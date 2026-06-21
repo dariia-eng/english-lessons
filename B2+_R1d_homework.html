@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HW1 · Vocabulary: Fights &amp; Disputes</title>
+<style>
+:root {
+  --or:#E8611A;--or2:#C94E0E;--or-pale:#FEF0E7;--or-light:#F5894A;
+  --gn:#2EAA6E;--gn-pale:#EBF9F3;--rd:#D63031;--rd-pale:#FDEAEA;
+  --bl:#2D6FA3;--bl-pale:#EEF4FB;
+  --dk:#1A1A2E;--md:#52526E;--lt:#F4F4F8;--bd:#E2E2EE;--wh:#fff;
+  --sh:0 4px 20px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--lt);color:var(--dk);padding:0 0 60px}
+
+.topbar{background:var(--dk);color:#fff;padding:14px 28px;display:flex;align-items:center;gap:14px;margin-bottom:32px}
+.unit-badge{background:var(--or);color:#fff;font-weight:800;font-size:13px;padding:3px 10px;border-radius:6px}
+.topbar-title{font-size:15px;font-weight:600;opacity:.9}
+.hw-badge{margin-left:auto;background:rgba(255,255,255,.12);border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700;color:rgba(255,255,255,.7)}
+
+.page{max-width:700px;margin:0 auto;padding:0 20px}
+
+/* Name block */
+.name-block{background:var(--wh);border-radius:14px;box-shadow:var(--sh);padding:20px 24px;margin-bottom:28px;display:flex;align-items:center;gap:16px}
+.name-block label{font-size:14px;font-weight:700;color:var(--dk);white-space:nowrap}
+.name-input{flex:1;border:2px solid var(--bd);border-radius:9px;padding:9px 14px;font-size:15px;font-family:inherit;color:var(--dk);outline:none;transition:border-color .15s}
+.name-input:focus{border-color:var(--or)}
+
+/* Section */
+.section{background:var(--wh);border-radius:14px;box-shadow:var(--sh);padding:22px 24px;margin-bottom:22px}
+.sec-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px}
+.sec-num{width:36px;height:36px;border-radius:10px;background:var(--or);color:#fff;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-title{flex:1}
+.sec-title h2{font-size:16px;font-weight:800;color:var(--dk);line-height:1.3}
+.sec-title p{font-size:13px;color:var(--md);margin-top:3px;line-height:1.5}
+
+/* Word bank */
+.wbank{display:flex;flex-wrap:wrap;gap:7px;background:var(--or-pale);border-radius:9px;padding:12px;margin-bottom:16px}
+.wb-chip{background:var(--wh);border:2px solid var(--or-light);border-radius:7px;padding:4px 12px;font-size:13px;font-weight:700;color:var(--or)}
+
+/* Match exercise */
+.match-list{display:flex;flex-direction:column;gap:9px}
+.match-row{display:flex;align-items:flex-start;gap:12px;background:var(--lt);border-radius:9px;padding:11px 14px}
+.match-num{font-weight:800;color:var(--or);font-size:13px;min-width:20px;padding-top:2px}
+.match-def{flex:1;font-size:13px;line-height:1.5;color:var(--md)}
+.match-sel{border:2px solid var(--bd);border-radius:8px;padding:6px 10px;font-size:13px;font-family:inherit;color:var(--dk);background:var(--wh);outline:none;cursor:pointer;min-width:180px;transition:border-color .15s}
+.match-sel:focus{border-color:var(--or)}
+.match-sel.correct{border-color:var(--gn);background:var(--gn-pale);color:var(--gn)}
+.match-sel.wrong{border-color:var(--rd);background:var(--rd-pale);color:var(--rd)}
+
+/* Gap fill */
+.story{font-size:14px;line-height:2.2;color:var(--dk)}
+.gb{display:inline-block;border:none;border-bottom:2px solid var(--or);background:transparent;font-size:14px;color:var(--dk);outline:none;min-width:110px;padding:0 4px;font-family:inherit}
+.gb:focus{border-bottom-color:var(--or2)}
+.gb.correct{border-bottom-color:var(--gn);color:var(--gn)}
+.gb.wrong{border-bottom-color:var(--rd);color:var(--rd)}
+
+/* Rewrite */
+.rw-list{display:flex;flex-direction:column;gap:12px}
+.rw-item{background:var(--lt);border-radius:9px;padding:13px 16px}
+.rw-item .orig{font-size:13px;color:var(--md);margin-bottom:8px;line-height:1.5}
+.rw-item .orig em{font-style:italic}
+.rw-item .answer-row{display:flex;align-items:center;gap:8px;font-size:14px}
+.rw-item .prefix{color:var(--md);font-size:13px}
+.rw-inp{border:none;border-bottom:2px solid var(--or);background:transparent;font-size:14px;font-family:inherit;color:var(--dk);outline:none;flex:1;padding:0 4px;min-width:0}
+.rw-inp:focus{border-bottom-color:var(--or2)}
+.rw-inp.correct{border-bottom-color:var(--gn);color:var(--gn)}
+.rw-inp.wrong{border-bottom-color:var(--rd);color:var(--rd)}
+
+/* Writing */
+.writing-area{width:100%;border:2px solid var(--bd);border-radius:10px;padding:14px;font-size:14px;font-family:inherit;color:var(--dk);min-height:120px;resize:vertical;outline:none;transition:border-color .15s;line-height:1.65}
+.writing-area:focus{border-color:var(--or)}
+.writing-hint{font-size:12px;color:var(--md);margin-top:8px;line-height:1.5}
+.vcl{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.vc{display:inline-flex;align-items:center;gap:4px;background:var(--or-pale);border:2px solid var(--or-light);border-radius:20px;padding:3px 11px;font-size:12px;font-weight:700;color:var(--or);cursor:pointer;user-select:none;transition:all .15s}
+.vc.used{background:var(--gn-pale);border-color:var(--gn);color:var(--gn)}
+
+/* Score */
+.score-badge{display:inline-flex;align-items:center;gap:6px;border-radius:8px;padding:5px 12px;font-size:13px;font-weight:700;margin-top:12px}
+.score-badge.ok{background:var(--gn-pale);color:var(--gn)}
+.score-badge.partial{background:#FFF7ED;color:#D97706}
+.score-badge.zero{background:var(--rd-pale);color:var(--rd)}
+
+/* Btn row */
+.btn-row{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap;align-items:center}
+.btn{border:none;border-radius:9px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;transition:all .16s}
+.btn.or{background:var(--or);color:#fff}
+.btn.or:hover{background:var(--or2)}
+.btn.ghost{background:var(--lt);color:var(--md);border:2px solid var(--bd)}
+.btn.ghost:hover{background:var(--bd)}
+
+/* Send bar */
+.send-bar{position:fixed;bottom:0;left:0;right:0;background:var(--wh);border-top:1px solid var(--bd);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:100}
+.send-bar p{font-size:13px;color:var(--md)}
+.btn.send{background:var(--dk);color:#fff;font-size:14px;padding:10px 26px}
+.btn.send:hover{background:#2D2D4E}
+
+/* Hint */
+.hint{font-size:11px;color:var(--gn);margin-left:5px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="unit-badge">1D</span>
+  <span class="topbar-title">Homework 1 · Vocabulary: Fights &amp; Disputes</span>
+  <span class="hw-badge">B2+ · ~25 min</span>
+</div>
+
+<div class="page">
+
+  <!-- NAME -->
+  <div class="name-block">
+    <label for="sname">👤 Your name:</label>
+    <input id="sname" class="name-input" type="text" placeholder="Type your name here…">
+  </div>
+
+  <!-- ═══ EXERCISE 1: MATCH DEFINITION ═══ -->
+  <div class="section">
+    <div class="sec-header">
+      <div class="sec-num">1</div>
+      <div class="sec-title">
+        <h2>Match the word to its definition</h2>
+        <p>Choose the correct word from the drop-down for each definition.</p>
+      </div>
+    </div>
+
+    <div class="match-list" id="ex1">
+      <div class="match-row">
+        <span class="match-num">1</span>
+        <span class="match-def">To get worse or more serious (of a situation)</span>
+        <select class="match-sel" data-ans="escalate">
+          <option value="">— choose —</option>
+          <option>clear the air</option><option>escalate</option><option>quarrel</option>
+          <option>side with someone</option><option>come to blows</option>
+          <option>kick someone out</option><option>willing to compromise</option><option>an ongoing dispute</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <span class="match-num">2</span>
+        <span class="match-def">To resolve tension through an open, honest conversation</span>
+        <select class="match-sel" data-ans="clear the air">
+          <option value="">— choose —</option>
+          <option>clear the air</option><option>escalate</option><option>quarrel</option>
+          <option>side with someone</option><option>come to blows</option>
+          <option>kick someone out</option><option>willing to compromise</option><option>an ongoing dispute</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <span class="match-num">3</span>
+        <span class="match-def">To start fighting physically; to reach a point of extreme conflict</span>
+        <select class="match-sel" data-ans="come to blows">
+          <option value="">— choose —</option>
+          <option>clear the air</option><option>escalate</option><option>quarrel</option>
+          <option>side with someone</option><option>come to blows</option>
+          <option>kick someone out</option><option>willing to compromise</option><option>an ongoing dispute</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <span class="match-num">4</span>
+        <span class="match-def">A conflict between two people or groups that has continued for a long time without being resolved</span>
+        <select class="match-sel" data-ans="an ongoing dispute">
+          <option value="">— choose —</option>
+          <option>clear the air</option><option>escalate</option><option>quarrel</option>
+          <option>side with someone</option><option>come to blows</option>
+          <option>kick someone out</option><option>willing to compromise</option><option>an ongoing dispute</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <span class="match-num">5</span>
+        <span class="match-def">To support one person in a dispute rather than staying neutral</span>
+        <select class="match-sel" data-ans="side with someone">
+          <option value="">— choose —</option>
+          <option>clear the air</option><option>escalate</option><option>quarrel</option>
+          <option>side with someone</option><option>come to blows</option>
+          <option>kick someone out</option><option>willing to compromise</option><option>an ongoing dispute</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <span class="match-num">6</span>
+        <span class="match-def">To argue repeatedly, especially about small or unimportant things</span>
+        <select class="match-sel" data-ans="quarrel">
+          <option value="">— choose —</option>
+          <option>clear the air</option><option>escalate</option><option>quarrel</option>
+          <option>side with someone</option><option>come to blows</option>
+          <option>kick someone out</option><option>willing to compromise</option><option>an ongoing dispute</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <span class="match-num">7</span>
+        <span class="match-def">To force someone to leave a place, group, or relationship</span>
+        <select class="match-sel" data-ans="kick someone out">
+          <option value="">— choose —</option>
+          <option>clear the air</option><option>escalate</option><option>quarrel</option>
+          <option>side with someone</option><option>come to blows</option>
+          <option>kick someone out</option><option>willing to compromise</option><option>an ongoing dispute</option>
+        </select>
+      </div>
+      <div class="match-row">
+        <span class="match-num">8</span>
+        <span class="match-def">Prepared to give up something you want in order to reach an agreement</span>
+        <select class="match-sel" data-ans="willing to compromise">
+          <option value="">— choose —</option>
+          <option>clear the air</option><option>escalate</option><option>quarrel</option>
+          <option>side with someone</option><option>come to blows</option>
+          <option>kick someone out</option><option>willing to compromise</option><option>an ongoing dispute</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn or" onclick="checkEx1()">Check answers</button>
+      <div id="sc1"></div>
+    </div>
+  </div>
+
+  <!-- ═══ EXERCISE 2: GAP FILL STORY ═══ -->
+  <div class="section">
+    <div class="sec-header">
+      <div class="sec-num">2</div>
+      <div class="sec-title">
+        <h2>Fill in the gaps</h2>
+        <p>Use the correct form of the words below. Each word is used once.</p>
+      </div>
+    </div>
+
+    <div class="wbank">
+      <span class="wb-chip">mediate</span>
+      <span class="wb-chip">came to blows</span>
+      <span class="wb-chip">speaking terms</span>
+      <span class="wb-chip">dispute</span>
+      <span class="wb-chip">clear the air</span>
+      <span class="wb-chip">escalated</span>
+      <span class="wb-chip">ongoing</span>
+      <span class="wb-chip">compromise</span>
+    </div>
+
+    <div class="story" id="ex2">
+      Last year, two of my neighbours had a big <input class="gb" data-ans="dispute" placeholder="(1)"> about a fence. It wasn't a new problem — it had been an <input class="gb" data-ans="ongoing" placeholder="(2)"> issue for months. Neither of them wanted to <input class="gb" data-ans="compromise" placeholder="(3)"> — both were convinced they were right. Eventually things <input class="gb" data-ans="escalated" placeholder="(4)"> so badly that they nearly <input class="gb" data-ans="came to blows" placeholder="(5)" style="min-width:140px"> in the street. After that, they weren't even on <input class="gb" data-ans="speaking terms" placeholder="(6)" style="min-width:130px"> . Their kids asked me to <input class="gb" data-ans="mediate" placeholder="(7)"> , but I didn't want to get involved. In the end, they both moved away without ever managing to <input class="gb" data-ans="clear the air" placeholder="(8)" style="min-width:130px"> .
+    </div>
+
+    <div class="btn-row">
+      <button class="btn or" onclick="checkEx2()">Check answers</button>
+      <button class="btn ghost" onclick="revealEx2()">Reveal</button>
+      <div id="sc2"></div>
+    </div>
+  </div>
+
+  <!-- ═══ EXERCISE 3: REWRITE ═══ -->
+  <div class="section">
+    <div class="sec-header">
+      <div class="sec-num">3</div>
+      <div class="sec-title">
+        <h2>Rewrite using the target vocabulary</h2>
+        <p>Complete the second sentence so it means the same as the first. Use 1–4 words.</p>
+      </div>
+    </div>
+
+    <div class="rw-list" id="ex3">
+      <div class="rw-item">
+        <div class="orig">The situation got much worse after the meeting.</div>
+        <div class="answer-row">
+          <span class="prefix">The situation</span>
+          <input class="rw-inp" data-ans="escalated" placeholder="___________">
+          <span class="prefix">after the meeting.</span>
+        </div>
+      </div>
+      <div class="rw-item">
+        <div class="orig">They stopped talking to each other for three weeks.</div>
+        <div class="answer-row">
+          <span class="prefix">They weren't on</span>
+          <input class="rw-inp" data-ans="speaking terms" placeholder="___________">
+          <span class="prefix">for three weeks.</span>
+        </div>
+      </div>
+      <div class="rw-item">
+        <div class="orig">She supported her flatmate, not the landlord.</div>
+        <div class="answer-row">
+          <span class="prefix">She</span>
+          <input class="rw-inp" data-ans="sided with" placeholder="___________">
+          <span class="prefix">her flatmate.</span>
+        </div>
+      </div>
+      <div class="rw-item">
+        <div class="orig">He was forced to leave the group chat.</div>
+        <div class="answer-row">
+          <span class="prefix">He was</span>
+          <input class="rw-inp" data-ans="kicked out of" placeholder="___________">
+          <span class="prefix">the group chat.</span>
+        </div>
+      </div>
+      <div class="rw-item">
+        <div class="orig">Are you prepared to give up some of what you want?</div>
+        <div class="answer-row">
+          <span class="prefix">Are you</span>
+          <input class="rw-inp" data-ans="willing to compromise" placeholder="___________">
+          <span class="prefix">?</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn or" onclick="checkEx3()">Check answers</button>
+      <button class="btn ghost" onclick="revealEx3()">Reveal</button>
+      <div id="sc3"></div>
+    </div>
+  </div>
+
+  <!-- ═══ EXERCISE 4: WRITING ═══ -->
+  <div class="section">
+    <div class="sec-header">
+      <div class="sec-num">4</div>
+      <div class="sec-title">
+        <h2>Writing task</h2>
+        <p>Write 5–7 sentences about a real or imagined dispute. Use at least <strong>5 words</strong> from the lesson. Tick each word as you use it.</p>
+      </div>
+    </div>
+
+    <div class="vcl">
+      <span class="vc" onclick="this.classList.toggle('used')">ongoing dispute</span>
+      <span class="vc" onclick="this.classList.toggle('used')">escalate</span>
+      <span class="vc" onclick="this.classList.toggle('used')">side with</span>
+      <span class="vc" onclick="this.classList.toggle('used')">come to blows</span>
+      <span class="vc" onclick="this.classList.toggle('used')">clear the air</span>
+      <span class="vc" onclick="this.classList.toggle('used')">on speaking terms</span>
+      <span class="vc" onclick="this.classList.toggle('used')">willing to compromise</span>
+      <span class="vc" onclick="this.classList.toggle('used')">kick out</span>
+      <span class="vc" onclick="this.classList.toggle('used')">quarrel</span>
+      <span class="vc" onclick="this.classList.toggle('used')">mediate</span>
+    </div>
+
+    <textarea id="writing4" class="writing-area" placeholder="Write your sentences here…" style="margin-top:14px"></textarea>
+    <p class="writing-hint">💡 Think of a dispute from your life, something you saw online, or make one up. Can you use all 10 words?</p>
+
+    <div class="btn-row">
+      <button class="btn or" onclick="checkEx4()">Check word count</button>
+      <div id="sc4"></div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- SEND BAR -->
+<div class="send-bar">
+  <p>When you're done, send your answers to your teacher 👉</p>
+  <button class="btn send" onclick="sendToTeacher()">📧 Send to Teacher</button>
+</div>
+
+<script>
+// ── EX 1: Match definitions ──
+function checkEx1() {
+  const sels = document.querySelectorAll('#ex1 .match-sel');
+  let score = 0;
+  sels.forEach(s => {
+    s.classList.remove('correct','wrong');
+    if (!s.value) return;
+    const ok = s.value.toLowerCase().trim() === s.dataset.ans.toLowerCase().trim();
+    s.classList.add(ok ? 'correct' : 'wrong');
+    if (ok) score++;
+  });
+  showScore('sc1', score, 8);
+}
+
+// ── EX 2: Gap fill story ──
+function checkEx2() {
+  const inputs = document.querySelectorAll('#ex2 .gb');
+  let score = 0;
+  inputs.forEach(inp => {
+    inp.classList.remove('correct','wrong');
+    document.querySelectorAll('.hint').forEach(h=>h.remove());
+    const val = inp.value.toLowerCase().trim();
+    const ans = inp.dataset.ans.toLowerCase().trim();
+    if (!val) return;
+    const ok = val === ans || ans.includes(val) || val.includes(ans);
+    inp.classList.add(ok ? 'correct' : 'wrong');
+    if (ok) score++;
+    else {
+      const h = document.createElement('span');
+      h.className = 'hint'; h.textContent = '→ ' + inp.dataset.ans;
+      inp.after(h);
+    }
+  });
+  showScore('sc2', score, 8);
+}
+function revealEx2() {
+  document.querySelectorAll('#ex2 .gb').forEach(i=>{i.value=i.dataset.ans;i.classList.add('correct');});
+}
+
+// ── EX 3: Rewrite ──
+const rw3ans = [
+  ['escalated'],
+  ['speaking terms'],
+  ['sided with','sided with her'],
+  ['kicked out of','was kicked out of'],
+  ['willing to compromise']
+];
+function checkEx3() {
+  const inputs = document.querySelectorAll('#ex3 .rw-inp');
+  let score = 0;
+  inputs.forEach((inp, i) => {
+    inp.classList.remove('correct','wrong');
+    const val = inp.value.toLowerCase().trim();
+    if (!val) return;
+    const ok = rw3ans[i].some(a => val === a || val.includes(a) || a.includes(val));
+    inp.classList.add(ok ? 'correct' : 'wrong');
+    if (ok) score++;
+  });
+  showScore('sc3', score, 5);
+}
+function revealEx3() {
+  const inputs = document.querySelectorAll('#ex3 .rw-inp');
+  const answers = ['escalated','speaking terms','sided with','kicked out of','willing to compromise'];
+  inputs.forEach((inp,i)=>{inp.value=answers[i];inp.classList.add('correct');});
+}
+
+// ── EX 4: Writing ──
+function checkEx4() {
+  const text = document.getElementById('writing4').value.trim();
+  const words = text.split(/\s+/).filter(w=>w).length;
+  const sc = document.getElementById('sc4');
+  if (words < 10) {
+    sc.innerHTML = `<span class="score-badge zero">📝 ${words} words — aim for at least 40</span>`;
+  } else if (words < 30) {
+    sc.innerHTML = `<span class="score-badge partial">📝 ${words} words — keep going!</span>`;
+  } else {
+    sc.innerHTML = `<span class="score-badge ok">✅ ${words} words — great!</span>`;
+  }
+}
+
+// ── SCORE DISPLAY ──
+function showScore(id, score, total) {
+  const el = document.getElementById(id);
+  const cls = score === total ? 'ok' : score >= total/2 ? 'partial' : 'zero';
+  const emoji = score === total ? '🎉' : score >= total/2 ? '👍' : '💪';
+  el.innerHTML = `<span class="score-badge ${cls}">${emoji} ${score}/${total}</span>`;
+}
+
+// ── VALIDATION NOTIFICATION ──
+function showNotif(msg) {
+  let n = document.getElementById('send-notif');
+  if (!n) {
+    n = document.createElement('div');
+    n.id = 'send-notif';
+    n.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#c0392b;color:#fff;padding:14px 24px;border-radius:12px;font-weight:700;font-size:15px;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,.25);max-width:90%;text-align:center;';
+    document.body.appendChild(n);
+  }
+  n.textContent = msg;
+  n.style.display = 'block';
+  clearTimeout(n._t);
+  n._t = setTimeout(() => n.style.display='none', 4000);
+}
+
+// ── SEND TO TEACHER ──
+function sendToTeacher() {
+  // — Validation —
+  const nameVal = document.getElementById('sname').value.trim();
+  if (!nameVal) { showNotif('⚠️ Please write your name before sending!'); return; }
+
+  const ex1blank = [...document.querySelectorAll('#ex1 .match-sel')].some(s => !s.value);
+  if (ex1blank) { showNotif('⚠️ Exercise 1 is not complete — please choose an answer for every definition.'); return; }
+
+  const ex2blank = [...document.querySelectorAll('#ex2 .gb')].some(i => !i.value.trim());
+  if (ex2blank) { showNotif('⚠️ Exercise 2 is not complete — fill in all the gaps.'); return; }
+
+  const ex3blank = [...document.querySelectorAll('#ex3 .rw-inp')].some(i => !i.value.trim());
+  if (ex3blank) { showNotif('⚠️ Exercise 3 is not complete — rewrite all the sentences.'); return; }
+
+  const writing = document.getElementById('writing4').value.trim();
+  if (!writing) { showNotif('⚠️ Exercise 4 is not complete — write your paragraph before sending.'); return; }
+
+  const name = nameVal;
+
+  // Ex1
+  const ex1rows = document.querySelectorAll('#ex1 .match-row');
+  let ex1lines = '';
+  ex1rows.forEach((row, i) => {
+    const def = row.querySelector('.match-def').textContent.trim().substring(0,50) + '…';
+    const ans = row.querySelector('.match-sel').value || '(blank)';
+    ex1lines += `  ${i+1}. ${ans}\n`;
+  });
+
+  // Ex2
+  const ex2inputs = document.querySelectorAll('#ex2 .gb');
+  let ex2lines = '';
+  ex2inputs.forEach((inp, i) => {
+    ex2lines += `  (${i+1}) ${inp.value || '(blank)'}\n`;
+  });
+
+  // Ex3
+  const ex3inputs = document.querySelectorAll('#ex3 .rw-inp');
+  const ex3prefixes = ['The situation','They weren\'t on','She','He was','Are you'];
+  const ex3suffixes = ['after the meeting.','for three weeks.','her flatmate.','the group chat.','?'];
+  let ex3lines = '';
+  ex3inputs.forEach((inp,i) => {
+    ex3lines += `  ${i+1}. ${ex3prefixes[i]} ${inp.value||'___'} ${ex3suffixes[i]}\n`;
+  });
+
+  // Ex4 (already validated above)
+
+  const body =
+`Homework 1 — Vocabulary: Fights & Disputes
+Student: ${name}
+Date: ${new Date().toLocaleDateString('en-GB')}
+
+══════════════════════════
+EXERCISE 1 — Match the definition
+══════════════════════════
+${ex1lines}
+══════════════════════════
+EXERCISE 2 — Fill in the gaps
+══════════════════════════
+${ex2lines}
+══════════════════════════
+EXERCISE 3 — Rewrite
+══════════════════════════
+${ex3lines}
+══════════════════════════
+EXERCISE 4 — Writing task
+══════════════════════════
+${writing}
+`;
+
+  const subject = encodeURIComponent(`HW1 – Fights & Disputes – ${name}`);
+  const bodyEnc = encodeURIComponent(body);
+  window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${subject}&body=${bodyEnc}`;
+}
+</script>
+</body>
+</html>
