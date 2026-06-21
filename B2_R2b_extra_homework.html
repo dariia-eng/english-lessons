@@ -121,6 +121,15 @@
   }
   .name-input:focus { border-bottom-color: var(--dark); }
   .name-input::placeholder { color: #bbb; font-style: italic; }
+  .name-input.error { border-bottom-color: var(--incorrect-border); background: var(--incorrect-bg); border-radius: 4px 4px 0 0; }
+  .name-card.shake { animation: shake 0.4s ease; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%      { transform: translateX(-6px); }
+    40%      { transform: translateX(6px); }
+    60%      { transform: translateX(-4px); }
+    80%      { transform: translateX(4px); }
+  }
 
   /* ── EXERCISE CARD ── */
   .ex-card {
@@ -375,6 +384,22 @@
   .total-score-bar.visible { display: flex; }
   .total-score-bar .total-num { font-size: 1.5rem; font-weight: 700; color: var(--accent2); }
   .total-score-bar .total-num.perfect { color: var(--correct); }
+
+  /* ── VALIDATION PANEL ── */
+  .validation-panel {
+    display: none;
+    background: var(--incorrect-bg);
+    border: 2px solid var(--incorrect-border);
+    border-radius: 10px;
+    padding: 1rem 1.4rem;
+    margin-bottom: 1rem;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.9rem;
+    color: var(--incorrect);
+  }
+  .validation-panel.visible { display: block; }
+  .validation-panel strong { display: block; margin-bottom: 0.5rem; font-size: 0.95rem; }
+  .validation-panel ul { padding-left: 1.2rem; line-height: 1.8; }
 
   /* ── FILM TAG ── */
   .film-tag {
@@ -662,6 +687,12 @@
     <span id="totalScoreMsg" style="font-size:0.88rem; color:var(--muted);"></span>
   </div>
 
+  <!-- ── VALIDATION ERRORS ── -->
+  <div class="validation-panel" id="validationPanel">
+    <strong>⚠ Please complete the following before sending:</strong>
+    <ul id="validationList"></ul>
+  </div>
+
   <!-- ── SEND TO TEACHER ── -->
   <div class="send-section">
     <div class="send-text">
@@ -780,10 +811,70 @@ function updateTotal() {
 }
 
 /* ══════════════════════════════════════════
-   SEND TO TEACHER
+   SEND TO TEACHER — with full validation
 ══════════════════════════════════════════ */
 function sendToTeacher() {
-  const name = document.getElementById('studentName').value.trim() || '(Name not provided)';
+  const nameEl   = document.getElementById('studentName');
+  const name     = nameEl.value.trim();
+  const panel    = document.getElementById('validationPanel');
+  const list     = document.getElementById('validationList');
+  const nameCard = document.querySelector('.name-card');
+
+  // Collect issues
+  const issues = [];
+
+  // 1. Name
+  if (!name) {
+    issues.push('Write your name at the top of the page.');
+    nameEl.classList.add('error');
+    nameCard.classList.remove('shake');
+    void nameCard.offsetWidth; // reflow to restart animation
+    nameCard.classList.add('shake');
+    nameEl.focus();
+  } else {
+    nameEl.classList.remove('error');
+  }
+
+  // 2. All blank-inputs must have a value
+  const allInputIds = [
+    ...exercises.ex1,
+    ...exercises.ex2,
+    ...exercises.ex3,
+  ];
+  const emptyInputs = allInputIds.filter(id => {
+    const el = document.getElementById(id);
+    return el && !el.value.trim();
+  });
+
+  // Group by exercise
+  const exNames = { 'e1': 'Exercise 1', 'e2': 'Exercise 2', 'e3': 'Exercise 3' };
+  const emptyByEx = {};
+  emptyInputs.forEach(id => {
+    const key = id.slice(0, 2);
+    if (!emptyByEx[key]) emptyByEx[key] = [];
+    const num = id.split('-').pop();
+    emptyByEx[key].push(num);
+  });
+  Object.entries(emptyByEx).forEach(([key, nums]) => {
+    issues.push(`${exNames[key]}: fill in question${nums.length > 1 ? 's' : ''} ${nums.join(', ')}.`);
+  });
+
+  // 3. Free writing
+  const freeVal = document.getElementById('e4-free').value.trim();
+  if (!freeVal) {
+    issues.push('Exercise 4: write your complaint (5–7 sentences).');
+  }
+
+  // Show or hide panel
+  if (issues.length > 0) {
+    list.innerHTML = issues.map(i => `<li>${i}</li>`).join('');
+    panel.classList.add('visible');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return; // block send
+  }
+
+  // All clear — hide panel and send
+  panel.classList.remove('visible');
 
   function val(id) {
     const el = document.getElementById(id);
@@ -830,7 +921,7 @@ EXERCISE 3 — Gap Fill  [Score: ${ex3Score}]
 8. ${val('e3-8')} ${status('e3-8')}
 
 EXERCISE 4 — Free Writing
-${val('e4-free')}
+${freeVal}
 
 ================================================
 Sent from the homework page.
@@ -840,6 +931,11 @@ Sent from the homework page.
   const bodyEnc = encodeURIComponent(body);
   window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${subject}&body=${bodyEnc}`;
 }
+
+/* ── Clear name error on typing ── */
+document.getElementById('studentName').addEventListener('input', function() {
+  this.classList.remove('error');
+});
 
 /* ══════════════════════════════════════════
    LIVE CHECK ON BLUR (light debounce)
