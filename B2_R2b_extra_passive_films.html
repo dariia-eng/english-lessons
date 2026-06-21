@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>That's Not What I Ordered — English Lesson</title>
+<style>
+  :root {
+    --bg: #f5f0eb;
+    --card: #ffffff;
+    --dark: #1a1a2e;
+    --accent: #e63946;
+    --accent2: #457b9d;
+    --muted: #6b7280;
+    --border: #e2d9d0;
+    --grammar-bg: #1a1a2e;
+    --grammar-text: #e8e0ff;
+    --grammar-highlight: #f4c430;
+    --grammar-highlight2: #7fffd4;
+    --shadow: 0 4px 24px rgba(0,0,0,0.09);
+    --correct: #16a34a;
+    --correct-bg: #f0fdf4;
+    --correct-border: #22c55e;
+    --incorrect: #dc2626;
+    --incorrect-bg: #fef2f2;
+    --incorrect-border: #ef4444;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: var(--bg);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* ── TOP NAV ── */
+  .top-nav {
+    background: var(--dark);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .lesson-title {
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: 0.04em;
+    color: var(--grammar-highlight);
+    font-family: 'Arial', sans-serif;
+  }
+  .progress-row { display: flex; gap: 6px; align-items: center; }
+  .progress-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #ffffff33;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .progress-dot.active { background: var(--grammar-highlight); transform: scale(1.3); }
+  .progress-dot.done { background: var(--grammar-highlight2); }
+  .page-label {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.78rem;
+    color: #aaa;
+    min-width: 80px;
+    text-align: right;
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; }
+
+  /* ── HEADINGS / TEXT ── */
+  .section-tag {
+    display: inline-block;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    padding: 2px 10px;
+    margin-bottom: 0.9rem;
+  }
+  h1 { font-size: 2rem; line-height: 1.25; margin-bottom: 0.4rem; }
+  h2 { font-size: 1.35rem; margin-bottom: 0.8rem; }
+  h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--accent2); font-family: 'Arial', sans-serif; }
+  p { line-height: 1.7; margin-bottom: 0.8rem; color: #333; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 1.8rem 2rem;
+    margin-bottom: 1.4rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+
+  /* ── GRAMMAR BOX ── */
+  .grammar-box {
+    background: var(--grammar-bg);
+    color: var(--grammar-text);
+    border-radius: 12px;
+    padding: 1.8rem 2rem;
+    margin-bottom: 1.4rem;
+    font-family: 'Arial', sans-serif;
+  }
+  .grammar-box h2 {
+    color: var(--grammar-highlight);
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+    border-bottom: 2px solid #ffffff22;
+    padding-bottom: 0.6rem;
+  }
+  .grammar-box .formula {
+    background: #ffffff14;
+    border-left: 4px solid var(--grammar-highlight);
+    border-radius: 6px;
+    padding: 0.9rem 1.2rem;
+    margin: 1rem 0;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+  .grammar-box .formula .hl  { color: var(--grammar-highlight);  font-weight: bold; }
+  .grammar-box .formula .hl2 { color: var(--grammar-highlight2); font-weight: bold; }
+  .grammar-box table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.92rem; }
+  .grammar-box table th { background: #ffffff22; color: var(--grammar-highlight); padding: 8px 12px; text-align: left; }
+  .grammar-box table td { padding: 8px 12px; border-top: 1px solid #ffffff15; vertical-align: middle; }
+  .grammar-box table tr:hover td { background: #ffffff0a; }
+  .grammar-box .note {
+    background: #ffffff10;
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    margin-top: 1rem;
+    font-size: 0.88rem;
+    color: #ccc;
+    line-height: 1.5;
+  }
+  .grammar-box .note span { color: var(--grammar-highlight2); font-weight: bold; }
+
+  /* ── INTERACTIVE INPUTS (light background) ── */
+  .blank-input {
+    display: inline-block;
+    min-width: 160px;
+    border: none;
+    border-bottom: 2.5px solid var(--accent2);
+    background: transparent;
+    font-family: 'Georgia', serif;
+    font-size: 0.95rem;
+    padding: 2px 6px 4px;
+    outline: none;
+    color: var(--dark);
+    transition: border-color 0.25s, background 0.25s, color 0.25s;
+    border-radius: 0;
+    vertical-align: bottom;
+  }
+  .blank-input:focus { border-bottom-color: var(--dark); }
+
+  .blank-input.correct {
+    border-bottom-color: var(--correct-border);
+    background: var(--correct-bg);
+    color: var(--correct);
+    border-radius: 4px 4px 0 0;
+  }
+  .blank-input.incorrect {
+    border-bottom-color: var(--incorrect-border);
+    background: var(--incorrect-bg);
+    color: var(--incorrect);
+    border-radius: 4px 4px 0 0;
+  }
+
+  /* ── INPUTS INSIDE DARK GRAMMAR BOX ── */
+  .grammar-box .blank-input {
+    border-bottom-color: var(--grammar-highlight);
+    color: #f0e6b2;
+    background: transparent;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.9rem;
+    min-width: 130px;
+  }
+  .grammar-box .blank-input:focus { border-bottom-color: white; }
+  .grammar-box .blank-input.correct {
+    background: rgba(134,239,172,0.12);
+    border-bottom-color: var(--grammar-highlight2);
+    color: var(--grammar-highlight2);
+    border-radius: 4px 4px 0 0;
+  }
+  .grammar-box .blank-input.incorrect {
+    background: rgba(252,165,165,0.12);
+    border-bottom-color: #f87171;
+    color: #fca5a5;
+    border-radius: 4px 4px 0 0;
+  }
+
+  /* ── FEEDBACK ICON ── */
+  .feedback-icon {
+    display: inline-block;
+    font-size: 0.85rem;
+    margin-left: 4px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    vertical-align: middle;
+  }
+  .blank-input.correct  + .feedback-icon,
+  .blank-input.incorrect + .feedback-icon { opacity: 1; }
+
+  /* ── OPEN TEXT AREA (no auto-check) ── */
+  .open-input {
+    display: block;
+    width: 100%;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: #fafafa;
+    font-family: 'Georgia', serif;
+    font-size: 0.95rem;
+    padding: 0.6rem 0.9rem;
+    outline: none;
+    color: var(--dark);
+    margin-top: 0.5rem;
+    resize: vertical;
+    min-height: 48px;
+    transition: border-color 0.2s;
+  }
+  .open-input:focus { border-color: var(--accent2); background: white; }
+
+  /* ── FILM QUOTE ── */
+  .film-quote {
+    border-left: 4px solid var(--accent);
+    padding: 0.8rem 1.2rem;
+    margin: 1rem 0;
+    background: #fff5f5;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: #444;
+  }
+  .film-quote cite {
+    display: block;
+    font-style: normal;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
+    font-family: 'Arial', sans-serif;
+  }
+
+  /* ── SPEAKING CARDS ── */
+  .speak-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-top: 0.5rem; }
+  .speak-card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--accent);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+  .speak-card.blue { border-top-color: var(--accent2); }
+  .speak-card.gold { border-top-color: #f4c430; }
+  .speak-card .role {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .speak-card.blue .role { color: var(--accent2); }
+  .speak-card.gold .role { color: #b8920a; }
+
+  /* ── EXERCISE ITEMS ── */
+  .ex-item {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.97rem;
+    line-height: 1.9;
+  }
+  .ex-item:last-child { border-bottom: none; }
+  .ex-num {
+    display: inline-block;
+    font-family: 'Arial', sans-serif;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-right: 0.4rem;
+    min-width: 1.4rem;
+  }
+
+  /* ── REVEAL ANSWERS ── */
+  .answer-toggle {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.82rem;
+    color: var(--accent2);
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    margin-top: 1rem;
+    padding: 0;
+  }
+  .answers {
+    display: none;
+    background: #f0f8ff;
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin-top: 0.8rem;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: #1a5276;
+    border: 1px solid #aed6f1;
+  }
+  .answers.visible { display: block; }
+  .answers strong { color: var(--accent); }
+
+  /* ── VOCAB / SORT ── */
+  .sort-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 0.8rem; }
+  .sort-col { border-radius: 10px; padding: 1rem 1.2rem; }
+  .sort-col.formal  { background: #eef2ff; border: 2px solid #7986cb; }
+  .sort-col.informal{ background: #fef9ee; border: 2px solid #f4c430; }
+  .sort-col h3 { margin-bottom: 0.7rem; }
+  .sort-col.formal h3  { color: #3949ab; }
+  .sort-col.informal h3{ color: #b8920a; }
+  .sort-col ul { list-style: none; padding: 0; }
+  .sort-col ul li { padding: 0.45rem 0.7rem; background: white; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.92rem; border: 1px solid #e0e0e0; }
+
+  .phrase-bank { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1rem 0; }
+  .chip { background: var(--dark); color: white; border-radius: 20px; padding: 5px 14px; font-family: 'Arial', sans-serif; font-size: 0.84rem; }
+
+  /* ── VOCAB GRID ── */
+  .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 0.8rem; }
+  .vocab-item { background: #f8f5f0; border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.92rem; border: 1px solid var(--border); }
+  .vocab-item b { color: var(--dark); }
+  .vocab-item span { color: var(--muted); font-size: 0.85rem; display: block; margin-top: 2px; font-family: 'Arial', sans-serif; }
+
+  /* ── BADGE ── */
+  .badge { display: inline-block; background: var(--accent); color: white; font-family: 'Arial', sans-serif; font-size: 0.72rem; font-weight: 700; border-radius: 4px; padding: 2px 8px; margin-right: 6px; vertical-align: middle; }
+  .badge.blue { background: var(--accent2); }
+  .badge.dark { background: var(--dark); }
+
+  /* ── DISCUSSION LIST ── */
+  .discuss-list { list-style: none; padding: 0; }
+  .discuss-list li { padding: 0.85rem 1rem 0.85rem 1.2rem; border-radius: 8px; background: var(--card); margin-bottom: 0.7rem; font-size: 0.97rem; line-height: 1.55; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid var(--accent2); }
+
+  /* ── READING ── */
+  .reading-text {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 1.6rem 2rem;
+    font-size: 0.97rem;
+    line-height: 1.8;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 1.2rem;
+  }
+  .reading-text .film-heading { font-family: 'Arial', sans-serif; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 0.5rem; }
+  .passive-hl { background: #fff3cd; padding: 1px 3px; border-radius: 3px; }
+
+  /* ── FILM BANNER ── */
+  .film-banner {
+    background: linear-gradient(135deg, var(--dark) 60%, #16213e);
+    color: white;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  .film-banner .icon { font-size: 2.8rem; }
+  .film-banner h2 { color: var(--grammar-highlight); margin-bottom: 0.3rem; }
+  .film-banner p { color: #ccc; font-size: 0.93rem; margin: 0; }
+
+  /* ── INSTRUCTION ── */
+  .instruction {
+    background: #eef6ff;
+    border-radius: 8px;
+    padding: 0.8rem 1.2rem;
+    margin-bottom: 1.2rem;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.9rem;
+    color: #1a4a7a;
+    border-left: 3px solid var(--accent2);
+  }
+
+  /* ── SCORE BANNER ── */
+  .score-banner {
+    display: none;
+    align-items: center;
+    gap: 1rem;
+    background: var(--dark);
+    color: white;
+    border-radius: 10px;
+    padding: 0.9rem 1.4rem;
+    margin-bottom: 1rem;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.92rem;
+  }
+  .score-banner.visible { display: flex; }
+  .score-num { font-size: 1.4rem; font-weight: bold; color: var(--grammar-highlight); }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: white;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9rem 2rem;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.07);
+    z-index: 100;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Arial', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    letter-spacing: 0.03em;
+    padding: 0.65rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.18s;
+    text-transform: uppercase;
+  }
+  .btn-prev { background: white; color: var(--dark); border: 2px solid var(--border); }
+  .btn-prev:hover { border-color: var(--dark); }
+  .btn-next { background: var(--accent); color: white; }
+  .btn-next:hover { background: #c1121f; }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .step-counter { font-family: 'Arial', sans-serif; font-size: 0.82rem; color: var(--muted); }
+
+  @media (max-width: 600px) {
+    .sort-columns, .vocab-grid { grid-template-columns: 1fr; }
+    .speak-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 1.5rem; }
+    .page-wrap { padding: 1.5rem 1rem 6rem; }
+    .blank-input { min-width: 110px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="lesson-title">🎬 That's Not What I Ordered</div>
+  <div class="progress-row" id="progressDots"></div>
+  <div class="page-label" id="pageLabel">1 / 9</div>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════════
+     PAGE 1 — WARMER
+══════════════════════════════════════════════════ -->
+<div class="page active" id="page-1">
+  <div class="page-wrap">
+    <div class="section-tag">Warmer</div>
+    <h1>Nobody's Happy</h1>
+    <p style="color:var(--muted); font-family:'Arial',sans-serif; font-size:0.93rem; margin-bottom:1.8rem;">Look at these lines from recent films. Then talk to your partner.</p>
+
+    <div class="film-quote">
+      "This is NOT what I asked for. I was promised a window seat!"
+      <cite>— inspired by Conclave (2024)</cite>
+    </div>
+    <div class="film-quote">
+      "You were told the rules. You chose to ignore them. And now everybody suffers."
+      <cite>— inspired by Dune: Part Two (2024)</cite>
+    </div>
+    <div class="film-quote">
+      "I've been kept waiting for forty minutes. Is this how you treat all your guests?"
+      <cite>— inspired by The Substance (2024)</cite>
+    </div>
+    <div class="film-quote">
+      "Everything was ruined. The whole evening was absolutely ruined."
+      <cite>— inspired by Wicked (2024)</cite>
+    </div>
+
+    <div class="card" style="margin-top:1.8rem;">
+      <h3>Discuss with a partner</h3>
+      <ul class="discuss-list">
+        <li>Think of the last time you complained about something — a film, a restaurant, a service. What happened?</li>
+        <li>Do you think people complain too much, not enough, or just the right amount?</li>
+        <li>Would you complain differently to a friend vs. a manager? How?</li>
+        <li>Have you ever complained and actually got a result? What did you say?</li>
+      </ul>
+    </div>
+
+    <div class="card" style="background:#fff8f0;">
+      <h3>🎬 Quick vote</h3>
+      <p style="margin-bottom:0.8rem;">Which of these would you most likely complain about? Put them in order (1 = most likely):</p>
+      <div class="phrase-bank">
+        <div class="chip">Cold food at a restaurant</div>
+        <div class="chip">Wrong item delivered online</div>
+        <div class="chip">Spoilers for a film you hadn't seen</div>
+        <div class="chip">Noisy neighbours</div>
+        <div class="chip">Rude customer service</div>
+        <div class="chip">A disappointing film ending</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PAGE 2 — VOCABULARY
+══════════════════════════════════════════════════ -->
+<div class="page" id="page-2">
+  <div class="page-wrap">
+    <div class="section-tag">Vocabulary</div>
+    <h1>The Language of Complaints</h1>
+
+    <div class="instruction">
+      Sort these expressions into <strong>Formal</strong> and <strong>Informal</strong>. Compare with your partner and explain your choices.
+    </div>
+
+    <div class="phrase-bank">
+      <div class="chip">I'm afraid this isn't good enough.</div>
+      <div class="chip">This is absolutely ridiculous!</div>
+      <div class="chip">I'd like to raise a concern.</div>
+      <div class="chip">I'm writing to express my dissatisfaction.</div>
+      <div class="chip">I want to speak to the manager.</div>
+      <div class="chip">I must insist on a full refund.</div>
+      <div class="chip">You've got to be kidding me.</div>
+      <div class="chip">I wasn't made aware of this.</div>
+      <div class="chip">Nobody told me!</div>
+      <div class="chip">I find this wholly unacceptable.</div>
+    </div>
+
+    <div class="sort-columns">
+      <div class="sort-col formal">
+        <h3>📋 Formal</h3>
+        <ul>
+          <li style="color:#aaa; font-style:italic;">e.g. I wish to draw your attention to…</li>
+          <li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li>
+        </ul>
+      </div>
+      <div class="sort-col informal">
+        <h3>💬 Informal</h3>
+        <ul>
+          <li style="color:#aaa; font-style:italic;">e.g. That's just not on!</li>
+          <li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="answer-toggle" onclick="toggleAnswers('ans-vocab')">▶ Show suggested answers</button>
+    <div class="answers" id="ans-vocab">
+      <strong>Formal:</strong> I'm afraid this isn't good enough / I'd like to raise a concern / I'm writing to express my dissatisfaction / I must insist on a full refund / I wasn't made aware of this / I find this wholly unacceptable<br><br>
+      <strong>Informal:</strong> This is absolutely ridiculous! / I want to speak to the manager / You've got to be kidding me / Nobody told me!<br><br>
+      <em>Note: some can go either way depending on tone — discuss!</em>
+    </div>
+
+    <div class="card" style="margin-top:1.2rem;">
+      <h3>Now discuss</h3>
+      <ul class="discuss-list">
+        <li>Which expressions feel too aggressive? Which feel too polite?</li>
+        <li>In your country, is it normal to complain formally or informally? Give an example.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PAGE 3 — READING
+══════════════════════════════════════════════════ -->
+<div class="page" id="page-3">
+  <div class="page-wrap">
+    <div class="section-tag">Reading</div>
+    <h1>A Very Bad Evening</h1>
+
+    <div class="instruction">
+      Read this online review. <strong>Underline</strong> any phrases that describe what happened TO the writer (not what they actively did).
+    </div>
+
+    <div class="reading-text">
+      <div class="film-heading">⭐ 1/5 — CineWorld Cinema, Review posted online</div>
+      <p>Last Friday, my partner and I decided to see <em>Gladiator II</em> for a special anniversary dinner-and-film night. What followed was, without question, the worst cinema experience I have ever had.</p>
+      <p>To begin with, our pre-booked seats had been given to someone else. <span class="passive-hl">We were told</span> by a member of staff that "the system had been updated" and that our booking <span class="passive-hl">had been cancelled</span> — something we were never informed about. No apology <span class="passive-hl">was offered</span>.</p>
+      <p>Eventually, we <span class="passive-hl">were moved</span> to seats in the very front row — the only ones left. During the film, the sound system broke down twice. <span class="passive-hl">No explanation was given</span> for the interruptions, and <span class="passive-hl">no refunds were issued</span>. When I approached the front desk, I <span class="passive-hl">was kept waiting</span> for over fifteen minutes while the staff member dealt with a phone call.</p>
+      <p>I <span class="passive-hl">was eventually handed</span> a complaints form — a piece of paper — and told to "fill it in and post it." In 2025. A piece of paper.</p>
+      <p>Several complaints <span class="passive-hl">have apparently been submitted</span> about this venue already. I have since found out that the cinema <span class="passive-hl">was awarded</span> "Best Local Cinema" last year. I find this hard to believe. I will not be returning.</p>
+    </div>
+
+    <div class="card">
+      <h3>Comprehension — discuss</h3>
+      <ul class="discuss-list">
+        <li>What exactly went wrong? List at least four specific problems.</li>
+        <li>What compensation, if any, was the writer offered?</li>
+        <li>Which complaint do you think was the most serious? Why?</li>
+        <li>How would you have reacted in this situation?</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PAGE 4 — GRAMMAR DISCOVERY
+══════════════════════════════════════════════════ -->
+<div class="page" id="page-4">
+  <div class="page-wrap">
+    <div class="section-tag">Grammar Discovery</div>
+    <h1>Notice the Pattern</h1>
+
+    <div class="instruction">
+      Look at the highlighted phrases from the review. Answer the questions with your partner.
+    </div>
+
+    <div class="card">
+      <p>These phrases were highlighted in the review:</p>
+      <ol style="padding-left:1.5rem; line-height:2.2; font-size:0.97rem;">
+        <li><em>"Our seats had been <strong>given</strong> to someone else."</em></li>
+        <li><em>"We were <strong>told</strong> that the system had been updated."</em></li>
+        <li><em>"No apology was <strong>offered</strong>."</em></li>
+        <li><em>"No refunds were <strong>issued</strong>."</em></li>
+        <li><em>"I was <strong>kept</strong> waiting for over fifteen minutes."</em></li>
+        <li><em>"Several complaints have apparently been <strong>submitted</strong>."</em></li>
+      </ol>
+    </div>
+
+    <div class="card" style="background:#f9f9ff;">
+      <h3>Questions to explore</h3>
+      <ul class="discuss-list">
+        <li><strong>Who</strong> is doing the action in each sentence? Is it always clear?</li>
+        <li><strong>Why</strong> do you think the writer chose not to say "A staff member gave our seats away"?</li>
+        <li>What <strong>verb form</strong> appears in all of these sentences after the verb <em>to be</em>?</li>
+        <li>Can you spot <em>to be</em> in different tenses across these examples? Which tenses?</li>
+        <li>Why do you think the passive voice appears so often in complaints?</li>
+      </ul>
+    </div>
+
+    <div class="card" style="background:#fff8f0; border-left: 4px solid var(--accent);">
+      <h3>Micro task</h3>
+      <p>Rewrite sentence 3 in the <strong>active voice</strong>. Then discuss: which version sounds more like a complaint?</p>
+      <p style="margin-bottom:0.4rem; color:var(--muted); font-style:italic; font-size:0.9rem;">"No apology was offered." →</p>
+      <textarea class="open-input" rows="2" placeholder="Write your active sentence here…"></textarea>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PAGE 5 — GRAMMAR BOX (with input gaps)
+══════════════════════════════════════════════════ -->
+<div class="page" id="page-5">
+  <div class="page-wrap">
+    <div class="section-tag">Grammar</div>
+    <h1>Passive Voice</h1>
+
+    <div class="grammar-box">
+      <h2>📐 The Passive Voice — Complete the Table</h2>
+
+      <div class="formula">
+        <span class="hl">Subject</span> + <span class="hl2">to be (tense)</span> + <span class="hl">past participle</span> (+ <em>by + agent</em>)
+      </div>
+
+      <p style="color:#ccc; font-size:0.86rem; margin:0.8rem 0 0.4rem;">Fill in the passive form for each tense. Type your answer and press Tab or click away to check.</p>
+
+      <table>
+        <tr>
+          <th>Tense</th>
+          <th>Active</th>
+          <th>Passive — type here</th>
+        </tr>
+        <tr>
+          <td>Present simple</td>
+          <td>They cancel bookings.</td>
+          <td>Bookings <input class="blank-input" id="g1" data-answer="are cancelled" placeholder="…"><span class="feedback-icon" id="fi-g1"></span>.</td>
+        </tr>
+        <tr>
+          <td>Past simple</td>
+          <td>Staff gave our seats away.</td>
+          <td>Our seats <input class="blank-input" id="g2" data-answer="were given away" placeholder="…"><span class="feedback-icon" id="fi-g2"></span>.</td>
+        </tr>
+        <tr>
+          <td>Present perfect</td>
+          <td>They have ignored my complaint.</td>
+          <td>My complaint <input class="blank-input" id="g3" data-answer="has been ignored" placeholder="…"><span class="feedback-icon" id="fi-g3"></span>.</td>
+        </tr>
+        <tr>
+          <td>Past perfect</td>
+          <td>They had cancelled the booking.</td>
+          <td>The booking <input class="blank-input" id="g4" data-answer="had been cancelled" placeholder="…"><span class="feedback-icon" id="fi-g4"></span>.</td>
+        </tr>
+        <tr>
+          <td>Future (will)</td>
+          <td>They will issue a refund.</td>
+          <td>A refund <input class="blank-input" id="g5" data-answer="will be issued" placeholder="…"><span class="feedback-icon" id="fi-g5"></span>.</td>
+        </tr>
+        <tr>
+          <td>Modal verbs</td>
+          <td>They should address this.</td>
+          <td>This <input class="blank-input" id="g6" data-answer="should be addressed" placeholder="…"><span class="feedback-icon" id="fi-g6"></span>.</td>
+        </tr>
+      </table>
+
+      <div class="note">
+        <span>Why use the passive in complaints?</span><br>
+        ① The doer is <strong>unknown</strong>: "My bag was stolen."<br>
+        ② The doer is <strong>obvious</strong>: "The order was delivered late."<br>
+        ③ We want to <strong>focus on the problem</strong>: "I was kept waiting." (more impactful)<br>
+        ④ It sounds <strong>more formal / objective</strong> in written complaints.
+      </div>
+    </div>
+
+    <div id="score-p5" class="score-banner">
+      <span class="score-num" id="score-p5-num">0/6</span>
+      <span id="score-p5-msg">Keep going!</span>
+    </div>
+
+    <div class="card">
+      <h3>Spot the difference — discuss</h3>
+      <ul class="discuss-list">
+        <li><em>"You gave my seat to someone else."</em> vs. <em>"My seat was given to someone else."</em> — Which is more confrontational?</li>
+        <li><em>"Nobody told me."</em> vs. <em>"I was never informed."</em> — Which sounds more formal?</li>
+        <li>When would you include <em>by + agent</em>? When would you leave it out?</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PAGE 6 — CONTROLLED PRACTICE
+══════════════════════════════════════════════════ -->
+<div class="page" id="page-6">
+  <div class="page-wrap">
+    <div class="section-tag">Grammar Practice</div>
+    <h1>Make It a Complaint</h1>
+
+    <div class="instruction">
+      Rewrite each sentence using the <strong>passive voice</strong>. Use the tense in brackets. Type your answer and press Tab or click away to check.
+    </div>
+
+    <div class="card">
+      <div class="ex-item">
+        <span class="ex-num">0.</span>
+        They didn't give us a receipt. <em>(past simple)</em><br>
+        → <strong>We were not given a receipt.</strong> <span style="color:var(--correct); font-size:0.85rem;">✓ example</span>
+      </div>
+
+      <div class="ex-item">
+        <span class="ex-num">1.</span>
+        Nobody informed me about the delay. <em>(past simple)</em><br>
+        → I <input class="blank-input" id="p6-1" data-answer="was not informed about the delay|was never informed about the delay|wasn't informed about the delay" placeholder="…"><span class="feedback-icon" id="fi-p6-1"></span>
+      </div>
+
+      <div class="ex-item">
+        <span class="ex-num">2.</span>
+        They have charged me twice for the same item. <em>(present perfect)</em><br>
+        → I <input class="blank-input" id="p6-2" data-answer="have been charged twice for the same item" placeholder="…"><span class="feedback-icon" id="fi-p6-2"></span>
+      </div>
+
+      <div class="ex-item">
+        <span class="ex-num">3.</span>
+        The company still hasn't resolved my complaint. <em>(present perfect passive)</em><br>
+        → My complaint <input class="blank-input" id="p6-3" data-answer="has still not been resolved|has not been resolved yet|still hasn't been resolved|hasn't been resolved yet" placeholder="…"><span class="feedback-icon" id="fi-p6-3"></span>
+      </div>
+
+      <div class="ex-item">
+        <span class="ex-num">4.</span>
+        A staff member kept me waiting for 20 minutes. <em>(past simple)</em><br>
+        → I <input class="blank-input" id="p6-4" data-answer="was kept waiting for 20 minutes|was kept waiting for twenty minutes" placeholder="…"><span class="feedback-icon" id="fi-p6-4"></span>
+      </div>
+
+      <div class="ex-item">
+        <span class="ex-num">5.</span>
+        They had already cancelled our reservation when we arrived. <em>(past perfect)</em><br>
+        → Our reservation <input class="blank-input" id="p6-5" data-answer="had already been cancelled when we arrived|had been cancelled already when we arrived" placeholder="…"><span class="feedback-icon" id="fi-p6-5"></span>
+      </div>
+
+      <div class="ex-item">
+        <span class="ex-num">6.</span>
+        They should replace the damaged goods immediately. <em>(modal passive)</em><br>
+        → The damaged goods <input class="blank-input" id="p6-6" data-answer="should be replaced immediately" placeholder="…"><span class="feedback-icon" id="fi-p6-6"></span>
+      </div>
+
+      <div class="ex-item">
+        <span class="ex-num">7.</span>
+        They will process all refund requests within 5 working days. <em>(future passive)</em><br>
+        → All refund requests <input class="blank-input" id="p6-7" data-answer="will be processed within 5 working days|will be processed within five working days" placeholder="…"><span class="feedback-icon" id="fi-p6-7"></span>
+      </div>
+    </div>
+
+    <div id="score-p6" class="score-banner">
+      <span class="score-num" id="score-p6-num">0/7</span>
+      <span id="score-p6-msg">Complete the sentences above.</span>
+    </div>
+
+    <button class="answer-toggle" onclick="toggleAnswers('ans-p6')">▶ Show all answers</button>
+    <div class="answers" id="ans-p6">
+      <strong>1.</strong> was not informed about the delay<br>
+      <strong>2.</strong> have been charged twice for the same item<br>
+      <strong>3.</strong> has still not been resolved<br>
+      <strong>4.</strong> was kept waiting for 20 minutes<br>
+      <strong>5.</strong> had already been cancelled when we arrived<br>
+      <strong>6.</strong> should be replaced immediately<br>
+      <strong>7.</strong> will be processed within 5 working days
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PAGE 7 — COMPLAINT LETTER GAP FILL
+══════════════════════════════════════════════════ -->
+<div class="page" id="page-7">
+  <div class="page-wrap">
+    <div class="section-tag">Grammar in Context</div>
+    <h1>The Complaint Letter</h1>
+
+    <div class="instruction">
+      Put the verb in brackets into the correct form. <strong>Watch out:</strong> not every gap requires a passive — one is a deliberate trick! Type your answer and click away to check.
+    </div>
+
+    <div class="card" style="font-family: Georgia, serif; line-height:2.1; font-size:0.95rem;">
+      <p style="color:var(--muted); font-family:'Arial',sans-serif; font-size:0.8rem; margin-bottom:1.2rem;">📧 To: customerservice@cineplus.com &nbsp;|&nbsp; Subject: Formal Complaint — Screening of <em>Wicked</em>, 14 December</p>
+
+      <p>Dear Sir or Madam,</p>
+
+      <p>I <input class="blank-input" id="p7-1" data-answer="am writing" placeholder="(write)"> to formally complain about the experience my family and I had at your venue on the evening of 14 December.<span class="feedback-icon" id="fi-p7-1"></span></p>
+
+      <p>Upon arrival, we discovered that our reserved seats <input class="blank-input" id="p7-2" data-answer="had been given" placeholder="(give)"> to another group of customers.<span class="feedback-icon" id="fi-p7-2"></span> When I raised this issue, I <input class="blank-input" id="p7-3" data-answer="was told" placeholder="(tell)"> that our booking "could not be found in the system."<span class="feedback-icon" id="fi-p7-3"></span> No apology <input class="blank-input" id="p7-4" data-answer="was offered" placeholder="(offer)"> at this point.<span class="feedback-icon" id="fi-p7-4"></span></p>
+
+      <p>Furthermore, during the screening, the film <input class="blank-input" id="p7-5" data-answer="was interrupted" placeholder="(interrupt)"> twice due to technical issues.<span class="feedback-icon" id="fi-p7-5"></span> <input class="blank-input" style="min-width:220px" id="p7-6" data-answer="no explanation was given|no explanation was given for these interruptions" placeholder="(no explanation / give)"> for these interruptions,<span class="feedback-icon" id="fi-p7-6"></span> and the audience <input class="blank-input" id="p7-7" data-answer="was left" placeholder="(leave)"> to sit in silence for twelve minutes.<span class="feedback-icon" id="fi-p7-7"></span></p>
+
+      <p>I feel that this matter <input class="blank-input" id="p7-8" data-answer="was handled" placeholder="(handle)"> very poorly.<span class="feedback-icon" id="fi-p7-8"></span> Customers should <input class="blank-input" id="p7-9" data-answer="be informed" placeholder="(inform)"> about any issues as soon as they arise.<span class="feedback-icon" id="fi-p7-9"></span></p>
+
+      <p>I would appreciate it if this complaint <input class="blank-input" id="p7-10" data-answer="could be acknowledged|would be acknowledged|were acknowledged" placeholder="(acknowledge)"> promptly and if appropriate compensation <input class="blank-input" id="p7-11" data-answer="could be offered|would be offered" placeholder="(offer)">.<span class="feedback-icon" id="fi-p7-10"></span><span class="feedback-icon" id="fi-p7-11"></span></p>
+
+      <p>Yours faithfully,<br><em>A. Müller</em></p>
+    </div>
+
+    <div id="score-p7" class="score-banner">
+      <span class="score-num" id="score-p7-num">0/11</span>
+      <span id="score-p7-msg">Complete the letter above.</span>
+    </div>
+
+    <button class="answer-toggle" onclick="toggleAnswers('ans-p7')">▶ Show all answers</button>
+    <div class="answers" id="ans-p7">
+      <strong>1.</strong> am writing <em>(⚠ trick — this one is active! "I am writing to…" is a fixed phrase)</em><br>
+      <strong>2.</strong> had been given<br>
+      <strong>3.</strong> was told<br>
+      <strong>4.</strong> was offered<br>
+      <strong>5.</strong> was interrupted<br>
+      <strong>6.</strong> No explanation was given<br>
+      <strong>7.</strong> was left<br>
+      <strong>8.</strong> was handled<br>
+      <strong>9.</strong> be informed<br>
+      <strong>10.</strong> could be acknowledged / would be acknowledged<br>
+      <strong>11.</strong> could be offered / would be offered
+    </div>
+
+    <div class="card" style="margin-top:1rem; background:#f9fff9; border-left: 4px solid #2ecc71;">
+      <h3>Quick discussion</h3>
+      <ul class="discuss-list">
+        <li>Why is the passive so common in formal complaint letters?</li>
+        <li>Did you spot the trick question (gap 1)? Why is it active?</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PAGE 8 — SPEAKING: ROLE PLAY
+══════════════════════════════════════════════════ -->
+<div class="page" id="page-8">
+  <div class="page-wrap">
+    <div class="section-tag">Speaking</div>
+    <h1>Lights, Camera, Complaint!</h1>
+
+    <div class="film-banner">
+      <div class="icon">🎬</div>
+      <div>
+        <h2>Behind the Scenes</h2>
+        <p>Take your role card and role-play the conversation. Use passive voice where it feels natural.</p>
+      </div>
+    </div>
+
+    <div class="instruction">
+      Work in pairs. Choose a scenario. Student A takes the customer/employee card; Student B takes the manager/director card. Swap after 3–4 minutes.
+    </div>
+
+    <h3 style="margin-bottom:0.8rem; margin-top:1.4rem;">🎭 Scenario 1 — The Cinema</h3>
+    <div class="speak-grid">
+      <div class="speak-card">
+        <div class="role">Student A — Customer</div>
+        You booked tickets for <em>Dune: Part Two</em> online. When you arrived:
+        <ul style="margin-top:0.8rem; padding-left:1.2rem; line-height:1.8;">
+          <li>You were not sent a confirmation email</li>
+          <li>Your seats were given to someone else</li>
+          <li>You were made to wait 25 mins</li>
+          <li>You were offered popcorn as compensation — not a refund</li>
+        </ul>
+        <p style="margin-top:0.8rem; font-size:0.88rem; color:var(--muted);">You want: a full refund + written apology.</p>
+      </div>
+      <div class="speak-card blue">
+        <div class="role">Student B — Cinema Manager</div>
+        You are the duty manager. You know:
+        <ul style="margin-top:0.8rem; padding-left:1.2rem; line-height:1.8;">
+          <li>The booking system was updated last night</li>
+          <li>Several bookings were affected</li>
+          <li>Refunds can only be processed online</li>
+          <li>You have been given no authority to give cash refunds</li>
+        </ul>
+        <p style="margin-top:0.8rem; font-size:0.88rem; color:var(--muted);">Try to calm the situation. Offer what you can.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom:0.8rem; margin-top:1.8rem;">🎭 Scenario 2 — The Film Set</h3>
+    <div class="speak-grid">
+      <div class="speak-card gold">
+        <div class="role">Student A — Junior Actor</div>
+        You're on set (imagine <em>Alien: Romulus</em>). Problems:
+        <ul style="margin-top:0.8rem; padding-left:1.2rem; line-height:1.8;">
+          <li>You weren't given your script until this morning</li>
+          <li>Your costume was damaged in storage</li>
+          <li>You were told the call time was 6am, but shooting started at 5am</li>
+          <li>Your concerns have been ignored twice already</li>
+        </ul>
+        <p style="margin-top:0.8rem; font-size:0.88rem; color:var(--muted);">You want proper communication and a new costume.</p>
+      </div>
+      <div class="speak-card blue">
+        <div class="role">Student B — Production Director</div>
+        You're under pressure — the film is behind schedule:
+        <ul style="margin-top:0.8rem; padding-left:1.2rem; line-height:1.8;">
+          <li>Scripts were sent by email — you're not sure if they were received</li>
+          <li>The costume department has been overwhelmed</li>
+          <li>The schedule was changed late last night</li>
+          <li>Everyone has been affected, not just this actor</li>
+        </ul>
+        <p style="margin-top:0.8rem; font-size:0.88rem; color:var(--muted);">Apologise, but keep things moving.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:1.4rem; background:#f8f5f0;">
+      <h3>Language to use</h3>
+      <div class="vocab-grid">
+        <div class="vocab-item"><b>I wasn't informed that…</b><span>making your point</span></div>
+        <div class="vocab-item"><b>No explanation was given for…</b><span>highlighting the problem</span></div>
+        <div class="vocab-item"><b>I was told… / I was promised…</b><span>referring to expectations</span></div>
+        <div class="vocab-item"><b>This should have been dealt with…</b><span>expressing disappointment</span></div>
+        <div class="vocab-item"><b>I'm afraid this isn't acceptable.</b><span>formal pushback</span></div>
+        <div class="vocab-item"><b>Could you confirm that…will be resolved?</b><span>requesting action</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PAGE 9 — SPEAKING: DISCUSSION + WRAP-UP
+══════════════════════════════════════════════════ -->
+<div class="page" id="page-9">
+  <div class="page-wrap">
+    <div class="section-tag">Speaking — Round Up</div>
+    <h1>Is Anyone Listening?</h1>
+
+    <div class="film-banner">
+      <div class="icon">🍿</div>
+      <div>
+        <h2>The Big Picture</h2>
+        <p>Discuss these questions as a group. Try to use passive voice naturally in your answers.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Discussion questions</h3>
+      <ul class="discuss-list">
+        <li><span class="badge dark">Films</span> Think about a film you were disappointed by recently — <em>Moana 2</em>, <em>Joker: Folie à Deux</em>, any film. How would you write a formal complaint to the studio?</li>
+        <li><span class="badge blue">Society</span> "People are given too many ways to complain today — reviews, social media, chatbots — but their complaints are rarely heard." Do you agree?</li>
+        <li><span class="badge">Culture</span> Is complaining a cultural thing? Are people in some countries more likely to complain — or be listened to — than others?</li>
+        <li><span class="badge dark">Ethics</span> Some companies have been criticised for using AI chatbots to handle complaints. Should human contact always be offered?</li>
+        <li><span class="badge blue">Personal</span> Have you ever written (or wanted to write) a formal complaint? What happened — or what stopped you?</li>
+      </ul>
+    </div>
+
+    <div class="card" style="background:#f9fff9; border-left: 4px solid #2ecc71;">
+      <h3>Language challenge — passive in speaking</h3>
+      <p>Give your partner at least <strong>3 sentences using the passive voice</strong> while answering one of the questions above. Your partner listens and ticks each one.</p>
+      <div style="margin-top:0.8rem; font-family:'Arial',sans-serif; font-size:0.88rem; color:var(--muted);">
+        ☐ Passive 1 &nbsp;&nbsp; ☐ Passive 2 &nbsp;&nbsp; ☐ Passive 3
+      </div>
+    </div>
+
+    <div class="grammar-box" style="margin-top:1.4rem;">
+      <h2>🎬 Lesson Summary</h2>
+      <div class="formula">
+        Effective complaint = <span class="hl">right language</span> + <span class="hl2">right tone</span> + <span class="hl">right grammar</span>
+      </div>
+      <p style="color:#ccc; margin-top:1rem; line-height:1.7; font-size:0.93rem;">
+        The passive voice <span style="color:var(--grammar-highlight2)">distances</span> the speaker from blame, <span style="color:var(--grammar-highlight2)">focuses attention on the problem</span>, and creates a <span style="color:var(--grammar-highlight2)">more formal, objective tone</span> — perfect for written and formal spoken complaints.
+      </p>
+      <div class="note">
+        <span>Take-away expressions:</span><br>
+        "I was not informed…" &nbsp;/&nbsp; "No explanation was given…" &nbsp;/&nbsp;
+        "This should have been dealt with…" &nbsp;/&nbsp; "I have been waiting for…" &nbsp;/&nbsp; "A refund has not been issued…"
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="btn btn-prev" id="btnPrev" onclick="navigate(-1)" disabled>← Back</button>
+  <span class="step-counter" id="stepCounter">Page 1 of 9</span>
+  <button class="btn btn-next" id="btnNext" onclick="navigate(1)">Next →</button>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════ -->
+<script>
+  /* ── PAGE NAVIGATION ── */
+  const TOTAL = 9;
+  let current = 1;
+
+  function buildDots() {
+    const container = document.getElementById('progressDots');
+    for (let i = 1; i <= TOTAL; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'progress-dot' + (i === 1 ? ' active' : '');
+      dot.id = 'dot-' + i;
+      dot.title = 'Page ' + i;
+      dot.onclick = () => goTo(i);
+      container.appendChild(dot);
+    }
+  }
+
+  function goTo(n) {
+    document.getElementById('page-' + current).classList.remove('active');
+    document.getElementById('dot-' + current).classList.remove('active');
+    document.getElementById('dot-' + current).classList.add('done');
+    current = n;
+    document.getElementById('page-' + current).classList.add('active');
+    document.getElementById('dot-' + current).classList.remove('done');
+    document.getElementById('dot-' + current).classList.add('active');
+    document.getElementById('btnPrev').disabled = current === 1;
+    document.getElementById('btnNext').disabled = current === TOTAL;
+    document.getElementById('stepCounter').textContent = 'Page ' + current + ' of ' + TOTAL;
+    document.getElementById('pageLabel').textContent = current + ' / ' + TOTAL;
+    document.getElementById('btnNext').textContent = current === TOTAL ? 'Finish ✓' : 'Next →';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function navigate(dir) {
+    const next = current + dir;
+    if (next >= 1 && next <= TOTAL) goTo(next);
+  }
+
+  /* ── ANSWER TOGGLING ── */
+  function toggleAnswers(id) {
+    const el = document.getElementById(id);
+    const btn = el.previousElementSibling;
+    el.classList.toggle('visible');
+    btn.textContent = el.classList.contains('visible') ? '▼ Hide answers' : '▶ Show all answers';
+  }
+
+  /* ── INPUT CHECKING ── */
+  // Normalise answer: lowercase, collapse spaces, remove trailing punct for comparison
+  function normalise(str) {
+    return str.trim().toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]$/, '');
+  }
+
+  function checkInput(input) {
+    const raw = input.value;
+    if (raw.trim() === '') {
+      input.classList.remove('correct', 'incorrect');
+      updateFeedbackIcon(input, '');
+      updateScores();
+      return;
+    }
+    const accepted = input.dataset.answer.split('|').map(a => normalise(a));
+    const val = normalise(raw);
+    const ok = accepted.includes(val);
+    input.classList.toggle('correct',   ok);
+    input.classList.toggle('incorrect', !ok);
+    updateFeedbackIcon(input, ok ? '✓' : '✗');
+    updateScores();
+  }
+
+  function updateFeedbackIcon(input, symbol) {
+    // feedback icon lives right after the input
+    const icon = input.nextElementSibling;
+    if (icon && icon.classList.contains('feedback-icon')) {
+      icon.textContent = symbol;
+      icon.style.color = symbol === '✓' ? 'var(--correct)' : 'var(--incorrect)';
+    }
+  }
+
+  /* ── SCORE BANNERS ── */
+  const scoreDefs = {
+    'p5': { ids: ['g1','g2','g3','g4','g5','g6'], total: 6 },
+    'p6': { ids: ['p6-1','p6-2','p6-3','p6-4','p6-5','p6-6','p6-7'], total: 7 },
+    'p7': { ids: ['p7-1','p7-2','p7-3','p7-4','p7-5','p7-6','p7-7','p7-8','p7-9','p7-10','p7-11'], total: 11 }
+  };
+
+  const scoreMsgs = (n, t) => {
+    if (n === 0)   return 'Complete the exercise above.';
+    if (n < t / 2) return 'Keep going — you\'re getting there!';
+    if (n < t)     return 'Nearly there — check the red ones!';
+    return '🎉 Perfect score!';
+  };
+
+  function updateScores() {
+    Object.entries(scoreDefs).forEach(([page, def]) => {
+      const correct = def.ids.filter(id => {
+        const el = document.getElementById(id);
+        return el && el.classList.contains('correct');
+      }).length;
+
+      const banner = document.getElementById('score-' + page);
+      if (!banner) return;
+
+      if (correct > 0 || def.ids.some(id => {
+        const el = document.getElementById(id);
+        return el && el.value.trim() !== '';
+      })) {
+        banner.classList.add('visible');
+        document.getElementById('score-' + page + '-num').textContent = correct + '/' + def.total;
+        document.getElementById('score-' + page + '-msg').textContent = scoreMsgs(correct, def.total);
+      }
+    });
+  }
+
+  /* ── DEBOUNCED LIVE CHECK ── */
+  const timers = {};
+
+  function attachInputListeners() {
+    document.querySelectorAll('.blank-input').forEach(input => {
+      input.addEventListener('input', () => {
+        clearTimeout(timers[input.id]);
+        timers[input.id] = setTimeout(() => checkInput(input), 650);
+      });
+      input.addEventListener('blur', () => {
+        clearTimeout(timers[input.id]);
+        checkInput(input);
+      });
+    });
+  }
+
+  /* ── INIT ── */
+  buildDots();
+  attachInputListeners();
+</script>
+</body>
+</html>
