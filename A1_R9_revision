@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 9 – Revision Lesson (A1)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f5f4f0;
+    color: #2c2c2c;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  .lesson-header {
+    background: #c0392b;
+    color: white;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  }
+  .lesson-header .hl-title { font-size: 1rem; font-weight: 700; letter-spacing: .5px; }
+  .lesson-header .subtitle { font-size: .78rem; opacity: .85; margin-top: 2px; }
+  .timer-box { display: flex; align-items: center; gap: 10px; }
+  .timer-display {
+    font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums;
+    background: rgba(255,255,255,.18); border-radius: 6px; padding: 4px 12px;
+  }
+  .timer-btn {
+    background: rgba(255,255,255,.22); border: 1px solid rgba(255,255,255,.5);
+    color: white; border-radius: 5px; padding: 4px 11px; cursor: pointer;
+    font-size: .8rem; transition: background .2s;
+  }
+  .timer-btn:hover { background: rgba(255,255,255,.38); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar-wrap { height: 5px; background: #e0ddd8; }
+  .progress-bar-fill { height: 100%; background: #c0392b; transition: width .4s ease; }
+
+  /* ── STEP DOTS ── */
+  .step-nav {
+    display: flex; justify-content: center; gap: 6px;
+    padding: 10px 0 4px; background: #f5f4f0; flex-wrap: wrap;
+  }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #ccc; cursor: pointer; transition: background .2s, transform .2s;
+    position: relative;
+  }
+  .dot.active { transform: scale(1.35); }
+  .dot.ex-dot { background: #ccc; }
+  .dot.ex-dot.active { background: #c0392b; }
+  .dot.ex-dot.done { background: #999; }
+  .dot.sp-dot { background: #b2dfdb; }
+  .dot.sp-dot.active { background: #16a085; }
+  .dot.sp-dot.done { background: #7fb3ab; }
+
+  /* ── MAIN CONTENT ── */
+  .lesson-body {
+    flex: 1; max-width: 780px; width: 100%;
+    margin: 0 auto; padding: 28px 24px 100px;
+  }
+  .page { display: none; animation: fadeIn .35s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* ── EXERCISE CARD ── */
+  .ex-card {
+    background: white; border-radius: 12px; padding: 30px 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+  }
+
+  /* ── SPEAKING CARD ── */
+  .sp-card {
+    background: white; border-radius: 12px; padding: 30px 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    border-top: 5px solid #16a085;
+  }
+
+  .page-label {
+    display: inline-block; border-radius: 4px; padding: 3px 10px; margin-bottom: 14px;
+    font-size: .72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    background: #c0392b; color: white;
+  }
+  .page-label.sp { background: #16a085; }
+
+  .ex-title { font-size: 1.35rem; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+  .ex-topic-tag {
+    display: inline-block; font-size: .75rem; font-weight: 600;
+    background: #fdecea; color: #c0392b; border-radius: 12px;
+    padding: 2px 10px; margin-bottom: 14px;
+  }
+  .ex-topic-tag.sp { background: #e0f2f1; color: #16a085; }
+  .ex-time-tag {
+    float: right; font-size: .75rem; color: #888;
+    background: #f0efec; border-radius: 12px; padding: 2px 10px; margin-bottom: 14px;
+  }
+  .instructions {
+    background: #f9f8f5; border-left: 4px solid #c0392b;
+    border-radius: 0 8px 8px 0; padding: 12px 16px;
+    font-size: .92rem; color: #444; margin-bottom: 22px; line-height: 1.6;
+  }
+  .instructions.sp { border-left-color: #16a085; }
+  .instructions strong { color: #c0392b; }
+  .instructions.sp strong { color: #16a085; }
+
+  /* ── QUESTION STYLES ── */
+  .question-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  .question-item { display: flex; flex-direction: column; gap: 6px; }
+  .question-text { font-size: .95rem; font-weight: 600; color: #333; }
+
+  .options { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .opt-btn {
+    background: #f0efec; border: 2px solid #ddd; border-radius: 8px;
+    padding: 7px 16px; cursor: pointer; font-size: .9rem; transition: all .18s; color: #333;
+  }
+  .opt-btn:hover { background: #fdecea; border-color: #c0392b; color: #c0392b; }
+  .opt-btn.correct { background: #e8f8ee; border-color: #27ae60; color: #1e8449; font-weight: 700; }
+  .opt-btn.wrong { background: #fdecea; border-color: #c0392b; color: #c0392b; }
+  .opt-btn:disabled { cursor: default; }
+
+  .blank-input {
+    border: 2px solid #ddd; border-radius: 7px; padding: 7px 12px;
+    font-size: .92rem; outline: none; transition: border-color .2s;
+  }
+  .blank-input:focus { border-color: #c0392b; }
+  .blank-input.correct { border-color: #27ae60; background: #e8f8ee; color: #1e8449; font-weight: 700; }
+  .blank-input.wrong { border-color: #c0392b; background: #fdecea; }
+
+  .feedback-inline { font-size: .82rem; margin-top: 4px; font-weight: 600; }
+  .feedback-inline.ok { color: #27ae60; }
+  .feedback-inline.err { color: #c0392b; }
+
+  .match-select {
+    border: 2px solid #ddd; border-radius: 7px; padding: 7px 10px;
+    font-size: .88rem; background: #f9f8f5; cursor: pointer;
+    transition: border-color .2s; width: 100%;
+  }
+  .match-select:focus { border-color: #c0392b; outline: none; }
+  .match-select.correct { border-color: #27ae60; background: #e8f8ee; color: #1e8449; }
+  .match-select.wrong { border-color: #c0392b; background: #fdecea; }
+
+  .writing-prompt { margin-bottom: 8px; font-size: .92rem; color: #444; }
+  .writing-area {
+    width: 100%; border: 2px solid #ddd; border-radius: 8px;
+    padding: 12px 14px; font-size: .92rem; resize: vertical; min-height: 80px;
+    font-family: inherit; color: #333; transition: border-color .2s;
+  }
+  .writing-area:focus { border-color: #c0392b; outline: none; }
+
+  .model-box {
+    background: #f9f8f5; border: 1px solid #e0ddd8; border-radius: 8px;
+    padding: 12px 16px; margin-bottom: 18px;
+  }
+  .model-box .model-label { font-size: .74rem; color: #999; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 5px; }
+  .model-box p { font-size: .9rem; color: #555; font-style: italic; line-height: 1.7; }
+
+  .word-bank {
+    background: #f0efec; border-radius: 8px; padding: 10px 16px;
+    margin-bottom: 18px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  }
+  .word-bank-label { font-size: .75rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .6px; margin-right: 4px; }
+  .word-chip {
+    background: white; border: 1px solid #ccc; border-radius: 20px;
+    padding: 3px 12px; font-size: .85rem; color: #555;
+  }
+
+  /* ── CHECK BUTTON ── */
+  .check-btn {
+    margin-top: 22px; background: #c0392b; color: white; border: none;
+    border-radius: 8px; padding: 11px 28px; font-size: .95rem; font-weight: 700;
+    cursor: pointer; transition: background .2s, transform .15s; letter-spacing: .3px;
+  }
+  .check-btn:hover { background: #a93226; transform: translateY(-1px); }
+
+  /* ── SCORE BOX ── */
+  .score-box {
+    display: none; margin-top: 18px; background: #f9f8f5;
+    border-radius: 10px; padding: 16px 20px; font-size: .92rem; border: 1px solid #e0ddd8;
+  }
+  .score-box.visible { display: block; }
+  .score-box .score-num { font-size: 1.5rem; font-weight: 800; color: #c0392b; }
+
+  /* ─────────────────────────────────
+     SPEAKING EXERCISE COMPONENTS
+  ───────────────────────────────── */
+
+  /* Prompt card grid */
+  .prompt-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px;
+  }
+  .prompt-card {
+    background: #e0f2f1; border: 1.5px solid #b2dfdb; border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .prompt-card .pc-label {
+    font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .8px;
+    color: #16a085; margin-bottom: 6px;
+  }
+  .prompt-card .pc-text { font-size: .92rem; color: #2c3e50; font-weight: 600; line-height: 1.5; }
+  .prompt-card .pc-hint { font-size: .8rem; color: #777; margin-top: 5px; font-style: italic; }
+
+  /* Useful phrases box */
+  .phrases-box {
+    background: #f9f8f5; border: 1.5px solid #b2dfdb; border-radius: 10px;
+    padding: 14px 18px; margin-bottom: 18px;
+  }
+  .phrases-box .pb-label {
+    font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .8px;
+    color: #16a085; margin-bottom: 10px;
+  }
+  .phrases-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .phrase-chip {
+    background: white; border: 1.5px solid #b2dfdb; border-radius: 20px;
+    padding: 5px 14px; font-size: .87rem; color: #2c3e50;
+  }
+
+  /* Self-check checklist */
+  .selfcheck {
+    background: #f0f9f8; border-radius: 10px; padding: 16px 18px; margin-top: 20px;
+  }
+  .selfcheck .sc-label {
+    font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .8px;
+    color: #16a085; margin-bottom: 12px;
+  }
+  .sc-item {
+    display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;
+  }
+  .sc-item input[type="checkbox"] {
+    margin-top: 2px; width: 17px; height: 17px; cursor: pointer;
+    accent-color: #16a085; flex-shrink: 0;
+  }
+  .sc-item label { font-size: .9rem; color: #444; line-height: 1.5; cursor: pointer; }
+
+  /* Role-play scenario card */
+  .scenario-card {
+    background: #16a085; color: white; border-radius: 12px;
+    padding: 20px 22px; margin-bottom: 20px;
+  }
+  .scenario-card .sc-title { font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; opacity: .8; margin-bottom: 8px; }
+  .scenario-card .sc-body { font-size: .97rem; line-height: 1.65; }
+  .scenario-card .sc-body strong { font-weight: 800; }
+
+  /* Question flip cards for speaking */
+  .flip-questions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+  .flip-q {
+    background: #f9f8f5; border: 1.5px solid #b2dfdb; border-radius: 9px;
+    padding: 12px 16px; display: flex; align-items: flex-start; gap: 12px;
+  }
+  .flip-q .fq-num {
+    background: #16a085; color: white; border-radius: 50%; width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center; font-size: .78rem;
+    font-weight: 800; flex-shrink: 0; margin-top: 1px;
+  }
+  .flip-q .fq-text { font-size: .92rem; color: #2c3e50; font-weight: 600; line-height: 1.5; }
+  .flip-q .fq-hint { font-size: .8rem; color: #888; margin-top: 3px; }
+
+  /* Teacher note */
+  .teacher-note {
+    background: #fffde7; border: 1px solid #ffe082; border-radius: 8px;
+    padding: 12px 16px; font-size: .85rem; color: #5d4037; margin-top: 18px;
+    line-height: 1.6;
+  }
+  .teacher-note strong { color: #e65100; }
+
+  /* ── NAVIGATION ── */
+  .nav-footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: white; border-top: 1px solid #e0ddd8;
+    padding: 14px 24px; display: flex; justify-content: space-between; align-items: center;
+    z-index: 99; box-shadow: 0 -2px 10px rgba(0,0,0,.07);
+  }
+  .nav-btn {
+    background: #2c2c2c; color: white; border: none; border-radius: 8px;
+    padding: 11px 26px; font-size: .92rem; font-weight: 700; cursor: pointer; transition: background .2s;
+  }
+  .nav-btn:hover { background: #444; }
+  .nav-btn:disabled { background: #ccc; cursor: default; }
+  .nav-btn.primary { background: #c0392b; }
+  .nav-btn.primary:hover { background: #a93226; }
+  .nav-btn.sp-next { background: #16a085; }
+  .nav-btn.sp-next:hover { background: #0e8070; }
+  .page-counter { font-size: .88rem; color: #888; font-weight: 600; }
+
+  /* ── INTRO GRID ── */
+  .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
+  .topic-chip {
+    background: #fdecea; border-left: 4px solid #c0392b; border-radius: 0 8px 8px 0;
+    padding: 10px 14px; font-size: .88rem; color: #333;
+  }
+  .topic-chip.sp-chip { background: #e0f2f1; border-left-color: #16a085; }
+  .topic-chip strong { display: block; font-size: .74rem; color: #c0392b; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 3px; }
+  .topic-chip.sp-chip strong { color: #16a085; }
+
+  /* ── DIALOGUE ── */
+  .dialogue { display: flex; flex-direction: column; gap: 10px; margin-bottom: 6px; }
+  .d-row { display: flex; align-items: flex-start; gap: 10px; }
+  .d-speaker { font-size: .78rem; font-weight: 800; text-transform: uppercase; color: #c0392b; min-width: 24px; padding-top: 9px; }
+  .d-line { flex: 1; font-size: .92rem; color: #333; }
+
+  /* ── QUIZ ── */
+  .quiz-q { background: #f9f8f5; border-radius: 8px; padding: 14px 16px; }
+  .quiz-q .q-num { font-size: .72rem; font-weight: 800; color: #c0392b; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 5px; }
+  .quiz-q .q-text { font-size: .95rem; font-weight: 600; margin-bottom: 10px; }
+
+  /* ── FINAL CARD ── */
+  .final-card {
+    background: white; border-radius: 12px; padding: 36px 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08); text-align: center;
+  }
+  .final-card .big-score { font-size: 3.5rem; font-weight: 900; color: #c0392b; }
+  .final-card .final-label { font-size: 1rem; color: #888; margin-bottom: 24px; }
+  .summary-table { width: 100%; border-collapse: collapse; text-align: left; margin-top: 20px; }
+  .summary-table th { font-size: .78rem; text-transform: uppercase; color: #aaa; padding: 8px 12px; border-bottom: 2px solid #f0efec; }
+  .summary-table td { padding: 10px 12px; font-size: .9rem; border-bottom: 1px solid #f0efec; }
+  .pill { display: inline-block; border-radius: 12px; padding: 2px 10px; font-size: .78rem; font-weight: 700; }
+  .pill.green { background: #e8f8ee; color: #1e8449; }
+  .pill.amber { background: #fef9e7; color: #b7950b; }
+  .pill.red { background: #fdecea; color: #c0392b; }
+  .pill.teal { background: #e0f2f1; color: #16a085; }
+
+  @media (max-width: 600px) {
+    .lesson-body { padding: 18px 14px 90px; }
+    .ex-card, .sp-card { padding: 20px 18px; }
+    .intro-grid, .prompt-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ HEADER ═══════════════════ -->
+<div class="lesson-header">
+  <div>
+    <div class="hl-title">Unit 9 — Revision Lesson &nbsp;·&nbsp; A1</div>
+    <div class="subtitle">Family · Hobbies · Study Habits · Suggestions</div>
+  </div>
+  <div class="timer-box">
+    <div class="timer-display" id="timerDisplay">00:00</div>
+    <button class="timer-btn" id="timerBtn" onclick="toggleTimer()">▶ Start</button>
+  </div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+</div>
+<div class="step-nav" id="stepNav"></div>
+
+<!-- ═══════════════════ LESSON BODY ═══════════════════ -->
+<div class="lesson-body">
+
+<!-- ─────────── PAGE 0 · INTRO ─────────── -->
+<div class="page active" id="page-0">
+  <div class="ex-card">
+    <div class="page-label">Welcome</div>
+    <div class="ex-title">Unit 9 Revision</div>
+    <p style="color:#888;font-size:.82rem;margin-bottom:16px;">⏱ ~85 minutes &nbsp;·&nbsp; Level A1 &nbsp;·&nbsp; 8 exercises + 4 speaking tasks</p>
+    <p style="font-size:.95rem;color:#444;line-height:1.7;margin-bottom:20px;">
+      Today we're revising everything from <strong>Unit 9</strong>. Press <strong>▶ Start</strong> on the timer, then work through the exercises. Speaking tasks appear between exercises — marked in <span style="color:#16a085;font-weight:700;">green</span>.
+    </p>
+    <div class="intro-grid">
+      <div class="topic-chip"><strong>9A · Grammar</strong>Object pronouns: me, him, her, us, them</div>
+      <div class="topic-chip sp-chip"><strong>🗣 Speaking 1</strong>Talk about a family photo</div>
+      <div class="topic-chip"><strong>9A · Vocabulary</strong>Prepositions of place</div>
+      <div class="topic-chip"><strong>9B · Grammar</strong>like / enjoy / love / hate + -ing</div>
+      <div class="topic-chip sp-chip"><strong>🗣 Speaking 2</strong>Hobbies interview</div>
+      <div class="topic-chip"><strong>9B · Vocabulary</strong>Hobbies</div>
+      <div class="topic-chip"><strong>9C · Grammar</strong>why and because</div>
+      <div class="topic-chip"><strong>9D · Communication</strong>Making &amp; responding to suggestions</div>
+      <div class="topic-chip sp-chip"><strong>🗣 Speaking 3</strong>Weekend role-play</div>
+      <div class="topic-chip"><strong>Skills · Writing</strong>A short text using because</div>
+      <div class="topic-chip sp-chip"><strong>🗣 Speaking 4</strong>General conversation</div>
+      <div class="topic-chip"><strong>Final</strong>Mixed revision quiz</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── PAGE 1 · OBJECT PRONOUNS ─────────── -->
+<div class="page" id="page-1">
+  <div class="ex-card">
+    <div class="ex-time-tag">⏱ ~8 min</div>
+    <div class="page-label">Exercise 1 of 8</div>
+    <div class="ex-title">Object Pronouns</div>
+    <div class="ex-topic-tag">9A · Grammar</div>
+    <div class="instructions">
+      Choose the correct <strong>object pronoun</strong> to complete each sentence.<br>
+      <em>me · you · him · her · it · us · them</em>
+    </div>
+    <ul class="question-list" id="ex1-questions">
+      <li class="question-item" data-answer="her">
+        <div class="question-text">1. That's my grandmother. I call _____ every Sunday.</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',0,'she')">she</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',0,'her')">her</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',0,'hers')">hers</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex1-0"></div>
+      </li>
+      <li class="question-item" data-answer="them">
+        <div class="question-text">2. Here are my parents. Can you see _____?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',1,'they')">they</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',1,'their')">their</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',1,'them')">them</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex1-1"></div>
+      </li>
+      <li class="question-item" data-answer="him">
+        <div class="question-text">3. Jake is my best friend. I sent _____ a message yesterday.</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',2,'he')">he</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',2,'him')">him</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',2,'his')">his</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex1-2"></div>
+      </li>
+      <li class="question-item" data-answer="it">
+        <div class="question-text">4. That's my cat, Mia. I take _____ to the vet every year.</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',3,'she')">she</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',3,'its')">its</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',3,'it')">it</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex1-3"></div>
+      </li>
+      <li class="question-item" data-answer="us">
+        <div class="question-text">5. My sister and I are in this photo. Mum took _____ to the beach.</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',4,'we')">we</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',4,'us')">us</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',4,'our')">our</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex1-4"></div>
+      </li>
+      <li class="question-item" data-answer="me">
+        <div class="question-text">6. I'm not in this photo — my brother took a photo of _____ later!</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',5,'I')">I</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',5,'my')">my</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex1-questions',5,'me')">me</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex1-5"></div>
+      </li>
+    </ul>
+    <button class="check-btn" onclick="checkMC('ex1-questions','score-ex1')">Check answers</button>
+    <div class="score-box" id="score-ex1"></div>
+  </div>
+</div>
+
+<!-- ─────────── PAGE 2 · SPEAKING 1 · TALK ABOUT A PHOTO ─────────── -->
+<div class="page" id="page-2">
+  <div class="sp-card">
+    <div class="ex-time-tag">⏱ ~5 min</div>
+    <div class="page-label sp">🗣 Speaking 1</div>
+    <div class="ex-title">Talk About a Photo</div>
+    <div class="ex-topic-tag sp">9A · Object Pronouns · Prepositions</div>
+
+    <div class="instructions sp">
+      Look at a photo on your phone (or imagine a family photo). <strong>Describe it to your teacher</strong> using object pronouns and prepositions of place. Aim for 5–6 sentences.
+    </div>
+
+    <div class="phrases-box">
+      <div class="pb-label">💬 Useful phrases</div>
+      <div class="phrases-grid">
+        <span class="phrase-chip">This is my…</span>
+        <span class="phrase-chip">You can see him/her…</span>
+        <span class="phrase-chip">I love / like them.</span>
+        <span class="phrase-chip">I call her every week.</span>
+        <span class="phrase-chip">He / She is next to…</span>
+        <span class="phrase-chip">They are between…</span>
+        <span class="phrase-chip">She is in front of…</span>
+        <span class="phrase-chip">He is behind…</span>
+      </div>
+    </div>
+
+    <div class="flip-questions">
+      <div class="flip-q">
+        <div class="fq-num">1</div>
+        <div>
+          <div class="fq-text">Who are the people in the photo?</div>
+          <div class="fq-hint">Use: "This is my [mum / brother / friend]…"</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">2</div>
+        <div>
+          <div class="fq-text">Where is each person? Describe their position.</div>
+          <div class="fq-hint">Use: "She is next to… / He is between…"</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">3</div>
+        <div>
+          <div class="fq-text">Say one thing you do with each person.</div>
+          <div class="fq-hint">Use: "I call him every week." / "I see her at weekends."</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">4</div>
+        <div>
+          <div class="fq-text">BONUS: Where was the photo taken? When?</div>
+          <div class="fq-hint">Use: "This photo is from…"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="selfcheck">
+      <div class="sc-label">✅ Self-check — did you…</div>
+      <div class="sc-item"><input type="checkbox" id="sc1-1"><label for="sc1-1">Use at least 3 different object pronouns (him / her / them / us)?</label></div>
+      <div class="sc-item"><input type="checkbox" id="sc1-2"><label for="sc1-2">Use at least 2 prepositions of place (next to / between / in front of…)?</label></div>
+      <div class="sc-item"><input type="checkbox" id="sc1-3"><label for="sc1-3">Speak in full sentences (not just single words)?</label></div>
+      <div class="sc-item"><input type="checkbox" id="sc1-4"><label for="sc1-4">Speak for at least 1 minute without stopping?</label></div>
+    </div>
+
+    <div class="teacher-note">
+      <strong>Teacher note:</strong> Listen for correct pronoun case (him not he, them not they). Prompt with "Who is she?" or "Where is he?" if the student gets stuck. Note any errors for correction at the end.
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── PAGE 3 · PREPOSITIONS OF PLACE ─────────── -->
+<div class="page" id="page-3">
+  <div class="ex-card">
+    <div class="ex-time-tag">⏱ ~8 min</div>
+    <div class="page-label">Exercise 2 of 8</div>
+    <div class="ex-title">Prepositions of Place</div>
+    <div class="ex-topic-tag">9A · Vocabulary</div>
+    <div class="instructions">
+      Read the description of a family photo. Fill in the gaps.<br>
+      <strong>Use each word once:</strong> next to · in front of · between · behind · on the left
+    </div>
+    <div class="word-bank">
+      <span class="word-bank-label">Word bank</span>
+      <span class="word-chip">next to</span><span class="word-chip">in front of</span>
+      <span class="word-chip">between</span><span class="word-chip">behind</span><span class="word-chip">on the left</span>
+    </div>
+    <p style="font-size:.95rem;line-height:2.2;color:#333;">
+      "This is a family photo from my sister's birthday party. My mum is standing
+      <input class="blank-input" id="p2-1" placeholder="___" style="width:130px">
+      my dad. My sister is
+      <input class="blank-input" id="p2-2" placeholder="___" style="width:115px">
+      them. My grandma is sitting
+      <input class="blank-input" id="p2-3" placeholder="___" style="width:130px">
+      the sofa. My dog is
+      <input class="blank-input" id="p2-4" placeholder="___" style="width:115px">
+      the camera — you can just see his tail! And I'm
+      <input class="blank-input" id="p2-5" placeholder="___" style="width:115px">
+      , near the window."
+    </p>
+    <button class="check-btn" onclick="checkBlanks2()">Check answers</button>
+    <div class="score-box" id="score-ex2"></div>
+  </div>
+</div>
+
+<!-- ─────────── PAGE 4 · LIKE/ENJOY/LOVE/HATE + ING ─────────── -->
+<div class="page" id="page-4">
+  <div class="ex-card">
+    <div class="ex-time-tag">⏱ ~8 min</div>
+    <div class="page-label">Exercise 3 of 8</div>
+    <div class="ex-title">like / enjoy / love / hate + <em>-ing</em></div>
+    <div class="ex-topic-tag">9B · Grammar</div>
+    <div class="instructions">
+      Choose the correct option. Remember: after <strong>like, enjoy, love, hate</strong> → use verb + <strong>-ing</strong>.
+    </div>
+    <ul class="question-list" id="ex3-questions">
+      <li class="question-item" data-answer="swimming">
+        <div class="question-text">1. I love _____ in the sea in summer.</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',0,'swim')">swim</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',0,'swimming')">swimming</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',0,'to swimming')">to swimming</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex3-0"></div>
+      </li>
+      <li class="question-item" data-answer="cooking">
+        <div class="question-text">2. She doesn't enjoy _____ after a long day at work.</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',1,'cook')">cook</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',1,'to cook')">to cook</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',1,'cooking')">cooking</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex3-1"></div>
+      </li>
+      <li class="question-item" data-answer="reading">
+        <div class="question-text">3. Do you like _____ magazines?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',2,'read')">read</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',2,'reading')">reading</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',2,'to reading')">to reading</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex3-2"></div>
+      </li>
+      <li class="question-item" data-answer="getting up">
+        <div class="question-text">4. My brother hates _____ early on weekdays.</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',3,'get up')">get up</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',3,'to get up')">to get up</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',3,'getting up')">getting up</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex3-3"></div>
+      </li>
+      <li class="question-item" data-answer="watching">
+        <div class="question-text">5. We enjoy _____ films at the weekend.</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',4,'watch')">watch</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',4,'watching')">watching</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',4,'to watch')">to watch</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex3-4"></div>
+      </li>
+      <li class="question-item" data-answer="dancing">
+        <div class="question-text">6. Does she love _____?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',5,'dance')">dance</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',5,'to dance')">to dance</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex3-questions',5,'dancing')">dancing</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex3-5"></div>
+      </li>
+    </ul>
+    <button class="check-btn" onclick="checkMC('ex3-questions','score-ex3')">Check answers</button>
+    <div class="score-box" id="score-ex3"></div>
+  </div>
+</div>
+
+<!-- ─────────── PAGE 5 · SPEAKING 2 · HOBBIES INTERVIEW ─────────── -->
+<div class="page" id="page-5">
+  <div class="sp-card">
+    <div class="ex-time-tag">⏱ ~5 min</div>
+    <div class="page-label sp">🗣 Speaking 2</div>
+    <div class="ex-title">Hobbies Interview</div>
+    <div class="ex-topic-tag sp">9B · Hobbies · like/enjoy/love/hate</div>
+
+    <div class="instructions sp">
+      Take turns asking and answering. The teacher asks — you answer. Then <strong>you ask your teacher</strong> the same question. Use full sentences with <strong>love/like/enjoy/don't like/hate + -ing</strong>.
+    </div>
+
+    <div class="phrases-box">
+      <div class="pb-label">💬 Useful structures</div>
+      <div class="phrases-grid">
+        <span class="phrase-chip">I love + -ing</span>
+        <span class="phrase-chip">I really enjoy + -ing</span>
+        <span class="phrase-chip">I like + -ing</span>
+        <span class="phrase-chip">I don't like + -ing</span>
+        <span class="phrase-chip">I hate + -ing</span>
+        <span class="phrase-chip">Do you like + -ing?</span>
+        <span class="phrase-chip">What do you enjoy doing?</span>
+        <span class="phrase-chip">Me too! / Really? Not me.</span>
+      </div>
+    </div>
+
+    <div class="flip-questions">
+      <div class="flip-q">
+        <div class="fq-num">1</div>
+        <div>
+          <div class="fq-text">Do you like cooking?</div>
+          <div class="fq-hint">Follow up: "What do you like cooking?" / "Who taught you?"</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">2</div>
+        <div>
+          <div class="fq-text">What do you enjoy doing at the weekend?</div>
+          <div class="fq-hint">Follow up: "Do you do it alone or with friends?"</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">3</div>
+        <div>
+          <div class="fq-text">Do you enjoy watching films or reading more?</div>
+          <div class="fq-hint">Follow up: "What kind of films / books do you like?"</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">4</div>
+        <div>
+          <div class="fq-text">Is there a hobby you hate? Why?</div>
+          <div class="fq-hint">Use: "I hate + -ing because…"</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">5</div>
+        <div>
+          <div class="fq-text">What hobby would you like to start? Why?</div>
+          <div class="fq-hint">Use: "I'd like to try + -ing because…"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="selfcheck">
+      <div class="sc-label">✅ Self-check — did you…</div>
+      <div class="sc-item"><input type="checkbox" id="sc2-1"><label for="sc2-1">Use love / enjoy / like / don't like / hate correctly with -ing?</label></div>
+      <div class="sc-item"><input type="checkbox" id="sc2-2"><label for="sc2-2">Give a reason for your answers (because…)?</label></div>
+      <div class="sc-item"><input type="checkbox" id="sc2-3"><label for="sc2-3">Ask at least 2 questions back to your teacher?</label></div>
+      <div class="sc-item"><input type="checkbox" id="sc2-4"><label for="sc2-4">React to your teacher's answers (Me too! / Really?)?</label></div>
+    </div>
+
+    <div class="teacher-note">
+      <strong>Teacher note:</strong> Model the target structure before each question if needed. Check for -ing form after the verb. Encourage the student to elaborate beyond one-word answers.
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── PAGE 6 · HOBBIES VOCABULARY ─────────── -->
+<div class="page" id="page-6">
+  <div class="ex-card">
+    <div class="ex-time-tag">⏱ ~7 min</div>
+    <div class="page-label">Exercise 4 of 8</div>
+    <div class="ex-title">Hobbies Vocabulary</div>
+    <div class="ex-topic-tag">9B · Vocabulary</div>
+    <div class="instructions">Match each description to the correct hobby.</div>
+    <div class="word-bank">
+      <span class="word-bank-label">Word bank</span>
+      <span class="word-chip">swimming</span><span class="word-chip">cooking</span>
+      <span class="word-chip">reading</span><span class="word-chip">playing the guitar</span>
+      <span class="word-chip">taking photos</span><span class="word-chip">watching films</span>
+    </div>
+    <ul class="question-list">
+      <li class="question-item">
+        <div class="question-text">1. "I use a camera. I love finding interesting moments in everyday life."</div>
+        <select class="match-select" id="h1">
+          <option value="">-- choose --</option>
+          <option>swimming</option><option>cooking</option><option>reading</option>
+          <option>playing the guitar</option><option>taking photos</option><option>watching films</option>
+        </select>
+        <div class="feedback-inline" id="fb-h1"></div>
+      </li>
+      <li class="question-item">
+        <div class="question-text">2. "I go to the pool three times a week. It's great for fitness."</div>
+        <select class="match-select" id="h2">
+          <option value="">-- choose --</option>
+          <option>swimming</option><option>cooking</option><option>reading</option>
+          <option>playing the guitar</option><option>taking photos</option><option>watching films</option>
+        </select>
+        <div class="feedback-inline" id="fb-h2"></div>
+      </li>
+      <li class="question-item">
+        <div class="question-text">3. "I make dinner for my family every evening. I try new recipes at weekends."</div>
+        <select class="match-select" id="h3">
+          <option value="">-- choose --</option>
+          <option>swimming</option><option>cooking</option><option>reading</option>
+          <option>playing the guitar</option><option>taking photos</option><option>watching films</option>
+        </select>
+        <div class="feedback-inline" id="fb-h3"></div>
+      </li>
+      <li class="question-item">
+        <div class="question-text">4. "I practice every day. I can play a few songs now!"</div>
+        <select class="match-select" id="h4">
+          <option value="">-- choose --</option>
+          <option>swimming</option><option>cooking</option><option>reading</option>
+          <option>playing the guitar</option><option>taking photos</option><option>watching films</option>
+        </select>
+        <div class="feedback-inline" id="fb-h4"></div>
+      </li>
+      <li class="question-item">
+        <div class="question-text">5. "I love books, magazines, and the news. I always have something to read on the bus."</div>
+        <select class="match-select" id="h5">
+          <option value="">-- choose --</option>
+          <option>swimming</option><option>cooking</option><option>reading</option>
+          <option>playing the guitar</option><option>taking photos</option><option>watching films</option>
+        </select>
+        <div class="feedback-inline" id="fb-h5"></div>
+      </li>
+      <li class="question-item">
+        <div class="question-text">6. "Every Saturday evening I sit on the sofa and enjoy a good story."</div>
+        <select class="match-select" id="h6">
+          <option value="">-- choose --</option>
+          <option>swimming</option><option>cooking</option><option>reading</option>
+          <option>playing the guitar</option><option>taking photos</option><option>watching films</option>
+        </select>
+        <div class="feedback-inline" id="fb-h6"></div>
+      </li>
+    </ul>
+    <button class="check-btn" onclick="checkHobbies()">Check answers</button>
+    <div class="score-box" id="score-ex4"></div>
+  </div>
+</div>
+
+<!-- ─────────── PAGE 7 · WHY AND BECAUSE ─────────── -->
+<div class="page" id="page-7">
+  <div class="ex-card">
+    <div class="ex-time-tag">⏱ ~8 min</div>
+    <div class="page-label">Exercise 5 of 8</div>
+    <div class="ex-title">Why and Because</div>
+    <div class="ex-topic-tag">9C · Grammar</div>
+    <div class="instructions">
+      <strong>Part A:</strong> Match each question to the correct answer.<br>
+      <strong>Part B:</strong> Write your own answer to one question.
+    </div>
+    <p style="font-size:.85rem;font-weight:700;color:#c0392b;margin-bottom:10px;">PART A – Match</p>
+    <ul class="question-list">
+      <li class="question-item">
+        <div class="question-text">1. Why do you study English?</div>
+        <select class="match-select" id="w1">
+          <option value="">-- choose --</option>
+          <option value="a">a) Because I work in the mornings.</option>
+          <option value="b">b) Because I want to travel.</option>
+          <option value="c">c) Because I love food and cooking.</option>
+          <option value="d">d) Because her bus didn't come.</option>
+          <option value="e">e) Because I prefer books.</option>
+        </select>
+        <div class="feedback-inline" id="fb-w1"></div>
+      </li>
+      <li class="question-item">
+        <div class="question-text">2. Why do you like cooking?</div>
+        <select class="match-select" id="w2">
+          <option value="">-- choose --</option>
+          <option value="a">a) Because I work in the mornings.</option>
+          <option value="b">b) Because I want to travel.</option>
+          <option value="c">c) Because I love food and cooking.</option>
+          <option value="d">d) Because her bus didn't come.</option>
+          <option value="e">e) Because I prefer books.</option>
+        </select>
+        <div class="feedback-inline" id="fb-w2"></div>
+      </li>
+      <li class="question-item">
+        <div class="question-text">3. Why don't you watch TV?</div>
+        <select class="match-select" id="w3">
+          <option value="">-- choose --</option>
+          <option value="a">a) Because I work in the mornings.</option>
+          <option value="b">b) Because I want to travel.</option>
+          <option value="c">c) Because I love food and cooking.</option>
+          <option value="d">d) Because her bus didn't come.</option>
+          <option value="e">e) Because I prefer books.</option>
+        </select>
+        <div class="feedback-inline" id="fb-w3"></div>
+      </li>
+      <li class="question-item">
+        <div class="question-text">4. Why is she late today?</div>
+        <select class="match-select" id="w4">
+          <option value="">-- choose --</option>
+          <option value="a">a) Because I work in the mornings.</option>
+          <option value="b">b) Because I want to travel.</option>
+          <option value="c">c) Because I love food and cooking.</option>
+          <option value="d">d) Because her bus didn't come.</option>
+          <option value="e">e) Because I prefer books.</option>
+        </select>
+        <div class="feedback-inline" id="fb-w4"></div>
+      </li>
+      <li class="question-item">
+        <div class="question-text">5. Why do you study in the evening?</div>
+        <select class="match-select" id="w5">
+          <option value="">-- choose --</option>
+          <option value="a">a) Because I work in the mornings.</option>
+          <option value="b">b) Because I want to travel.</option>
+          <option value="c">c) Because I love food and cooking.</option>
+          <option value="d">d) Because her bus didn't come.</option>
+          <option value="e">e) Because I prefer books.</option>
+        </select>
+        <div class="feedback-inline" id="fb-w5"></div>
+      </li>
+    </ul>
+    <p style="font-size:.85rem;font-weight:700;color:#c0392b;margin:18px 0 8px;">PART B – Your turn</p>
+    <div class="writing-prompt">Answer this question about yourself: <em>"Why do you study English?"</em></div>
+    <textarea class="writing-area" placeholder="Because…" rows="2"></textarea>
+    <button class="check-btn" onclick="checkWhy()">Check Part A</button>
+    <div class="score-box" id="score-ex5"></div>
+  </div>
+</div>
+
+<!-- ─────────── PAGE 8 · MAKING SUGGESTIONS ─────────── -->
+<div class="page" id="page-8">
+  <div class="ex-card">
+    <div class="ex-time-tag">⏱ ~8 min</div>
+    <div class="page-label">Exercise 6 of 8</div>
+    <div class="ex-title">Making &amp; Responding to Suggestions</div>
+    <div class="ex-topic-tag">9D · English in Action</div>
+    <div class="instructions">Complete the dialogue with the correct phrase from the word bank.</div>
+    <div class="word-bank">
+      <span class="word-bank-label">Word bank</span>
+      <span class="word-chip">Why don't we</span><span class="word-chip">Let's</span>
+      <span class="word-chip">How about</span><span class="word-chip">That's a great idea!</span>
+      <span class="word-chip">I'm not sure.</span><span class="word-chip">OK, sounds good!</span>
+    </div>
+    <div class="dialogue">
+      <div class="d-row">
+        <div class="d-speaker">A</div>
+        <div class="d-line">It's Saturday night!
+          <select class="match-select" id="s1" style="width:200px;display:inline-block;margin:0 6px;">
+            <option value="">-- choose --</option>
+            <option>Why don't we</option><option>Let's</option><option>How about</option>
+            <option>That's a great idea!</option><option>I'm not sure.</option><option>OK, sounds good!</option>
+          </select>
+          go to the cinema tonight?
+        </div>
+      </div>
+      <div class="feedback-inline" id="fb-s1" style="margin-left:34px;"></div>
+      <div class="d-row">
+        <div class="d-speaker">B</div>
+        <div class="d-line">
+          <select class="match-select" id="s2" style="width:220px;display:inline-block;margin:0 6px;">
+            <option value="">-- choose --</option>
+            <option>Why don't we</option><option>Let's</option><option>How about</option>
+            <option>That's a great idea!</option><option>I'm not sure.</option><option>OK, sounds good!</option>
+          </select>
+          What film do you want to see?
+        </div>
+      </div>
+      <div class="feedback-inline" id="fb-s2" style="margin-left:34px;"></div>
+      <div class="d-row">
+        <div class="d-speaker">A</div>
+        <div class="d-line">
+          <select class="match-select" id="s3" style="width:170px;display:inline-block;margin:0 6px;">
+            <option value="">-- choose --</option>
+            <option>Why don't we</option><option>Let's</option><option>How about</option>
+            <option>That's a great idea!</option><option>I'm not sure.</option><option>OK, sounds good!</option>
+          </select>
+          watching a comedy?
+        </div>
+      </div>
+      <div class="feedback-inline" id="fb-s3" style="margin-left:34px;"></div>
+      <div class="d-row">
+        <div class="d-speaker">B</div>
+        <div class="d-line">Hmm,
+          <select class="match-select" id="s4" style="width:165px;display:inline-block;margin:0 6px;">
+            <option value="">-- choose --</option>
+            <option>Why don't we</option><option>Let's</option><option>How about</option>
+            <option>That's a great idea!</option><option>I'm not sure.</option><option>OK, sounds good!</option>
+          </select>
+          I don't really like comedies.
+        </div>
+      </div>
+      <div class="feedback-inline" id="fb-s4" style="margin-left:34px;"></div>
+      <div class="d-row">
+        <div class="d-speaker">A</div>
+        <div class="d-line">OK,
+          <select class="match-select" id="s5" style="width:110px;display:inline-block;margin:0 6px;">
+            <option value="">-- choose --</option>
+            <option>Why don't we</option><option>Let's</option><option>How about</option>
+            <option>That's a great idea!</option><option>I'm not sure.</option><option>OK, sounds good!</option>
+          </select>
+          see an action film instead.
+        </div>
+      </div>
+      <div class="feedback-inline" id="fb-s5" style="margin-left:34px;"></div>
+      <div class="d-row">
+        <div class="d-speaker">B</div>
+        <div class="d-line">
+          <select class="match-select" id="s6" style="width:200px;display:inline-block;margin:0 6px;">
+            <option value="">-- choose --</option>
+            <option>Why don't we</option><option>Let's</option><option>How about</option>
+            <option>That's a great idea!</option><option>I'm not sure.</option><option>OK, sounds good!</option>
+          </select>
+          See you at 7!
+        </div>
+      </div>
+      <div class="feedback-inline" id="fb-s6" style="margin-left:34px;"></div>
+    </div>
+    <button class="check-btn" onclick="checkSuggestions()">Check answers</button>
+    <div class="score-box" id="score-ex6"></div>
+  </div>
+</div>
+
+<!-- ─────────── PAGE 9 · SPEAKING 3 · WEEKEND ROLE-PLAY ─────────── -->
+<div class="page" id="page-9">
+  <div class="sp-card">
+    <div class="ex-time-tag">⏱ ~6 min</div>
+    <div class="page-label sp">🗣 Speaking 3</div>
+    <div class="ex-title">Role-play: Plan Your Weekend</div>
+    <div class="ex-topic-tag sp">9D · Making Suggestions</div>
+
+    <div class="instructions sp">
+      You and your teacher are friends planning the weekend together. <strong>Create a short dialogue</strong> — make suggestions, agree, disagree, and agree on a plan. Aim for 6–8 turns each.
+    </div>
+
+    <div class="scenario-card">
+      <div class="sc-title">📋 Your scenario</div>
+      <div class="sc-body">
+        It's Friday afternoon. You and a friend want to do something fun this weekend. You want to go outside (a park, a market, a walk). Your friend prefers something indoors (a café, a film, cooking at home). <strong>Make suggestions and find an activity you both like!</strong>
+      </div>
+    </div>
+
+    <div class="phrases-box">
+      <div class="pb-label">💬 Phrases you must use (tick when used)</div>
+      <div class="phrases-grid">
+        <span class="phrase-chip">Why don't we…?</span>
+        <span class="phrase-chip">Let's…</span>
+        <span class="phrase-chip">How about…?</span>
+        <span class="phrase-chip">That's a great idea!</span>
+        <span class="phrase-chip">I'm not sure.</span>
+        <span class="phrase-chip">OK, sounds good!</span>
+      </div>
+    </div>
+
+    <div class="prompt-grid">
+      <div class="prompt-card">
+        <div class="pc-label">Start the conversation</div>
+        <div class="pc-text">Make the first suggestion using "Why don't we…?"</div>
+        <div class="pc-hint">e.g. "Why don't we go to the park on Saturday?"</div>
+      </div>
+      <div class="prompt-card">
+        <div class="pc-label">Disagree politely</div>
+        <div class="pc-text">When your teacher suggests something you don't like, use "I'm not sure…"</div>
+        <div class="pc-hint">e.g. "I'm not sure. I don't really like…"</div>
+      </div>
+      <div class="prompt-card">
+        <div class="pc-label">Make a compromise</div>
+        <div class="pc-text">Suggest something that works for both of you using "How about…?"</div>
+        <div class="pc-hint">e.g. "How about going to the market and then a café?"</div>
+      </div>
+      <div class="prompt-card">
+        <div class="pc-label">Agree on the plan</div>
+        <div class="pc-text">End the conversation with an agreement and a detail (time / place).</div>
+        <div class="pc-hint">e.g. "OK, sounds good! Let's meet at 11."</div>
+      </div>
+    </div>
+
+    <div class="selfcheck">
+      <div class="sc-label">✅ Self-check — did you…</div>
+      <div class="sc-item"><input type="checkbox" id="sc3-1"><label for="sc3-1">Use all 6 suggestion phrases at least once?</label></div>
+      <div class="sc-item"><input type="checkbox" id="sc3-2"><label for="sc3-2">Make at least 3 different suggestions?</label></div>
+      <div class="sc-item"><input type="checkbox" id="sc3-3"><label for="sc3-3">Disagree politely (not just "no")?</label></div>
+      <div class="sc-item"><input type="checkbox" id="sc3-4"><label for="sc3-4">Agree on a final plan with a time or place?</label></div>
+      <div class="sc-item"><input type="checkbox" id="sc3-5"><label for="sc3-5">Use like / enjoy / love / hate + -ing to explain preferences?</label></div>
+    </div>
+
+    <div class="teacher-note">
+      <strong>Teacher note:</strong> Prompt with "But I don't like…" to force a new suggestion if the student runs out of ideas. Correct errors after the role-play rather than mid-task. Check for all 6 suggestion phrases. Can extend by swapping roles.
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── PAGE 10 · WRITING TASK ─────────── -->
+<div class="page" id="page-10">
+  <div class="ex-card">
+    <div class="ex-time-tag">⏱ ~10 min</div>
+    <div class="page-label">Exercise 7 of 8</div>
+    <div class="ex-title">Writing: Using <em>because</em></div>
+    <div class="ex-topic-tag">9C · Skills · Writing</div>
+    <div class="instructions">
+      Write <strong>5 sentences</strong> about your study habits. Use <strong>because</strong> in each sentence.
+    </div>
+    <div class="model-box">
+      <div class="model-label">Model sentences</div>
+      <p>I study English in the morning <strong>because</strong> I am more focused then.<br>
+      I don't use my phone when I study <strong>because</strong> it's a distraction.</p>
+    </div>
+    <ul class="question-list" style="gap:18px;">
+      <li class="question-item">
+        <div class="writing-prompt">1. When do you study? <em>(morning / evening / at the weekend…)</em></div>
+        <textarea class="writing-area" placeholder="I study ______ because ______." rows="2"></textarea>
+      </li>
+      <li class="question-item">
+        <div class="writing-prompt">2. Do you like studying alone or with others?</div>
+        <textarea class="writing-area" placeholder="I like studying ______ because ______." rows="2"></textarea>
+      </li>
+      <li class="question-item">
+        <div class="writing-prompt">3. What do you use to help you learn? <em>(app, notebook, flashcards…)</em></div>
+        <textarea class="writing-area" placeholder="I use ______ because ______." rows="2"></textarea>
+      </li>
+      <li class="question-item">
+        <div class="writing-prompt">4. How long do you study each day?</div>
+        <textarea class="writing-area" placeholder="I study for ______ because ______." rows="2"></textarea>
+      </li>
+      <li class="question-item">
+        <div class="writing-prompt">5. Why do you want to learn English?</div>
+        <textarea class="writing-area" placeholder="I want to learn English because ______." rows="2"></textarea>
+      </li>
+    </ul>
+    <div style="margin-top:20px;padding:12px 16px;background:#f0efec;border-radius:8px;font-size:.85rem;color:#666;">
+      ✏️ <strong>Teacher note:</strong> Review together. Check: correct use of <em>because</em>, sentence structure, and verb forms.
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── PAGE 11 · SPEAKING 4 · GENERAL QUESTIONS ─────────── -->
+<div class="page" id="page-11">
+  <div class="sp-card">
+    <div class="ex-time-tag">⏱ ~8 min</div>
+    <div class="page-label sp">🗣 Speaking 4</div>
+    <div class="ex-title">General Conversation</div>
+    <div class="ex-topic-tag sp">All topics · Free speaking</div>
+
+    <div class="instructions sp">
+      The teacher asks — you answer naturally. <strong>No preparation needed.</strong> Try to give more than one sentence for each answer. It's OK to ask the teacher questions too!
+    </div>
+
+    <div class="flip-questions">
+      <div class="flip-q">
+        <div class="fq-num">1</div>
+        <div>
+          <div class="fq-text">Tell me about your family. Who do you live with?</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">2</div>
+        <div>
+          <div class="fq-text">Who is your favourite person in your family? Why?</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">3</div>
+        <div>
+          <div class="fq-text">What do you like doing in your free time?</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">4</div>
+        <div>
+          <div class="fq-text">Is there a hobby you want to try? Why?</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">5</div>
+        <div>
+          <div class="fq-text">Why do you study English? How long have you been learning?</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">6</div>
+        <div>
+          <div class="fq-text">When and where do you usually study? Do you have a routine?</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">7</div>
+        <div>
+          <div class="fq-text">What are your plans for the weekend? What do you want to do?</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">8</div>
+        <div>
+          <div class="fq-text">Do you like taking photos? Who or what do you like to photograph?</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">9</div>
+        <div>
+          <div class="fq-text">What is one thing you love doing and one thing you hate doing? Why?</div>
+        </div>
+      </div>
+      <div class="flip-q">
+        <div class="fq-num">10</div>
+        <div>
+          <div class="fq-text">If you could suggest one activity for this weekend, what would it be?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="teacher-note">
+      <strong>Teacher note:</strong> Use these freely — pick the questions that feel most natural given the conversation. Follow up on interesting answers. Note any recurring errors from the lesson for a final error-correction slot. This is a chance to hear the student use all Unit 9 language in an unprompted context.
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── PAGE 12 · FINAL QUIZ ─────────── -->
+<div class="page" id="page-12">
+  <div class="ex-card">
+    <div class="ex-time-tag">⏱ ~7 min</div>
+    <div class="page-label">Exercise 8 of 8</div>
+    <div class="ex-title">Final Revision Quiz</div>
+    <div class="ex-topic-tag">Mixed – all topics</div>
+    <div class="instructions">8 quick questions — one from each topic. Choose the correct answer.</div>
+    <ul class="question-list" id="ex8-questions" style="gap:18px;">
+      <li class="question-item quiz-q" data-answer="her">
+        <div class="q-num">Question 1 · Object Pronouns</div>
+        <div class="q-text">"That's my sister Anna. I see _____ every weekend."</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',0,'she')">she</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',0,'her')">her</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',0,'hers')">hers</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex8-0"></div>
+      </li>
+      <li class="question-item quiz-q" data-answer="next to">
+        <div class="q-num">Question 2 · Prepositions of Place</div>
+        <div class="q-text">"In this photo, my mum is standing _____ my dad."</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',1,'in front of')">in front of</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',1,'next to')">next to</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',1,'behind')">behind</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex8-1"></div>
+      </li>
+      <li class="question-item quiz-q" data-answer="reading">
+        <div class="q-num">Question 3 · like / enjoy / love / hate + -ing</div>
+        <div class="q-text">"He enjoys _____ books before bed."</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',2,'read')">read</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',2,'to read')">to read</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',2,'reading')">reading</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex8-2"></div>
+      </li>
+      <li class="question-item quiz-q" data-answer="taking photos">
+        <div class="q-num">Question 4 · Hobbies</div>
+        <div class="q-text">"I always have my camera with me. My hobby is _____."</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',3,'swimming')">swimming</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',3,'taking photos')">taking photos</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',3,'cooking')">cooking</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex8-3"></div>
+      </li>
+      <li class="question-item quiz-q" data-answer="Because">
+        <div class="q-num">Question 5 · Why and Because</div>
+        <div class="q-text">"Why do you study English?" &nbsp; "_____ I want a new job."</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',4,'Why')">Why</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',4,'Because')">Because</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',4,'And')">And</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex8-4"></div>
+      </li>
+      <li class="question-item quiz-q" data-answer="Let's">
+        <div class="q-num">Question 6 · Making Suggestions</div>
+        <div class="q-text">"_____ go for a coffee!" (making a suggestion)</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',5,'Let\'s')">Let's</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',5,'Because')">Because</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',5,'Why not')">Why not</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex8-5"></div>
+      </li>
+      <li class="question-item quiz-q" data-answer="That's a great idea!">
+        <div class="q-num">Question 7 · Responding to Suggestions</div>
+        <div class="q-text">Someone says: "Let's watch a film tonight." You agree. What do you say?</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',6,'I\'m not sure.')">I'm not sure.</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',6,'That\'s a great idea!')">That's a great idea!</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',6,'How about?')">How about?</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex8-6"></div>
+      </li>
+      <li class="question-item quiz-q" data-answer="between">
+        <div class="q-num">Question 8 · Prepositions of Place</div>
+        <div class="q-text">"My sister is _____ my mum and my dad in the photo." (she is in the middle)</div>
+        <div class="options">
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',7,'behind')">behind</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',7,'in front of')">in front of</button>
+          <button class="opt-btn" onclick="selectOpt(this,'ex8-questions',7,'between')">between</button>
+        </div>
+        <div class="feedback-inline" id="fb-ex8-7"></div>
+      </li>
+    </ul>
+    <button class="check-btn" onclick="checkMC('ex8-questions','score-ex8')">Check all answers</button>
+    <div class="score-box" id="score-ex8"></div>
+  </div>
+</div>
+
+<!-- ─────────── PAGE 13 · SUMMARY ─────────── -->
+<div class="page" id="page-13">
+  <div class="final-card">
+    <div style="font-size:2.5rem;margin-bottom:8px;">🎉</div>
+    <div class="big-score" id="finalScore">–</div>
+    <div class="final-label">Total written score</div>
+    <p style="font-size:.95rem;color:#555;margin-bottom:24px;line-height:1.7;">
+      Well done for completing the Unit 9 revision lesson! Check the table below to see what to practise more.
+    </p>
+    <table class="summary-table">
+      <thead>
+        <tr><th>Activity</th><th>Topic</th><th>Score</th><th>Status</th></tr>
+      </thead>
+      <tbody id="summaryBody"></tbody>
+    </table>
+    <p style="margin-top:20px;font-size:.83rem;color:#aaa;">Speaking tasks and writing are teacher-assessed and not included in the score.</p>
+  </div>
+</div>
+
+</div><!-- /lesson-body -->
+
+<!-- ═══════════════════ NAVIGATION ═══════════════════ -->
+<div class="nav-footer">
+  <button class="nav-btn" id="prevBtn" onclick="changePage(-1)" disabled>← Back</button>
+  <span class="page-counter" id="pageCounter">Intro</span>
+  <button class="nav-btn primary" id="nextBtn" onclick="changePage(1)">Next →</button>
+</div>
+
+<!-- ═══════════════════ JAVASCRIPT ═══════════════════ -->
+<script>
+// ── CONFIG ─────────────────────────────────────────
+const TOTAL_PAGES = 14; // pages 0–13
+
+// Page types: 'ex' = written exercise, 'sp' = speaking, 'intro', 'summary'
+const PAGE_META = [
+  { type:'intro',   label:'Intro' },
+  { type:'ex',      label:'Ex 1 · Pronouns' },
+  { type:'sp',      label:'🗣 Speaking 1' },
+  { type:'ex',      label:'Ex 2 · Prepositions' },
+  { type:'ex',      label:'Ex 3 · -ing' },
+  { type:'sp',      label:'🗣 Speaking 2' },
+  { type:'ex',      label:'Ex 4 · Hobbies' },
+  { type:'ex',      label:'Ex 5 · Because' },
+  { type:'ex',      label:'Ex 6 · Suggestions' },
+  { type:'sp',      label:'🗣 Speaking 3' },
+  { type:'ex',      label:'Ex 7 · Writing' },
+  { type:'sp',      label:'🗣 Speaking 4' },
+  { type:'ex',      label:'Ex 8 · Quiz' },
+  { type:'summary', label:'Summary' },
+];
+
+let currentPage = 0;
+let scores = {};
+
+// ── TIMER ──────────────────────────────────────────
+let timerInterval = null, seconds = 0, timerRunning = false;
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval); timerRunning = false;
+    document.getElementById('timerBtn').textContent = '▶ Resume';
+  } else {
+    timerInterval = setInterval(() => {
+      seconds++;
+      const m = String(Math.floor(seconds/60)).padStart(2,'0');
+      const s = String(seconds%60).padStart(2,'0');
+      document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+    }, 1000);
+    timerRunning = true;
+    document.getElementById('timerBtn').textContent = '⏸ Pause';
+  }
+}
+
+// ── DOTS ───────────────────────────────────────────
+function buildDots() {
+  const nav = document.getElementById('stepNav');
+  nav.innerHTML = '';
+  PAGE_META.forEach((meta, i) => {
+    const d = document.createElement('div');
+    const isSp = meta.type === 'sp';
+    d.className = `dot ${isSp ? 'sp-dot' : 'ex-dot'}`;
+    if (i === currentPage) d.classList.add('active');
+    else if (i < currentPage) d.classList.add('done');
+    d.onclick = () => goToPage(i);
+    d.title = meta.label;
+    nav.appendChild(d);
+  });
+}
+
+// ── NAVIGATION ─────────────────────────────────────
+function changePage(dir) { goToPage(currentPage + dir); }
+
+function goToPage(n) {
+  if (n < 0 || n >= TOTAL_PAGES) return;
+  document.getElementById(`page-${currentPage}`).classList.remove('active');
+  currentPage = n;
+  document.getElementById(`page-${currentPage}`).classList.add('active');
+
+  document.getElementById('prevBtn').disabled = (currentPage === 0);
+  document.getElementById('nextBtn').disabled = (currentPage === TOTAL_PAGES - 1);
+  document.getElementById('pageCounter').textContent = PAGE_META[currentPage].label;
+
+  // Style next button green on speaking pages
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.className = 'nav-btn ' + (PAGE_META[currentPage].type === 'sp' ? 'sp-next' : 'primary');
+
+  const pct = (currentPage / (TOTAL_PAGES - 1)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  if (currentPage === 13) buildSummary();
+  buildDots();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── SELECT OPTION ──────────────────────────────────
+function selectOpt(btn, listId, idx, value) {
+  const list = document.getElementById(listId);
+  const item = list.querySelectorAll('.question-item')[idx];
+  const answer = item.dataset.answer;
+  const allBtns = item.querySelectorAll('.opt-btn');
+  const fbId = `fb-${listId.replace('-questions','')}-${idx}`;
+  const fb = document.getElementById(fbId);
+
+  allBtns.forEach(b => { b.classList.remove('correct','wrong'); b.disabled = true; });
+
+  if (value === answer) {
+    btn.classList.add('correct');
+    if (fb) { fb.textContent = '✓ Correct!'; fb.className = 'feedback-inline ok'; }
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b => { if (b.textContent.trim() === answer) b.classList.add('correct'); });
+    if (fb) { fb.textContent = `✗ Answer: ${answer}`; fb.className = 'feedback-inline err'; }
+  }
+}
+
+// ── CHECK MC ───────────────────────────────────────
+function checkMC(listId, scoreId) {
+  const list = document.getElementById(listId);
+  const items = list.querySelectorAll('.question-item');
+  let correct = 0;
+  items.forEach((item, idx) => {
+    const answer = item.dataset.answer;
+    const allBtns = item.querySelectorAll('.opt-btn');
+    const fbId = `fb-${listId.replace('-questions','')}-${idx}`;
+    const fb = document.getElementById(fbId);
+    allBtns.forEach(b => b.disabled = true);
+    const chosen = item.querySelector('.opt-btn.correct');
+    if (!chosen) {
+      allBtns.forEach(b => { if (b.textContent.trim() === answer) b.classList.add('correct'); });
+      if (fb) { fb.textContent = `✗ Answer: ${answer}`; fb.className = 'feedback-inline err'; }
+    } else {
+      correct++;
+    }
+  });
+  showScore(scoreId, correct, items.length);
+  const key = listId === 'ex1-questions' ? 'ex1' : listId === 'ex3-questions' ? 'ex3' : 'ex8';
+  scores[key] = { correct, total: items.length };
+}
+
+// ── CHECK BLANKS EX 2 ─────────────────────────────
+function checkBlanks2() {
+  const answers = ['next to','between','in front of','behind','on the left'];
+  let correct = 0;
+  answers.forEach((ans, i) => {
+    const inp = document.getElementById(`p2-${i+1}`);
+    inp.classList.remove('correct','wrong');
+    const val = inp.value.trim().toLowerCase();
+    if (val === ans) { inp.classList.add('correct'); correct++; }
+    else { inp.classList.add('wrong'); }
+    inp.disabled = true;
+  });
+  showScore('score-ex2', correct, 5);
+  scores['ex2'] = { correct, total: 5 };
+}
+
+// ── CHECK HOBBIES ──────────────────────────────────
+function checkHobbies() {
+  const answers = {
+    h1:'taking photos', h2:'swimming', h3:'cooking',
+    h4:'playing the guitar', h5:'reading', h6:'watching films'
+  };
+  let correct = 0;
+  Object.entries(answers).forEach(([id, ans]) => {
+    const sel = document.getElementById(id);
+    const fb = document.getElementById(`fb-${id}`);
+    sel.disabled = true;
+    if (sel.value === ans) {
+      sel.classList.add('correct'); correct++;
+      if (fb) { fb.textContent = '✓ Correct!'; fb.className = 'feedback-inline ok'; }
+    } else {
+      sel.classList.add('wrong');
+      if (fb) { fb.textContent = `✗ Answer: ${ans}`; fb.className = 'feedback-inline err'; }
+    }
+  });
+  showScore('score-ex4', correct, 6);
+  scores['ex4'] = { correct, total: 6 };
+}
+
+// ── CHECK WHY ──────────────────────────────────────
+function checkWhy() {
+  const answers = { w1:'b', w2:'c', w3:'e', w4:'d', w5:'a' };
+  let correct = 0;
+  Object.entries(answers).forEach(([id, ans]) => {
+    const sel = document.getElementById(id);
+    const fb = document.getElementById(`fb-${id}`);
+    sel.disabled = true;
+    if (sel.value === ans) {
+      sel.classList.add('correct'); correct++;
+      if (fb) { fb.textContent = '✓ Correct!'; fb.className = 'feedback-inline ok'; }
+    } else {
+      sel.classList.add('wrong');
+      const correctText = sel.querySelector(`option[value="${ans}"]`)?.textContent || ans;
+      if (fb) { fb.textContent = `✗ Answer: ${correctText}`; fb.className = 'feedback-inline err'; }
+    }
+  });
+  showScore('score-ex5', correct, 5);
+  scores['ex5'] = { correct, total: 5 };
+}
+
+// ── CHECK SUGGESTIONS ─────────────────────────────
+function checkSuggestions() {
+  const answers = {
+    s1:"Why don't we", s2:"That's a great idea!", s3:'How about',
+    s4:"I'm not sure.", s5:"Let's", s6:'OK, sounds good!'
+  };
+  let correct = 0;
+  Object.entries(answers).forEach(([id, ans]) => {
+    const sel = document.getElementById(id);
+    const fb = document.getElementById(`fb-${id}`);
+    sel.disabled = true;
+    if (sel.value === ans) {
+      sel.classList.add('correct'); correct++;
+      if (fb) { fb.textContent = '✓ Correct!'; fb.className = 'feedback-inline ok'; }
+    } else {
+      sel.classList.add('wrong');
+      if (fb) { fb.textContent = `✗ Answer: ${ans}`; fb.className = 'feedback-inline err'; }
+    }
+  });
+  showScore('score-ex6', correct, 6);
+  scores['ex6'] = { correct, total: 6 };
+}
+
+// ── SHOW SCORE ─────────────────────────────────────
+function showScore(id, correct, total) {
+  const box = document.getElementById(id);
+  const pct = Math.round((correct/total)*100);
+  const msg = pct===100 ? '🌟 Perfect!' : pct>=70 ? '👍 Good job!' : '📚 Keep practising!';
+  box.innerHTML = `<span class="score-num">${correct}/${total}</span> &nbsp; ${msg}`;
+  box.classList.add('visible');
+}
+
+// ── SUMMARY ────────────────────────────────────────
+function buildSummary() {
+  const exercises = [
+    { id:'ex1', label:'Ex 1 · Object Pronouns', topic:'9A Grammar', type:'written' },
+    { id:'ex2', label:'Ex 2 · Prepositions', topic:'9A Vocabulary', type:'written' },
+    { id:'ex3', label:'Ex 3 · like/enjoy + -ing', topic:'9B Grammar', type:'written' },
+    { id:'ex4', label:'Ex 4 · Hobbies Vocabulary', topic:'9B Vocabulary', type:'written' },
+    { id:'ex5', label:'Ex 5 · Why and Because', topic:'9C Grammar', type:'written' },
+    { id:'ex6', label:'Ex 6 · Suggestions', topic:'9D Communication', type:'written' },
+    { id:'ex8', label:'Ex 8 · Final Quiz', topic:'Mixed', type:'written' },
+    { id:'sp1', label:'🗣 Speaking 1 · Family Photo', topic:'9A Speaking', type:'speaking' },
+    { id:'sp2', label:'🗣 Speaking 2 · Hobbies Interview', topic:'9B Speaking', type:'speaking' },
+    { id:'sp3', label:'🗣 Speaking 3 · Weekend Role-play', topic:'9D Speaking', type:'speaking' },
+    { id:'wr',  label:'✏️ Exercise 7 · Writing', topic:'9C Writing', type:'writing' },
+  ];
+
+  let totalC = 0, totalT = 0;
+  const tbody = document.getElementById('summaryBody');
+  tbody.innerHTML = '';
+
+  exercises.forEach(ex => {
+    const tr = document.createElement('tr');
+    if (ex.type === 'written') {
+      const s = scores[ex.id];
+      if (s) {
+        const pct = Math.round((s.correct/s.total)*100);
+        const pc = pct===100 ? 'green' : pct>=70 ? 'amber' : 'red';
+        const pt = pct===100 ? 'Excellent' : pct>=70 ? 'Good' : 'Review';
+        tr.innerHTML = `<td>${ex.label}</td><td>${ex.topic}</td><td>${s.correct}/${s.total}</td><td><span class="pill ${pc}">${pt}</span></td>`;
+        totalC += s.correct; totalT += s.total;
+      } else {
+        tr.innerHTML = `<td>${ex.label}</td><td>${ex.topic}</td><td>–</td><td><span class="pill amber">Not checked</span></td>`;
+      }
+    } else {
+      tr.innerHTML = `<td>${ex.label}</td><td>${ex.topic}</td><td>–</td><td><span class="pill teal">Teacher assessed</span></td>`;
+    }
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('finalScore').textContent = totalT > 0 ? `${totalC}/${totalT}` : '–';
+}
+
+// ── INIT ───────────────────────────────────────────
+buildDots();
+goToPage(0);
+</script>
+</body>
+</html>
