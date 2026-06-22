@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revision — Units 1 & 2</title>
+<style>
+:root {
+  --bg:#f5f0eb; --card:#fff; --dark:#1a1a2e; --accent:#e63946; --accent2:#457b9d;
+  --muted:#6b7280; --border:#e2d9d0;
+  --gb:#1a1a2e; --gy:#f4c430; --gt:#7fffd4;
+  --shadow:0 4px 24px rgba(0,0,0,.09);
+  --ok:#16a34a; --okbg:#f0fdf4; --okb:#22c55e;
+  --no:#dc2626; --nobg:#fef2f2; --nob:#ef4444;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia',serif;background:var(--bg);color:var(--dark);min-height:100vh}
+
+/* ── NAV ── */
+.top-nav{background:var(--dark);display:flex;align-items:center;justify-content:space-between;padding:.75rem 2rem;position:sticky;top:0;z-index:100}
+.t-title{font-family:'Arial',sans-serif;font-size:.95rem;font-weight:700;color:var(--gy);letter-spacing:.03em}
+.progress-row{display:flex;gap:6px;align-items:center}
+.pd{width:10px;height:10px;border-radius:50%;background:#fff3;cursor:pointer;transition:background .2s,transform .2s}
+.pd.active{background:var(--gy);transform:scale(1.3)}
+.pd.done{background:var(--gt)}
+.score-display{font-family:'Arial',sans-serif;font-size:.82rem;color:var(--gy);font-weight:700;min-width:80px;text-align:right}
+
+/* ── LAYOUT ── */
+.page{display:none}.page.active{display:block}
+.pw{max-width:880px;margin:0 auto;padding:2.5rem 1.5rem 6rem}
+
+/* ── TYPE ── */
+.stag{display:inline-block;font-family:'Arial',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);border:2px solid var(--accent);border-radius:4px;padding:2px 10px;margin-bottom:.9rem}
+.gtag{display:inline-block;font-family:'Arial',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--gy);color:var(--dark);border-radius:4px;padding:2px 10px;margin-left:.6rem;vertical-align:middle}
+h1{font-size:1.9rem;line-height:1.25;margin-bottom:.4rem}
+h2{font-size:1.2rem;margin-bottom:.8rem;font-family:'Arial',sans-serif}
+h3{font-size:1rem;margin-bottom:.5rem;color:var(--accent2);font-family:'Arial',sans-serif}
+p{line-height:1.7;margin-bottom:.8rem;color:#333}
+
+/* ── CARDS ── */
+.card{background:var(--card);border-radius:12px;padding:1.6rem 2rem;margin-bottom:1.4rem;box-shadow:var(--shadow);border:1px solid var(--border)}
+.inst{background:#eef6ff;border-radius:8px;padding:.75rem 1.1rem;margin-bottom:1.2rem;font-family:'Arial',sans-serif;font-size:.88rem;color:#1a4a7a;border-left:3px solid var(--accent2);line-height:1.5}
+
+/* ── GRAMMAR BOX ── */
+.gb{background:var(--gb);color:#e8e0ff;border-radius:12px;padding:1.5rem 2rem;margin-bottom:1.4rem;font-family:'Arial',sans-serif;font-size:.9rem;line-height:1.65}
+.gb h3{color:var(--gy);margin-bottom:.7rem;border-bottom:1px solid #fff2;padding-bottom:.5rem}
+.gb .hl{color:var(--gy);font-weight:700}
+.gb .hl2{color:var(--gt);font-weight:700}
+.gb table{width:100%;border-collapse:collapse;margin-top:.8rem}
+.gb table th{background:#fff2;color:var(--gy);padding:7px 10px;text-align:left;font-size:.85rem}
+.gb table td{padding:7px 10px;border-top:1px solid #fff1;font-size:.88rem}
+
+/* ── INPUTS ── */
+.bi{display:inline-block;min-width:140px;border:none;border-bottom:2.5px solid var(--accent2);background:transparent;font-family:'Georgia',serif;font-size:.95rem;padding:2px 6px 4px;outline:none;color:var(--dark);transition:border-color .25s,background .25s,color .25s;vertical-align:bottom}
+.bi:focus{border-bottom-color:var(--dark)}
+.bi.ok{border-bottom-color:var(--okb);background:var(--okbg);color:var(--ok);border-radius:4px 4px 0 0}
+.bi.no{border-bottom-color:var(--nob);background:var(--nobg);color:var(--no);border-radius:4px 4px 0 0}
+.fi{display:inline-block;font-size:.85rem;margin-left:3px;vertical-align:middle}
+
+/* ── EX ITEMS ── */
+.exi{padding:.8rem 0;border-bottom:1px solid var(--border);font-size:.96rem;line-height:1.95}
+.exi:last-of-type{border-bottom:none}
+.in{font-family:'Arial',sans-serif;font-weight:700;color:var(--accent2);margin-right:.4rem}
+
+/* ── SCORE BANNER ── */
+.sb{display:flex;align-items:center;gap:.8rem;background:var(--dark);color:white;border-radius:10px;padding:.85rem 1.4rem;margin-top:1.2rem;font-family:'Arial',sans-serif;font-size:.9rem;opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s;pointer-events:none}
+.sb.vis{opacity:1;transform:translateY(0);pointer-events:auto}
+.sn{font-size:1.3rem;font-weight:700;color:var(--gy)}
+.sn.perf{color:var(--gt)}
+
+/* ── BUTTONS ── */
+.bchk{font-family:'Arial',sans-serif;font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.04em;padding:.6rem 1.4rem;border-radius:8px;border:none;cursor:pointer;background:var(--accent2);color:white;margin-top:1.2rem;transition:background .18s}
+.bchk:hover{background:#2c5f7a}
+.atog{font-family:'Arial',sans-serif;font-size:.82rem;color:var(--accent2);cursor:pointer;text-decoration:underline;background:none;border:none;margin-top:.8rem;padding:0;display:block}
+.ans{display:none;background:#f0f8ff;border-radius:8px;padding:.9rem 1.2rem;margin-top:.7rem;font-family:'Arial',sans-serif;font-size:.88rem;line-height:1.8;color:#1a5276;border:1px solid #aed6f1}
+.ans.vis{display:block}
+.ans strong{color:var(--accent)}
+
+/* ── BOTTOM NAV ── */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:.9rem 2rem;box-shadow:0 -4px 16px rgba(0,0,0,.07);z-index:100}
+.btn{font-family:'Arial',sans-serif;font-weight:700;font-size:.88rem;letter-spacing:.03em;padding:.65rem 1.5rem;border-radius:8px;border:none;cursor:pointer;transition:all .18s;text-transform:uppercase}
+.bprev{background:white;color:var(--dark);border:2px solid var(--border)}
+.bprev:hover{border-color:var(--dark)}
+.bnext{background:var(--accent);color:white}
+.bnext:hover{background:#c1121f}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.sc{font-family:'Arial',sans-serif;font-size:.82rem;color:var(--muted)}
+
+/* ━━━━━━━━━━━━━━ MATCHING GAME ━━━━━━━━━━━━━━ */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.match-col{display:flex;flex-direction:column;gap:.55rem}
+.mi{background:white;border:2.5px solid var(--border);border-radius:10px;padding:.65rem 1rem;font-size:.88rem;cursor:pointer;transition:all .18s;line-height:1.4;user-select:none;position:relative;min-height:48px;display:flex;align-items:center}
+.mi:hover:not(.matched):not(.wrong){border-color:var(--accent2);background:#f0f8ff}
+.mi.selected{border-color:var(--accent2);background:var(--accent2);color:white;transform:scale(1.02)}
+.mi.matched{border-color:var(--okb);background:var(--okbg);color:var(--ok);cursor:default}
+.mi.matched::after{content:'✓';position:absolute;right:10px;font-weight:700}
+.mi.wrong{border-color:var(--nob);background:var(--nobg);animation:mshk .45s ease}
+@keyframes mshk{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.mi .ml{font-weight:700;font-family:'Arial',sans-serif;color:var(--accent);margin-right:5px;flex-shrink:0}
+.mi.selected .ml,.mi.wrong .ml{color:inherit}
+.mi.matched .ml{color:var(--ok)}
+.mc-row{display:flex;align-items:center;justify-content:space-between;margin-top:.8rem;font-family:'Arial',sans-serif;font-size:.9rem;flex-wrap:wrap;gap:.5rem}
+.mc-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--dark);color:white;border-radius:20px;padding:4px 14px;font-size:.85rem;font-weight:700}
+.mc-badge span{color:var(--gy);font-size:1.1rem}
+
+/* ━━━━━━━━━━━━━━ ERROR HUNT ━━━━━━━━━━━━━━ */
+.etext{background:white;border-radius:12px;padding:1.4rem 1.8rem;line-height:2.2;font-size:.97rem;box-shadow:var(--shadow);border:1px solid var(--border)}
+.ep{display:inline;border-bottom:2.5px solid var(--accent2);cursor:pointer;padding:1px 2px;border-radius:2px;transition:background .15s}
+.ep sup{font-family:'Arial',sans-serif;font-size:.62rem;font-weight:700;color:var(--accent2);margin-left:1px}
+.ep:hover:not(.fe):not(.ne){background:#eef6ff}
+.ep.fe{border-bottom-color:var(--no);background:var(--nobg);color:var(--no);text-decoration:line-through}
+.ep.ne{background:#fffbeb;border-bottom-color:#f59e0b;animation:fyl .7s ease}
+@keyframes fyl{0%,100%{background:#fffbeb}50%{background:#fde68a}}
+.ec-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;font-family:'Arial',sans-serif;flex-wrap:wrap;gap:.5rem}
+.hbtn{font-family:'Arial',sans-serif;font-size:.8rem;padding:4px 12px;border-radius:6px;border:1.5px solid var(--accent2);background:transparent;color:var(--accent2);cursor:pointer;transition:all .15s}
+.hbtn:hover{background:var(--accent2);color:white}
+.hbtn:disabled{opacity:.35;cursor:default}
+.corr-box{display:none;background:var(--okbg);border:1.5px solid var(--okb);border-radius:10px;padding:1rem 1.4rem;margin-top:1rem;font-family:'Arial',sans-serif;font-size:.88rem;color:var(--ok);line-height:1.8}
+.corr-box.vis{display:block}
+
+/* ━━━━━━━━━━━━━━ TOGGLE CHIPS (Ex 9) ━━━━━━━━━━━━━━ */
+.tc{display:inline-flex;border-radius:8px;overflow:hidden;border:2px solid var(--border);margin:0 5px;vertical-align:middle}
+.to{padding:3px 13px;font-family:'Arial',sans-serif;font-size:.83rem;cursor:pointer;border:none;background:white;color:var(--dark);transition:all .15s;border-right:1px solid var(--border)}
+.to:last-child{border-right:none}
+.to:hover{background:#eef6ff}
+.to.sel{background:var(--accent2);color:white}
+.to.ok{background:var(--okbg);color:var(--ok);font-weight:700}
+.to.no{background:var(--nobg);color:var(--no);font-weight:700}
+
+/* ━━━━━━━━━━━━━━ PP SHOWDOWN ━━━━━━━━━━━━━━ */
+.pp-pair{border-radius:12px;border:1px solid var(--border);padding:1.1rem 1.5rem;margin-bottom:.9rem;background:white;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.pp-lbl{font-family:'Arial',sans-serif;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.4rem}
+.pp-toggle{display:inline-flex;border:2px solid var(--border);border-radius:8px;overflow:hidden;margin:0 6px;vertical-align:middle}
+.ppt{padding:2px 12px;font-family:'Arial',sans-serif;font-size:.8rem;cursor:pointer;border:none;background:white;color:var(--dark);transition:all .15s;border-right:1px solid var(--border)}
+.ppt:last-child{border-right:none}
+.ppt:hover{background:#eef6ff}
+.ppt.sel{background:var(--accent2);color:white}
+.ppt.ok{background:var(--okbg);color:var(--ok)}
+.ppt.no{background:var(--nobg);color:var(--no)}
+
+/* ━━━━━━━━━━━━━━ WORD BANK ━━━━━━━━━━━━━━ */
+.wb{display:flex;flex-wrap:wrap;gap:.45rem;padding:.8rem 1rem;background:#f8f5f0;border-radius:8px;border:1px solid var(--border);margin-bottom:1rem}
+.wc{background:var(--dark);color:white;border-radius:16px;padding:4px 14px;font-family:'Arial',sans-serif;font-size:.82rem}
+
+/* ━━━━━━━━━━━━━━ DEBATE ROOM ━━━━━━━━━━━━━━ */
+.opinion-card{background:var(--dark);border-radius:14px;padding:1.5rem 2rem;margin-bottom:1.4rem;color:white;font-size:1.05rem;font-style:italic;line-height:1.6;border-left:6px solid var(--gy)}
+.opinion-card span{display:block;font-style:normal;font-size:.78rem;color:#aaa;margin-top:.5rem;font-family:'Arial',sans-serif}
+.resp-item{display:flex;align-items:center;gap:.7rem;padding:.75rem 0;border-bottom:1px solid var(--border);font-size:.95rem;line-height:1.9;flex-wrap:wrap}
+.resp-item:last-of-type{border-bottom:none}
+.rn{font-family:'Arial',sans-serif;font-weight:700;color:var(--accent2);min-width:1.2rem}
+.adbtn{padding:3px 13px;border-radius:20px;border:2px solid var(--border);background:white;font-family:'Arial',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s;margin-left:4px}
+.adbtn.ab{color:var(--ok);border-color:var(--ok)}
+.adbtn.db{color:var(--no);border-color:var(--no)}
+.adbtn.sela{background:var(--ok);color:white;border-color:var(--ok)}
+.adbtn.seld{background:var(--no);color:white;border-color:var(--no)}
+.adbtn.oka{background:var(--okbg);border-color:var(--okb);color:var(--ok)}
+.adbtn.oka.sela,.adbtn.okd.seld{outline:3px solid #fde047}
+.adbtn.okd{background:var(--nobg);border-color:var(--nob);color:var(--no)}
+.adbtn.wrong-ad{border-color:#f59e0b;background:#fffbeb;color:#92400e}
+
+/* ━━━━━━━━━━━━━━ DEFINITION DETECTIVE ━━━━━━━━━━━━━━ */
+.def-item{display:flex;align-items:center;gap:1rem;padding:.85rem 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.def-item:last-of-type{border-bottom:none}
+.def-n{font-family:'Arial',sans-serif;font-weight:700;color:var(--accent);min-width:1.2rem}
+.def-txt{flex:1;font-size:.93rem;min-width:180px;line-height:1.5}
+.def-ins{display:flex;gap:.4rem;align-items:center}
+.def-ins .bi{min-width:90px}
+
+/* ━━━━━━━━━━━━━━ WARMER GRID ━━━━━━━━━━━━━━ */
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.wtop{background:white;border-radius:10px;padding:1rem 1.2rem;box-shadow:var(--shadow);font-size:.9rem;line-height:1.5;border-top:4px solid var(--accent)}
+.wtop:nth-child(2){border-top-color:var(--accent2)}
+.wtop:nth-child(3){border-top-color:var(--gy)}
+.wtop:nth-child(4){border-top-color:var(--gt)}
+.wtop h3{font-size:.85rem;margin-bottom:.5rem;font-family:'Arial',sans-serif;color:var(--dark)}
+.wtop ul{padding-left:1.1rem}
+.wtop li{margin-bottom:.3rem;color:var(--muted)}
+.dis-list{list-style:none;padding:0}
+.dis-list li{padding:.8rem 1rem .8rem 1.2rem;border-radius:8px;background:white;margin-bottom:.6rem;font-size:.96rem;line-height:1.5;box-shadow:0 2px 8px rgba(0,0,0,.06);border-left:4px solid var(--accent2)}
+
+/* ━━━━━━━━━━━━━━ REFLECT ━━━━━━━━━━━━━━ */
+.ref-item{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--border);font-size:.94rem;flex-wrap:wrap}
+.ref-item:last-of-type{border-bottom:none}
+.star-row{display:flex;gap:3px}
+.star{font-size:1.4rem;background:none;border:none;cursor:pointer;opacity:.25;transition:opacity .15s,transform .1s;line-height:1}
+.star:hover,.star.on{opacity:1}
+.star:hover{transform:scale(1.2)}
+.final-score{background:var(--gb);color:white;border-radius:14px;padding:1.8rem 2rem;text-align:center;margin-top:1.5rem}
+.final-score .big{font-size:3rem;font-weight:700;color:var(--gy);font-family:'Arial',sans-serif}
+.final-score p{color:#ccc;margin:0}
+
+@media(max-width:600px){
+  .match-grid,.wgrid{grid-template-columns:1fr}
+  h1{font-size:1.5rem}
+  .pw{padding:1.5rem 1rem 6rem}
+  .bi{min-width:90px}
+}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="t-title">📘 Units 1 &amp; 2 — Revision</div>
+  <div class="progress-row" id="pDots"></div>
+  <div class="score-display" id="navScore">0 pts</div>
+</nav>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 1 — WARMER
+══════════════════════════════════════════ -->
+<div class="page active" id="page-1">
+<div class="pw">
+  <div class="stag">Warmer</div>
+  <h1>What Do You Remember?</h1>
+  <p style="color:var(--muted);font-family:'Arial',sans-serif;font-size:.92rem;margin-bottom:1.6rem">Quick — what can you recall from Units 1 &amp; 2?</p>
+
+  <div class="wgrid">
+    <div class="wtop">
+      <h3>🗣 Emotions &amp; Personality</h3>
+      <ul>
+        <li>Adjective forms (-ed / -ing)</li>
+        <li>Personality adjectives</li>
+        <li>Idiomatic expressions</li>
+      </ul>
+    </div>
+    <div class="wtop">
+      <h3>⏰ Past Tenses</h3>
+      <ul>
+        <li><em>used to</em> vs <em>would</em></li>
+        <li>Past simple / continuous</li>
+        <li>Common errors to avoid</li>
+      </ul>
+    </div>
+    <div class="wtop">
+      <h3>⚡ GET Phrases</h3>
+      <ul>
+        <li>get on sb's nerves</li>
+        <li>get rid of</li>
+        <li>get carried away…</li>
+      </ul>
+    </div>
+    <div class="wtop">
+      <h3>🏛 Present Perfect</h3>
+      <ul>
+        <li>Simple vs Continuous</li>
+        <li>Active &amp; Passive forms</li>
+        <li>Vocabulary: laws &amp; complaints</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1.4rem">
+    <h3>Warm-up — discuss</h3>
+    <ul class="dis-list">
+      <li>Can you give one example of a past habit using <em>used to</em> and one using <em>would</em>? What's the difference?</li>
+      <li>Think of three things that <strong>get on your nerves</strong>. Use the phrase in a sentence.</li>
+      <li>"I've been working here for three years." vs "I've worked here for three years." — Do both work? Is there a difference in meaning?</li>
+      <li>Describe a person you know using at least two personality adjectives from Units 1–2.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 2 — EX 3 — MATCHING GAME
+══════════════════════════════════════════ -->
+<div class="page" id="page-2">
+<div class="pw">
+  <div class="stag">Exercise 3</div><span class="gtag">🎮 Matching Game</span>
+  <h1 style="margin-top:.5rem">Sentence Connect</h1>
+
+  <div class="inst">Click a sentence beginning on the left, then click the correct ending on the right. All 8 pairs need to match!</div>
+
+  <div class="ec-row">
+    <div class="mc-badge">Matched: <span id="mc">0</span> / 8</div>
+    <div style="font-family:'Arial',sans-serif;font-size:.83rem;color:var(--muted)">Wrong attempt? Just try again — no penalty!</div>
+  </div>
+
+  <div class="match-grid">
+    <!-- LEFT: sentence beginnings -->
+    <div class="match-col" id="mleft">
+      <div class="mi" id="L1" onclick="matchClick('L','1',this)"><span class="ml">1</span>When the test results came back, I felt totally</div>
+      <div class="mi" id="L2" onclick="matchClick('L','2',this)"><span class="ml">2</span>My first experience of travelling abroad had a big</div>
+      <div class="mi" id="L3" onclick="matchClick('L','3',this)"><span class="ml">3</span>When I got the job, I simply couldn't believe</div>
+      <div class="mi" id="L4" onclick="matchClick('L','4',this)"><span class="ml">4</span>When I saw the effects of the flood, I was literally in</div>
+      <div class="mi" id="L5" onclick="matchClick('L','5',this)"><span class="ml">5</span>It was my chemistry teacher who inspired</div>
+      <div class="mi" id="L6" onclick="matchClick('L','6',this)"><span class="ml">6</span>Losing all the money I'd invested was completely</div>
+      <div class="mi" id="L7" onclick="matchClick('L','7',this)"><span class="ml">7</span>For days after the accident, I just sat and bawled</div>
+      <div class="mi" id="L8" onclick="matchClick('L','8',this)"><span class="ml">8</span>Going to Nepal a few years ago completely blew</div>
+    </div>
+    <!-- RIGHT: endings (shuffled) -->
+    <div class="match-col" id="mright">
+      <div class="mi" id="Rb" onclick="matchClick('R','b',this)"><span class="ml">—</span>my mind.</div>
+      <div class="mi" id="Rg" onclick="matchClick('R','g',this)"><span class="ml">—</span>shock.</div>
+      <div class="mi" id="Ra" onclick="matchClick('R','a',this)"><span class="ml">—</span>my eyes out.</div>
+      <div class="mi" id="Re" onclick="matchClick('R','e',this)"><span class="ml">—</span>numb.</div>
+      <div class="mi" id="Rh" onclick="matchClick('R','h',this)"><span class="ml">—</span>my luck.</div>
+      <div class="mi" id="Rf" onclick="matchClick('R','f',this)"><span class="ml">—</span>me.</div>
+      <div class="mi" id="Rd" onclick="matchClick('R','d',this)"><span class="ml">—</span>devastating.</div>
+      <div class="mi" id="Rc" onclick="matchClick('R','c',this)"><span class="ml">—</span>impact on me.</div>
+    </div>
+  </div>
+
+  <div class="sb" id="matchSB"><span class="sn perf" id="matchSN">8/8</span><span>🎉 All matched! Brilliant work!</span></div>
+
+  <div class="card" style="margin-top:1.2rem;background:#f9f9ff">
+    <h3>Now try — discuss</h3>
+    <ul class="dis-list">
+      <li>Choose three of the completed sentences. Have you ever experienced anything like this? Tell your partner.</li>
+      <li>Which of these eight situations would have the biggest emotional impact on you?</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 3 — EX 4 — BUG HUNT
+══════════════════════════════════════════ -->
+<div class="page" id="page-3">
+<div class="pw">
+  <div class="stag">Exercise 4</div><span class="gtag">🐛 Bug Hunt</span>
+  <h1 style="margin-top:.5rem">Spot the Bug</h1>
+
+  <div class="inst">Five of the ten underlined phrases contain a grammar mistake (<em>used to / would / past simple / past continuous</em>). Click on the ones you think are <strong>wrong</strong>. The number above the phrase tells you which one it is.</div>
+
+  <div class="ec-row">
+    <div class="mc-badge">Found: <span id="foundCount">0</span> / 5</div>
+    <button class="hbtn" id="hintBtn" onclick="useHint()">💡 Hint (1 use)</button>
+  </div>
+
+  <div class="etext">
+    <p>My parents didn't have much money when we were kids, so we <span class="ep" id="ph1" onclick="clickEP(1,this)">didn't use to go<sup>1</sup></span> abroad much — we <span class="ep" id="ph2" onclick="clickEP(2,this)">used to go<sup>2</sup></span> on day trips around the local area. Then, when I was around 14, my uncle <span class="ep" id="ph3" onclick="clickEP(3,this)">was getting<sup>3</sup></span> a job in Paris and things <span class="ep" id="ph4" onclick="clickEP(4,this)">would change<sup>4</sup></span>. He <span class="ep" id="ph5" onclick="clickEP(5,this)">didn't have<sup>5</sup></span> a big apartment, so <span class="ep" id="ph6" onclick="clickEP(6,this)">we'd all sleep<sup>6</sup></span> in the same room, but it was fun. Once we went to a really nice restaurant. While we <span class="ep" id="ph7" onclick="clickEP(7,this)">waited<sup>7</sup></span> for our food, there was suddenly huge excitement. I <span class="ep" id="ph8" onclick="clickEP(8,this)">looked<sup>8</sup></span> round and saw that Jennifer Lawrence was there. I couldn't believe my eyes. I <span class="ep" id="ph9" onclick="clickEP(9,this)">kept looking<sup>9</sup></span> at her and I was too nervous to eat my food. Then I went to the toilet, which <span class="ep" id="ph10" onclick="clickEP(10,this)">was meaning<sup>10</sup></span> I had to walk past her table. I told her how much I liked her.</p>
+  </div>
+
+  <div class="corr-box" id="corrBox">
+    <strong>✓ All five found! Here are the corrections:</strong><br>
+    <strong>3.</strong> <del>was getting</del> → <strong>got</strong> (one-time event, not a habit)<br>
+    <strong>4.</strong> <del>would change</del> → <strong>changed</strong> (one-time change, not repeated)<br>
+    <strong>7.</strong> <del>waited</del> → <strong>were waiting</strong> (ongoing background action while something happened)<br>
+    <strong>9.</strong> <del>kept looking</del> → <strong>looked</strong> (a single specific action in the sequence)<br>
+    <strong>10.</strong> <del>was meaning</del> → <strong>meant</strong> (stative verb — never use in continuous)
+  </div>
+
+  <div class="card" style="margin-top:1.2rem;background:#f9f9ff">
+    <h3>Discuss</h3>
+    <ul class="dis-list">
+      <li>Have you ever had an unexpected encounter with a celebrity or someone famous? What happened?</li>
+      <li>Rewrite sentence 3 aloud using the correct form. Can you also correct sentence 10?</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 4 — EX 5 + 12 — WORD FACTORY
+══════════════════════════════════════════ -->
+<div class="page" id="page-4">
+<div class="pw">
+  <div class="stag">Exercises 5 &amp; 12</div>
+  <h1>Word Factory</h1>
+
+  <div class="gb">
+    <h3>📐 Adjective Forms</h3>
+    <table>
+      <tr><th>Type</th><th>Meaning</th><th>Example</th></tr>
+      <tr><td><span class="hl">-ed adjectives</span></td><td>how a person feels</td><td><em>"I'm <span class="hl2">exhausted</span>."</em></td></tr>
+      <tr><td><span class="hl">-ing adjectives</span></td><td>the quality of the thing/person</td><td><em>"The film was <span class="hl2">entertaining</span>."</em></td></tr>
+      <tr><td><span class="hl">Other forms</span></td><td>adjectives from nouns / verbs</td><td><em>adventure → <span class="hl2">adventurous</span></em></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Part A — Personality adjectives <span style="font-weight:400;font-size:.85rem;color:var(--muted)">(from the word in brackets)</span></h3>
+    <div class="exi"><span class="in">1</span>I grow more cautious as I get older, but I used to be quite <input class="bi" id="w5-1" data-answer="adventurous" placeholder="…(adventure)"><span class="fi" id="fi-w5-1"></span>.</div>
+    <div class="exi"><span class="in">2</span>I wouldn't say I'm really an extrovert, but I guess I'm fairly <input class="bi" id="w5-2" data-answer="outgoing" placeholder="…(outgo)"><span class="fi" id="fi-w5-2"></span>.</div>
+    <div class="exi"><span class="in">3</span>Jenny's very <input class="bi" id="w5-3" data-answer="reserved" placeholder="…(reserve)"><span class="fi" id="fi-w5-3"></span>. She hardly said a word all evening.</div>
+    <div class="exi"><span class="in">4</span>You can trust Jake to do the job well. He's very <input class="bi" id="w5-4" data-answer="conscientious" placeholder="…(conscience)"><span class="fi" id="fi-w5-4"></span>.</div>
+    <div class="exi"><span class="in">5</span>It was <input class="bi" id="w5-5" data-answer="careless" placeholder="…(care)"><span class="fi" id="fi-w5-5"></span> of you to leave the back door unlocked.</div>
+    <div class="exi"><span class="in">6</span>John's a real worrier. He gets <input class="bi" id="w5-6" data-answer="nervous" placeholder="…(nerve)"><span class="fi" id="fi-w5-6"></span> about every little thing.</div>
+    <div class="exi"><span class="in">7</span>Julie will be good company on the trip. She seems very <input class="bi" id="w5-7" data-answer="agreeable" placeholder="…(agree)"><span class="fi" id="fi-w5-7"></span>.</div>
+    <div class="exi"><span class="in">8</span>I don't know why Greg wants the money. I'm a bit <input class="bi" id="w5-8" data-answer="suspicious" placeholder="…(suspect)"><span class="fi" id="fi-w5-8"></span>.</div>
+    <button class="bchk" onclick="checkGroup('wf-a',['w5-1','w5-2','w5-3','w5-4','w5-5','w5-6','w5-7','w5-8'],8)">Check Part A</button>
+    <div class="sb" id="sb-wf-a"><span class="sn" id="sn-wf-a"></span><span id="sm-wf-a"></span></div>
+  </div>
+
+  <div class="card">
+    <h3>Part B — Emotion adjectives <span style="font-weight:400;font-size:.85rem;color:var(--muted)">(words: infuriate worry entertain convince overwhelm exhaust)</span></h3>
+    <div class="exi"><span class="in">1</span>The journey home was very tiring. The children are totally <input class="bi" id="w12-1" data-answer="exhausted" placeholder="…"><span class="fi" id="fi-w12-1"></span>.</div>
+    <div class="exi"><span class="in">2</span>We bought it mainly because the sales team were so <input class="bi" id="w12-2" data-answer="convincing" placeholder="…"><span class="fi" id="fi-w12-2"></span>.</div>
+    <div class="exi"><span class="in">3</span>I've tried to meet Jenny three times, but she's always too busy. How <input class="bi" id="w12-3" data-answer="infuriating" placeholder="…"><span class="fi" id="fi-w12-3"></span>!</div>
+    <div class="exi"><span class="in">4</span>I'm feeling a bit <input class="bi" id="w12-4" data-answer="overwhelmed" placeholder="…"><span class="fi" id="fi-w12-4"></span>. I've got so much work to do.</div>
+    <div class="exi"><span class="in">5</span>It's not the best drama ever, but it's quite <input class="bi" id="w12-5" data-answer="entertaining" placeholder="…"><span class="fi" id="fi-w12-5"></span>.</div>
+    <div class="exi"><span class="in">6</span>Jo was <input class="bi" id="w12-6" data-answer="worried" placeholder="…"><span class="fi" id="fi-w12-6"></span> about her exam results, but she got all A grades!</div>
+    <button class="bchk" onclick="checkGroup('wf-b',['w12-1','w12-2','w12-3','w12-4','w12-5','w12-6'],6)">Check Part B</button>
+    <div class="sb" id="sb-wf-b"><span class="sn" id="sn-wf-b"></span><span id="sm-wf-b"></span></div>
+  </div>
+
+  <button class="atog" onclick="toggleAns('ans-wf')">▶ Show all answers</button>
+  <div class="ans" id="ans-wf">
+    <strong>Part A:</strong> 1. adventurous &nbsp;2. outgoing &nbsp;3. reserved &nbsp;4. conscientious &nbsp;5. careless &nbsp;6. nervous &nbsp;7. agreeable &nbsp;8. suspicious<br>
+    <strong>Part B:</strong> 1. exhausted &nbsp;2. convincing &nbsp;3. infuriating &nbsp;4. overwhelmed &nbsp;5. entertaining &nbsp;6. worried
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 5 — EX 6 — VERB VAULT
+══════════════════════════════════════════ -->
+<div class="page" id="page-5">
+<div class="pw">
+  <div class="stag">Exercise 6</div>
+  <h1>Verb Vault</h1>
+
+  <div class="inst">Complete the questions using the correct form of the verbs in the box.</div>
+  <div class="wb">
+    <span class="wc">break</span><span class="wc">speak</span><span class="wc">return</span><span class="wc">make</span>
+    <span class="wc">take</span><span class="wc">meet</span><span class="wc">remain</span><span class="wc">keep</span><span class="wc">lose</span>
+  </div>
+
+  <div class="card">
+    <div class="exi"><span class="in">1</span>Do you often <input class="bi" id="v6-1a" data-answer="lose" placeholder="…" style="min-width:80px"> your temper or do you tend to <input class="bi" id="v6-1b" data-answer="remain|keep" placeholder="…" style="min-width:80px"> calm?<span class="fi" id="fi-v6-1a"></span><span class="fi" id="fi-v6-1b"></span></div>
+    <div class="exi"><span class="in">2</span>Can you remember the last time you <input class="bi" id="v6-2" data-answer="broke" placeholder="…"> a rule?<span class="fi" id="fi-v6-2"></span></div>
+    <div class="exi"><span class="in">3</span>In what situations would you not <input class="bi" id="v6-3" data-answer="speak" placeholder="…"> your mind?<span class="fi" id="fi-v6-3"></span></div>
+    <div class="exi"><span class="in">4</span>When did you last fail to <input class="bi" id="v6-4" data-answer="keep" placeholder="…"> a promise you'd made?<span class="fi" id="fi-v6-4"></span></div>
+    <div class="exi"><span class="in">5</span>Is it important to <input class="bi" id="v6-5" data-answer="return" placeholder="…"> favours?<span class="fi" id="fi-v6-5"></span></div>
+    <div class="exi"><span class="in">6</span>Are you good at <input class="bi" id="v6-6" data-answer="meeting" placeholder="…"> deadlines when you work?<span class="fi" id="fi-v6-6"></span></div>
+    <div class="exi"><span class="in">7</span>Do you <input class="bi" id="v6-7" data-answer="take" placeholder="…"> an interest in world politics?<span class="fi" id="fi-v6-7"></span></div>
+    <div class="exi"><span class="in">8</span>Do most things in life <input class="bi" id="v6-8" data-answer="make" placeholder="…"> sense to you?<span class="fi" id="fi-v6-8"></span></div>
+
+    <button class="bchk" onclick="checkGroup('vv',['v6-1a','v6-1b','v6-2','v6-3','v6-4','v6-5','v6-6','v6-7','v6-8'],9)">Check answers</button>
+    <div class="sb" id="sb-vv"><span class="sn" id="sn-vv"></span><span id="sm-vv"></span></div>
+
+    <button class="atog" onclick="toggleAns('ans-vv')">▶ Show answers</button>
+    <div class="ans" id="ans-vv"><strong>1.</strong> lose / remain (or keep) &nbsp;<strong>2.</strong> broke &nbsp;<strong>3.</strong> speak &nbsp;<strong>4.</strong> keep &nbsp;<strong>5.</strong> return &nbsp;<strong>6.</strong> meeting &nbsp;<strong>7.</strong> take &nbsp;<strong>8.</strong> make</div>
+  </div>
+
+  <div class="card" style="background:#f9f9ff">
+    <h3>Speaking — ask &amp; answer</h3>
+    <ul class="dis-list">
+      <li>Take turns asking and answering the questions above with your partner. Give reasons!</li>
+      <li>Which question did you find most interesting? Why?</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 6 — EX 7 — GET SMART
+══════════════════════════════════════════ -->
+<div class="page" id="page-6">
+<div class="pw">
+  <div class="stag">Exercise 7</div>
+  <h1>Get Smart</h1>
+
+  <div class="gb">
+    <h3>⚡ GET phrases — quick reminder</h3>
+    <p style="color:#ccc;margin-bottom:.5rem;font-size:.88rem">Fill in the missing word to complete each GET phrase. The phrase is shown in <span class="hl">bold</span>.</p>
+    <p style="color:#ddd;font-size:.87rem;line-height:1.7"><span class="hl2">get the impression</span> · <span class="hl2">get on sb's nerves</span> · <span class="hl2">get rid of</span> · <span class="hl2">get sb's attention</span> · <span class="hl2">get in touch</span> · <span class="hl2">get to the point</span> · <span class="hl2">get paid</span> · <span class="hl2">get carried away</span> · <span class="hl2">get together</span></p>
+  </div>
+
+  <div class="card">
+    <div class="exi"><span class="in">1</span>Do you ever <strong>get the</strong> <input class="bi" id="g7-1" data-answer="impression" placeholder="…" style="min-width:110px"> <strong>that</strong> something has happened before?<span class="fi" id="fi-g7-1"></span></div>
+    <div class="exi"><span class="in">2</span>Does it <strong>get on your</strong> <input class="bi" id="g7-2" data-answer="nerves" placeholder="…" style="min-width:90px"> when people talk loudly on their mobiles?<span class="fi" id="fi-g7-2"></span></div>
+    <div class="exi"><span class="in">3</span>Is it difficult to <strong>get</strong> <input class="bi" id="g7-3" data-answer="rid" placeholder="…" style="min-width:70px"> <strong>of</strong> old computer equipment where you live?<span class="fi" id="fi-g7-3"></span></div>
+    <div class="exi"><span class="in">4</span>Should you ever snap your fingers to <strong>get</strong> a waiter's <input class="bi" id="g7-4" data-answer="attention" placeholder="…" style="min-width:110px">?<span class="fi" id="fi-g7-4"></span></div>
+    <div class="exi"><span class="in">5</span>Do you ever use social media to <strong>get in</strong> <input class="bi" id="g7-5" data-answer="touch" placeholder="…" style="min-width:80px"> <strong>with</strong> old friends?<span class="fi" id="fi-g7-5"></span></div>
+    <div class="exi"><span class="in">6</span>Have you got a friend who talks and talks but never <strong>gets to the</strong> <input class="bi" id="g7-6" data-answer="point" placeholder="…" style="min-width:80px">?<span class="fi" id="fi-g7-6"></span></div>
+    <div class="exi"><span class="in">7</span>Do most people you know <strong>get</strong> <input class="bi" id="g7-7" data-answer="paid" placeholder="…" style="min-width:70px"> at the end of the month?<span class="fi" id="fi-g7-7"></span></div>
+    <div class="exi"><span class="in">8</span>Are you a football fan? Do you <strong>get</strong> <input class="bi" id="g7-8" data-answer="carried" placeholder="…" style="min-width:90px"> <strong>away</strong> when your team scores?<span class="fi" id="fi-g7-8"></span></div>
+    <div class="exi"><span class="in">9</span>Does your family usually <strong>get</strong> <input class="bi" id="g7-9" data-answer="together" placeholder="…" style="min-width:100px"> to celebrate birthdays?<span class="fi" id="fi-g7-9"></span></div>
+
+    <button class="bchk" onclick="checkGroup('gs',['g7-1','g7-2','g7-3','g7-4','g7-5','g7-6','g7-7','g7-8','g7-9'],9)">Check answers</button>
+    <div class="sb" id="sb-gs"><span class="sn" id="sn-gs"></span><span id="sm-gs"></span></div>
+
+    <button class="atog" onclick="toggleAns('ans-gs')">▶ Show answers</button>
+    <div class="ans" id="ans-gs"><strong>1.</strong> impression &nbsp;<strong>2.</strong> nerves &nbsp;<strong>3.</strong> rid &nbsp;<strong>4.</strong> attention &nbsp;<strong>5.</strong> touch &nbsp;<strong>6.</strong> point &nbsp;<strong>7.</strong> paid &nbsp;<strong>8.</strong> carried &nbsp;<strong>9.</strong> together</div>
+  </div>
+
+  <div class="card" style="background:#f9f9ff">
+    <h3>Ask your partner — choose 5 questions</h3>
+    <ul class="dis-list">
+      <li>Answer five of the questions above with your partner. Try to use the full GET phrase in your answer.</li>
+      <li>Can you add one more question of your own using a GET phrase?</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 7 — EX 8 — PP SHOWDOWN
+══════════════════════════════════════════ -->
+<div class="page" id="page-7">
+<div class="pw">
+  <div class="stag">Exercise 8</div><span class="gtag">⚔ Showdown!</span>
+  <h1 style="margin-top:.5rem">Simple vs Continuous</h1>
+
+  <div class="gb">
+    <h3>📐 Present Perfect — when to use which</h3>
+    <table>
+      <tr><th>Simple</th><th>Continuous</th></tr>
+      <tr><td><span class="hl2">Completed actions</span> with a present result<br><em>"I've cut my finger."</em></td><td><span class="hl2">Ongoing / recent activity</span> explaining now<br><em>"I've been cutting onions."</em></td></tr>
+      <tr><td>How many <span class="hl2">times</span> sth has happened<br><em>"I've seen it three times."</em></td><td>Action over a period — <span class="hl2">not yet finished</span><br><em>"We've been working for six months."</em></td></tr>
+    </table>
+  </div>
+
+  <div class="inst">For each sentence: first click <strong>Simple</strong> or <strong>Continuous</strong>, then type the correct verb form.</div>
+
+  <!-- Pair 1 -->
+  <div class="pp-pair">
+    <div class="pp-lbl">PAIR 1</div>
+    <div style="font-size:.96rem;line-height:2">
+      <span class="in">a</span>Nothing's the matter. I
+      <div class="pp-toggle"><button class="ppt" onclick="ppSel('pp1a','S',this)">Simple</button><button class="ppt" onclick="ppSel('pp1a','C',this)">Continuous</button></div>
+      <input class="bi" id="pp1a-in" data-answer="been cutting" data-tense="C" placeholder="(cut)"><span class="fi" id="fi-pp1a"></span> onions.<br>
+      <span class="in">b</span>Ouch! I
+      <div class="pp-toggle"><button class="ppt" onclick="ppSel('pp1b','S',this)">Simple</button><button class="ppt" onclick="ppSel('pp1b','C',this)">Continuous</button></div>
+      <input class="bi" id="pp1b-in" data-answer="cut|have cut" data-tense="S" placeholder="(cut)"><span class="fi" id="fi-pp1b"></span> my finger.
+    </div>
+  </div>
+
+  <!-- Pair 2 -->
+  <div class="pp-pair">
+    <div class="pp-lbl">PAIR 2</div>
+    <div style="font-size:.96rem;line-height:2">
+      <span class="in">a</span>We
+      <div class="pp-toggle"><button class="ppt" onclick="ppSel('pp2a','S',this)">Simple</button><button class="ppt" onclick="ppSel('pp2a','C',this)">Continuous</button></div>
+      <input class="bi" id="pp2a-in" data-answer="been playing" data-tense="C" placeholder="(play)"><span class="fi" id="fi-pp2a"></span> football for two hours. I need a rest.<br>
+      <span class="in">b</span>They
+      <div class="pp-toggle"><button class="ppt" onclick="ppSel('pp2b','S',this)">Simple</button><button class="ppt" onclick="ppSel('pp2b','C',this)">Continuous</button></div>
+      <input class="bi" id="pp2b-in" data-answer="played|have played" data-tense="S" placeholder="(play)"><span class="fi" id="fi-pp2b"></span> two matches so far.
+    </div>
+  </div>
+
+  <!-- Pair 3 -->
+  <div class="pp-pair">
+    <div class="pp-lbl">PAIR 3</div>
+    <div style="font-size:.96rem;line-height:2">
+      <span class="in">a</span>You're covered in blue powder. What on earth have you
+      <div class="pp-toggle"><button class="ppt" onclick="ppSel('pp3a','S',this)">Simple</button><button class="ppt" onclick="ppSel('pp3a','C',this)">Continuous</button></div>
+      <input class="bi" id="pp3a-in" data-answer="been doing" data-tense="C" placeholder="(do)"><span class="fi" id="fi-pp3a"></span>?<br>
+      <span class="in">b</span>There's a dent in the car. What on earth have you
+      <div class="pp-toggle"><button class="ppt" onclick="ppSel('pp3b','S',this)">Simple</button><button class="ppt" onclick="ppSel('pp3b','C',this)">Continuous</button></div>
+      <input class="bi" id="pp3b-in" data-answer="done" data-tense="S" placeholder="(do)"><span class="fi" id="fi-pp3b"></span>?
+    </div>
+  </div>
+
+  <!-- Pair 4 -->
+  <div class="pp-pair">
+    <div class="pp-lbl">PAIR 4</div>
+    <div style="font-size:.96rem;line-height:2">
+      <span class="in">a</span>Yes, I know Lisa. I
+      <div class="pp-toggle"><button class="ppt" onclick="ppSel('pp4a','S',this)">Simple</button><button class="ppt" onclick="ppSel('pp4a','C',this)">Continuous</button></div>
+      <input class="bi" id="pp4a-in" data-answer="seen|have seen" data-tense="S" placeholder="(see)"><span class="fi" id="fi-pp4a"></span> her before.<br>
+      <span class="in">b</span>We
+      <div class="pp-toggle"><button class="ppt" onclick="ppSel('pp4b','S',this)">Simple</button><button class="ppt" onclick="ppSel('pp4b','C',this)">Continuous</button></div>
+      <input class="bi" id="pp4b-in" data-answer="been working" data-tense="C" placeholder="(work)"><span class="fi" id="fi-pp4b"></span> on this project for six months.
+    </div>
+  </div>
+
+  <!-- Pair 5 -->
+  <div class="pp-pair">
+    <div class="pp-lbl">PAIR 5</div>
+    <div style="font-size:.96rem;line-height:2">
+      <span class="in">a</span>Oh no, not <em>Avatar</em> again. I
+      <div class="pp-toggle"><button class="ppt" onclick="ppSel('pp5a','S',this)">Simple</button><button class="ppt" onclick="ppSel('pp5a','C',this)">Continuous</button></div>
+      <input class="bi" id="pp5a-in" data-answer="seen|have seen" data-tense="S" placeholder="(see)"><span class="fi" id="fi-pp5a"></span> it three times already.<br>
+      <span class="in">b</span>Apparently, Phil
+      <div class="pp-toggle"><button class="ppt" onclick="ppSel('pp5b','S',this)">Simple</button><button class="ppt" onclick="ppSel('pp5b','C',this)">Continuous</button></div>
+      <input class="bi" id="pp5b-in" data-answer="been seeing" data-tense="C" placeholder="(see)"><span class="fi" id="fi-pp5b"></span> that woman who works at Mamma Mia's.
+    </div>
+  </div>
+
+  <button class="bchk" onclick="checkPP()">Check all answers</button>
+  <div class="sb" id="sb-pp"><span class="sn" id="sn-pp"></span><span id="sm-pp"></span></div>
+
+  <button class="atog" onclick="toggleAns('ans-pp')">▶ Show answers</button>
+  <div class="ans" id="ans-pp">
+    <strong>1a.</strong> Continuous — been cutting &nbsp;<strong>1b.</strong> Simple — cut<br>
+    <strong>2a.</strong> Continuous — been playing &nbsp;<strong>2b.</strong> Simple — played<br>
+    <strong>3a.</strong> Continuous — been doing &nbsp;<strong>3b.</strong> Simple — done<br>
+    <strong>4a.</strong> Simple — seen &nbsp;<strong>4b.</strong> Continuous — been working<br>
+    <strong>5a.</strong> Simple — seen &nbsp;<strong>5b.</strong> Continuous — been seeing
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 8 — EX 9 — PICK YOUR WORD
+══════════════════════════════════════════ -->
+<div class="page" id="page-8">
+<div class="pw">
+  <div class="stag">Exercise 9</div><span class="gtag">👆 Click to Choose</span>
+  <h1 style="margin-top:.5rem">Pick Your Word</h1>
+
+  <div class="inst">Each sentence needs one of the two words shown. Click the correct option. There's a grammar clue in each sentence!</div>
+
+  <div class="card" id="pw-card">
+    <div class="exi">
+      <span class="in">1</span>Are the authorities
+      <span class="tc"><button class="to" onclick="tcSel('tc1','cracking',this)" data-ans="cracking">cracking</button><button class="to" onclick="tcSel('tc1','banning',this)" data-ans="banning">banning</button></span>
+      down on knife crime?<span class="fi" id="fi-tc1"></span>
+    </div>
+    <div class="exi">
+      <span class="in">2</span>Are young people
+      <span class="tc"><button class="to" onclick="tcSel('tc2','offered',this)" data-ans="offered">offered</button><button class="to" onclick="tcSel('tc2','warned',this)" data-ans="warned">warned</button></span>
+      about the dangers of meeting strangers online?<span class="fi" id="fi-tc2"></span>
+    </div>
+    <div class="exi">
+      <span class="in">3</span>Are the authorities
+      <span class="tc"><button class="to" onclick="tcSel('tc3','tackling',this)" data-ans="tackling">tackling</button><button class="to" onclick="tcSel('tc3','enforcing',this)" data-ans="enforcing">enforcing</button></span>
+      the growing problem of graffiti?<span class="fi" id="fi-tc3"></span>
+    </div>
+    <div class="exi">
+      <span class="in">4</span>Has smoking been
+      <span class="tc"><button class="to" onclick="tcSel('tc4','banned',this)" data-ans="banned">banned</button><button class="to" onclick="tcSel('tc4','warned',this)" data-ans="warned">warned</button></span>
+      in all public places?<span class="fi" id="fi-tc4"></span>
+    </div>
+    <div class="exi">
+      <span class="in">5</span>Do social media sites really
+      <span class="tc"><button class="to" onclick="tcSel('tc5','increase',this)" data-ans="increase">increase</button><button class="to" onclick="tcSel('tc5','enforce',this)" data-ans="enforce">enforce</button></span>
+      laws on online bullying?<span class="fi" id="fi-tc5"></span>
+    </div>
+    <div class="exi">
+      <span class="in">6</span>All societies need more care for old people, but is funding being
+      <span class="tc"><button class="to" onclick="tcSel('tc6','taken',this)" data-ans="taken">taken</button><button class="to" onclick="tcSel('tc6','increased',this)" data-ans="increased">increased</button></span>
+      ?<span class="fi" id="fi-tc6"></span>
+    </div>
+
+    <button class="bchk" onclick="checkTC()">Check answers</button>
+    <div class="sb" id="sb-tc"><span class="sn" id="sn-tc"></span><span id="sm-tc"></span></div>
+  </div>
+
+  <div class="card" style="background:#f9f9ff">
+    <h3>Discuss</h3>
+    <ul class="dis-list">
+      <li>Do you agree with the policies described in the sentences? Which ones?</li>
+      <li>Write two more sentences of your own using vocabulary from this exercise.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 9 — EX 10 — ACTIVE OR PASSIVE?
+══════════════════════════════════════════ -->
+<div class="page" id="page-9">
+<div class="pw">
+  <div class="stag">Exercise 10</div>
+  <h1>Active or Passive?</h1>
+
+  <div class="gb">
+    <h3>📐 Quick check</h3>
+    <p style="color:#ccc;font-size:.88rem;line-height:1.65">Use <span class="hl">passive</span> when the action is more important than the agent, or the agent is unknown/obvious.<br>
+    Use <span class="hl2">active</span> when you know who is doing the action and it matters.<br>
+    Remember: passive = <em>be</em> + past participle.</p>
+  </div>
+
+  <div class="inst">Complete using the active OR passive form of the verb in brackets. The tense is suggested by the context.</div>
+
+  <div class="card">
+    <div class="exi"><span class="in">1</span>In Singapore, chewing gum <input class="bi" id="ap1" data-answer="has been banned" placeholder="(ban)"><span class="fi" id="fi-ap1"></span> since 1992.</div>
+    <div class="exi"><span class="in">2</span>Right now, car share schemes <input class="bi" id="ap2" data-answer="are being set up" placeholder="(set up)"><span class="fi" id="fi-ap2"></span> in cities all over Australia.</div>
+    <div class="exi"><span class="in">3</span>Women in Switzerland <input class="bi" id="ap3" data-answer="gained" placeholder="(gain)"><span class="fi" id="fi-ap3"></span> the right to vote in 1971.</div>
+    <div class="exi"><span class="in">4</span>In Sweden, babies' names must <input class="bi" id="ap4" data-answer="be chosen" placeholder="(choose)"><span class="fi" id="fi-ap4"></span> from a list of approved names.</div>
+    <div class="exi"><span class="in">5</span>Economic factors <input class="bi" id="ap5" data-answer="have caused|caused" placeholder="(cause)"><span class="fi" id="fi-ap5"></span> the birth rate in Italy to fall to 1.3.</div>
+
+    <button class="bchk" onclick="checkGroup('ap',['ap1','ap2','ap3','ap4','ap5'],5)">Check answers</button>
+    <div class="sb" id="sb-ap"><span class="sn" id="sn-ap"></span><span id="sm-ap"></span></div>
+
+    <button class="atog" onclick="toggleAns('ans-ap')">▶ Show answers</button>
+    <div class="ans" id="ans-ap">
+      <strong>1.</strong> has been banned (passive, present perfect) &nbsp;
+      <strong>2.</strong> are being set up (passive, present continuous) &nbsp;
+      <strong>3.</strong> gained (active, past simple) &nbsp;
+      <strong>4.</strong> be chosen (passive, modal infinitive) &nbsp;
+      <strong>5.</strong> have caused / caused (active)
+    </div>
+  </div>
+
+  <div class="card" style="background:#f9f9ff">
+    <h3>Discuss — laws &amp; society</h3>
+    <ul class="dis-list">
+      <li>Which of the facts in this exercise surprised you most? Why?</li>
+      <li>Can you think of a law in your country that was introduced / abolished recently? Describe it using active or passive voice.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 10 — EX 11 — DEFINITION DETECTIVE
+══════════════════════════════════════════ -->
+<div class="page" id="page-10">
+<div class="pw">
+  <div class="stag">Exercise 11</div><span class="gtag">🔍 Detective Mode</span>
+  <h1 style="margin-top:.5rem">The Two-Word Files</h1>
+
+  <div class="inst">Each clue describes a two-word phrase related to consumer complaints. Type the first word, then the second word. The first letters are given!</div>
+
+  <div class="card">
+    <div class="def-item">
+      <span class="def-n">1</span>
+      <span class="def-txt">something that doesn't work properly</span>
+      <div class="def-ins">
+        <input class="bi" id="dd1a" data-answer="faulty" placeholder="f_____" style="min-width:90px"><span class="fi" id="fi-dd1a"></span>
+        <input class="bi" id="dd1b" data-answer="products" placeholder="p______" style="min-width:100px"><span class="fi" id="fi-dd1b"></span>
+      </div>
+    </div>
+    <div class="def-item">
+      <span class="def-n">2</span>
+      <span class="def-txt">impolite assistants and phone operators</span>
+      <div class="def-ins">
+        <input class="bi" id="dd2a" data-answer="rude" placeholder="r___" style="min-width:80px"><span class="fi" id="fi-dd2a"></span>
+        <input class="bi" id="dd2b" data-answer="staff" placeholder="s____" style="min-width:80px"><span class="fi" id="fi-dd2b"></span>
+      </div>
+    </div>
+    <div class="def-item">
+      <span class="def-n">3</span>
+      <span class="def-txt">people with no previous contact trying to reach you</span>
+      <div class="def-ins">
+        <input class="bi" id="dd3a" data-answer="cold" placeholder="c___" style="min-width:80px"><span class="fi" id="fi-dd3a"></span>
+        <input class="bi" id="dd3b" data-answer="calls" placeholder="c____" style="min-width:80px"><span class="fi" id="fi-dd3b"></span>
+      </div>
+    </div>
+    <div class="def-item">
+      <span class="def-n">4</span>
+      <span class="def-txt">products not arriving soon enough</span>
+      <div class="def-ins">
+        <input class="bi" id="dd4a" data-answer="slow" placeholder="s___" style="min-width:80px"><span class="fi" id="fi-dd4a"></span>
+        <input class="bi" id="dd4b" data-answer="delivery" placeholder="d_______" style="min-width:100px"><span class="fi" id="fi-dd4b"></span>
+      </div>
+    </div>
+    <div class="def-item">
+      <span class="def-n">5</span>
+      <span class="def-txt">disagreements about payment</span>
+      <div class="def-ins">
+        <input class="bi" id="dd5a" data-answer="billing" placeholder="b______" style="min-width:90px"><span class="fi" id="fi-dd5a"></span>
+        <input class="bi" id="dd5b" data-answer="disputes" placeholder="d_______" style="min-width:100px"><span class="fi" id="fi-dd5b"></span>
+      </div>
+    </div>
+    <div class="def-item">
+      <span class="def-n">6</span>
+      <span class="def-txt">promoting products with misleading messages</span>
+      <div class="def-ins">
+        <input class="bi" id="dd6a" data-answer="false" placeholder="f____" style="min-width:80px"><span class="fi" id="fi-dd6a"></span>
+        <input class="bi" id="dd6b" data-answer="advertising" placeholder="a__________" style="min-width:120px"><span class="fi" id="fi-dd6b"></span>
+      </div>
+    </div>
+
+    <button class="bchk" onclick="checkGroup('dd',['dd1a','dd1b','dd2a','dd2b','dd3a','dd3b','dd4a','dd4b','dd5a','dd5b','dd6a','dd6b'],12)">Check answers</button>
+    <div class="sb" id="sb-dd"><span class="sn" id="sn-dd"></span><span id="sm-dd"></span></div>
+
+    <button class="atog" onclick="toggleAns('ans-dd')">▶ Show answers</button>
+    <div class="ans" id="ans-dd">
+      <strong>1.</strong> faulty products &nbsp;<strong>2.</strong> rude staff &nbsp;<strong>3.</strong> cold calls &nbsp;<strong>4.</strong> slow delivery &nbsp;<strong>5.</strong> billing disputes &nbsp;<strong>6.</strong> false advertising
+    </div>
+  </div>
+
+  <div class="card" style="background:#f9f9ff">
+    <h3>Discuss — consumer issues</h3>
+    <ul class="dis-list">
+      <li>Which of these have you personally experienced? What happened?</li>
+      <li>Rank them 1–6 from most annoying to least annoying. Compare with your partner.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 11 — EX 13 — DEBATE ROOM
+══════════════════════════════════════════ -->
+<div class="page" id="page-11">
+<div class="pw">
+  <div class="stag">Exercise 13</div><span class="gtag">💬 Debate Room</span>
+  <h1 style="margin-top:.5rem">Agree or Disagree?</h1>
+
+  <div class="opinion-card">
+    "It would be better to have no speed limits at all."
+    <span>— The opinion you are responding to</span>
+  </div>
+
+  <div class="inst">
+    <strong>Part A:</strong> Complete each response using a word from the box.<br>
+    <strong>Part B:</strong> Click <strong>A</strong> (Agree) or <strong>D</strong> (Disagree) for each response.
+  </div>
+
+  <div class="wb">
+    <span class="wc">experience</span><span class="wc">come</span><span class="wc">say</span><span class="wc">cons</span>
+    <span class="wc">balance</span><span class="wc">serious</span><span class="wc">explain</span><span class="wc">with</span>
+  </div>
+
+  <div class="card">
+    <div class="resp-item">
+      <span class="rn">1</span>
+      <span>What makes you <input class="bi" id="dr1" data-answer="say" placeholder="…" style="min-width:70px"><span class="fi" id="fi-dr1"></span> that?</span>
+    </div>
+    <div class="resp-item">
+      <span class="rn">2</span>
+      <span>Can you <input class="bi" id="dr2" data-answer="explain" placeholder="…" style="min-width:90px"><span class="fi" id="fi-dr2"></span> that a bit more?</span>
+    </div>
+    <div class="resp-item">
+      <span class="rn">3</span>
+      <span>Yes, in my <input class="bi" id="dr3" data-answer="experience" placeholder="…" style="min-width:110px"><span class="fi" id="fi-dr3"></span>, they don't solve any problems.</span>
+      <span style="margin-left:auto;display:flex;gap:4px">
+        <button class="adbtn ab" id="ad3a" onclick="adSel(3,'A',this)">A</button>
+        <button class="adbtn db" id="ad3d" onclick="adSel(3,'D',this)">D</button>
+      </span>
+    </div>
+    <div class="resp-item">
+      <span class="rn">4</span>
+      <span>How did you <input class="bi" id="dr4" data-answer="come" placeholder="…" style="min-width:90px"><span class="fi" id="fi-dr4"></span> to that conclusion?</span>
+      <span style="margin-left:auto;display:flex;gap:4px">
+        <button class="adbtn ab" id="ad4a" onclick="adSel(4,'A',this)">A</button>
+        <button class="adbtn db" id="ad4d" onclick="adSel(4,'D',this)">D</button>
+      </span>
+    </div>
+    <div class="resp-item">
+      <span class="rn">5</span>
+      <span>You're not <input class="bi" id="dr5" data-answer="serious" placeholder="…" style="min-width:90px"><span class="fi" id="fi-dr5"></span>!</span>
+      <span style="margin-left:auto;display:flex;gap:4px">
+        <button class="adbtn ab" id="ad5a" onclick="adSel(5,'A',this)">A</button>
+        <button class="adbtn db" id="ad5d" onclick="adSel(5,'D',this)">D</button>
+      </span>
+    </div>
+    <div class="resp-item">
+      <span class="rn">6</span>
+      <span>On <input class="bi" id="dr6" data-answer="balance" placeholder="…" style="min-width:90px"><span class="fi" id="fi-dr6"></span>, you're probably right.</span>
+      <span style="margin-left:auto;display:flex;gap:4px">
+        <button class="adbtn ab" id="ad6a" onclick="adSel(6,'A',this)">A</button>
+        <button class="adbtn db" id="ad6d" onclick="adSel(6,'D',this)">D</button>
+      </span>
+    </div>
+    <div class="resp-item">
+      <span class="rn">7</span>
+      <span>No, I'm not really <input class="bi" id="dr7" data-answer="with" placeholder="…" style="min-width:70px"><span class="fi" id="fi-dr7"></span> you on that one.</span>
+      <span style="margin-left:auto;display:flex;gap:4px">
+        <button class="adbtn ab" id="ad7a" onclick="adSel(7,'A',this)">A</button>
+        <button class="adbtn db" id="ad7d" onclick="adSel(7,'D',this)">D</button>
+      </span>
+    </div>
+    <div class="resp-item">
+      <span class="rn">8</span>
+      <span>Well, they certainly have a number of pros and <input class="bi" id="dr8" data-answer="cons" placeholder="…" style="min-width:70px"><span class="fi" id="fi-dr8"></span>.</span>
+    </div>
+
+    <button class="bchk" onclick="checkDebate()">Check answers</button>
+    <div class="sb" id="sb-dr"><span class="sn" id="sn-dr"></span><span id="sm-dr"></span></div>
+  </div>
+
+  <div class="card" style="background:#f9f9ff">
+    <h3>Now debate — pick a side!</h3>
+    <ul class="dis-list">
+      <li><em>"Drones are dangerous and should be banned."</em> — Respond using at least 3 expressions from above.</li>
+      <li><em>"Cycle lanes in big cities are ridiculous."</em> — Discuss with your partner. Do you agree?</li>
+      <li><em>"School lunches should be free for every child."</em> — Make the case for AND against.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     PAGE 12 — REFLECT
+══════════════════════════════════════════ -->
+<div class="page" id="page-12">
+<div class="pw">
+  <div class="stag">Reflect</div>
+  <h1>How Did You Do?</h1>
+  <p style="color:var(--muted);font-family:'Arial',sans-serif;font-size:.92rem;margin-bottom:1.6rem">Rate your confidence for each statement. 1 = not very confident, 5 = very confident.</p>
+
+  <div class="card">
+    <div class="ref-item">
+      <span>I can start a conversation and keep it going.</span>
+      <div class="star-row" data-group="r1">
+        <button class="star" onclick="starClick(this,'r1')">⭐</button><button class="star" onclick="starClick(this,'r1')">⭐</button>
+        <button class="star" onclick="starClick(this,'r1')">⭐</button><button class="star" onclick="starClick(this,'r1')">⭐</button>
+        <button class="star" onclick="starClick(this,'r1')">⭐</button>
+      </div>
+    </div>
+    <div class="ref-item">
+      <span>I can describe an experience and a life lesson.</span>
+      <div class="star-row" data-group="r2">
+        <button class="star" onclick="starClick(this,'r2')">⭐</button><button class="star" onclick="starClick(this,'r2')">⭐</button>
+        <button class="star" onclick="starClick(this,'r2')">⭐</button><button class="star" onclick="starClick(this,'r2')">⭐</button>
+        <button class="star" onclick="starClick(this,'r2')">⭐</button>
+      </div>
+    </div>
+    <div class="ref-item">
+      <span>I can use <em>used to</em> and <em>would</em> correctly.</span>
+      <div class="star-row" data-group="r3">
+        <button class="star" onclick="starClick(this,'r3')">⭐</button><button class="star" onclick="starClick(this,'r3')">⭐</button>
+        <button class="star" onclick="starClick(this,'r3')">⭐</button><button class="star" onclick="starClick(this,'r3')">⭐</button>
+        <button class="star" onclick="starClick(this,'r3')">⭐</button>
+      </div>
+    </div>
+    <div class="ref-item">
+      <span>I can choose between present perfect simple and continuous.</span>
+      <div class="star-row" data-group="r4">
+        <button class="star" onclick="starClick(this,'r4')">⭐</button><button class="star" onclick="starClick(this,'r4')">⭐</button>
+        <button class="star" onclick="starClick(this,'r4')">⭐</button><button class="star" onclick="starClick(this,'r4')">⭐</button>
+        <button class="star" onclick="starClick(this,'r4')">⭐</button>
+      </div>
+    </div>
+    <div class="ref-item">
+      <span>I can use GET phrases naturally in conversation.</span>
+      <div class="star-row" data-group="r5">
+        <button class="star" onclick="starClick(this,'r5')">⭐</button><button class="star" onclick="starClick(this,'r5')">⭐</button>
+        <button class="star" onclick="starClick(this,'r5')">⭐</button><button class="star" onclick="starClick(this,'r5')">⭐</button>
+        <button class="star" onclick="starClick(this,'r5')">⭐</button>
+      </div>
+    </div>
+    <div class="ref-item">
+      <span>I can respond to opinions — agreeing and disagreeing.</span>
+      <div class="star-row" data-group="r6">
+        <button class="star" onclick="starClick(this,'r6')">⭐</button><button class="star" onclick="starClick(this,'r6')">⭐</button>
+        <button class="star" onclick="starClick(this,'r6')">⭐</button><button class="star" onclick="starClick(this,'r6')">⭐</button>
+        <button class="star" onclick="starClick(this,'r6')">⭐</button>
+      </div>
+    </div>
+    <div class="ref-item">
+      <span>I can use vocabulary related to complaints and laws.</span>
+      <div class="star-row" data-group="r7">
+        <button class="star" onclick="starClick(this,'r7')">⭐</button><button class="star" onclick="starClick(this,'r7')">⭐</button>
+        <button class="star" onclick="starClick(this,'r7')">⭐</button><button class="star" onclick="starClick(this,'r7')">⭐</button>
+        <button class="star" onclick="starClick(this,'r7')">⭐</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="final-score">
+    <div class="big" id="finalPts">—</div>
+    <p id="finalMsg" style="margin-top:.4rem">Complete exercises and check your answers to see your score.</p>
+  </div>
+
+  <div class="card" style="margin-top:1.4rem;background:#f9f9ff">
+    <h3>🎯 One last challenge</h3>
+    <ul class="dis-list">
+      <li>In 2 minutes, write 5 sentences using: one GET phrase, one personality adjective, one PP Simple, one PP Continuous, and one passive form.</li>
+      <li>Read your sentences to your partner. They must identify which grammar point each sentence uses.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+
+<!-- BOTTOM NAV -->
+<div class="bnav">
+  <button class="btn bprev" id="btnPrev" onclick="nav(-1)" disabled>← Back</button>
+  <span class="sc" id="stepC">Page 1 of 12</span>
+  <button class="btn bnext" id="btnNext" onclick="nav(1)">Next →</button>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+const TOTAL = 12;
+let cur = 1;
+let totalPts = 0;
+const scored = {};
+
+/* ── NAVIGATION ── */
+function buildDots(){
+  const c=document.getElementById('pDots');
+  for(let i=1;i<=TOTAL;i++){
+    const d=document.createElement('div');
+    d.className='pd'+(i===1?' active':'');
+    d.id='pd'+i; d.title='Page '+i;
+    d.onclick=()=>goTo(i);
+    c.appendChild(d);
+  }
+}
+function goTo(n){
+  document.getElementById('page-'+cur).classList.remove('active');
+  document.getElementById('pd'+cur).classList.remove('active');
+  document.getElementById('pd'+cur).classList.add('done');
+  cur=n;
+  document.getElementById('page-'+cur).classList.add('active');
+  document.getElementById('pd'+cur).classList.remove('done');
+  document.getElementById('pd'+cur).classList.add('active');
+  document.getElementById('btnPrev').disabled=cur===1;
+  document.getElementById('btnNext').disabled=cur===TOTAL;
+  document.getElementById('stepC').textContent='Page '+cur+' of '+TOTAL;
+  document.getElementById('btnNext').textContent=cur===TOTAL?'Finish ✓':'Next →';
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(cur===12) updateFinalScore();
+}
+function nav(d){ const n=cur+d; if(n>=1&&n<=TOTAL) goTo(n); }
+
+/* ── ANSWER TOGGLE ── */
+function toggleAns(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('vis');
+  el.previousElementSibling.textContent=el.classList.contains('vis')?'▼ Hide answers':'▶ Show answers';
+}
+
+/* ── NORMALISE ── */
+function norm(s){ return s.trim().toLowerCase().replace(/\s+/g,' ').replace(/[.!?,]$/,''); }
+
+/* ── SINGLE INPUT CHECK (live) ── */
+function chkOne(id){
+  const inp=document.getElementById(id);
+  if(!inp) return false;
+  const v=norm(inp.value);
+  if(!v){ inp.classList.remove('ok','no'); setFI(id,''); return false; }
+  const ok=inp.dataset.answer.split('|').map(a=>norm(a)).includes(v);
+  inp.classList.toggle('ok',ok);
+  inp.classList.toggle('no',!ok);
+  setFI(id,ok?'✓':'✗',ok);
+  return ok;
+}
+function setFI(inputId,sym,ok){
+  const fi=document.getElementById('fi-'+inputId);
+  if(!fi) return;
+  fi.textContent=sym;
+  fi.style.color=ok?'var(--ok)':'var(--no)';
+}
+
+/* ── GROUP CHECK ── */
+function checkGroup(key,ids,total){
+  let c=ids.filter(id=>chkOne(id)).length;
+  showSB(key,c,total);
+  addPts(key,c);
+}
+function showSB(key,c,total){
+  const sb=document.getElementById('sb-'+key);
+  const sn=document.getElementById('sn-'+key);
+  const sm=document.getElementById('sm-'+key);
+  if(!sb) return;
+  sb.classList.add('vis');
+  sn.textContent=c+'/'+total;
+  sn.className='sn'+(c===total?' perf':'');
+  sm.textContent=c===total?'🎉 Perfect!':c>=total*.7?'Almost — check the red ones.':'Good effort — keep reviewing!';
+}
+function addPts(key,pts){
+  if(!scored[key]){ scored[key]=pts; totalPts+=pts; document.getElementById('navScore').textContent=totalPts+' pts'; }
+}
+
+/* ━━━━━━━━━━━━━━ MATCHING GAME ━━━━━━━━━━━━━━ */
+const PAIRS={'1':'e','2':'c','3':'h','4':'g','5':'f','6':'d','7':'a','8':'b'};
+let mL=null,mR=null,mCount=0;
+
+function matchClick(side,id,el){
+  if(el.classList.contains('matched')) return;
+  if(side==='L'){
+    if(mL){ mL.classList.remove('selected'); }
+    mL={el,id}; el.classList.add('selected');
+  } else {
+    if(mR){ mR.classList.remove('selected'); }
+    mR={el,id}; el.classList.add('selected');
+  }
+  if(mL&&mR) attemptMatch();
+}
+function attemptMatch(){
+  const ok=PAIRS[mL.id]===mR.id;
+  if(ok){
+    mL.el.classList.remove('selected'); mR.el.classList.remove('selected');
+    mL.el.classList.add('matched'); mR.el.classList.add('matched');
+    mCount++;
+    document.getElementById('mc').textContent=mCount;
+    mL=null; mR=null;
+    if(mCount===8){
+      document.getElementById('matchSB').classList.add('vis');
+      addPts('match',8);
+    }
+  } else {
+    mL.el.classList.add('wrong'); mR.el.classList.add('wrong');
+    const L=mL,R=mR;
+    setTimeout(()=>{
+      L.el.classList.remove('wrong','selected');
+      R.el.classList.remove('wrong','selected');
+      mL=null; mR=null;
+    },550);
+  }
+}
+
+/* ━━━━━━━━━━━━━━ ERROR HUNT ━━━━━━━━━━━━━━ */
+const ERR_PHRASES=[3,4,7,9,10];
+let foundErr=0,hintUsed=false;
+
+function clickEP(num,el){
+  if(el.classList.contains('fe')) return;
+  if(ERR_PHRASES.includes(num)){
+    el.classList.add('fe');
+    foundErr++;
+    document.getElementById('foundCount').textContent=foundErr;
+    if(foundErr===5){
+      document.getElementById('corrBox').classList.add('vis');
+      addPts('errors',5);
+    }
+  } else {
+    if(!el.classList.contains('ne')){
+      el.classList.add('ne');
+      setTimeout(()=>el.classList.remove('ne'),800);
+    }
+  }
+}
+function useHint(){
+  if(hintUsed) return;
+  hintUsed=true;
+  document.getElementById('hintBtn').disabled=true;
+  const unfound=ERR_PHRASES.filter(n=>!document.getElementById('ph'+n).classList.contains('fe'));
+  if(unfound.length>0){
+    const el=document.getElementById('ph'+unfound[0]);
+    el.style.background='#fef9c3';
+    el.style.borderBottomColor='#d97706';
+    setTimeout(()=>{ el.style.background=''; el.style.borderBottomColor=''; },2500);
+  }
+}
+
+/* ━━━━━━━━━━━━━━ PP SHOWDOWN ━━━━━━━━━━━━━━ */
+const ppSelected={};
+
+function ppSel(key,type,btn){
+  ppSelected[key]=type;
+  const parent=btn.parentElement;
+  parent.querySelectorAll('.ppt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function checkPP(){
+  const items=['pp1a','pp1b','pp2a','pp2b','pp3a','pp3b','pp4a','pp4b','pp5a','pp5b'];
+  let c=0;
+  items.forEach(key=>{
+    const inp=document.getElementById(key+'-in');
+    if(!inp) return;
+    const expectedTense=inp.dataset.tense;
+    const chosenTense=ppSelected[key];
+    const tenOk=(chosenTense===expectedTense);
+    const valOk=chkOne(key+'-in');
+    // Color the toggle buttons
+    const parent=inp.previousElementSibling;
+    if(parent&&parent.classList.contains('pp-toggle')){
+      parent.querySelectorAll('.ppt').forEach(btn=>{
+        const bTense=btn.textContent==='Simple'?'S':'C';
+        btn.classList.remove('ok','no','sel');
+        if(bTense===expectedTense) btn.classList.add('ok');
+        else if(bTense===chosenTense&&!tenOk) btn.classList.add('no');
+      });
+    }
+    if(tenOk&&valOk) c++;
+  });
+  showSB('pp',c,10);
+  addPts('pp',c);
+}
+
+/* ━━━━━━━━━━━━━━ TOGGLE CHOICE (Ex 9) ━━━━━━━━━━━━━━ */
+const tcAnswers={
+  tc1:'cracking',tc2:'warned',tc3:'tackling',tc4:'banned',tc5:'enforce',tc6:'increased'
+};
+const tcSelected={};
+
+function tcSel(group,val,btn){
+  tcSelected[group]=val;
+  const parent=btn.parentElement;
+  parent.querySelectorAll('.to').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function checkTC(){
+  let c=0;
+  Object.keys(tcAnswers).forEach(group=>{
+    const correct=tcAnswers[group];
+    const chosen=tcSelected[group];
+    const fi=document.getElementById('fi-'+group);
+    const parent=document.querySelector('.tc button[onclick*="'+group+'"]')?.parentElement;
+    if(parent){
+      parent.querySelectorAll('.to').forEach(btn=>{
+        btn.classList.remove('ok','no');
+        if(btn.dataset.ans===correct) btn.classList.add('ok');
+        else if(btn.dataset.ans===chosen&&chosen!==correct) btn.classList.add('no');
+      });
+    }
+    if(fi){
+      const ok=(chosen===correct);
+      fi.textContent=chosen?(ok?'✓':'✗'):'';
+      fi.style.color=ok?'var(--ok)':'var(--no)';
+      if(ok) c++;
+    }
+  });
+  showSB('tc',c,6);
+  addPts('tc',c);
+}
+
+/* ━━━━━━━━━━━━━━ DEBATE ROOM ━━━━━━━━━━━━━━ */
+const AD_CORRECT={3:'A',4:'D',5:'D',6:'A',7:'D'};
+const adSelected={};
+
+function adSel(num,val,btn){
+  adSelected[num]=val;
+  const row=btn.parentElement;
+  row.querySelectorAll('.adbtn').forEach(b=>b.classList.remove('sela','seld'));
+  btn.classList.add(val==='A'?'sela':'seld');
+}
+
+function checkDebate(){
+  // Part A: gap fill
+  const gapIds=['dr1','dr2','dr3','dr4','dr5','dr6','dr7','dr8'];
+  let gapC=gapIds.filter(id=>chkOne(id)).length;
+
+  // Part B: A/D
+  let adC=0;
+  [3,4,5,6,7].forEach(num=>{
+    const correct=AD_CORRECT[num];
+    const chosen=adSelected[num];
+    const btnA=document.getElementById('ad'+num+'a');
+    const btnD=document.getElementById('ad'+num+'d');
+    if(!btnA||!btnD) return;
+    btnA.classList.remove('sela','seld','oka','okd','wrong-ad');
+    btnD.classList.remove('sela','seld','oka','okd','wrong-ad');
+    if(chosen){
+      if(chosen===correct){
+        (correct==='A'?btnA:btnD).classList.add(correct==='A'?'oka':'okd');
+        adC++;
+      } else {
+        (chosen==='A'?btnA:btnD).classList.add('wrong-ad');
+        (correct==='A'?btnA:btnD).classList.add(correct==='A'?'oka':'okd');
+      }
+    } else {
+      (correct==='A'?btnA:btnD).classList.add(correct==='A'?'oka':'okd');
+    }
+  });
+
+  const total=gapC+adC;
+  showSB('dr',total,13);
+  addPts('dr',total);
+}
+
+/* ━━━━━━━━━━━━━━ STARS (Reflect) ━━━━━━━━━━━━━━ */
+function starClick(btn,group){
+  const row=btn.parentElement;
+  const stars=row.querySelectorAll('.star');
+  const idx=[...stars].indexOf(btn);
+  stars.forEach((s,i)=>s.classList.toggle('on',i<=idx));
+}
+
+/* ━━━━━━━━━━━━━━ FINAL SCORE ━━━━━━━━━━━━━━ */
+function updateFinalScore(){
+  const el=document.getElementById('finalPts');
+  const msg=document.getElementById('finalMsg');
+  el.textContent=totalPts+' pts';
+  if(totalPts===0) msg.textContent='Complete exercises to see your score here!';
+  else if(totalPts<30) msg.textContent='Good work — keep reviewing Units 1 & 2!';
+  else if(totalPts<55) msg.textContent='Well done — solid progress!';
+  else msg.textContent='🌟 Outstanding revision — you nailed it!';
+}
+
+/* ━━━━━━━━━━━━━━ LIVE INPUT CHECK ━━━━━━━━━━━━━━ */
+const timers={};
+document.querySelectorAll('.bi').forEach(inp=>{
+  inp.addEventListener('input',()=>{
+    clearTimeout(timers[inp.id]);
+    timers[inp.id]=setTimeout(()=>chkOne(inp.id),650);
+  });
+  inp.addEventListener('blur',()=>{ clearTimeout(timers[inp.id]); chkOne(inp.id); });
+});
+
+/* ━━━━━━━━━━━━━━ INIT ━━━━━━━━━━━━━━ */
+buildDots();
+</script>
+</body>
+</html>
