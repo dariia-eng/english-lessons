@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emojis: A Secret Language?</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #f4f0fc;
+  color: #1a1a2e;
+  min-height: 100vh;
+}
+
+/* ── PROGRESS BAR ── */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: #fff;
+  padding: 12px 28px 10px;
+  box-shadow: 0 2px 14px rgba(80,40,160,0.08);
+}
+.topbar-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.topbar-title { font-weight: 800; font-size: 0.88rem; color: #6d28d9; letter-spacing: 0.01em; }
+.topbar-count { font-size: 0.82rem; color: #94a3b8; font-weight: 600; }
+.bar-track {
+  height: 7px; background: #ede9fe; border-radius: 99px; overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed 0%, #c026d3 100%);
+  border-radius: 99px;
+  transition: width 0.55s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── PAGES ── */
+.page {
+  display: none;
+  min-height: 100vh;
+  padding: 92px 22px 96px;
+  max-width: 700px;
+  margin: 0 auto;
+  animation: fadeIn 0.3s ease;
+}
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── PAGE HEADER ── */
+.tag {
+  display: inline-block;
+  background: #7c3aed; color: #fff;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 12px; border-radius: 99px; margin-bottom: 14px;
+}
+.page-h1 {
+  font-size: 1.55rem; font-weight: 900; color: #1a1a2e; line-height: 1.25;
+  margin-bottom: 6px;
+}
+.page-sub {
+  font-size: 0.92rem; color: #64748b; margin-bottom: 26px; line-height: 1.5;
+}
+
+/* ── CARD ── */
+.card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 16px rgba(80,40,160,0.06);
+}
+
+/* ── DARK GRAMMAR BOX ── */
+.gbox {
+  background: #1e1b4b;
+  border-radius: 18px;
+  padding: 24px 26px;
+  margin-bottom: 18px;
+  color: #e2d9f3;
+}
+.gbox-label {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #a78bfa; margin-bottom: 18px;
+}
+.gbox-rule {
+  font-size: 0.93rem; line-height: 1.6; margin-bottom: 10px; color: #e2d9f3;
+}
+.gbox-rule strong { color: #f9a8d4; }
+.gbox-eg {
+  background: rgba(255,255,255,0.07);
+  border-left: 3px solid #a78bfa;
+  padding: 8px 14px;
+  border-radius: 0 10px 10px 0;
+  font-style: italic; font-size: 0.9rem;
+  margin: 6px 0 14px; color: #f3f0ff;
+}
+.gbox-eg b { color: #f9a8d4; font-style: normal; }
+.gbox-pairs {
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px; padding: 12px 16px;
+  margin-top: 14px;
+}
+.gbox-pairs-label { font-size: 0.78rem; color: #a78bfa; font-weight: 700; margin-bottom: 6px; }
+.gbox-pairs p { font-size: 0.88rem; color: #e2d9f3; line-height: 1.7; }
+
+/* ── MC OPTIONS ── */
+.mc-group { display: grid; gap: 9px; margin-top: 14px; }
+.mc-opt {
+  display: flex; align-items: center; gap: 12px;
+  background: #f8f5ff; border: 2px solid #e9d5ff;
+  border-radius: 12px; padding: 13px 16px;
+  font-size: 0.93rem; cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+  text-align: left;
+}
+.mc-opt:hover:not(:disabled) { border-color: #7c3aed; background: #f0ebff; }
+.mc-opt.correct  { background: #f0fdf4; border-color: #22c55e; color: #15803d; }
+.mc-opt.wrong    { background: #fff1f2; border-color: #f43f5e; color: #be123c; }
+.mc-opt.show-ans { background: #f0fdf4; border-color: #22c55e; color: #15803d; }
+.mc-opt:disabled { cursor: default; }
+
+/* ── FEEDBACK ── */
+.fb {
+  display: none; margin-top: 12px; padding: 11px 15px;
+  border-radius: 10px; font-size: 0.88rem; font-weight: 600; line-height: 1.5;
+}
+.fb.ok  { display:block; background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; }
+.fb.bad { display:block; background:#fff1f2; border:1px solid #fecdd3; color:#be123c; }
+
+/* ── TEXT INPUTS ── */
+.blank {
+  border: 2px solid #e2d9f3; border-radius: 8px;
+  padding: 5px 11px; font-size: 0.93rem; font-family: inherit;
+  outline: none; width: 148px; text-align: center;
+  transition: border-color 0.18s;
+}
+.blank:focus { border-color: #7c3aed; }
+.blank.ok  { border-color: #22c55e; background: #f0fdf4; color: #15803d; }
+.blank.bad { border-color: #f43f5e; background: #fff1f2; color: #be123c; }
+
+/* ── SELECT / DROPDOWN ── */
+.gapsel {
+  border: 2px solid #e2d9f3; border-radius: 8px;
+  padding: 4px 9px; font-size: 0.92rem; font-family: inherit;
+  background: white; cursor: pointer; outline: none;
+  transition: border-color 0.18s;
+}
+.gapsel:focus { border-color: #7c3aed; }
+.gapsel.ok  { border-color: #22c55e; background: #f0fdf4; color: #15803d; }
+.gapsel.bad { border-color: #f43f5e; background: #fff1f2; color: #be123c; }
+.tick { font-size: 1rem; margin-left: 3px; }
+
+/* ── MATCHING ── */
+.match-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 14px;
+}
+.match-col { display: flex; flex-direction: column; gap: 8px; }
+.match-col-header {
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #7c3aed; text-align: center;
+  margin-bottom: 2px;
+}
+.mitem {
+  background: #f8f5ff; border: 2px solid #e2d9f3;
+  border-radius: 11px; padding: 11px 13px;
+  cursor: pointer; font-size: 0.88rem; line-height: 1.4;
+  transition: all 0.18s; min-height: 52px;
+  display: flex; align-items: center;
+}
+.mitem:hover { border-color: #7c3aed; background: #ede9fe; }
+.mitem.sel    { border-color: #7c3aed; background: #ede9fe; }
+.mitem.paired { border-color: #22c55e; background: #f0fdf4; color: #15803d; cursor: default; }
+.mitem.shake  { animation: shake 0.4s ease; border-color: #f43f5e; background: #fff1f2; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+/* ── SENTENCE COMBINING ── */
+.sc-block { background: #f8f5ff; border-radius: 13px; padding: 16px 18px; margin-bottom: 14px; }
+.sc-src { font-size: 0.85rem; color: #64748b; margin-bottom: 10px; line-height: 1.7; }
+.sc-src span { display: block; }
+.sc-input {
+  width: 100%; border: 2px solid #e2d9f3; border-radius: 9px;
+  padding: 9px 13px; font-size: 0.92rem; font-family: inherit;
+  outline: none; resize: none; transition: border-color 0.18s;
+}
+.sc-input:focus { border-color: #7c3aed; }
+.model {
+  display: none; background: #f0fdf4; border: 1px solid #bbf7d0;
+  color: #15803d; padding: 10px 14px; border-radius: 9px;
+  font-size: 0.88rem; margin-top: 8px; line-height: 1.6;
+}
+.model.show { display: block; }
+
+/* ── INLINE TEXT ── */
+.prose {
+  font-size: 0.93rem; color: #374151; line-height: 1.85;
+}
+.prose p { margin-bottom: 14px; }
+.prose strong { color: #1a1a2e; }
+
+/* ── INLINE GAPS ── */
+.gap-line {
+  font-size: 0.93rem; color: #374151; line-height: 2.5;
+  margin-bottom: 6px;
+}
+
+/* ── EMOJI DISPLAY ── */
+.emoji-hero { font-size: 2.8rem; display: block; margin-bottom: 8px; }
+
+/* ── CHECK BUTTON ── */
+.check-btn {
+  background: #7c3aed; color: #fff;
+  border: none; border-radius: 10px;
+  padding: 10px 22px; font-weight: 700; font-size: 0.9rem;
+  cursor: pointer; margin-top: 14px; transition: background 0.18s, transform 0.1s;
+}
+.check-btn:hover { background: #6d28d9; transform: translateY(-1px); }
+
+.show-btn {
+  background: #f1f5f9; color: #475569;
+  border: none; border-radius: 10px;
+  padding: 9px 18px; font-weight: 700; font-size: 0.88rem;
+  cursor: pointer; margin-top: 10px; transition: background 0.18s;
+}
+.show-btn:hover { background: #e2e8f0; }
+
+/* ── INFO BUBBLE ── */
+.bubble {
+  background: #faf5ff; border: 1px solid #e9d5ff;
+  border-radius: 14px; padding: 14px 18px; margin-bottom: 16px;
+  font-size: 0.88rem; color: #6d28d9; line-height: 1.6;
+}
+
+/* ── SPEAKING ── */
+.speak-card {
+  background: #fff; border-radius: 14px; padding: 18px 22px;
+  margin-bottom: 13px;
+  box-shadow: 0 2px 12px rgba(80,40,160,0.06);
+  border-left: 4px solid #7c3aed;
+}
+.speak-card .qn { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; color: #7c3aed; font-weight: 700; margin-bottom: 7px; }
+.speak-card p { font-size: 0.93rem; line-height: 1.6; }
+.useful-box {
+  background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 14px;
+  padding: 16px 20px; margin-top: 6px;
+}
+.useful-box .label { font-size: 0.8rem; color: #7c3aed; font-weight: 700; margin-bottom: 8px; }
+.useful-box p { font-size: 0.88rem; color: #374151; line-height: 1.85; }
+
+/* ── FINISH ── */
+.finish-block { text-align: center; padding: 24px 0 8px; }
+.finish-block .big-emoji { font-size: 3.5rem; display:block; margin-bottom:12px; }
+.finish-block h2 { font-size: 1.2rem; font-weight: 800; color: #1a1a2e; }
+
+/* ── NAV FOOTER ── */
+.navfoot {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #fff;
+  padding: 14px 24px;
+  box-shadow: 0 -2px 14px rgba(80,40,160,0.08);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.navfoot-inner {
+  max-width: 700px; margin: 0 auto; width: 100%;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.navbtn {
+  padding: 11px 26px; border-radius: 12px; border: none;
+  font-weight: 700; font-size: 0.92rem; cursor: pointer;
+  transition: background 0.18s, transform 0.1s;
+}
+.navbtn-next { background: #7c3aed; color: #fff; }
+.navbtn-next:hover { background: #6d28d9; transform: translateY(-1px); }
+.navbtn-prev { background: #f1f5f9; color: #64748b; }
+.navbtn-prev:hover { background: #e2e8f0; }
+.navbtn:disabled { opacity: 0.35; cursor: default; transform: none !important; }
+.navpill {
+  font-size: 0.82rem; color: #94a3b8; font-weight: 600;
+  background: #f8f5ff; padding: 6px 14px; border-radius: 99px;
+}
+
+/* Q separator */
+.q-sep { border: none; border-top: 1px solid #f1f5f9; margin: 18px 0; }
+
+/* ── ERROR CORRECTION ── */
+.err-row { margin-bottom: 4px; }
+.err-sent { font-size: 0.93rem; color: #374151; line-height: 1.8; }
+.ew {
+  display: inline-block;
+  background: #ede9fe; color: #5b21b6;
+  border: 2px solid #c4b5fd; border-radius: 7px;
+  padding: 1px 9px; margin: 0 2px;
+  cursor: pointer; font-weight: 600;
+  transition: all 0.18s;
+}
+.ew:hover { background: #ddd6fe; border-color: #7c3aed; }
+.ew.err-correct { background: #f0fdf4; border-color: #22c55e; color: #15803d; cursor: default; }
+.ew.err-wrong   { background: #fff1f2; border-color: #f43f5e; color: #be123c; cursor: default; }
+.ew.err-ok      { background: #f8fafc; border-color: #cbd5e1; color: #94a3b8; cursor: default; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ TOP PROGRESS BAR ═══════════ -->
+<div class="topbar">
+  <div class="topbar-row">
+    <span class="topbar-title">🌍 Emojis: A Secret Language?</span>
+    <span class="topbar-count" id="pgCount">1 / 11</span>
+  </div>
+  <div class="bar-track"><div class="bar-fill" id="barFill" style="width:10%"></div></div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PAGE 1 — WARM-UP: Click MC
+═══════════════════════════════════════ -->
+<div class="page active" id="p1">
+  <span class="tag">Warm-Up</span>
+  <h1 class="page-h1">What does this emoji mean? 🤔</h1>
+  <p class="page-sub">Click the answer that matches how <em>you</em> would use it.</p>
+
+  <div class="card">
+    <span class="emoji-hero">🙂</span>
+    <p style="font-size:0.93rem;color:#374151;margin-bottom:12px;">Your friend sends you <strong>🙂</strong> after you cancel your plans. What do they mean?</p>
+    <div class="mc-group" id="q1g">
+      <button class="mc-opt" onclick="mc(this,'q1g','q1fb',false)">😊 They're totally fine and happy about it</button>
+      <button class="mc-opt" onclick="mc(this,'q1g','q1fb',true)">😤 They're a little annoyed but pretending to be fine</button>
+      <button class="mc-opt" onclick="mc(this,'q1g','q1fb',false)">🥱 They're bored</button>
+      <button class="mc-opt" onclick="mc(this,'q1g','q1fb',false)">😶 They have no reaction at all</button>
+    </div>
+    <div class="fb" id="q1fb"></div>
+  </div>
+
+  <div class="card">
+    <span class="emoji-hero">💀</span>
+    <p style="font-size:0.93rem;color:#374151;margin-bottom:12px;">Your friend texts: <em>"This maths homework is 💀"</em>. What do they mean?</p>
+    <div class="mc-group" id="q2g">
+      <button class="mc-opt" onclick="mc(this,'q2g','q2fb',false)">☠️ Something is actually dangerous</button>
+      <button class="mc-opt" onclick="mc(this,'q2g','q2fb',false)">😨 They're scared of maths</button>
+      <button class="mc-opt" onclick="mc(this,'q2g','q2fb',true)">😂 It's so hard / funny they're "dead"</button>
+      <button class="mc-opt" onclick="mc(this,'q2g','q2fb',false)">💀 The homework is literally about death</button>
+    </div>
+    <div class="fb" id="q2fb"></div>
+  </div>
+
+  <div class="card">
+    <span class="emoji-hero">🔥</span>
+    <p style="font-size:0.93rem;color:#374151;margin-bottom:12px;">A friend posts a new photo and you comment <strong>"🔥🔥🔥"</strong>. What does it mean?</p>
+    <div class="mc-group" id="q3g">
+      <button class="mc-opt" onclick="mc(this,'q3g','q3fb',false)">🚒 There is a fire somewhere</button>
+      <button class="mc-opt" onclick="mc(this,'q3g','q3fb',true)">😍 They look amazing / cool</button>
+      <button class="mc-opt" onclick="mc(this,'q3g','q3fb',false)">🌡️ It's very hot weather today</button>
+      <button class="mc-opt" onclick="mc(this,'q3g','q3fb',false)">😡 You're angry at them</button>
+    </div>
+    <div class="fb" id="q3fb"></div>
+  </div>
+
+  <div class="card">
+    <span class="emoji-hero">😭</span>
+    <p style="font-size:0.93rem;color:#374151;margin-bottom:12px;">You send your friend a funny meme and they reply <em>"LMAO 😭😭😭"</em>. What are they saying?</p>
+    <div class="mc-group" id="q4g">
+      <button class="mc-opt" onclick="mc(this,'q4g','q4fb',false)">😢 They're actually very sad and upset</button>
+      <button class="mc-opt" onclick="mc(this,'q4g','q4fb',true)">😂 It's so funny they're "crying" with laughter</button>
+      <button class="mc-opt" onclick="mc(this,'q4g','q4fb',false)">😭 They want you to comfort them</button>
+      <button class="mc-opt" onclick="mc(this,'q4g','q4fb',false)">😬 They feel embarrassed by the meme</button>
+    </div>
+    <div class="fb" id="q4fb"></div>
+  </div>
+
+  <div class="card">
+    <span class="emoji-hero">👀</span>
+    <p style="font-size:0.93rem;color:#374151;margin-bottom:12px;">Someone posts a rumour about your school online and your friend replies with just <strong>"👀"</strong>. What do they mean?</p>
+    <div class="mc-group" id="q5g">
+      <button class="mc-opt" onclick="mc(this,'q5g','q5fb',false)">🙈 They can't see what you're saying</button>
+      <button class="mc-opt" onclick="mc(this,'q5g','q5fb',true)">🤔 "Ooh, I'm watching this / tell me more!"</button>
+      <button class="mc-opt" onclick="mc(this,'q5g','q5fb',false)">😴 They're too tired to respond properly</button>
+      <button class="mc-opt" onclick="mc(this,'q5g','q5fb',false)">😎 They're trying to look cool</button>
+    </div>
+    <div class="fb" id="q5fb"></div>
+  </div>
+
+  <div class="card">
+    <span class="emoji-hero">🫠</span>
+    <p style="font-size:0.93rem;color:#374151;margin-bottom:12px;">You accidentally wave back at someone who wasn't waving at you. You text your friend: <em>"I just waved back at a stranger 🫠"</em>. What does 🫠 mean here?</p>
+    <div class="mc-group" id="q6g">
+      <button class="mc-opt" onclick="mc(this,'q6g','q6fb',false)">🌞 You're melting because it's hot outside</button>
+      <button class="mc-opt" onclick="mc(this,'q6g','q6fb',false)">😊 You feel happy and relaxed</button>
+      <button class="mc-opt" onclick="mc(this,'q6g','q6fb',true)">😬 You're so embarrassed you want to disappear / "melt"</button>
+      <button class="mc-opt" onclick="mc(this,'q6g','q6fb',false)">😴 You're tired and falling asleep</button>
+    </div>
+    <div class="fb" id="q6fb"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PAGE 2 — READING + COMPREHENSION
+═══════════════════════════════════════ -->
+<div class="page" id="p2">
+  <span class="tag">Reading</span>
+  <h1 class="page-h1">Emojis speak louder than words 📢</h1>
+  <p class="page-sub">Read the text carefully, then answer the questions below.</p>
+
+  <div class="card">
+    <div class="prose">
+      <p>Every day, people send over <strong>10 billion emojis</strong> — more than there are people on Earth. But here's the surprising part: two people can look at the exact same emoji and understand completely different things.</p>
+      <p>Take 🙂. In the UK and the US, many young people use it to show they are <em>not</em> happy — it often means "I'm fine" in a passive-aggressive way, the same way someone says <em>"fine"</em> when they clearly aren't. But in many other countries, it simply means "I'm smiling."</p>
+      <p>The thumbs-up 👍 is perfectly friendly in most of the world. But in some cultures, it can actually be rude. And 🙃 (the upside-down face) looks like a smile, but most English speakers use it to say <em>"this is a disaster and I'm smiling to cope."</em></p>
+      <p>So emojis aren't a universal language — they're more like <strong>dialects</strong>. Just as English has different words and meanings in Australia, the UK, and the US, emojis carry different meanings depending on who sends them and where they're from.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <p style="font-weight:700;margin-bottom:4px;font-size:0.93rem;">1. How many emojis are sent every day?</p>
+    <div class="mc-group" id="r1g">
+      <button class="mc-opt" onclick="mc(this,'r1g','r1fb',false)">1 million</button>
+      <button class="mc-opt" onclick="mc(this,'r1g','r1fb',true)">10 billion</button>
+      <button class="mc-opt" onclick="mc(this,'r1g','r1fb',false)">100 million</button>
+    </div>
+    <div class="fb" id="r1fb"></div>
+
+    <hr class="q-sep">
+
+    <p style="font-weight:700;margin-bottom:4px;font-size:0.93rem;">2. What is the main point of the text?</p>
+    <div class="mc-group" id="r2g">
+      <button class="mc-opt" onclick="mc(this,'r2g','r2fb',false)">Emojis always mean the same thing for everyone.</button>
+      <button class="mc-opt" onclick="mc(this,'r2g','r2fb',false)">People send too many emojis and should stop.</button>
+      <button class="mc-opt" onclick="mc(this,'r2g','r2fb',true)">The same emoji can mean very different things in different cultures.</button>
+    </div>
+    <div class="fb" id="r2fb"></div>
+
+    <hr class="q-sep">
+
+    <p style="font-weight:700;margin-bottom:4px;font-size:0.93rem;">3. According to the text, what does 🙃 usually mean for English speakers?</p>
+    <div class="mc-group" id="r3g">
+      <button class="mc-opt" onclick="mc(this,'r3g','r3fb',false)">The person is very happy and playful.</button>
+      <button class="mc-opt" onclick="mc(this,'r3g','r3fb',true)">Things are going badly but they're pretending to be okay.</button>
+      <button class="mc-opt" onclick="mc(this,'r3g','r3fb',false)">The person is literally upside down.</button>
+    </div>
+    <div class="fb" id="r3fb"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PAGE 3 — MATCHING
+═══════════════════════════════════════ -->
+<div class="page" id="p3">
+  <span class="tag">Vocabulary</span>
+  <h1 class="page-h1">Official name vs. real meaning 🤫</h1>
+  <p class="page-sub">Click one item from the left column, then one from the right to match them. Get all four right!</p>
+
+  <div class="card">
+    <div class="match-grid">
+      <div class="match-col">
+        <div class="match-col-header">Official name</div>
+        <div class="mitem" id="L0" onclick="selectMatch('L',0)">😂 Face with tears of joy</div>
+        <div class="mitem" id="L1" onclick="selectMatch('L',1)">🙃 Upside-down face</div>
+        <div class="mitem" id="L2" onclick="selectMatch('L',2)">💅 Nail polish</div>
+        <div class="mitem" id="L3" onclick="selectMatch('L',3)">👁️👄👁️ Eyes + lips + eyes</div>
+      </div>
+      <div class="match-col">
+        <div class="match-col-header">How people use it</div>
+        <div class="mitem" id="R0" onclick="selectMatch('R',0)">"I don't care — I look fabulous."</div>
+        <div class="mitem" id="R1" onclick="selectMatch('R',1)">"Everything is fine 🙂" (it is not fine)</div>
+        <div class="mitem" id="R2" onclick="selectMatch('R',2)">"It is what it is." / silent shock</div>
+        <div class="mitem" id="R3" onclick="selectMatch('R',3)">"That's so funny I'm literally crying with laughter."</div>
+      </div>
+    </div>
+    <div class="fb" id="matchFb" style="margin-top:14px;"></div>
+  </div>
+
+  <div class="bubble">💡 <strong>Fun fact:</strong> 😂 was Oxford Dictionary's "Word of the Year" in 2015 — the first emoji ever to receive this award!</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PAGE 4 — GRAMMAR BOX + QUICK CHECK
+═══════════════════════════════════════ -->
+<div class="page" id="p4">
+  <span class="tag">Grammar Focus</span>
+  <h1 class="page-h1">-ed vs. -ing adjectives 🎯</h1>
+  <p class="page-sub">Study the grammar box, then do the quick check below.</p>
+
+  <div class="gbox">
+    <div class="gbox-label">📚 Grammar Box</div>
+
+    <p class="gbox-rule">Use <strong>-ing adjectives</strong> to describe a <strong>thing, situation, or person</strong> that causes the feeling.</p>
+    <div class="gbox-eg">The emoji conversation was <b>confusing</b>. <span style="opacity:0.7">(= it caused confusion)</span></div>
+    <div class="gbox-eg">Riley's emotions in <em>Inside Out 2</em> are <b>overwhelming</b>. <span style="opacity:0.7">(= they overwhelm her)</span></div>
+
+    <p class="gbox-rule" style="margin-top:6px;">Use <strong>-ed adjectives</strong> to describe how a <strong>person feels</strong>.</p>
+    <div class="gbox-eg">I was <b>confused</b> by the emoji. <span style="opacity:0.7">(= I felt confusion)</span></div>
+    <div class="gbox-eg">She felt <b>overwhelmed</b> by her new emotions. <span style="opacity:0.7">(= she had that feeling)</span></div>
+
+    <div class="gbox-pairs">
+      <div class="gbox-pairs-label">Common pairs to remember:</div>
+      <p>boring / bored &nbsp;·&nbsp; confusing / confused &nbsp;·&nbsp; exciting / excited</p>
+      <p>surprising / surprised &nbsp;·&nbsp; frustrating / frustrated &nbsp;·&nbsp; amusing / amused</p>
+      <p>fascinating / fascinated &nbsp;·&nbsp; embarrassing / embarrassed</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <p style="font-weight:700;font-size:0.93rem;margin-bottom:14px;">Quick check — click the correct sentence.</p>
+
+    <p style="font-size:0.9rem;color:#374151;margin-bottom:10px;">1. Which sentence is correct?</p>
+    <div class="mc-group" id="g1g">
+      <button class="mc-opt" onclick="mc(this,'g1g','g1fb',true)">A. The emoji was confusing. I was confused.</button>
+      <button class="mc-opt" onclick="mc(this,'g1g','g1fb',false)">B. The emoji was confused. I was confusing.</button>
+      <button class="mc-opt" onclick="mc(this,'g1g','g1fb',false)">C. The emoji was confuse. I was confuse.</button>
+    </div>
+    <div class="fb" id="g1fb"></div>
+
+    <hr class="q-sep">
+
+    <p style="font-size:0.9rem;color:#374151;margin-bottom:10px;">2. "The plot of <em>Dune: Part Two</em> is really ___. Most people feel ___ in the first half."</p>
+    <div class="mc-group" id="g2g">
+      <button class="mc-opt" onclick="mc(this,'g2g','g2fb',false)">A. confused / confusing</button>
+      <button class="mc-opt" onclick="mc(this,'g2g','g2fb',true)">B. confusing / confused</button>
+      <button class="mc-opt" onclick="mc(this,'g2g','g2fb',false)">C. confusing / confusing</button>
+    </div>
+    <div class="fb" id="g2fb"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PAGE 5 — FILL-IN-THE-BLANK (typed)
+═══════════════════════════════════════ -->
+<div class="page" id="p5">
+  <span class="tag">Grammar Practice</span>
+  <h1 class="page-h1">Type the right form ✏️</h1>
+  <p class="page-sub">Complete each sentence with the <strong>-ed</strong> or <strong>-ing</strong> form of the word in brackets.</p>
+
+  <div class="card">
+
+    <div class="gap-line">1. The ending of <em>Inside Out 2</em> is so
+      <input class="blank" id="f1" placeholder="-ed / -ing"> (move) — I actually cried.
+      <span id="f1t"></span>
+    </div>
+    <div class="gap-line">2. I felt really
+      <input class="blank" id="f2" placeholder="-ed / -ing"> (excite) when the trailer for the new Marvel film dropped.
+      <span id="f2t"></span>
+    </div>
+    <div class="gap-line">3. Some people find emoji slang very
+      <input class="blank" id="f3" placeholder="-ed / -ing"> (confuse) because it changes so quickly.
+      <span id="f3t"></span>
+    </div>
+    <div class="gap-line">4. My mum sent me 👍 and I was a bit
+      <input class="blank" id="f4" placeholder="-ed / -ing"> (surprise) — she never uses emojis!
+      <span id="f4t"></span>
+    </div>
+    <div class="gap-line">5. The documentary about emoji culture is really
+      <input class="blank" id="f5" placeholder="-ed / -ing"> (fascinate) — I learned so much.
+      <span id="f5t"></span>
+    </div>
+
+    <button class="check-btn" onclick="checkBlanks()">Check answers ✓</button>
+    <div class="fb" id="blankFb" style="margin-top:12px;"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PAGE 6 — DROPDOWN GAPS
+═══════════════════════════════════════ -->
+<div class="page" id="p6">
+  <span class="tag">Grammar Practice</span>
+  <h1 class="page-h1">Choose the right word 🎯</h1>
+  <p class="page-sub">Select the correct -ed or -ing adjective from each dropdown.</p>
+
+  <div class="card">
+    <div class="gap-line">1. It was really
+      <select class="gapsel" id="d1" onchange="chkDrop('d1','embarrassing','d1t')">
+        <option value="">choose…</option>
+        <option>embarrassed</option>
+        <option>embarrassing</option>
+      </select>
+      when she sent the wrong emoji to her teacher by mistake.
+      <span class="tick" id="d1t"></span>
+    </div>
+    <div class="gap-line">2. Marco was
+      <select class="gapsel" id="d2" onchange="chkDrop('d2','annoyed','d2t')">
+        <option value="">choose…</option>
+        <option>annoyed</option>
+        <option>annoying</option>
+      </select>
+      because his friend kept replying with just "👍" to everything.
+      <span class="tick" id="d2t"></span>
+    </div>
+    <div class="gap-line">3. I find passive-aggressive emojis so
+      <select class="gapsel" id="d3" onchange="chkDrop('d3','frustrating','d3t')">
+        <option value="">choose…</option>
+        <option>frustrated</option>
+        <option>frustrating</option>
+      </select>
+      — just say what you actually mean!
+      <span class="tick" id="d3t"></span>
+    </div>
+    <div class="gap-line">4. The whole class was genuinely
+      <select class="gapsel" id="d4" onchange="chkDrop('d4','amused','d4t')">
+        <option value="">choose…</option>
+        <option>amused</option>
+        <option>amusing</option>
+      </select>
+      when the professor used 💀 on the lecture slides.
+      <span class="tick" id="d4t"></span>
+    </div>
+    <div class="gap-line">5. The cultural differences in emoji meanings are quite
+      <select class="gapsel" id="d5" onchange="chkDrop('d5','surprising','d5t')">
+        <option value="">choose…</option>
+        <option>surprised</option>
+        <option>surprising</option>
+      </select>
+      when you first hear about them.
+      <span class="tick" id="d5t"></span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PAGE 7 — SENTENCE COMBINING
+═══════════════════════════════════════ -->
+<div class="page" id="p7">
+  <span class="tag">Grammar Practice</span>
+  <h1 class="page-h1">Combine the sentences ✍️</h1>
+  <p class="page-sub">Join each pair into <strong>one sentence</strong> using an -ed or -ing adjective. Then check the model answer.</p>
+
+  <div class="card">
+
+    <div class="sc-block">
+      <div class="sc-src">
+        <span>a. The plot of <em>Dune: Part Two</em> is very complex.</span>
+        <span>b. It causes a lot of confusion in viewers.</span>
+      </div>
+      <textarea class="sc-input" id="sc1" rows="2" placeholder="Write your sentence here…"></textarea>
+      <br>
+      <button class="show-btn" onclick="showModel('sc1m')">Show model answer 💡</button>
+      <div class="model" id="sc1m">✅ <strong>Model answer:</strong> The plot of <em>Dune: Part Two</em> is very <strong>confusing</strong> for many viewers.</div>
+    </div>
+
+    <div class="sc-block">
+      <div class="sc-src">
+        <span>a. Anxiety has a lot of energy in <em>Inside Out 2</em>.</span>
+        <span>b. She makes Riley feel overwhelmed.</span>
+      </div>
+      <textarea class="sc-input" id="sc2" rows="2" placeholder="Write your sentence here…"></textarea>
+      <br>
+      <button class="show-btn" onclick="showModel('sc2m')">Show model answer 💡</button>
+      <div class="model" id="sc2m">✅ <strong>Model answer:</strong> Anxiety is <strong>overwhelming</strong> / Riley feels <strong>overwhelmed</strong> by Anxiety's energy in <em>Inside Out 2</em>.</div>
+    </div>
+
+    <div class="sc-block">
+      <div class="sc-src">
+        <span>a. My teacher sent "🙂" after I handed in my essay late.</span>
+        <span>b. I didn't know what to think.</span>
+      </div>
+      <textarea class="sc-input" id="sc3" rows="2" placeholder="Write your sentence here…"></textarea>
+      <br>
+      <button class="show-btn" onclick="showModel('sc3m')">Show model answer 💡</button>
+      <div class="model" id="sc3m">✅ <strong>Model answer:</strong> I was really <strong>confused</strong> when my teacher sent "🙂" after I handed in my essay late. <small style="opacity:0.8">(Also possible: "My teacher's "🙂" was very <strong>confusing</strong> after I handed in my essay late.")</small></div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PAGE 8 — ERROR CORRECTION (click the wrong word)
+═══════════════════════════════════════ -->
+<div class="page" id="p8">
+  <span class="tag">Error Correction</span>
+  <h1 class="page-h1">Spot the mistake! 🐛</h1>
+  <p class="page-sub">Each sentence has <strong>one wrong adjective</strong> (-ed or -ing). Click on the word that is incorrect.</p>
+
+  <div class="card">
+
+    <!-- Sentence 1: boring → bored -->
+    <div class="err-row" id="err1">
+      <p class="err-sent">1. "I was really
+        <span class="ew" onclick="errClick('err1',this,true,'boring → <b>bored</b> (you feel it, so use -ed)')">boring</span>
+        during the three-hour documentary — I nearly
+        <span class="ew" onclick="errClick('err1',this,false,'')">fell</span>
+        asleep."
+      </p>
+      <div class="fb" id="err1fb"></div>
+    </div>
+
+    <hr class="q-sep">
+
+    <!-- Sentence 2: surprised → surprising -->
+    <div class="err-row" id="err2">
+      <p class="err-sent">2. "The cultural differences between emojis are really
+        <span class="ew" onclick="errClick('err2',this,true,'surprised → <b>surprising</b> (the situation causes surprise, so use -ing)')">surprised</span>
+        when you
+        <span class="ew" onclick="errClick('err2',this,false,'')">first</span>
+        learn about them."
+      </p>
+      <div class="fb" id="err2fb"></div>
+    </div>
+
+    <hr class="q-sep">
+
+    <!-- Sentence 3: embarrassing → embarrassed -->
+    <div class="err-row" id="err3">
+      <p class="err-sent">3. "My friend was so
+        <span class="ew" onclick="errClick('err3',this,true,'embarrassing → <b>embarrassed</b> (she felt the emotion, so use -ed)')">embarrassing</span>
+        when she
+        <span class="ew" onclick="errClick('err3',this,false,'')">accidentally</span>
+        sent 😍 to her teacher."
+      </p>
+      <div class="fb" id="err3fb"></div>
+    </div>
+
+    <hr class="q-sep">
+
+    <!-- Sentence 4: fascinated → fascinating -->
+    <div class="err-row" id="err4">
+      <p class="err-sent">4. "The documentary about emojis is totally
+        <span class="ew" onclick="errClick('err4',this,true,'fascinated → <b>fascinating</b> (the documentary causes fascination, so use -ing)')">fascinated</span>
+        — I
+        <span class="ew" onclick="errClick('err4',this,false,'')">watched</span>
+        it twice."
+      </p>
+      <div class="fb" id="err4fb"></div>
+    </div>
+
+    <hr class="q-sep">
+
+    <!-- Sentence 5: exciting → excited -->
+    <div class="err-row" id="err5">
+      <p class="err-sent">5. "I felt really
+        <span class="ew" onclick="errClick('err5',this,true,'exciting → <b>excited</b> (I felt the emotion, so use -ed)')">exciting</span>
+        when I
+        <span class="ew" onclick="errClick('err5',this,false,'')">discovered</span>
+        that 👍 means something rude in some countries."
+      </p>
+      <div class="fb" id="err5fb"></div>
+    </div>
+
+  </div>
+
+  <div class="bubble">💡 <strong>Remember:</strong> -<em>ing</em> describes the thing / situation. -<em>ed</em> describes how a person feels.</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PAGE 9 — DECODE THE EMOJI (Click MC)
+═══════════════════════════════════════ -->
+<div class="page" id="p9">
+  <span class="tag">Fun Challenge</span>
+  <h1 class="page-h1">Decode the emoji message 🔍</h1>
+  <p class="page-sub">What do these emoji sequences really mean? Click the best translation.</p>
+
+  <div class="card">
+    <div style="text-align:center;font-size:2.2rem;letter-spacing:6px;margin-bottom:12px;">🎬 😭 💀 😂</div>
+    <p style="font-size:0.93rem;color:#374151;margin-bottom:12px;">Your friend sends you this right after watching a film. What do they mean?</p>
+    <div class="mc-group" id="dc1g">
+      <button class="mc-opt" onclick="mc(this,'dc1g','dc1fb',false)">The film was terrible and they hated it.</button>
+      <button class="mc-opt" onclick="mc(this,'dc1g','dc1fb',true)">The film was so emotional and funny they nearly "died" laughing and crying.</button>
+      <button class="mc-opt" onclick="mc(this,'dc1g','dc1fb',false)">They're warning you not to watch the film.</button>
+    </div>
+    <div class="fb" id="dc1fb"></div>
+  </div>
+
+  <div class="card">
+    <div style="text-align:center;font-size:2.2rem;letter-spacing:6px;margin-bottom:12px;">✅ 🙂 👍</div>
+    <p style="font-size:0.93rem;color:#374151;margin-bottom:12px;">After a small argument, your friend asks <em>"Are you okay?"</em> and you reply with this. What's the real meaning in Gen Z / UK culture?</p>
+    <div class="mc-group" id="dc2g">
+      <button class="mc-opt" onclick="mc(this,'dc2g','dc2fb',false)">You're completely fine — no problem at all!</button>
+      <button class="mc-opt" onclick="mc(this,'dc2g','dc2fb',true)">You're still a little upset but pretending everything is fine (passive-aggressive).</button>
+      <button class="mc-opt" onclick="mc(this,'dc2g','dc2fb',false)">You want to end the conversation immediately.</button>
+    </div>
+    <div class="fb" id="dc2fb"></div>
+  </div>
+
+  <div class="card">
+    <div style="text-align:center;font-size:2.2rem;letter-spacing:6px;margin-bottom:12px;">🏃‍♀️💨 📚😰</div>
+    <p style="font-size:0.93rem;color:#374151;margin-bottom:12px;">A classmate sends you this at 11pm the night before an exam. What do they mean?</p>
+    <div class="mc-group" id="dc3g">
+      <button class="mc-opt" onclick="mc(this,'dc3g','dc3fb',false)">They finished studying and feel relaxed.</button>
+      <button class="mc-opt" onclick="mc(this,'dc3g','dc3fb',false)">They're going for a run instead of revising.</button>
+      <button class="mc-opt" onclick="mc(this,'dc3g','dc3fb',true)">They're rushing to cram revision at the last minute and panicking.</button>
+    </div>
+    <div class="fb" id="dc3fb"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PAGE 10 — TRUE / FALSE EMOJI FACTS
+═══════════════════════════════════════ -->
+<div class="page" id="p10">
+  <span class="tag">Did You Know?</span>
+  <h1 class="page-h1">Emoji facts: True or False? 🤯</h1>
+  <p class="page-sub">Read each fact and decide: is it <strong>true</strong> or <strong>false</strong>? Click to find out!</p>
+
+  <div class="card">
+
+    <!-- Fact 1 -->
+    <div style="margin-bottom:6px;">
+      <p style="font-size:0.93rem;color:#374151;margin-bottom:10px;">1. The first emoji was created in Japan in <strong>1999</strong>.</p>
+      <div class="mc-group" id="tf1g">
+        <button class="mc-opt" onclick="mc(this,'tf1g','tf1fb',true)">✅ True</button>
+        <button class="mc-opt" onclick="mc(this,'tf1g','tf1fb',false)">❌ False</button>
+      </div>
+      <div class="fb" id="tf1fb"></div>
+      <div class="tf-detail" id="tf1d" style="display:none;"></div>
+    </div>
+
+    <hr class="q-sep">
+
+    <!-- Fact 2 -->
+    <div style="margin-bottom:6px;">
+      <p style="font-size:0.93rem;color:#374151;margin-bottom:10px;">2. The word <em>"emoji"</em> comes from the <strong>Chinese</strong> language.</p>
+      <div class="mc-group" id="tf2g">
+        <button class="mc-opt" onclick="mc(this,'tf2g','tf2fb',false)">✅ True</button>
+        <button class="mc-opt" onclick="mc(this,'tf2g','tf2fb',true)">❌ False</button>
+      </div>
+      <div class="fb" id="tf2fb"></div>
+    </div>
+
+    <hr class="q-sep">
+
+    <!-- Fact 3 -->
+    <div style="margin-bottom:6px;">
+      <p style="font-size:0.93rem;color:#374151;margin-bottom:10px;">3. There are now more than <strong>3,000</strong> official emojis in the Unicode standard.</p>
+      <div class="mc-group" id="tf3g">
+        <button class="mc-opt" onclick="mc(this,'tf3g','tf3fb',true)">✅ True</button>
+        <button class="mc-opt" onclick="mc(this,'tf3g','tf3fb',false)">❌ False</button>
+      </div>
+      <div class="fb" id="tf3fb"></div>
+    </div>
+
+    <hr class="q-sep">
+
+    <!-- Fact 4 -->
+    <div style="margin-bottom:6px;">
+      <p style="font-size:0.93rem;color:#374151;margin-bottom:10px;">4. 😂 has been the world's most-used emoji for several years in a row.</p>
+      <div class="mc-group" id="tf4g">
+        <button class="mc-opt" onclick="mc(this,'tf4g','tf4fb',true)">✅ True</button>
+        <button class="mc-opt" onclick="mc(this,'tf4g','tf4fb',false)">❌ False</button>
+      </div>
+      <div class="fb" id="tf4fb"></div>
+    </div>
+
+    <hr class="q-sep">
+
+    <!-- Fact 5 -->
+    <div style="margin-bottom:6px;">
+      <p style="font-size:0.93rem;color:#374151;margin-bottom:10px;">5. Apple invented the emoji and introduced it to the world.</p>
+      <div class="mc-group" id="tf5g">
+        <button class="mc-opt" onclick="mc(this,'tf5g','tf5fb',false)">✅ True</button>
+        <button class="mc-opt" onclick="mc(this,'tf5g','tf5fb',true)">❌ False</button>
+      </div>
+      <div class="fb" id="tf5fb"></div>
+    </div>
+
+  </div>
+
+  <div class="bubble">
+    💡 <strong>Extra facts:</strong> Emoji (絵文字) means "picture character" in Japanese — <em>e</em> (絵) = picture, <em>moji</em> (文字) = character. They were invented by <strong>Shigetaka Kurita</strong> for a Japanese phone company, not by Apple!
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PAGE 11 — SPEAKING
+═══════════════════════════════════════ -->
+<div class="page" id="p11">
+  <span class="tag">Speaking</span>
+  <h1 class="page-h1">Let's talk! 🗣️</h1>
+  <p class="page-sub">Discuss these questions. Try to use -ed and -ing adjectives in your answers!</p>
+
+  <div class="speak-card">
+    <div class="qn">Question 1</div>
+    <p>Think of an emoji you use very differently from its official meaning. Which one is it, and what does it mean in your group of friends?</p>
+  </div>
+
+  <div class="speak-card">
+    <div class="qn">Question 2</div>
+    <p>Have you ever been <strong>confused</strong> or <strong>embarrassed</strong> because of a misunderstanding caused by an emoji or text message? Tell the story!</p>
+  </div>
+
+  <div class="speak-card">
+    <div class="qn">Question 3</div>
+    <p>Is it <strong>surprising</strong> to you that the same emoji can mean something rude in one country and completely normal in another? Why?</p>
+  </div>
+
+  <div class="speak-card">
+    <div class="qn">Question 4</div>
+    <p>In 50 years, do you think people will still use emojis? What new kinds of digital language might exist?</p>
+  </div>
+
+  <div class="useful-box">
+    <div class="label">💬 Useful language</div>
+    <p>
+      "I think it's really <em>interesting</em> that…" &nbsp;·&nbsp; "I was <em>surprised</em> to learn that…"<br>
+      "Personally, I find it <em>confusing</em> when…" &nbsp;·&nbsp; "That's what's so <em>fascinating</em> about…"<br>
+      "It can be really <em>embarrassing</em> if…" &nbsp;·&nbsp; "I was totally <em>amused</em> when…"
+    </p>
+  </div>
+
+  <div class="finish-block">
+    <span class="big-emoji">🎉</span>
+    <h2>Lesson complete — great work today!</h2>
+  </div>
+</div>
+
+
+<!-- ═══════════ NAV FOOTER ═══════════ -->
+<div class="navfoot">
+  <div class="navfoot-inner">
+    <button class="navbtn navbtn-prev" id="prevBtn" onclick="goPage(-1)" disabled>← Back</button>
+    <span class="navpill" id="navPill">Page 1</span>
+    <button class="navbtn navbtn-next" id="nextBtn" onclick="goPage(1)">Next →</button>
+  </div>
+</div>
+
+
+<script>
+// ═══════════ NAVIGATION ═══════════
+let cur = 1;
+const TOTAL = 11;
+
+function goPage(dir) {
+  document.getElementById('p' + cur).classList.remove('active');
+  cur = Math.max(1, Math.min(TOTAL, cur + dir));
+  document.getElementById('p' + cur).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateUI();
+}
+
+function updateUI() {
+  document.getElementById('barFill').style.width = (cur / TOTAL * 100) + '%';
+  document.getElementById('pgCount').textContent = cur + ' / ' + TOTAL;
+  document.getElementById('navPill').textContent = 'Page ' + cur;
+  document.getElementById('prevBtn').disabled = cur === 1;
+  document.getElementById('nextBtn').textContent = cur === TOTAL ? 'Finish ✓' : 'Next →';
+}
+
+// ═══════════ MULTIPLE CHOICE ═══════════
+// Extra feedback for True/False facts
+const TF_FACTS = {
+  tf1fb: { ok: '✅ True! Shigetaka Kurita created the first 176 emoji in 1999 for a Japanese mobile phone company.', bad: '❌ False — the first emoji were made in Japan in 1999, not later!' },
+  tf2fb: { ok: '✅ Correct — it\'s NOT Chinese. "Emoji" is Japanese: e (絵) = picture + moji (文字) = character.', bad: '❌ Actually false! "Emoji" is a Japanese word, not Chinese.' },
+  tf3fb: { ok: '✅ True! Unicode 15.1 includes over 3,600 emoji — and new ones are added every year.', bad: '❌ False — there are actually more than 3,600 official emoji now!' },
+  tf4fb: { ok: '✅ True! 😂 has topped emoji usage charts for years — it\'s the most-sent emoji worldwide.', bad: '❌ False — 😂 really is the most-used emoji globally for several years running.' },
+  tf5fb: { ok: '✅ Correct — it\'s FALSE! Apple popularised emoji, but they were invented in Japan in 1999.', bad: '❌ Actually false! Emoji were invented in Japan by Shigetaka Kurita, not Apple.' },
+};
+
+function mc(btn, groupId, fbId, isCorrect) {
+  const group = document.getElementById(groupId);
+  const btns = group.querySelectorAll('.mc-opt');
+  btns.forEach(b => { b.classList.remove('correct','wrong','show-ans'); b.disabled = true; });
+
+  const fb = document.getElementById(fbId);
+  const factMsg = TF_FACTS[fbId];
+  if (isCorrect) {
+    btn.classList.add('correct');
+    fb.className = 'fb ok';
+    fb.innerHTML = factMsg ? factMsg.ok : '✅ Correct!';
+  } else {
+    btn.classList.add('wrong');
+    btns.forEach(b => {
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(',true)')) b.classList.add('show-ans');
+    });
+    fb.className = 'fb bad';
+    fb.innerHTML = factMsg ? factMsg.bad : '❌ Not quite — see the highlighted answer.';
+  }
+}
+
+// ═══════════ MATCHING ═══════════
+// left[i] correct right[j]: L0→R3, L1→R1, L2→R0, L3→R2
+const MATCH_KEY = { 0:3, 1:1, 2:0, 3:2 };
+let mSel = { L: null, R: null };
+let mDone = new Set();
+
+function selectMatch(side, idx) {
+  const el = document.getElementById(side + idx);
+  if (el.classList.contains('paired')) return;
+
+  // Deselect previous on same side
+  if (mSel[side] !== null) {
+    const prev = document.getElementById(side + mSel[side]);
+    if (prev && !prev.classList.contains('paired')) prev.classList.remove('sel');
+  }
+  el.classList.add('sel');
+  mSel[side] = idx;
+
+  if (mSel.L !== null && mSel.R !== null) {
+    const li = mSel.L, ri = mSel.R;
+    const lEl = document.getElementById('L' + li);
+    const rEl = document.getElementById('R' + ri);
+    if (MATCH_KEY[li] === ri) {
+      lEl.classList.remove('sel'); lEl.classList.add('paired');
+      rEl.classList.remove('sel'); rEl.classList.add('paired');
+      mDone.add(li);
+      if (mDone.size === 4) {
+        const fb = document.getElementById('matchFb');
+        fb.className = 'fb ok';
+        fb.textContent = '🎉 All matched correctly — well done!';
+      }
+    } else {
+      lEl.classList.add('shake'); rEl.classList.add('shake');
+      setTimeout(() => { lEl.classList.remove('shake','sel'); rEl.classList.remove('shake','sel'); }, 450);
+    }
+    mSel = { L: null, R: null };
+  }
+}
+
+// ═══════════ FILL-IN-THE-BLANK ═══════════
+const BLANK_ANS = {
+  f1: ['moving','moved'],
+  f2: ['excited'],
+  f3: ['confusing'],
+  f4: ['surprised'],
+  f5: ['fascinating']
+};
+
+function checkBlanks() {
+  let ok = 0;
+  Object.entries(BLANK_ANS).forEach(([id, ans]) => {
+    const el = document.getElementById(id);
+    const tick = document.getElementById(id + 't');
+    const v = el.value.trim().toLowerCase();
+    if (ans.includes(v)) {
+      el.classList.add('ok'); el.classList.remove('bad');
+      if (tick) tick.textContent = ' ✅';
+      ok++;
+    } else {
+      el.classList.add('bad'); el.classList.remove('ok');
+      if (tick) tick.textContent = ' ❌';
+    }
+  });
+  const fb = document.getElementById('blankFb');
+  if (ok === 5) {
+    fb.className = 'fb ok'; fb.textContent = '🎉 All five correct — fantastic!';
+  } else {
+    fb.className = 'fb bad'; fb.textContent = ok + '/5 correct. Check the red boxes and try again!';
+  }
+}
+
+// ═══════════ DROPDOWN ═══════════
+function chkDrop(id, correct, tickId) {
+  const sel = document.getElementById(id);
+  const tick = document.getElementById(tickId);
+  if (!sel.value) return;
+  if (sel.value === correct) {
+    sel.classList.add('ok'); sel.classList.remove('bad');
+    tick.textContent = ' ✅';
+  } else {
+    sel.classList.add('bad'); sel.classList.remove('ok');
+    tick.textContent = ' ❌';
+  }
+}
+
+// ═══════════ MODEL ANSWER ═══════════
+function showModel(id) {
+  document.getElementById(id).classList.add('show');
+}
+
+// ═══════════ ERROR CORRECTION ═══════════
+function errClick(rowId, span, isWrong, explanation) {
+  const row = document.getElementById(rowId);
+  if (row.dataset.done) return;
+  const spans = row.querySelectorAll('.ew');
+  const fb = document.getElementById(rowId + 'fb');
+
+  if (isWrong) {
+    row.dataset.done = '1';
+    span.classList.add('err-correct');
+    // grey out the other clickable word
+    spans.forEach(s => { if (s !== span) s.classList.add('err-ok'); });
+    fb.className = 'fb ok';
+    fb.innerHTML = '✅ Correct! ' + explanation;
+  } else {
+    span.classList.add('err-wrong');
+    setTimeout(() => span.classList.remove('err-wrong'), 600);
+    fb.className = 'fb bad';
+    fb.textContent = '❌ That word is fine — look at the other highlighted word!';
+    setTimeout(() => { if (!row.dataset.done) fb.className = 'fb'; }, 2000);
+  }
+}
+
+updateUI();
+</script>
+</body>
+</html>
