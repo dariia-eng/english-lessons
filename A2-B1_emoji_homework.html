@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emoji Homework</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #f4f0fc;
+  color: #1a1a2e;
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+.wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 22px 60px;
+}
+
+/* ── HEADER ── */
+.hw-header {
+  background: #1e1b4b;
+  border-radius: 20px;
+  padding: 28px 30px;
+  margin-bottom: 28px;
+  color: #e2d9f3;
+}
+.hw-header .tag {
+  display: inline-block;
+  background: #7c3aed; color: #fff;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 12px; border-radius: 99px; margin-bottom: 12px;
+}
+.hw-header h1 {
+  font-size: 1.45rem; font-weight: 900; color: #fff; line-height: 1.25; margin-bottom: 6px;
+}
+.hw-header p { font-size: 0.88rem; color: #a78bfa; }
+
+/* ── NAME FIELD ── */
+.name-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 14px rgba(80,40,160,0.07);
+  display: flex; align-items: center; gap: 14px;
+}
+.name-label {
+  font-weight: 700; font-size: 0.9rem; color: #1a1a2e; white-space: nowrap;
+}
+.name-input {
+  flex: 1;
+  border: 2px solid #e2d9f3; border-radius: 10px;
+  padding: 9px 14px; font-size: 0.95rem; font-family: inherit;
+  outline: none; transition: border-color 0.18s;
+}
+.name-input:focus { border-color: #7c3aed; }
+.name-input.filled { border-color: #22c55e; }
+
+/* ── EXERCISE BLOCK ── */
+.ex-block {
+  background: #fff;
+  border-radius: 18px;
+  padding: 24px 26px;
+  margin-bottom: 22px;
+  box-shadow: 0 2px 14px rgba(80,40,160,0.06);
+}
+.ex-tag {
+  display: inline-block;
+  background: #ede9fe; color: #6d28d9;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 99px; margin-bottom: 10px;
+}
+.ex-title {
+  font-size: 1.05rem; font-weight: 800; color: #1a1a2e; margin-bottom: 4px;
+}
+.ex-sub {
+  font-size: 0.88rem; color: #64748b; margin-bottom: 20px; line-height: 1.5;
+}
+
+/* ── GRAMMAR BOX (dark) ── */
+.gbox {
+  background: #1e1b4b; border-radius: 14px;
+  padding: 18px 20px; margin-bottom: 20px;
+}
+.gbox-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #a78bfa; margin-bottom: 12px; }
+.gbox p { font-size: 0.88rem; color: #e2d9f3; line-height: 1.7; }
+.gbox p + p { margin-top: 6px; }
+.gbox strong { color: #f9a8d4; }
+
+/* ── FILL IN BLANK ── */
+.gap-line {
+  font-size: 0.93rem; color: #374151; line-height: 2.6; margin-bottom: 2px;
+}
+.blank {
+  border: 2px solid #e2d9f3; border-radius: 8px;
+  padding: 4px 10px; font-size: 0.9rem; font-family: inherit;
+  outline: none; width: 138px; text-align: center;
+  transition: border-color 0.18s;
+}
+.blank:focus { border-color: #7c3aed; }
+.blank.ok  { border-color: #22c55e; background: #f0fdf4; color: #15803d; }
+.blank.bad { border-color: #f43f5e; background: #fff1f2; color: #be123c; }
+.icon { font-size: 0.95rem; margin-left: 2px; }
+
+/* ── EMOJI MATCHING (dropdowns) ── */
+.emoji-match-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.93rem;
+}
+.emoji-match-row:last-child { border-bottom: none; }
+.em-emoji { font-size: 1.8rem; width: 44px; text-align: center; flex-shrink: 0; }
+.gapsel {
+  flex: 1;
+  border: 2px solid #e2d9f3; border-radius: 8px;
+  padding: 7px 10px; font-size: 0.88rem; font-family: inherit;
+  background: white; cursor: pointer; outline: none;
+  transition: border-color 0.18s;
+}
+.gapsel:focus { border-color: #7c3aed; }
+.gapsel.ok  { border-color: #22c55e; background: #f0fdf4; color: #15803d; }
+.gapsel.bad { border-color: #f43f5e; background: #fff1f2; color: #be123c; }
+.em-tick { font-size: 1.1rem; width: 22px; flex-shrink: 0; }
+
+/* ── ERROR CORRECTION ── */
+.err-item { margin-bottom: 18px; }
+.err-sentence {
+  background: #f8f5ff; border-radius: 10px;
+  padding: 10px 14px; font-size: 0.92rem; color: #374151;
+  line-height: 1.6; margin-bottom: 8px;
+}
+.err-sentence .wrong-word {
+  text-decoration: underline wavy #f43f5e;
+  color: #be123c; font-weight: 700;
+}
+.correction-input {
+  width: 100%; border: 2px solid #e2d9f3; border-radius: 9px;
+  padding: 8px 13px; font-size: 0.9rem; font-family: inherit;
+  outline: none; transition: border-color 0.18s;
+}
+.correction-input:focus { border-color: #7c3aed; }
+.correction-input.ok  { border-color: #22c55e; background: #f0fdf4; color: #15803d; }
+.correction-input.bad { border-color: #f43f5e; background: #fff1f2; }
+.model-ans {
+  display: none; background: #f0fdf4; border: 1px solid #bbf7d0;
+  color: #15803d; border-radius: 8px; padding: 8px 12px;
+  font-size: 0.85rem; margin-top: 6px; line-height: 1.5;
+}
+.model-ans.show { display: block; }
+
+/* ── FREE WRITING ── */
+.write-area {
+  width: 100%; border: 2px solid #e2d9f3; border-radius: 10px;
+  padding: 12px 14px; font-size: 0.93rem; font-family: inherit;
+  outline: none; resize: vertical; min-height: 100px;
+  transition: border-color 0.18s; line-height: 1.7;
+}
+.write-area:focus { border-color: #7c3aed; }
+.write-hint {
+  font-size: 0.82rem; color: #94a3b8; margin-top: 6px; line-height: 1.5;
+}
+
+/* ── FEEDBACK ── */
+.fb {
+  display: none; margin-top: 12px; padding: 11px 15px;
+  border-radius: 10px; font-size: 0.88rem; font-weight: 600; line-height: 1.5;
+}
+.fb.ok  { display:block; background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; }
+.fb.bad { display:block; background:#fff1f2; border:1px solid #fecdd3; color:#be123c; }
+
+/* ── BUTTONS ── */
+.check-btn {
+  background: #7c3aed; color: #fff; border: none;
+  border-radius: 10px; padding: 10px 22px;
+  font-weight: 700; font-size: 0.9rem; cursor: pointer;
+  margin-top: 16px; transition: background 0.18s, transform 0.1s;
+}
+.check-btn:hover { background: #6d28d9; transform: translateY(-1px); }
+
+/* ── SEND SECTION ── */
+.send-section {
+  background: #fff; border-radius: 18px;
+  padding: 26px 28px; margin-top: 10px;
+  box-shadow: 0 2px 14px rgba(80,40,160,0.07);
+  text-align: center;
+}
+.send-section h3 { font-size: 1rem; font-weight: 800; color: #1a1a2e; margin-bottom: 6px; }
+.send-section p { font-size: 0.88rem; color: #64748b; margin-bottom: 18px; line-height: 1.5; }
+.send-btn {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff; border: none; border-radius: 12px;
+  padding: 14px 36px; font-weight: 800; font-size: 1rem;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 4px 18px rgba(124,58,237,0.35);
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.send-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(124,58,237,0.45); }
+.send-btn:disabled {
+  background: #e2e8f0; color: #94a3b8;
+  cursor: not-allowed; box-shadow: none; transform: none;
+}
+.validation-msg {
+  font-size: 0.82rem; color: #f43f5e; margin-top: 12px;
+  min-height: 18px; font-weight: 600;
+}
+
+/* ── PROGRESS DOTS ── */
+.ex-status {
+  display: flex; gap: 8px; align-items: center; margin-top: 4px;
+}
+.dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #e2d9f3; transition: background 0.3s;
+  flex-shrink: 0;
+}
+.dot.done { background: #22c55e; }
+
+/* separators */
+.q-sep { border: none; border-top: 1px solid #f1f5f9; margin: 16px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="hw-header">
+    <div class="tag">Homework</div>
+    <h1>🌍 Emojis: A Secret Language?</h1>
+    <p>Complete all exercises, then click <strong>Send to Teacher</strong>.</p>
+  </div>
+
+  <!-- NAME FIELD -->
+  <div class="name-card">
+    <span class="name-label">✏️ Your name:</span>
+    <input class="name-input" id="studentName" type="text" placeholder="Type your full name here…"
+           oninput="onNameInput()" autocomplete="name">
+  </div>
+
+
+  <!-- ═══════════════════════════════════
+       EXERCISE 1 — Fill in the blank
+  ═══════════════════════════════════ -->
+  <div class="ex-block" id="block1">
+    <span class="ex-tag">Exercise 1</span>
+    <div class="ex-title">Fill in the blank — <em>-ed</em> or <em>-ing</em>?</div>
+    <p class="ex-sub">Complete each sentence with the correct form of the adjective in brackets.</p>
+
+    <div class="gbox">
+      <div class="gbox-label">🔑 Remember</div>
+      <p><strong>-ing</strong> → describes the thing / situation that causes the feeling.</p>
+      <p><strong>-ed</strong> → describes how a person feels.</p>
+    </div>
+
+    <div class="gap-line">1. The end of <em>Inside Out 2</em> is so
+      <input class="blank" id="e1q1" placeholder="-ed / -ing">
+      (move) — I actually cried!
+      <span class="icon" id="e1q1i"></span>
+    </div>
+    <div class="gap-line">2. She felt really
+      <input class="blank" id="e1q2" placeholder="-ed / -ing">
+      (embarrass) when she sent 😍 to her teacher.
+      <span class="icon" id="e1q2i"></span>
+    </div>
+    <div class="gap-line">3. This documentary about emojis is genuinely
+      <input class="blank" id="e1q3" placeholder="-ed / -ing">
+      (fascinate) — I watched it twice.
+      <span class="icon" id="e1q3i"></span>
+    </div>
+    <div class="gap-line">4. I was really
+      <input class="blank" id="e1q4" placeholder="-ed / -ing">
+      (surprise) to learn that 👍 can be rude in some countries.
+      <span class="icon" id="e1q4i"></span>
+    </div>
+    <div class="gap-line">5. It can be very
+      <input class="blank" id="e1q5" placeholder="-ed / -ing">
+      (confuse) when your friend uses 🙂 but isn't actually happy.
+      <span class="icon" id="e1q5i"></span>
+    </div>
+
+    <button class="check-btn" onclick="checkEx1()">Check ✓</button>
+    <div class="fb" id="ex1fb"></div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════
+       EXERCISE 2 — Emoji meanings
+  ═══════════════════════════════════ -->
+  <div class="ex-block" id="block2">
+    <span class="ex-tag">Exercise 2</span>
+    <div class="ex-title">What do these emojis really mean? 🔍</div>
+    <p class="ex-sub">Match each emoji to how people actually use it in Gen Z / UK culture. Choose from the dropdown.</p>
+
+    <div class="emoji-match-row">
+      <span class="em-emoji">🫠</span>
+      <select class="gapsel" id="em1">
+        <option value="">choose a meaning…</option>
+        <option value="a">"Ooh interesting — tell me more!"</option>
+        <option value="b">"I'm so embarrassed I want to disappear / melt."</option>
+        <option value="c">"That's so funny I'm literally crying."</option>
+        <option value="d">"Everything is fine." (but it isn't)</option>
+      </select>
+      <span class="em-tick" id="em1t"></span>
+    </div>
+
+    <div class="emoji-match-row">
+      <span class="em-emoji">😭</span>
+      <select class="gapsel" id="em2">
+        <option value="">choose a meaning…</option>
+        <option value="a">"Ooh interesting — tell me more!"</option>
+        <option value="b">"I'm so embarrassed I want to disappear / melt."</option>
+        <option value="c">"That's so funny I'm literally crying."</option>
+        <option value="d">"Everything is fine." (but it isn't)</option>
+      </select>
+      <span class="em-tick" id="em2t"></span>
+    </div>
+
+    <div class="emoji-match-row">
+      <span class="em-emoji">👀</span>
+      <select class="gapsel" id="em3">
+        <option value="">choose a meaning…</option>
+        <option value="a">"Ooh interesting — tell me more!"</option>
+        <option value="b">"I'm so embarrassed I want to disappear / melt."</option>
+        <option value="c">"That's so funny I'm literally crying."</option>
+        <option value="d">"Everything is fine." (but it isn't)</option>
+      </select>
+      <span class="em-tick" id="em3t"></span>
+    </div>
+
+    <div class="emoji-match-row">
+      <span class="em-emoji">🙃</span>
+      <select class="gapsel" id="em4">
+        <option value="">choose a meaning…</option>
+        <option value="a">"Ooh interesting — tell me more!"</option>
+        <option value="b">"I'm so embarrassed I want to disappear / melt."</option>
+        <option value="c">"That's so funny I'm literally crying."</option>
+        <option value="d">"Everything is fine." (but it isn't)</option>
+      </select>
+      <span class="em-tick" id="em4t"></span>
+    </div>
+
+    <button class="check-btn" onclick="checkEx2()">Check ✓</button>
+    <div class="fb" id="ex2fb"></div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════
+       EXERCISE 3 — Error correction
+  ═══════════════════════════════════ -->
+  <div class="ex-block" id="block3">
+    <span class="ex-tag">Exercise 3</span>
+    <div class="ex-title">Correct the mistake ✍️</div>
+    <p class="ex-sub">Each sentence has <strong>one wrong adjective</strong> (underlined). Rewrite the full sentence correctly in the box below it.</p>
+
+    <div class="err-item">
+      <div class="err-sentence">1. "I was so <span class="wrong-word">boring</span> during the three-hour lecture that I nearly fell asleep."</div>
+      <input class="correction-input" id="ec1" placeholder="Write the corrected sentence here…">
+      <div class="model-ans" id="ec1m">✅ <strong>Model answer:</strong> "I was so <strong>bored</strong> during the three-hour lecture that I nearly fell asleep." <em>(You feel bored → use -ed)</em></div>
+    </div>
+
+    <hr class="q-sep">
+
+    <div class="err-item">
+      <div class="err-sentence">2. "The cultural differences between countries are quite <span class="wrong-word">surprised</span> when you first learn about them."</div>
+      <input class="correction-input" id="ec2" placeholder="Write the corrected sentence here…">
+      <div class="model-ans" id="ec2m">✅ <strong>Model answer:</strong> "The cultural differences between countries are quite <strong>surprising</strong> when you first learn about them." <em>(The situation causes surprise → use -ing)</em></div>
+    </div>
+
+    <hr class="q-sep">
+
+    <div class="err-item">
+      <div class="err-sentence">3. "My friend was very <span class="wrong-word">embarrassing</span> when she realised she'd sent 💀 to her grandma."</div>
+      <input class="correction-input" id="ec3" placeholder="Write the corrected sentence here…">
+      <div class="model-ans" id="ec3m">✅ <strong>Model answer:</strong> "My friend was very <strong>embarrassed</strong> when she realised she'd sent 💀 to her grandma." <em>(She felt embarrassed → use -ed)</em></div>
+    </div>
+
+    <button class="check-btn" onclick="checkEx3()">Check ✓</button>
+    <div class="fb" id="ex3fb"></div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════
+       EXERCISE 4 — Free writing
+  ═══════════════════════════════════ -->
+  <div class="ex-block" id="block4">
+    <span class="ex-tag">Exercise 4</span>
+    <div class="ex-title">My emoji moment 💬</div>
+    <p class="ex-sub">Write <strong>3–4 sentences</strong> about a real or imaginary emoji misunderstanding — funny, embarrassing or confusing. Use at least <strong>two -ed / -ing adjectives</strong> from the lesson.</p>
+
+    <textarea class="write-area" id="freeWrite" rows="5"
+      placeholder="Example: Last week I sent 🙂 to my mum and she thought I was angry…"></textarea>
+    <p class="write-hint">💡 Try to use words like: <em>embarrassed, confusing, surprised, amusing, frustrated, fascinating…</em></p>
+
+    <button class="check-btn" onclick="checkEx4()">Done ✓</button>
+    <div class="fb" id="ex4fb"></div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════
+       SEND SECTION
+  ═══════════════════════════════════ -->
+  <div class="send-section">
+    <h3>Ready to send? 📬</h3>
+    <p>This will open your email app with everything filled in. Just hit <strong>Send</strong>!</p>
+
+    <!-- Mini checklist -->
+    <div style="display:inline-flex;flex-direction:column;gap:6px;text-align:left;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:#64748b;">
+        <span class="dot" id="dot-name"></span> Your name
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:#64748b;">
+        <span class="dot" id="dot-ex1"></span> Exercise 1 checked
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:#64748b;">
+        <span class="dot" id="dot-ex2"></span> Exercise 2 checked
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:#64748b;">
+        <span class="dot" id="dot-ex3"></span> Exercise 3 checked
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:#64748b;">
+        <span class="dot" id="dot-ex4"></span> Exercise 4 written
+      </div>
+    </div>
+
+    <br>
+    <button class="send-btn" id="sendBtn" onclick="sendToTeacher()" disabled>
+      📧 Send to Teacher
+    </button>
+    <div class="validation-msg" id="valMsg">Please fill in your name and complete all exercises first.</div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ═══ STATE ═══
+const checked = { ex1: false, ex2: false, ex3: false, ex4: false };
+
+function setDot(id, on) {
+  document.getElementById('dot-' + id).classList.toggle('done', on);
+}
+
+function refreshSendBtn() {
+  const nameOk = document.getElementById('studentName').value.trim().length > 0;
+  const allChecked = checked.ex1 && checked.ex2 && checked.ex3 && checked.ex4;
+  const btn = document.getElementById('sendBtn');
+  const msg = document.getElementById('valMsg');
+
+  setDot('name', nameOk);
+
+  btn.disabled = !(nameOk && allChecked);
+
+  if (!nameOk && !allChecked)      msg.textContent = 'Please fill in your name and complete all exercises first.';
+  else if (!nameOk)                msg.textContent = 'Please fill in your name.';
+  else if (!allChecked)            msg.textContent = 'Please check all exercises before sending.';
+  else                             msg.textContent = '';
+}
+
+function onNameInput() {
+  const el = document.getElementById('studentName');
+  el.classList.toggle('filled', el.value.trim().length > 0);
+  refreshSendBtn();
+}
+
+function markChecked(ex) {
+  checked[ex] = true;
+  setDot(ex, true);
+  refreshSendBtn();
+}
+
+// ═══ EXERCISE 1 ═══
+const EX1_ANS = {
+  e1q1: ['moving'],
+  e1q2: ['embarrassed'],
+  e1q3: ['fascinating'],
+  e1q4: ['surprised'],
+  e1q5: ['confusing']
+};
+
+function checkEx1() {
+  let ok = 0;
+  Object.entries(EX1_ANS).forEach(([id, ans]) => {
+    const el = document.getElementById(id);
+    const icon = document.getElementById(id + 'i');
+    const v = el.value.trim().toLowerCase();
+    if (ans.includes(v)) {
+      el.classList.add('ok'); el.classList.remove('bad');
+      icon.textContent = ' ✅'; ok++;
+    } else {
+      el.classList.add('bad'); el.classList.remove('ok');
+      icon.textContent = ' ❌';
+    }
+  });
+  const fb = document.getElementById('ex1fb');
+  if (ok === 5) {
+    fb.className = 'fb ok'; fb.textContent = '🎉 All five correct — well done!';
+  } else {
+    fb.className = 'fb bad'; fb.textContent = ok + '/5 correct. Check the red boxes — look at the rule again!';
+  }
+  markChecked('ex1');
+}
+
+// ═══ EXERCISE 2 ═══
+// 🫠 → b, 😭 → c, 👀 → a, 🙃 → d
+const EM_ANS = { em1: 'b', em2: 'c', em3: 'a', em4: 'd' };
+
+function checkEx2() {
+  let ok = 0;
+  Object.entries(EM_ANS).forEach(([id, ans]) => {
+    const sel = document.getElementById(id);
+    const tick = document.getElementById(id + 't');
+    if (sel.value === ans) {
+      sel.classList.add('ok'); sel.classList.remove('bad');
+      tick.textContent = '✅'; ok++;
+    } else {
+      sel.classList.add('bad'); sel.classList.remove('ok');
+      tick.textContent = '❌';
+    }
+  });
+  const fb = document.getElementById('ex2fb');
+  if (ok === 4) {
+    fb.className = 'fb ok'; fb.textContent = '🎉 All matched correctly!';
+  } else {
+    fb.className = 'fb bad'; fb.textContent = ok + '/4 correct. Review and try again!';
+  }
+  markChecked('ex2');
+}
+
+// ═══ EXERCISE 3 ═══
+// Check for the correct word in the rewritten sentence
+const EC_CORRECT = {
+  ec1: 'bored',
+  ec2: 'surprising',
+  ec3: 'embarrassed'
+};
+
+function checkEx3() {
+  let ok = 0;
+  Object.entries(EC_CORRECT).forEach(([id, word]) => {
+    const el = document.getElementById(id);
+    const model = document.getElementById(id + 'm');
+    const v = el.value.toLowerCase();
+    if (v.includes(word) && v.length > 10) {
+      el.classList.add('ok'); el.classList.remove('bad');
+      model.classList.add('show'); ok++;
+    } else {
+      el.classList.add('bad'); el.classList.remove('ok');
+      model.classList.add('show');
+    }
+  });
+  const fb = document.getElementById('ex3fb');
+  if (ok === 3) {
+    fb.className = 'fb ok'; fb.textContent = '✅ All three corrected! Check the model answers below each sentence.';
+  } else {
+    fb.className = 'fb bad'; fb.textContent = ok + '/3 correct. See the model answers — compare yours!';
+  }
+  markChecked('ex3');
+}
+
+// ═══ EXERCISE 4 ═══
+function checkEx4() {
+  const v = document.getElementById('freeWrite').value.trim();
+  const fb = document.getElementById('ex4fb');
+  if (v.length < 30) {
+    fb.className = 'fb bad'; fb.textContent = 'Please write a bit more — aim for 3–4 sentences!';
+    return;
+  }
+  fb.className = 'fb ok'; fb.textContent = '✅ Great! Your teacher will read this when you send it in.';
+  markChecked('ex4');
+}
+
+// ═══ SEND TO TEACHER ═══
+function sendToTeacher() {
+  const name = document.getElementById('studentName').value.trim();
+  if (!name) return;
+
+  // Collect answers
+  const e1 = {
+    q1: document.getElementById('e1q1').value || '(blank)',
+    q2: document.getElementById('e1q2').value || '(blank)',
+    q3: document.getElementById('e1q3').value || '(blank)',
+    q4: document.getElementById('e1q4').value || '(blank)',
+    q5: document.getElementById('e1q5').value || '(blank)',
+  };
+
+  const emLabels = {
+    a: '"Ooh interesting — tell me more!"',
+    b: '"I\'m so embarrassed I want to disappear / melt."',
+    c: '"That\'s so funny I\'m literally crying."',
+    d: '"Everything is fine." (but it isn\'t)'
+  };
+  const em = {
+    '🫠': emLabels[document.getElementById('em1').value] || '(not answered)',
+    '😭': emLabels[document.getElementById('em2').value] || '(not answered)',
+    '👀': emLabels[document.getElementById('em3').value] || '(not answered)',
+    '🙃': emLabels[document.getElementById('em4').value] || '(not answered)',
+  };
+
+  const ec = {
+    1: document.getElementById('ec1').value || '(blank)',
+    2: document.getElementById('ec2').value || '(blank)',
+    3: document.getElementById('ec3').value || '(blank)',
+  };
+
+  const fw = document.getElementById('freeWrite').value || '(blank)';
+
+  const body =
+`HOMEWORK — Emojis: A Secret Language?
+Student: ${name}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EXERCISE 1 — Fill in the blank
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. "The end of Inside Out 2 is so _____ (move)."
+   → ${e1.q1}  [correct: moving]
+
+2. "She felt really _____ (embarrass) when she sent 😍 to her teacher."
+   → ${e1.q2}  [correct: embarrassed]
+
+3. "This documentary is genuinely _____ (fascinate)."
+   → ${e1.q3}  [correct: fascinating]
+
+4. "I was really _____ (surprise) to learn that 👍 can be rude in some countries."
+   → ${e1.q4}  [correct: surprised]
+
+5. "It can be very _____ (confuse) when your friend uses 🙂 but isn't actually happy."
+   → ${e1.q5}  [correct: confusing]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EXERCISE 2 — Emoji meanings
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🫠 → ${em['🫠']}
+😭 → ${em['😭']}
+👀 → ${em['👀']}
+🙃 → ${em['🙃']}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EXERCISE 3 — Error correction
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. ${ec[1]}
+2. ${ec[2]}
+3. ${ec[3]}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EXERCISE 4 — My emoji moment
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${fw}`;
+
+  const subject = encodeURIComponent(`Homework: Emojis — ${name}`);
+  const bodyEnc = encodeURIComponent(body);
+  window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${subject}&body=${bodyEnc}`;
+}
+
+// init
+refreshSendBtn();
+</script>
+</body>
+</html>
