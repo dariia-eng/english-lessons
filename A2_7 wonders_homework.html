@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Homework – 7 Wonders of the World</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0f0c29,#302b63 50%,#24243e);min-height:100vh;color:#e0e0e0;padding-bottom:60px;}
+
+/* ── HEADER ── */
+.hero{background:rgba(0,0,0,.3);border-bottom:1px solid rgba(255,255,255,.07);padding:28px 20px 22px;text-align:center;}
+h1{font-size:1.9rem;background:linear-gradient(135deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:6px;}
+.subtitle{color:rgba(255,255,255,.45);font-size:.88rem;}
+
+/* ── PROGRESS STRIP ── */
+#prog-strip{display:flex;gap:0;background:rgba(0,0,0,.2);border-bottom:1px solid rgba(255,255,255,.06);}
+.pstep{flex:1;padding:8px 4px;text-align:center;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.3);border-right:1px solid rgba(255,255,255,.06);transition:all .3s;cursor:default;}
+.pstep:last-child{border-right:none;}
+.pstep.done{color:#56cfad;background:rgba(86,207,173,.07);}
+.pstep.active{color:#ffd200;background:rgba(255,210,0,.07);}
+
+/* ── LAYOUT ── */
+.page-wrap{max-width:760px;margin:0 auto;padding:0 16px;}
+
+/* ── NAME CARD ── */
+.name-card{background:rgba(255,255,255,.05);border:2px solid rgba(255,210,0,.3);border-radius:18px;padding:20px 22px;margin:22px 0 18px;}
+.name-card label{display:block;font-size:.85rem;font-weight:700;color:#ffd200;margin-bottom:8px;}
+.name-input{width:100%;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.15);border-radius:10px;padding:11px 14px;color:#e0e0e0;font-size:1rem;font-weight:700;outline:none;transition:border-color .2s;}
+.name-input:focus{border-color:#ffd200;}
+.name-input.filled{border-color:rgba(86,207,173,.5);}
+
+/* ── SECTION WRAPPER ── */
+.ex-section{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:22px;margin-bottom:20px;transition:border-color .3s;}
+.ex-section.checked{border-color:rgba(86,207,173,.3);}
+.ex-header{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.badge{background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a2e;font-weight:900;padding:4px 13px;border-radius:20px;font-size:.78rem;white-space:nowrap;}
+h2{font-size:1.3rem;color:#ffd200;line-height:1.2;}
+.ex-instr{color:#bbbbd0;font-size:.87rem;line-height:1.65;margin-bottom:16px;}
+.hl{color:#64dfdf;font-weight:700;}
+
+/* ── MCQ ── */
+.mcq-q{margin-bottom:14px;}
+.mcq-sent{color:#ddd;font-size:.9rem;font-weight:600;margin-bottom:8px;line-height:1.5;}
+.mcq-opts{display:flex;flex-wrap:wrap;gap:7px;}
+.mcq-opt{padding:8px 15px;border:2px solid rgba(255,255,255,.13);border-radius:10px;background:rgba(255,255,255,.04);color:#ccc;font-size:.85rem;cursor:pointer;transition:all .2s;}
+.mcq-opt:hover:not(.locked){border-color:#ffd200;background:rgba(255,210,0,.09);color:#ffd200;}
+.mcq-opt.sel{border-color:#ffd200;background:rgba(255,210,0,.15);color:#ffd200;font-weight:700;}
+.mcq-opt.correct{border-color:#56cfad!important;background:rgba(86,207,173,.18)!important;color:#56cfad!important;font-weight:700;}
+.mcq-opt.wrong{border-color:#ff6b6b!important;background:rgba(255,107,107,.18)!important;color:#ff6b6b!important;}
+.mcq-opt.locked{cursor:not-allowed;}
+
+/* ── DROPDOWN TEXT ── */
+.dd-text{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px 18px;font-size:.9rem;color:#ddd;line-height:2.4;}
+.gap-sel{background:rgba(255,210,0,.12);border:2px solid rgba(255,210,0,.4);border-radius:7px;color:#ffd200;font-weight:700;padding:3px 6px;font-size:.85rem;outline:none;cursor:pointer;-webkit-appearance:none;min-width:110px;text-align:center;transition:all .2s;vertical-align:middle;margin:0 2px;}
+.gap-sel option{background:#1a1a2e;color:#e0e0e0;}
+.gap-sel.correct{border-color:#56cfad;background:rgba(86,207,173,.15);color:#56cfad;}
+.gap-sel.wrong{border-color:#ff6b6b;background:rgba(255,107,107,.15);color:#ff6b6b;}
+.gap-num{color:#f7971e;font-weight:900;font-size:.8rem;}
+
+/* ── FILL-IN ── */
+.fi-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px;margin-bottom:12px;font-size:.9rem;color:#ddd;line-height:2;}
+.fi-num{color:#f7971e;font-weight:900;min-width:18px;}
+.fi-verb{color:rgba(255,255,255,.35);font-style:italic;font-size:.8rem;}
+.fi-input{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 12px;color:#e0e0e0;font-size:.88rem;font-weight:700;outline:none;width:170px;text-align:center;transition:border-color .2s;}
+.fi-input:focus{border-color:#ffd200;}
+.fi-input.correct{border-color:#56cfad;color:#56cfad;}
+.fi-input.wrong{border-color:#ff6b6b;color:#ff6b6b;}
+.fi-reveal{font-size:.78rem;color:#56cfad;margin-top:2px;display:none;}
+
+/* ── OPEN WRITING ── */
+.writing-area{width:100%;background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;color:#e0e0e0;font-size:.9rem;line-height:1.7;resize:vertical;min-height:140px;outline:none;transition:border-color .2s;font-family:inherit;}
+.writing-area:focus{border-color:#ffd200;}
+.wc-lbl{text-align:right;font-size:.75rem;color:rgba(255,255,255,.3);margin-top:5px;}
+
+/* ── PASSIVE REMINDER ── */
+.lang-box{background:rgba(100,223,223,.06);border:1px solid rgba(100,223,223,.2);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:.8rem;color:#bbbbd0;line-height:1.7;}
+
+/* ── BUTTONS ── */
+.check-btn{padding:9px 24px;border:none;border-radius:22px;background:linear-gradient(135deg,#64dfdf,#56cfad);color:#1a1a2e;font-size:.87rem;font-weight:700;cursor:pointer;transition:all .22s;margin-top:12px;}
+.check-btn:hover:not(:disabled){transform:scale(1.04);}
+.check-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.fb{padding:9px 15px;border-radius:9px;margin-top:10px;font-size:.85rem;font-weight:700;}
+.fb.ok{background:rgba(86,207,173,.15);border:1px solid #56cfad;color:#56cfad;}
+.fb.bad{background:rgba(255,107,107,.15);border:1px solid #ff6b6b;color:#ff6b6b;}
+.fb.part{background:rgba(247,151,30,.12);border:1px solid rgba(247,151,30,.4);color:#f7971e;}
+
+/* ── SEND BLOCK ── */
+.send-block{background:rgba(0,0,0,.3);border:2px solid rgba(255,210,0,.25);border-radius:18px;padding:22px;margin-top:4px;text-align:center;}
+.send-block h3{color:#ffd200;margin-bottom:8px;font-size:1.1rem;}
+.send-block p{color:#bbbbd0;font-size:.85rem;margin-bottom:14px;}
+#send-err{display:none;text-align:left;background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);border-radius:10px;padding:12px 16px;margin-bottom:14px;}
+#send-err p{color:#ff6b6b;font-size:.83rem;margin-bottom:4px;line-height:1.5;}
+#send-err p:last-child{margin-bottom:0;}
+.send-btn{padding:13px 36px;border:none;border-radius:30px;background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a2e;font-size:1rem;font-weight:900;cursor:pointer;transition:all .25s;letter-spacing:.3px;}
+.send-btn:hover{transform:scale(1.05);box-shadow:0 6px 24px rgba(247,151,30,.3);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:500px){h1{font-size:1.5rem;}.mcq-opts{flex-direction:column;}.fi-input{width:140px;}}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     HERO
+══════════════════════════════════ -->
+<div class="hero">
+  <h1>🌍 Seven Wonders of the World</h1>
+  <p class="subtitle">Homework — The Passive Voice &nbsp;·&nbsp; Complete all exercises and send to your teacher</p>
+</div>
+
+<!-- ── PROGRESS STRIP ── -->
+<div id="prog-strip">
+  <div class="pstep active" id="ps-name">📝 Name</div>
+  <div class="pstep" id="ps-ex1">Ex 1</div>
+  <div class="pstep" id="ps-ex2">Ex 2</div>
+  <div class="pstep" id="ps-ex3">Ex 3</div>
+  <div class="pstep" id="ps-ex4">Ex 4</div>
+  <div class="pstep" id="ps-send">📨 Send</div>
+</div>
+
+<div class="page-wrap">
+
+  <!-- ── NAME ── -->
+  <div class="name-card">
+    <label for="student-name">✏️ Your full name *</label>
+    <input type="text" id="student-name" class="name-input" placeholder="e.g. Anna Smith"
+           oninput="onNameInput(this)">
+  </div>
+
+  <!-- ══════════════════════════════════
+       EXERCISE 1 – MULTIPLE CHOICE
+  ══════════════════════════════════ -->
+  <div class="ex-section" id="sec1">
+    <div class="ex-header">
+      <div class="badge">Exercise 1</div>
+      <h2>Multiple Choice</h2>
+    </div>
+    <p class="ex-instr">Choose the correct passive form. Click your answer.</p>
+
+    <div id="mcq-wrap"></div>
+
+    <button class="check-btn" id="check1" onclick="checkEx1()">Check Exercise 1 ✅</button>
+    <div id="fb1"></div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       EXERCISE 2 – TEXT + DROPDOWNS
+  ══════════════════════════════════ -->
+  <div class="ex-section" id="sec2">
+    <div class="ex-header">
+      <div class="badge">Exercise 2</div>
+      <h2>Complete the Text</h2>
+    </div>
+    <p class="ex-instr">Read the text. Choose the correct passive verb from each dropdown.</p>
+
+    <div class="dd-text" id="dd-text">
+      The New Seven Wonders of the World <span class="gap-num">(1)</span>
+      <select class="gap-sel" id="dd0" onchange="onDDChange()">
+        <option value="">— choose —</option>
+        <option value="was">was</option>
+        <option value="were">were</option>
+        <option value="is">is</option>
+        <option value="are">are</option>
+        <option value="has been">has been</option>
+        <option value="have been">have been</option>
+      </select>
+      chosen by over 100 million voters in 2007. Since then, many of these places
+      <span class="gap-num">(2)</span>
+      <select class="gap-sel" id="dd1" onchange="onDDChange()">
+        <option value="">— choose —</option>
+        <option value="was">was</option>
+        <option value="were">were</option>
+        <option value="is">is</option>
+        <option value="are">are</option>
+        <option value="has been">has been</option>
+        <option value="have been">have been</option>
+      </select>
+      added to lists of must-visit destinations around the world.
+      The Great Wall of China <span class="gap-num">(3)</span>
+      <select class="gap-sel" id="dd2" onchange="onDDChange()">
+        <option value="">— choose —</option>
+        <option value="was">was</option>
+        <option value="were">were</option>
+        <option value="is">is</option>
+        <option value="are">are</option>
+        <option value="has been">has been</option>
+        <option value="have been">have been</option>
+      </select>
+      built over many centuries and stretches thousands of kilometres across China.
+      The Taj Mahal <span class="gap-num">(4)</span>
+      <select class="gap-sel" id="dd3" onchange="onDDChange()">
+        <option value="">— choose —</option>
+        <option value="was">was</option>
+        <option value="were">were</option>
+        <option value="is">is</option>
+        <option value="are">are</option>
+        <option value="has been">has been</option>
+        <option value="have been">have been</option>
+      </select>
+      constructed in the 17th century by Emperor Shah Jahan. It <span class="gap-num">(5)</span>
+      <select class="gap-sel" id="dd4" onchange="onDDChange()">
+        <option value="">— choose —</option>
+        <option value="was">was</option>
+        <option value="were">were</option>
+        <option value="is">is</option>
+        <option value="are">are</option>
+        <option value="has been">has been</option>
+        <option value="have been">have been</option>
+      </select>
+      made of beautiful white marble. Machu Picchu <span class="gap-num">(6)</span>
+      <select class="gap-sel" id="dd5" onchange="onDDChange()">
+        <option value="">— choose —</option>
+        <option value="was">was</option>
+        <option value="were">were</option>
+        <option value="is">is</option>
+        <option value="are">are</option>
+        <option value="has been">has been</option>
+        <option value="have been">have been</option>
+      </select>
+      recognised as a UNESCO World Heritage Site since 1983.
+    </div>
+
+    <button class="check-btn" id="check2" onclick="checkEx2()">Check Exercise 2 ✅</button>
+    <div id="fb2"></div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       EXERCISE 3 – TYPED FILL-IN
+  ══════════════════════════════════ -->
+  <div class="ex-section" id="sec3">
+    <div class="ex-header">
+      <div class="badge">Exercise 3</div>
+      <h2>Fill in the Blanks</h2>
+    </div>
+    <p class="ex-instr">Write the correct passive form of the verb in brackets. Use the <strong style="color:#ffd200">correct tense</strong> — the sentence gives you a clue!</p>
+
+    <div id="fi-wrap"></div>
+
+    <button class="check-btn" id="check3" onclick="checkEx3()">Check Exercise 3 ✅</button>
+    <div id="fb3"></div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       EXERCISE 4 – OPEN WRITING
+  ══════════════════════════════════ -->
+  <div class="ex-section" id="sec4">
+    <div class="ex-header">
+      <div class="badge">Exercise 4</div>
+      <h2>Write!</h2>
+    </div>
+    <p class="ex-instr">Choose <strong style="color:#ffd200">ONE</strong> of the Seven Wonders of the World. Write <strong style="color:#ffd200">5–6 sentences</strong> about it using the passive voice. Try to use <em>all three</em> passive tenses!</p>
+
+    <div class="lang-box">
+      💬 <strong style="color:#64dfdf">Useful language:</strong><br>
+      "It <span class="hl">was built</span> in…" &nbsp;·&nbsp; "It <span class="hl">is visited</span> by…" &nbsp;·&nbsp; "It <span class="hl">has been named</span>…"<br>
+      "It <span class="hl">is located</span> in…" &nbsp;·&nbsp; "It <span class="hl">is made</span> of…" &nbsp;·&nbsp; "It <span class="hl">was completed</span> in…"<br>
+      "It <span class="hl">is known</span> for…" &nbsp;·&nbsp; "It <span class="hl">has been recognised</span> as…"
+    </div>
+
+    <textarea class="writing-area" id="ex4-text" placeholder="Start writing here… Choose your wonder and describe it!"
+              oninput="onWritingInput()"></textarea>
+    <div class="wc-lbl"><span id="wc">0</span> words</div>
+    <div id="fb4" style="margin-top:8px;"></div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       SEND TO TEACHER
+  ══════════════════════════════════ -->
+  <div class="send-block">
+    <h3>📨 Send to Teacher</h3>
+    <p>Make sure you have completed <strong style="color:#ffd200">all exercises</strong> and written your <strong style="color:#ffd200">name</strong> before sending.</p>
+    <div id="send-err"></div>
+    <button class="send-btn" onclick="sendToTeacher()">Send to Teacher 🚀</button>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+// ══════════════════════════════════
+// DATA
+// ══════════════════════════════════
+
+const MCQ = [
+  {
+    q: 'The Taj Mahal _____ by Emperor Shah Jahan in the 17th century.',
+    opts: ['is built', 'was built', 'has been built', 'were built'],
+    ans: 1
+  },
+  {
+    q: 'The Great Wall of China _____ by millions of tourists every year.',
+    opts: ['was visited', 'were visited', 'is visited', 'have been visited'],
+    ans: 2
+  },
+  {
+    q: 'Machu Picchu _____ a UNESCO World Heritage Site since 1983.',
+    opts: ['was declared', 'is declared', 'has been declared', 'were declared'],
+    ans: 2
+  },
+  {
+    q: 'The Colosseum _____ in 70 AD.',
+    opts: ['is constructed', 'was constructed', 'has been constructed', 'were constructed'],
+    ans: 1
+  },
+  {
+    q: 'Petra _____ for its beautiful rose-red sandstone.',
+    opts: ['was known', 'were known', 'has been known', 'is known'],
+    ans: 3
+  },
+  {
+    q: 'The Seven Wonders _____ by millions of voters in 2007.',
+    opts: ['are chosen', 'have been chosen', 'were chosen', 'was chosen'],
+    ans: 2
+  }
+];
+
+const DD_ANS = ['were', 'have been', 'was', 'was', 'is', 'has been'];
+
+const FI = [
+  { before: 'The Taj Mahal',               verb: 'build',        after: 'in the 17th century.',            ans: ['was built'] },
+  { before: 'The Great Wall',              verb: 'visit',        after: 'by millions of tourists every year.', ans: ['is visited'] },
+  { before: 'The Colosseum',               verb: 'complete',     after: 'in 80 AD.',                       ans: ['was completed'] },
+  { before: 'Petra',                       verb: 'know',         after: 'as "The Rose City".',              ans: ['is known'] },
+  { before: 'Machu Picchu',                verb: 'photograph',   after: 'by millions of tourists since it was discovered.', ans: ['has been photographed'] },
+];
+
+// ══════════════════════════════════
+// INIT
+// ══════════════════════════════════
+const mcqSel = {};
+
+window.addEventListener('DOMContentLoaded', () => {
+  buildMCQ();
+  buildFI();
+});
+
+function buildMCQ() {
+  document.getElementById('mcq-wrap').innerHTML = MCQ.map((q, i) =>
+    `<div class="mcq-q" id="mq${i}">
+       <p class="mcq-sent">${i + 1}. ${q.q.replace('_____', '<strong style="color:#ffd200">_____</strong>')}</p>
+       <div class="mcq-opts">
+         ${q.opts.map((o, oi) =>
+           `<button class="mcq-opt" id="mo${i}_${oi}" onclick="pickMCQ(${i},${oi})">${o}</button>`
+         ).join('')}
+       </div>
+     </div>`
+  ).join('');
+}
+
+function buildFI() {
+  document.getElementById('fi-wrap').innerHTML = FI.map((q, i) =>
+    `<div class="fi-row" id="fir${i}">
+       <span class="fi-num">${i + 1}.</span>
+       <span>${q.before}</span>
+       <input class="fi-input" id="fi${i}" type="text" placeholder="________"
+              oninput="onFIChange()" spellcheck="false">
+       <span class="fi-verb">(${q.verb})</span>
+       <span>${q.after}</span>
+       <div class="fi-reveal" id="frev${i}"></div>
+     </div>`
+  ).join('');
+}
+
+// ══════════════════════════════════
+// PROGRESS STRIP
+// ══════════════════════════════════
+function markStep(id, done) {
+  const el = document.getElementById(id);
+  el.classList.remove('active', 'done');
+  el.classList.add(done ? 'done' : 'active');
+}
+
+function onNameInput(el) {
+  el.classList.toggle('filled', el.value.trim().length > 0);
+  markStep('ps-name', el.value.trim().length > 0);
+}
+
+function onDDChange() {
+  const allDone = Array.from({length: 6}, (_, i) => document.getElementById('dd' + i).value !== '').every(Boolean);
+  if (allDone) markStep('ps-ex2', true);
+}
+
+function onFIChange() {
+  const allDone = FI.every((_, i) => document.getElementById('fi' + i).value.trim() !== '');
+  if (allDone) markStep('ps-ex3', true);
+}
+
+function onWritingInput() {
+  const text = document.getElementById('ex4-text').value.trim();
+  const words = text ? text.split(/\s+/).length : 0;
+  document.getElementById('wc').textContent = words;
+  if (words >= 10) markStep('ps-ex4', true);
+}
+
+// ══════════════════════════════════
+// EXERCISE 1 – MCQ
+// ══════════════════════════════════
+function pickMCQ(qi, oi) {
+  if (document.getElementById('mo' + qi + '_0').classList.contains('locked')) return;
+  // Clear selection for this question
+  MCQ[qi].opts.forEach((_, i) => {
+    const b = document.getElementById(`mo${qi}_${i}`);
+    b.classList.remove('sel');
+  });
+  document.getElementById(`mo${qi}_${oi}`).classList.add('sel');
+  mcqSel[qi] = oi;
+  // Mark step if all answered
+  if (Object.keys(mcqSel).length === MCQ.length) markStep('ps-ex1', true);
+}
+
+function checkEx1() {
+  let ok = 0;
+  MCQ.forEach((q, i) => {
+    MCQ[i].opts.forEach((_, oi) => {
+      const b = document.getElementById(`mo${i}_${oi}`);
+      b.classList.add('locked');
+      b.classList.remove('sel');
+      if (oi === q.ans) b.classList.add('correct');
+      else if (oi === mcqSel[i] && mcqSel[i] !== q.ans) b.classList.add('wrong');
+    });
+    if (mcqSel[i] === q.ans) ok++;
+  });
+  const fb = document.getElementById('fb1');
+  const cls = ok === 6 ? 'ok' : ok >= 4 ? 'part' : 'bad';
+  fb.innerHTML = `<div class="fb ${cls}">You got ${ok} / 6! ${ok===6?'🌟 Perfect!':ok>=4?'👍 Well done!':'📖 Review passive tenses and try again next time.'}</div>`;
+  document.getElementById('check1').disabled = true;
+  document.getElementById('sec1').classList.add('checked');
+  markStep('ps-ex1', true);
+}
+
+// ══════════════════════════════════
+// EXERCISE 2 – DROPDOWNS
+// ══════════════════════════════════
+function checkEx2() {
+  let ok = 0;
+  DD_ANS.forEach((ans, i) => {
+    const sel = document.getElementById('dd' + i);
+    sel.disabled = true;
+    if (sel.value === ans) { sel.classList.add('correct'); ok++; }
+    else sel.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb2');
+  const cls = ok === 6 ? 'ok' : ok >= 4 ? 'part' : 'bad';
+  fb.innerHTML = `<div class="fb ${cls}">You got ${ok} / 6! ${ok===6?'🌟 Excellent!':ok>=4?'👍 Good job!':'📖 Think about which time markers tell you which tense to use.'}</div>`;
+  document.getElementById('check2').disabled = true;
+  document.getElementById('sec2').classList.add('checked');
+  markStep('ps-ex2', true);
+}
+
+// ══════════════════════════════════
+// EXERCISE 3 – FILL-IN
+// ══════════════════════════════════
+function norm(s) { return s.trim().toLowerCase().replace(/[.!?]+$/, '').replace(/\s+/g, ' '); }
+
+function checkEx3() {
+  let ok = 0;
+  FI.forEach((q, i) => {
+    const inp = document.getElementById('fi' + i);
+    const rev = document.getElementById('frev' + i);
+    inp.disabled = true;
+    const val = norm(inp.value);
+    if (q.ans.map(norm).includes(val)) {
+      inp.classList.add('correct');
+      ok++;
+    } else {
+      inp.classList.add('wrong');
+      rev.textContent = '→ ' + q.ans[0];
+      rev.style.display = 'block';
+    }
+  });
+  const fb = document.getElementById('fb3');
+  const cls = ok === FI.length ? 'ok' : ok >= 3 ? 'part' : 'bad';
+  fb.innerHTML = `<div class="fb ${cls}">You got ${ok} / ${FI.length}! ${ok===FI.length?'🌟 All correct!':ok>=3?'👍 Almost there!':'📖 Check the tense clues in each sentence.'}</div>`;
+  document.getElementById('check3').disabled = true;
+  document.getElementById('sec3').classList.add('checked');
+  markStep('ps-ex3', true);
+}
+
+// ══════════════════════════════════
+// VALIDATION + SEND
+// ══════════════════════════════════
+function validate() {
+  const errs = [];
+  const name = document.getElementById('student-name').value.trim();
+  if (!name) errs.push('❌ Please enter your <strong>name</strong> at the top.');
+
+  const unanswered1 = MCQ.filter((_, i) => mcqSel[i] === undefined).length;
+  if (unanswered1 > 0) errs.push(`❌ <strong>Exercise 1:</strong> ${unanswered1} question${unanswered1>1?'s':''} not answered yet.`);
+
+  const unanswered2 = Array.from({length: 6}, (_, i) => document.getElementById('dd' + i).value === '').filter(Boolean).length;
+  if (unanswered2 > 0) errs.push(`❌ <strong>Exercise 2:</strong> ${unanswered2} gap${unanswered2>1?'s':''} not completed yet.`);
+
+  const unanswered3 = FI.filter((_, i) => !document.getElementById('fi' + i).value.trim()).length;
+  if (unanswered3 > 0) errs.push(`❌ <strong>Exercise 3:</strong> ${unanswered3} sentence${unanswered3>1?'s':''} not filled in yet.`);
+
+  const writing = document.getElementById('ex4-text').value.trim();
+  const words = writing ? writing.split(/\s+/).length : 0;
+  if (words < 10) errs.push('❌ <strong>Exercise 4:</strong> Please write your answer (at least a few sentences).');
+
+  const errDiv = document.getElementById('send-err');
+  if (errs.length) {
+    errDiv.style.display = 'block';
+    errDiv.innerHTML = errs.map(e => `<p>${e}</p>`).join('');
+    errDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return false;
+  }
+  errDiv.style.display = 'none';
+  return true;
+}
+
+function buildEmailBody() {
+  const name = document.getElementById('student-name').value.trim();
+  let b = '';
+  b += '════════════════════════════\n';
+  b += 'HOMEWORK – SEVEN WONDERS\n';
+  b += '════════════════════════════\n';
+  b += 'Student: ' + name + '\n\n';
+
+  b += '── EXERCISE 1: Multiple Choice ──\n';
+  MCQ.forEach((q, i) => {
+    const chosen = mcqSel[i] !== undefined ? q.opts[mcqSel[i]] : '(not answered)';
+    b += `${i+1}. ${q.q}\n   Answer: ${chosen}\n`;
+  });
+
+  b += '\n── EXERCISE 2: Complete the Text ──\n';
+  const dd_labels = [
+    'The New Seven Wonders ... (1) chosen by voters in 2007',
+    'Many places (2) added to must-visit lists',
+    'The Great Wall (3) built over many centuries',
+    'The Taj Mahal (4) constructed in the 17th century',
+    'It (5) made of white marble',
+    'Machu Picchu (6) recognised since 1983'
+  ];
+  DD_ANS.forEach((_, i) => {
+    const val = document.getElementById('dd' + i).value || '(not answered)';
+    b += `${i+1}. ${dd_labels[i]}\n   Answer: ${val}\n`;
+  });
+
+  b += '\n── EXERCISE 3: Fill in the Blanks ──\n';
+  FI.forEach((q, i) => {
+    const val = document.getElementById('fi' + i).value.trim() || '(not answered)';
+    b += `${i+1}. ${q.before} _____ ${q.after}\n   Answer: ${val}\n`;
+  });
+
+  b += '\n── EXERCISE 4: Writing ──\n';
+  b += document.getElementById('ex4-text').value.trim() + '\n';
+
+  b += '
+════════════════════════════
+';
+  return b;
+}
+
+function sendToTeacher() {
+  if (!validate()) return;
+  const name = document.getElementById('student-name').value.trim();
+  const subject = 'Homework – Seven Wonders – ' + name;
+  const body = buildEmailBody();
+  const mailto = 'mailto:dariia.mlnk@gmail.com'
+    + '?subject=' + encodeURIComponent(subject)
+    + '&body=' + encodeURIComponent(body);
+  window.location.href = mailto;
+  markStep('ps-send', true);
+  // Show success message
+  document.getElementById('send-err').style.display = 'none';
+  const sb = document.querySelector('.send-block');
+  const msg = document.createElement('div');
+  msg.className = 'fb ok';
+  msg.style.marginTop = '12px';
+  msg.innerHTML = '✅ Your email app has opened! Check it and press Send. Great work, ' + name + '! 🌟';
+  sb.appendChild(msg);
+}
+</script>
+</body>
+</html>
