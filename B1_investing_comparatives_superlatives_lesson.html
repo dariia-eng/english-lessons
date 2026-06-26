@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smarter Investing — English Lesson</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #eef2f7; min-height: 100vh; display: flex; flex-direction: column; }
+
+    .header { background: #18344f; color: #fff; padding: 14px 32px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+    .lesson-title { font-size: 17px; font-weight: 700; }
+    .page-counter { font-size: 13px; opacity: .75; background: rgba(255,255,255,.15); padding: 4px 14px; border-radius: 20px; }
+
+    .main { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 36px 24px 24px; }
+
+    .page { display: none; max-width: 920px; width: 100%; background: #fff; border-radius: 18px; padding: 48px 52px; box-shadow: 0 4px 32px rgba(0,0,0,.09); animation: fadeUp .3s ease both; }
+    .page.active { display: block; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+    .badge { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; padding: 4px 13px; border-radius: 20px; margin-bottom: 18px; }
+    .badge.warmup  { background: #fce7f3; color: #9d174d; }
+    .badge.vocab   { background: #ede9fe; color: #5b21b6; }
+    .badge.reading { background: #fee2e2; color: #991b1b; }
+    .badge.discuss { background: #fef9c3; color: #713f12; }
+    .badge.grammar { background: #fef3c7; color: #78350f; }
+    .badge.wrapup  { background: #e0f2fe; color: #0c4a6e; }
+
+    h1 { font-size: 26px; color: #18344f; margin-bottom: 6px; line-height: 1.25; }
+    .subtitle { color: #6b7280; font-size: 15px; margin-bottom: 28px; line-height: 1.55; }
+    p { color: #374151; line-height: 1.75; margin-bottom: 10px; font-size: 15px; }
+
+    /* HOT TAKES */
+    .takes { display: flex; flex-direction: column; gap: 14px; }
+    .take { display: flex; align-items: center; gap: 16px; background: #f8faff; border: 1.5px solid #bfdbfe; border-radius: 12px; padding: 16px 20px; }
+    .take-quote { flex: 1; font-size: 15px; color: #1f2937; line-height: 1.5; font-style: italic; }
+    .take-quote strong { font-style: normal; font-weight: 800; color: #18344f; display: block; margin-bottom: 4px; font-size: 13.5px; }
+    .vote-btns { display: flex; gap: 8px; flex-shrink: 0; }
+    .vote-btn { padding: 7px 15px; border: 2px solid #d1d5db; border-radius: 8px; background: #fff; cursor: pointer; font-size: 13px; font-weight: 700; color: #6b7280; transition: all .15s; }
+    .vote-btn:hover { border-color: #18344f; color: #18344f; }
+    .vote-btn.agree    { border-color: #16a34a; background: #f0fdf4; color: #16a34a; }
+    .vote-btn.disagree { border-color: #dc2626; background: #fef2f2; color: #dc2626; }
+
+    /* ── EX 1: VOCAB CARDS ── */
+    .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .vocab-card { background: #f8faff; border: 1.5px solid #bfdbfe; border-radius: 13px; padding: 18px 20px; transition: border-color .2s; }
+    .vocab-card.ok    { border-color: #16a34a; background: #f0fdf4; }
+    .vocab-card.wrong { border-color: #dc2626; background: #fef2f2; }
+    .vc-word { font-size: 15px; font-weight: 800; color: #18344f; margin-bottom: 8px; border-bottom: 2px solid #f59e0b; display: inline-block; padding-bottom: 2px; }
+    .vc-eg { font-size: 13.5px; color: #374151; font-style: italic; line-height: 1.55; margin-bottom: 12px; }
+    .vc-opts { display: flex; flex-direction: column; gap: 7px; }
+    .vc-opt { padding: 8px 13px; border: 1.5px solid #d1d5db; border-radius: 8px; background: #fff; cursor: pointer; font-size: 13px; color: #374151; text-align: left; transition: all .15s; }
+    .vc-opt:hover { border-color: #18344f; background: #f0f4ff; }
+    .vc-opt.sel   { border-color: #6366f1; background: #ede9fe; color: #5b21b6; font-weight: 600; }
+    .vc-opt.ok    { border-color: #16a34a !important; background: #f0fdf4 !important; color: #15803d !important; font-weight: 700; }
+    .vc-opt.wrong { border-color: #dc2626 !important; background: #fef2f2 !important; color: #b91c1c !important; }
+    .vc-opt.reveal { border-color: #16a34a !important; background: #f0fdf4 !important; color: #15803d !important; font-weight: 700; }
+
+    /* WORD BANK */
+    .word-bank { background: #fffbeb; border: 1.5px solid #fcd34d; border-radius: 10px; padding: 14px 18px; margin-bottom: 22px; }
+    .word-bank h4 { font-size: 10px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; color: #92400e; margin-bottom: 10px; }
+    .wb-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .wb-tag { background: #fff; border: 1.5px solid #fbbf24; border-radius: 6px; padding: 4px 12px; font-size: 13.5px; font-weight: 700; color: #92400e; }
+
+    /* EXERCISE ROWS */
+    .ex-list { display: flex; flex-direction: column; gap: 14px; }
+    .ex-row { display: flex; align-items: flex-start; gap: 12px; background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; font-size: 15px; color: #1f2937; line-height: 1.7; flex-wrap: wrap; transition: border-color .2s, background .2s; }
+    .ex-row.ok    { border-color: #16a34a !important; background: #f0fdf4 !important; }
+    .ex-row.wrong { border-color: #dc2626 !important; background: #fef2f2 !important; }
+    .ex-n { font-weight: 800; color: #18344f; min-width: 26px; flex-shrink: 0; padding-top: 2px; }
+    .bi { border: none; border-bottom: 2px solid #18344f; background: transparent; font-size: 15px; color: #18344f; font-weight: 700; min-width: 100px; padding: 1px 4px; outline: none; vertical-align: baseline; }
+    .bi.ok    { border-bottom-color: #16a34a; color: #15803d; }
+    .bi.wrong { border-bottom-color: #dc2626; color: #b91c1c; }
+    .hint  { color: #9ca3af; font-size: 13px; font-style: italic; }
+    .reveal-ans { font-size: 13px; font-weight: 700; color: #16a34a; margin-left: 6px; }
+
+    /* READING */
+    .reading-box { background: #f8faff; border: 1.5px solid #bfdbfe; border-radius: 13px; padding: 28px; margin-bottom: 6px; }
+    .reading-title { font-size: 19px; font-weight: 800; color: #18344f; margin-bottom: 4px; }
+    .reading-sub   { font-size: 13px; color: #9ca3af; margin-bottom: 18px; font-style: italic; }
+    .hl       { font-weight: 700; color: #18344f; border-bottom: 2px solid #f59e0b; }
+    .num-data { font-weight: 700; color: #dc2626; }
+
+    /* T/F/NS */
+    .tf-list { display: flex; flex-direction: column; gap: 13px; }
+    .tf-row { display: flex; align-items: flex-start; gap: 14px; background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; transition: border-color .2s, background .2s; }
+    .tf-row.ok    { border-color: #16a34a !important; background: #f0fdf4 !important; }
+    .tf-row.wrong { border-color: #dc2626 !important; background: #fef2f2 !important; }
+    .tf-n   { font-weight: 800; color: #18344f; min-width: 26px; flex-shrink: 0; padding-top: 2px; }
+    .tf-txt { flex: 1; font-size: 15px; color: #1f2937; line-height: 1.5; }
+    .tf-btns { display: flex; gap: 7px; flex-shrink: 0; }
+    .tf-btn { padding: 5px 13px; border: 2px solid #d1d5db; border-radius: 7px; background: #fff; cursor: pointer; font-size: 12.5px; font-weight: 700; color: #6b7280; transition: all .15s; }
+    .tf-btn:hover { border-color: #18344f; color: #18344f; }
+    .tf-btn.sel-T { border-color: #6366f1; background: #ede9fe; color: #5b21b6; }
+    .tf-btn.sel-F { border-color: #6366f1; background: #ede9fe; color: #5b21b6; }
+    .tf-btn.sel-N { border-color: #6366f1; background: #ede9fe; color: #5b21b6; }
+    .tf-btn.correct-ans { border-color: #16a34a !important; background: #f0fdf4 !important; color: #15803d !important; font-weight: 800; }
+    .tf-btn.wrong-ans   { border-color: #dc2626 !important; background: #fef2f2 !important; color: #b91c1c !important; }
+
+    /* DISCUSSION */
+    .disc-questions { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+    .disc-q { background: #f8faff; border-left: 4px solid #18344f; padding: 15px 20px; border-radius: 0 10px 10px 0; }
+    .disc-q .dq-n { font-weight: 800; color: #18344f; margin-right: 8px; }
+    .disc-q p { font-size: 15.5px; color: #1f2937; line-height: 1.55; margin: 0; }
+    .disc-q .follow { font-size: 13px; color: #6b7280; font-style: italic; margin-top: 6px; }
+    .disc-takes { margin-bottom: 20px; }
+    .disc-takes h3 { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #6b7280; margin-bottom: 12px; }
+    .disc-take { display: flex; align-items: center; gap: 14px; background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 13px 16px; margin-bottom: 10px; }
+    .disc-take p { font-size: 14.5px; color: #1f2937; margin: 0; flex: 1; font-style: italic; }
+    .lang-box { background: #f0fdf4; border: 1.5px solid #6ee7b7; border-radius: 10px; padding: 16px 20px; }
+    .lang-box h4 { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #065f46; margin-bottom: 12px; }
+    .lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .lang-chip { font-size: 13.5px; color: #065f46; font-style: italic; padding: 4px 0; }
+
+    /* GRAMMAR */
+    .g-box { border-radius: 12px; padding: 24px 26px; margin-bottom: 18px; background: linear-gradient(135deg, #18344f 0%, #1e4976 100%); color: #fff; }
+    .g-box.purple { background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%); }
+    .g-box h3 { font-size: 10px; letter-spacing: 1.3px; text-transform: uppercase; opacity: .65; margin-bottom: 10px; }
+    .g-rule { font-family: 'Courier New', monospace; font-size: 16px; font-weight: 700; background: rgba(255,255,255,.14); padding: 10px 18px; border-radius: 8px; margin-bottom: 8px; }
+    .g-eg { font-size: 14.5px; opacity: .88; font-style: italic; padding: 6px 18px; }
+    .g-eg strong { font-style: normal; background: rgba(255,255,255,.2); padding: 1px 6px; border-radius: 4px; }
+    .g-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 14px; }
+    .g-table th { background: #18344f; color: #fff; padding: 11px 14px; text-align: left; font-size: 11px; letter-spacing: .6px; text-transform: uppercase; }
+    .g-table th:first-child { border-radius: 8px 0 0 0; } .g-table th:last-child { border-radius: 0 8px 0 0; }
+    .g-table td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; color: #374151; }
+    .g-table tr:hover td { background: #f8faff; }
+    .g-table .form { color: #18344f; font-weight: 700; }
+
+    /* MULTIPLE CHOICE */
+    .mc-wrap { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .mc-stem { display: flex; gap: 12px; align-items: flex-start; }
+    .mc-opts { display: flex; gap: 9px; flex-wrap: wrap; padding-left: 38px; }
+    .mc-btn { padding: 7px 16px; border: 2px solid #d1d5db; border-radius: 8px; background: #fff; cursor: pointer; font-size: 14px; font-weight: 600; color: #374151; transition: all .15s; }
+    .mc-btn:hover  { border-color: #18344f; color: #18344f; background: #f8faff; }
+    .mc-btn.sel    { border-color: #6366f1; background: #ede9fe; color: #5b21b6; }
+    .mc-btn.ok     { border-color: #16a34a !important; background: #f0fdf4 !important; color: #15803d !important; font-weight: 800; }
+    .mc-btn.wrong  { border-color: #dc2626 !important; background: #fef2f2 !important; color: #b91c1c !important; }
+    .mc-btn.reveal { border-color: #16a34a !important; background: #f0fdf4 !important; color: #15803d !important; font-weight: 800; }
+
+    /* TRANSFORMATION */
+    .tr-ex { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .tr-source { display: flex; gap: 12px; font-size: 15px; color: #1f2937; flex-wrap: wrap; }
+    .tr-write { width: 100%; border: none; border-bottom: 2px solid #d1d5db; background: transparent; font-size: 15px; color: #18344f; font-style: italic; padding: 5px 8px; outline: none; transition: border-color .2s; }
+    .tr-write:focus { border-color: #18344f; }
+    .tr-arrow { color: #9ca3af; font-size: 15px; padding-left: 38px; display: block; }
+    .model-ans { display: none; width: 100%; font-size: 14px; font-weight: 700; color: #15803d; background: #f0fdf4; border-radius: 8px; padding: 8px 14px; border-left: 3px solid #16a34a; }
+    .model-ans.visible { display: block; }
+
+    /* CHECK BUTTON */
+    .check-row { display: flex; align-items: center; gap: 16px; margin-top: 24px; padding-top: 20px; border-top: 1.5px dashed #e5e7eb; }
+    .check-btn { display: flex; align-items: center; gap: 8px; padding: 11px 26px; background: #18344f; color: #fff; border: none; border-radius: 10px; font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all .2s; flex-shrink: 0; }
+    .check-btn:hover { background: #122b40; transform: translateY(-1px); }
+    .check-btn.done  { background: #16a34a; cursor: default; transform: none; }
+    .score-badge { font-size: 15px; font-weight: 800; color: #18344f; background: #f0f4ff; border: 1.5px solid #bfdbfe; padding: 6px 16px; border-radius: 20px; display: none; }
+    .score-badge.visible { display: inline-block; }
+    .score-badge.perfect { background: #f0fdf4; border-color: #6ee7b7; color: #15803d; }
+    .score-badge.bad     { background: #fef2f2; border-color: #fca5a5; color: #b91c1c; }
+    .reset-btn { background: none; border: none; color: #9ca3af; font-size: 13px; cursor: pointer; text-decoration: underline; padding: 0; }
+    .reset-btn:hover { color: #374151; }
+
+    /* WRAP-UP */
+    .wu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+    .wu-card { background: #f8faff; border: 1.5px solid #bfdbfe; border-radius: 12px; padding: 20px 22px; }
+    .wu-card h3 { font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: #6b7280; margin-bottom: 14px; }
+    .v-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .v-pill  { background: #18344f; color: #fff; border-radius: 20px; padding: 5px 14px; font-size: 13px; font-weight: 600; }
+    .check-list { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .check-list li { display: flex; gap: 10px; font-size: 14px; color: #374151; line-height: 1.45; align-items: flex-start; }
+    .check-list li::before { content: '✓'; color: #16a34a; font-weight: 800; flex-shrink: 0; }
+    .reflect-q { background: #f8faff; border: 1.5px solid #bfdbfe; border-radius: 12px; padding: 20px 22px; }
+    .reflect-q h3 { font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: #6b7280; margin-bottom: 14px; }
+    .r-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .r-list li { font-size: 15px; color: #1f2937; line-height: 1.5; display: flex; gap: 10px; }
+    .r-list li .rn { font-weight: 800; color: #18344f; flex-shrink: 0; }
+
+    /* NAV */
+    .nav { background: #fff; border-top: 1.5px solid #e5e7eb; padding: 14px 32px; display: flex; justify-content: space-between; align-items: center; position: sticky; bottom: 0; }
+    .nav-btn { display: flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 10px; border: none; cursor: pointer; font-size: 14.5px; font-weight: 700; transition: all .15s; }
+    .nav-btn.prev { background: #f3f4f6; color: #374151; }
+    .nav-btn.prev:hover:not(:disabled) { background: #e5e7eb; }
+    .nav-btn.next { background: #18344f; color: #fff; }
+    .nav-btn.next:hover:not(:disabled) { background: #122b40; }
+    .nav-btn:disabled { opacity: .3; cursor: not-allowed; }
+    .dots { display: flex; gap: 5px; align-items: center; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #d1d5db; cursor: pointer; transition: all .2s; }
+    .dot.active { width: 22px; border-radius: 4px; background: #18344f; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="lesson-title">Smarter Investing</div>
+  <div class="page-counter" id="counter">1 / 11</div>
+</header>
+
+<main class="main">
+
+  <!-- PAGE 1 · WARM-UP -->
+  <div class="page active" id="p1">
+    <span class="badge warmup">Warm-Up</span>
+    <h1>Hot Takes 🔥</h1>
+    <p class="subtitle">Do you agree or disagree? Choose your position and be ready to defend it.</p>
+    <div class="takes">
+      <div class="take">
+        <div class="take-quote"><strong>"Crypto is the future of investing."</strong>Bitcoin is more reliable than gold and will outperform every traditional asset class in the next decade.</div>
+        <div class="vote-btns"><button class="vote-btn" onclick="pickVote(this,'agree')">Agree</button><button class="vote-btn" onclick="pickVote(this,'disagree')">Disagree</button></div>
+      </div>
+      <div class="take">
+        <div class="take-quote"><strong>"Timing the market is a waste of time."</strong>No investor is more successful in the long run than someone who simply buys and holds index funds.</div>
+        <div class="vote-btns"><button class="vote-btn" onclick="pickVote(this,'agree')">Agree</button><button class="vote-btn" onclick="pickVote(this,'disagree')">Disagree</button></div>
+      </div>
+      <div class="take">
+        <div class="take-quote"><strong>"Real estate is always the safest bet."</strong>Property is a more stable investment than stocks and will never lose its value in the long term.</div>
+        <div class="vote-btns"><button class="vote-btn" onclick="pickVote(this,'agree')">Agree</button><button class="vote-btn" onclick="pickVote(this,'disagree')">Disagree</button></div>
+      </div>
+      <div class="take">
+        <div class="take-quote"><strong>"You need a lot of money to start investing."</strong>The barrier to entry is much higher than most people think — small investors will always do worse than big ones.</div>
+        <div class="vote-btns"><button class="vote-btn" onclick="pickVote(this,'agree')">Agree</button><button class="vote-btn" onclick="pickVote(this,'disagree')">Disagree</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2 · VOCABULARY — GUESS FROM EXAMPLES -->
+  <div class="page" id="p2">
+    <span class="badge vocab">Vocabulary — Exercise 1</span>
+    <h1>Guess the Meaning</h1>
+    <p class="subtitle">Read the example sentences. What does the word in bold mean? Choose the best definition.</p>
+
+    <div class="vocab-grid">
+      <div class="vocab-card" data-correct="0">
+        <div class="vc-word">volatility</div>
+        <div class="vc-eg">"Bitcoin's <strong>volatility</strong> is extreme — its price dropped 65% in one year, then doubled the next."</div>
+        <div class="vc-opts">
+          <button class="vc-opt" onclick="pickVocab(this)">how much a price goes up and down</button>
+          <button class="vc-opt" onclick="pickVocab(this)">how easy it is to sell an asset</button>
+          <button class="vc-opt" onclick="pickVocab(this)">the profit an investment earns</button>
+        </div>
+      </div>
+      <div class="vocab-card" data-correct="1">
+        <div class="vc-word">liquidity</div>
+        <div class="vc-eg">"Stocks have better <strong>liquidity</strong> than property — you can sell them in seconds, any day of the week."</div>
+        <div class="vc-opts">
+          <button class="vc-opt" onclick="pickVocab(this)">how much risk an investment carries</button>
+          <button class="vc-opt" onclick="pickVocab(this)">how easily you can turn an investment into cash</button>
+          <button class="vc-opt" onclick="pickVocab(this)">the total value of a portfolio</button>
+        </div>
+      </div>
+      <div class="vocab-card" data-correct="2">
+        <div class="vc-word">compound interest</div>
+        <div class="vc-eg">"Thanks to <strong>compound interest</strong>, €1,000 at 25 is worth far more at 65 than €1,000 invested at 45."</div>
+        <div class="vc-opts">
+          <button class="vc-opt" onclick="pickVocab(this)">interest paid only on the original amount</button>
+          <button class="vc-opt" onclick="pickVocab(this)">fees charged by a fund manager</button>
+          <button class="vc-opt" onclick="pickVocab(this)">earning interest on your interest, so money grows faster and faster</button>
+        </div>
+      </div>
+      <div class="vocab-card" data-correct="0">
+        <div class="vc-word">ETF</div>
+        <div class="vc-eg">"She bought a Bitcoin <strong>ETF</strong> — she tracks the price without owning crypto directly or managing a wallet."</div>
+        <div class="vc-opts">
+          <button class="vc-opt" onclick="pickVocab(this)">a fund that holds many assets and trades on the stock market like a single stock</button>
+          <button class="vc-opt" onclick="pickVocab(this)">a type of savings account with a fixed interest rate</button>
+          <button class="vc-opt" onclick="pickVocab(this)">a loan used to invest in property</button>
+        </div>
+      </div>
+      <div class="vocab-card" data-correct="1">
+        <div class="vc-word">diversification</div>
+        <div class="vc-eg">"Good <strong>diversification</strong> means that if crypto crashes, your whole portfolio doesn't collapse with it."</div>
+        <div class="vc-opts">
+          <button class="vc-opt" onclick="pickVocab(this)">putting all your money into one strong asset</button>
+          <button class="vc-opt" onclick="pickVocab(this)">spreading money across different investments to reduce risk</button>
+          <button class="vc-opt" onclick="pickVocab(this)">moving investments to a safer currency</button>
+        </div>
+      </div>
+      <div class="vocab-card" data-correct="2">
+        <div class="vc-word">bear market</div>
+        <div class="vc-eg">"In 2022, crypto entered a <strong>bear market</strong> — Bitcoin lost more than 65% of its value in twelve months."</div>
+        <div class="vc-opts">
+          <button class="vc-opt" onclick="pickVocab(this)">a period of rapid price growth</button>
+          <button class="vc-opt" onclick="pickVocab(this)">a market with high trading volume</button>
+          <button class="vc-opt" onclick="pickVocab(this)">a period when prices fall significantly — usually 20% or more</button>
+        </div>
+      </div>
+      <div class="vocab-card" data-correct="0">
+        <div class="vc-word">yield</div>
+        <div class="vc-eg">"That government bond has a <strong>yield</strong> of 4% per year — not exciting, but safe and completely predictable."</div>
+        <div class="vc-opts">
+          <button class="vc-opt" onclick="pickVocab(this)">the money an investment earns each year, shown as a percentage</button>
+          <button class="vc-opt" onclick="pickVocab(this)">the total amount you invest upfront</button>
+          <button class="vc-opt" onclick="pickVocab(this)">the tax you pay on investment profits</button>
+        </div>
+      </div>
+      <div class="vocab-card" data-correct="1">
+        <div class="vc-word">rebalancing</div>
+        <div class="vc-eg">"After Bitcoin doubled, she sold some crypto and bought more bonds — this <strong>rebalancing</strong> kept her 60/40 plan on track."</div>
+        <div class="vc-opts">
+          <button class="vc-opt" onclick="pickVocab(this)">switching all investments into one asset class</button>
+          <button class="vc-opt" onclick="pickVocab(this)">adjusting your portfolio to return to your original plan</button>
+          <button class="vc-opt" onclick="pickVocab(this)">taking profits and putting them in a bank account</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="check-row">
+      <button class="check-btn" id="checkP2" onclick="checkVocab()">✓ Check Answers</button>
+      <div class="score-badge" id="scoreP2"></div>
+      <button class="reset-btn" id="resetP2" style="display:none" onclick="resetVocab()">Reset</button>
+    </div>
+  </div>
+
+  <!-- PAGE 3 · VOCABULARY IN CONTEXT -->
+  <div class="page" id="p3">
+    <span class="badge vocab">Vocabulary — Exercise 2</span>
+    <h1>Words in Context</h1>
+    <p class="subtitle">Complete the sentences with the correct word from the box.</p>
+    <div class="word-bank">
+      <h4>Word Bank</h4>
+      <div class="wb-tags">
+        <span class="wb-tag">volatility</span><span class="wb-tag">liquidity</span><span class="wb-tag">compound interest</span>
+        <span class="wb-tag">ETF</span><span class="wb-tag">diversification</span><span class="wb-tag">bear market</span>
+        <span class="wb-tag">yield</span><span class="wb-tag">rebalancing</span>
+      </div>
+    </div>
+    <div class="ex-list" id="ex3list">
+      <div class="ex-row">
+        <span class="ex-n">1.</span>
+        <span>Anna doesn't want to manage a crypto wallet or worry about private keys. So she bought a Bitcoin <input class="bi" type="text" style="min-width:55px" data-ans="etf">. Now she can track Bitcoin's price just like a regular stock — simple and safe.</span>
+      </div>
+      <div class="ex-row">
+        <span class="ex-n">2.</span>
+        <span>Last month, Bitcoin lost 30% of its value in just seven days. This kind of <input class="bi" type="text" style="min-width:105px" data-ans="volatility"> is the main reason many financial advisors say crypto is not suitable for cautious investors.</span>
+      </div>
+      <div class="ex-row">
+        <span class="ex-n">3.</span>
+        <span>One big advantage of crypto over property is its <input class="bi" type="text" style="min-width:105px" data-ans="liquidity">. If you need cash urgently, you can sell Bitcoin at 3am on a Sunday — crypto markets never close.</span>
+      </div>
+      <div class="ex-row">
+        <span class="ex-n">4.</span>
+        <span>Financial advisors always say: start saving as early as possible. The reason is <input class="bi" type="text" style="min-width:165px" data-ans="compound interest">. In year one, you earn interest on your money. In year two, you earn interest on your money <em>and</em> on the interest. Over 30 years, this makes a huge difference.</span>
+      </div>
+      <div class="ex-row">
+        <span class="ex-n">5.</span>
+        <span>He never puts more than 10% of his savings into any single asset. This <input class="bi" type="text" style="min-width:140px" data-ans="diversification"> strategy means that even if crypto crashes completely, he still has 90% of his money in other investments.</span>
+      </div>
+      <div class="ex-row">
+        <span class="ex-n">6.</span>
+        <span>2022 was a brutal year for crypto investors. Bitcoin fell from $69,000 to under $17,000 — a typical <input class="bi" type="text" style="min-width:120px" data-ans="bear market">. Many people panicked and sold at the lowest price, making their losses even bigger.</span>
+      </div>
+      <div class="ex-row">
+        <span class="ex-n">7.</span>
+        <span>She didn't want the stress of watching crypto prices every day. Instead, she chose a government bond with a <input class="bi" type="text" style="min-width:65px" data-ans="yield"> of 4% per year. It's not exciting, but she knows exactly how much she will earn.</span>
+      </div>
+      <div class="ex-row">
+        <span class="ex-n">8.</span>
+        <span>After a great year for Bitcoin, his portfolio was 25% crypto — much more than he planned. So he sold some Bitcoin and bought more bonds. This <input class="bi" type="text" style="min-width:120px" data-ans="rebalancing"> brought him back to his original 10% crypto target.</span>
+      </div>
+    </div>
+    <div class="check-row">
+      <button class="check-btn" id="checkP3" onclick="checkInputs('ex3list','checkP3','scoreP3','resetP3')">✓ Check Answers</button>
+      <div class="score-badge" id="scoreP3"></div>
+      <button class="reset-btn" id="resetP3" style="display:none" onclick="resetInputs('ex3list','checkP3','scoreP3','resetP3')">Reset</button>
+    </div>
+  </div>
+
+  <!-- PAGE 4 · READING -->
+  <div class="page" id="p4">
+    <span class="badge reading">Reading</span>
+    <h1>Bitcoin: Brilliant Investment or Big Mistake?</h1>
+    <p class="subtitle">Read the article. Pay attention to the words in <strong>bold</strong>.</p>
+    <div class="reading-box">
+      <div class="reading-title">Should You Put Your Money in Crypto?</div>
+      <div class="reading-sub">Personal Finance Weekly</div>
+      <p>Ten years ago, one Bitcoin was worth less than $100. Today, it is worth tens of thousands of dollars. For the people who bought early, it was the <span class="hl">most profitable</span> investment in history. Stories like this make crypto very attractive — and that is exactly the problem.</p>
+      <p>Bitcoin is also the <span class="hl">most volatile</span> major asset in the world. In 2022, it lost <span class="num-data">more than 65%</span> of its value in twelve months. That is a <span class="hl">worse</span> drop than almost any stock market crash in the last fifty years. If you invested €10,000 at the top, you had less than €3,500 twelve months later. Unlike stocks, crypto has no company behind it, no earnings, and no <span class="hl">yield</span>. Its price moves on news, social media, and emotion — nothing more.</p>
+      <p>Supporters say this is too simple. They argue that Bitcoin is "digital gold" — a <span class="hl">better</span> store of value than traditional currencies because no government can print more of it. They also say that a small amount of crypto — around <span class="num-data">5–10%</span> of a portfolio — gives <span class="hl">more diversification</span> without too much extra risk. And with <span class="hl">higher liquidity</span> than property, it is <span class="hl">easier</span> to buy and sell than almost any other asset.</p>
+      <p>The question is not really whether crypto is good or bad. It is whether <em>you</em> can sleep at night knowing your money can lose half its value in a month. If yes — it might deserve a small place in your portfolio. If not, <span class="hl">safer</span> investments exist. And remember: the <span class="hl">most dangerous</span> investor is the one who buys because of fear of missing out.</p>
+    </div>
+  </div>
+
+  <!-- PAGE 5 · READING COMPREHENSION -->
+  <div class="page" id="p5">
+    <span class="badge reading">Reading — Exercise 3</span>
+    <h1>True, False, or Not Stated?</h1>
+    <p class="subtitle">Choose <strong>True</strong>, <strong>False</strong>, or <strong>Not Stated</strong> based on the article.</p>
+    <div class="tf-list" id="ex5list">
+      <div class="tf-row" data-ans="T">
+        <span class="tf-n">1.</span>
+        <span class="tf-txt">Bitcoin lost more than 65% of its value in 2022.</span>
+        <div class="tf-btns"><button class="tf-btn" onclick="pickTF(this,'T')">T</button><button class="tf-btn" onclick="pickTF(this,'F')">F</button><button class="tf-btn" onclick="pickTF(this,'N')">NS</button></div>
+      </div>
+      <div class="tf-row" data-ans="T">
+        <span class="tf-n">2.</span>
+        <span class="tf-txt">Bitcoin has better liquidity than property.</span>
+        <div class="tf-btns"><button class="tf-btn" onclick="pickTF(this,'T')">T</button><button class="tf-btn" onclick="pickTF(this,'F')">F</button><button class="tf-btn" onclick="pickTF(this,'N')">NS</button></div>
+      </div>
+      <div class="tf-row" data-ans="T">
+        <span class="tf-n">3.</span>
+        <span class="tf-txt">The article says crypto prices are affected by emotions and social media.</span>
+        <div class="tf-btns"><button class="tf-btn" onclick="pickTF(this,'T')">T</button><button class="tf-btn" onclick="pickTF(this,'F')">F</button><button class="tf-btn" onclick="pickTF(this,'N')">NS</button></div>
+      </div>
+      <div class="tf-row" data-ans="N">
+        <span class="tf-n">4.</span>
+        <span class="tf-txt">The article recommends investing exactly 5% of your portfolio in crypto.</span>
+        <div class="tf-btns"><button class="tf-btn" onclick="pickTF(this,'T')">T</button><button class="tf-btn" onclick="pickTF(this,'F')">F</button><button class="tf-btn" onclick="pickTF(this,'N')">NS</button></div>
+      </div>
+      <div class="tf-row" data-ans="T">
+        <span class="tf-n">5.</span>
+        <span class="tf-txt">According to crypto supporters, no government can create more Bitcoin.</span>
+        <div class="tf-btns"><button class="tf-btn" onclick="pickTF(this,'T')">T</button><button class="tf-btn" onclick="pickTF(this,'F')">F</button><button class="tf-btn" onclick="pickTF(this,'N')">NS</button></div>
+      </div>
+      <div class="tf-row" data-ans="F">
+        <span class="tf-n">6.</span>
+        <span class="tf-txt">The writer says buying Bitcoin because of FOMO is a smart strategy.</span>
+        <div class="tf-btns"><button class="tf-btn" onclick="pickTF(this,'T')">T</button><button class="tf-btn" onclick="pickTF(this,'F')">F</button><button class="tf-btn" onclick="pickTF(this,'N')">NS</button></div>
+      </div>
+    </div>
+    <div class="check-row">
+      <button class="check-btn" id="checkP5" onclick="checkTF('ex5list','checkP5','scoreP5','resetP5')">✓ Check Answers</button>
+      <div class="score-badge" id="scoreP5"></div>
+      <button class="reset-btn" id="resetP5" style="display:none" onclick="resetTF('ex5list','checkP5','scoreP5','resetP5')">Reset</button>
+    </div>
+  </div>
+
+  <!-- PAGE 6 · DISCUSSION -->
+  <div class="page" id="p6">
+    <span class="badge discuss">Discussion</span>
+    <h1>Let's Talk About It</h1>
+    <p class="subtitle">Discuss these questions based on the article. Give reasons and examples from your own experience.</p>
+    <div class="disc-questions">
+      <div class="disc-q">
+        <p><span class="dq-n">1.</span>The article says crypto's price moves on "news, social media, and emotion." Do you think that makes it <em>more</em> or <em>less</em> dangerous than traditional investments?</p>
+        <p class="follow">→ Can you think of an example when social media moved a crypto price?</p>
+      </div>
+      <div class="disc-q">
+        <p><span class="dq-n">2.</span>Supporters say Bitcoin is "digital gold" — a better store of value than currencies because no government can print more of it. Do you find that argument convincing? Is Bitcoin more or less reliable than gold?</p>
+        <p class="follow">→ What are the biggest differences between Bitcoin and gold as investments?</p>
+      </div>
+      <div class="disc-q">
+        <p><span class="dq-n">3.</span>The article suggests keeping 5–10% in crypto is a sensible approach. Do you think that's the best strategy — or is any amount of crypto in a portfolio too risky?</p>
+        <p class="follow">→ What percentage, if any, would you personally be comfortable with?</p>
+      </div>
+      <div class="disc-q">
+        <p><span class="dq-n">4.</span>The article ends: <em>"the most dangerous investor is the one who buys because of fear of missing out."</em> Have you ever made a financial decision because of FOMO? Was it a good or bad one?</p>
+      </div>
+    </div>
+    <div class="disc-takes">
+      <h3>Agree or Disagree? Vote first, then discuss.</h3>
+      <div class="disc-take">
+        <p>"Crypto is riskier than any other investment, so it should never be part of a serious portfolio."</p>
+        <div class="vote-btns"><button class="vote-btn" onclick="pickVote(this,'agree')">Agree</button><button class="vote-btn" onclick="pickVote(this,'disagree')">Disagree</button></div>
+      </div>
+      <div class="disc-take">
+        <p>"The best time to buy crypto is during a bear market — that's when the best opportunities appear."</p>
+        <div class="vote-btns"><button class="vote-btn" onclick="pickVote(this,'agree')">Agree</button><button class="vote-btn" onclick="pickVote(this,'disagree')">Disagree</button></div>
+      </div>
+    </div>
+    <div class="lang-box">
+      <h4>Useful Language</h4>
+      <div class="lang-grid">
+        <div class="lang-chip">"I think crypto is more / less … than …"</div>
+        <div class="lang-chip">"In my opinion, the biggest risk is …"</div>
+        <div class="lang-chip">"The most important thing for me is …"</div>
+        <div class="lang-chip">"I agree / disagree because …"</div>
+        <div class="lang-chip">"That's a good point, but …"</div>
+        <div class="lang-chip">"The worst decision an investor can make is …"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 7 · GRAMMAR FOCUS -->
+  <div class="page" id="p7">
+    <span class="badge grammar">Grammar Focus</span>
+    <h1>Comparative &amp; Superlative</h1>
+    <p class="subtitle">We use <strong>comparatives</strong> to compare two things. We use <strong>superlatives</strong> to compare one thing with all others in a group.</p>
+    <div class="g-box">
+      <h3>Comparative — comparing two things</h3>
+      <div class="g-rule">adj + <strong>-er</strong> + than &nbsp;/&nbsp; <strong>more</strong> + adj + than</div>
+      <div class="g-eg">➤ Crypto is <strong>riskier</strong> than government bonds.</div>
+      <div class="g-eg">➤ Bitcoin is <strong>more volatile</strong> than gold.</div>
+    </div>
+    <div class="g-box purple">
+      <h3>Superlative — comparing one thing with all others</h3>
+      <div class="g-rule">the + adj + <strong>-est</strong> &nbsp;/&nbsp; the <strong>most</strong> + adj</div>
+      <div class="g-eg">➤ FOMO is <strong>the most dangerous</strong> reason to invest.</div>
+      <div class="g-eg">➤ Bitcoin was <strong>the best</strong> performing asset of the last decade.</div>
+    </div>
+    <table class="g-table">
+      <thead><tr><th>Adjective</th><th>Type</th><th>Comparative</th><th>Superlative</th></tr></thead>
+      <tbody>
+        <tr><td>safe</td><td>short (1 syllable)</td><td class="form">safer</td><td class="form">the safest</td></tr>
+        <tr><td>big</td><td>short — double final consonant</td><td class="form">bigger</td><td class="form">the biggest</td></tr>
+        <tr><td>risky</td><td>ends in -y → change to -i</td><td class="form">riskier</td><td class="form">the riskiest</td></tr>
+        <tr><td>volatile</td><td>long (3+ syllables)</td><td class="form">more volatile</td><td class="form">the most volatile</td></tr>
+        <tr><td>good</td><td>irregular</td><td class="form">better</td><td class="form">the best</td></tr>
+        <tr><td>bad</td><td>irregular</td><td class="form">worse</td><td class="form">the worst</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PAGE 8 · GRAMMAR EXERCISE 4 — MULTIPLE CHOICE (was Ex 5) -->
+  <div class="page" id="p8">
+    <span class="badge grammar">Grammar — Exercise 4</span>
+    <h1>Choose the Correct Form</h1>
+    <p class="subtitle">Select the correct option for each sentence.</p>
+    <div class="ex-list" id="ex8list">
+      <div class="ex-row mc-wrap" data-ans="1">
+        <div class="mc-stem"><span class="ex-n">1.</span><span>Bitcoin becomes _______ than usual when bad news hits the market.</span></div>
+        <div class="mc-opts"><button class="mc-btn" onclick="pickMC(this)">more risky</button><button class="mc-btn" onclick="pickMC(this)">riskier</button><button class="mc-btn" onclick="pickMC(this)">the riskiest</button></div>
+      </div>
+      <div class="ex-row mc-wrap" data-ans="0">
+        <div class="mc-stem"><span class="ex-n">2.</span><span>Compound interest is _______ tool available to a long-term investor.</span></div>
+        <div class="mc-opts"><button class="mc-btn" onclick="pickMC(this)">the most powerful</button><button class="mc-btn" onclick="pickMC(this)">more powerful</button><button class="mc-btn" onclick="pickMC(this)">powerfuller</button></div>
+      </div>
+      <div class="ex-row mc-wrap" data-ans="1">
+        <div class="mc-stem"><span class="ex-n">3.</span><span>My portfolio performed _______ last year than in 2022.</span></div>
+        <div class="mc-opts"><button class="mc-btn" onclick="pickMC(this)">well</button><button class="mc-btn" onclick="pickMC(this)">better</button><button class="mc-btn" onclick="pickMC(this)">the best</button></div>
+      </div>
+      <div class="ex-row mc-wrap" data-ans="1">
+        <div class="mc-stem"><span class="ex-n">4.</span><span>Crypto is _______ asset class I have ever invested in — the swings are brutal.</span></div>
+        <div class="mc-opts"><button class="mc-btn" onclick="pickMC(this)">more volatile</button><button class="mc-btn" onclick="pickMC(this)">the most volatile</button><button class="mc-btn" onclick="pickMC(this)">volatiler</button></div>
+      </div>
+      <div class="ex-row mc-wrap" data-ans="2">
+        <div class="mc-stem"><span class="ex-n">5.</span><span>An ETF is often _______ to manage than a portfolio of individual stocks.</span></div>
+        <div class="mc-opts"><button class="mc-btn" onclick="pickMC(this)">more easy</button><button class="mc-btn" onclick="pickMC(this)">the easiest</button><button class="mc-btn" onclick="pickMC(this)">easier</button></div>
+      </div>
+      <div class="ex-row mc-wrap" data-ans="0">
+        <div class="mc-stem"><span class="ex-n">6.</span><span>Selling everything during a crash was _______ decision he ever made.</span></div>
+        <div class="mc-opts"><button class="mc-btn" onclick="pickMC(this)">the worst</button><button class="mc-btn" onclick="pickMC(this)">worse</button><button class="mc-btn" onclick="pickMC(this)">more bad</button></div>
+      </div>
+    </div>
+    <div class="check-row">
+      <button class="check-btn" id="checkP8" onclick="checkMC('ex8list','checkP8','scoreP8','resetP8')">✓ Check Answers</button>
+      <div class="score-badge" id="scoreP8"></div>
+      <button class="reset-btn" id="resetP8" style="display:none" onclick="resetMC('ex8list','checkP8','scoreP8','resetP8')">Reset</button>
+    </div>
+  </div>
+
+  <!-- PAGE 9 · GRAMMAR EXERCISE 5 — FILL IN THE GAPS (was Ex 4) -->
+  <div class="page" id="p9">
+    <span class="badge grammar">Grammar — Exercise 5</span>
+    <h1>Fill in the Gaps</h1>
+    <p class="subtitle">Use the <strong>comparative</strong> or <strong>superlative</strong> form of the adjective in brackets.</p>
+    <div class="ex-list" id="ex9list">
+      <div class="ex-row"><span class="ex-n">1.</span><span>Bitcoin is <input class="bi" type="text" style="min-width:130px" data-ans="more volatile"> than gold — its price can change by 20% in a single week. <span class="hint">(volatile)</span></span></div>
+      <div class="ex-row"><span class="ex-n">2.</span><span>In 2022, crypto had the <input class="bi" type="text" style="min-width:80px" data-ans="worst"> year in its history. <span class="hint">(bad)</span></span></div>
+      <div class="ex-row"><span class="ex-n">3.</span><span>ETFs are generally <input class="bi" type="text" style="min-width:100px" data-ans="cheaper"> to manage than hand-picked stock portfolios. <span class="hint">(cheap)</span></span></div>
+      <div class="ex-row"><span class="ex-n">4.</span><span>A diversified portfolio is usually <input class="bi" type="text" style="min-width:140px" data-ans="more resilient"> than one focused on a single asset. <span class="hint">(resilient)</span></span></div>
+      <div class="ex-row"><span class="ex-n">5.</span><span>That fund had the <input class="bi" type="text" style="min-width:75px" data-ans="best"> returns of any we reviewed this year. <span class="hint">(good)</span></span></div>
+      <div class="ex-row"><span class="ex-n">6.</span><span>Keeping all your money in cash is the <input class="bi" type="text" style="min-width:100px" data-ans="riskiest"> long-term strategy because of inflation. <span class="hint">(risky)</span></span></div>
+      <div class="ex-row"><span class="ex-n">7.</span><span>Crypto markets have <input class="bi" type="text" style="min-width:80px" data-ans="better"> liquidity than property — they never close. <span class="hint">(good)</span></span></div>
+      <div class="ex-row"><span class="ex-n">8.</span><span>Starting to invest at 25 is far <input class="bi" type="text" style="min-width:80px" data-ans="better"> than starting at 40, thanks to compound interest. <span class="hint">(good)</span></span></div>
+    </div>
+    <div class="check-row">
+      <button class="check-btn" id="checkP9" onclick="checkInputs('ex9list','checkP9','scoreP9','resetP9')">✓ Check Answers</button>
+      <div class="score-badge" id="scoreP9"></div>
+      <button class="reset-btn" id="resetP9" style="display:none" onclick="resetInputs('ex9list','checkP9','scoreP9','resetP9')">Reset</button>
+    </div>
+  </div>
+
+  <!-- PAGE 10 · GRAMMAR EXERCISE 6 — TRANSFORMATIONS (no hints) -->
+  <div class="page" id="p10">
+    <span class="badge grammar">Grammar — Exercise 6</span>
+    <h1>Rewrite the Sentences</h1>
+    <p class="subtitle">Rewrite each sentence using the word in bold. Keep the meaning the same.</p>
+    <div class="ex-list" id="ex10list">
+      <div class="ex-row tr-ex">
+        <div class="tr-source"><span class="ex-n">1.</span><span>No asset class is more volatile than cryptocurrency. Use: <strong>the most</strong></span></div>
+        <span class="tr-arrow">→</span>
+        <input class="tr-write" type="text" placeholder="Cryptocurrency is …">
+        <div class="model-ans">✓ Cryptocurrency is the most volatile asset class.</div>
+      </div>
+      <div class="ex-row tr-ex">
+        <div class="tr-source"><span class="ex-n">2.</span><span>Property is not as liquid as Bitcoin. Use: <strong>more liquid</strong></span></div>
+        <span class="tr-arrow">→</span>
+        <input class="tr-write" type="text" placeholder="Bitcoin is …">
+        <div class="model-ans">✓ Bitcoin is more liquid than property.</div>
+      </div>
+      <div class="ex-row tr-ex">
+        <div class="tr-source"><span class="ex-n">3.</span><span>I've never made a worse decision than buying crypto at its peak. Use: <strong>the worst</strong></span></div>
+        <span class="tr-arrow">→</span>
+        <input class="tr-write" type="text" placeholder="Buying crypto at its peak was …">
+        <div class="model-ans">✓ Buying crypto at its peak was the worst decision I've ever made.</div>
+      </div>
+      <div class="ex-row tr-ex">
+        <div class="tr-source"><span class="ex-n">4.</span><span>Active funds have higher fees than ETFs. Use: <strong>lower</strong></span></div>
+        <span class="tr-arrow">→</span>
+        <input class="tr-write" type="text" placeholder="ETFs have …">
+        <div class="model-ans">✓ ETFs have lower fees than active funds.</div>
+      </div>
+      <div class="ex-row tr-ex">
+        <div class="tr-source"><span class="ex-n">5.</span><span>No strategy has worked better for me than buy-and-hold. Use: <strong>the best</strong></span></div>
+        <span class="tr-arrow">→</span>
+        <input class="tr-write" type="text" placeholder="Buy-and-hold is …">
+        <div class="model-ans">✓ Buy-and-hold is the best strategy that has worked for me.</div>
+      </div>
+    </div>
+    <div class="check-row">
+      <button class="check-btn" id="checkP10" onclick="revealTransform()">👁 Reveal Answers</button>
+      <button class="reset-btn" id="resetP10" style="display:none" onclick="hideTransform()">Hide Answers</button>
+    </div>
+  </div>
+
+  <!-- PAGE 11 · WRAP-UP -->
+  <div class="page" id="p11">
+    <span class="badge wrapup">Wrap-Up</span>
+    <h1>What Did You Learn Today?</h1>
+    <p class="subtitle">Let's review.</p>
+    <div class="wu-grid">
+      <div class="wu-card">
+        <h3>Vocabulary</h3>
+        <div class="v-pills">
+          <span class="v-pill">volatility</span><span class="v-pill">liquidity</span>
+          <span class="v-pill">compound interest</span><span class="v-pill">ETF</span>
+          <span class="v-pill">diversification</span><span class="v-pill">bear market</span>
+          <span class="v-pill">yield</span><span class="v-pill">rebalancing</span>
+        </div>
+      </div>
+      <div class="wu-card">
+        <h3>Grammar</h3>
+        <ul class="check-list">
+          <li>Comparative adjectives <em>(riskier, more volatile)</em></li>
+          <li>Superlative adjectives <em>(the worst, the most dangerous)</em></li>
+          <li>Irregular forms <em>(good → better → the best)</em></li>
+          <li>Using these to argue, compare, and persuade</li>
+        </ul>
+      </div>
+    </div>
+    <div class="reflect-q">
+      <h3>Reflection</h3>
+      <ul class="r-list">
+        <li><span class="rn">1.</span>Has today's lesson changed your opinion about crypto at all? Why or why not?</li>
+        <li><span class="rn">2.</span>Describe your own investment approach using one comparative and one superlative.</li>
+        <li><span class="rn">3.</span>What is one financial article or podcast in English you could read or listen to this week?</li>
+      </ul>
+    </div>
+  </div>
+
+</main>
+
+<nav class="nav">
+  <button class="nav-btn prev" id="prevBtn" onclick="go(-1)" disabled>← Previous</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn next" id="nextBtn" onclick="go(1)">Next →</button>
+</nav>
+
+<script>
+  const N = 11; let cur = 1;
+  const dotsEl = document.getElementById('dots');
+  for (let i = 1; i <= N; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' active' : '');
+    d.onclick = () => jump(i);
+    dotsEl.appendChild(d);
+  }
+  function jump(n) {
+    document.getElementById('p' + cur).classList.remove('active');
+    dotsEl.children[cur - 1].classList.remove('active');
+    cur = n;
+    const pg = document.getElementById('p' + cur);
+    pg.classList.remove('active'); void pg.offsetWidth; pg.classList.add('active');
+    dotsEl.children[cur - 1].classList.add('active');
+    document.getElementById('counter').textContent = cur + ' / ' + N;
+    document.getElementById('prevBtn').disabled = cur === 1;
+    document.getElementById('nextBtn').disabled = cur === N;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function go(dir) { const n = cur + dir; if (n >= 1 && n <= N) jump(n); }
+
+  function pickVote(btn, type) {
+    btn.closest('.vote-btns').querySelectorAll('.vote-btn').forEach(b => b.className = 'vote-btn');
+    btn.classList.add(type);
+  }
+
+  /* ── VOCAB CARDS (Ex 1) ── */
+  function pickVocab(btn) {
+    btn.closest('.vc-opts').querySelectorAll('.vc-opt').forEach(b => b.classList.remove('sel','ok','wrong','reveal'));
+    btn.classList.add('sel');
+  }
+  function checkVocab() {
+    const cards = document.querySelectorAll('.vocab-card');
+    let correct = 0;
+    cards.forEach(card => {
+      const ci = parseInt(card.dataset.correct);
+      const opts = card.querySelectorAll('.vc-opt');
+      let si = -1;
+      opts.forEach((o, i) => { if (o.classList.contains('sel')) si = i; });
+      opts.forEach((o, i) => {
+        o.classList.remove('sel','ok','wrong','reveal');
+        if (i === ci) o.classList.add('reveal');
+        else if (i === si && si !== ci) o.classList.add('wrong');
+      });
+      card.classList.remove('ok','wrong');
+      if (si === ci) { correct++; card.classList.add('ok'); } else card.classList.add('wrong');
+    });
+    finishCheck('checkP2','scoreP2','resetP2', correct, cards.length, resetVocab);
+  }
+  function resetVocab() {
+    document.querySelectorAll('.vocab-card').forEach(card => {
+      card.classList.remove('ok','wrong');
+      card.querySelectorAll('.vc-opt').forEach(o => o.classList.remove('sel','ok','wrong','reveal'));
+    });
+    resetCheck('checkP2','scoreP2','resetP2', checkVocab);
+  }
+
+  /* ── T/F/NS ── */
+  function pickTF(btn, type) {
+    btn.closest('.tf-btns').querySelectorAll('.tf-btn').forEach(b => b.classList.remove('sel-T','sel-F','sel-N','correct-ans','wrong-ans'));
+    btn.classList.add('sel-' + type);
+  }
+  function checkTF(listId, btnId, scoreId, resetId) {
+    const rows = document.querySelectorAll('#' + listId + ' .tf-row');
+    let correct = 0;
+    rows.forEach(row => {
+      const ans = row.dataset.ans;
+      const btns = row.querySelectorAll('.tf-btn');
+      let selType = null;
+      btns.forEach(b => { if (b.classList.contains('sel-T')) selType='T'; if (b.classList.contains('sel-F')) selType='F'; if (b.classList.contains('sel-N')) selType='N'; });
+      btns.forEach(b => b.classList.remove('sel-T','sel-F','sel-N'));
+      const map = { T: btns[0], F: btns[1], N: btns[2] };
+      map[ans].classList.add('correct-ans');
+      if (selType && selType !== ans) map[selType].classList.add('wrong-ans');
+      row.classList.remove('ok','wrong');
+      if (selType === ans) { correct++; row.classList.add('ok'); } else row.classList.add('wrong');
+    });
+    finishCheck(btnId, scoreId, resetId, correct, rows.length, () => resetTF(listId, btnId, scoreId, resetId));
+  }
+  function resetTF(listId, btnId, scoreId, resetId) {
+    document.querySelectorAll('#' + listId + ' .tf-btn').forEach(b => b.classList.remove('sel-T','sel-F','sel-N','correct-ans','wrong-ans'));
+    document.querySelectorAll('#' + listId + ' .tf-row').forEach(r => r.classList.remove('ok','wrong'));
+    resetCheck(btnId, scoreId, resetId, () => checkTF(listId, btnId, scoreId, resetId));
+  }
+
+  /* ── INPUTS ── */
+  function normalise(s) { return s.trim().toLowerCase().replace(/\s+/g,' '); }
+  function checkInputs(listId, btnId, scoreId, resetId) {
+    const inputs = document.querySelectorAll('#' + listId + ' .bi');
+    let correct = 0;
+    inputs.forEach(inp => {
+      const ans = normalise(inp.dataset.ans), val = normalise(inp.value);
+      const row = inp.closest('.ex-row');
+      row.querySelectorAll('.reveal-ans').forEach(s => s.remove());
+      inp.classList.remove('ok','wrong'); row.classList.remove('ok','wrong');
+      if (val === ans) { inp.classList.add('ok'); row.classList.add('ok'); correct++; }
+      else {
+        inp.classList.add('wrong'); row.classList.add('wrong');
+        const sp = document.createElement('span');
+        sp.className = 'reveal-ans'; sp.textContent = '→ ' + inp.dataset.ans;
+        inp.after(sp);
+      }
+    });
+    finishCheck(btnId, scoreId, resetId, correct, inputs.length, () => resetInputs(listId, btnId, scoreId, resetId));
+  }
+  function resetInputs(listId, btnId, scoreId, resetId) {
+    document.querySelectorAll('#' + listId + ' .bi').forEach(inp => {
+      inp.value = ''; inp.classList.remove('ok','wrong');
+      inp.closest('.ex-row').querySelectorAll('.reveal-ans').forEach(s => s.remove());
+      inp.closest('.ex-row').classList.remove('ok','wrong');
+    });
+    resetCheck(btnId, scoreId, resetId, () => checkInputs(listId, btnId, scoreId, resetId));
+  }
+
+  /* ── MULTIPLE CHOICE ── */
+  function pickMC(btn) {
+    btn.closest('.mc-opts').querySelectorAll('.mc-btn').forEach(b => b.classList.remove('sel','ok','wrong','reveal'));
+    btn.classList.add('sel');
+  }
+  function checkMC(listId, btnId, scoreId, resetId) {
+    const rows = document.querySelectorAll('#' + listId + ' .ex-row[data-ans]');
+    let correct = 0;
+    rows.forEach(row => {
+      const ci = parseInt(row.dataset.ans);
+      const btns = row.querySelectorAll('.mc-btn');
+      let si = -1;
+      btns.forEach((b, i) => { if (b.classList.contains('sel')) si = i; });
+      btns.forEach((b, i) => {
+        b.classList.remove('sel','ok','wrong','reveal');
+        if (i === ci) b.classList.add('reveal');
+        else if (i === si && si !== ci) b.classList.add('wrong');
+      });
+      row.classList.remove('ok','wrong');
+      if (si === ci) { correct++; row.classList.add('ok'); } else row.classList.add('wrong');
+    });
+    finishCheck(btnId, scoreId, resetId, correct, rows.length, () => resetMC(listId, btnId, scoreId, resetId));
+  }
+  function resetMC(listId, btnId, scoreId, resetId) {
+    document.querySelectorAll('#' + listId + ' .mc-btn').forEach(b => b.classList.remove('sel','ok','wrong','reveal'));
+    document.querySelectorAll('#' + listId + ' .ex-row[data-ans]').forEach(r => r.classList.remove('ok','wrong'));
+    resetCheck(btnId, scoreId, resetId, () => checkMC(listId, btnId, scoreId, resetId));
+  }
+
+  /* ── TRANSFORMATIONS ── */
+  function revealTransform() {
+    document.querySelectorAll('#ex10list .model-ans').forEach(el => el.classList.add('visible'));
+    const btn = document.getElementById('checkP10');
+    btn.classList.add('done'); btn.textContent = '✓ Shown'; btn.onclick = null;
+    document.getElementById('resetP10').style.display = 'inline-block';
+  }
+  function hideTransform() {
+    document.querySelectorAll('#ex10list .model-ans').forEach(el => el.classList.remove('visible'));
+    const btn = document.getElementById('checkP10');
+    btn.classList.remove('done'); btn.textContent = '👁 Reveal Answers'; btn.onclick = revealTransform;
+    document.getElementById('resetP10').style.display = 'none';
+  }
+
+  /* ── SHARED HELPERS ── */
+  function showScore(id, correct, total) {
+    const el = document.getElementById(id);
+    el.textContent = correct + ' / ' + total + ' correct';
+    el.classList.add('visible');
+    el.classList.remove('perfect','bad');
+    if (correct === total) el.classList.add('perfect');
+    else if (correct < total / 2) el.classList.add('bad');
+  }
+  function finishCheck(btnId, scoreId, resetId, correct, total, resetFn) {
+    const btn = document.getElementById(btnId);
+    btn.classList.add('done'); btn.textContent = '✓ Checked'; btn.onclick = null;
+    showScore(scoreId, correct, total);
+    const rb = document.getElementById(resetId);
+    rb.style.display = 'inline-block'; rb.onclick = resetFn;
+  }
+  function resetCheck(btnId, scoreId, resetId, checkFn) {
+    const btn = document.getElementById(btnId);
+    btn.classList.remove('done'); btn.textContent = '✓ Check Answers'; btn.onclick = checkFn;
+    document.getElementById(scoreId).classList.remove('visible','perfect','bad');
+    document.getElementById(resetId).style.display = 'none';
+  }
+
+</script>
+</body>
+</html>
