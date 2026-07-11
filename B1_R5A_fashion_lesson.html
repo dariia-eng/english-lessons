@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5A – How does it look?</title>
+<style>
+  :root {
+    --purple: #6c3fcf;
+    --purple-light: #f0ebff;
+    --purple-mid: #9b72e8;
+    --green: #27ae60;
+    --red: #e74c3c;
+    --grey: #f5f5f7;
+    --dark: #1a1a2e;
+    --text: #333;
+    --border: #ddd;
+    --shadow: 0 4px 20px rgba(108,63,207,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #fafafa; color: var(--text); min-height: 100vh; }
+
+  .topbar {
+    background: var(--purple); color: white; padding: 14px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  }
+  .progress-bar-wrap { height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; width: 160px; }
+  .progress-bar-fill { height: 4px; background: white; border-radius: 2px; transition: width .4s; }
+  .progress-label { font-size: .75rem; opacity: .8; margin-top: 3px; text-align: right; }
+
+  .page { display: none; max-width: 780px; margin: 0 auto; padding: 36px 24px 100px; }
+  .page.active { display: block; }
+
+  .page-tag {
+    display: inline-block; background: var(--purple); color: white;
+    font-size: .7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 20px; margin-bottom: 16px;
+  }
+  h2 { font-size: 1.6rem; font-weight: 800; color: var(--dark); margin-bottom: 8px; line-height: 1.3; }
+  .instruction {
+    font-size: .95rem; color: #555; margin-bottom: 24px;
+    padding: 12px 16px; background: var(--purple-light);
+    border-left: 4px solid var(--purple); border-radius: 0 8px 8px 0; line-height: 1.6;
+  }
+  .card {
+    background: white; border-radius: 14px; padding: 22px 26px; margin-bottom: 16px;
+    box-shadow: var(--shadow); border: 1.5px solid transparent; transition: border .2s;
+  }
+  .card:hover { border-color: var(--purple-mid); }
+
+  /* DISCUSSION */
+  .discussion-q {
+    background: white; border-radius: 14px; padding: 18px 22px; margin-bottom: 14px;
+    box-shadow: var(--shadow); display: flex; gap: 16px; align-items: flex-start;
+  }
+  .q-num {
+    background: var(--purple); color: white; width: 32px; height: 32px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .9rem; flex-shrink: 0;
+  }
+  .q-text { font-size: 1rem; line-height: 1.6; padding-top: 4px; }
+
+  /* DRAG & DROP */
+  .word-bank {
+    display: flex; flex-wrap: wrap; gap: 10px; padding: 18px;
+    background: var(--grey); border-radius: 12px; margin-bottom: 20px; min-height: 60px;
+  }
+  .word-chip {
+    background: var(--purple); color: white; padding: 7px 16px; border-radius: 20px;
+    font-size: .9rem; cursor: grab; user-select: none; font-weight: 600;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .word-chip:hover { transform: scale(1.06); box-shadow: 0 4px 12px rgba(108,63,207,.35); }
+  .word-chip.dragging { opacity: .5; cursor: grabbing; }
+  .word-chip.used { opacity: .35; cursor: default; pointer-events: none; }
+  .drop-zone {
+    border: 2px dashed var(--purple-mid); border-radius: 10px; min-height: 44px;
+    padding: 8px 12px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    background: #faf8ff; transition: background .2s;
+  }
+  .drop-zone.over { background: var(--purple-light); border-color: var(--purple); }
+  .drop-zone .word-chip { background: var(--purple-mid); cursor: default; font-size: .82rem; padding: 5px 12px; }
+  .category-row { display: grid; grid-template-columns: 170px 1fr; gap: 12px; align-items: center; margin-bottom: 12px; }
+  .category-label { font-weight: 700; font-size: .9rem; color: var(--purple); text-align: right; padding-right: 10px; }
+
+  /* READING */
+  .story-box {
+    background: white; border-radius: 14px; padding: 24px 28px; box-shadow: var(--shadow);
+    line-height: 1.8; font-size: .97rem; margin-bottom: 20px;
+  }
+  .story-box p { margin-bottom: 14px; }
+  .highlight { background: #ffe066; padding: 0 2px; border-radius: 3px; }
+
+  /* MCQ */
+  .mcq-item { margin-bottom: 22px; }
+  .mcq-stem { font-size: .97rem; margin-bottom: 10px; font-weight: 600; }
+  .mcq-options { display: flex; flex-direction: column; gap: 8px; }
+  .mcq-opt {
+    padding: 10px 16px; border-radius: 10px; border: 2px solid var(--border);
+    cursor: pointer; font-size: .9rem; transition: all .18s; background: white;
+  }
+  .mcq-opt:hover { border-color: var(--purple-mid); background: var(--purple-light); }
+  .mcq-opt.correct { border-color: var(--green); background: #eafaf1; color: var(--green); font-weight: 700; }
+  .mcq-opt.wrong { border-color: var(--red); background: #fdf0ee; color: var(--red); }
+  .mcq-opt.disabled { pointer-events: none; }
+  .mcq-feedback { font-size: .83rem; margin-top: 6px; padding: 6px 12px; border-radius: 8px; }
+  .mcq-feedback.ok { background: #eafaf1; color: var(--green); }
+  .mcq-feedback.bad { background: #fdf0ee; color: var(--red); }
+
+  /* GRAMMAR BOX */
+  .grammar-box {
+    background: white; border: 2px solid var(--purple); border-radius: 14px;
+    padding: 22px 26px; margin-bottom: 24px; box-shadow: var(--shadow);
+  }
+  .grammar-box h3 { color: var(--purple); margin-bottom: 14px; font-size: 1.1rem; border-bottom: 1.5px solid var(--purple-light); padding-bottom: 8px; }
+  .grammar-row { margin-bottom: 12px; }
+  .grammar-row .example { color: var(--purple-mid); font-style: italic; margin-top: 4px; font-size: .9rem; }
+
+  /* CHOICE BUTTONS */
+  .choice-btn {
+    display: inline-block; padding: 4px 14px; margin: 0 3px;
+    border-radius: 20px; border: 2px solid var(--purple-mid);
+    cursor: pointer; font-size: .9rem; font-weight: 600;
+    transition: all .15s; background: white; color: var(--purple);
+  }
+  .choice-btn:hover { background: var(--purple-light); }
+  .choice-btn.selected-correct { background: var(--green); border-color: var(--green); color: white; }
+  .choice-btn.selected-wrong { background: var(--red); border-color: var(--red); color: white; }
+  .choice-btn.show-correct { background: var(--green); border-color: var(--green); color: white; }
+  .choice-btn.disabled { pointer-events: none; opacity: .55; }
+
+  /* CHOOSE CORRECT sentence style */
+  .choose-item { margin-bottom: 16px; font-size: .97rem; line-height: 1.9; }
+  .choose-item .num { font-weight: 800; color: var(--purple); margin-right: 6px; }
+
+  /* OPEN QUESTIONS */
+  .open-q { margin-bottom: 18px; }
+  .open-q-stem { font-size: .95rem; font-weight: 600; margin-bottom: 8px; line-height: 1.5; }
+  textarea.response-input {
+    width: 100%; border: 2px solid var(--border); border-radius: 10px;
+    padding: 10px 14px; font-size: .93rem; font-family: inherit;
+    resize: vertical; transition: border .2s; min-height: 58px;
+  }
+  textarea.response-input:focus { outline: none; border-color: var(--purple); }
+  .reveal-answer-btn {
+    margin-top: 7px; padding: 5px 16px; background: transparent;
+    border: 2px solid var(--purple-mid); color: var(--purple);
+    border-radius: 20px; cursor: pointer; font-size: .8rem; font-weight: 700; transition: all .15s;
+  }
+  .reveal-answer-btn:hover { background: var(--purple-light); }
+  .model-answer {
+    display: none; margin-top: 7px; padding: 10px 14px; background: #eafaf1;
+    border-radius: 10px; font-size: .88rem; color: var(--green);
+    font-style: italic; border: 1.5px solid #b2e7c8;
+  }
+
+  /* SITUATIONS */
+  .situation-item { margin-bottom: 22px; }
+  .situation-stem { font-size: .95rem; margin-bottom: 10px; line-height: 1.6; }
+  .situation-stem .given { color: var(--green); font-style: italic; font-size: .9rem; margin-top: 4px; }
+
+  /* SPEAKING */
+  .photo-card { background: white; border-radius: 14px; padding: 22px 26px; box-shadow: var(--shadow); margin-bottom: 16px; }
+  .photo-placeholder {
+    width: 100%; height: 170px; border-radius: 10px;
+    background: linear-gradient(135deg, #e0d4f7, #c9b8f0);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    margin-bottom: 14px; color: var(--purple); font-weight: 700; font-size: .9rem;
+    text-align: center; padding: 20px;
+  }
+  .photo-placeholder .icon { font-size: 2.5rem; margin-bottom: 8px; }
+  .guess-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .guess-tag {
+    padding: 5px 14px; border-radius: 20px; border: 2px solid var(--purple-mid);
+    background: var(--purple-light); font-size: .82rem; color: var(--purple);
+    font-weight: 600; cursor: pointer; transition: all .15s;
+  }
+  .guess-tag.active { background: var(--purple); color: white; border-color: var(--purple); }
+
+  /* BUTTONS */
+  .btn-nav { position: fixed; bottom: 24px; right: 24px; display: flex; gap: 10px; z-index: 200; }
+  .btn { padding: 13px 28px; border-radius: 50px; border: none; font-size: .95rem; font-weight: 700; cursor: pointer; transition: all .18s; }
+  .btn-primary { background: var(--purple); color: white; box-shadow: 0 4px 14px rgba(108,63,207,.35); }
+  .btn-primary:hover { background: #5530b0; transform: translateY(-1px); }
+  .btn-secondary { background: white; color: var(--purple); border: 2px solid var(--purple); }
+  .btn-secondary:hover { background: var(--purple-light); }
+  .btn:disabled { opacity: .4; cursor: default; transform: none; }
+
+  .check-btn {
+    display: block; margin: 20px auto 0; padding: 11px 32px;
+    background: var(--purple); color: white; border: none; border-radius: 30px;
+    font-size: .95rem; font-weight: 700; cursor: pointer; transition: all .18s;
+  }
+  .check-btn:hover { background: #5530b0; }
+  .score-display { text-align: center; font-size: .95rem; margin-top: 16px; font-weight: 700; color: var(--purple); }
+
+  .page-dots { display: flex; justify-content: center; gap: 6px; margin-top: 20px; flex-wrap: wrap; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; cursor: pointer; transition: background .2s; }
+  .dot.active { background: var(--purple); }
+  .dot.done { background: var(--purple-mid); }
+
+  /* DISCUSSION Q highlight */
+  .discussion-q-plain {
+    background: var(--purple-light); border-radius: 12px; padding: 14px 18px;
+    margin-bottom: 12px; font-size: .97rem; line-height: 1.7;
+  }
+  .discussion-q-plain strong { color: var(--purple); }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div>
+    <div style="font-size:1.05rem;font-weight:800;color:white;">5A · How does it look?</div>
+    <div style="font-size:.8rem;opacity:.8;margin-top:2px;">Clothes · Appearances · Modal verbs</div>
+  </div>
+  <div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:10%"></div></div>
+    <div class="progress-label" id="progressLabel">Page 1 of 10</div>
+  </div>
+</div>
+
+<!-- =========== PAGE 1: WARM-UP =========== -->
+<div class="page active" id="page1">
+  <span class="page-tag">🔥 Warm-up</span>
+  <h2>Let's talk about style!</h2>
+  <p class="instruction">Discuss these questions with your partner. Try to speak for at least 1 minute on each one. Use the phrases below to help.</p>
+
+  <div class="discussion-q">
+    <div class="q-num">1</div>
+    <div class="q-text">Do you prefer <strong>smart</strong> or <strong>casual</strong> clothes? Why? Does it depend on the situation?</div>
+  </div>
+  <div class="discussion-q">
+    <div class="q-num">2</div>
+    <div class="q-text">What clothes do you wear at <strong>different times</strong> — at work, at home, going out at the weekend?</div>
+  </div>
+  <div class="discussion-q">
+    <div class="q-num">3</div>
+    <div class="q-text">Can you tell what a person is like just from their <strong>clothes</strong>? Think of an example from real life.</div>
+  </div>
+
+  <div class="card" style="margin-top:24px;">
+    <p style="font-size:.85rem;font-weight:700;color:var(--purple);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;">💡 Useful language</p>
+    <p style="font-size:.9rem;line-height:1.9;">
+      <em>I tend to wear… / I'm quite into… / It depends on…</em><br>
+      <em>I'd say… tells you a lot about… / You can't always judge…</em><br>
+      <em>Personally, I think… / In my experience…</em>
+    </p>
+  </div>
+</div>
+
+<!-- =========== PAGE 2: STYLE PROFILES =========== -->
+<div class="page" id="page2">
+  <span class="page-tag">💬 Vocabulary &amp; Speaking</span>
+  <h2>Which style is closest to yours?</h2>
+  <p class="instruction">Read the four style profiles. <strong>Part A:</strong> match the bold words to their definitions. <strong>Part B:</strong> choose which profile is closest to your style and explain why to your partner.</p>
+
+  <div class="card" style="border-left:5px solid var(--purple);">
+    <p style="font-size:.78rem;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;">Style profiles</p>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="background:var(--purple-light);border-radius:10px;padding:14px 18px;font-size:.95rem;line-height:1.7;">
+        <span style="font-weight:800;color:var(--purple);margin-right:8px;">1</span>
+        I want to look good so I like <strong>fashionable</strong> clothes. I always want to look modern and <strong>stylish</strong>. It's important for me to have a <strong>matching</strong> bag and shoes, too, so these have to be the same colour as the other clothes I'm wearing.
+      </div>
+      <div style="background:var(--purple-light);border-radius:10px;padding:14px 18px;font-size:.95rem;line-height:1.7;">
+        <span style="font-weight:800;color:var(--purple);margin-right:8px;">2</span>
+        I don't like to <strong>dress up</strong> in <strong>smart</strong> clothes, like a suit and tie. I prefer relaxing in some <strong>casual</strong> old jeans.
+      </div>
+      <div style="background:var(--purple-light);border-radius:10px;padding:14px 18px;font-size:.95rem;line-height:1.7;">
+        <span style="font-weight:800;color:var(--purple);margin-right:8px;">3</span>
+        I like to wear vintage clothes… you know, the kind of clothes people wore forty years ago. I don't think they're <strong>old-fashioned</strong> and I like to look a bit different.
+      </div>
+      <div style="background:var(--purple-light);border-radius:10px;padding:14px 18px;font-size:.95rem;line-height:1.7;">
+        <span style="font-weight:800;color:var(--purple);margin-right:8px;">4</span>
+        I don't really care what I've <strong>got on</strong>, just as long as I'm comfortable. That's why I never wear <strong>tight</strong> clothes – they stop me moving easily. I prefer to wear big, <strong>loose</strong>, comfortable clothes.
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:24px;">
+    <p style="font-weight:700;color:var(--dark);margin-bottom:14px;">Part A — Match each bold word to its definition. Click a word, then click its definition.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div id="styleLeft" style="display:flex;flex-direction:column;gap:8px;"></div>
+      <div id="styleRight" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+    <div class="score-display" id="styleMatchScore" style="display:none;margin-top:12px;"></div>
+  </div>
+
+  <div style="margin-top:24px;" class="card">
+    <p style="font-weight:700;color:var(--dark);margin-bottom:12px;">Part B — Which description is closest to your style?</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;" id="styleVoteBtns">
+      <button class="choice-btn" onclick="styleVote(this)">1 – Fashionable</button>
+      <button class="choice-btn" onclick="styleVote(this)">2 – Casual</button>
+      <button class="choice-btn" onclick="styleVote(this)">3 – Vintage</button>
+      <button class="choice-btn" onclick="styleVote(this)">4 – Comfortable</button>
+    </div>
+    <textarea class="response-input" placeholder="Explain your choice in 2–3 sentences… e.g. I'm most like description 2 because I hate wearing suits…" rows="3"></textarea>
+    <p style="font-size:.8rem;color:#888;margin-top:8px;">💡 Now tell your partner. Do you have the same style or different?</p>
+  </div>
+</div>
+
+<!-- =========== PAGE 3: VOCABULARY – DRAG & DROP =========== -->
+<div class="page" id="page3">
+  <span class="page-tag">📚 Vocabulary</span>
+  <h2>Sort the words into categories</h2>
+  <p class="instruction">Drag each word from the bank into the correct category. Some words might surprise you!</p>
+
+  <div class="word-bank" id="wordBank3"></div>
+
+  <div class="category-row">
+    <div class="category-label">👔 Smart</div>
+    <div class="drop-zone" id="drop-smart" data-cat="smart"></div>
+  </div>
+  <div class="category-row">
+    <div class="category-label">👖 Casual</div>
+    <div class="drop-zone" id="drop-casual" data-cat="casual"></div>
+  </div>
+  <div class="category-row">
+    <div class="category-label">🕰️ Vintage / Old-fashioned</div>
+    <div class="drop-zone" id="drop-vintage" data-cat="vintage"></div>
+  </div>
+  <div class="category-row">
+    <div class="category-label">✨ Fashionable</div>
+    <div class="drop-zone" id="drop-fashion" data-cat="fashion"></div>
+  </div>
+
+  <button class="check-btn" onclick="checkDrag()">Check answers</button>
+  <div class="score-display" id="dragScore"></div>
+</div>
+
+<!-- =========== PAGE 4: READING + QUESTIONS =========== -->
+<div class="page" id="page4">
+  <span class="page-tag">📖 Reading</span>
+  <h2>The mystery girl</h2>
+  <p class="instruction">Read the story carefully. Then answer the six questions below in your own words.</p>
+
+  <div class="story-box">
+    <p>One cold day in the city, passers-by notice a young girl standing on the main street, outside one of the biggest buildings. She's wearing <span class="highlight">casual clothes</span>. She's got an <span class="highlight">old denim jacket</span> on and a <span class="highlight">grey sweater</span>, <span class="highlight">tight jeans</span> and <span class="highlight">flat black shoes</span>. She is thin, with long blonde hair. She is pale and looks cold. She looks lost and confused.</p>
+    <p>She looks as if she is about 14 or 15 years old. The people who see her think <span class="highlight">she must be in trouble</span>, or they think <span class="highlight">she may be ill or lost</span>. They are worried about her. Someone calls the police. The police take her to hospital. She only starts to speak a few days later, but it is clear that she doesn't speak English, so she can't give the police any information about herself. She communicates through drawings. From the drawings, the police guess that <span class="highlight">she must be running away</span>. The police think <span class="highlight">she must be from another country</span>. <span class="highlight">She definitely can't be English-speaking</span> because she doesn't understand them. However, <span class="highlight">she could be from somewhere else in Europe</span>.</p>
+    <p>They start a search to find out who she is so they can return her to her family. Three weeks later they still don't know who she is, so they take an unusual step. They put her photo in the newspapers and on TV.</p>
+  </div>
+
+  <div class="card">
+    <p style="font-weight:700;color:var(--purple);font-size:.85rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px;">Questions — answer in your own words, then reveal a model answer</p>
+    <div id="readingQuestions"></div>
+  </div>
+</div>
+
+<!-- =========== PAGE 5: EX. 7 – STORY ENDING =========== -->
+<div class="page" id="page5">
+  <span class="page-tag">🎧 Listening &amp; Speaking</span>
+  <h2>The end of the story</h2>
+  <p class="instruction"><strong>Exercise 7a</strong> — You're going to hear the end of the story. Choose the correct alternative in each sentence. Click your answer.</p>
+
+  <div class="card" style="margin-bottom:20px;">
+    <p style="font-size:.82rem;color:#888;margin-bottom:16px;font-style:italic;">💡 Before you listen: guess which alternatives are correct. Then check with the audio.</p>
+    <div id="ex7Items"></div>
+    <div class="score-display" id="ex7Score"></div>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--purple);">
+    <p style="font-weight:700;color:var(--dark);margin-bottom:12px;">Exercise 7b — Discussion</p>
+    <div class="discussion-q-plain">
+      <strong>What do you think about the girl's experiment? Was it a good idea?</strong>
+    </div>
+    <p style="font-size:.88rem;color:#555;line-height:1.7;margin-bottom:12px;">Think about: her reasons for doing it / how the police and public felt / what she found out / whether the risk was worth it.</p>
+    <textarea class="response-input" placeholder="Write your opinion here before you discuss with your partner…" rows="3"></textarea>
+    <p style="font-size:.8rem;color:#888;margin-top:8px;">💬 Now share your views with your partner. Do you agree or disagree?</p>
+  </div>
+</div>
+
+<!-- =========== PAGE 6: GRAMMAR PRESENTATION =========== -->
+<div class="page" id="page6">
+  <span class="page-tag">📐 Grammar</span>
+  <h2>Modal verbs: possibility &amp; deduction</h2>
+  <p class="instruction">Study the grammar box, then complete the quick check below.</p>
+
+  <div class="grammar-box">
+    <h3>🔑 How it works</h3>
+    <div class="grammar-row">
+      <strong>may / might / could + infinitive</strong> → uncertain guess (present or future)
+      <div class="example">"She <strong>may be</strong> ill." &nbsp;|&nbsp; "She <strong>might not be</strong> here tomorrow." &nbsp;|&nbsp; "She <strong>could be</strong> from Europe."</div>
+    </div>
+    <div class="grammar-row" style="margin-top:10px;">
+      <strong>seems to be</strong> → strong possibility based on evidence
+      <div class="example">"She <strong>seems to be</strong> very cold."</div>
+    </div>
+    <div class="grammar-row" style="margin-top:10px;">
+      <strong>must + infinitive (no 'to')</strong> → almost certain — you're sure it's true
+      <div class="example">"She <strong>must be</strong> from another country."</div>
+    </div>
+    <div class="grammar-row" style="margin-top:10px;">
+      <strong>can't + infinitive (no 'to')</strong> → almost certain — you're sure it's NOT true
+      <div class="example">"She definitely <strong>can't be</strong> English-speaking."</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p style="font-weight:700;margin-bottom:14px;color:var(--dark);">⚡ Quick check — choose the correct option</p>
+    <div id="quickCheck"></div>
+  </div>
+</div>
+
+<!-- =========== PAGE 7: GRAMMAR PRACTICE =========== -->
+<div class="page" id="page7">
+  <span class="page-tag">⚙️ Grammar Practice</span>
+  <h2>Choose the correct alternative</h2>
+  <p class="instruction">Click the correct word or phrase in each sentence. Think about how certain the speaker is.</p>
+
+  <div id="chooseItems"></div>
+  <div class="score-display" id="chooseScore"></div>
+</div>
+
+<!-- =========== PAGE 8: GRAMMAR PRODUCTION =========== -->
+<div class="page" id="page8">
+  <span class="page-tag">✍️ Grammar Production</span>
+  <h2>Make your own deductions</h2>
+  <p class="instruction">Read each situation. Write a sentence using <strong>may, might, could, must</strong> or <strong>can't</strong>. Then reveal a model answer to compare.</p>
+
+  <div id="situationItems"></div>
+</div>
+
+<!-- =========== PAGE 9: LISTENING PREPARATION =========== -->
+<div class="page" id="page9">
+  <span class="page-tag">🎧 Listening</span>
+  <h2>Guessing about people</h2>
+  <p class="instruction"><strong>Exercise 12</strong> — You're going to make guesses about people from their photos. First, listen to two people doing the same. <strong>Tick the points they mention.</strong></p>
+
+  <div class="card">
+    <p style="font-weight:700;color:var(--dark);margin-bottom:16px;">Step 1 — Predict before you listen</p>
+    <p style="font-size:.88rem;color:#666;margin-bottom:18px;">Which points do you think the two speakers will mention? Click to tick your predictions, then listen and adjust.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="tickGrid"></div>
+  </div>
+
+  <div class="card" style="margin-top:6px;">
+    <p style="font-weight:700;color:var(--dark);margin-bottom:12px;">Step 2 — After listening</p>
+    <p style="font-size:.88rem;color:#666;margin-bottom:14px;">Did the speakers mention the same points you predicted? Click <strong>Reveal answers</strong> to check, then discuss with your partner:</p>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+      <button class="check-btn" style="margin:0;" onclick="revealListeningAnswers()">Reveal answers</button>
+      <span style="font-size:.82rem;color:#aaa;" id="revealNote"></span>
+    </div>
+    <div id="listeningAnswers" style="display:none;margin-top:16px;">
+      <p style="font-size:.85rem;font-weight:700;color:var(--purple);margin-bottom:10px;">✓ The speakers mention these points:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="answerGrid"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:6px;border-left:4px solid var(--purple);">
+    <p style="font-weight:700;color:var(--dark);margin-bottom:10px;">Step 3 — Your turn to speak</p>
+    <p style="font-size:.9rem;color:#555;line-height:1.7;">Look at the photos on <strong>page 154</strong> (or use any photo your teacher provides). Make guesses about the people using modal verbs. Try to mention <em>all eight points</em> from the list above.</p>
+    <div style="margin-top:12px;background:var(--purple-light);border-radius:10px;padding:14px 16px;font-size:.88rem;color:var(--purple);line-height:1.8;">
+      <strong>Useful phrases:</strong><br>
+      <em>She must be about… years old.</em><br>
+      <em>He could be with… / They might be…</em><br>
+      <em>She's wearing… which suggests she might…</em><br>
+      <em>He seems to be… / They can't be… because…</em>
+    </div>
+  </div>
+</div>
+
+<!-- =========== PAGE 10: SPEAKING + WRAP-UP =========== -->
+<div class="page" id="page10">
+  <span class="page-tag">🗣️ Speaking</span>
+  <h2>What do you think?</h2>
+  <p class="instruction">Look at each person described below. Make as many guesses as you can using modal verbs. Click the topics you want to cover, then discuss with your partner.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;">
+    <div class="photo-card">
+      <div class="photo-placeholder">
+        <div class="icon">👩</div>
+        <div>A woman in her 20s in a long floral skirt, white blouse, no make-up, carrying a canvas bag full of books.</div>
+      </div>
+      <p style="font-size:.85rem;font-weight:700;color:var(--purple);margin-bottom:8px;">What can you guess about her?</p>
+      <div class="guess-tags" id="tags1"></div>
+    </div>
+    <div class="photo-card">
+      <div class="photo-placeholder">
+        <div class="icon">👨</div>
+        <div>A man around 40 in a sharp suit and expensive watch, looking at his phone outside a large office building. He looks impatient.</div>
+      </div>
+      <p style="font-size:.85rem;font-weight:700;color:var(--purple);margin-bottom:8px;">What can you guess about him?</p>
+      <div class="guess-tags" id="tags2"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p style="font-weight:700;color:var(--dark);margin-bottom:12px;">🏁 Lesson wrap-up — what did we cover today?</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;">
+      <div style="background:var(--purple-light);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.4rem;margin-bottom:4px;">👗</div>
+        <div style="font-weight:700;color:var(--purple);font-size:.88rem;">Clothes &amp; style vocabulary</div>
+      </div>
+      <div style="background:var(--purple-light);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.4rem;margin-bottom:4px;">🔍</div>
+        <div style="font-weight:700;color:var(--purple);font-size:.88rem;">Modal verbs for deduction</div>
+      </div>
+      <div style="background:var(--purple-light);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.4rem;margin-bottom:4px;">📖</div>
+        <div style="font-weight:700;color:var(--purple);font-size:.88rem;">Reading &amp; comprehension</div>
+      </div>
+      <div style="background:var(--purple-light);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:1.4rem;margin-bottom:4px;">🗣️</div>
+        <div style="font-weight:700;color:var(--purple);font-size:.88rem;">Speaking — making guesses</div>
+      </div>
+    </div>
+    <p style="margin-top:16px;font-size:.9rem;color:#555;line-height:1.7;text-align:center;">Keep practising! Describe people you see on the street, on TV, or in films using <em>must, might, could, can't</em>.</p>
+  </div>
+</div>
+
+<!-- NAVIGATION -->
+<div class="btn-nav">
+  <button class="btn btn-secondary" id="btnBack" onclick="changePage(-1)" disabled>← Back</button>
+  <button class="btn btn-primary" id="btnNext" onclick="changePage(1)">Next →</button>
+</div>
+<div class="page-dots" id="pageDots"></div>
+
+<script>
+let currentPage = 1;
+const TOTAL = 10;
+
+// ==================== STYLE MATCH ====================
+const styleMatchPairs = [
+  { word: "fashionable", def: "popular and in the latest style" },
+  { word: "stylish", def: "elegant and attractive" },
+  { word: "matching", def: "the same colour/design as something else" },
+  { word: "dress up", def: "to put on smart or special clothes" },
+  { word: "smart", def: "formal and neat in appearance" },
+  { word: "casual", def: "relaxed and informal" },
+  { word: "old-fashioned", def: "no longer modern or popular" },
+  { word: "got on", def: "wearing (informal)" },
+  { word: "tight", def: "fitting very closely to the body" },
+  { word: "loose", def: "not fitting closely; baggy" },
+];
+let styleMatchSel = null, styleMatchDone = new Set();
+
+function buildStyleMatch() {
+  const left = document.getElementById('styleLeft');
+  const right = document.getElementById('styleRight');
+  if (!left) return;
+  const sw = [...styleMatchPairs].sort(() => Math.random()-.5);
+  const sd = [...styleMatchPairs].sort(() => Math.random()-.5);
+  left.innerHTML = ''; right.innerHTML = '';
+  sw.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'mcq-opt';
+    el.style.cssText = 'font-weight:600;font-size:.85rem;padding:8px 12px;';
+    el.textContent = p.word; el.dataset.word = p.word; el.dataset.type = 'word';
+    el.onclick = () => selectStyleMatch(el);
+    left.appendChild(el);
+  });
+  sd.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'mcq-opt';
+    el.style.cssText = 'font-size:.8rem;padding:8px 12px;';
+    el.textContent = p.def; el.dataset.word = p.word; el.dataset.type = 'def';
+    el.onclick = () => selectStyleMatch(el);
+    right.appendChild(el);
+  });
+}
+
+function selectStyleMatch(el) {
+  if (el.classList.contains('correct') || el.classList.contains('wrong')) return;
+  if (styleMatchSel && styleMatchSel.dataset.type === el.dataset.type) {
+    styleMatchSel.style.outline = ''; styleMatchSel = el;
+    el.style.outline = '3px solid var(--purple)'; return;
+  }
+  if (!styleMatchSel) { styleMatchSel = el; el.style.outline = '3px solid var(--purple)'; return; }
+  const a = styleMatchSel, b = el; a.style.outline = '';
+  if (a.dataset.word === b.dataset.word) {
+    [a,b].forEach(x => x.classList.add('correct','disabled'));
+    styleMatchDone.add(a.dataset.word);
+    if (styleMatchDone.size === styleMatchPairs.length) {
+      const sc = document.getElementById('styleMatchScore');
+      sc.style.display = 'block'; sc.textContent = '🎉 All matched! Excellent!';
+    }
+  } else {
+    [a,b].forEach(x => x.classList.add('wrong'));
+    setTimeout(() => [a,b].forEach(x => x.classList.remove('wrong')), 900);
+  }
+  styleMatchSel = null;
+}
+
+function styleVote(btn) {
+  document.querySelectorAll('#styleVoteBtns .choice-btn').forEach(b => b.classList.remove('selected-correct'));
+  btn.classList.add('selected-correct');
+}
+
+// ==================== DRAG & DROP ====================
+const dragWords = [
+  { w: "a suit", cat: "smart" }, { w: "a tie", cat: "smart" }, { w: "a blazer", cat: "smart" },
+  { w: "jeans", cat: "casual" }, { w: "a T-shirt", cat: "casual" }, { w: "trainers", cat: "casual" },
+  { w: "bell-bottoms", cat: "vintage" }, { w: "a mini-skirt", cat: "vintage" }, { w: "platforms", cat: "vintage" },
+  { w: "a leather jacket", cat: "fashion" }, { w: "wide-leg trousers", cat: "fashion" }, { w: "chunky boots", cat: "fashion" },
+];
+let dragSrc = null;
+
+function buildDrag() {
+  const bank = document.getElementById('wordBank3');
+  if (!bank) return;
+  bank.innerHTML = '';
+  dragWords.sort(() => Math.random()-.5).forEach(item => {
+    const chip = document.createElement('div');
+    chip.className = 'word-chip'; chip.textContent = item.w;
+    chip.draggable = true; chip.dataset.word = item.w; chip.dataset.cat = item.cat;
+    chip.addEventListener('dragstart', e => { dragSrc = chip; chip.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+    chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+    bank.appendChild(chip);
+  });
+  document.querySelectorAll('.drop-zone').forEach(zone => {
+    zone.innerHTML = '';
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); zone.classList.remove('over');
+      if (dragSrc) {
+        const clone = dragSrc.cloneNode(true);
+        clone.classList.remove('dragging'); clone.draggable = false; clone.style.cursor = 'default';
+        zone.appendChild(clone); dragSrc.classList.add('used'); dragSrc = null;
+      }
+    });
+  });
+}
+
+function checkDrag() {
+  let correct = 0, total = 0;
+  document.querySelectorAll('.drop-zone').forEach(zone => {
+    const cat = zone.dataset.cat;
+    zone.querySelectorAll('.word-chip').forEach(chip => {
+      total++;
+      chip.style.background = chip.dataset.cat === cat ? (correct++, 'var(--green)') : 'var(--red)';
+    });
+  });
+  document.getElementById('dragScore').textContent = `Score: ${correct}/${total} — ${correct===total?'🎉 Excellent!':'Review the ones in red!'}`;
+}
+
+// ==================== READING QUESTIONS ====================
+const readingQs = [
+  { q: "1. Where is the girl?", a: "She's on the main street, outside one of the biggest buildings in the city." },
+  { q: "2. How does she look?", a: "She looks pale, thin, cold, lost and confused. She's wearing casual clothes." },
+  { q: "3. Do people think something is wrong? Are they sure about this?", a: "Yes, people think she must be in trouble or may be ill or lost — but they aren't completely sure (they use 'must' and 'may', not 'definitely')." },
+  { q: "4. How does she communicate with the police?", a: "She communicates through drawings, because she doesn't speak English." },
+  { q: "5. What guesses do the police make about her? Why?", a: "They guess she must be running away, must be from another country, and can't be English-speaking — because she doesn't understand English and uses drawings." },
+  { q: "6. What unusual step do the police take?", a: "They put her photo in the newspapers and on TV to try to find out who she is." },
+];
+
+function buildReadingQs() {
+  const cont = document.getElementById('readingQuestions');
+  if (!cont) return;
+  cont.innerHTML = '';
+  readingQs.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'open-q';
+    div.innerHTML = `
+      <div class="open-q-stem">${item.q}</div>
+      <textarea class="response-input" placeholder="Write your answer…" rows="2"></textarea>
+      <button class="reveal-answer-btn" onclick="revealModel(this,'rq${i}')">See model answer</button>
+      <div class="model-answer" id="rq${i}">${item.a}</div>
+    `;
+    cont.appendChild(div);
+  });
+}
+
+// ==================== EX. 7A ====================
+// Answers: the twist is the girl was a uni student doing a social experiment.
+// 1. didn't call (the woman — she hesitated, didn't call)
+// 2. was (the girl WAS older than she looked)
+// 3. was (she WAS doing a test)
+// 4. was (it WAS part of her uni course)
+// 5. knew (her family knew)
+const ex7Data = [
+  { stem: "The woman", opts: ["called", "didn't call"], ans: 1, after: " the police." },
+  { stem: "The girl", opts: ["was", "wasn't"], ans: 0, after: " older than she looked." },
+  { stem: "She", opts: ["was", "wasn't"], ans: 0, after: " doing a test of how people behave to strangers." },
+  { stem: "This", opts: ["wasn't", "was"], ans: 1, after: " part of her university course." },
+  { stem: "Her family", opts: ["knew", "didn't know"], ans: 0, after: "." },
+];
+let ex7Correct = 0;
+
+function buildEx7() {
+  const cont = document.getElementById('ex7Items');
+  if (!cont) return;
+  cont.innerHTML = '';
+  ex7Data.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'choose-item';
+    let html = `<span class="num">${i+1}</span><span>${item.stem} </span>`;
+    item.opts.forEach((o, oi) => {
+      html += `<span class="choice-btn" data-ex7="${i}" data-oi="${oi}" onclick="pickEx7(this,${i},${oi},${item.ans})">${o}</span>`;
+      if (oi < item.opts.length - 1) html += '<span style="color:#bbb;font-size:.8rem;margin:0 3px;">/ </span>';
+    });
+    html += `<span>${item.after}</span>`;
+    div.innerHTML = html;
+    cont.appendChild(div);
+  });
+}
+
+function pickEx7(el, qi, oi, ans) {
+  const btns = document.querySelectorAll(`.choice-btn[data-ex7="${qi}"]`);
+  btns.forEach(b => b.classList.add('disabled'));
+  if (oi === ans) {
+    el.classList.add('selected-correct'); ex7Correct++;
+  } else {
+    el.classList.add('selected-wrong'); btns[ans].classList.add('show-correct');
+  }
+  const done = document.querySelectorAll('.choice-btn[data-ex7].disabled').length;
+  if (done === ex7Data.length * 2) {
+    document.getElementById('ex7Score').textContent = `Score: ${ex7Correct}/${ex7Data.length}`;
+  }
+}
+
+// ==================== QUICK CHECK ====================
+const quickCheckData = [
+  { stem: "You see someone crying. You're almost certain they're sad. You say:", opts: ["They might be sad.", "They must be sad.", "They can't be sad."], ans: 1, fb: "must = you're almost certain it's true" },
+  { stem: "A person is jogging in sub-zero weather in shorts. You're sure they're not cold. You say:", opts: ["They can't be cold.", "They must be cold.", "They might not be cold."], ans: 0, fb: "can't = you're sure it's NOT true" },
+  { stem: "You see an expensive-looking car. You're not sure, but perhaps the owner is wealthy. You say:", opts: ["The owner must be rich.", "The owner can't be rich.", "The owner might be rich."], ans: 2, fb: "might = uncertain guess" },
+];
+
+function buildQuickCheck() {
+  const cont = document.getElementById('quickCheck');
+  if (!cont) return;
+  cont.innerHTML = '';
+  quickCheckData.forEach((q, qi) => {
+    const div = document.createElement('div');
+    div.className = 'mcq-item';
+    div.innerHTML = `<div class="mcq-stem">${q.stem}</div><div class="mcq-options" id="qcOpts${qi}"></div><div class="mcq-feedback" id="qcFb${qi}" style="display:none;"></div>`;
+    cont.appendChild(div);
+    const opts = div.querySelector(`#qcOpts${qi}`);
+    q.opts.forEach((o, oi) => {
+      const btn = document.createElement('div');
+      btn.className = 'mcq-opt'; btn.textContent = o;
+      btn.onclick = () => {
+        if (btn.classList.contains('disabled')) return;
+        opts.querySelectorAll('.mcq-opt').forEach(b => b.classList.add('disabled'));
+        const fb = document.getElementById(`qcFb${qi}`);
+        if (oi === q.ans) { btn.classList.add('correct'); fb.className = 'mcq-feedback ok'; fb.textContent = `✓ Correct! ${q.fb}`; }
+        else { btn.classList.add('wrong'); opts.children[q.ans].classList.add('correct'); fb.className = 'mcq-feedback bad'; fb.textContent = `✗ Not quite. ${q.fb}`; }
+        fb.style.display = 'block';
+      };
+      opts.appendChild(btn);
+    });
+  });
+}
+
+// ==================== CHOOSE CORRECT ====================
+const chooseData = [
+  { before: "1. I'm not sure. I suppose they ", opts: ["can't", "might not"], ans: 1, after: " know the answer." },
+  { before: "2. ", opts: ["Could", "Must"], ans: 0, after: " he be lost? He's looking at his phone." },
+  { before: "3. She seems ", opts: ["be", "to be"], ans: 1, after: " happy — she's smiling." },
+  { before: "4. They're wearing coats so it ", opts: ["can't", "must"], ans: 1, after: " be cold there." },
+  { before: "5. It's not very clear and they may not ", opts: ["to be", "be"], ans: 1, after: " able to see the boat." },
+  { before: "6. I think they ", opts: ["look", "might"], ans: 1, after: " be scared." },
+];
+let choiceCorrect = 0;
+
+function buildChoose() {
+  const cont = document.getElementById('chooseItems');
+  if (!cont) return;
+  cont.innerHTML = '';
+  chooseData.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'choose-item card';
+    let html = `<span>${item.before}</span>`;
+    item.opts.forEach((o, oi) => {
+      html += `<span class="choice-btn" data-qi="${i}" data-oi="${oi}" onclick="pickChoice(this,${i},${oi},${item.ans})">${o}</span>`;
+      if (oi < item.opts.length - 1) html += '<span style="color:#bbb;font-size:.8rem;margin:0 3px;">or</span>';
+    });
+    html += `<span>${item.after}</span>`;
+    div.innerHTML = html; cont.appendChild(div);
+  });
+}
+
+function pickChoice(el, qi, oi, ans) {
+  const btns = document.querySelectorAll(`.choice-btn[data-qi="${qi}"]`);
+  btns.forEach(b => b.classList.add('disabled'));
+  if (oi === ans) { el.classList.add('selected-correct'); choiceCorrect++; document.getElementById('chooseScore').textContent = `Score: ${choiceCorrect}/${chooseData.length}`; }
+  else { el.classList.add('selected-wrong'); btns[ans].classList.add('show-correct'); }
+}
+
+// ==================== SITUATIONS ====================
+const situationsData = [
+  { stem: "Your friend is late for dinner. She's been to your house many times before.", example: "She can't be lost. She knows the way.", models: ["She can't be lost — she knows the way!", "She might be stuck in traffic.", "She must have forgotten."] },
+  { stem: "You meet a friend outside on a freezing cold day. He's wearing only shorts and a T-shirt.", example: "", models: ["He must be freezing!", "He can't be warm in those clothes.", "He might not feel the cold."] },
+  { stem: "A family you don't know are standing outside the house next door with suitcases.", example: "", models: ["They could be moving in.", "They must be the new neighbours.", "They might be visiting someone."] },
+  { stem: "A man in very smart clothes comes to your workplace and goes to your manager's office.", example: "", models: ["He must be an important client.", "He could be a job candidate.", "He can't be from our company — I've never seen him."] },
+  { stem: "A man is standing outside a very expensive restaurant in casual clothes. He looks cold and hungry.", example: "", models: ["He might be waiting for someone.", "He could be homeless.", "He can't have a reservation dressed like that."] },
+];
+
+function buildSituations() {
+  const cont = document.getElementById('situationItems');
+  if (!cont) return;
+  cont.innerHTML = '';
+  situationsData.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'situation-item card';
+    div.innerHTML = `
+      <div class="situation-stem"><strong>${i+1}.</strong> ${s.stem}${s.example ? `<div class="given">Example: <em>${s.example}</em></div>` : ''}</div>
+      <textarea class="response-input" placeholder="Write your sentence here…" rows="2"></textarea>
+      <button class="reveal-answer-btn" onclick="revealModel(this,'model${i}')">See model answer</button>
+      <div class="model-answer" id="model${i}">${s.models.map(m=>`• ${m}`).join('<br>')}</div>
+    `;
+    cont.appendChild(div);
+  });
+}
+
+function revealModel(btn, id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+  btn.textContent = el.style.display === 'block' ? 'Hide model answer' : 'See model answer';
+}
+
+// ==================== LISTENING EX 12 ====================
+const listeningPoints = [
+  "how old they are",
+  "who they are with",
+  "their clothes",
+  "their hairstyles",
+  "where they are",
+  "the time of day",
+  "their expressions",
+  "what they are doing",
+];
+// Points the speakers actually mention in 5.3 (standard textbook answer)
+const listeningAnswers = new Set(["how old they are", "their clothes", "their expressions", "what they are doing", "where they are", "their hairstyles"]);
+
+function buildListening() {
+  const grid = document.getElementById('tickGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  listeningPoints.forEach(point => {
+    const item = document.createElement('div');
+    item.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:2px solid var(--border);background:white;cursor:pointer;font-size:.9rem;transition:all .18s;user-select:none;';
+    item.dataset.point = point;
+    item.innerHTML = `<span style="width:22px;height:22px;border-radius:6px;border:2px solid var(--purple-mid);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem;transition:all .15s;" class="tick-box"></span><span>${point}</span>`;
+    item.onclick = () => {
+      const box = item.querySelector('.tick-box');
+      const ticked = box.textContent === '✓';
+      box.textContent = ticked ? '' : '✓';
+      box.style.background = ticked ? '' : 'var(--purple)';
+      box.style.borderColor = ticked ? 'var(--purple-mid)' : 'var(--purple)';
+      box.style.color = ticked ? '' : 'white';
+      item.style.borderColor = ticked ? 'var(--border)' : 'var(--purple)';
+      item.style.background = ticked ? 'white' : 'var(--purple-light)';
+    };
+    grid.appendChild(item);
+  });
+}
+
+function revealListeningAnswers() {
+  const panel = document.getElementById('listeningAnswers');
+  const ansGrid = document.getElementById('answerGrid');
+  const note = document.getElementById('revealNote');
+  panel.style.display = 'block';
+  note.textContent = 'Compare with your predictions above!';
+  ansGrid.innerHTML = '';
+
+  // Colour-code the prediction grid
+  document.querySelectorAll('#tickGrid [data-point]').forEach(item => {
+    const point = item.dataset.point;
+    const box = item.querySelector('.tick-box');
+    const wasTickedByUser = box.textContent === '✓';
+    const isCorrect = listeningAnswers.has(point);
+    if (isCorrect) {
+      item.style.borderColor = 'var(--green)';
+      item.style.background = '#eafaf1';
+      box.textContent = '✓'; box.style.background = 'var(--green)'; box.style.borderColor = 'var(--green)'; box.style.color = 'white';
+    } else {
+      item.style.borderColor = 'var(--border)';
+      item.style.background = 'white';
+      box.textContent = ''; box.style.background = ''; box.style.borderColor = 'var(--purple-mid)'; box.style.color = '';
+    }
+  });
+
+  listeningPoints.forEach(p => {
+    if (listeningAnswers.has(p)) {
+      const el = document.createElement('div');
+      el.style.cssText = 'background:#eafaf1;border:1.5px solid #b2e7c8;border-radius:8px;padding:8px 12px;font-size:.88rem;color:var(--green);font-weight:600;display:flex;align-items:center;gap:6px;';
+      el.innerHTML = `<span>✓</span><span>${p}</span>`;
+      ansGrid.appendChild(el);
+    }
+  });
+}
+
+// ==================== SPEAKING ====================
+const speakingTopics = ["age", "job", "personality", "where they're from", "what they're doing", "who they're with", "time of day", "how they feel"];
+
+function buildSpeaking() {
+  ['tags1','tags2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '';
+    speakingTopics.forEach(t => {
+      const tag = document.createElement('div');
+      tag.className = 'guess-tag'; tag.textContent = t;
+      tag.onclick = () => tag.classList.toggle('active');
+      el.appendChild(tag);
+    });
+  });
+}
+
+// ==================== NAVIGATION ====================
+function buildDots() {
+  const cont = document.getElementById('pageDots');
+  cont.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' active' : '');
+    d.onclick = () => goToPage(i); d.id = `dot${i}`;
+    cont.appendChild(d);
+  }
+}
+
+function goToPage(n) {
+  document.getElementById(`page${currentPage}`).classList.remove('active');
+  document.getElementById(`dot${currentPage}`).classList.remove('active');
+  document.getElementById(`dot${currentPage}`).classList.add('done');
+  currentPage = n;
+  document.getElementById(`page${currentPage}`).classList.add('active');
+  document.getElementById(`dot${currentPage}`).classList.remove('done');
+  document.getElementById(`dot${currentPage}`).classList.add('active');
+  document.getElementById('btnBack').disabled = currentPage === 1;
+  document.getElementById('btnNext').disabled = currentPage === TOTAL;
+  document.getElementById('progressFill').style.width = `${Math.round(currentPage/TOTAL*100)}%`;
+  document.getElementById('progressLabel').textContent = `Page ${currentPage} of ${TOTAL}`;
+  window.scrollTo(0, 0);
+}
+
+function changePage(dir) { goToPage(currentPage + dir); }
+
+document.addEventListener('DOMContentLoaded', () => {
+  buildDots();
+  buildStyleMatch();
+  buildListening();
+  buildDrag();
+  buildReadingQs();
+  buildEx7();
+  buildQuickCheck();
+  buildChoose();
+  buildSituations();
+  buildSpeaking();
+});
+</script>
+</body>
+</html>
