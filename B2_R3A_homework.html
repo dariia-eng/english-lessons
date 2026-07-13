@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3A Homework – Past Perfect &amp; Memory</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #2a7f8f; --teal-light: #e6f4f6; --teal-dark: #1d5e6b;
+      --orange: #e07b39; --orange-light: #fdf0e7;
+      --gray: #f5f5f5; --text: #2c2c2c; --border: #d0d0d0;
+      --correct: #2e7d32; --correct-bg: #e8f5e9;
+      --wrong: #c62828; --wrong-bg: #ffebee;
+    }
+
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f5; color: var(--text); min-height: 100vh; }
+
+    /* HEADER */
+    header { background: var(--teal); color: #fff; padding: 18px 32px; display: flex; align-items: center; gap: 16px; }
+    header .badge { background: var(--orange); color: #fff; font-size: 1.5rem; font-weight: 800; border-radius: 8px; padding: 4px 14px; }
+    header h1 { font-size: 1.35rem; font-weight: 700; }
+    header p  { font-size: 0.85rem; opacity: 0.85; margin-top: 2px; }
+
+    /* MAIN */
+    main { max-width: 860px; margin: 0 auto; padding: 28px 24px 60px; }
+
+    /* CARDS */
+    .card { background: #fff; border-radius: 10px; padding: 22px 24px; margin-bottom: 22px; border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+    .section-title { font-size: 1.2rem; font-weight: 800; color: var(--teal-dark); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 3px solid var(--teal); }
+    .ex-title { font-size: 1rem; font-weight: 700; color: var(--teal-dark); margin-bottom: 14px; }
+    .ex-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--orange); margin-bottom: 6px; display: block; }
+    .highlight-box { background: var(--teal-light); border-left: 4px solid var(--teal); border-radius: 6px; padding: 12px 16px; margin-bottom: 14px; font-size: 0.92rem; }
+    .orange-box { background: var(--orange-light); border-left: 4px solid var(--orange); border-radius: 6px; padding: 12px 16px; margin-bottom: 14px; font-size: 0.92rem; }
+
+    /* NAME FIELD */
+    .name-wrap { background: #fff; border-radius: 10px; padding: 18px 24px; margin-bottom: 22px; border: 2px solid var(--teal); box-shadow: 0 2px 8px rgba(42,127,143,.1); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .name-wrap label { font-size: 0.95rem; font-weight: 700; color: var(--teal-dark); white-space: nowrap; }
+    .name-wrap input { flex: 1; min-width: 200px; border: 2px solid var(--border); border-radius: 8px; padding: 9px 14px; font-size: 1rem; font-family: inherit; outline: none; transition: border-color .2s; }
+    .name-wrap input:focus { border-color: var(--teal); }
+    .name-wrap input.error { border-color: var(--wrong); background: var(--wrong-bg); }
+
+    /* EXERCISE 1 – CHOICE BUTTONS */
+    .ex-item { margin-bottom: 14px; line-height: 1.8; font-size: 0.95rem; }
+    .ex-item .num { font-weight: 700; color: var(--teal); margin-right: 6px; }
+    .choice-group { display: inline-flex; gap: 5px; vertical-align: middle; flex-wrap: wrap; }
+    .choice-btn {
+      padding: 2px 12px; border: 2px solid var(--border); border-radius: 14px;
+      cursor: pointer; font-size: 0.88rem; background: #fff; transition: all .18s;
+      font-style: italic; font-family: inherit; font-weight: 600; color: var(--text);
+      user-select: none;
+    }
+    .choice-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .choice-btn.selected { background: var(--teal); color: #fff; border-color: var(--teal); }
+    .choice-btn.correct  { background: var(--correct-bg); color: var(--correct); border-color: var(--correct); }
+    .choice-btn.wrong    { background: var(--wrong-bg);   color: var(--wrong);   border-color: var(--wrong); }
+    .choice-btn.correct-answer { background: var(--correct-bg); color: var(--correct); border-color: var(--correct); }
+
+    /* EXERCISE 2 – FILL IN TEXT */
+    .reading-passage { background: var(--gray); border-radius: 8px; padding: 18px 20px; line-height: 2.2; font-size: 0.95rem; margin-bottom: 4px; }
+    .reading-passage p { margin-bottom: 10px; }
+    .blank-input {
+      border: none; border-bottom: 2px solid var(--teal); background: transparent;
+      outline: none; font-size: 0.93rem; width: 150px; padding: 0 4px;
+      color: var(--text); font-family: inherit; transition: border-color .2s;
+    }
+    .blank-input:focus { border-color: var(--orange); }
+    .blank-input.correct { border-color: var(--correct); background: var(--correct-bg); color: var(--correct); border-radius: 4px; padding: 0 4px; }
+    .blank-input.wrong   { border-color: var(--wrong);   background: var(--wrong-bg);   color: var(--wrong);   border-radius: 4px; padding: 0 4px; }
+    sup.gap-num { font-size: 0.65rem; color: var(--teal); font-weight: 800; }
+    .hint { font-size: 0.78rem; color: #888; font-style: italic; }
+
+    /* EXERCISE 3 – WORD BOX */
+    .word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; background: var(--teal-light); border-radius: 8px; padding: 12px 16px; }
+    .word-chip { background: #fff; border: 1.5px solid var(--teal); border-radius: 12px; padding: 3px 12px; font-size: 0.88rem; font-weight: 600; color: var(--teal-dark); }
+    .vocab-item { margin-bottom: 12px; font-size: 0.95rem; line-height: 1.8; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .vocab-item .vnum { font-weight: 700; color: var(--teal); min-width: 18px; }
+    .vocab-input {
+      border: none; border-bottom: 2px solid var(--teal); background: transparent;
+      outline: none; font-size: 0.93rem; width: 120px; padding: 0 4px;
+      color: var(--text); font-family: inherit;
+    }
+    .vocab-input:focus { border-color: var(--orange); }
+    .vocab-input.correct { border-color: var(--correct); background: var(--correct-bg); color: var(--correct); border-radius: 4px; }
+    .vocab-input.wrong   { border-color: var(--wrong);   background: var(--wrong-bg);   color: var(--wrong);   border-radius: 4px; }
+
+    /* EXERCISE 4 – CONVERSATIONS */
+    .convo { margin-bottom: 18px; border-left: 3px solid var(--border); padding-left: 14px; }
+    .convo-line { display: flex; gap: 10px; margin-bottom: 8px; font-size: 0.93rem; align-items: baseline; flex-wrap: wrap; }
+    .speaker { font-weight: 800; min-width: 20px; color: var(--teal-dark); }
+    .speaker.b { color: var(--orange); }
+    .convo-input {
+      border: none; border-bottom: 2px solid var(--teal); background: transparent;
+      outline: none; font-size: 0.93rem; flex: 1; min-width: 180px; padding: 0 4px;
+      color: var(--text); font-family: inherit;
+    }
+    .convo-input:focus { border-color: var(--orange); }
+    .convo-input.filled { border-color: var(--teal-dark); }
+    .convo-prompt { font-size: 0.82rem; color: #888; font-style: italic; }
+
+    /* FEEDBACK */
+    .feedback { margin-top: 10px; padding: 10px 14px; border-radius: 8px; font-size: 0.88rem; font-weight: 600; display: none; }
+    .feedback.show { display: block; }
+    .feedback.good  { background: var(--correct-bg); color: var(--correct); }
+    .feedback.retry { background: var(--wrong-bg);   color: var(--wrong); }
+
+    /* BUTTONS */
+    .btn { display: inline-block; padding: 9px 22px; border-radius: 20px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 700; transition: all .2s; font-family: inherit; }
+    .btn-teal   { background: var(--teal);   color: #fff; }
+    .btn-teal:hover   { background: var(--teal-dark); }
+    .btn-orange { background: var(--orange); color: #fff; }
+    .btn-orange:hover { opacity: .85; }
+    .btn-gray   { background: var(--border); color: var(--text); }
+    .btn-gray:hover   { background: #bbb; }
+    .btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; align-items: center; }
+
+    /* SEND SECTION */
+    .send-section { background: #fff; border-radius: 12px; border: 2px solid var(--teal); padding: 22px 24px; margin-bottom: 30px; text-align: center; }
+    .send-section h3 { color: var(--teal-dark); margin-bottom: 8px; font-size: 1.05rem; }
+    .send-section p  { font-size: 0.88rem; color: #666; margin-bottom: 14px; }
+    #sendBtn { font-size: 1rem; padding: 12px 32px; opacity: .45; pointer-events: none; transition: all .3s; }
+    #sendBtn.ready { opacity: 1; pointer-events: all; }
+    #sendBtn.ready:hover { background: var(--teal-dark); }
+    .validation-msg { font-size: 0.82rem; color: var(--wrong); font-weight: 600; margin-top: 10px; display: none; }
+    .validation-msg.show { display: block; }
+
+    @media (max-width: 600px) {
+      main { padding: 14px 12px 40px; }
+      header { padding: 14px 16px; }
+      .blank-input { width: 110px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">3A</div>
+  <div>
+    <h1>Homework</h1>
+    <p>Grammar: Past perfect simple &amp; continuous &nbsp;|&nbsp; Vocabulary: Memory</p>
+  </div>
+</header>
+
+<main>
+
+  <!-- NAME -->
+  <div class="name-wrap">
+    <label for="studentName">👤 Your name:</label>
+    <input type="text" id="studentName" placeholder="Write your full name here…" oninput="validateAll()"/>
+  </div>
+
+  <!-- ══ GRAMMAR ══ -->
+  <div class="card">
+    <div class="section-title">Grammar — Past perfect simple and continuous</div>
+
+    <!-- EX 1 -->
+    <span class="ex-label">Exercise 1</span>
+    <div class="ex-title">Choose the correct alternatives.</div>
+
+    <div class="ex-item">
+      <span class="num">1</span>By the time we got to the café, they
+      <span class="choice-group" id="g1">
+        <button class="choice-btn" data-group="g1" data-val="A" onclick="pick(this)">stopped</button>
+        <button class="choice-btn" data-group="g1" data-val="B" onclick="pick(this)">'d stopped</button>
+      </span>
+      serving food.
+    </div>
+
+    <div class="ex-item">
+      <span class="num">2</span>I sat down and started reading the book that I'd just
+      <span class="choice-group" id="g2">
+        <button class="choice-btn" data-group="g2" data-val="A" onclick="pick(this)">bought</button>
+        <button class="choice-btn" data-group="g2" data-val="B" onclick="pick(this)">been buying</button>
+      </span>.
+    </div>
+
+    <div class="ex-item">
+      <span class="num">3</span>The TV series that we'd
+      <span class="choice-group" id="g3">
+        <button class="choice-btn" data-group="g3" data-val="A" onclick="pick(this)">watched</button>
+        <button class="choice-btn" data-group="g3" data-val="B" onclick="pick(this)">been watching</button>
+      </span>
+      for weeks had a disappointing ending.
+    </div>
+
+    <div class="ex-item">
+      <span class="num">4</span>The sun
+      <span class="choice-group" id="g4">
+        <button class="choice-btn" data-group="g4" data-val="A" onclick="pick(this)">had been shining</button>
+        <button class="choice-btn" data-group="g4" data-val="B" onclick="pick(this)">shone</button>
+      </span>
+      all day, so we were disappointed when it went in.
+    </div>
+
+    <div class="ex-item">
+      <span class="num">5</span>I
+      <span class="choice-group" id="g5">
+        <button class="choice-btn" data-group="g5" data-val="A" onclick="pick(this)">never</button>
+        <button class="choice-btn" data-group="g5" data-val="B" onclick="pick(this)">'d never</button>
+      </span>
+      heard of the band that were playing on the radio before.
+    </div>
+
+    <div class="ex-item">
+      <span class="num">6</span>We didn't get into the match even though we
+      <span class="choice-group" id="g6">
+        <button class="choice-btn" data-group="g6" data-val="A" onclick="pick(this)">were</button>
+        <button class="choice-btn" data-group="g6" data-val="B" onclick="pick(this)">'d been</button>
+      </span>
+      queueing for hours.
+    </div>
+
+    <div class="ex-item">
+      <span class="num">7</span>Tom had already
+      <span class="choice-group" id="g7">
+        <button class="choice-btn" data-group="g7" data-val="A" onclick="pick(this)">ordered</button>
+        <button class="choice-btn" data-group="g7" data-val="B" onclick="pick(this)">been ordering</button>
+      </span>
+      some food by the time I arrived.
+    </div>
+
+    <div class="ex-item">
+      <span class="num">8</span>Paula went to bed early because she
+      <span class="choice-group" id="g8">
+        <button class="choice-btn" data-group="g8" data-val="A" onclick="pick(this)">worked</button>
+        <button class="choice-btn" data-group="g8" data-val="B" onclick="pick(this)">had been working</button>
+      </span>
+      for over 12 hours.
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-teal" onclick="checkEx1()">Check Exercise 1</button>
+      <button class="btn btn-gray" onclick="resetEx1()">Reset</button>
+    </div>
+    <div id="fb1" class="feedback"></div>
+  </div>
+
+  <!-- EX 2 -->
+  <div class="card">
+    <span class="ex-label">Exercise 2</span>
+    <div class="ex-title">Complete the text with the correct form of the verbs in brackets.</div>
+    <div class="highlight-box">Use past simple, past perfect simple, or past perfect continuous. The verb in brackets is in its base or infinitive form.</div>
+
+    <div class="reading-passage">
+      <p style="font-size:1.1rem; font-weight:700; color:var(--teal-dark); margin-bottom:12px;">A vivid memory. But whose?</p>
+
+      <p>Memories are strange. I have one memory that I can recall really clearly from when I was six. I lived with my parents in the small, terraced house that they <sup class="gap-num">1</sup><input class="blank-input" id="b1" placeholder="buy…"> just after I was born. I went outside to play on my scooter. I remember that it <sup class="gap-num">2</sup><input class="blank-input" id="b2" placeholder="rain…"> for hours so I soon got wet but I didn't mind. After I <sup class="gap-num">3</sup><input class="blank-input" id="b3" placeholder="ride…"> around for a little while, the woman next door invited me in. She wanted me to try some of the cake she <sup class="gap-num">4</sup><input class="blank-input" id="b4" placeholder="just / make…">. In fact, she <sup class="gap-num">5</sup><input class="blank-input" id="b5" placeholder="bake…"> all day and <sup class="gap-num">6</sup><input class="blank-input" id="b6" placeholder="make…"> several different types of cake. I picked the chocolate one and she cut me a slice.</p>
+
+      <p>While I ate, the woman showed me photos that her son <sup class="gap-num">7</sup><input class="blank-input" id="b7" placeholder="send…"> of her grandchildren. Her son <sup class="gap-num">8</sup><input class="blank-input" id="b8" placeholder="already / move…"> to Australia by the time his children were born so she <sup class="gap-num">9</sup><input class="blank-input" id="b9" placeholder="never / meet…"> them. I think she was sad about that.</p>
+
+      <p>Anyway, I put the last bite of cake in my mouth and started choking. I couldn't breathe and started to panic. Fortunately, the woman <sup class="gap-num">10</sup><input class="blank-input" id="b10" placeholder="be…"> a nurse so knew exactly what to do. She turned me upside down and hit me on my back. The cake fell out and I could breathe again.</p>
+
+      <p>So, why is this memory strange? Well, it's really clear in my mind, so much so that it feels like it happened yesterday. And yet, the funny thing is, I don't actually remember it, but I've been told the story so many times by my mum, that I feel like I do.</p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-teal" onclick="checkEx2()">Check Exercise 2</button>
+      <button class="btn btn-gray" onclick="resetEx2()">Reset</button>
+    </div>
+    <div id="fb2" class="feedback"></div>
+  </div>
+
+  <!-- ══ VOCABULARY ══ -->
+  <div class="card">
+    <div class="section-title">Vocabulary — Memory</div>
+
+    <!-- EX 3 -->
+    <span class="ex-label">Exercise 3</span>
+    <div class="ex-title">Complete the sentences with the correct form of the words in the box.</div>
+
+    <div class="word-bank">
+      <span class="word-chip">forget</span>
+      <span class="word-chip">memorable</span>
+      <span class="word-chip">memorise</span>
+      <span class="word-chip">memory <em>(×2)</em></span>
+      <span class="word-chip">mind</span>
+      <span class="word-chip">recall</span>
+      <span class="word-chip">remind</span>
+    </div>
+
+    <div class="vocab-item"><span class="vnum">1</span> I have a good <input class="vocab-input" id="v1" placeholder="…"> for faces but I never remember people's names.</div>
+    <div class="vocab-item"><span class="vnum">2</span> Your perfume <input class="vocab-input" id="v2" placeholder="…"> me of those pink flowers in our garden.</div>
+    <div class="vocab-item"><span class="vnum">3</span> I have to <input class="vocab-input" id="v3" placeholder="…"> all of these words before my English test next week.</div>
+    <div class="vocab-item"><span class="vnum">4</span> I can still <input class="vocab-input" id="v4" placeholder="…"> the first day I met you.</div>
+    <div class="vocab-item"><span class="vnum">5</span> What did we have for lunch? I've got no <input class="vocab-input" id="v5" placeholder="…"> of it at all!</div>
+    <div class="vocab-item"><span class="vnum">6</span> I loved our wedding. It was such a <input class="vocab-input" id="v6" placeholder="…"> day.</div>
+    <div class="vocab-item"><span class="vnum">7</span> When you visit Grandad, bear in <input class="vocab-input" id="v7" placeholder="…"> that he's not very well.</div>
+    <div class="vocab-item"><span class="vnum">8</span> Don't <input class="vocab-input" id="v8" placeholder="…"> to buy Mum a birthday present.</div>
+
+    <div class="btn-row">
+      <button class="btn btn-teal" onclick="checkEx3()">Check Exercise 3</button>
+      <button class="btn btn-gray" onclick="resetEx3()">Reset</button>
+    </div>
+    <div id="fb3" class="feedback"></div>
+  </div>
+
+  <!-- EX 4 -->
+  <div class="card">
+    <span class="ex-label">Exercise 4</span>
+    <div class="ex-title">Complete the conversations using the prompts in brackets and other words you need.</div>
+    <div class="orange-box">Write the full sentence for each A line using the words in brackets as a guide. You may need to add extra words.</div>
+
+    <div class="convo">
+      <div class="convo-line"><span class="speaker">1 A:</span><input class="convo-input" id="c1" placeholder="…" oninput="markFilled(this); validateAll()"/></div>
+      <div class="convo-prompt">&nbsp;&nbsp;&nbsp;&nbsp;(you / recall / name) of that hotel we stayed in last week?</div>
+      <div class="convo-line" style="margin-top:6px;"><span class="speaker b">B:</span><span>The King's Hotel, I think.</span></div>
+    </div>
+
+    <div class="convo">
+      <div class="convo-line"><span class="speaker">2 A:</span><input class="convo-input" id="c2" placeholder="…" oninput="markFilled(this); validateAll()"/></div>
+      <div class="convo-prompt">&nbsp;&nbsp;&nbsp;&nbsp;(this music / remind you / anything)?</div>
+      <div class="convo-line" style="margin-top:6px;"><span class="speaker b">B:</span><span>No, why? Should it?</span></div>
+    </div>
+
+    <div class="convo">
+      <div class="convo-line"><span class="speaker">3 A:</span><span>Well,&nbsp;</span><input class="convo-input" id="c3" placeholder="…" oninput="markFilled(this); validateAll()"/></div>
+      <div class="convo-prompt">&nbsp;&nbsp;&nbsp;&nbsp;(that meeting / memorable).</div>
+      <div class="convo-line" style="margin-top:6px;"><span class="speaker b">B:</span><span>Yes, it was but for all the wrong reasons!</span></div>
+    </div>
+
+    <div class="convo">
+      <div class="convo-line"><span class="speaker">4 A:</span><span>How come you can remember my mobile number but I can't?</span></div>
+      <div class="convo-line"><span class="speaker b">B:</span><input class="convo-input" id="c4" placeholder="…" oninput="markFilled(this); validateAll()"/></div>
+      <div class="convo-prompt">&nbsp;&nbsp;&nbsp;&nbsp;(I / always / good / memory / numbers).</div>
+    </div>
+
+    <div class="convo">
+      <div class="convo-line"><span class="speaker">5 A:</span><input class="convo-input" id="c5" placeholder="…" oninput="markFilled(this); validateAll()"/></div>
+      <div class="convo-prompt">&nbsp;&nbsp;&nbsp;&nbsp;(I / will / never / forget / time) that you called the teacher 'Dad'.</div>
+      <div class="convo-line" style="margin-top:6px;"><span class="speaker b">B:</span><span>Oh yes – that was so embarrassing!</span></div>
+    </div>
+
+    <div class="convo">
+      <div class="convo-line"><span class="speaker">6 A:</span><span>We had this same conversation last week.</span></div>
+      <div class="convo-line"><span class="speaker b">B:</span><span>Did we?&nbsp;</span><input class="convo-input" id="c6" placeholder="…" oninput="markFilled(this); validateAll()"/></div>
+      <div class="convo-prompt">&nbsp;&nbsp;&nbsp;&nbsp;(I / no memory / it at all). Sorry!</div>
+    </div>
+
+    <div class="convo">
+      <div class="convo-line"><span class="speaker">7 A:</span><input class="convo-input" id="c7" placeholder="…" oninput="markFilled(this); validateAll()"/></div>
+      <div class="convo-prompt">&nbsp;&nbsp;&nbsp;&nbsp;(None of us / need / memorise / history dates) any more.</div>
+      <div class="convo-line" style="margin-top:6px;"><span class="speaker b">B:</span><span>You're right. We can just look them up online!</span></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-teal" onclick="checkEx4()">Check Exercise 4</button>
+      <button class="btn btn-gray" onclick="resetEx4()">Reset</button>
+    </div>
+    <div id="fb4" class="feedback"></div>
+  </div>
+
+  <!-- SEND -->
+  <div class="send-section">
+    <h3>📤 Send your homework to the teacher</h3>
+    <p>Make sure your name is written and <strong>all exercises are complete</strong> before sending.</p>
+    <button class="btn btn-teal" id="sendBtn" onclick="sendHomework()">Send to Teacher ✉️</button>
+    <div class="validation-msg" id="validationMsg">⚠️ Please fill in your name and complete all exercises before sending.</div>
+  </div>
+
+</main>
+
+<script>
+  // ── ANSWER KEYS ──────────────────────────────────────────────
+
+  const ex1Answers = { g1:'B', g2:'A', g3:'B', g4:'A', g5:'B', g6:'B', g7:'A', g8:'B' };
+
+  const ex2Answers = {
+    b1:  ["had bought","'d bought"],
+    b2:  ["had been raining","'d been raining"],
+    b3:  ["had ridden","'d ridden","had been riding","'d been riding"],
+    b4:  ["had just made","'d just made"],
+    b5:  ["had been baking","'d been baking"],
+    b6:  ["had made","'d made","had been making","'d been making"],
+    b7:  ["had sent","'d sent"],
+    b8:  ["had already moved","'d already moved"],
+    b9:  ["had never met","'d never met"],
+    b10: ["had been","'d been","was"],
+  };
+
+  const ex3Answers = {
+    v1:"memory", v2:"reminds", v3:"memorise", v4:"recall",
+    v5:"memory", v6:"memorable", v7:"mind", v8:"forget"
+  };
+
+  // Ex4 expected answers (flexible — teacher sees raw answers too)
+  const ex4Expected = {
+    c1: ["do you recall the name","can you recall the name","do you remember the name"],
+    c2: ["does this music remind you of anything","is this music reminding you of anything"],
+    c3: ["that meeting was memorable","it was memorable","that was a memorable meeting"],
+    c4: ["i've always had a good memory for numbers","i always have a good memory for numbers"],
+    c5: ["i'll never forget the time","i will never forget the time"],
+    c6: ["i have no memory of it at all","i've got no memory of it at all"],
+    c7: ["none of us need to memorise history dates","none of us needs to memorise history dates","none of us need memorise history dates"],
+  };
+
+  function norm(s) { return s.trim().toLowerCase().replace(/['']/g,"'").replace(/[^a-z0-9' ]/g,'').replace(/\s+/g,' '); }
+
+  // ── EX 1 ─────────────────────────────────────────────────────
+  function pick(btn) {
+    const group = btn.dataset.group;
+    document.querySelectorAll(`[data-group="${group}"]`).forEach(b => b.classList.remove('selected','correct','wrong','correct-answer'));
+    btn.classList.add('selected');
+    validateAll();
+  }
+
+  function checkEx1() {
+    let score = 0;
+    Object.keys(ex1Answers).forEach(g => {
+      const btns = document.querySelectorAll(`[data-group="${g}"]`);
+      const correct = ex1Answers[g];
+      btns.forEach(b => {
+        b.classList.remove('correct','wrong','correct-answer');
+        if (b.dataset.val === correct) {
+          if (b.classList.contains('selected')) { b.classList.add('correct'); score++; }
+          else { b.classList.add('correct-answer'); }
+        } else if (b.classList.contains('selected')) {
+          b.classList.add('wrong');
+        }
+      });
+    });
+    const fb = document.getElementById('fb1');
+    fb.className = score === 8 ? 'feedback show good' : 'feedback show retry';
+    fb.textContent = `${score}/8 correct.${score < 8 ? ' Review the highlighted items.' : ' Perfect!'}`;
+  }
+
+  function resetEx1() {
+    document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected','correct','wrong','correct-answer'));
+    document.getElementById('fb1').className = 'feedback';
+    validateAll();
+  }
+
+  // ── EX 2 ─────────────────────────────────────────────────────
+  document.querySelectorAll('.blank-input').forEach(el => el.addEventListener('input', validateAll));
+
+  function checkEx2() {
+    let score = 0;
+    Object.keys(ex2Answers).forEach(id => {
+      const el = document.getElementById(id);
+      const v = norm(el.value);
+      el.className = 'blank-input';
+      if (ex2Answers[id].some(a => norm(a) === v)) { el.classList.add('correct'); score++; }
+      else if (v) { el.classList.add('wrong'); }
+    });
+    const fb = document.getElementById('fb2');
+    fb.className = score === 10 ? 'feedback show good' : 'feedback show retry';
+    fb.textContent = `${score}/10 correct.${score < 10 ? ' Check the red fields — remember: past perfect simple vs continuous.' : ' Excellent!'}`;
+  }
+
+  function resetEx2() {
+    Object.keys(ex2Answers).forEach(id => { const el = document.getElementById(id); el.value=''; el.className='blank-input'; });
+    document.getElementById('fb2').className = 'feedback';
+    validateAll();
+  }
+
+  // ── EX 3 ─────────────────────────────────────────────────────
+  document.querySelectorAll('.vocab-input').forEach(el => el.addEventListener('input', validateAll));
+
+  function checkEx3() {
+    let score = 0;
+    Object.keys(ex3Answers).forEach(id => {
+      const el = document.getElementById(id);
+      const v = el.value.trim().toLowerCase();
+      el.className = 'vocab-input';
+      if (v === ex3Answers[id]) { el.classList.add('correct'); score++; }
+      else if (v) { el.classList.add('wrong'); }
+    });
+    const fb = document.getElementById('fb3');
+    fb.className = score === 8 ? 'feedback show good' : 'feedback show retry';
+    fb.textContent = `${score}/8 correct.${score < 8 ? ' Check the red fields — look at the word bank again.' : ' Well done!'}`;
+  }
+
+  function resetEx3() {
+    Object.keys(ex3Answers).forEach(id => { const el=document.getElementById(id); el.value=''; el.className='vocab-input'; });
+    document.getElementById('fb3').className = 'feedback';
+    validateAll();
+  }
+
+  // ── EX 4 ─────────────────────────────────────────────────────
+  function markFilled(el) { el.classList.toggle('filled', el.value.trim().length > 0); }
+
+  function checkEx4() {
+    let score = 0;
+    Object.keys(ex4Expected).forEach(id => {
+      const el = document.getElementById(id);
+      const v = norm(el.value);
+      el.classList.remove('filled');
+      if (!v) return;
+      const match = ex4Expected[id].some(a => norm(a) === v || v.includes(norm(a).split(' ').slice(0,3).join(' ')));
+      el.style.borderColor = match ? 'var(--correct)' : 'var(--teal)';
+      if (match) score++;
+    });
+    const fb = document.getElementById('fb4');
+    fb.className = 'feedback show good';
+    fb.textContent = `Exercise 4 submitted! Your teacher will review your answers. ${score}/7 matched the expected pattern.`;
+  }
+
+  function resetEx4() {
+    ['c1','c2','c3','c4','c5','c6','c7'].forEach(id => {
+      const el=document.getElementById(id); el.value=''; el.style.borderColor=''; el.classList.remove('filled');
+    });
+    document.getElementById('fb4').className = 'feedback';
+    validateAll();
+  }
+
+  // ── VALIDATION ───────────────────────────────────────────────
+  function isComplete() {
+    const name = document.getElementById('studentName').value.trim();
+    if (!name) return false;
+
+    // Ex1: all 8 groups have a selection
+    for (let i = 1; i <= 8; i++) {
+      if (!document.querySelector(`[data-group="g${i}"].selected`)) return false;
+    }
+    // Ex2: all 10 blanks filled
+    for (let i = 1; i <= 10; i++) {
+      if (!document.getElementById(`b${i}`).value.trim()) return false;
+    }
+    // Ex3: all 8 vocab filled
+    for (let i = 1; i <= 8; i++) {
+      if (!document.getElementById(`v${i}`).value.trim()) return false;
+    }
+    // Ex4: all 7 convo lines filled
+    for (let i = 1; i <= 7; i++) {
+      if (!document.getElementById(`c${i}`).value.trim()) return false;
+    }
+    return true;
+  }
+
+  function validateAll() {
+    const ok = isComplete();
+    const btn = document.getElementById('sendBtn');
+    btn.classList.toggle('ready', ok);
+    document.getElementById('validationMsg').classList.toggle('show', false);
+  }
+
+  // ── SEND ─────────────────────────────────────────────────────
+  function sendHomework() {
+    if (!isComplete()) {
+      document.getElementById('validationMsg').classList.add('show');
+      return;
+    }
+
+    const name = document.getElementById('studentName').value.trim();
+
+    // Build email body
+    const ex1Labels = {
+      g1:["stopped","'d stopped"], g2:["bought","been buying"],
+      g3:["watched","been watching"], g4:["had been shining","shone"],
+      g5:["never","'d never"], g6:["were","'d been"],
+      g7:["ordered","been ordering"], g8:["worked","had been working"]
+    };
+
+    let body = `HOMEWORK: Unit 3A – Past Perfect & Memory\n`;
+    body += `Student: ${name}\n`;
+    body += `${'─'.repeat(40)}\n\n`;
+
+    body += `EXERCISE 1 – Choose the correct alternative\n`;
+    for (let i = 1; i <= 8; i++) {
+      const sel = document.querySelector(`[data-group="g${i}"].selected`);
+      const val = sel ? ex1Labels[`g${i}`][sel.dataset.val === 'A' ? 0 : 1] : '(not answered)';
+      body += `  ${i}. ${val}\n`;
+    }
+
+    body += `\nEXERCISE 2 – Complete the text\n`;
+    for (let i = 1; i <= 10; i++) {
+      body += `  ${i}. ${document.getElementById(`b${i}`).value.trim()}\n`;
+    }
+
+    body += `\nEXERCISE 3 – Word box\n`;
+    for (let i = 1; i <= 8; i++) {
+      body += `  ${i}. ${document.getElementById(`v${i}`).value.trim()}\n`;
+    }
+
+    body += `\nEXERCISE 4 – Conversations\n`;
+    for (let i = 1; i <= 7; i++) {
+      body += `  ${i}. ${document.getElementById(`c${i}`).value.trim()}\n`;
+    }
+
+    const subject = encodeURIComponent(`3A Homework – ${name}`);
+    const encodedBody = encodeURIComponent(body);
+    window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${subject}&body=${encodedBody}`;
+  }
+
+  // Init
+  validateAll();
+</script>
+</body>
+</html>
