@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3B — Great Rivals</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #1a6b8a;
+    --teal-dark: #124f67;
+    --teal-light: #d0eaf3;
+    --accent: #e8334a;
+    --gold: #f0a500;
+    --text: #1a1a2e;
+    --muted: #5a6070;
+    --bg: #f4f7fa;
+    --white: #ffffff;
+    --border: #dce3ea;
+  }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOP NAV BAR ── */
+  #topbar {
+    background: var(--teal-dark);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 24px;
+    flex-shrink: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+  #topbar .unit-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  #topbar .unit-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  #topbar .goals {
+    font-size: 12px;
+    opacity: 0.8;
+    text-align: right;
+  }
+  #topbar .goals span {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 2px 8px;
+    margin-left: 5px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-wrap {
+    background: var(--teal);
+    height: 4px;
+    flex-shrink: 0;
+  }
+  #progress-bar {
+    height: 100%;
+    background: var(--gold);
+    transition: width 0.4s ease;
+  }
+
+  /* ── SLIDE COUNTER ── */
+  #slide-counter {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 5px;
+    flex-shrink: 0;
+    letter-spacing: 1px;
+  }
+
+  /* ── SLIDES WRAPPER ── */
+  #slides-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+  .slide {
+    display: none;
+    height: 100%;
+    overflow-y: auto;
+    padding: 28px 60px;
+    animation: fadeIn 0.3s ease;
+  }
+  .slide.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── SLIDE INNER LAYOUT ── */
+  .slide-inner {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  /* ── SECTION BADGE + HEADING ── */
+  .ex-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--teal);
+    color: white;
+    padding: 5px 14px 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .ex-badge .num {
+    background: white;
+    color: var(--teal);
+    border-radius: 50%;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .section-tag {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 16px;
+  }
+  .section-tag.grammar { background: var(--teal); }
+  .section-tag.speaking { background: #7b4ea0; }
+  .section-tag.listening { background: #c47b00; }
+
+  .instruction {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+  .sub-instruction {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 22px;
+    line-height: 1.5;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .card.teal-top { border-top: 4px solid var(--teal); }
+  .card.accent-top { border-top: 4px solid var(--accent); }
+  .card.gold-top { border-top: 4px solid var(--gold); }
+
+  /* ── QUESTIONS / LISTS ── */
+  .q-list { list-style: none; }
+  .q-list li {
+    display: flex;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+    line-height: 1.5;
+    align-items: flex-start;
+  }
+  .q-list li:last-child { border-bottom: none; }
+  .q-num {
+    min-width: 24px; height: 24px;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ── LETTER LIST (a b c …) ── */
+  .letter-list { list-style: none; }
+  .letter-list li {
+    display: flex; gap: 10px;
+    padding: 7px 0;
+    font-size: 15px; line-height: 1.5;
+    border-bottom: 1px dashed var(--border);
+    align-items: flex-start;
+  }
+  .letter-list li:last-child { border-bottom: none; }
+  .l-badge {
+    min-width: 22px; height: 22px;
+    background: var(--gold);
+    color: white;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800;
+    flex-shrink: 0; margin-top: 2px;
+  }
+
+  /* ── QUOTE BLOCK ── */
+  .quote-card {
+    background: white;
+    border-left: 5px solid var(--teal);
+    padding: 12px 18px;
+    margin-bottom: 10px;
+    border-radius: 0 8px 8px 0;
+    font-size: 15px;
+    font-style: italic;
+    color: #2c3e50;
+  }
+  .quote-card .q-label {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--teal);
+    margin-right: 6px;
+  }
+
+  /* ── GRAMMAR BOX ── */
+  .grammar-box {
+    background: #f0f8fc;
+    border: 2px solid var(--teal);
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin-bottom: 20px;
+  }
+  .grammar-box h3 {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--teal-dark);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .grammar-rule {
+    margin-bottom: 14px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .grammar-rule p { margin-bottom: 4px; }
+  .grammar-rule .use-label {
+    font-weight: 700;
+    color: var(--teal-dark);
+  }
+  .grammar-rule .example {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .grammar-rule .example strong {
+    font-weight: 800;
+    color: var(--teal-dark);
+    font-style: normal;
+  }
+  .grammar-rule .gap-line {
+    display: block;
+    border-bottom: 1px solid var(--teal);
+    width: 100%;
+    margin: 6px 0;
+    height: 16px;
+  }
+  .grammar-divider {
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 12px 0;
+  }
+
+  /* ── READING TEXT ── */
+  .reading-text {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--text);
+  }
+  .reading-text .vocab-bold { font-weight: 700; }
+  .reading-text h4 {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--teal-dark);
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--teal-light);
+  }
+
+  /* ── GAP FILL ── */
+  .gap-text {
+    font-size: 15px;
+    line-height: 2.1;
+    color: var(--text);
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+  .gap {
+    display: inline-block;
+    border-bottom: 2px solid var(--teal);
+    min-width: 90px;
+    margin: 0 3px;
+    vertical-align: bottom;
+  }
+  .gap-hint {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    margin-left: 2px;
+  }
+
+  /* ── MATCHING EXERCISE ── */
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .match-col h4 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--border);
+  }
+  .match-item {
+    display: flex;
+    gap: 10px;
+    padding: 7px 0;
+    font-size: 14px;
+    line-height: 1.5;
+    border-bottom: 1px dashed var(--border);
+    align-items: flex-start;
+  }
+  .match-item:last-child { border-bottom: none; }
+  .match-item .m-num {
+    min-width: 26px; height: 26px;
+    background: var(--teal);
+    color: white;
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .match-item .m-word {
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    font-weight: 700;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  .match-item .m-ans {
+    background: #fff3cd;
+    color: #856404;
+    font-weight: 700;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  /* ── PHOTO CARDS ── */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .photo-card {
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+    position: relative;
+    cursor: default;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .photo-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.18); }
+  .photo-card .pc-art {
+    width: 100%;
+    aspect-ratio: 3/4;
+    display: block;
+  }
+  .photo-card .pc-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.82));
+    color: white;
+    padding: 18px 10px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .photo-card .pc-sub {
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.85;
+    display: block;
+    margin-top: 1px;
+  }
+
+  /* ── IMAGE PLACEHOLDER (small / inline) ── */
+  .img-placeholder {
+    background: linear-gradient(135deg, #1a6b8a15, #1a6b8a30);
+    border: 2px dashed var(--teal);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    color: var(--teal-dark);
+    font-size: 13px;
+    text-align: center;
+    gap: 6px;
+    min-height: 120px;
+  }
+  .img-placeholder .photo-icon { font-size: 32px; margin-bottom: 4px; }
+  .img-placeholder .photo-caption { font-weight: 600; font-size: 12px; }
+  .img-placeholder .photo-sub { font-size: 11px; color: var(--muted); }
+
+  /* ── VOCAB CHIPS (large, page 4) ── */
+  .vocab-chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 14px 0;
+  }
+  .vocab-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: white;
+    border: 2px solid var(--teal);
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--teal-dark);
+    cursor: default;
+    transition: background 0.15s, color 0.15s;
+    box-shadow: 0 2px 6px rgba(26,107,138,0.1);
+  }
+  .vocab-chip .chip-num {
+    background: var(--teal);
+    color: white;
+    border-radius: 50%;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .vocab-chip.matched { background: var(--teal); color: white; border-color: var(--teal-dark); }
+
+  /* ── GAME STYLES (page 10) ── */
+  .game-card {
+    background: white;
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    padding: 16px 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    user-select: none;
+  }
+  .game-card:hover { border-color: var(--teal); box-shadow: 0 4px 14px rgba(26,107,138,0.18); transform: translateY(-2px); }
+  .game-card.flipped { background: var(--teal); color: white; border-color: var(--teal-dark); }
+  .game-card .card-front { font-size: 28px; display: block; margin-bottom: 6px; }
+  .game-card .card-back { display: none; font-size: 14px; font-weight: 700; line-height: 1.4; }
+  .game-card.flipped .card-front { display: none; }
+  .game-card.flipped .card-back { display: block; }
+
+  /* ── COMPARISON TABLE ── */
+  .comparison-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .comp-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .comp-item.big-diff { border-left: 3px solid var(--accent); }
+  .comp-item.small-diff { border-left: 3px solid var(--gold); }
+  .comp-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  /* ── SPEAKING PROMPT ── */
+  .speak-card {
+    background: linear-gradient(135deg, #7b4ea015, #7b4ea025);
+    border: 2px solid #7b4ea0;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 14px;
+  }
+  .speak-card .speak-icon { font-size: 28px; margin-bottom: 8px; }
+  .speak-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #7b4ea0;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .speak-card p { font-size: 15px; line-height: 1.6; }
+
+  .role-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .role-a { background: var(--teal); color: white; }
+  .role-b { background: var(--accent); color: white; }
+
+  /* ── LISTENING BOX ── */
+  .listen-card {
+    background: linear-gradient(135deg, #c47b0010, #c47b0025);
+    border: 2px solid var(--gold);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .listen-icon { font-size: 30px; flex-shrink: 0; }
+  .listen-card p { font-size: 14px; line-height: 1.6; }
+
+  /* ── EXAMPLE HIGHLIGHT ── */
+  .example-box {
+    background: #fff8e6;
+    border-left: 4px solid var(--gold);
+    padding: 10px 16px;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    margin: 10px 0;
+    line-height: 1.6;
+  }
+  .example-box .ex-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  /* ── TWO COLUMN ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* ── ANSWER KEY TOGGLE ── */
+  .answer-toggle {
+    background: none;
+    border: 1px dashed var(--teal);
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.2s;
+  }
+  .answer-toggle:hover { background: var(--teal); color: white; }
+  .answer-key {
+    display: none;
+    background: #f0f8fc;
+    border: 1px solid var(--teal-light);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-top: 10px;
+    font-size: 13.5px;
+  }
+  .answer-key.visible { display: block; }
+  .answer-key strong { color: var(--teal-dark); }
+
+  /* ── BOTTOM NAV ── */
+  #bottom-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 28px;
+    background: white;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .nav-btn:hover { background: var(--teal-dark); }
+  .nav-btn:disabled { background: var(--border); color: var(--muted); cursor: default; }
+  .nav-btn.prev { background: white; color: var(--teal); border: 2px solid var(--teal); }
+  .nav-btn.prev:hover { background: var(--teal-light); }
+  .nav-btn.prev:disabled { border-color: var(--border); color: var(--muted); }
+
+  .slide-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 400px;
+  }
+  .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+  .dot.active { background: var(--teal); transform: scale(1.3); }
+  .dot:hover { background: var(--teal); opacity: 0.7; }
+
+  /* ── PAGE-SPECIFIC ── */
+  .note-box {
+    background: #fffbf0;
+    border: 1px solid #e8c84a;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #7a5e00;
+    margin-top: 14px;
+    line-height: 1.5;
+  }
+  .note-box strong { color: #5a4400; }
+
+  /* ── DRAG & DROP VOCAB ── */
+  .draggable {
+    cursor: grab;
+    transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
+    user-select: none;
+  }
+  .draggable:active { cursor: grabbing; }
+  .draggable.dragging {
+    opacity: 0.4;
+    transform: scale(0.96);
+  }
+  .def-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .def-row:last-child { border-bottom: none; }
+  .def-text {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--text);
+  }
+  .drop-zone {
+    min-width: 120px;
+    height: 34px;
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    transition: border-color 0.15s, background 0.15s;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .drop-zone.drag-over {
+    border-color: var(--teal);
+    background: var(--teal-light);
+  }
+  .drop-zone.filled {
+    border-style: solid;
+    border-color: var(--teal);
+    background: white;
+    color: var(--teal-dark);
+    font-weight: 700;
+  }
+  .drop-zone.correct {
+    border-color: #27ae60;
+    background: #eafaf1;
+    color: #1a7a45;
+  }
+  .drop-zone.wrong {
+    border-color: var(--accent);
+    background: #fef0f0;
+    color: var(--accent);
+  }
+  .drop-zone .dz-remove {
+    position: absolute;
+    right: 4px; top: 4px;
+    width: 14px; height: 14px;
+    background: var(--muted);
+    color: white;
+    border-radius: 50%;
+    font-size: 9px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .drop-zone .dz-remove:hover { background: var(--accent); }
+
+  /* ── TAB BUTTONS ── */
+  .tab-btn {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .tab-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .tab-btn.active { background: var(--teal); border-color: var(--teal); color: white; }
+
+  @media (max-width: 700px) {
+    .slide { padding: 16px 16px; }
+    .photo-grid { grid-template-columns: repeat(2,1fr); }
+    .match-grid { grid-template-columns: 1fr; }
+    .two-col, .three-col, .comparison-pair { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div>
+    <div class="unit-label">Unit 3B</div>
+    <div class="unit-title">Great Rivals</div>
+  </div>
+  <div class="goals">
+    <span>Express opinions about rivals</span>
+    <span>Comparatives &amp; superlatives</span>
+    <span>Character adjectives</span>
+  </div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div id="progress-wrap"><div id="progress-bar" style="width:8%"></div></div>
+
+<!-- SLIDE COUNTER -->
+<div id="slide-counter">1 / 11</div>
+
+<!-- SLIDES -->
+<div id="slides-container">
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SLIDE 1 — LEAD-IN -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="slide active" id="slide-1">
+    <div class="slide-inner">
+      <div class="section-tag">Reading &amp; Vocabulary</div>
+      <div class="ex-badge"><span class="num">1</span> Lead-in</div>
+      <p class="instruction">Look at the photos and answer the questions.</p>
+      <p class="sub-instruction">Work with a partner. What do you already know about these people?</p>
+
+      <div class="photo-grid">
+
+        <div class="photo-card">
+          <img class="pc-art" src="file:///Users/dariiamelnyk/Desktop/bobby.jpg" alt="Bobby Fischer" style="width:100%;aspect-ratio:3/4;object-fit:cover;display:block;">
+          <div class="pc-label">Bobby Fischer</div>
+        </div>
+
+        <div class="photo-card">
+          <img class="pc-art" src="file:///Users/dariiamelnyk/Desktop/gates.jpg" alt="Bill Gates" style="width:100%;aspect-ratio:3/4;object-fit:cover;display:block;">
+          <div class="pc-label">Bill Gates</div>
+        </div>
+
+        <div class="photo-card">
+          <img class="pc-art" src="file:///Users/dariiamelnyk/Desktop/serena.jpg" alt="Serena Williams" style="width:100%;aspect-ratio:3/4;object-fit:cover;display:block;">
+          <div class="pc-label">Serena Williams</div>
+        </div>
+
+        <div class="photo-card">
+          <img class="pc-art" src="file:///Users/dariiamelnyk/Desktop/4.jpg" alt="1972 US Basketball Team" style="width:100%;aspect-ratio:3/4;object-fit:cover;display:block;">
+          <div class="pc-label">1972 US Basketball Team</div>
+        </div>
+
+      </div>
+
+      <div class="card teal-top">
+        <ul class="q-list">
+          <li><span class="q-num">1</span><span>What are these people famous for?</span></li>
+          <li><span class="q-num">2</span><span>Who are / were their biggest rivals?</span></li>
+          <li><span class="q-num">3</span><span>What else do you know about them?</span></li>
+        </ul>
+      </div>
+
+      <div class="note-box"><strong>Teacher tip:</strong> Elicit rivalry vocabulary: <em>opponent, competitor, match, championship, defeat.</em> Ask: "What makes a rivalry famous?"</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SLIDE 2 — READING + VOCABULARY (merged) -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-2">
+    <div class="slide-inner">
+      <div class="section-tag">Reading &amp; Vocabulary</div>
+
+      <!-- TAB SWITCHER -->
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+        <button class="tab-btn active" onclick="showTab('chess')" id="tab-chess">♟️ Ex 2 — Chess Rivals</button>
+        <button class="tab-btn" onclick="showTab('bball')" id="tab-bball">🏀 Ex 2 — Basketball Rivals</button>
+        <button class="tab-btn" onclick="showTab('vocab')" id="tab-vocab">📋 Ex 3 — Vocabulary</button>
+      </div>
+
+      <!-- CHESS TAB -->
+      <div id="panel-chess">
+        <p class="instruction">Read the text. Close your books. Work in pairs and take turns explaining who won and how.</p>
+        <div class="card teal-top" style="margin-top:10px;">
+          <div class="reading-text">
+            <h4>Chess Rivals</h4>
+            <p>In July 1972, Bobby Fischer from the USA took on Boris Spassky from the USSR in the World Chess Championships. The Soviet players had won every championship since 1948 and the <span class="vocab-bold">determined</span>, <span class="vocab-bold">thoughtful</span> Spassky was the clear favourite. However Fischer was fiercely <span class="vocab-bold">competitive</span>, some even called him <span class="vocab-bold">stubborn</span> and <span class="vocab-bold">arrogant</span>, and his desire to win was huge.</p>
+            <br>
+            <p>The battle started on 11th July and Fischer lost the first two games. Two-nil to Spassky — usually an unbeatable lead in chess. But suddenly, before the third game, the <span class="vocab-bold">unpredictable</span> Fischer lost his temper and threatened to quit unless the next game was played in a different room. Spassky, <span class="vocab-bold">reasonable</span> as always, agreed but the fuss unsettled him and he started to lose games. The longer the championship went on, the more <span class="vocab-bold">confident</span> Fischer became and the final score, two months later, was 12.5 points to Fischer and 8.5 points to Spassky. Fischer was the new king of chess!</p>
+          </div>
+        </div>
+        <div class="note-box" style="margin-top:12px;"><strong>Follow-up:</strong> Retell the story using only 5 prompts: <em>1972 / favourite / lost / quit / confident.</em></div>
+      </div>
+
+      <!-- BASKETBALL TAB -->
+      <div id="panel-bball" style="display:none;">
+        <p class="instruction">Read the text. Close your books. Work in pairs and take turns explaining who won and how.</p>
+        <div class="card teal-top" style="margin-top:10px;">
+          <div class="reading-text">
+            <h4>Basketball Rivals</h4>
+            <p>In September 1972, the USSR took on the USA in the Olympic basketball final. American teams had won every Olympic basketball final since 1936 and the Americans were the clear favourites. However they were also by far the youngest team to represent the USA, while the Soviet team were <span class="vocab-bold">tough</span> and determined. The rivalry between the two teams was intense.</p>
+            <br>
+            <p>The battle took place on 9th September. The <span class="vocab-bold">inexperienced</span> American team quickly went behind to the <span class="vocab-bold">bold</span> Soviets. However the American team fought back and with just three seconds remaining they scored and went ahead, 50–49. With so little time remaining, it looked like the match was over but suddenly the Soviet team did something <span class="vocab-bold">remarkable</span>: they threw the ball from one end of the court to the other and scored the winning goal. The USSR was the new king of basketball!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- VOCAB TAB — drag & drop -->
+      <div id="panel-vocab" style="display:none;">
+        <p class="instruction">3a — Work in pairs. Guess the meanings of the bold words from the texts.</p>
+        <p class="instruction" style="margin-top:6px;">3b — Drag each word to the correct definition.</p>
+
+        <!-- WORD BANK -->
+        <div class="card" style="margin:10px 0;border-top:4px solid var(--gold);">
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:10px;">Word Bank — drag from here</p>
+          <div id="vocab-bank" class="vocab-chip-grid">
+            <div class="vocab-chip draggable" draggable="true" data-word="bold">bold</div>
+            <div class="vocab-chip draggable" draggable="true" data-word="determined">determined</div>
+            <div class="vocab-chip draggable" draggable="true" data-word="arrogant">arrogant</div>
+            <div class="vocab-chip draggable" draggable="true" data-word="thoughtful">thoughtful</div>
+            <div class="vocab-chip draggable" draggable="true" data-word="remarkable">remarkable</div>
+            <div class="vocab-chip draggable" draggable="true" data-word="competitive">competitive</div>
+            <div class="vocab-chip draggable" draggable="true" data-word="stubborn">stubborn</div>
+            <div class="vocab-chip draggable" draggable="true" data-word="inexperienced">inexperienced</div>
+            <div class="vocab-chip draggable" draggable="true" data-word="confident">confident</div>
+            <div class="vocab-chip draggable" draggable="true" data-word="tough">tough</div>
+            <div class="vocab-chip draggable" draggable="true" data-word="reasonable">reasonable</div>
+            <div class="vocab-chip draggable" draggable="true" data-word="unpredictable">unpredictable</div>
+          </div>
+        </div>
+
+        <!-- DEFINITIONS with drop zones -->
+        <div class="card teal-top" style="padding:14px 18px;">
+          <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Someone who… → drop the word here</p>
+          <div id="vocab-definitions">
+            <div class="def-row" data-answer="competitive">
+              <span class="m-num">1</span>
+              <span class="def-text">always tries very hard to win</span>
+              <div class="drop-zone" data-def="1"></div>
+            </div>
+            <div class="def-row" data-answer="stubborn">
+              <span class="m-num">2</span>
+              <span class="def-text">refuses to change his/her mind</span>
+              <div class="drop-zone" data-def="2"></div>
+            </div>
+            <div class="def-row" data-answer="confident">
+              <span class="m-num">3</span>
+              <span class="def-text">believes in his/her own abilities</span>
+              <div class="drop-zone" data-def="3"></div>
+            </div>
+            <div class="def-row" data-answer="unpredictable">
+              <span class="m-num">4</span>
+              <span class="def-text">does things you don't expect</span>
+              <div class="drop-zone" data-def="4"></div>
+            </div>
+            <div class="def-row" data-answer="inexperienced">
+              <span class="m-num">5</span>
+              <span class="def-text">has little knowledge or experience</span>
+              <div class="drop-zone" data-def="5"></div>
+            </div>
+            <div class="def-row" data-answer="arrogant">
+              <span class="m-num">6</span>
+              <span class="def-text">behaves unpleasantly because they feel superior to others</span>
+              <div class="drop-zone" data-def="6"></div>
+            </div>
+            <div class="def-row" data-answer="reasonable">
+              <span class="m-num">7</span>
+              <span class="def-text">is fair and sensible</span>
+              <div class="drop-zone" data-def="7"></div>
+            </div>
+            <div class="def-row" data-answer="determined">
+              <span class="m-num">8</span>
+              <span class="def-text">doesn't let others stop them achieving their goal</span>
+              <div class="drop-zone" data-def="8"></div>
+            </div>
+            <div class="def-row" data-answer="tough">
+              <span class="m-num">9</span>
+              <span class="def-text">is strong and not afraid to fight</span>
+              <div class="drop-zone" data-def="9"></div>
+            </div>
+            <div class="def-row" data-answer="thoughtful">
+              <span class="m-num">10</span>
+              <span class="def-text">is quiet and serious</span>
+              <div class="drop-zone" data-def="10"></div>
+            </div>
+            <div class="def-row" data-answer="bold">
+              <span class="m-num">11</span>
+              <span class="def-text">is not afraid of taking risks</span>
+              <div class="drop-zone" data-def="11"></div>
+            </div>
+            <div class="def-row" data-answer="remarkable">
+              <span class="m-num">12</span>
+              <span class="def-text">surprises others in a very positive way</span>
+              <div class="drop-zone" data-def="12"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+          <button class="nav-btn" style="font-size:13px;padding:8px 18px;" onclick="checkVocabAnswers()">✓ Check Answers</button>
+          <button class="nav-btn prev" style="font-size:13px;padding:8px 18px;" onclick="resetVocab()">↺ Reset</button>
+        </div>
+        <div id="vocab-score" style="display:none;margin-top:10px;font-size:14px;font-weight:700;padding:10px 16px;border-radius:8px;background:#f0f8fc;color:var(--teal-dark);border:1px solid var(--teal-light);"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SLIDE 3 — LISTENING (Ex 4) -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-3">
+    <div class="slide-inner">
+      <div class="section-tag listening">Listening</div>
+      <div class="ex-badge"><span class="num">4</span> Listen &amp; Rephrase</div>
+      <p class="instruction">🎧 3.4 — Listen and rephrase the descriptions of people with the adjectives from Exercise 3.</p>
+
+      <div class="listen-card">
+        <div class="listen-icon">🎧</div>
+        <div>
+          <p>You will hear sentences describing people. After each one, rephrase using a word from the box below.</p>
+        </div>
+      </div>
+
+      <!-- WORD BANK — visible for reference -->
+      <div class="card" style="margin-bottom:16px;border-top:4px solid var(--gold);">
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:10px;">Use these words ↓</p>
+        <div class="vocab-chip-grid">
+          <div class="vocab-chip"><span>competitive</span></div>
+          <div class="vocab-chip"><span>stubborn</span></div>
+          <div class="vocab-chip"><span>confident</span></div>
+          <div class="vocab-chip"><span>unpredictable</span></div>
+          <div class="vocab-chip"><span>inexperienced</span></div>
+          <div class="vocab-chip"><span>arrogant</span></div>
+          <div class="vocab-chip"><span>reasonable</span></div>
+          <div class="vocab-chip"><span>determined</span></div>
+          <div class="vocab-chip"><span>tough</span></div>
+          <div class="vocab-chip"><span>thoughtful</span></div>
+          <div class="vocab-chip"><span>bold</span></div>
+          <div class="vocab-chip"><span>remarkable</span></div>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <div class="ex-label">Example</div>
+        <p><strong>Speaker:</strong> <em>"She's usually very fair and sensible."</em></p>
+        <p><strong>You:</strong> <em>"She sounds quite <strong>reasonable</strong>."</em></p>
+      </div>
+
+      <div class="card" style="margin-top:18px;">
+        <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">Write your rephrased sentences here:</p>
+        <ul class="q-list">
+          <li><span class="q-num">1</span><span style="flex:1;border-bottom:1px dotted var(--border);min-height:28px;">&nbsp;</span></li>
+          <li><span class="q-num">2</span><span style="flex:1;border-bottom:1px dotted var(--border);min-height:28px;">&nbsp;</span></li>
+          <li><span class="q-num">3</span><span style="flex:1;border-bottom:1px dotted var(--border);min-height:28px;">&nbsp;</span></li>
+          <li><span class="q-num">4</span><span style="flex:1;border-bottom:1px dotted var(--border);min-height:28px;">&nbsp;</span></li>
+          <li><span class="q-num">5</span><span style="flex:1;border-bottom:1px dotted var(--border);min-height:28px;">&nbsp;</span></li>
+          <li><span class="q-num">6</span><span style="flex:1;border-bottom:1px dotted var(--border);min-height:28px;">&nbsp;</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SLIDE 4 — GRAMMAR: Ex 5a -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-4">
+    <div class="slide-inner">
+      <div class="section-tag grammar">Grammar</div>
+      <div class="ex-badge"><span class="num">5a</span> Comparatives &amp; Superlatives</div>
+      <p class="instruction">Read some opinions about the people and teams in the reading texts.</p>
+      <p class="sub-instruction">Who are they talking about? Spassky, Fischer, the Soviet team or the American team?</p>
+
+      <div style="margin-bottom:16px;">
+        <div class="quote-card"><span class="q-label">a</span>'I think he was as good as the other guy, but not as bold or arrogant.'</div>
+        <div class="quote-card"><span class="q-label">b</span>'He played slightly more aggressively.'</div>
+        <div class="quote-card"><span class="q-label">c</span>'The longer the match went on, the more remarkably they played.'</div>
+        <div class="quote-card"><span class="q-label">d</span>'I think they were just a bit less experienced.'</div>
+        <div class="quote-card"><span class="q-label">e</span>'He sounds like he was much more reasonable.'</div>
+        <div class="quote-card"><span class="q-label">f</span>'To my mind, he was less of a gentleman.'</div>
+        <div class="quote-card"><span class="q-label">g</span>'They were by far the youngest team ever to represent their country.'</div>
+      </div>
+
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show Answers</button>
+      <div class="answer-key">
+        <strong>a</strong> Spassky &nbsp;·&nbsp;
+        <strong>b</strong> Fischer &nbsp;·&nbsp;
+        <strong>c</strong> the Soviet team &nbsp;·&nbsp;
+        <strong>d</strong> the American team &nbsp;·&nbsp;
+        <strong>e</strong> Spassky &nbsp;·&nbsp;
+        <strong>f</strong> Fischer &nbsp;·&nbsp;
+        <strong>g</strong> the American team
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SLIDE 5 — GUIDED DISCOVERY -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-5">
+    <div class="slide-inner">
+      <div class="section-tag grammar">Grammar — Guided Discovery</div>
+      <div class="ex-badge"><span class="num">5b</span> Notice &amp; Complete</div>
+      <p class="instruction">Look at the sentences from Exercise 5a. What grammar pattern does each group use?</p>
+      <p class="sub-instruction">Work with a partner. Read the examples → complete the rule → reveal to check.</p>
+
+      <!-- GROUP 1 -->
+      <div class="card teal-top" style="margin-bottom:12px;">
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Group A — notice the highlighted words</p>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+          <div style="background:#f0f8fc;border-radius:6px;padding:10px 14px;font-size:15px;font-style:italic;">'He played <strong style="color:var(--teal);">slightly more</strong> aggressively.'</div>
+          <div style="background:#f0f8fc;border-radius:6px;padding:10px 14px;font-size:15px;font-style:italic;">'I think they were just <strong style="color:var(--teal);">a bit less</strong> experienced.'</div>
+          <div style="background:#f0f8fc;border-radius:6px;padding:10px 14px;font-size:15px;font-style:italic;">'He was <strong style="color:var(--accent);">much more</strong> reasonable.'</div>
+          <div style="background:#f0f8fc;border-radius:6px;padding:10px 14px;font-size:15px;font-style:italic;">'They were <strong style="color:var(--accent);">by far</strong> the youngest team.'</div>
+        </div>
+        <div style="background:#fff8e6;border-radius:8px;padding:12px 16px;font-size:14px;">
+          📝 <strong>Complete the rule:</strong> To show a <em>small</em> difference use <strong style="color:var(--teal);">______</strong> / <strong style="color:var(--teal);">______</strong>. To show a <em>big</em> difference use <strong style="color:var(--accent);">______</strong> / <strong style="color:var(--accent);">______</strong>.
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer(this)" style="margin-top:10px;">Reveal</button>
+        <div class="answer-key">Small difference: <strong>slightly / a bit</strong> &nbsp;·&nbsp; Big difference: <strong>much / by far</strong></div>
+      </div>
+
+      <!-- GROUP 2 -->
+      <div class="card" style="margin-bottom:12px;border-top:4px solid var(--gold);">
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Group B</p>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+          <div style="background:#fffbf0;border-radius:6px;padding:10px 14px;font-size:15px;font-style:italic;">'I think he was <strong style="color:var(--gold);">as</strong> good <strong style="color:var(--gold);">as</strong> the other guy, but not <strong style="color:var(--gold);">as</strong> bold or arrogant.'</div>
+        </div>
+        <div style="background:#fff8e6;border-radius:8px;padding:12px 16px;font-size:14px;">
+          📝 <strong>Complete the rule:</strong> To say two things are similar (or NOT similar), use: <strong style="color:var(--gold);">___ + adjective + ___</strong>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer(this)" style="margin-top:10px;">Reveal</button>
+        <div class="answer-key"><strong>as … as</strong> &nbsp;·&nbsp; I guess he wasn't <em>as traditional as</em> his rival.</div>
+      </div>
+
+      <!-- GROUP 3 -->
+      <div class="card" style="margin-bottom:12px;border-top:4px solid #7b4ea0;">
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Group C</p>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+          <div style="background:#f9f4ff;border-radius:6px;padding:10px 14px;font-size:15px;font-style:italic;">'To my mind, he was <strong style="color:#7b4ea0;">less of a</strong> gentleman.'</div>
+        </div>
+        <div style="background:#f9f4ff;border-radius:8px;padding:12px 16px;font-size:14px;border-left:3px solid #7b4ea0;">
+          📝 <strong>Complete the rule:</strong> Sometimes we compare using <strong style="color:#7b4ea0;">more/less of a + ______</strong>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer(this)" style="margin-top:10px;">Reveal</button>
+        <div class="answer-key"><strong>more/less of a + noun</strong> — e.g. "She's more of a team player."</div>
+      </div>
+
+      <!-- GROUP 4 -->
+      <div class="card" style="border-top:4px solid var(--accent);">
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Group D — the double comparative</p>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+          <div style="background:#fef5f5;border-radius:6px;padding:10px 14px;font-size:15px;font-style:italic;"><strong style="color:var(--accent);">The longer</strong> the championship went on, <strong style="color:var(--accent);">the more confident</strong> Fischer became.</div>
+          <div style="background:#fef5f5;border-radius:6px;padding:10px 14px;font-size:15px;font-style:italic;"><strong style="color:var(--accent);">The longer</strong> the match went on, <strong style="color:var(--accent);">the more remarkably</strong> they played.</div>
+        </div>
+        <div style="background:#fef5f5;border-radius:8px;padding:12px 16px;font-size:14px;border-left:3px solid var(--accent);">
+          📝 <strong>Complete the rule:</strong> To say one thing causes another to increase, use: <strong style="color:var(--accent);">The + ______ , the + ______</strong>
+        </div>
+        <button class="answer-toggle" onclick="toggleAnswer(this)" style="margin-top:10px;">Reveal</button>
+        <div class="answer-key"><strong>The + comparative , the + comparative</strong> — e.g. "The harder you work, the luckier you get."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SLIDE 6 — GRAMMAR PRACTICE -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-6">
+    <div class="slide-inner">
+      <div class="section-tag grammar">Grammar Practice</div>
+      <div class="ex-badge"><span class="num">6</span> Practice — Comparatives &amp; Superlatives</div>
+
+      <!-- PART A: Multiple choice -->
+      <div class="card teal-top" style="margin-bottom:14px;">
+        <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:14px;">Part A — Choose the correct option.</p>
+        <ul class="q-list">
+          <li>
+            <span class="q-num">1</span>
+            <div style="flex:1;">
+              <p style="font-size:14px;margin-bottom:8px;">The American basketball team was _____ youngest team ever to represent their country.</p>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc1" value="a"> <span><strong>a)</strong> much the</span></label>
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc1" value="b"> <span><strong>b)</strong> by far the</span></label>
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc1" value="c"> <span><strong>c)</strong> a lot the</span></label>
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="q-num">2</span>
+            <div style="flex:1;">
+              <p style="font-size:14px;margin-bottom:8px;">Fischer played _____ more aggressively — the two were almost equal in style.</p>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc2" value="a"> <span><strong>a)</strong> so much</span></label>
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc2" value="b"> <span><strong>b)</strong> far</span></label>
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc2" value="c"> <span><strong>c)</strong> slightly</span></label>
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="q-num">3</span>
+            <div style="flex:1;">
+              <p style="font-size:14px;margin-bottom:8px;">The _____ the championship went on, the more confident Fischer became.</p>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc3" value="a"> <span><strong>a)</strong> long</span></label>
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc3" value="b"> <span><strong>b)</strong> longer</span></label>
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc3" value="c"> <span><strong>c)</strong> longest</span></label>
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="q-num">4</span>
+            <div style="flex:1;">
+              <p style="font-size:14px;margin-bottom:8px;">Fischer wasn't _____ Spassky when it came to sportsmanship.</p>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc4" value="a"> <span><strong>a)</strong> as reasonable than</span></label>
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc4" value="b"> <span><strong>b)</strong> as reasonable as</span></label>
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc4" value="c"> <span><strong>c)</strong> so reasonable as</span></label>
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="q-num">5</span>
+            <div style="flex:1;">
+              <p style="font-size:14px;margin-bottom:8px;">To my mind, Fischer was less of _____ gentleman than Spassky.</p>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc5" value="a"> <span><strong>a)</strong> a</span></label>
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc5" value="b"> <span><strong>b)</strong> the</span></label>
+                <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="radio" name="mc5" value="c"> <span><strong>c)</strong> —</span></label>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <button class="answer-toggle" onclick="toggleAnswer(this)" style="margin-top:14px;">Show Answers</button>
+        <div class="answer-key">
+          <strong>1</strong> b) by far the &nbsp;·&nbsp; <strong>2</strong> c) slightly &nbsp;·&nbsp; <strong>3</strong> b) longer &nbsp;·&nbsp; <strong>4</strong> b) as reasonable as &nbsp;·&nbsp; <strong>5</strong> a) a
+        </div>
+      </div>
+
+      <!-- PART B: Gap fill — no hints -->
+      <div class="card" style="margin-bottom:14px;border-top:4px solid var(--gold);">
+        <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;">Part B — Complete the sentences. No hints!</p>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:14px;font-style:italic;">Use one or more words in each gap.</p>
+        <ul class="q-list">
+          <li>
+            <span class="q-num">1</span>
+            <span style="flex:1;">Spassky was nowhere near <span class="gap" style="min-width:100px;"></span> arrogant <span class="gap" style="min-width:60px;"></span> Fischer.</span>
+          </li>
+          <li>
+            <span class="q-num">2</span>
+            <span style="flex:1;">Kerrigan was <span class="gap" style="min-width:120px;"></span> popular than Harding — there was a huge difference.</span>
+          </li>
+          <li>
+            <span class="q-num">3</span>
+            <span style="flex:1;"><span class="gap" style="min-width:90px;"></span> harder they trained, <span class="gap" style="min-width:90px;"></span> better their chances became.</span>
+          </li>
+          <li>
+            <span class="q-num">4</span>
+            <span style="flex:1;">Fischer was <span class="gap" style="min-width:120px;"></span> a showman than a diplomat — his behaviour shocked everyone.</span>
+          </li>
+          <li>
+            <span class="q-num">5</span>
+            <span style="flex:1;">The Soviet team was <span class="gap" style="min-width:110px;"></span> experienced <span class="gap" style="min-width:60px;"></span> the Americans — it wasn't even close.</span>
+          </li>
+        </ul>
+        <button class="answer-toggle" onclick="toggleAnswer(this)" style="margin-top:14px;">Show Answers</button>
+        <div class="answer-key">
+          <p><strong>1</strong> nowhere near <strong>as</strong> arrogant <strong>as</strong></p>
+          <p><strong>2</strong> <strong>so much / far</strong> more popular (big difference)</p>
+          <p><strong>3</strong> <strong>The</strong> harder … <strong>the</strong> better</p>
+          <p><strong>4</strong> <strong>more of</strong> a showman</p>
+          <p><strong>5</strong> <strong>far more</strong> experienced <strong>than</strong></p>
+        </div>
+      </div>
+
+      <!-- PART C: Personal freer practice -->
+      <div class="card" style="border-top:4px solid var(--accent);">
+        <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Part C — Make it personal</p>
+        <p style="font-size:14px;margin-bottom:14px;">Answer these questions about yourself. Discuss with your partner — do you have anything in common?</p>
+        <ul class="q-list">
+          <li>
+            <span class="q-num">1</span>
+            <div style="flex:1;">
+              <p style="font-size:14px;font-weight:600;margin-bottom:4px;">Who is more competitive in your family — you or someone else? How much more?</p>
+              <p style="font-size:12px;color:var(--muted);font-style:italic;">Use: <em>much more / a bit more / nowhere near as … as</em></p>
+            </div>
+          </li>
+          <li>
+            <span class="q-num">2</span>
+            <div style="flex:1;">
+              <p style="font-size:14px;font-weight:600;margin-bottom:4px;">Think of your best friend. Are you more of a risk-taker or more of a careful person compared to them?</p>
+              <p style="font-size:12px;color:var(--muted);font-style:italic;">Use: <em>more of a … / less of a …</em></p>
+            </div>
+          </li>
+          <li>
+            <span class="q-num">3</span>
+            <div style="flex:1;">
+              <p style="font-size:14px;font-weight:600;margin-bottom:4px;">Complete this sentence so it's true for you: "The older I get, the more/less …"</p>
+              <p style="font-size:12px;color:var(--muted);font-style:italic;">Use: <em>the … the …</em></p>
+            </div>
+          </li>
+          <li>
+            <span class="q-num">4</span>
+            <div style="flex:1;">
+              <p style="font-size:14px;font-weight:600;margin-bottom:4px;">Who is by far the most determined person you know? What makes them that way?</p>
+              <p style="font-size:12px;color:var(--muted);font-style:italic;">Use: <em>by far the most …</em></p>
+            </div>
+          </li>
+        </ul>
+        <div class="note-box" style="margin-top:12px;"><strong>Follow-up:</strong> Ask two or three students to share their answers with the class. Note any interesting comparisons on the board.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SLIDE 7 — LISTENING Ex 6 -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-7">
+    <div class="slide-inner">
+      <div class="section-tag listening">Listening</div>
+      <div class="ex-badge"><span class="num">6</span> Emphasising Differences</div>
+      <p class="instruction">6a — 🎧 3.5 Listen and notice how we emphasise big differences and small differences.</p>
+
+      <div class="two-col" style="margin-bottom:20px;">
+        <div>
+          <div class="comp-label" style="color:var(--gold);">Small difference</div>
+          <div class="comp-item small-diff">
+            <p><strong>1a</strong> It's not quite as good.</p>
+          </div>
+          <div class="comp-item small-diff">
+            <p><strong>2a</strong> She's a bit more competitive than me.</p>
+          </div>
+          <div class="comp-item small-diff">
+            <p><strong>3a</strong> They're not quite as confident as last time.</p>
+          </div>
+        </div>
+        <div>
+          <div class="comp-label" style="color:var(--accent);">Big difference</div>
+          <div class="comp-item big-diff">
+            <p><strong>1b</strong> It's nowhere near as good.</p>
+          </div>
+          <div class="comp-item big-diff">
+            <p><strong>2b</strong> She's so much more competitive than me.</p>
+          </div>
+          <div class="comp-item big-diff">
+            <p><strong>3b</strong> They're not nearly as confident as last time.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card gold-top">
+        <p class="instruction" style="font-size:15px;margin-bottom:8px;">6b — Which word in each sentence is emphasised when the speaker describes a big difference?</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+          <div style="background:var(--teal-light);padding:6px 14px;border-radius:6px;font-size:14px;"><strong>nowhere near</strong></div>
+          <div style="background:var(--teal-light);padding:6px 14px;border-radius:6px;font-size:14px;"><strong>so much</strong></div>
+          <div style="background:var(--teal-light);padding:6px 14px;border-radius:6px;font-size:14px;"><strong>not nearly</strong></div>
+        </div>
+      </div>
+
+      <div class="note-box" style="margin-top:14px;"><strong>6c — Listen again and repeat.</strong> Focus on where the stress falls to convey degree of difference.</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SLIDE 8 — GRAMMAR PRACTICE Ex 7 -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-8">
+    <div class="slide-inner">
+      <div class="section-tag grammar">Grammar</div>
+      <div class="ex-badge"><span class="num">7</span> Complete the Text</div>
+      <p class="instruction">Complete the text with the comparative or superlative form of the words in brackets.</p>
+
+      <div class="two-col" style="align-items:start;">
+        <div class="img-placeholder" style="min-height:160px;">
+          <div class="photo-icon">⛸️</div>
+          <div class="photo-caption">Tonya Harding &amp; Nancy Kerrigan</div>
+          <div class="photo-sub">1994 US Figure Skating Championships</div>
+        </div>
+        <div class="gap-text">
+          <p>In the early 1990s, Tonya Harding and Nancy Kerrigan were competing to be <span class="gap">¹</span><span class="gap-hint">(good)</span> American figure skater. Neither skater was the clear favourite, but each was <span class="gap">²</span><span class="gap-hint">(as/competitive)</span> the other. Harding's life had been difficult. It had been <span class="gap">³</span><span class="gap-hint">(much/hard)</span> and <span class="gap">⁴</span><span class="gap-hint">(far/stable)</span> than Kerrigan's. Harding was <span class="gap">⁵</span><span class="gap-hint">(far/tough)</span> of the two and the <span class="gap">⁶&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="gap-hint">(old/get/tough/become)</span>. By contrast, Kerrigan was <span class="gap">⁷</span><span class="gap-hint">(bit/thoughtful)</span> and <span class="gap">⁸</span><span class="gap-hint">(family person)</span>. She came from a <span class="gap">⁹</span><span class="gap-hint">(far/stable)</span> background and was considered to be <span class="gap">¹⁰</span><span class="gap-hint">(elegant)</span>, and consequently she was <span class="gap">¹¹</span><span class="gap-hint">(lot/popular)</span> than Harding. The day before the 1994 US championships, a man attacked Kerrigan, she was unable to compete and Harding won the championships. But over time people became suspicious of Harding. She was later stripped of the title, although she said she had 'no prior knowledge' of the attack.</p>
+        </div>
+      </div>
+
+      <button class="answer-toggle" onclick="toggleAnswer(this)">Show Answer Key</button>
+      <div class="answer-key">
+        <strong>1</strong> the best &nbsp;·&nbsp;
+        <strong>2</strong> as competitive as &nbsp;·&nbsp;
+        <strong>3</strong> much harder &nbsp;·&nbsp;
+        <strong>4</strong> far less stable &nbsp;·&nbsp;
+        <strong>5</strong> far tougher &nbsp;·&nbsp;
+        <strong>6</strong> the older she got, the tougher she became &nbsp;·&nbsp;
+        <strong>7</strong> a bit more thoughtful &nbsp;·&nbsp;
+        <strong>8</strong> more of a family person &nbsp;·&nbsp;
+        <strong>9</strong> far more stable &nbsp;·&nbsp;
+        <strong>10</strong> more elegant &nbsp;·&nbsp;
+        <strong>11</strong> a lot more popular
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SLIDE 9 — GAME: Rivals Bluff -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-9">
+    <div class="slide-inner">
+      <div class="section-tag speaking">🎮 Game</div>
+      <div class="ex-badge"><span class="num">8</span> Rivals Bluff</div>
+      <p class="instruction">Draw a card. Describe the person using comparatives — don't say the name! Can your partner guess who it is?</p>
+      <p class="sub-instruction">Use at least <strong>3 comparative or superlative structures</strong> per description. Click a card to flip it.</p>
+
+      <!-- GAME CARDS -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;" id="game-cards">
+        <div class="game-card" onclick="this.classList.toggle('flipped')">
+          <span class="card-front">🎾</span>
+          <div class="card-back">Serena Williams<br><span style="font-weight:400;font-size:12px;opacity:0.85;">tennis champion</span></div>
+        </div>
+        <div class="game-card" onclick="this.classList.toggle('flipped')">
+          <span class="card-front">♟️</span>
+          <div class="card-back">Bobby Fischer<br><span style="font-weight:400;font-size:12px;opacity:0.85;">chess grandmaster</span></div>
+        </div>
+        <div class="game-card" onclick="this.classList.toggle('flipped')">
+          <span class="card-front">💻</span>
+          <div class="card-back">Bill Gates<br><span style="font-weight:400;font-size:12px;opacity:0.85;">tech mogul</span></div>
+        </div>
+        <div class="game-card" onclick="this.classList.toggle('flipped')">
+          <span class="card-front">🏀</span>
+          <div class="card-back">1972 US Basketball Team<br><span style="font-weight:400;font-size:12px;opacity:0.85;">olympic underdogs</span></div>
+        </div>
+        <div class="game-card" onclick="this.classList.toggle('flipped')">
+          <span class="card-front">⚽</span>
+          <div class="card-back">Lionel Messi<br><span style="font-weight:400;font-size:12px;opacity:0.85;">vs Cristiano Ronaldo</span></div>
+        </div>
+        <div class="game-card" onclick="this.classList.toggle('flipped')">
+          <span class="card-front">🎵</span>
+          <div class="card-back">Taylor Swift<br><span style="font-weight:400;font-size:12px;opacity:0.85;">pop superstar</span></div>
+        </div>
+        <div class="game-card" onclick="this.classList.toggle('flipped')">
+          <span class="card-front">🍎</span>
+          <div class="card-back">Steve Jobs<br><span style="font-weight:400;font-size:12px;opacity:0.85;">Apple founder</span></div>
+        </div>
+        <div class="game-card" onclick="this.classList.toggle('flipped')">
+          <span class="card-front">🥊</span>
+          <div class="card-back">Muhammad Ali<br><span style="font-weight:400;font-size:12px;opacity:0.85;">boxing legend</span></div>
+        </div>
+      </div>
+
+      <!-- HOW TO PLAY -->
+      <div class="card gold-top">
+        <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">How to play</p>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:14px;align-items:start;">
+          <span style="background:var(--teal);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">1</span>
+          <span>Student A: click a card to reveal your person (keep it secret from your partner).</span>
+          <span style="background:var(--teal);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">2</span>
+          <span>Describe them using comparatives &amp; superlatives — no names, no famous facts directly.</span>
+          <span style="background:var(--teal);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">3</span>
+          <span>Student B: guess! If you're wrong, Student A gives one more comparative clue.</span>
+          <span style="background:var(--gold);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">★</span>
+          <span><strong>Bonus point</strong> if you can correctly identify the structure your partner used (e.g. "you used <em>the more … the more</em>!").</span>
+        </div>
+      </div>
+
+      <div class="note-box" style="margin-top:12px;"><strong>Useful language:</strong> "She's by far the most … in …" / "He was so much more … than …" / "The longer she played, the more …"</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SLIDE 10 — SPEAKING: WHO'S GREATER? DEBATE -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-10">
+    <div class="slide-inner">
+      <div class="section-tag speaking">Speaking — Debate</div>
+      <div class="ex-badge"><span class="num">9 &amp; 10</span> Who's Greater?</div>
+      <p class="instruction">Choose a famous rivalry. Each student defends one side. Convince the class!</p>
+
+      <!-- STEP 1 -->
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:10px 16px;align-items:start;margin-bottom:18px;">
+
+        <div style="background:var(--teal);color:white;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0;margin-top:2px;">1</div>
+        <div class="card" style="margin:0;">
+          <p style="font-weight:700;font-size:15px;margin-bottom:8px;">Pick your rivalry</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+            <span style="background:var(--teal-light);color:var(--teal-dark);padding:5px 12px;border-radius:20px;font-size:13px;font-weight:600;">Messi vs Ronaldo</span>
+            <span style="background:var(--teal-light);color:var(--teal-dark);padding:5px 12px;border-radius:20px;font-size:13px;font-weight:600;">Fischer vs Spassky</span>
+            <span style="background:var(--teal-light);color:var(--teal-dark);padding:5px 12px;border-radius:20px;font-size:13px;font-weight:600;">Apple vs Microsoft</span>
+            <span style="background:var(--teal-light);color:var(--teal-dark);padding:5px 12px;border-radius:20px;font-size:13px;font-weight:600;">USA vs USSR basketball</span>
+            <span style="background:#f0eaf8;color:#7b4ea0;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:600;">Your own choice ✏️</span>
+          </div>
+          <p style="font-size:13px;color:var(--muted);">Student A defends Rival 1 · Student B defends Rival 2</p>
+        </div>
+
+        <div style="background:var(--teal);color:white;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0;margin-top:2px;">2</div>
+        <div class="card" style="margin:0;">
+          <p style="font-weight:700;font-size:15px;margin-bottom:10px;">Prepare your argument (2 min)</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:14px;">
+            <div style="background:#f0f8fc;border-radius:8px;padding:12px;">
+              <p style="font-weight:700;color:var(--teal);margin-bottom:6px;">Think about…</p>
+              <p>🏆 Achievements</p>
+              <p>💪 Character &amp; personality</p>
+              <p>📖 Background / story</p>
+              <p>🌍 Legacy &amp; impact</p>
+            </div>
+            <div style="background:#fffbf0;border-radius:8px;padding:12px;">
+              <p style="font-weight:700;color:var(--gold);margin-bottom:6px;">Use structures like…</p>
+              <p>… was by far the greatest …</p>
+              <p>… was so much more … than …</p>
+              <p>The more … , the more …</p>
+              <p>… was more of a … than …</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--teal);color:white;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0;margin-top:2px;">3</div>
+        <div class="speak-card" style="margin:0;">
+          <h4>Debate! (3–4 min per pair)</h4>
+          <p>Take turns presenting your argument. After both students speak, the <strong>class votes</strong> — who was more convincing?</p>
+          <p style="margin-top:8px;font-size:13px;color:var(--muted);">The class should listen for correct use of comparatives and give feedback after the vote.</p>
+        </div>
+      </div>
+
+      <div class="note-box"><strong>Teacher tip:</strong> Write 2–3 incorrect comparative sentences on the board mid-activity for error correction at the end. Ask: "Which pair used the widest variety of structures?"</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SLIDE 11 — SPEAKING: Ex 11 -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="slide" id="slide-11">
+    <div class="slide-inner">
+      <div class="section-tag speaking">Speaking — Speak</div>
+      <div class="ex-badge"><span class="num">11</span> Final Speaking Task</div>
+      <p class="instruction">Work in pairs. Take turns telling each other about the rivals you have chosen. What is your opinion about them?</p>
+
+      <div class="speak-card" style="margin-bottom:16px;">
+        <div class="speak-icon">🗣️</div>
+        <h4>Your task</h4>
+        <p>Present your rivals to your partner. Include:</p>
+        <ul style="margin-top:10px;font-size:14px;line-height:2;">
+          <li>📌 <strong>Who</strong> they are and what they are famous for</li>
+          <li>📌 <strong>What makes them rivals</strong> — character, background, style</li>
+          <li>📌 <strong>Your opinion</strong> — who is/was better and why</li>
+          <li>📌 <strong>Comparisons</strong> — use at least 4 comparative/superlative structures</li>
+        </ul>
+      </div>
+
+      <div class="card gold-top">
+        <p style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Language to use</p>
+        <div class="example-box" style="margin-top:0;">
+          <p>"In my opinion, … was by far the more talented of the two…"</p>
+          <p>"Although … was slightly more experienced, … was nowhere near as…"</p>
+          <p>"The longer their rivalry went on, the more…"</p>
+          <p>"I think … was less of a … but much more of a …"</p>
+        </div>
+      </div>
+
+      <div class="note-box" style="margin-top:16px;">
+        <strong>Wrap-up:</strong> Take class feedback — who chose the most interesting rivals? Vote on the most memorable rivalry presented. Review any recurring errors with comparatives on the board.
+      </div>
+    </div>
+  </div>
+
+</div><!-- /slides-container -->
+
+<!-- BOTTOM NAV -->
+<div id="bottom-nav">
+  <button class="nav-btn prev" id="btn-prev" onclick="changeSlide(-1)" disabled>← Previous</button>
+  <div class="slide-dots" id="dot-container"></div>
+  <button class="nav-btn" id="btn-next" onclick="changeSlide(1)">Next →</button>
+</div>
+
+<script>
+  const TOTAL = 11;
+  let current = 1;
+
+  const titles = [
+    "Lead-in: Photos",
+    "Reading + Vocabulary",
+    "Listening: Rephrase",
+    "Grammar: Read Opinions (5a)",
+    "Grammar: Guided Discovery (5b)",
+    "Grammar Practice — controlled",
+    "Listening: Emphasis (6)",
+    "Gap-fill: Harding & Kerrigan (7)",
+    "Game: Rivals Bluff (8)",
+    "Speaking: Who's Greater? (9–10)",
+    "Final Speaking (11)"
+  ];
+
+  function showTab(name) {
+    ['chess','bball','vocab'].forEach(t => {
+      document.getElementById('panel-' + t).style.display = t === name ? '' : 'none';
+      document.getElementById('tab-' + t).classList.toggle('active', t === name);
+    });
+  }
+
+  // Build dots
+  const dotContainer = document.getElementById('dot-container');
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 1 ? ' active' : '');
+    d.title = titles[i-1];
+    d.onclick = () => goTo(i);
+    dotContainer.appendChild(d);
+  }
+
+  function goTo(n) {
+    document.getElementById('slide-' + current).classList.remove('active');
+    document.querySelectorAll('.dot')[current-1].classList.remove('active');
+    current = n;
+    document.getElementById('slide-' + current).classList.add('active');
+    document.querySelectorAll('.dot')[current-1].classList.add('active');
+    document.getElementById('btn-prev').disabled = current === 1;
+    document.getElementById('btn-next').disabled = current === TOTAL;
+    document.getElementById('slide-counter').textContent = current + ' / ' + TOTAL;
+    document.getElementById('progress-bar').style.width = Math.round((current / TOTAL) * 100) + '%';
+    document.getElementById('btn-next').textContent = current === TOTAL ? '✓ End' : 'Next →';
+    // Scroll slide to top
+    document.getElementById('slide-' + current).scrollTop = 0;
+  }
+
+  function changeSlide(dir) {
+    const next = current + dir;
+    if (next >= 1 && next <= TOTAL) goTo(next);
+  }
+
+  function toggleAnswer(btn) {
+    const key = btn.nextElementSibling;
+    key.classList.toggle('visible');
+    btn.textContent = key.classList.contains('visible') ? 'Hide Answer Key' : 'Show Answer Key';
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSlide(-1);
+  });
+
+  /* ── DRAG & DROP VOCABULARY ── */
+  let draggedWord = null;
+  let draggedFrom = null; // 'bank' or a drop-zone element
+
+  function initVocabDrag() {
+    // Set up draggable chips
+    document.querySelectorAll('.draggable').forEach(chip => {
+      chip.addEventListener('dragstart', e => {
+        draggedWord = chip.dataset.word;
+        draggedFrom = chip.parentElement.id === 'vocab-bank' ? 'bank' : chip.parentElement;
+        chip.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+    });
+
+    // Set up drop zones
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.classList.add('drag-over');
+      });
+      zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        if (!draggedWord) return;
+
+        // If zone already has a word, send it back to the bank
+        if (zone.dataset.current) {
+          returnToBank(zone.dataset.current);
+        }
+        // If dragged from another zone, clear that zone
+        if (draggedFrom && draggedFrom !== 'bank' && draggedFrom.nodeType === 1) {
+          clearZone(draggedFrom);
+        }
+        // Place word in this zone
+        placeWord(zone, draggedWord);
+        draggedWord = null;
+        draggedFrom = null;
+      });
+    });
+
+    // Allow dropping BACK to bank
+    const bank = document.getElementById('vocab-bank');
+    if (bank) {
+      bank.addEventListener('dragover', e => { e.preventDefault(); bank.style.outline = '2px dashed var(--teal)'; });
+      bank.addEventListener('dragleave', () => bank.style.outline = '');
+      bank.addEventListener('drop', e => {
+        e.preventDefault();
+        bank.style.outline = '';
+        if (!draggedWord) return;
+        if (draggedFrom && draggedFrom !== 'bank' && draggedFrom.nodeType === 1) {
+          clearZone(draggedFrom);
+        }
+        draggedWord = null;
+        draggedFrom = null;
+      });
+    }
+  }
+
+  function placeWord(zone, word) {
+    zone.dataset.current = word;
+    zone.classList.add('filled');
+    zone.classList.remove('correct', 'wrong');
+    zone.innerHTML = word + '<span class="dz-remove" onclick="removeFromZone(this.parentElement)">✕</span>';
+    // Hide the chip in the bank
+    document.querySelectorAll('#vocab-bank .draggable').forEach(c => {
+      if (c.dataset.word === word) c.style.visibility = 'hidden';
+    });
+  }
+
+  function clearZone(zone) {
+    const w = zone.dataset.current;
+    if (w) returnToBank(w);
+    zone.dataset.current = '';
+    zone.classList.remove('filled', 'correct', 'wrong');
+    zone.innerHTML = '';
+  }
+
+  function returnToBank(word) {
+    document.querySelectorAll('#vocab-bank .draggable').forEach(c => {
+      if (c.dataset.word === word) c.style.visibility = 'visible';
+    });
+  }
+
+  function removeFromZone(zone) {
+    clearZone(zone);
+  }
+
+  function checkVocabAnswers() {
+    let correct = 0, total = 0;
+    document.querySelectorAll('#vocab-definitions .def-row').forEach(row => {
+      const zone = row.querySelector('.drop-zone');
+      const answer = row.dataset.answer;
+      total++;
+      if (zone.dataset.current) {
+        if (zone.dataset.current === answer) {
+          zone.classList.add('correct');
+          zone.classList.remove('wrong');
+          correct++;
+        } else {
+          zone.classList.add('wrong');
+          zone.classList.remove('correct');
+        }
+      }
+    });
+    const score = document.getElementById('vocab-score');
+    score.style.display = 'block';
+    if (correct === total) {
+      score.style.background = '#eafaf1'; score.style.borderColor = '#27ae60'; score.style.color = '#1a7a45';
+      score.textContent = '🎉 Perfect! All ' + total + ' correct!';
+    } else {
+      score.style.background = '#f0f8fc'; score.style.borderColor = 'var(--teal-light)'; score.style.color = 'var(--teal-dark)';
+      score.textContent = '✓ ' + correct + ' / ' + total + ' correct. Red = try again.';
+    }
+  }
+
+  function resetVocab() {
+    document.querySelectorAll('#vocab-definitions .drop-zone').forEach(zone => {
+      zone.dataset.current = '';
+      zone.classList.remove('filled', 'correct', 'wrong');
+      zone.innerHTML = '';
+    });
+    document.querySelectorAll('#vocab-bank .draggable').forEach(c => c.style.visibility = 'visible');
+    const score = document.getElementById('vocab-score');
+    if (score) { score.style.display = 'none'; score.textContent = ''; }
+  }
+
+  // Init on load
+  document.addEventListener('DOMContentLoaded', initVocabDrag);
+</script>
+</body>
+</html>
