@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3B Homework — Great Rivals</title>
+<style>
+  :root {
+    --teal: #1a7a8a;
+    --teal-light: #c0e4ea;
+    --teal-dark: #145f6d;
+    --accent: #e8f4f7;
+    --gold: #d4a847;
+    --bg: #f5f7f8;
+    --muted: #6c7a80;
+    --card: #ffffff;
+    --border: #dde3e6;
+    --correct: #27ae60;
+    --wrong: #e74c3c;
+    --correct-bg: #eafaf1;
+    --wrong-bg: #fdf0ee;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: #2c3e50;
+    padding: 24px 20px 48px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  /* ── HEADER ── */
+  .page-header {
+    background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 100%);
+    color: white;
+    border-radius: 14px;
+    padding: 26px 32px;
+    margin-bottom: 20px;
+  }
+  .page-header h1 { font-size: 1.55rem; font-weight: 800; letter-spacing: -0.3px; }
+  .page-header p  { opacity: .8; font-size: .92rem; margin-top: 5px; }
+
+  /* ── NAME BOX ── */
+  .name-box {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 22px;
+    margin-bottom: 26px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  }
+  .name-box label { font-weight: 700; color: var(--teal-dark); white-space: nowrap; }
+  .name-box input {
+    flex: 1;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .name-box input:focus { border-color: var(--teal); }
+  .name-box input.field-error { border-color: var(--wrong) !important; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--teal-dark);
+    padding-bottom: 8px;
+    border-bottom: 3px solid var(--teal-light);
+    margin: 28px 0 16px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin-bottom: 18px;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  }
+
+  .ex-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+  .ex-num {
+    background: var(--teal);
+    color: white;
+    min-width: 34px; height: 34px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .97rem; flex-shrink: 0;
+  }
+  .ex-instr { font-weight: 700; font-size: .95rem; line-height: 1.45; padding-top: 5px; }
+
+  /* ── EX 1 ── */
+  .desc-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .desc-item {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .d-num  { font-weight: 700; color: var(--teal); min-width: 18px; flex-shrink: 0; }
+  .d-text { flex: 1; font-size: .9rem; line-height: 1.4; min-width: 160px; }
+  .d-ans  { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
+  .hint   { font-weight: 800; color: var(--teal); font-size: 1rem; }
+  .ans-input {
+    border: 2px solid var(--border);
+    border-radius: 7px;
+    padding: 6px 10px;
+    font-size: .9rem;
+    font-family: inherit;
+    width: 128px;
+    outline: none;
+    transition: border-color .2s, background .2s;
+  }
+  .ans-input:focus { border-color: var(--teal); }
+  .ans-input.correct { border-color: var(--correct); background: var(--correct-bg); color: #1a7a45; }
+  .ans-input.wrong   { border-color: var(--wrong);   background: var(--wrong-bg);   color: var(--wrong); }
+  .ans-input.empty-err { border-color: var(--wrong); }
+  .c-hint { font-size: .76rem; color: var(--wrong); margin-left: 4px; font-style: italic; white-space: nowrap; }
+
+  /* ── EX 2 ── */
+  .word-bank {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    background: var(--accent);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+  }
+  .wb-chip {
+    background: white;
+    border: 2px solid var(--teal-light);
+    color: var(--teal-dark);
+    border-radius: 20px;
+    padding: 4px 13px;
+    font-size: .88rem;
+    font-weight: 600;
+  }
+  .conv-list { display: flex; flex-direction: column; gap: 12px; }
+  .conv-item { background: var(--bg); border-radius: 10px; padding: 13px 16px; }
+  .conv-n    { font-weight: 700; color: var(--teal); font-size: .85rem; margin-bottom: 6px; }
+  .conv-line { font-size: .9rem; line-height: 1.7; }
+  .conv-line b { color: #2c3e50; }
+  .conv-line .ans-input { width: 140px; }
+
+  /* ── EX 3 ── */
+  .choice-list { display: flex; flex-direction: column; gap: 10px; }
+  .choice-item {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .c-num  { font-weight: 700; color: var(--teal); min-width: 18px; flex-shrink: 0; }
+  .c-text { font-size: .9rem; flex: 1; min-width: 200px; }
+  .radio-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .radio-opt {
+    display: flex; align-items: center; gap: 6px;
+    font-size: .88rem;
+    cursor: pointer;
+    padding: 5px 14px;
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    background: white;
+    transition: all .2s;
+    user-select: none;
+  }
+  .radio-opt input[type="radio"] { accent-color: var(--teal); width: 14px; height: 14px; cursor: pointer; }
+  .radio-opt:has(input:checked) { border-color: var(--teal); background: var(--accent); font-weight: 600; color: var(--teal-dark); }
+  .radio-opt.opt-correct { border-color: var(--correct); background: var(--correct-bg); color: #1a7a45; font-weight: 700; }
+  .radio-opt.opt-wrong   { border-color: var(--wrong);   background: var(--wrong-bg);   color: var(--wrong); }
+  .choice-item.unanswered-err { outline: 2px solid var(--wrong); border-radius: 10px; }
+
+  /* ── EX 4 passage ── */
+  .passage {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 18px 20px;
+    font-size: .9rem;
+    line-height: 2.2;
+    border-left: 4px solid var(--teal-light);
+  }
+  .passage-title { font-weight: 800; font-size: .97rem; margin-bottom: 10px; color: var(--teal-dark); }
+  .gap-label { font-size: .72rem; font-weight: 700; color: var(--teal); vertical-align: super; margin-right: 1px; }
+  .inline-input {
+    border: none;
+    border-bottom: 2px solid var(--teal);
+    background: transparent;
+    font-size: .9rem;
+    font-family: inherit;
+    padding: 0 5px 1px;
+    width: 76px;
+    outline: none;
+    text-align: center;
+    transition: border-color .2s, color .2s;
+  }
+  .inline-input:focus { border-bottom-color: var(--teal-dark); }
+  .inline-input.correct { border-bottom-color: var(--correct); color: #1a7a45; }
+  .inline-input.wrong   { border-bottom-color: var(--wrong);   color: var(--wrong); }
+  .inline-input.empty-err { border-bottom-color: var(--wrong); }
+
+  /* ── EX 5 ── */
+  .transform-list { display: flex; flex-direction: column; gap: 14px; }
+  .transform-item { background: var(--bg); border-radius: 10px; padding: 13px 16px; }
+  .t-num  { font-weight: 700; color: var(--teal); font-size: .85rem; margin-bottom: 4px; }
+  .t-orig { font-size: .88rem; color: #555; font-style: italic; margin-bottom: 7px; }
+  .t-line { font-size: .9rem; line-height: 2.1; }
+  .t-input {
+    border: none;
+    border-bottom: 2px solid var(--teal);
+    background: transparent;
+    font-size: .9rem;
+    font-family: inherit;
+    padding: 0 5px 1px;
+    min-width: 90px;
+    outline: none;
+    transition: border-color .2s, color .2s;
+  }
+  .t-input.wide  { min-width: 155px; }
+  .t-input.xwide { min-width: 190px; }
+  .t-input:focus { border-bottom-color: var(--teal-dark); }
+  .t-input.empty-err { border-bottom-color: var(--wrong); }
+
+  /* model answer box for Ex 5 */
+  .model-answers {
+    display: none;
+    margin-top: 14px;
+    background: #fffbec;
+    border: 2px solid var(--gold);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: .87rem;
+  }
+  .model-answers strong { color: #a07a00; display: block; margin-bottom: 8px; }
+  .model-answers ol { margin: 0; padding-left: 20px; }
+  .model-answers li { margin-bottom: 4px; line-height: 1.5; }
+
+  /* ── SHARED BUTTON ── */
+  .check-btn {
+    margin-top: 16px;
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 9px 22px;
+    font-size: .9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .2s, transform .1s;
+  }
+  .check-btn:hover  { background: var(--teal-dark); transform: translateY(-1px); }
+  .check-btn:active { transform: translateY(0); }
+
+  .ex-score {
+    display: none;
+    margin-top: 12px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: .9rem;
+    font-weight: 600;
+    border: 2px solid;
+  }
+
+  /* ── SEND SECTION ── */
+  .send-section {
+    background: white;
+    border: 2px solid var(--teal-light);
+    border-radius: 14px;
+    padding: 28px;
+    margin-top: 28px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,.07);
+  }
+  .send-section h3 { color: var(--teal-dark); font-size: 1.05rem; margin-bottom: 6px; }
+  .send-section p  { color: var(--muted); font-size: .88rem; margin-bottom: 20px; }
+
+  .send-btn {
+    background: linear-gradient(135deg, var(--gold) 0%, #b8882e 100%);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 14px 40px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .2s;
+    box-shadow: 0 4px 14px rgba(212,168,71,.4);
+  }
+  .send-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(212,168,71,.5); }
+
+  .send-error {
+    display: none;
+    margin-top: 14px;
+    color: var(--wrong);
+    font-size: .9rem;
+    font-weight: 600;
+    background: var(--wrong-bg);
+    border: 1.5px solid var(--wrong);
+    border-radius: 8px;
+    padding: 10px 16px;
+  }
+
+  @media (max-width: 580px) {
+    body { padding: 12px 12px 40px; }
+    .page-header { padding: 18px; }
+    .card { padding: 16px; }
+    .desc-item { gap: 8px; }
+    .d-ans { width: 100%; }
+    .choice-item { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<div class="page-header">
+  <h1>3B Homework — Great Rivals</h1>
+  <p>Vocabulary: Character Adjectives &nbsp;|&nbsp; Grammar: Comparatives &amp; Superlatives</p>
+</div>
+
+<!-- ── NAME ── -->
+<div class="name-box">
+  <label for="sname">👤 Your name:</label>
+  <input type="text" id="sname" placeholder="Type your full name here…" autocomplete="name">
+</div>
+
+<!-- ══════════════ VOCABULARY ══════════════ -->
+<div class="section-title">📚 Vocabulary — Character Adjectives</div>
+
+<!-- EX 1 -->
+<div class="card">
+  <div class="ex-header">
+    <div class="ex-num">1</div>
+    <div class="ex-instr">Read the descriptions. What adjective describes each person? The first letter is given to help you.</div>
+  </div>
+  <ul class="desc-list">
+    <li class="desc-item">
+      <span class="d-num">1</span>
+      <span class="d-text">Steve thinks he's better than everyone and can be quite unpleasant.</span>
+      <span class="d-ans"><span class="hint">a</span><input class="ans-input" data-ex="1" data-answer="arrogant" type="text" maxlength="15" placeholder="__________"></span>
+    </li>
+    <li class="desc-item">
+      <span class="d-num">2</span>
+      <span class="d-text">The new receptionist is really sweet but she clearly lacks knowledge and skills.</span>
+      <span class="d-ans"><span class="hint">i</span><input class="ans-input" data-ex="1" data-answer="inexperienced" type="text" maxlength="15" placeholder="__________"></span>
+    </li>
+    <li class="desc-item">
+      <span class="d-num">3</span>
+      <span class="d-text">Alan always thinks about how he can make people happy.</span>
+      <span class="d-ans"><span class="hint">t</span><input class="ans-input" data-ex="1" data-answer="thoughtful" type="text" maxlength="15" placeholder="__________"></span>
+    </li>
+    <li class="desc-item">
+      <span class="d-num">4</span>
+      <span class="d-text">My nephew's achieved so much in his life. He's a really surprising guy.</span>
+      <span class="d-ans"><span class="hint">r</span><input class="ans-input" data-ex="1" data-answer="remarkable" type="text" maxlength="15" placeholder="__________"></span>
+    </li>
+    <li class="desc-item">
+      <span class="d-num">5</span>
+      <span class="d-text">The boss can be very strong.</span>
+      <span class="d-ans"><span class="hint">t</span><input class="ans-input" data-ex="1" data-answer="tough" type="text" maxlength="15" placeholder="__________"></span>
+    </li>
+    <li class="desc-item">
+      <span class="d-num">6</span>
+      <span class="d-text">You never know what my friend Matt will do next.</span>
+      <span class="d-ans"><span class="hint">u</span><input class="ans-input" data-ex="1" data-answer="unpredictable" type="text" maxlength="15" placeholder="__________"></span>
+    </li>
+    <li class="desc-item">
+      <span class="d-num">7</span>
+      <span class="d-text">Rachel feels sure that her job interview will go well.</span>
+      <span class="d-ans"><span class="hint">c</span><input class="ans-input" data-ex="1" data-answer="confident" type="text" maxlength="15" placeholder="__________"></span>
+    </li>
+    <li class="desc-item">
+      <span class="d-num">8</span>
+      <span class="d-text">I want to go to New Zealand and I won't let anything stop me!</span>
+      <span class="d-ans"><span class="hint">d</span><input class="ans-input" data-ex="1" data-answer="determined" type="text" maxlength="15" placeholder="__________"></span>
+    </li>
+  </ul>
+  <button class="check-btn" onclick="checkEx1()">✓ Check Exercise 1</button>
+  <div class="ex-score" id="score-1"></div>
+</div>
+
+<!-- EX 2 -->
+<div class="card">
+  <div class="ex-header">
+    <div class="ex-num">2</div>
+    <div class="ex-instr">Complete the conversations with the adjectives in the box.</div>
+  </div>
+  <div class="word-bank">
+    <span class="wb-chip">arrogant</span>
+    <span class="wb-chip">bold</span>
+    <span class="wb-chip">competitive</span>
+    <span class="wb-chip">determined</span>
+    <span class="wb-chip">reasonable</span>
+    <span class="wb-chip">remarkable</span>
+    <span class="wb-chip">stubborn</span>
+    <span class="wb-chip">thoughtful</span>
+  </div>
+  <div class="conv-list">
+    <div class="conv-item">
+      <div class="conv-n">1</div>
+      <div class="conv-line"><b>A:</b> I hear what you're saying but I won't change my mind.</div>
+      <div class="conv-line"><b>B:</b> Oh, don't be so <input class="ans-input" data-ex="2" data-answer="stubborn" type="text" maxlength="15" placeholder="_______">!</div>
+    </div>
+    <div class="conv-item">
+      <div class="conv-n">2</div>
+      <div class="conv-line"><b>A:</b> I just walked straight into my boss's office and asked for more money.</div>
+      <div class="conv-line"><b>B:</b> Wow, that was <input class="ans-input" data-ex="2" data-answer="bold" type="text" maxlength="15" placeholder="_______"> of you.</div>
+    </div>
+    <div class="conv-item">
+      <div class="conv-n">3</div>
+      <div class="conv-line"><b>A:</b> You don't need to be so <input class="ans-input" data-ex="2" data-answer="competitive" type="text" maxlength="15" placeholder="_______"> all the time.</div>
+      <div class="conv-line"><b>B:</b> You know me. I hate to lose.</div>
+    </div>
+    <div class="conv-item">
+      <div class="conv-n">4</div>
+      <div class="conv-line"><b>A:</b> I got you a coffee from the shop. Milk and one sugar, right?</div>
+      <div class="conv-line"><b>B:</b> Yes, that's really <input class="ans-input" data-ex="2" data-answer="thoughtful" type="text" maxlength="15" placeholder="_______">, thanks.</div>
+    </div>
+    <div class="conv-item">
+      <div class="conv-n">5</div>
+      <div class="conv-line"><b>A:</b> Jenny wants the report by midday.</div>
+      <div class="conv-line"><b>B:</b> What? That's crazy — she's usually very <input class="ans-input" data-ex="2" data-answer="reasonable" type="text" maxlength="15" placeholder="_______">.</div>
+    </div>
+    <div class="conv-item">
+      <div class="conv-n">6</div>
+      <div class="conv-line"><b>A:</b> I'm <input class="ans-input" data-ex="2" data-answer="determined" type="text" maxlength="15" placeholder="_______"> to get fit this year.</div>
+      <div class="conv-line"><b>B:</b> Well, if you put your mind to it, then you can do it.</div>
+    </div>
+    <div class="conv-item">
+      <div class="conv-n">7</div>
+      <div class="conv-line"><b>A:</b> Eva got an A in all her subjects this year.</div>
+      <div class="conv-line"><b>B:</b> I'm not surprised. She's a <input class="ans-input" data-ex="2" data-answer="remarkable" type="text" maxlength="15" placeholder="_______"> woman.</div>
+    </div>
+    <div class="conv-item">
+      <div class="conv-n">8</div>
+      <div class="conv-line"><b>A:</b> If anyone should get the job, it's me.</div>
+      <div class="conv-line"><b>B:</b> Don't be so <input class="ans-input" data-ex="2" data-answer="arrogant" type="text" maxlength="15" placeholder="_______">! The others are good workers, too.</div>
+    </div>
+  </div>
+  <button class="check-btn" onclick="checkEx2()">✓ Check Exercise 2</button>
+  <div class="ex-score" id="score-2"></div>
+</div>
+
+<!-- ══════════════ GRAMMAR ══════════════ -->
+<div class="section-title">📐 Grammar — Comparatives &amp; Superlatives</div>
+
+<!-- EX 3 -->
+<div class="card">
+  <div class="ex-header">
+    <div class="ex-num">3</div>
+    <div class="ex-instr">Choose the correct alternative.</div>
+  </div>
+  <div class="choice-list" id="ex3-list">
+    <div class="choice-item" data-answer="by far">
+      <span class="c-num">1</span>
+      <span class="c-text">Russia is ________ bigger than China.</span>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="q3_1" value="by far"> by far</label>
+        <label class="radio-opt"><input type="radio" name="q3_1" value="a lot"> a lot</label>
+      </div>
+    </div>
+    <div class="choice-item" data-answer="more">
+      <span class="c-num">2</span>
+      <span class="c-text">The longer we waited, the ________ impatient we became.</span>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="q3_2" value="more"> more</label>
+        <label class="radio-opt"><input type="radio" name="q3_2" value="much"> much</label>
+      </div>
+    </div>
+    <div class="choice-item" data-answer="as">
+      <span class="c-num">3</span>
+      <span class="c-text">This film adaptation isn't as good ________ the original.</span>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="q3_3" value="as"> as</label>
+        <label class="radio-opt"><input type="radio" name="q3_3" value="than"> than</label>
+      </div>
+    </div>
+    <div class="choice-item" data-answer="by far">
+      <span class="c-num">4</span>
+      <span class="c-text">This is ________ the best steak I've ever eaten.</span>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="q3_4" value="by far"> by far</label>
+        <label class="radio-opt"><input type="radio" name="q3_4" value="far more"> far more</label>
+      </div>
+    </div>
+    <div class="choice-item" data-answer="as warm">
+      <span class="c-num">5</span>
+      <span class="c-text">It's not ________ today as it was yesterday.</span>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="q3_5" value="as warm"> as warm</label>
+        <label class="radio-opt"><input type="radio" name="q3_5" value="warmer"> warmer</label>
+      </div>
+    </div>
+    <div class="choice-item" data-answer="less">
+      <span class="c-num">6</span>
+      <span class="c-text">You're not ________ of a man if you cry at films!</span>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="q3_6" value="less"> less</label>
+        <label class="radio-opt"><input type="radio" name="q3_6" value="lesser"> lesser</label>
+      </div>
+    </div>
+    <div class="choice-item" data-answer="least">
+      <span class="c-num">7</span>
+      <span class="c-text">This mobile phone is the ________ reliable one I've ever had.</span>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="q3_7" value="least"> least</label>
+        <label class="radio-opt"><input type="radio" name="q3_7" value="less"> less</label>
+      </div>
+    </div>
+    <div class="choice-item" data-answer="so much">
+      <span class="c-num">8</span>
+      <span class="c-text">We have to walk ________ more quickly or we'll be late.</span>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="q3_8" value="so much"> so much</label>
+        <label class="radio-opt"><input type="radio" name="q3_8" value="much more"> much more</label>
+      </div>
+    </div>
+  </div>
+  <button class="check-btn" onclick="checkEx3()">✓ Check Exercise 3</button>
+  <div class="ex-score" id="score-3"></div>
+</div>
+
+<!-- EX 4 -->
+<div class="card">
+  <div class="ex-header">
+    <div class="ex-num">4</div>
+    <div class="ex-instr">Complete the text with one word in each gap.</div>
+  </div>
+  <div class="passage">
+    <div class="passage-title">The Cola Wars</div>
+    Coca Cola and Pepsi are by <sup class="gap-label">1</sup><input class="inline-input" data-ex="4" data-answer="far" type="text" maxlength="10" placeholder="____"> the most well-known business rivals when it comes to soft drinks. Coca Cola was invented in 1886, 12 years earlier <sup class="gap-label">2</sup><input class="inline-input" data-ex="4" data-answer="than" type="text" maxlength="10" placeholder="____"> Pepsi. It was already selling millions of litres a year when Pepsi appeared. Pepsi wanted a share of that market and the companies have been <sup class="gap-label">3</sup><input class="inline-input" data-ex="4" data-answer="the" type="text" maxlength="10" placeholder="____"> best of rivals ever since. Their rivalry became much <sup class="gap-label">4</sup><input class="inline-input" data-ex="4" data-answer="more" type="text" maxlength="10" placeholder="____"> famous in the 1970s when Pepsi introduced the Pepsi Challenge. They asked customers to blind taste Coke and Pepsi and say which they preferred. Pepsi say that over 50 percent of people chose their drink. Whether that was <sup class="gap-label">5</sup><input class="inline-input" data-ex="4" data-answer="slightly|just" type="text" maxlength="10" placeholder="____"> little over 50 percent or <sup class="gap-label">6</sup><input class="inline-input" data-ex="4" data-answer="slightly|far|well" type="text" maxlength="10" placeholder="____"> more than 50 percent, we can't be sure. However, this started an era of competition known as the <em>cola wars</em>. <sup class="gap-label">7</sup><input class="inline-input" data-ex="4" data-answer="the" type="text" maxlength="10" placeholder="____"> harder Coca Cola promoted their company, the greater the effort Pepsi made and vice versa. It's still clear today that they're as competitive <sup class="gap-label">8</sup><input class="inline-input" data-ex="4" data-answer="as" type="text" maxlength="10" placeholder="____"> each other when it comes to selling their products and this is unlikely to change any time soon.
+  </div>
+  <button class="check-btn" onclick="checkEx4()">✓ Check Exercise 4</button>
+  <div class="ex-score" id="score-4"></div>
+</div>
+
+<!-- EX 5 -->
+<div class="card">
+  <div class="ex-header">
+    <div class="ex-num">5</div>
+    <div class="ex-instr">Complete the second sentence so it means the same as the first.</div>
+  </div>
+  <div class="transform-list">
+    <div class="transform-item">
+      <div class="t-num">1</div>
+      <div class="t-orig">You're better at languages than me.</div>
+      <div class="t-line">I'm not <input class="t-input" data-ex="5" type="text" placeholder="________"> at languages <input class="t-input" data-ex="5" type="text" placeholder="___" style="min-width:52px"> you.</div>
+    </div>
+    <div class="transform-item">
+      <div class="t-num">2</div>
+      <div class="t-orig">That exercise wasn't as easy as I'd expected.</div>
+      <div class="t-line">That exercise was <input class="t-input wide" data-ex="5" type="text" placeholder="____________"> than I'd expected.</div>
+    </div>
+    <div class="transform-item">
+      <div class="t-num">3</div>
+      <div class="t-orig">I've never had such a fast car.</div>
+      <div class="t-line">This is by far <input class="t-input wide" data-ex="5" type="text" placeholder="____________"> car I've ever had.</div>
+    </div>
+    <div class="transform-item">
+      <div class="t-num">4</div>
+      <div class="t-orig">The blue shirt is nicer than the green one.</div>
+      <div class="t-line">The green shirt <input class="t-input xwide" data-ex="5" type="text" placeholder="__________________"> the blue one.</div>
+    </div>
+    <div class="transform-item">
+      <div class="t-num">5</div>
+      <div class="t-orig">I feel much more relaxed today.</div>
+      <div class="t-line">I feel a <input class="t-input" data-ex="5" type="text" placeholder="________"> stressed <input class="t-input" data-ex="5" type="text" placeholder="________"> yesterday.</div>
+    </div>
+    <div class="transform-item">
+      <div class="t-num">6</div>
+      <div class="t-orig">When I feel more tired, I sleep less.</div>
+      <div class="t-line"><input class="t-input wide" data-ex="5" type="text" placeholder="____________"> I feel, <input class="t-input" data-ex="5" type="text" placeholder="________"> I sleep.</div>
+    </div>
+    <div class="transform-item">
+      <div class="t-num">7</div>
+      <div class="t-orig">You don't look awake enough to work today.</div>
+      <div class="t-line">You look far <input class="t-input wide" data-ex="5" type="text" placeholder="____________"> to work today.</div>
+    </div>
+    <div class="transform-item">
+      <div class="t-num">8</div>
+      <div class="t-orig">The Bears played much worse than The Tigers and still won!</div>
+      <div class="t-line">The Bears didn't <input class="t-input xwide" data-ex="5" type="text" placeholder="__________________"> The Tigers and still won!</div>
+    </div>
+  </div>
+  <button class="check-btn" onclick="checkEx5()">💡 Show Model Answers</button>
+  <div class="model-answers" id="model-5">
+    <strong>💡 Suggested answers — your teacher may also accept other correct forms:</strong>
+    <ol>
+      <li>I'm not <b>as good</b> at languages <b>as</b> you.</li>
+      <li>That exercise was <b>more difficult</b> than I'd expected.</li>
+      <li>This is by far <b>the fastest</b> car I've ever had.</li>
+      <li>The green shirt <b>isn't as nice as</b> the blue one.</li>
+      <li>I feel a <b>lot less</b> stressed <b>than</b> yesterday.</li>
+      <li><b>The more tired</b> I feel, <b>the less</b> I sleep.</li>
+      <li>You look far <b>too tired</b> to work today.</li>
+      <li>The Bears didn't <b>play nearly as well as</b> The Tigers and still won!</li>
+    </ol>
+  </div>
+  <div class="ex-score" id="score-5"></div>
+</div>
+
+<!-- ── SEND SECTION ── -->
+<div class="send-section">
+  <h3>📬 Ready to submit?</h3>
+  <p>Complete all exercises and make sure your name is filled in. Your answers will open in your email app.</p>
+  <button class="send-btn" onclick="sendToTeacher()">✉️ Send to Teacher</button>
+  <div class="send-error" id="send-error"></div>
+</div>
+
+<script>
+  /* ── HELPERS ── */
+  const norm = s => s.trim().toLowerCase().replace(/\s+/g,' ');
+
+  function showScore(id, correct, total) {
+    const el = document.getElementById(id);
+    el.style.display = 'block';
+    if (correct === total) {
+      el.style.cssText = 'display:block;background:#eafaf1;border-color:#27ae60;color:#1a7a45;margin-top:12px;padding:10px 16px;border-radius:8px;font-size:.9rem;font-weight:600;border:2px solid;';
+      el.textContent = `🎉 ${correct}/${total} — Perfect!`;
+    } else {
+      el.style.cssText = 'display:block;background:#f0f8fc;border-color:var(--teal-light);color:var(--teal-dark);margin-top:12px;padding:10px 16px;border-radius:8px;font-size:.9rem;font-weight:600;border:2px solid;';
+      el.textContent = `✓ ${correct}/${total} correct — review the red ones and try again!`;
+    }
+  }
+
+  /* ── EX 1 ── */
+  function checkEx1() {
+    const inputs = document.querySelectorAll('.ans-input[data-ex="1"]');
+    let ok = 0;
+    inputs.forEach(inp => {
+      // remove old hint
+      inp.parentElement.querySelector('.c-hint')?.remove();
+      inp.classList.remove('correct','wrong');
+      if (!inp.value.trim()) return;
+      if (norm(inp.value) === norm(inp.dataset.answer)) {
+        inp.classList.add('correct'); ok++;
+      } else {
+        inp.classList.add('wrong');
+        const h = document.createElement('span');
+        h.className = 'c-hint';
+        h.textContent = '→ ' + inp.dataset.answer;
+        inp.parentElement.appendChild(h);
+      }
+    });
+    showScore('score-1', ok, 8);
+  }
+
+  /* ── EX 2 ── */
+  function checkEx2() {
+    const inputs = document.querySelectorAll('.ans-input[data-ex="2"]');
+    let ok = 0;
+    inputs.forEach(inp => {
+      inp.parentElement.querySelector('.c-hint')?.remove();
+      inp.classList.remove('correct','wrong');
+      if (!inp.value.trim()) return;
+      if (norm(inp.value) === norm(inp.dataset.answer)) {
+        inp.classList.add('correct'); ok++;
+      } else {
+        inp.classList.add('wrong');
+        const h = document.createElement('span');
+        h.className = 'c-hint';
+        h.textContent = '→ ' + inp.dataset.answer;
+        inp.parentElement.appendChild(h);
+      }
+    });
+    showScore('score-2', ok, 8);
+  }
+
+  /* ── EX 3 ── */
+  function checkEx3() {
+    const items = document.querySelectorAll('#ex3-list .choice-item');
+    let ok = 0, total = items.length;
+    items.forEach((item, i) => {
+      item.classList.remove('unanswered-err');
+      item.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('opt-correct','opt-wrong'));
+      const correct = item.dataset.answer;
+      const checked = item.querySelector('input[type="radio"]:checked');
+      if (!checked) return;
+      const lbl = checked.closest('.radio-opt');
+      if (norm(checked.value) === norm(correct)) {
+        lbl.classList.add('opt-correct'); ok++;
+      } else {
+        lbl.classList.add('opt-wrong');
+        item.querySelectorAll('.radio-opt').forEach(o => {
+          if (norm(o.querySelector('input').value) === norm(correct)) o.classList.add('opt-correct');
+        });
+      }
+    });
+    showScore('score-3', ok, total);
+  }
+
+  /* ── EX 4 ── */
+  function checkEx4() {
+    const inputs = document.querySelectorAll('.inline-input[data-ex="4"]');
+    let ok = 0;
+    inputs.forEach(inp => {
+      inp.classList.remove('correct','wrong');
+      if (!inp.value.trim()) return;
+      const accepted = inp.dataset.answer.split('|');
+      if (accepted.some(a => norm(a) === norm(inp.value))) {
+        inp.classList.add('correct'); ok++;
+      } else {
+        inp.classList.add('wrong');
+      }
+    });
+    showScore('score-4', ok, 8);
+  }
+
+  /* ── EX 5 ── */
+  function checkEx5() {
+    const box = document.getElementById('model-5');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+    const btn = box.previousElementSibling;
+    btn.textContent = box.style.display === 'block' ? '🙈 Hide Model Answers' : '💡 Show Model Answers';
+  }
+
+  /* ── VALIDATION FOR SEND ── */
+  function clearErrors() {
+    document.getElementById('sname').classList.remove('field-error');
+    document.querySelectorAll('.ans-input, .inline-input, .t-input').forEach(i => i.classList.remove('empty-err'));
+    document.querySelectorAll('.choice-item').forEach(i => i.classList.remove('unanswered-err'));
+  }
+
+  function validate() {
+    clearErrors();
+    let errors = [];
+
+    const name = document.getElementById('sname').value.trim();
+    if (!name) {
+      document.getElementById('sname').classList.add('field-error');
+      errors.push('Please enter your name.');
+    }
+
+    // text inputs ex 1 & 2
+    let emptyText = false;
+    document.querySelectorAll('.ans-input[data-ex="1"], .ans-input[data-ex="2"]').forEach(inp => {
+      if (!inp.value.trim()) { inp.classList.add('empty-err'); emptyText = true; }
+    });
+    if (emptyText) errors.push('Please complete all gaps in Exercises 1 and 2.');
+
+    // radio ex 3
+    let emptyRadio = false;
+    document.querySelectorAll('#ex3-list .choice-item').forEach((item, i) => {
+      if (!item.querySelector('input[type="radio"]:checked')) {
+        item.classList.add('unanswered-err'); emptyRadio = true;
+      }
+    });
+    if (emptyRadio) errors.push('Please answer all questions in Exercise 3.');
+
+    // inline inputs ex 4
+    let emptyInline = false;
+    document.querySelectorAll('.inline-input[data-ex="4"]').forEach(inp => {
+      if (!inp.value.trim()) { inp.classList.add('empty-err'); emptyInline = true; }
+    });
+    if (emptyInline) errors.push('Please fill all gaps in Exercise 4.');
+
+    // transform inputs ex 5
+    let emptyT = false;
+    document.querySelectorAll('.t-input[data-ex="5"]').forEach(inp => {
+      if (!inp.value.trim()) { inp.classList.add('empty-err'); emptyT = true; }
+    });
+    if (emptyT) errors.push('Please complete all gaps in Exercise 5.');
+
+    return errors;
+  }
+
+  /* ── COLLECT ANSWERS ── */
+  function collectAnswers() {
+    const name = document.getElementById('sname').value.trim();
+    const date = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'long',year:'numeric'});
+    let body = `3B HOMEWORK — GREAT RIVALS\nStudent: ${name}\nDate: ${date}\n`;
+    body += '='.repeat(40) + '\n\n';
+
+    body += 'EXERCISE 1 — Character Adjectives\n';
+    document.querySelectorAll('.ans-input[data-ex="1"]').forEach((inp, i) => {
+      body += `  ${i+1}. ${inp.value || '(blank)'}\n`;
+    });
+
+    body += '\nEXERCISE 2 — Conversations\n';
+    document.querySelectorAll('.ans-input[data-ex="2"]').forEach((inp, i) => {
+      body += `  ${i+1}. ${inp.value || '(blank)'}\n`;
+    });
+
+    body += '\nEXERCISE 3 — Choose the Correct Alternative\n';
+    for (let i = 1; i <= 8; i++) {
+      const checked = document.querySelector(`input[name="q3_${i}"]:checked`);
+      body += `  ${i}. ${checked ? checked.value : '(not answered)'}\n`;
+    }
+
+    body += '\nEXERCISE 4 — The Cola Wars Gap Fill\n';
+    document.querySelectorAll('.inline-input[data-ex="4"]').forEach((inp, i) => {
+      body += `  Gap ${i+1}: ${inp.value || '(blank)'}\n`;
+    });
+
+    body += '\nEXERCISE 5 — Sentence Transformation\n';
+    const t5 = document.querySelectorAll('.t-input[data-ex="5"]');
+    const groups = [[0,1],[2],[3],[4],[5,6],[7,8],[9],[10]];
+    groups.forEach((idxs, num) => {
+      const vals = idxs.map(j => t5[j]?.value || '____').join(' / ');
+      body += `  ${num+1}. ${vals}\n`;
+    });
+
+    return body;
+  }
+
+  /* ── SEND ── */
+  function sendToTeacher() {
+    const errors = validate();
+    const errEl = document.getElementById('send-error');
+    if (errors.length) {
+      errEl.style.display = 'block';
+      errEl.innerHTML = '⚠️ ' + errors.join('<br>⚠️ ');
+      errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    errEl.style.display = 'none';
+    const name    = document.getElementById('sname').value.trim();
+    const subject = encodeURIComponent(`3B Homework — ${name}`);
+    const body    = encodeURIComponent(collectAnswers());
+    window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${subject}&body=${body}`;
+  }
+</script>
+</body>
+</html>
