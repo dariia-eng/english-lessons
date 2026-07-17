@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework — Vocabulary: Arguments</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0ebe4;color:#2d3748;line-height:1.6;}
+
+header{background:linear-gradient(135deg,#1a3a5c 0%,#2471a3 100%);color:white;padding:2rem 2rem 1.5rem;text-align:center;}
+header h1{font-size:1.9rem;letter-spacing:-0.5px;}
+header h1 span{color:#5dade2;font-style:italic;}
+header .sub{margin-top:.4rem;opacity:.8;font-size:.88rem;}
+header .hw-tag{display:inline-block;background:#f9ca24;color:#7d5a00;border-radius:20px;padding:.2rem .9rem;font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;margin-top:.6rem;}
+
+.wrap{max-width:820px;margin:0 auto;padding:1.5rem;}
+
+/* NAME FIELD */
+.name-box{background:white;border-radius:14px;padding:1.2rem 1.4rem;box-shadow:0 3px 12px rgba(0,0,0,.1);margin-bottom:1.8rem;display:flex;align-items:center;gap:1rem;}
+.name-box label{font-weight:700;color:#1a3a5c;font-size:.92rem;white-space:nowrap;}
+.name-box input{flex:1;border:2px solid #e2e8f0;border-radius:9px;padding:.55rem .9rem;font-size:.95rem;outline:none;transition:border-color .2s;font-family:inherit;}
+.name-box input:focus{border-color:#2471a3;}
+.name-box input.error{border-color:#e74c3c;background:#fff5f5;}
+
+/* STAGE HEADERS */
+.stage{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;}
+.sbadge{background:#1a3a5c;color:white;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;flex-shrink:0;}
+.stage h2{font-size:1.1rem;color:#1a3a5c;margin:0;}
+.stag{background:#d6eaf8;color:#1a5276;border-radius:12px;padding:.15rem .7rem;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-left:auto;}
+
+/* EXERCISE BOX */
+.exbox{background:white;border-radius:14px;padding:1.4rem;box-shadow:0 2px 10px rgba(0,0,0,.08);margin-bottom:.8rem;}
+
+/* ---- EXERCISE 1: MATCHING ---- */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+.match-col h3{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;font-weight:700;margin-bottom:.6rem;}
+.mitem{border:2px solid #e2e8f0;border-radius:9px;padding:.6rem .9rem;margin-bottom:.45rem;cursor:pointer;font-size:.87rem;line-height:1.4;transition:all .18s;user-select:none;background:white;}
+.mitem:hover:not(.correct):not(.locked){border-color:#2471a3;background:#eaf4fb;}
+.mitem.selected{border-color:#2471a3;background:#2471a3;color:white;}
+.mitem.correct{border-color:#27ae60!important;background:#c6f6d5!important;color:#1e8449!important;cursor:default;pointer-events:none;font-weight:600;}
+.mitem.wrong{border-color:#e74c3c;background:#fed7d7;color:#c53030;}
+.mitem .badge{display:inline-block;font-weight:800;min-width:18px;margin-right:.3rem;}
+
+.match-score{text-align:center;margin-top:.7rem;font-weight:700;color:#1a3a5c;font-size:.92rem;}
+
+/* ---- EXERCISE 2: CONVERSATION ---- */
+.phone-shell{background:#e8eaed;border-radius:28px;padding:14px;box-shadow:0 6px 24px rgba(0,0,0,.18);max-width:420px;margin:0 auto;}
+.phone-bar{display:flex;justify-content:space-between;align-items:center;padding:6px 10px 10px;font-size:.75rem;color:#555;}
+.phone-bar .signal{font-size:.8rem;}
+.phone-bar .time{font-weight:600;}
+.phone-bar .batt{font-size:.75rem;}
+.phone-screen{background:white;border-radius:18px;overflow:hidden;}
+.chat-header{background:#f5f5f5;padding:.6rem 1rem;border-bottom:1px solid #e5e5e5;display:flex;align-items:center;gap:.6rem;}
+.chat-header .avatar{width:30px;height:30px;border-radius:50%;background:#2471a3;color:white;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;}
+.chat-header .chat-name{font-size:.88rem;font-weight:700;color:#1a1a1a;}
+.chat-msgs{padding:.8rem;background:#f9f9f9;display:flex;flex-direction:column;gap:.5rem;min-height:300px;}
+
+/* message bubbles */
+.msg{display:flex;flex-direction:column;max-width:78%;}
+.msg.lucy{align-self:flex-start;}
+.msg.emma{align-self:flex-end;align-items:flex-end;}
+.msg-name{font-size:.68rem;font-weight:700;color:#888;margin-bottom:.2rem;padding:0 .3rem;}
+.bubble{padding:.5rem .8rem;border-radius:14px;font-size:.84rem;line-height:1.5;}
+.msg.lucy .bubble{background:white;border:1px solid #e2e8f0;border-top-left-radius:4px;color:#1a1a1a;}
+.msg.emma .bubble{background:#2471a3;color:white;border-top-right-radius:4px;}
+
+/* dropdowns in chat */
+.chat-select{border:none;border-bottom:2px solid rgba(0,0,0,.25);background:transparent;font-size:.82rem;padding:.1rem .2rem;margin:0 .1rem;cursor:pointer;outline:none;font-family:inherit;color:inherit;max-width:200px;}
+.msg.lucy .chat-select{color:#1a3a5c;border-color:#2471a3;}
+.msg.emma .chat-select{color:white;border-color:rgba(255,255,255,.6);}
+.chat-select option{color:#2d3748;background:white;}
+.chat-select.correct{border-color:#27ae60;background:rgba(39,174,96,.1);}
+.chat-select.wrong{border-color:#e74c3c;background:rgba(231,76,60,.1);}
+.chat-select.correct-emma{border-color:#a8f0c6;background:rgba(168,240,198,.2);}
+.chat-select.wrong-emma{border-color:#f1948a;background:rgba(241,148,138,.2);}
+
+/* ---- BUTTONS ---- */
+.btn{padding:.55rem 1.3rem;border:none;border-radius:9px;cursor:pointer;font-size:.87rem;font-weight:700;transition:all .2s;letter-spacing:.2px;}
+.btn-p{background:#1a3a5c;color:white;}
+.btn-p:hover{background:#154360;}
+.btn-o{background:white;color:#1a3a5c;border:2px solid #1a3a5c;}
+.btn-o:hover{background:#eaf4fb;}
+.btn-send{background:#27ae60;color:white;font-size:.95rem;padding:.7rem 2rem;border-radius:12px;border:none;cursor:pointer;font-weight:700;transition:all .2s;display:block;margin:0 auto;letter-spacing:.3px;}
+.btn-send:hover{background:#1e8449;transform:translateY(-1px);box-shadow:0 4px 12px rgba(39,174,96,.3);}
+.btn-send:disabled{background:#95a5a6;cursor:not-allowed;transform:none;box-shadow:none;}
+.bgroup{display:flex;gap:.6rem;margin-top:.9rem;flex-wrap:wrap;}
+
+/* FEEDBACK */
+.fb{margin-top:.6rem;font-weight:700;font-size:.88rem;color:#1a3a5c;min-height:1.2rem;}
+.fb.ok{color:#27ae60;}
+.fb.err{color:#e74c3c;}
+
+/* SEND SECTION */
+.send-box{background:white;border-radius:14px;padding:1.4rem;box-shadow:0 2px 10px rgba(0,0,0,.08);text-align:center;margin-top:1.5rem;}
+.send-box p{font-size:.88rem;color:#718096;margin-bottom:1rem;}
+.send-error{color:#e74c3c;font-size:.85rem;font-weight:600;margin-top:.7rem;min-height:1rem;}
+
+/* INFO BANNER */
+.info{background:#eaf4fb;border-left:4px solid #2471a3;border-radius:0 10px 10px 0;padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.87rem;color:#1a5276;}
+.info strong{color:#1a3a5c;}
+
+@media(max-width:600px){
+  .match-grid{grid-template-columns:1fr;}
+  .phone-shell{border-radius:18px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hw-tag">📚 Homework</div>
+  <h1><span>Vocabulary</span> — Arguments</h1>
+  <div class="sub">Complete both exercises, then send your answers to your teacher.</div>
+</header>
+
+<div class="wrap">
+
+  <!-- NAME -->
+  <div class="name-box">
+    <label for="sname">👤 Your name:</label>
+    <input type="text" id="sname" placeholder="Type your full name here…" oninput="clearSendError()">
+  </div>
+
+  <div class="info">
+    <strong>How to submit:</strong> Complete both exercises and check your answers, then click <strong>Send to Teacher</strong> at the bottom. The button will only activate when everything is done.
+  </div>
+
+  <!-- ===== EXERCISE 1 ===== -->
+  <div class="stage">
+    <div class="sbadge">1</div>
+    <h2>Match the sentence halves.</h2>
+    <div class="stag">Matching</div>
+  </div>
+
+  <div class="exbox">
+    <div class="match-grid">
+      <div class="match-col">
+        <h3>Sentence beginnings</h3>
+        <div class="mitem" data-pid="1" onclick="pickPhrase(this)"><span class="badge">1</span> Neither of us agree so we have to find</div>
+        <div class="mitem" data-pid="2" onclick="pickPhrase(this)"><span class="badge">2</span> I love your idea but I have</div>
+        <div class="mitem" data-pid="3" onclick="pickPhrase(this)"><span class="badge">3</span> I know you're trying to pick</div>
+        <div class="mitem" data-pid="4" onclick="pickPhrase(this)"><span class="badge">4</span> None of my family see eye</div>
+        <div class="mitem" data-pid="5" onclick="pickPhrase(this)"><span class="badge">5</span> Eduardo will often back</div>
+        <div class="mitem" data-pid="6" onclick="pickPhrase(this)"><span class="badge">6</span> There's clearly an underlying</div>
+        <div class="mitem" data-pid="7" onclick="pickPhrase(this)"><span class="badge">7</span> My friend Anne and I clash</div>
+        <div class="mitem" data-pid="8" onclick="pickPhrase(this)"><span class="badge">8</span> If I say <em>black</em>, my boyfriend will immediately</div>
+      </div>
+      <div class="match-col">
+        <h3>Sentence endings</h3>
+        <div class="mitem" data-mid="3" onclick="pickMeaning(this)"><span class="badge">a</span> a fight with me but I won't argue with you.</div>
+        <div class="mitem" data-mid="2" onclick="pickMeaning(this)"><span class="badge">b</span> an issue with some of the details.</div>
+        <div class="mitem" data-mid="8" onclick="pickMeaning(this)"><span class="badge">c</span> contradict me and say <em>white</em>. It's infuriating!</div>
+        <div class="mitem" data-mid="5" onclick="pickMeaning(this)"><span class="badge">d</span> down if you give him good reasons why you disagree with him.</div>
+        <div class="mitem" data-mid="6" onclick="pickMeaning(this)"><span class="badge">e</span> issue as to why the Brown brothers fight all the time.</div>
+        <div class="mitem" data-mid="4" onclick="pickMeaning(this)"><span class="badge">f</span> to eye on politics.</div>
+        <div class="mitem" data-mid="7" onclick="pickMeaning(this)"><span class="badge">g</span> with each other on parenting issues all the time.</div>
+        <div class="mitem" data-mid="1" onclick="pickMeaning(this)"><span class="badge">h</span> a compromise.</div>
+      </div>
+    </div>
+    <div class="match-score" id="mScore"></div>
+    <div class="bgroup">
+      <button class="btn btn-p" onclick="checkEx1()">Check Exercise 1</button>
+      <button class="btn btn-o" onclick="resetEx1()">Reset</button>
+    </div>
+    <div class="fb" id="fb1"></div>
+  </div>
+
+  <!-- ===== EXERCISE 2 ===== -->
+  <div class="stage" style="margin-top:2rem;">
+    <div class="sbadge">2</div>
+    <h2>Complete the conversation with sentences a–g.</h2>
+    <div class="stag">Gap fill</div>
+  </div>
+
+  <div class="exbox">
+    <!-- Options reference -->
+    <div style="background:#f7fafc;border:1px solid #e2e8f0;border-radius:10px;padding:.8rem 1rem;margin-bottom:1.2rem;font-size:.84rem;line-height:1.9;">
+      <strong style="display:block;margin-bottom:.3rem;color:#1a3a5c;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;">Choose from:</strong>
+      <span><strong>a</strong> That's why he contradicts you.</span> &nbsp;·&nbsp;
+      <span><strong>b</strong> He seems to have an issue with me.</span> &nbsp;·&nbsp;
+      <span><strong>c</strong> We clash on almost every subject.</span><br>
+      <span><strong>d</strong> He never backs down.</span> &nbsp;·&nbsp;
+      <span><strong>e</strong> But he picks a fight with me every time I see him.</span> &nbsp;·&nbsp;
+      <span><strong>f</strong> But promise me you'll intervene if he starts a fight!</span> &nbsp;·&nbsp;
+      <span><strong>g</strong> There's no underlying issue there.</span>
+    </div>
+
+    <!-- Phone UI -->
+    <div class="phone-shell">
+      <div class="phone-bar">
+        <span class="signal">▐▐▐</span>
+        <span class="time">16:24</span>
+        <span class="batt">50% ▭</span>
+      </div>
+      <div class="phone-screen">
+        <div class="chat-header">
+          <div class="avatar">E</div>
+          <div class="chat-name">Emma</div>
+        </div>
+        <div class="chat-msgs">
+
+          <!-- Emma -->
+          <div class="msg emma">
+            <div class="msg-name">Emma</div>
+            <div class="bubble">Are you coming out tonight?</div>
+          </div>
+
+          <!-- Lucy -->
+          <div class="msg lucy">
+            <div class="msg-name">Lucy</div>
+            <div class="bubble">No sorry. Going to get an early night.</div>
+          </div>
+
+          <!-- Emma -->
+          <div class="msg emma">
+            <div class="msg-name">Emma</div>
+            <div class="bubble">You had an early night last night!</div>
+          </div>
+
+          <!-- Lucy 1 -->
+          <div class="msg lucy">
+            <div class="msg-name">Lucy</div>
+            <div class="bubble">I know, but Ivan will be there.
+              <select class="chat-select" id="cs1" onchange="clearChatFb()">
+                <option value="">¹ ___</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+                <option value="f">f</option>
+                <option value="g">g</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Emma -->
+          <div class="msg emma">
+            <div class="msg-name">Emma</div>
+            <div class="bubble">He doesn't. He likes you.</div>
+          </div>
+
+          <!-- Lucy 2 -->
+          <div class="msg lucy">
+            <div class="msg-name">Lucy</div>
+            <div class="bubble">
+              <select class="chat-select" id="cs2" onchange="clearChatFb()">
+                <option value="">² ___</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+                <option value="f">f</option>
+                <option value="g">g</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Emma -->
+          <div class="msg emma">
+            <div class="msg-name">Emma</div>
+            <div class="bubble">Because he likes talking to you!</div>
+          </div>
+
+          <!-- Lucy 3 -->
+          <div class="msg lucy">
+            <div class="msg-name">Lucy</div>
+            <div class="bubble">No, he doesn't!
+              <select class="chat-select" id="cs3" onchange="clearChatFb()">
+                <option value="">³ ___</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+                <option value="f">f</option>
+                <option value="g">g</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Emma 4 -->
+          <div class="msg emma">
+            <div class="msg-name">Emma</div>
+            <div class="bubble">He enjoys a good argument.
+              <select class="chat-select" id="cs4" onchange="clearChatFb()">
+                <option value="">⁴ ___</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+                <option value="f">f</option>
+                <option value="g">g</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Lucy 5 -->
+          <div class="msg lucy">
+            <div class="msg-name">Lucy</div>
+            <div class="bubble">Are you sure about that? He gets so annoyed with me and he's so stubborn.
+              <select class="chat-select" id="cs5" onchange="clearChatFb()">
+                <option value="">⁵ ___</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+                <option value="f">f</option>
+                <option value="g">g</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Emma 6 -->
+          <div class="msg emma">
+            <div class="msg-name">Emma</div>
+            <div class="bubble">I honestly think he just likes a good argument.
+              <select class="chat-select" id="cs6" onchange="clearChatFb()">
+                <option value="">⁶ ___</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+                <option value="f">f</option>
+                <option value="g">g</option>
+              </select>
+              Besides, there'll be plenty of us there so you won't need to speak to him.
+            </div>
+          </div>
+
+          <!-- Lucy 7 -->
+          <div class="msg lucy">
+            <div class="msg-name">Lucy</div>
+            <div class="bubble">Alright, I'll come.
+              <select class="chat-select" id="cs7" onchange="clearChatFb()">
+                <option value="">⁷ ___</option>
+                <option value="a">a</option>
+                <option value="b">b</option>
+                <option value="c">c</option>
+                <option value="d">d</option>
+                <option value="e">e</option>
+                <option value="f">f</option>
+                <option value="g">g</option>
+              </select>
+            </div>
+          </div>
+
+        </div><!-- /chat-msgs -->
+      </div><!-- /phone-screen -->
+    </div><!-- /phone-shell -->
+
+    <div class="bgroup" style="justify-content:center;margin-top:1.2rem;">
+      <button class="btn btn-p" onclick="checkEx2()">Check Exercise 2</button>
+      <button class="btn btn-o" onclick="resetEx2()">Reset</button>
+    </div>
+    <div class="fb" id="fb2" style="text-align:center;"></div>
+  </div>
+
+  <!-- ===== SEND TO TEACHER ===== -->
+  <div class="send-box">
+    <p>When you're happy with your answers, send them to your teacher.</p>
+    <button class="btn-send" id="sendBtn" onclick="sendToTeacher()">📨 Send to Teacher</button>
+    <div class="send-error" id="sendErr"></div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ===== EXERCISE 1 MATCHING =====
+const ex1Answers = {1:'h',2:'b',3:'a',4:'f',5:'d',6:'e',7:'g',8:'c'};
+const midToLetter = {3:'a',2:'b',8:'c',5:'d',6:'e',4:'f',7:'g',1:'h'};
+
+let selPhrase = null;
+let ex1Score = 0;
+let ex1Matched = {}; // pid -> letter matched
+
+function pickPhrase(el){
+  if(el.classList.contains('correct')) return;
+  document.querySelectorAll('.mitem[data-pid]').forEach(i=>{
+    if(!i.classList.contains('correct')) i.classList.remove('selected');
+  });
+  el.classList.add('selected');
+  selPhrase = el;
+}
+
+function pickMeaning(el){
+  if(!selPhrase || el.classList.contains('correct')) return;
+  const pid = selPhrase.dataset.pid;
+  const mid = el.dataset.mid;
+  const letter = midToLetter[mid];
+  if(pid === mid){
+    selPhrase.classList.remove('selected');
+    selPhrase.classList.add('correct');
+    el.classList.add('correct');
+    ex1Matched[pid] = letter;
+    ex1Score++;
+    document.getElementById('mScore').textContent = ex1Score + ' / 8 matched';
+    selPhrase = null;
+    document.getElementById('fb1').textContent = '';
+  } else {
+    el.classList.add('wrong');
+    selPhrase.classList.add('wrong');
+    const p = selPhrase;
+    setTimeout(()=>{ el.classList.remove('wrong'); p.classList.remove('wrong','selected'); selPhrase=null; }, 700);
+  }
+}
+
+function checkEx1(){
+  const fb = document.getElementById('fb1');
+  if(ex1Score < 8){
+    fb.textContent = ex1Score + '/8 correct. Keep going — match all pairs to continue!';
+    fb.className = 'fb err';
+  } else {
+    fb.textContent = '✓ Exercise 1 complete! All 8 correct.';
+    fb.className = 'fb ok';
+  }
+  updateSendBtn();
+}
+
+function resetEx1(){
+  document.querySelectorAll('.mitem').forEach(i=>i.classList.remove('selected','correct','wrong'));
+  ex1Score = 0; ex1Matched = {}; selPhrase = null;
+  document.getElementById('mScore').textContent = '';
+  document.getElementById('fb1').textContent = '';
+  document.getElementById('fb1').className = 'fb';
+  updateSendBtn();
+}
+
+// ===== EXERCISE 2 CONVERSATION =====
+const ex2Answers = {cs1:'b', cs2:'e', cs3:'c', cs4:'a', cs5:'d', cs6:'g', cs7:'f'};
+const ex2Sentences = {
+  a: "That's why he contradicts you.",
+  b: "He seems to have an issue with me.",
+  c: "We clash on almost every subject.",
+  d: "He never backs down.",
+  e: "But he picks a fight with me every time I see him.",
+  f: "But promise me you'll intervene if he starts a fight!",
+  g: "There's no underlying issue there."
+};
+const emmaSelects = ['cs4','cs6'];
+
+function checkEx2(){
+  let correct = 0;
+  let incomplete = false;
+  for(const [id, ans] of Object.entries(ex2Answers)){
+    const sel = document.getElementById(id);
+    if(!sel.value){ incomplete = true; continue; }
+    const isEmma = emmaSelects.includes(id);
+    if(sel.value === ans){
+      sel.className = 'chat-select ' + (isEmma ? 'correct-emma' : 'correct');
+      correct++;
+    } else {
+      sel.className = 'chat-select ' + (isEmma ? 'wrong-emma' : 'wrong');
+    }
+  }
+  const fb = document.getElementById('fb2');
+  if(incomplete){
+    fb.textContent = 'Please select an answer for every blank before checking.';
+    fb.className = 'fb err';
+  } else if(correct === 7){
+    fb.textContent = '✓ Exercise 2 complete! All 7 correct.';
+    fb.className = 'fb ok';
+  } else {
+    fb.textContent = correct + '/7 correct. Review the highlighted blanks and try again.';
+    fb.className = 'fb err';
+  }
+  updateSendBtn();
+}
+
+function resetEx2(){
+  ['cs1','cs2','cs3','cs4','cs5','cs6','cs7'].forEach(id=>{
+    const s = document.getElementById(id);
+    s.value = '';
+    s.className = 'chat-select';
+  });
+  document.getElementById('fb2').textContent = '';
+  document.getElementById('fb2').className = 'fb';
+  updateSendBtn();
+}
+
+function clearChatFb(){
+  ['cs1','cs2','cs3','cs4','cs5','cs6','cs7'].forEach(id=>{
+    const s = document.getElementById(id);
+    s.classList.remove('correct','wrong','correct-emma','wrong-emma');
+  });
+  document.getElementById('fb2').textContent = '';
+  updateSendBtn();
+}
+
+// ===== VALIDATION & SEND =====
+function isEx1Done(){
+  return ex1Score === 8;
+}
+function isEx2Done(){
+  for(const [id, ans] of Object.entries(ex2Answers)){
+    const sel = document.getElementById(id);
+    if(!sel.value || sel.value !== ans) return false;
+  }
+  return true;
+}
+
+function updateSendBtn(){
+  // no auto-lock — user checks themselves, send does final validation
+}
+
+function clearSendError(){ document.getElementById('sendErr').textContent=''; }
+
+function sendToTeacher(){
+  const name = document.getElementById('sname').value.trim();
+  const errEl = document.getElementById('sendErr');
+
+  if(!name){
+    document.getElementById('sname').classList.add('error');
+    errEl.textContent = '⚠ Please enter your name before sending.';
+    document.getElementById('sname').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  document.getElementById('sname').classList.remove('error');
+
+  if(!isEx1Done()){
+    errEl.textContent = '⚠ Exercise 1 is not complete. Please match all 8 sentence halves correctly.';
+    document.getElementById('s1')?.scrollIntoView({behavior:'smooth',block:'start'});
+    return;
+  }
+
+  // Check ex2 all filled
+  let ex2Filled = true;
+  for(const id of Object.keys(ex2Answers)){
+    if(!document.getElementById(id).value){ ex2Filled = false; break; }
+  }
+  if(!ex2Filled){
+    errEl.textContent = '⚠ Exercise 2 is not complete. Please fill in all 7 blanks.';
+    return;
+  }
+
+  if(!isEx2Done()){
+    errEl.textContent = '⚠ Exercise 2 has some incorrect answers. Please check and correct them first.';
+    return;
+  }
+
+  errEl.textContent = '';
+
+  // Build answer summary
+  const ex1Labels = {
+    1:'Neither of us agree so we have to find',
+    2:'I love your idea but I have',
+    3:"I know you're trying to pick",
+    4:'None of my family see eye',
+    5:'Eduardo will often back',
+    6:"There's clearly an underlying",
+    7:'My friend Anne and I clash',
+    8:'If I say black, my boyfriend will immediately'
+  };
+  const ex1Endings = {h:'a compromise.',b:'an issue with some of the details.',a:"a fight with me but I won't argue with you.",f:'to eye on politics.',d:'down if you give him good reasons why you disagree with him.',e:'issue as to why the Brown brothers fight all the time.',g:'with each other on parenting issues all the time.',c:"contradict me and say white. It's infuriating!"};
+
+  let body = `HOMEWORK — Vocabulary: Arguments\n`;
+  body += `Student: ${name}\n`;
+  body += `Submitted: ${new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})}\n`;
+  body += `${'─'.repeat(40)}\n\n`;
+
+  body += `EXERCISE 1 — Match the sentence halves\n\n`;
+  for(let i=1;i<=8;i++){
+    const letter = ex1Matched[i] || '?';
+    const ending = ex1Endings[letter] || '';
+    body += `${i}. ${ex1Labels[i]} … ${letter}) ${ending}\n`;
+  }
+
+  body += `\n${'─'.repeat(40)}\n\n`;
+  body += `EXERCISE 2 — Complete the conversation\n\n`;
+  const blanks = ['cs1','cs2','cs3','cs4','cs5','cs6','cs7'];
+  blanks.forEach((id,i)=>{
+    const letter = document.getElementById(id).value;
+    const sentence = ex2Sentences[letter] || '?';
+    body += `${i+1}. ${letter}) ${sentence}\n`;
+  });
+  body += `\n${'─'.repeat(40)}\n`;
+
+  const subject = encodeURIComponent(`Homework — Arguments — ${name}`);
+  const encodedBody = encodeURIComponent(body);
+  window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${subject}&body=${encodedBody}`;
+}
+</script>
+</body>
+</html>
