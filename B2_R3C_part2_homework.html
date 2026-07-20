@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3C Homework — Forming Adjectives</title>
+<style>
+:root{
+  --navy:#1e3a5f;--navy-mid:#2c5282;--navy-light:#ebf0f8;
+  --coral:#e05c3a;--coral-light:#fde8e3;
+  --amber:#c9922a;--amber-light:#fdf3d8;
+  --mint:#2d9c8f;--mint-light:#d4efec;
+  --purple:#6c3483;--purple-light:#f4e6f7;
+  --good:#2e8b72;--good-bg:#d4efec;
+  --bad:#c0392b;--bad-bg:#fde8e3;
+  --card:#fff;--border:#dde3ee;--muted:#7a8ba6;--bg:#f4f6fb;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:#222;min-height:100vh;}
+
+/* ── HEADER ── */
+.hw-header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);color:#fff;padding:24px 28px 20px;}
+.hw-meta{font-size:.75rem;opacity:.65;letter-spacing:.09em;text-transform:uppercase;margin-bottom:5px;}
+.hw-title{font-size:1.4rem;font-weight:800;margin-bottom:16px;}
+.name-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.name-row label{font-size:.87rem;font-weight:600;opacity:.85;white-space:nowrap;}
+.name-inp{flex:1;max-width:340px;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.28);border-radius:8px;padding:8px 13px;color:#fff;font-size:.9rem;font-family:inherit;outline:none;transition:border-color .2s;}
+.name-inp::placeholder{color:rgba(255,255,255,.45);}
+.name-inp:focus{border-color:rgba(255,255,255,.7);}
+.prog-track{background:rgba(255,255,255,.18);border-radius:20px;height:8px;overflow:hidden;margin-bottom:7px;}
+.prog-bar{height:100%;background:var(--coral);border-radius:20px;width:0%;transition:width .45s cubic-bezier(.4,0,.2,1);}
+.prog-label{font-size:.78rem;opacity:.65;}
+
+/* ── LAYOUT ── */
+.hw-body{max-width:800px;margin:0 auto;padding:26px 20px 70px;}
+
+/* ── EX CARDS ── */
+.ex-card{background:var(--card);border-radius:14px;border:1.5px solid var(--border);padding:24px 26px;margin-bottom:24px;box-shadow:0 2px 12px rgba(30,58,95,.07);}
+.ex-head{display:flex;align-items:flex-start;gap:13px;margin-bottom:4px;}
+.ex-num{background:var(--coral);color:#fff;font-weight:800;font-size:.88rem;border-radius:50%;min-width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.ex-title{font-weight:800;font-size:1rem;color:var(--navy);line-height:1.35;}
+.ex-sub{font-size:.83rem;color:var(--muted);margin-top:4px;margin-bottom:16px;padding-left:43px;}
+
+/* ── MCQ (EX 1) ── */
+.mcq-list{display:flex;flex-direction:column;gap:9px;margin-bottom:18px;}
+.mcq-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border-radius:9px;border:1.5px solid var(--border);background:#fafbff;}
+.mcq-root{font-weight:700;font-size:.91rem;color:var(--navy);min-width:108px;flex-shrink:0;}
+.mcq-opts{display:flex;gap:7px;flex-wrap:wrap;}
+.suf-opt{border:2px solid var(--border);background:#fff;border-radius:20px;padding:4px 14px;font-size:.82rem;font-weight:700;color:#555;cursor:pointer;transition:all .14s;user-select:none;font-family:inherit;}
+.suf-opt:hover{border-color:var(--navy-mid);color:var(--navy);}
+.suf-opt.sel{background:var(--coral-light);border-color:var(--coral);color:#922b15;}
+.suf-opt.c{background:var(--good-bg);border-color:var(--good);color:#1a6b5f;pointer-events:none;}
+.suf-opt.w{background:var(--bad-bg);border-color:var(--bad);color:var(--bad);pointer-events:none;}
+.suf-opt.rev{background:var(--good-bg);border-color:var(--good);color:#1a6b5f;opacity:.6;pointer-events:none;}
+
+/* ── FILM REVIEW (EX 2) ── */
+.film-box{background:var(--navy-light);border-radius:11px;padding:18px 22px;font-size:.91rem;line-height:2.1;color:#222;margin-bottom:18px;}
+.film-title{font-weight:800;color:var(--navy);font-size:.95rem;}
+.gap-sel{border:none;border-bottom:2.5px solid var(--amber);background:transparent;font-size:.91rem;font-family:inherit;color:var(--navy);font-weight:700;padding:1px 5px;cursor:pointer;outline:none;margin:0 1px;}
+.gap-sel.c{border-bottom-color:var(--good);color:var(--good);}
+.gap-sel.w{border-bottom-color:var(--bad);color:var(--bad);}
+
+/* ── TYPED SUFFIX (EX 3) ── */
+.sent-list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+.sent-item{display:flex;align-items:baseline;gap:7px;font-size:.91rem;line-height:1.65;padding:9px 14px;border-radius:9px;border:1.5px solid var(--border);background:#fafbff;}
+.sn{font-weight:800;color:var(--navy);min-width:22px;flex-shrink:0;}
+.root-lbl{font-weight:700;color:var(--navy-mid);}
+.suf-in{border:none;border-bottom:2.5px solid var(--amber);background:transparent;font-size:.9rem;font-family:inherit;padding:1px 5px;width:90px;outline:none;text-align:center;color:#222;transition:border-color .2s,color .2s;}
+.suf-in.c{border-bottom-color:var(--good);color:var(--good);}
+.suf-in.w{border-bottom-color:var(--bad);color:var(--bad);}
+
+
+/* ── SCORE BAR ── */
+.ex-score{margin-top:12px;font-size:.86rem;font-weight:600;padding:9px 15px;border-radius:9px;border:2px solid;display:none;}
+.ex-score.good{background:var(--good-bg);border-color:var(--good);color:#1a6b5f;}
+.ex-score.ok{background:var(--amber-light);border-color:var(--amber);color:#7a5800;}
+.ex-score.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--bad);}
+
+/* ── BUTTONS ── */
+.check-btn{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:9px 22px;font-size:.87rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;margin-top:2px;}
+.check-btn:hover{background:var(--navy-mid);}
+
+/* ── SEND SECTION ── */
+.send-card{background:var(--card);border-radius:14px;border:1.5px solid var(--border);padding:22px 26px;box-shadow:0 2px 12px rgba(30,58,95,.07);}
+.send-title{font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:14px;}
+.send-btn{background:var(--coral);color:#fff;border:none;border-radius:9px;padding:12px 30px;font-size:.97rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;}
+.send-btn:hover{background:#c44e30;}
+.send-errs{margin-top:14px;font-size:.84rem;color:var(--bad);font-weight:600;line-height:1.8;}
+.send-errs li{margin-left:18px;}
+
+@media(max-width:520px){
+  .mcq-row{flex-direction:column;align-items:flex-start;}
+  .hw-header{padding:18px 16px 16px;}
+  .ex-card,.send-card{padding:16px 14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="hw-header">
+  <div class="hw-meta">3C — Life's Too Short · Homework</div>
+  <div class="hw-title">Forming Adjectives</div>
+  <div class="name-row">
+    <label for="sname">Your name:</label>
+    <input type="text" id="sname" class="name-inp" placeholder="Type your full name here…" autocomplete="off">
+  </div>
+  <div class="prog-track"><div class="prog-bar" id="prog"></div></div>
+  <div class="prog-label" id="prog-lbl">0 / 3 exercises checked</div>
+</div>
+
+<div class="hw-body">
+
+<!-- ══ EX 1 — MCQ ══ -->
+<div class="ex-card">
+  <div class="ex-head">
+    <div class="ex-num">1</div>
+    <div class="ex-title">Choose the correct suffix to form an adjective.</div>
+  </div>
+  <div class="ex-sub">Click the suffix that goes with each word root. Some distractors look convincing — say the word aloud!</div>
+  <div class="mcq-list" id="mcq-list"></div>
+  <button class="check-btn" onclick="checkEx1()">✓ Check</button>
+  <div class="ex-score" id="sc1"></div>
+</div>
+
+<!-- ══ EX 2 — FILM REVIEW DROPDOWNS ══ -->
+<div class="ex-card">
+  <div class="ex-head">
+    <div class="ex-num">2</div>
+    <div class="ex-title">Read the film review. Choose the correct adjective for each gap.</div>
+  </div>
+  <div class="ex-sub">All the missing words use a suffix from today's lesson.</div>
+  <div class="film-box">
+    <span class="film-title">Knives Out</span> (2019) is a
+    <select class="gap-sel" id="g1"><option value="">___</option><option>careful</option><option>colourful</option><option>powerful</option></select>
+    comedy thriller that keeps you guessing until the very end. The main character, Marta, is warm, honest, and completely
+    <select class="gap-sel" id="g2"><option value="">___</option><option>comfortable</option><option>suitable</option><option>ethical</option></select>
+    — which makes her the last person you'd expect to be accused of murder. The villain's scheme is both clever and
+    <select class="gap-sel" id="g3"><option value="">___</option><option>gorgeous</option><option>outrageous</option><option>serious</option></select>,
+    and watching it unravel is
+    <select class="gap-sel" id="g4"><option value="">___</option><option>delightful</option><option>pointless</option><option>colourless</option></select>.
+    The plot is impressively
+    <select class="gap-sel" id="g5"><option value="">___</option><option>musical</option><option>magical</option><option>logical</option></select>,
+    with every clue carefully placed. The ending, though slightly
+    <select class="gap-sel" id="g6"><option value="">___</option><option>stylish</option><option>nightmarish</option><option>childish</option></select>
+    for some of the characters, leaves the audience with a huge smile.
+  </div>
+  <button class="check-btn" onclick="checkEx2()">✓ Check</button>
+  <div class="ex-score" id="sc2"></div>
+</div>
+
+<!-- ══ EX 3 — TYPED SUFFIX ══ -->
+<div class="ex-card">
+  <div class="ex-head">
+    <div class="ex-num">3</div>
+    <div class="ex-title">Complete the adjective by adding the correct suffix.</div>
+  </div>
+  <div class="ex-sub">The word root is shown. Type the missing ending (spelling may change).</div>
+  <div class="sent-list" id="sent-list"></div>
+  <button class="check-btn" onclick="checkEx3()">✓ Check</button>
+  <div class="ex-score" id="sc3"></div>
+</div>
+
+
+<!-- ══ SEND ══ -->
+<div class="send-card">
+  <div class="send-title">📧 Finished? Send your work to your teacher.</div>
+  <button class="send-btn" onclick="sendToTeacher()">Send to Teacher</button>
+  <div class="send-errs" id="send-errs" style="display:none;"></div>
+</div>
+
+</div><!-- /hw-body -->
+
+<script>
+/* ══════════════ DATA ══════════════ */
+
+const ex1Data = [
+  {root:'allergy',   correct:'-ic',         opts:['-al',  '-ic',        '-ous',  '-ish']},
+  {root:'ethics',    correct:'-al',         opts:['-al',  '-ic',        '-ful',  '-less']},
+  {root:'fool',      correct:'-ish',        opts:['-ful', '-less',      '-ish',  '-y']},
+  {root:'meat',      correct:'-y',          opts:['-al',  '-ful',       '-ous',  '-y']},
+  {root:'nightmare', correct:'-ish',        opts:['-ful', '-ic',        '-ish',  '-less']},
+  {root:'outrage',   correct:'-ous',        opts:['-ful', '-ic',        '-ous',  '-y']},
+  {root:'ridicule',  correct:'-ous',        opts:['-al',  '-ish',       '-ous',  '-less']},
+  {root:'accept',    correct:'-able/-ible', opts:['-al',  '-able/-ible','-ish',  '-y']},
+  {root:'logic',     correct:'-al',         opts:['-al',  '-ic',        '-ful',  '-y']},
+  {root:'scare',     correct:'-y',          opts:['-ic',  '-ish',       '-ous',  '-y']},
+];
+
+const ex2Ans = {g1:'colourful', g2:'ethical', g3:'outrageous', g4:'delightful', g5:'logical', g6:'nightmarish'};
+
+const ex3Data = [
+  {pre:'Fixing this won\'t be easy but it\'s ', root:'do',         suf:'able', post:'.'},
+  {pre:'Today\'s crossword is really ',         root:'trick',      suf:'y',    post:'.'},
+  {pre:'So, what\'s a ',                        root:'tradition',  suf:'al',   post:' meal in your country?'},
+  {pre:'I love this film. It\'s a ',            root:'class',      suf:'ic',   post:'.'},
+  {pre:'Everyone loves Vera. She\'s just so ',  root:'like',       suf:'able', post:'.'},
+  {pre:'You don\'t think that snake\'s ',       root:'poison',     suf:'ous',  post:', do you?'},
+  {pre:'The way Tom calls his dad \'Sir\' is so ', root:'respect', suf:'ful',  post:'.'},
+  {pre:'Please remember that this information is ', root:'confident', suf:'ial', post:'.'},
+];
+
+/* ══════════════ BUILD EX 1 ══════════════ */
+const mcqList = document.getElementById('mcq-list');
+ex1Data.forEach((item, i) => {
+  const row = document.createElement('div');
+  row.className = 'mcq-row';
+  row.id = 'row' + i;
+  row.innerHTML =
+    `<span class="mcq-root">${item.root} →</span>` +
+    `<div class="mcq-opts">` +
+    item.opts.map(o =>
+      `<button class="suf-opt" data-suf="${o}" onclick="selectSuf(this,${i})">${o}</button>`
+    ).join('') +
+    `</div>`;
+  mcqList.appendChild(row);
+});
+
+function selectSuf(btn, i) {
+  const row = document.getElementById('row' + i);
+  row.querySelectorAll('.suf-opt').forEach(b => b.classList.remove('sel','c','w','rev'));
+  btn.classList.add('sel');
+  row.dataset.chosen = btn.dataset.suf;
+}
+
+function checkEx1() {
+  let ok = 0;
+  ex1Data.forEach((item, i) => {
+    const row = document.getElementById('row' + i);
+    const chosen = row.dataset.chosen || '';
+    row.querySelectorAll('.suf-opt').forEach(b => {
+      b.classList.remove('sel','c','w','rev');
+      if (chosen) {
+        if (b.dataset.suf === chosen) {
+          chosen === item.correct ? (b.classList.add('c'), ok++) : b.classList.add('w');
+        } else if (b.dataset.suf === item.correct && chosen !== item.correct) {
+          b.classList.add('rev');
+        }
+      } else {
+        if (b.dataset.suf === item.correct) b.classList.add('rev');
+      }
+    });
+  });
+  showScore('sc1', ok, ex1Data.length);
+  markDone(0);
+}
+
+/* ══════════════ BUILD EX 3 ══════════════ */
+const sentList = document.getElementById('sent-list');
+ex3Data.forEach((item, i) => {
+  const div = document.createElement('div');
+  div.className = 'sent-item';
+  div.innerHTML =
+    `<span class="sn">${i + 1}.</span>` +
+    `<span>${item.pre}<span class="root-lbl">${item.root}</span>` +
+    `<input class="suf-in" id="s${i}" data-suf="${item.suf}" data-root="${item.root}" placeholder="${'_'.repeat(item.suf.length + 1)}" autocomplete="off">` +
+    `${item.post}</span>`;
+  sentList.appendChild(div);
+});
+
+function checkEx3() {
+  let ok = 0;
+  ex3Data.forEach((item, i) => {
+    const inp = document.getElementById('s' + i);
+    inp.classList.remove('c','w');
+    const v = inp.value.trim().toLowerCase().replace(/\s/g,'');
+    if (!v) return;
+    const full = item.root + item.suf;
+    if (v === item.suf || v === full) { inp.classList.add('c'); ok++; }
+    else inp.classList.add('w');
+  });
+  showScore('sc3', ok, ex3Data.length);
+  markDone(2);
+}
+
+/* ══════════════ CHECK EX 2 ══════════════ */
+function checkEx2() {
+  let ok = 0;
+  Object.entries(ex2Ans).forEach(([id, ans]) => {
+    const sel = document.getElementById(id);
+    sel.classList.remove('c','w');
+    if (!sel.value) return;
+    sel.value === ans ? (sel.classList.add('c'), ok++) : sel.classList.add('w');
+  });
+  showScore('sc2', ok, 6);
+  markDone(1);
+}
+
+
+/* ══════════════ PROGRESS ══════════════ */
+const done = [false, false, false];
+function markDone(i) {
+  done[i] = true;
+  const n = done.filter(Boolean).length;
+  document.getElementById('prog').style.width = (n / 3 * 100) + '%';
+  document.getElementById('prog-lbl').textContent = n + ' / 3 exercises checked';
+}
+
+function showScore(id, ok, total) {
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  if (ok === total) {
+    el.className = 'ex-score good';
+    el.textContent = `🎉 ${ok}/${total} — Perfect!`;
+  } else if (ok >= Math.ceil(total / 2)) {
+    el.className = 'ex-score ok';
+    el.textContent = `✓ ${ok}/${total} — Check the highlighted answers.`;
+  } else {
+    el.className = 'ex-score bad';
+    el.textContent = `✗ ${ok}/${total} — Review and try again.`;
+  }
+}
+
+/* ══════════════ VALIDATE & SEND ══════════════ */
+function validate() {
+  const errs = [];
+
+  if (!document.getElementById('sname').value.trim())
+    errs.push('Write your name at the top before sending.');
+
+  const ex1missing = ex1Data.some((_, i) => !document.getElementById('row' + i).dataset.chosen);
+  if (ex1missing) errs.push('Exercise 1: select a suffix for every word.');
+
+  const ex2missing = Object.keys(ex2Ans).some(id => !document.getElementById(id).value);
+  if (ex2missing) errs.push('Exercise 2: choose an answer for every gap.');
+
+  const ex3missing = ex3Data.some((_, i) => !document.getElementById('s' + i).value.trim());
+  if (ex3missing) errs.push('Exercise 3: complete all sentences.');
+
+
+  return errs;
+}
+
+function collectAnswers() {
+  const name = document.getElementById('sname').value.trim();
+  let body = `Student: ${name}\n${'─'.repeat(40)}\n\n`;
+
+  body += 'EX 1 — Suffix Choice\n';
+  ex1Data.forEach((item, i) => {
+    const chosen = document.getElementById('row' + i).dataset.chosen || '(no answer)';
+    const tick = chosen === item.correct ? '✓' : '✗';
+    body += `  ${tick} ${item.root} → ${chosen}  (correct: ${item.correct})\n`;
+  });
+
+  body += '\nEX 2 — Film Review Gaps\n';
+  const gLabels = {g1:'Gap 1',g2:'Gap 2',g3:'Gap 3',g4:'Gap 4',g5:'Gap 5',g6:'Gap 6'};
+  Object.entries(ex2Ans).forEach(([id, ans]) => {
+    const val = document.getElementById(id).value || '(no answer)';
+    const tick = val === ans ? '✓' : '✗';
+    body += `  ${tick} ${gLabels[id]}: ${val}  (correct: ${ans})\n`;
+  });
+
+  body += '\nEX 3 — Complete the Adjective\n';
+  ex3Data.forEach((item, i) => {
+    const val = document.getElementById('s' + i).value.trim() || '(blank)';
+    const full = item.root + item.suf;
+    const correct = val === item.suf || val === full;
+    body += `  ${correct?'✓':'✗'} ${item.root}[${val}]  (correct: ${item.suf})\n`;
+  });
+
+
+  return body;
+}
+
+function sendToTeacher() {
+  const errs = validate();
+  const errDiv = document.getElementById('send-errs');
+  if (errs.length) {
+    errDiv.style.display = 'block';
+    errDiv.innerHTML = '<ul>' + errs.map(e => `<li>${e}</li>`).join('') + '</ul>';
+    errDiv.scrollIntoView({behavior:'smooth', block:'nearest'});
+    return;
+  }
+  errDiv.style.display = 'none';
+  const name = document.getElementById('sname').value.trim();
+  const sub = encodeURIComponent(`3C Homework — Forming Adjectives — ${name}`);
+  const bod = encodeURIComponent(collectAnswers());
+  window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${sub}&body=${bod}`;
+}
+</script>
+</body>
+</html>
