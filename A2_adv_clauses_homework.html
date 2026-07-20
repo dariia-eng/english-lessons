@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homework – Adverbial Clauses</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #080e1a;
+      min-height: 100vh;
+      color: #f0f0ff;
+      padding-bottom: 60px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 18%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 38% 65%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 72% 12%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 88% 78%, rgba(255,255,255,0.28) 0%, transparent 100%),
+        radial-gradient(1px 1px at 52% 44%, rgba(255,255,255,0.42) 0%, transparent 100%),
+        radial-gradient(1px 1px at 20% 86%, rgba(255,255,255,0.32) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 92% 32%, rgba(255,255,255,0.48) 0%, transparent 100%),
+        radial-gradient(1px 1px at 62% 91%, rgba(255,255,255,0.38) 0%, transparent 100%),
+        radial-gradient(1px 1px at 44% 8%,  rgba(255,255,255,0.44) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 0 20px; }
+
+    /* ── HEADER ── */
+    .hw-header { text-align: center; padding: 36px 20px 22px; }
+    .hw-icon   { font-size: 3rem; display: block; margin-bottom: 10px; }
+    .hw-label  { font-size: 0.67rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 6px; }
+    .hw-title  {
+      font-size: 2rem; font-weight: 800; line-height: 1.15;
+      background: linear-gradient(135deg, #34d399, #60a5fa, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 6px;
+    }
+    .hw-sub { font-size: 0.84rem; color: rgba(255,255,255,0.38); }
+
+    /* ── NAME CARD ── */
+    .name-card {
+      background: rgba(52,211,153,0.05);
+      border: 2px solid rgba(52,211,153,0.28);
+      border-radius: 18px;
+      padding: 20px 24px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .name-card label { font-weight: 700; font-size: 0.88rem; white-space: nowrap; color: #6ee7b7; }
+    .name-input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: none;
+      border-bottom: 2px solid rgba(52,211,153,0.35);
+      color: #f0f0ff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      outline: none;
+      border-radius: 5px 5px 0 0;
+      transition: border-color 0.2s;
+    }
+    .name-input:focus { border-bottom-color: #34d399; }
+    .name-input::placeholder { color: rgba(255,255,255,0.18); font-weight: 400; }
+
+    /* ── PROGRESS BAR ── */
+    .prog-wrap { margin-bottom: 28px; }
+    .prog-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px;
+    }
+    .prog-label { font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+    .prog-pct   { font-size: 0.8rem; font-weight: 700; color: #34d399; transition: color 0.3s; }
+    .prog-track {
+      height: 8px; background: rgba(255,255,255,0.07);
+      border-radius: 99px; overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #34d399, #60a5fa, #a78bfa);
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.5s cubic-bezier(.4,0,.2,1);
+    }
+    .prog-steps {
+      display: flex; gap: 6px; margin-top: 8px;
+    }
+    .prog-step {
+      flex: 1; height: 3px; border-radius: 99px;
+      background: rgba(255,255,255,0.08);
+      transition: background 0.4s;
+    }
+    .prog-step.done { background: #34d399; }
+
+    /* ── EXERCISE CARD ── */
+    .ex-card {
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px;
+      padding: 24px 26px;
+      margin-bottom: 22px;
+      transition: border-color 0.3s;
+    }
+    .ex-card.complete { border-color: rgba(52,211,153,0.22); }
+
+    .ex-header { display: flex; align-items: flex-start; gap: 13px; margin-bottom: 16px; }
+    .ex-badge {
+      flex-shrink: 0; font-size: 0.67rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 5px 13px; border-radius: 99px;
+    }
+    .badge-teal   { background: rgba(52,211,153,0.12);  color: #6ee7b7;  border: 1px solid rgba(52,211,153,0.28); }
+    .badge-blue   { background: rgba(96,165,250,0.12);  color: #93c5fd;  border: 1px solid rgba(96,165,250,0.28); }
+    .badge-purple { background: rgba(167,139,250,0.12); color: #c4b5fd;  border: 1px solid rgba(167,139,250,0.28); }
+    .badge-gold   { background: rgba(251,191,36,0.1);   color: #fcd34d;  border: 1px solid rgba(251,191,36,0.25); }
+
+    .ex-title-wrap { flex: 1; }
+    .ex-title       { font-size: 1.03rem; font-weight: 700; margin-bottom: 2px; }
+    .ex-instruction { font-size: 0.82rem; color: rgba(255,255,255,0.48); line-height: 1.55; }
+
+    hr.divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 0 0 18px; }
+
+    /* ── EX 1: MULTIPLE CHOICE ── */
+    .mc-question { margin-bottom: 18px; }
+    .mc-q-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+    .mc-q-num {
+      flex-shrink: 0; width: 24px; height: 24px;
+      border-radius: 50%; background: rgba(52,211,153,0.15); color: #34d399;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 700;
+    }
+    .mc-q-text { font-size: 0.9rem; line-height: 1.65; color: rgba(255,255,255,0.82); padding-top: 1px; }
+    .mc-options { display: flex; gap: 7px; flex-wrap: wrap; padding-left: 34px; }
+    .mc-opt {
+      background: rgba(255,255,255,0.04);
+      border: 2px solid rgba(255,255,255,0.09);
+      border-radius: 10px;
+      padding: 7px 16px;
+      font-size: 0.86rem; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.17s;
+      color: rgba(255,255,255,0.72);
+      user-select: none;
+    }
+    .mc-opt:hover     { background: rgba(52,211,153,0.07); border-color: rgba(52,211,153,0.3); color: #fff; }
+    .mc-opt.selected  { background: rgba(52,211,153,0.12); border-color: #34d399; color: #6ee7b7; }
+    .mc-opt.correct   { background: rgba(52,211,153,0.13); border-color: #34d399; color: #6ee7b7; cursor: default; }
+    .mc-opt.wrong     { background: rgba(248,113,113,0.1);  border-color: #f87171; color: #fca5a5; cursor: default; }
+    .mc-opt.reveal    { background: rgba(52,211,153,0.07);  border-color: rgba(52,211,153,0.35); color: #6ee7b7; cursor: default; }
+
+    /* ── EX 2: TEXT + DROPDOWNS ── */
+    .film-text {
+      background: rgba(255,255,255,0.025);
+      border-left: 3px solid rgba(96,165,250,0.4);
+      border-radius: 0 12px 12px 0;
+      padding: 18px 20px;
+      font-size: 0.92rem;
+      line-height: 2.2;
+      color: rgba(255,255,255,0.8);
+    }
+    .gap-sel {
+      display: inline-block;
+      background: rgba(96,165,250,0.1);
+      border: none;
+      border-bottom: 2px solid rgba(96,165,250,0.45);
+      border-radius: 4px 4px 0 0;
+      color: #93c5fd;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.88rem; font-weight: 600;
+      padding: 2px 6px;
+      outline: none;
+      cursor: pointer;
+      vertical-align: baseline;
+      margin: 0 2px;
+      transition: border-color 0.2s;
+    }
+    .gap-sel:focus { border-bottom-color: #60a5fa; }
+    .gap-sel option { background: #101828; }
+    .gap-sel.correct { border-bottom-color: #34d399; color: #6ee7b7; background: rgba(52,211,153,0.07); }
+    .gap-sel.wrong   { border-bottom-color: #f87171; color: #fca5a5; background: rgba(248,113,113,0.07); }
+
+    /* ── EX 3: TYPED BLANKS ── */
+    .t-item { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 14px; }
+    .t-num {
+      flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+      background: rgba(167,139,250,0.15); color: #a78bfa;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 700;
+    }
+    .t-text { flex: 1; font-size: 0.9rem; line-height: 1.8; color: rgba(255,255,255,0.8); }
+    .t-blank {
+      display: inline-block;
+      background: rgba(255,255,255,0.04);
+      border: none;
+      border-bottom: 2px solid rgba(167,139,250,0.38);
+      border-radius: 4px 4px 0 0;
+      color: #f0f0ff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      padding: 2px 8px;
+      min-width: 110px;
+      outline: none;
+      vertical-align: baseline;
+      transition: border-color 0.2s;
+    }
+    .t-blank:focus   { border-bottom-color: #a78bfa; }
+    .t-blank.correct { border-bottom-color: #34d399; background: rgba(52,211,153,0.07); }
+    .t-blank.wrong   { border-bottom-color: #f87171; background: rgba(248,113,113,0.07); }
+
+    .wordbank {
+      display: flex; flex-wrap: wrap; gap: 7px;
+      margin-bottom: 18px;
+    }
+    .wb-chip {
+      background: linear-gradient(135deg, rgba(96,165,250,0.15), rgba(167,139,250,0.15));
+      border: 1px solid rgba(167,139,250,0.3);
+      color: #c4b5fd;
+      border-radius: 99px;
+      padding: 4px 14px;
+      font-size: 0.83rem; font-weight: 600;
+      cursor: default; user-select: all;
+    }
+
+    /* ── EX 4: WRITING ── */
+    .tip-box {
+      background: rgba(251,191,36,0.06);
+      border-left: 3px solid rgba(251,191,36,0.5);
+      border-radius: 0 10px 10px 0;
+      padding: 11px 15px;
+      font-size: 0.83rem;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 14px;
+      line-height: 1.65;
+    }
+    .tip-box strong { color: #fbbf24; }
+
+    .writing-area {
+      width: 100%;
+      min-height: 145px;
+      background: rgba(255,255,255,0.035);
+      border: 2px solid rgba(251,191,36,0.18);
+      border-radius: 12px;
+      color: #f0f0ff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.75;
+      padding: 13px 15px;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .writing-area:focus { border-color: rgba(251,191,36,0.4); }
+    .writing-area::placeholder { color: rgba(255,255,255,0.18); font-style: italic; }
+
+    .conj-counter { margin-top: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.38); }
+    .conj-count   { font-weight: 700; color: #fbbf24; }
+    .conj-found   { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+    .c-chip {
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.28);
+      border-radius: 99px;
+      padding: 2px 11px;
+      font-size: 0.77rem; font-weight: 600;
+      color: #fcd34d;
+    }
+
+    /* ── EXERCISE FOOTER ── */
+    .ex-footer { display: flex; align-items: center; gap: 11px; margin-top: 18px; flex-wrap: wrap; }
+    .ex-status { font-size: 0.82rem; font-weight: 600; }
+    .st-ok   { color: #34d399; }
+    .st-warn { color: #fbbf24; }
+    .st-err  { color: #f87171; }
+
+    /* ── SEND SECTION ── */
+    .send-section {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px;
+      padding: 24px 26px;
+      margin-top: 6px;
+    }
+    .send-title { font-size: 0.97rem; font-weight: 700; margin-bottom: 16px; }
+
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 7px; margin-bottom: 22px; }
+    .checklist li {
+      font-size: 0.84rem; display: flex; align-items: center;
+      gap: 9px; color: rgba(255,255,255,0.48); transition: color 0.3s;
+    }
+    .checklist li.done { color: #34d399; }
+    .ci { font-size: 0.95rem; flex-shrink: 0; width: 18px; text-align: center; }
+
+    .btn-send {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, #34d399, #60a5fa);
+      color: #021a0e;
+      font-family: 'Poppins', sans-serif; font-size: 0.93rem; font-weight: 800;
+      padding: 13px 30px; border-radius: 99px; border: none;
+      cursor: pointer; transition: all 0.25s;
+      box-shadow: 0 4px 18px rgba(52,211,153,0.28);
+    }
+    .btn-send:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(52,211,153,0.38); }
+    .btn-send:disabled { opacity: 0.28; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .send-note { margin-top: 11px; font-size: 0.76rem; color: rgba(255,255,255,0.27); }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 20px; border-radius: 99px;
+      font-family: 'Poppins', sans-serif; font-size: 0.84rem; font-weight: 700;
+      cursor: pointer; border: none; transition: all 0.2s;
+    }
+    .btn-check { background: linear-gradient(135deg, #fbbf24, #f97316); color: #1a0800; font-weight: 800; }
+    .btn-check:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(251,191,36,0.28); }
+    .btn-key { background: rgba(52,211,153,0.07); color: #34d399; border: 1px solid rgba(52,211,153,0.2); font-size: 0.79rem; }
+    .btn-key:hover { background: rgba(52,211,153,0.12); }
+
+    /* ── ANSWER KEY ── */
+    .answer-key {
+      display: none; margin-top: 13px;
+      background: rgba(52,211,153,0.04); border: 1px solid rgba(52,211,153,0.16);
+      border-radius: 11px; padding: 14px 17px;
+    }
+    .answer-key.open { display: block; }
+    .answer-key h4 { color: #34d399; font-size: 0.76rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 9px; }
+    .answer-key ol { padding-left: 16px; }
+    .answer-key li { font-size: 0.85rem; margin-bottom: 5px; color: rgba(255,255,255,0.65); line-height: 1.6; }
+    .ans { color: #6ee7b7; font-weight: 700; }
+
+    @media (max-width: 560px) {
+      .ex-card { padding: 18px 16px; }
+      .name-card { flex-direction: column; align-items: flex-start; gap: 7px; }
+      .mc-options { flex-direction: column; padding-left: 0; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ── HEADER ── -->
+  <div class="hw-header">
+    <span class="hw-icon">🔗</span>
+    <div class="hw-label">Homework</div>
+    <h1 class="hw-title">Connecting Ideas</h1>
+    <p class="hw-sub">Adverbial Clauses · Complete all exercises and send to your teacher.</p>
+  </div>
+
+  <!-- ── NAME ── -->
+  <div class="name-card">
+    <label for="sname">✏️ Your name:</label>
+    <input type="text" id="sname" class="name-input" placeholder="Write your full name here…" oninput="updateProgress()" autocomplete="off" />
+  </div>
+
+  <!-- ── PROGRESS BAR ── -->
+  <div class="prog-wrap">
+    <div class="prog-header">
+      <span class="prog-label">Your progress</span>
+      <span class="prog-pct" id="prog-pct">0%</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+    <div class="prog-steps">
+      <div class="prog-step" id="ps-name"  title="Your name"></div>
+      <div class="prog-step" id="ps-ex1"   title="Exercise 1"></div>
+      <div class="prog-step" id="ps-ex2"   title="Exercise 2"></div>
+      <div class="prog-step" id="ps-ex3"   title="Exercise 3"></div>
+      <div class="prog-step" id="ps-ex4"   title="Exercise 4"></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       EXERCISE 1 — MULTIPLE CHOICE
+  ════════════════════════════════ -->
+  <div class="ex-card" id="card-ex1">
+    <div class="ex-header">
+      <span class="ex-badge badge-teal">Exercise 1</span>
+      <div class="ex-title-wrap">
+        <div class="ex-title">🎯 Choose the Right Conjunction</div>
+        <div class="ex-instruction">Click the correct option — A, B or C — for each sentence.</div>
+      </div>
+    </div>
+    <hr class="divider">
+
+    <!-- Q1 -->
+    <div class="mc-question">
+      <div class="mc-q-row">
+        <div class="mc-q-num">1</div>
+        <div class="mc-q-text">I always listen to music <strong>___</strong> I do my homework — it helps me focus.</div>
+      </div>
+      <div class="mc-options">
+        <div class="mc-opt" data-q="1" data-v="a" onclick="pickMC(this)">A &nbsp;although</div>
+        <div class="mc-opt" data-q="1" data-v="b" onclick="pickMC(this)">B &nbsp;when</div>
+        <div class="mc-opt" data-q="1" data-v="c" onclick="pickMC(this)">C &nbsp;so that</div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="mc-question">
+      <div class="mc-q-row">
+        <div class="mc-q-num">2</div>
+        <div class="mc-q-text">She finished all her homework <strong>___</strong> it was already midnight.</div>
+      </div>
+      <div class="mc-options">
+        <div class="mc-opt" data-q="2" data-v="a" onclick="pickMC(this)">A &nbsp;although</div>
+        <div class="mc-opt" data-q="2" data-v="b" onclick="pickMC(this)">B &nbsp;because</div>
+        <div class="mc-opt" data-q="2" data-v="c" onclick="pickMC(this)">C &nbsp;before</div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="mc-question">
+      <div class="mc-q-row">
+        <div class="mc-q-num">3</div>
+        <div class="mc-q-text">He set an alarm <strong>___</strong> he wouldn't be late for school.</div>
+      </div>
+      <div class="mc-options">
+        <div class="mc-opt" data-q="3" data-v="a" onclick="pickMC(this)">A &nbsp;when</div>
+        <div class="mc-opt" data-q="3" data-v="b" onclick="pickMC(this)">B &nbsp;so that</div>
+        <div class="mc-opt" data-q="3" data-v="c" onclick="pickMC(this)">C &nbsp;although</div>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="mc-question">
+      <div class="mc-q-row">
+        <div class="mc-q-num">4</div>
+        <div class="mc-q-text"><strong>___</strong> my alarm rang, I was already awake and ready.</div>
+      </div>
+      <div class="mc-options">
+        <div class="mc-opt" data-q="4" data-v="a" onclick="pickMC(this)">A &nbsp;Before</div>
+        <div class="mc-opt" data-q="4" data-v="b" onclick="pickMC(this)">B &nbsp;Although</div>
+        <div class="mc-opt" data-q="4" data-v="c" onclick="pickMC(this)">C &nbsp;When</div>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="mc-question">
+      <div class="mc-q-row">
+        <div class="mc-q-num">5</div>
+        <div class="mc-q-text">Tidy your room <strong>___</strong> you go to bed tonight.</div>
+      </div>
+      <div class="mc-options">
+        <div class="mc-opt" data-q="5" data-v="a" onclick="pickMC(this)">A &nbsp;before</div>
+        <div class="mc-opt" data-q="5" data-v="b" onclick="pickMC(this)">B &nbsp;so that</div>
+        <div class="mc-opt" data-q="5" data-v="c" onclick="pickMC(this)">C &nbsp;although</div>
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="mc-question">
+      <div class="mc-q-row">
+        <div class="mc-q-num">6</div>
+        <div class="mc-q-text">She called her best friend <strong>___</strong> she felt lonely.</div>
+      </div>
+      <div class="mc-options">
+        <div class="mc-opt" data-q="6" data-v="a" onclick="pickMC(this)">A &nbsp;before</div>
+        <div class="mc-opt" data-q="6" data-v="b" onclick="pickMC(this)">B &nbsp;so that</div>
+        <div class="mc-opt" data-q="6" data-v="c" onclick="pickMC(this)">C &nbsp;because</div>
+      </div>
+    </div>
+
+    <div class="ex-footer">
+      <button class="btn btn-check" onclick="checkEx1()">✓ Check Exercise 1</button>
+      <button class="btn btn-key"   onclick="toggleKey('key-ex1')">Show answer key</button>
+      <span class="ex-status" id="st-ex1"></span>
+    </div>
+    <div class="answer-key" id="key-ex1">
+      <h4>✓ Answer Key</h4>
+      <ol>
+        <li><span class="ans">B — when</span></li>
+        <li><span class="ans">A — although</span></li>
+        <li><span class="ans">B — so that</span></li>
+        <li><span class="ans">C — When</span></li>
+        <li><span class="ans">A — before</span></li>
+        <li><span class="ans">C — because</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       EXERCISE 2 — TEXT + DROPDOWNS
+  ════════════════════════════════ -->
+  <div class="ex-card" id="card-ex2">
+    <div class="ex-header">
+      <span class="ex-badge badge-blue">Exercise 2</span>
+      <div class="ex-title-wrap">
+        <div class="ex-title">🎬 Inside Out 2 — Fill the Gaps</div>
+        <div class="ex-instruction">Read the text about the film and choose the correct conjunction from each dropdown.</div>
+      </div>
+    </div>
+    <hr class="divider">
+
+    <div class="film-text">
+      <em>Inside Out 2</em> (2024) is an animated film about a girl called Riley. The story begins
+      <select class="gap-sel" id="d1" onchange="updateProgress()">
+        <option value="">▾ choose</option>
+        <option value="just as">just as</option>
+        <option value="although">although</option>
+        <option value="so that">so that</option>
+      </select>
+      she is starting high school — a scary and exciting time. Riley feels nervous
+      <select class="gap-sel" id="d2" onchange="updateProgress()">
+        <option value="">▾ choose</option>
+        <option value="before">before</option>
+        <option value="because">because</option>
+        <option value="so that">so that</option>
+      </select>
+      everything around her is new and changing. A new emotion called Anxiety arrives
+      <select class="gap-sel" id="d3" onchange="updateProgress()">
+        <option value="">▾ choose</option>
+        <option value="when">when</option>
+        <option value="although">although</option>
+        <option value="before">before</option>
+      </select>
+      Riley needs to make new friends and fit in. Riley works very hard
+      <select class="gap-sel" id="d4" onchange="updateProgress()">
+        <option value="">▾ choose</option>
+        <option value="just as">just as</option>
+        <option value="although">although</option>
+        <option value="so that">so that</option>
+      </select>
+      she can be part of the hockey team.
+      <select class="gap-sel" id="d5" onchange="updateProgress()">
+        <option value="">▾ choose</option>
+        <option value="Although">Although</option>
+        <option value="Before">Before</option>
+        <option value="When">When</option>
+      </select>
+      the film is animated, it deals with real emotions that everyone can understand.
+    </div>
+
+    <div class="ex-footer">
+      <button class="btn btn-check" onclick="checkEx2()">✓ Check Exercise 2</button>
+      <button class="btn btn-key"   onclick="toggleKey('key-ex2')">Show answer key</button>
+      <span class="ex-status" id="st-ex2"></span>
+    </div>
+    <div class="answer-key" id="key-ex2">
+      <h4>✓ Answer Key</h4>
+      <ol>
+        <li>Gap 1 — <span class="ans">just as</span></li>
+        <li>Gap 2 — <span class="ans">because</span></li>
+        <li>Gap 3 — <span class="ans">when</span></li>
+        <li>Gap 4 — <span class="ans">so that</span></li>
+        <li>Gap 5 — <span class="ans">Although</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       EXERCISE 3 — TYPED BLANKS
+  ════════════════════════════════ -->
+  <div class="ex-card" id="card-ex3">
+    <div class="ex-header">
+      <span class="ex-badge badge-purple">Exercise 3</span>
+      <div class="ex-title-wrap">
+        <div class="ex-title">✏️ Complete the Sentences</div>
+        <div class="ex-instruction">Type the correct conjunction in each blank.</div>
+      </div>
+    </div>
+    <hr class="divider">
+
+    <div class="wordbank">
+      <span class="wb-chip">when</span>
+      <span class="wb-chip">because</span>
+      <span class="wb-chip">although</span>
+      <span class="wb-chip">so that</span>
+      <span class="wb-chip">before</span>
+      <span class="wb-chip">just as</span>
+      <span class="wb-chip">as</span>
+    </div>
+
+    <div class="t-item">
+      <div class="t-num">1</div>
+      <div class="t-text">He didn't say anything
+        <input class="t-blank" id="t1" data-ans="because" placeholder="…" oninput="updateProgress()" autocomplete="off">
+        he was too embarrassed.
+      </div>
+    </div>
+    <div class="t-item">
+      <div class="t-num">2</div>
+      <div class="t-text">Don't forget to say goodbye
+        <input class="t-blank" id="t2" data-ans="before" placeholder="…" oninput="updateProgress()" autocomplete="off">
+        you leave.
+      </div>
+    </div>
+    <div class="t-item">
+      <div class="t-num">3</div>
+      <div class="t-text">
+        <input class="t-blank" id="t3" data-ans="although" placeholder="…" oninput="updateProgress()" autocomplete="off">
+        the test was very hard, she got a perfect score.
+      </div>
+    </div>
+    <div class="t-item">
+      <div class="t-num">4</div>
+      <div class="t-text">She bought a notebook
+        <input class="t-blank" id="t4" data-ans="so that" placeholder="…" oninput="updateProgress()" autocomplete="off">
+        she wouldn't forget her ideas.
+      </div>
+    </div>
+    <div class="t-item">
+      <div class="t-num">5</div>
+      <div class="t-text">I was thinking about you
+        <input class="t-blank" id="t5" data-ans="just as" placeholder="…" oninput="updateProgress()" autocomplete="off">
+        you called me — so strange!
+      </div>
+    </div>
+
+    <div class="ex-footer">
+      <button class="btn btn-check" onclick="checkEx3()">✓ Check Exercise 3</button>
+      <button class="btn btn-key"   onclick="toggleKey('key-ex3')">Show answer key</button>
+      <span class="ex-status" id="st-ex3"></span>
+    </div>
+    <div class="answer-key" id="key-ex3">
+      <h4>✓ Answer Key</h4>
+      <ol>
+        <li><span class="ans">because</span></li>
+        <li><span class="ans">before</span></li>
+        <li><span class="ans">Although</span></li>
+        <li><span class="ans">so that</span></li>
+        <li><span class="ans">just as</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       EXERCISE 4 — OPEN WRITING
+  ════════════════════════════════ -->
+  <div class="ex-card" id="card-ex4">
+    <div class="ex-header">
+      <span class="ex-badge badge-gold">Exercise 4</span>
+      <div class="ex-title-wrap">
+        <div class="ex-title">🌟 My Film or Series Review</div>
+        <div class="ex-instruction">Write 4–6 sentences about a film or series you have watched recently.</div>
+      </div>
+    </div>
+    <hr class="divider">
+
+    <div class="tip-box">
+      <strong>Include:</strong> what it is about · what happens · why you liked (or didn't like) it.<br>
+      <strong>Use at least 3 conjunctions</strong> from today's lesson: <em>when, because, although, so that, before, as, just as, after.</em>
+    </div>
+
+    <textarea
+      class="writing-area"
+      id="writing"
+      placeholder="The film / series I want to write about is… It begins when… Although… I recommend it because…"
+      oninput="liveConjunctions()"
+    ></textarea>
+
+    <div class="conj-counter" id="conj-counter" style="display:none;">
+      Conjunctions found: <span class="conj-count" id="conj-count">0</span> / 3 needed
+      <div class="conj-found" id="conj-found"></div>
+    </div>
+
+    <div class="ex-footer">
+      <button class="btn btn-check" onclick="checkEx4()">✓ Check Exercise 4</button>
+      <span class="ex-status" id="st-ex4"></span>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════
+       SEND TO TEACHER
+  ════════════════════════════════ -->
+  <div class="send-section">
+    <div class="send-title">📬 Send to Teacher</div>
+    <ul class="checklist" id="checklist">
+      <li id="cl-name"><span class="ci">○</span>Your name is written</li>
+      <li id="cl-ex1"> <span class="ci">○</span>Exercise 1 — all 6 questions answered</li>
+      <li id="cl-ex2"> <span class="ci">○</span>Exercise 2 — all 5 gaps filled</li>
+      <li id="cl-ex3"> <span class="ci">○</span>Exercise 3 — all 5 blanks filled</li>
+      <li id="cl-ex4"> <span class="ci">○</span>Exercise 4 — writing with 3+ conjunctions</li>
+    </ul>
+
+    <button class="btn-send" id="btn-send" disabled onclick="sendToTeacher()">
+      ✉️ Send to Teacher
+    </button>
+    <p class="send-note">This opens your email app with all answers pre-filled. Press Send in your email to submit.</p>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+  /* ════════════════════════
+     DATA
+  ════════════════════════ */
+  const MC_ANS  = { 1:'b', 2:'a', 3:'b', 4:'c', 5:'a', 6:'c' };
+  const DROP_ANS = { d1:'just as', d2:'because', d3:'when', d4:'so that', d5:'Although' };
+  const T_ANS   = { t1:'because', t2:'before', t3:'although', t4:'so that', t5:'just as' };
+  const CONJ    = ['just as','so that','although','because','before','after','when','as'];
+
+  const mcPicked = {};
+
+  /* ════════════════════════
+     PROGRESS
+  ════════════════════════ */
+  function updateProgress() {
+    const name    = document.getElementById('sname').value.trim().length > 0;
+    const ex1done = Object.keys(mcPicked).length === 6;
+    const ex2done = ['d1','d2','d3','d4','d5'].every(id => document.getElementById(id).value !== '');
+    const ex3done = ['t1','t2','t3','t4','t5'].every(id => document.getElementById(id).value.trim() !== '');
+    const txt     = document.getElementById('writing').value.trim();
+    const ex4done = txt.length >= 30 && countConj(txt).length >= 3;
+
+    const steps   = [name, ex1done, ex2done, ex3done, ex4done];
+    const done    = steps.filter(Boolean).length;
+    const pct     = Math.round((done / 5) * 100);
+
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-pct').textContent  = pct + '%';
+
+    const ids = ['ps-name','ps-ex1','ps-ex2','ps-ex3','ps-ex4'];
+    steps.forEach((s, i) => {
+      document.getElementById(ids[i]).classList.toggle('done', s);
+    });
+
+    // Checklist
+    setCI('cl-name', name);
+    setCI('cl-ex1',  ex1done);
+    setCI('cl-ex2',  ex2done);
+    setCI('cl-ex3',  ex3done);
+    setCI('cl-ex4',  ex4done);
+
+    document.getElementById('btn-send').disabled = done < 5;
+  }
+
+  function setCI(id, ok) {
+    const li = document.getElementById(id);
+    const ci = li.querySelector('.ci');
+    li.classList.toggle('done', ok);
+    ci.textContent = ok ? '✓' : '○';
+  }
+
+  /* ════════════════════════
+     EX 1 — MC
+  ════════════════════════ */
+  function pickMC(el) {
+    const q = el.dataset.q;
+    document.querySelectorAll(`.mc-opt[data-q="${q}"]`).forEach(o => {
+      if (!o.classList.contains('correct') && !o.classList.contains('wrong')) o.classList.remove('selected');
+    });
+    if (!el.classList.contains('correct') && !el.classList.contains('wrong')) {
+      el.classList.add('selected');
+      mcPicked[q] = el.dataset.v;
+    }
+    updateProgress();
+  }
+
+  function checkEx1() {
+    let allDone = true, score = 0;
+    for (let q = 1; q <= 6; q++) {
+      if (!mcPicked[q]) { allDone = false; continue; }
+      document.querySelectorAll(`.mc-opt[data-q="${q}"]`).forEach(o => {
+        o.style.pointerEvents = 'none';
+        o.classList.remove('selected');
+        if (o.dataset.v === MC_ANS[q]) {
+          o.classList.add(mcPicked[q] === MC_ANS[q] ? 'correct' : 'reveal');
+        }
+        if (o.dataset.v === mcPicked[q] && mcPicked[q] !== MC_ANS[q]) o.classList.add('wrong');
+      });
+      if (mcPicked[q] === MC_ANS[q]) score++;
+    }
+    const st = document.getElementById('st-ex1');
+    if (!allDone) { st.className = 'ex-status st-warn'; st.textContent = '⚠ Answer all questions first.'; return; }
+    st.className = 'ex-status ' + (score === 6 ? 'st-ok' : 'st-warn');
+    st.textContent = score === 6 ? '✓ Perfect! 6/6' : `${score}/6 — check highlighted answers.`;
+  }
+
+  /* ════════════════════════
+     EX 2 — DROPDOWNS
+  ════════════════════════ */
+  function checkEx2() {
+    const ids = ['d1','d2','d3','d4','d5'];
+    let allFilled = true, score = 0;
+    ids.forEach(id => {
+      const sel = document.getElementById(id);
+      sel.classList.remove('correct','wrong');
+      if (!sel.value) { allFilled = false; return; }
+      sel.disabled = true;
+      if (sel.value === DROP_ANS[id]) { sel.classList.add('correct'); score++; }
+      else sel.classList.add('wrong');
+    });
+    const st = document.getElementById('st-ex2');
+    if (!allFilled) { st.className = 'ex-status st-warn'; st.textContent = '⚠ Fill all gaps first.'; return; }
+    st.className = 'ex-status ' + (score === 5 ? 'st-ok' : 'st-warn');
+    st.textContent = score === 5 ? '✓ Perfect! 5/5' : `${score}/5 — check the red gaps.`;
+  }
+
+  /* ════════════════════════
+     EX 3 — TYPED BLANKS
+  ════════════════════════ */
+  function checkEx3() {
+    const ids = ['t1','t2','t3','t4','t5'];
+    let allFilled = true, score = 0;
+    ids.forEach(id => {
+      const inp = document.getElementById(id);
+      const val = inp.value.trim().toLowerCase();
+      inp.classList.remove('correct','wrong');
+      if (!val) { allFilled = false; return; }
+      if (val === T_ANS[id]) { inp.classList.add('correct'); score++; }
+      else inp.classList.add('wrong');
+    });
+    const st = document.getElementById('st-ex3');
+    if (!allFilled) { st.className = 'ex-status st-warn'; st.textContent = '⚠ Fill all blanks first.'; return; }
+    st.className = 'ex-status ' + (score === 5 ? 'st-ok' : 'st-warn');
+    st.textContent = score === 5 ? '✓ Perfect! 5/5' : `${score}/5 — check the red blanks.`;
+  }
+
+  /* ════════════════════════
+     EX 4 — WRITING
+  ════════════════════════ */
+  function countConj(text) {
+    const lower = text.toLowerCase();
+    const found = [];
+    // Sort by length descending so "just as" matches before "as"
+    [...CONJ].sort((a,b) => b.length - a.length).forEach(c => {
+      const re = new RegExp('\\b' + c.replace(/\s+/g,'\\s+') + '\\b', 'gi');
+      const m = lower.match(re);
+      if (m) m.forEach(() => found.push(c));
+    });
+    return found;
+  }
+
+  function liveConjunctions() {
+    const text = document.getElementById('writing').value;
+    const counter = document.getElementById('conj-counter');
+    const found = countConj(text);
+    const unique = [...new Set(found)];
+    if (text.trim().length > 10) {
+      counter.style.display = 'block';
+      document.getElementById('conj-count').textContent = found.length;
+      document.getElementById('conj-found').innerHTML = unique.map(c => `<span class="c-chip">${c}</span>`).join('');
+    } else {
+      counter.style.display = 'none';
+    }
+    updateProgress();
+  }
+
+  function checkEx4() {
+    const text = document.getElementById('writing').value.trim();
+    const st   = document.getElementById('st-ex4');
+    if (text.length < 30)          { st.className = 'ex-status st-err';  st.textContent = '✗ Please write at least 4 sentences.'; return; }
+    const found = countConj(text);
+    if (found.length < 3)          { st.className = 'ex-status st-warn'; st.textContent = `⚠ Found ${found.length} conjunction${found.length===1?'':'s'} — try to use 3 or more.`; return; }
+    st.className = 'ex-status st-ok';
+    st.textContent = `✓ Great! ${found.length} conjunction${found.length===1?'':'s'} used.`;
+    updateProgress();
+  }
+
+  /* ════════════════════════
+     ANSWER KEY TOGGLE
+  ════════════════════════ */
+  function toggleKey(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  /* ════════════════════════
+     SEND TO TEACHER
+  ════════════════════════ */
+  function sendToTeacher() {
+    const name = document.getElementById('sname').value.trim();
+    const date = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+
+    const qTexts = {
+      1: 'I always listen to music ___ I do my homework',
+      2: 'She finished all her homework ___ it was already midnight',
+      3: 'He set an alarm ___ he wouldn\'t be late',
+      4: '___ my alarm rang, I was already awake',
+      5: 'Tidy your room ___ you go to bed',
+      6: 'She called her best friend ___ she felt lonely'
+    };
+    const optLabels = {
+      1:{a:'although',b:'when',c:'so that'},
+      2:{a:'although',b:'because',c:'before'},
+      3:{a:'when',b:'so that',c:'although'},
+      4:{a:'Before',b:'Although',c:'When'},
+      5:{a:'before',b:'so that',c:'although'},
+      6:{a:'before',b:'so that',c:'because'}
+    };
+    let ex1 = '';
+    for (let q=1;q<=6;q++) {
+      const chosen = mcPicked[q] ? optLabels[q][mcPicked[q]] : '(no answer)';
+      ex1 += `  ${q}. ${qTexts[q]}\n     → ${chosen}\n`;
+    }
+
+    const dropLabels = {
+      d1:'Gap 1 (the story begins ___)',
+      d2:'Gap 2 (Riley feels nervous ___)',
+      d3:'Gap 3 (Anxiety arrives ___)',
+      d4:'Gap 4 (Riley works hard ___)',
+      d5:'Gap 5 (___ the film is animated)'
+    };
+    let ex2 = '';
+    ['d1','d2','d3','d4','d5'].forEach(id => {
+      ex2 += `  ${dropLabels[id]}: ${document.getElementById(id).value || '(empty)'}\n`;
+    });
+
+    const tLabels = {
+      t1:'He didn\'t say anything ___ he was embarrassed',
+      t2:'Don\'t forget to say goodbye ___ you leave',
+      t3:'___ the test was hard, she got a perfect score',
+      t4:'She bought a notebook ___ she wouldn\'t forget',
+      t5:'I was thinking about you ___ you called me'
+    };
+    let ex3 = '';
+    ['t1','t2','t3','t4','t5'].forEach(id => {
+      ex3 += `  ${tLabels[id]}\n     → ${document.getElementById(id).value.trim() || '(empty)'}\n`;
+    });
+
+    const writing = document.getElementById('writing').value.trim();
+    const foundC  = countConj(writing);
+
+    const body =
+`HOMEWORK – ADVERBIAL CLAUSES
+Student: ${name}
+Date: ${date}
+
+${'═'.repeat(42)}
+EXERCISE 1 – Choose the Right Conjunction
+${'═'.repeat(42)}
+${ex1}
+${'═'.repeat(42)}
+EXERCISE 2 – Inside Out 2 (Dropdown Gaps)
+${'═'.repeat(42)}
+${ex2}
+${'═'.repeat(42)}
+EXERCISE 3 – Complete the Sentences
+${'═'.repeat(42)}
+${ex3}
+${'═'.repeat(42)}
+EXERCISE 4 – Film / Series Review
+[Conjunctions used: ${foundC.length} — ${[...new Set(foundC)].join(', ')}]
+${'─'.repeat(42)}
+${writing}`;
+
+    const subj = encodeURIComponent(`Homework – Adverbial Clauses – ${name}`);
+    window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${subj}&body=${encodeURIComponent(body)}`;
+  }
+</script>
+</body>
+</html>
