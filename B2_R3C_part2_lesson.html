@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3C — Life's Too Short</title>
+<style>
+:root {
+  --navy:#1e3a5f; --navy-mid:#2c5282; --navy-light:#ebf0f8;
+  --coral:#e05c3a; --coral-light:#fde8e3;
+  --amber:#c9922a; --amber-light:#fdf3d8;
+  --mint:#2d9c8f; --mint-light:#d4efec;
+  --purple:#6c3483; --purple-light:#f4e6f7;
+  --bg:#f7f5f2; --card:#fff; --border:#e2e8f0; --text:#2d3748; --muted:#718096;
+  --good:#2d9c8f; --good-bg:#d4efec; --bad:#e05c3a; --bad-bg:#fde8e3;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── TOP BAR ── */
+.top-bar{background:var(--navy);color:#fff;padding:11px 22px;display:flex;align-items:center;justify-content:space-between;}
+.tb-title{font-size:.93rem;font-weight:700;opacity:.85;letter-spacing:.1px;}
+.tb-counter{font-size:.8rem;opacity:.6;white-space:nowrap;}
+.progress-bar{height:3px;background:rgba(255,255,255,.12);}
+.progress-fill{height:100%;background:var(--coral);transition:width .45s ease;}
+
+/* ── DOTS ── */
+.dots{display:flex;justify-content:center;gap:6px;padding:10px 0 2px;flex-wrap:wrap;}
+.dot{width:9px;height:9px;border-radius:50%;background:#c8d3e0;border:none;cursor:pointer;transition:all .25s;}
+.dot.active{background:var(--navy);transform:scale(1.35);}
+
+/* ── SLIDES ── */
+.slides-wrap{flex:1;padding:14px 20px 0;max-width:950px;margin:0 auto;width:100%;}
+.slide{display:none;}
+.slide.active{display:block;animation:up .3s ease;}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SLIDE HEADER ── */
+.sh{margin-bottom:18px;}
+.sh-tag{display:inline-block;color:#fff;font-size:.67rem;font-weight:800;letter-spacing:.7px;padding:3px 12px;border-radius:10px;text-transform:uppercase;margin-bottom:8px;}
+.sh-tag.lead{background:var(--navy);}
+.sh-tag.voc{background:var(--purple);}
+.sh-tag.prac{background:var(--coral);}
+.sh-tag.speak{background:var(--mint);}
+.sh-tag.gram{background:#2980b9;}
+.sh-tag.read{background:#8e6534;}
+.sh-tag.pron{background:#922b15;}
+.sh-tag.wrap{background:var(--navy-mid);}
+.sh-title{font-size:1.5rem;font-weight:800;color:var(--navy);line-height:1.2;}
+.sh-sub{font-size:.88rem;color:var(--muted);margin-top:5px;line-height:1.5;}
+
+/* ── NAV ── */
+.nav-row{display:flex;justify-content:space-between;align-items:center;padding:18px 0 26px;}
+.nav-btn{background:var(--navy);color:#fff;border:none;border-radius:22px;padding:10px 28px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;}
+.nav-btn:hover{background:var(--navy-mid);transform:translateY(-1px);}
+.nav-btn:active{transform:translateY(0);}
+.nav-btn:disabled{opacity:.3;cursor:default;transform:none;}
+
+/* ── UTILITY ── */
+.card{background:var(--card);border-radius:13px;padding:20px 24px;margin-bottom:14px;border:1.5px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.instr{background:var(--navy-light);border-left:4px solid var(--navy);border-radius:9px;padding:11px 17px;font-size:.87rem;color:var(--navy);font-weight:500;margin-bottom:14px;line-height:1.5;}
+.reveal-btn{background:var(--navy);color:#fff;border:none;border-radius:20px;padding:8px 22px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:inherit;margin-top:12px;transition:background .2s;}
+.reveal-btn:hover{background:var(--navy-mid);}
+.reveal-btn.coral{background:var(--coral);}
+.reveal-btn.coral:hover{background:#c04d2e;}
+@media(max-width:580px){.two-col{grid-template-columns:1fr;}}
+
+/* ══════════════════ SLIDE 1 — CASE FILES ══════════════════ */
+.case-file{background:var(--card);border-radius:13px;border:1.5px solid var(--border);box-shadow:0 3px 12px rgba(0,0,0,.07);margin-bottom:14px;overflow:hidden;}
+.case-top{background:var(--navy);color:#fff;padding:10px 18px;display:flex;align-items:center;gap:11px;}
+.case-stamp{background:var(--coral);color:#fff;font-size:.65rem;font-weight:800;letter-spacing:.5px;padding:3px 10px;border-radius:6px;text-transform:uppercase;white-space:nowrap;}
+.case-heading{font-weight:700;font-size:.9rem;}
+.case-body{padding:14px 18px;}
+.case-sides{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.side{padding:10px 13px;border-radius:0 9px 9px 0;font-size:.85rem;line-height:1.5;}
+.side strong{font-size:.72rem;text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:3px;}
+.side-a{background:var(--navy-light);border-left:3px solid var(--navy);}
+.side-a strong{color:var(--navy);}
+.side-b{background:var(--coral-light);border-left:3px solid var(--coral);}
+.side-b strong{color:var(--coral);}
+.case-question{font-size:.85rem;font-weight:600;color:var(--muted);padding:0 0 4px;}
+.verdict-row{padding:12px 18px;background:#f9fafc;border-top:1px solid var(--border);display:flex;gap:7px;flex-wrap:wrap;align-items:center;}
+.verdict-row .vl{font-size:.78rem;font-weight:700;color:var(--muted);margin-right:2px;}
+.vbtn{border-radius:18px;padding:5px 15px;font-size:.8rem;font-weight:600;border:2px solid var(--border);background:white;cursor:pointer;font-family:inherit;transition:all .2s;}
+.vbtn:hover{border-color:var(--navy);color:var(--navy);}
+.vbtn.va{background:var(--navy);color:#fff;border-color:var(--navy);}
+.vbtn.vb{background:var(--coral);color:#fff;border-color:var(--coral);}
+.vbtn.vc{background:var(--amber);color:#fff;border-color:var(--amber);}
+@media(max-width:480px){.case-sides{grid-template-columns:1fr;}}
+
+/* ══════════════════ SLIDE 2 — FLIP CARDS ══════════════════ */
+.flip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;}
+.flip-card{height:95px;cursor:pointer;perspective:700px;}
+.flip-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1);border-radius:12px;}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+.flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:11px;text-align:center;border:2px solid;}
+.flip-front{background:var(--navy);border-color:var(--navy-mid);color:#fff;font-weight:700;font-size:.85rem;flex-direction:column;gap:5px;}
+.flip-front .fhint{font-size:.66rem;opacity:.55;margin-top:2px;}
+.flip-back{background:var(--card);border-color:var(--navy-light);transform:rotateY(180deg);flex-direction:column;gap:5px;}
+.flip-back .bphrase{font-weight:700;color:var(--navy);font-size:.76rem;}
+.flip-back .bdef{font-size:.72rem;color:var(--muted);line-height:1.3;}
+
+/* ══════════════════ SLIDE 3 — DIPLOMATIC EDIT ══════════════════ */
+.edit-item{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:13px 17px;margin-bottom:9px;font-size:.9rem;line-height:1.55;position:relative;}
+.edit-n{font-weight:800;color:var(--coral);display:inline;margin-right:6px;}
+.edit-item u{color:var(--coral);text-decoration-color:var(--coral);cursor:pointer;border-radius:4px;padding:1px 3px;transition:background .15s;}
+.edit-item u:hover{background:var(--coral-light);}
+.edit-ans{display:none;margin-top:8px;background:var(--good-bg);border:1.5px solid var(--good);border-radius:7px;padding:6px 13px;font-size:.84rem;font-weight:700;color:#1a6b5f;}
+.edit-show-all{display:flex;align-items:center;gap:8px;background:none;border:2px solid var(--navy);color:var(--navy);border-radius:20px;padding:7px 18px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:inherit;margin-top:12px;transition:all .2s;}
+.edit-show-all:hover{background:var(--navy);color:#fff;}
+
+/* ══════════════════ SLIDE 4 — AGONY AUNT ══════════════════ */
+.letter{background:#fffef7;border:1.5px solid #e8e0c0;border-radius:13px;padding:22px 24px 22px 52px;position:relative;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.letter::before{content:'';position:absolute;left:38px;top:0;bottom:0;width:1.5px;background:#f5c8c0;}
+.let-meta{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:12px;}
+.let-body{font-size:.88rem;line-height:1.85;color:#3a3020;}
+.let-body b{color:var(--coral);}
+.let-sig{font-style:italic;margin-top:12px;font-size:.86rem;color:var(--muted);}
+.reply-scaffold{background:var(--navy-light);border:1.5px solid var(--navy-mid);border-radius:12px;padding:16px 20px;}
+.reply-scaffold h4{color:var(--navy);font-weight:700;font-size:.88rem;margin-bottom:10px;}
+.starter-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.sc{background:white;border:1.5px solid var(--navy-mid);color:var(--navy);border-radius:18px;padding:5px 13px;font-size:.82rem;font-weight:500;}
+.lang-box{background:var(--amber-light);border:2px solid var(--amber);border-radius:12px;padding:14px 19px;margin-bottom:14px;}
+.lang-box h4{color:var(--amber);font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:9px;}
+.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.lp{font-size:.84rem;background:white;border-radius:8px;padding:6px 11px;border:1px solid #e8d080;color:#5a4000;}
+@media(max-width:520px){.lang-grid{grid-template-columns:1fr;}}
+
+/* ══════════════════ SLIDE 5 — SUFFIX LAB ══════════════════ */
+.suf-palette{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px;}
+.sbadge{border-radius:8px;padding:5px 13px;font-size:.8rem;font-weight:700;border:2px solid;cursor:default;}
+.sbadge[data-s="-al"]{background:#e8f0ff;border-color:#2980b9;color:#1a5276;}
+.sbadge[data-s="-ful"]{background:var(--good-bg);border-color:var(--good);color:#1a6b5f;}
+.sbadge[data-s="-ic"]{background:var(--purple-light);border-color:var(--purple);color:var(--purple);}
+.sbadge[data-s="-ish"]{background:var(--coral-light);border-color:var(--coral);color:#922b15;}
+.sbadge[data-s="-less"]{background:#f0f0f0;border-color:#888;color:#333;}
+.sbadge[data-s="-ous"]{background:var(--amber-light);border-color:var(--amber);color:#7a5800;}
+.sbadge[data-s="-able/-ible"]{background:#fff0e8;border-color:#e67e22;color:#a04800;}
+.sbadge[data-s="-y"]{background:var(--purple-light);border-color:#8e44ad;color:#5b2c88;}
+
+.suf-items{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.suf-item{background:var(--card);border-radius:10px;border:1.5px solid var(--border);padding:11px 15px;display:flex;align-items:center;gap:9px;}
+.suf-n{font-weight:800;color:var(--navy);min-width:18px;}
+.suf-root{font-weight:700;min-width:88px;font-size:.9rem;}
+.suf-inp{border:none;border-bottom:2px solid var(--amber);background:transparent;font-size:.9rem;font-family:inherit;padding:1px 5px;width:130px;outline:none;text-align:center;transition:border-color .2s,color .2s;}
+.suf-inp.c{border-bottom-color:var(--good);color:var(--good);}
+.suf-inp.w{border-bottom-color:var(--bad);color:var(--bad);}
+.suf-hint{font-size:.72rem;color:var(--muted);font-style:italic;}
+@media(max-width:550px){.suf-items{grid-template-columns:1fr;}}
+
+/* ── SUFFIX DRAG-AND-DROP ── */
+.sbadge{cursor:grab;user-select:none;transition:opacity .2s;}
+.sbadge.suf-used{opacity:.28;cursor:not-allowed;pointer-events:none;}
+.sbadge.suf-dragging{opacity:.45;}
+.suf-items{grid-template-columns:1fr;}
+.suf-drop{min-width:94px;height:34px;border:2px dashed #c0c9d6;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.suf-drop.drag-over{border-color:var(--navy);background:var(--navy-light);border-style:solid;}
+.suf-eq{font-size:.85rem;color:var(--muted);flex-shrink:0;margin:0 2px;}
+.suf-drop-ph{font-size:.68rem;color:#bbb;font-style:italic;pointer-events:none;user-select:none;}
+.placed-suf{display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:700;color:#7a5800;background:var(--amber-light);border:1.5px solid var(--amber);border-radius:6px;padding:2px 8px;}
+.rm-suf{font-size:.62rem;cursor:pointer;color:var(--amber);border:1px solid var(--amber);border-radius:50%;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0;}
+.rm-suf:hover{background:var(--amber);color:#fff;}
+
+/* ── SLIDE 9: SPEAKING ACTIVITIES ── */
+.ex-section{margin-bottom:18px;}
+.ex-label{display:inline-block;font-weight:800;font-size:.88rem;color:var(--navy);background:var(--navy-light);border-radius:20px;padding:4px 14px;margin-bottom:10px;}
+.conviction-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.conv-card{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:13px 15px;font-size:.87rem;font-style:italic;color:var(--navy);line-height:1.5;position:relative;}
+.conv-card::before{content:'"';font-size:2rem;color:var(--coral);font-style:normal;line-height:.6;display:block;margin-bottom:5px;font-weight:900;}
+@media(max-width:550px){.conviction-grid{grid-template-columns:1fr;}}
+
+/* ══════════════════ SLIDE 6 — CLASSIFY ══════════════════ */
+.adj-pool{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;min-height:44px;background:var(--bg);border-radius:10px;padding:10px 14px;border:2px dashed var(--border);}
+.adj-btn{padding:7px 16px;border-radius:20px;font-size:.87rem;font-weight:600;border:2px solid var(--border);background:white;cursor:pointer;font-family:inherit;transition:all .2s;}
+.adj-btn:hover{border-color:var(--navy);color:var(--navy);transform:translateY(-1px);}
+.adj-btn.used{opacity:.3;pointer-events:none;}
+.classify-bins{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+.cbin{border-radius:12px;padding:13px 14px;min-height:80px;border:2px dashed;transition:background .2s;}
+.cbin.plus{border-color:var(--good);background:var(--good-bg);}
+.cbin.minus{border-color:var(--bad);background:var(--bad-bg);}
+.cbin.neutral{border-color:var(--amber);background:var(--amber-light);}
+.cbin:hover{filter:brightness(.97);}
+.cbin-label{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
+.cbin.plus .cbin-label{color:var(--good);}
+.cbin.minus .cbin-label{color:var(--bad);}
+.cbin.neutral .cbin-label{color:var(--amber);}
+.cbin-items{display:flex;flex-wrap:wrap;gap:5px;min-height:30px;}
+.cplaced{padding:4px 11px;border-radius:12px;font-size:.8rem;font-weight:600;cursor:pointer;transition:opacity .15s;}
+.cplaced:hover{opacity:.7;}
+.cbin.plus .cplaced{background:white;color:var(--good);border:1px solid var(--good);}
+.cbin.minus .cplaced{background:white;color:var(--bad);border:1px solid var(--bad);}
+.cbin.neutral .cplaced{background:white;color:var(--amber);border:1px solid var(--amber);}
+.cbin.correct-bin{border-style:solid;}
+.cplaced.wrong-place{background:var(--bad-bg) !important;border-color:var(--bad) !important;color:var(--bad) !important;}
+.cplaced.right-place{background:var(--good-bg) !important;border-color:var(--good) !important;color:var(--good) !important;}
+@media(max-width:480px){.classify-bins{grid-template-columns:1fr;}}
+
+/* ══════════════════ SLIDE 7 — STRESS DETECTIVE ══════════════════ */
+.stress-group{background:var(--card);border-radius:12px;border:1.5px solid var(--border);padding:14px 18px;margin-bottom:11px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.stress-group .sg-n{font-weight:800;color:var(--coral);font-size:.9rem;margin-bottom:10px;}
+.stress-words{display:flex;gap:9px;flex-wrap:wrap;}
+.sw{padding:8px 16px;border-radius:10px;border:2px solid var(--border);background:white;cursor:pointer;font-size:.9rem;transition:all .2s;font-family:inherit;line-height:1;}
+.sw .stress{font-weight:800;font-size:1.05em;color:var(--navy);}
+.sw .unstress{font-weight:400;color:var(--muted);}
+.sw:hover{border-color:var(--navy);}
+.sw.selected-odd{border-color:var(--bad);background:var(--bad-bg);}
+.sw.confirmed-odd{border-color:var(--bad);background:var(--bad);color:white;}
+.sw.confirmed-odd .stress,.sw.confirmed-odd .unstress{color:white;}
+.sw.confirmed-same{border-color:var(--good);background:var(--good-bg);}
+
+/* ══════════════════ SLIDE 8 — DIARY ══════════════════ */
+.diary{background:#fffef5;border:1.5px solid #e8d890;border-radius:13px;padding:22px 24px 22px 58px;position:relative;line-height:2.3;font-size:.9rem;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:14px;}
+.diary::before{content:'';position:absolute;left:44px;top:0;bottom:0;width:1.5px;background:#f0b8b0;}
+.diary-date{font-size:.76rem;color:var(--muted);font-style:italic;margin-bottom:12px;}
+.diary h4{font-size:1rem;font-weight:800;color:#3a2e00;margin-bottom:12px;}
+.dsup{font-size:.7rem;font-weight:800;color:var(--coral);vertical-align:super;margin-right:1px;}
+.dinp{border:none;border-bottom:2px solid var(--amber);background:transparent;font-size:.9rem;font-family:inherit;padding:0 5px 1px;width:115px;outline:none;text-align:center;transition:border-color .2s,color .2s;}
+.dinp:focus{border-bottom-color:var(--navy);}
+.dinp.c{border-bottom-color:var(--good);color:var(--good);}
+.dinp.w{border-bottom-color:var(--bad);color:var(--bad);}
+
+/* ══════════════════ SLIDE 9 — NEGOTIATION ══════════════════ */
+.nego-scenario{background:var(--amber-light);border:2px solid var(--amber);border-radius:12px;padding:16px 19px;margin-bottom:14px;}
+.nego-scenario .ns-label{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--amber);margin-bottom:6px;}
+.nego-scenario .ns-text{font-size:.9rem;line-height:1.6;}
+.nego-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.nego-card{border-radius:12px;padding:17px 18px;border:2px solid;}
+.nego-card.na{background:var(--navy-light);border-color:var(--navy);}
+.nego-card.nb{background:var(--coral-light);border-color:var(--coral);}
+.nego-card .nc-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+.nego-card.na .nc-label{color:var(--navy);}
+.nego-card.nb .nc-label{color:var(--coral);}
+.nego-card .nc-situation{font-size:.83rem;font-style:italic;color:var(--muted);margin-bottom:12px;line-height:1.5;}
+.prio-chips{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.prio-chip{padding:6px 13px;border-radius:8px;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:7px;}
+.nego-card.na .prio-chip{background:white;border:1.5px solid var(--navy);color:var(--navy);}
+.nego-card.nb .prio-chip{background:white;border:1.5px solid var(--coral);color:var(--coral);}
+.prio-chip .pc-icon{font-size:.9rem;}
+.nego-card .nc-goal{font-size:.83rem;line-height:1.5;font-weight:600;}
+.nego-card.na .nc-goal{color:var(--navy);}
+.nego-card.nb .nc-goal{color:var(--coral);}
+@media(max-width:480px){.nego-cards{grid-template-columns:1fr;}}
+
+/* ══════════════════ SLIDE 10 — CONFLICT DNA ══════════════════ */
+.arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.arch-card{border-radius:13px;padding:18px;border:2px solid;cursor:pointer;transition:all .2s;}
+.arch-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.1);}
+.arch-card.fighter{background:var(--coral-light);border-color:var(--coral);}
+.arch-card.diplomat{background:var(--mint-light);border-color:var(--mint);}
+.arch-card.avoider{background:var(--navy-light);border-color:var(--navy);}
+.arch-card.strategist{background:var(--purple-light);border-color:var(--purple);}
+.arch-card.selected{transform:translateY(-3px);}
+.arch-card.selected.fighter{background:var(--coral);border-color:var(--coral);}
+.arch-card.selected.diplomat{background:var(--mint);border-color:var(--mint);}
+.arch-card.selected.avoider{background:var(--navy);border-color:var(--navy);}
+.arch-card.selected.strategist{background:var(--purple);border-color:var(--purple);}
+.arch-card.selected .arch-name,.arch-card.selected .arch-trait,.arch-card.selected .arch-desc{color:white !important;}
+.arch-emoji{font-size:1.65rem;margin-bottom:7px;}
+.arch-name{font-weight:800;font-size:.98rem;margin-bottom:4px;color:var(--text);}
+.arch-card.fighter  .arch-name{color:var(--coral);}
+.arch-card.diplomat .arch-name{color:var(--mint);}
+.arch-card.avoider  .arch-name{color:var(--navy);}
+.arch-card.strategist .arch-name{color:var(--purple);}
+.arch-trait{font-size:.77rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px;color:var(--muted);}
+.arch-desc{font-size:.84rem;line-height:1.5;color:var(--text);}
+.arch-reveal{display:none;padding:14px 18px;border-radius:12px;margin-top:4px;font-size:.88rem;line-height:1.6;}
+@media(max-width:480px){.arch-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <span class="tb-title" id="tb-title">3C — Life's Too Short</span>
+  <span class="tb-counter" id="tb-counter">1 / 10</span>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="prog" style="width:10%"></div></div>
+<div class="dots" id="dots"></div>
+
+<div class="slides-wrap">
+
+<!-- ════════ SLIDE 1 ── CASE FILES ════════ -->
+<div class="slide active" id="slide-1">
+  <div class="sh">
+    <span class="sh-tag lead">Lead-in</span>
+    <h2 class="sh-title">The Conflict Dossier</h2>
+    <p class="sh-sub">Three real situations. One question: who do you side with?</p>
+  </div>
+
+  <div class="instr">📋 Read each case file. Vote on who is in the right, then share your verdict with the class. <em>There's no wrong answer — but you have to justify it.</em></div>
+
+  <div class="case-file">
+    <div class="case-top">
+      <span class="case-stamp">Case #001</span>
+      <span class="case-heading">The 11 p.m. Dishes</span>
+    </div>
+    <div class="case-body">
+      <div class="case-sides">
+        <div class="side side-a"><strong>👤 Party A — Mia</strong>Her flatmate Leo never washes up. After three weeks of silence, Mia left him a note on the fridge. Leo threw it away without reading it.</div>
+        <div class="side side-b"><strong>👤 Party B — Leo</strong>Leo says he always planned to do the dishes after his late shift. He finds the note passive-aggressive and thinks Mia should have just talked to him.</div>
+      </div>
+      <p class="case-question">🔍 What's the <em>underlying issue</em> here? Is it really about the dishes?</p>
+    </div>
+    <div class="verdict-row">
+      <span class="vl">Your verdict:</span>
+      <button class="vbtn" onclick="castVerdict(this,'va',1)">Mia is right</button>
+      <button class="vbtn" onclick="castVerdict(this,'vb',1)">Leo is right</button>
+      <button class="vbtn" onclick="castVerdict(this,'vc',1)">They're both wrong</button>
+    </div>
+  </div>
+
+  <div class="case-file">
+    <div class="case-top">
+      <span class="case-stamp">Case #002</span>
+      <span class="case-heading">The Group Project</span>
+    </div>
+    <div class="case-body">
+      <div class="case-sides">
+        <div class="side side-a"><strong>👤 Party A — Jordan</strong>Jordan did 80% of the group project. When the grade came back, their teammate Sam posted the result on Instagram as if it were a shared effort. Jordan was furious.</div>
+        <div class="side side-b"><strong>👤 Party B — Sam</strong>Sam says they attended every meeting and contributed ideas — not just the writing. They think Jordan is being competitive and should have raised the issue before the deadline.</div>
+      </div>
+      <p class="case-question">🔍 Did Jordan have the right to pick a fight after the fact?</p>
+    </div>
+    <div class="verdict-row">
+      <span class="vl">Your verdict:</span>
+      <button class="vbtn" onclick="castVerdict(this,'va',2)">Jordan is right</button>
+      <button class="vbtn" onclick="castVerdict(this,'vb',2)">Sam is right</button>
+      <button class="vbtn" onclick="castVerdict(this,'vc',2)">They're both wrong</button>
+    </div>
+  </div>
+
+  <div class="case-file">
+    <div class="case-top">
+      <span class="case-stamp">Case #003</span>
+      <span class="case-heading">The Family Dinner</span>
+    </div>
+    <div class="case-body">
+      <div class="case-sides">
+        <div class="side side-a"><strong>👤 Party A — Nadia</strong>At every family dinner, Nadia's uncle contradicts everything she says about politics. She finally snapped and told him he was being arrogant. The family sided with the uncle.</div>
+        <div class="side side-b"><strong>👤 Party B — Uncle Rafal</strong>Rafal says he's just having a debate. He thinks Nadia can't come to terms with the fact that not everyone shares her views. He says he's being perfectly reasonable.</div>
+      </div>
+      <p class="case-question">🔍 Is Rafal debating — or is he picking a fight?</p>
+    </div>
+    <div class="verdict-row">
+      <span class="vl">Your verdict:</span>
+      <button class="vbtn" onclick="castVerdict(this,'va',3)">Nadia is right</button>
+      <button class="vbtn" onclick="castVerdict(this,'vb',3)">Rafal is right</button>
+      <button class="vbtn" onclick="castVerdict(this,'vc',3)">They're both wrong</button>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" disabled>← Back</button>
+    <button class="nav-btn" onclick="go(2)">Next →</button>
+  </div>
+</div>
+
+<!-- ════════ SLIDE 2 ── FLIP CARDS VOCAB ════════ -->
+<div class="slide" id="slide-2">
+  <div class="sh">
+    <span class="sh-tag voc">Vocabulary</span>
+    <h2 class="sh-title">Conflict Phrases — Flip &amp; Learn</h2>
+    <p class="sh-sub">10 phrases for talking about arguments. Click each card to reveal the meaning. Try to predict before you flip!</p>
+  </div>
+
+  <div class="instr">👆 Click a card to flip it. Can you guess the definition before you look? Try to remember all 10 — you'll need them in the next exercise.</div>
+
+  <div class="flip-grid">
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">clash with sb<span class="fhint">tap to reveal</span></div>
+        <div class="flip-back"><span class="bphrase">clash with sb</span><span class="bdef">to have a serious fight or argument with someone</span></div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">back down<span class="fhint">tap to reveal</span></div>
+        <div class="flip-back"><span class="bphrase">back down</span><span class="bdef">to admit defeat and stop arguing</span></div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">reach a compromise<span class="fhint">tap to reveal</span></div>
+        <div class="flip-back"><span class="bphrase">reach a compromise</span><span class="bdef">agree on a solution both sides can live with</span></div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">contradict sb<span class="fhint">tap to reveal</span></div>
+        <div class="flip-back"><span class="bphrase">contradict sb</span><span class="bdef">say the opposite of what someone has said</span></div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">mediate<span class="fhint">tap to reveal</span></div>
+        <div class="flip-back"><span class="bphrase">mediate</span><span class="bdef">help two sides resolve a disagreement</span></div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">see eye to eye<span class="fhint">tap to reveal</span></div>
+        <div class="flip-back"><span class="bphrase">see eye to eye</span><span class="bdef">agree / share the same opinion as someone</span></div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">pick a fight<span class="fhint">tap to reveal</span></div>
+        <div class="flip-back"><span class="bphrase">pick a fight</span><span class="bdef">start an argument deliberately</span></div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">underlying issue<span class="fhint">tap to reveal</span></div>
+        <div class="flip-back"><span class="bphrase">underlying issue</span><span class="bdef">the real, deeper problem behind a conflict</span></div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">come to terms with<span class="fhint">tap to reveal</span></div>
+        <div class="flip-back"><span class="bphrase">come to terms with</span><span class="bdef">manage to accept something difficult</span></div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">gang up on sb<span class="fhint">tap to reveal</span></div>
+        <div class="flip-back"><span class="bphrase">gang up on sb</span><span class="bdef">when a group all turns against one person</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="go(1)">← Back</button>
+    <button class="nav-btn" onclick="go(3)">Next →</button>
+  </div>
+</div>
+
+<!-- ════════ SLIDE 3 ── DIPLOMATIC EDIT (EX 3) ════════ -->
+<div class="slide" id="slide-3">
+  <div class="sh">
+    <span class="sh-tag prac">Practice — Ex 3</span>
+    <h2 class="sh-title">Diplomatic Language</h2>
+    <p class="sh-sub">These sentences are written in formal, careful language. Replace each underlined phrase with a conflict phrase from the vocabulary.</p>
+  </div>
+
+  <div class="instr">🖊️ Click on any underlined phrase to reveal its replacement. Try answering first, then check.</div>
+
+  <div class="edit-item"><span class="edit-n">1</span>I <u onclick="toggleAns('e1')">had a disagreement or a fight with</u> them.<div class="edit-ans" id="e1">✓ clashed with</div></div>
+  <div class="edit-item"><span class="edit-n">2</span>They realised they were wrong and <u onclick="toggleAns('e2')">stopped arguing</u>.<div class="edit-ans" id="e2">✓ backed down</div></div>
+  <div class="edit-item"><span class="edit-n">3</span>We should probably <u onclick="toggleAns('e3')">agree on a solution that's acceptable to both of us</u>.<div class="edit-ans" id="e3">✓ reach a compromise</div></div>
+  <div class="edit-item"><span class="edit-n">4</span>You're not supposed to <u onclick="toggleAns('e4')">say the opposite of</u> what your elders say.<div class="edit-ans" id="e4">✓ contradict</div></div>
+  <div class="edit-item"><span class="edit-n">5</span>My boss <u onclick="toggleAns('e5')">got involved in the argument to find a solution</u>.<div class="edit-ans" id="e5">✓ mediated</div></div>
+  <div class="edit-item"><span class="edit-n">6</span>We <u onclick="toggleAns('e6')">didn't have the same opinion</u>.<div class="edit-ans" id="e6">✓ didn't see eye to eye</div></div>
+  <div class="edit-item"><span class="edit-n">7</span>She often <u onclick="toggleAns('e7')">starts an argument</u> with me.<div class="edit-ans" id="e7">✓ picks a fight</div></div>
+  <div class="edit-item"><span class="edit-n">8</span><u onclick="toggleAns('e8')">The basic problem</u> is that she's a control freak.<div class="edit-ans" id="e8">✓ The underlying issue</div></div>
+  <div class="edit-item"><span class="edit-n">9</span>I really <u onclick="toggleAns('e9')">found it difficult to accept</u> what she said.<div class="edit-ans" id="e9">✓ couldn't come to terms with</div></div>
+  <div class="edit-item"><span class="edit-n">10</span>My co-workers <u onclick="toggleAns('e10')">formed a group against</u> me.<div class="edit-ans" id="e10">✓ ganged up on</div></div>
+
+  <button class="edit-show-all" onclick="toggleAllEdit()">👁 Show / Hide All Answers</button>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="go(2)">← Back</button>
+    <button class="nav-btn" onclick="go(4)">Next →</button>
+  </div>
+</div>
+
+<!-- ════════ SLIDE 4 ── AGONY AUNT ════════ -->
+<div class="slide" id="slide-4">
+  <div class="sh">
+    <span class="sh-tag speak">Speaking — Ex 4</span>
+    <h2 class="sh-title">Dear Agony Aunt…</h2>
+    <p class="sh-sub">Someone has written in for advice. Your job: write the reply — using conflict vocabulary.</p>
+  </div>
+
+  <div class="letter">
+    <div class="let-meta">📬 Advice column &nbsp;|&nbsp; Letter received this week</div>
+    <div class="let-body">
+      Dear Agony Aunt,<br><br>
+      I need your help. My best friend <b>contradicts</b> everything I say. If I like a film, she hates it. If I suggest a restaurant, she picks a different one. Last week she <b>picked a fight</b> with me in front of our whole friend group over something completely trivial — the music at a party.<br><br>
+      I've tried to talk to her about it, but she either <b>backs down</b> immediately and then does the same thing again, or she gets defensive and accuses me of being unreasonable. Our friends have started <b>ganging up on me</b>, saying I'm "too sensitive." I don't think the <b>underlying issue</b> is the music or the films. I think she just can't stand it when I'm happy.<br><br>
+      We've been friends for ten years. I don't want to <b>clash</b> with her — but I can't <b>come to terms with</b> this behaviour any more. What should I do?
+    </div>
+    <div class="let-sig">— Exhausted in Edinburgh</div>
+  </div>
+
+  <div class="lang-box">
+    <h4>💬 Language for your reply</h4>
+    <div class="lang-grid">
+      <span class="lp">It sounds like the underlying issue is…</span>
+      <span class="lp">Have you tried to mediate by…?</span>
+      <span class="lp">You may need to pick your moment…</span>
+      <span class="lp">Rather than backing down again, try…</span>
+      <span class="lp">A compromise might be to…</span>
+      <span class="lp">Sometimes you have to come to terms with…</span>
+    </div>
+  </div>
+
+  <div class="reply-scaffold">
+    <h4>✍️ Your reply — discuss with a partner:</h4>
+    <div class="starter-chips">
+      <span class="sc">1. What's the real underlying issue?</span>
+      <span class="sc">2. Should she clash directly or find another way?</span>
+      <span class="sc">3. Is a compromise even possible here?</span>
+      <span class="sc">4. What would YOU do in her position?</span>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="go(3)">← Back</button>
+    <button class="nav-btn" onclick="go(5)">Next →</button>
+  </div>
+</div>
+
+<!-- ════════ SLIDE 5 ── SUFFIX LAB ════════ -->
+<div class="slide" id="slide-5">
+  <div class="sh">
+    <span class="sh-tag gram">Language Focus — Ex 5a</span>
+    <h2 class="sh-title">The Suffix Lab</h2>
+    <p class="sh-sub">Drag a suffix onto the word root, then type the complete adjective. Watch your spelling!</p>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <p style="font-weight:700;font-size:.88rem;color:var(--navy);margin-bottom:10px;">Suffix toolkit — drag to a word:</p>
+      <div class="suf-palette">
+        <span class="sbadge" data-s="-al" data-suffix="-al" draggable="true" ondragstart="sbStart(event,this)" ondragend="sbEnd(this)">-al</span>
+        <span class="sbadge" data-s="-ful" data-suffix="-ful" draggable="true" ondragstart="sbStart(event,this)" ondragend="sbEnd(this)">-ful</span>
+        <span class="sbadge" data-s="-ic" data-suffix="-ic" draggable="true" ondragstart="sbStart(event,this)" ondragend="sbEnd(this)">-ic</span>
+        <span class="sbadge" data-s="-ish" data-suffix="-ish" draggable="true" ondragstart="sbStart(event,this)" ondragend="sbEnd(this)">-ish</span>
+        <span class="sbadge" data-s="-less" data-suffix="-less" draggable="true" ondragstart="sbStart(event,this)" ondragend="sbEnd(this)">-less</span>
+        <span class="sbadge" data-s="-ous" data-suffix="-ous" draggable="true" ondragstart="sbStart(event,this)" ondragend="sbEnd(this)">-ous</span>
+        <span class="sbadge" data-s="-able/-ible" data-suffix="-able/-ible" draggable="true" ondragstart="sbStart(event,this)" ondragend="sbEnd(this)">-able/-ible</span>
+        <span class="sbadge" data-s="-y" data-suffix="-y" draggable="true" ondragstart="sbStart(event,this)" ondragend="sbEnd(this)">-y</span>
+      </div>
+      <div class="card" style="background:var(--amber-light);border-color:var(--amber);margin-top:4px;">
+        <p style="font-size:.85rem;font-weight:700;color:#7a5800;margin-bottom:7px;">⚠️ Watch your spelling!</p>
+        <p style="font-size:.83rem;line-height:1.7;color:#5a4000;">
+          ridicule → ridicu<strong>l</strong>ous (drop the <em>e</em>)<br>
+          apologise → apolog<strong>etic</strong> (bigger change!)<br>
+          sense → sens<strong>ible</strong> (drop the <em>se</em>)<br>
+          hope → can go two ways: <em>hope</em>-ful or <em>hope</em>-less
+        </p>
+      </div>
+    </div>
+    <div>
+      <div class="suf-items">
+        <div class="suf-item"><span class="suf-n">1</span><span class="suf-root">child</span><div class="suf-drop" id="sd-1" ondragover="sdOver(event,this)" ondragleave="sdLeave(this)" ondrop="sdDrop(event,this,'sd-1')"><span class="suf-drop-ph">drop suffix</span></div><span class="suf-eq">→</span><input class="suf-inp" data-answer="childish" placeholder="adjective"></div>
+        <div class="suf-item"><span class="suf-n">2</span><span class="suf-root">ridicule</span><div class="suf-drop" id="sd-2" ondragover="sdOver(event,this)" ondragleave="sdLeave(this)" ondrop="sdDrop(event,this,'sd-2')"><span class="suf-drop-ph">drop suffix</span></div><span class="suf-eq">→</span><input class="suf-inp" data-answer="ridiculous" placeholder="adjective"></div>
+        <div class="suf-item"><span class="suf-n">3</span><span class="suf-root">sense</span><div class="suf-drop" id="sd-3" ondragover="sdOver(event,this)" ondragleave="sdLeave(this)" ondrop="sdDrop(event,this,'sd-3')"><span class="suf-drop-ph">drop suffix</span></div><span class="suf-eq">→</span><input class="suf-inp" data-answer="sensible" placeholder="adjective"></div>
+        <div class="suf-item"><span class="suf-n">4</span><span class="suf-root">ethics</span><div class="suf-drop" id="sd-4" ondragover="sdOver(event,this)" ondragleave="sdLeave(this)" ondrop="sdDrop(event,this,'sd-4')"><span class="suf-drop-ph">drop suffix</span></div><span class="suf-eq">→</span><input class="suf-inp" data-answer="ethical" placeholder="adjective"></div>
+        <div class="suf-item"><span class="suf-n">5</span><span class="suf-root">trick</span><div class="suf-drop" id="sd-5" ondragover="sdOver(event,this)" ondragleave="sdLeave(this)" ondrop="sdDrop(event,this,'sd-5')"><span class="suf-drop-ph">drop suffix</span></div><span class="suf-eq">→</span><input class="suf-inp" data-answer="tricky" placeholder="adjective"></div>
+        <div class="suf-item"><span class="suf-n">6</span><span class="suf-root">disrespect</span><div class="suf-drop" id="sd-6" ondragover="sdOver(event,this)" ondragleave="sdLeave(this)" ondrop="sdDrop(event,this,'sd-6')"><span class="suf-drop-ph">drop suffix</span></div><span class="suf-eq">→</span><input class="suf-inp" data-answer="disrespectful" placeholder="adjective"></div>
+        <div class="suf-item"><span class="suf-n">7</span><span class="suf-root">apologise</span><div class="suf-drop" id="sd-7" ondragover="sdOver(event,this)" ondragleave="sdLeave(this)" ondrop="sdDrop(event,this,'sd-7')"><span class="suf-drop-ph">drop suffix</span></div><span class="suf-eq">→</span><input class="suf-inp" data-answer="apologetic" placeholder="adjective"></div>
+        <div class="suf-item"><span class="suf-n">8</span><span class="suf-root">hope</span><div class="suf-drop" id="sd-8" ondragover="sdOver(event,this)" ondragleave="sdLeave(this)" ondrop="sdDrop(event,this,'sd-8')"><span class="suf-drop-ph">drop suffix</span></div><span class="suf-eq">→</span><input class="suf-inp" data-answer="hopeful|hopeless" placeholder="adjective"><span class="suf-hint">(2 options!)</span></div>
+      </div>
+      <button class="reveal-btn" onclick="checkSuffixes()" style="margin-top:12px;">✓ Check Answers</button>
+      <div id="suf-score" style="display:none;margin-top:10px;padding:9px 14px;border-radius:8px;font-size:.87rem;font-weight:600;border:2px solid;"></div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="go(4)">← Back</button>
+    <button class="nav-btn" onclick="go(6)">Next →</button>
+  </div>
+</div>
+
+<!-- ════════ SLIDE 6 ── CLASSIFY ════════ -->
+<div class="slide" id="slide-6">
+  <div class="sh">
+    <span class="sh-tag gram">Language Focus — Ex 5b</span>
+    <h2 class="sh-title">Sort the Adjectives</h2>
+    <p class="sh-sub">Click an adjective, then click the correct bin. Click a placed word to return it.</p>
+  </div>
+
+  <div class="instr">Decide: is the adjective positive (+), negative (−), or does it depend on context (n)? Discuss with a partner before clicking.</div>
+
+  <div class="adj-pool" id="adj-pool">
+    <button class="adj-btn" onclick="selectAdj(this)">childish</button>
+    <button class="adj-btn" onclick="selectAdj(this)">ridiculous</button>
+    <button class="adj-btn" onclick="selectAdj(this)">sensible</button>
+    <button class="adj-btn" onclick="selectAdj(this)">ethical</button>
+    <button class="adj-btn" onclick="selectAdj(this)">tricky</button>
+    <button class="adj-btn" onclick="selectAdj(this)">disrespectful</button>
+    <button class="adj-btn" onclick="selectAdj(this)">apologetic</button>
+    <button class="adj-btn" onclick="selectAdj(this)">hopeful</button>
+    <button class="adj-btn" onclick="selectAdj(this)">hopeless</button>
+  </div>
+  <div class="classify-bins">
+    <div class="cbin plus" onclick="dropInBin(this,'plus')">
+      <div class="cbin-label">✅ Positive (+)</div>
+      <div class="cbin-items" id="bin-plus"></div>
+    </div>
+    <div class="cbin minus" onclick="dropInBin(this,'minus')">
+      <div class="cbin-label">❌ Negative (−)</div>
+      <div class="cbin-items" id="bin-minus"></div>
+    </div>
+    <div class="cbin neutral" onclick="dropInBin(this,'neutral')">
+      <div class="cbin-label">〰️ Neutral (n)</div>
+      <div class="cbin-items" id="bin-neutral"></div>
+    </div>
+  </div>
+
+  <button class="reveal-btn" onclick="checkClassify()">✓ Check My Sort</button>
+  <div id="classify-score" style="display:none;margin-top:10px;padding:9px 14px;border-radius:8px;font-size:.87rem;font-weight:600;border:2px solid;"></div>
+
+  <div class="card" style="margin-top:14px;background:var(--amber-light);border-color:var(--amber);">
+    <p style="font-size:.87rem;font-weight:700;color:#7a5800;margin-bottom:6px;">🗣️ Discuss this:</p>
+    <p style="font-size:.85rem;line-height:1.6;color:#5a4000;">Can <em>being childish</em> ever be a good thing? In what situations is <em>being apologetic</em> a sign of strength rather than weakness? Can something be <em>ridiculous</em> and right at the same time?</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="go(5)">← Back</button>
+    <button class="nav-btn" onclick="go(7)">Next →</button>
+  </div>
+</div>
+
+<!-- ════════ SLIDE 7 ── STRESS DETECTIVE ════════ -->
+<div class="slide" id="slide-7">
+  <div class="sh">
+    <span class="sh-tag pron">Pronunciation — Ex 6a</span>
+    <h2 class="sh-title">Stress Detective</h2>
+    <p class="sh-sub">In each group, three words share the same stress pattern. One is different. Find it.</p>
+  </div>
+
+  <div class="instr">🔊 Say each group of words out loud. Three share the same pattern — one is the odd one out. Click the word you think is different.</div>
+
+  <div class="stress-group">
+    <div class="sg-n">Group 1 — suffix <em>-ous</em></div>
+    <div class="stress-words" id="sg1">
+      <button class="sw" data-word="poisonous" onclick="pickStress(this,1)">poisonous</button>
+      <button class="sw" data-word="dangerous" onclick="pickStress(this,1)">dangerous</button>
+      <button class="sw" data-word="outrageous" onclick="pickStress(this,1)">outrageous</button>
+      <button class="sw" data-word="curious" onclick="pickStress(this,1)">curious</button>
+    </div>
+  </div>
+  <div class="stress-group">
+    <div class="sg-n">Group 2 — suffix <em>-able</em></div>
+    <div class="stress-words" id="sg2">
+      <button class="sw" data-word="advisable" onclick="pickStress(this,2)">advisable</button>
+      <button class="sw" data-word="acceptable" onclick="pickStress(this,2)">acceptable</button>
+      <button class="sw" data-word="comfortable" onclick="pickStress(this,2)">comfortable</button>
+      <button class="sw" data-word="adaptable" onclick="pickStress(this,2)">adaptable</button>
+    </div>
+  </div>
+  <div class="stress-group">
+    <div class="sg-n">Group 3 — suffix <em>-ful</em></div>
+    <div class="stress-words" id="sg3">
+      <button class="sw" data-word="colourful" onclick="pickStress(this,3)">colourful</button>
+      <button class="sw" data-word="delightful" onclick="pickStress(this,3)">delightful</button>
+      <button class="sw" data-word="respectful" onclick="pickStress(this,3)">respectful</button>
+      <button class="sw" data-word="successful" onclick="pickStress(this,3)">successful</button>
+    </div>
+  </div>
+  <div class="stress-group">
+    <div class="sg-n">Group 4 — suffix <em>-al</em></div>
+    <div class="stress-words" id="sg4">
+      <button class="sw" data-word="accidental" onclick="pickStress(this,4)">accidental</button>
+      <button class="sw" data-word="confidential" onclick="pickStress(this,4)">confidential</button>
+      <button class="sw" data-word="traditional" onclick="pickStress(this,4)">traditional</button>
+      <button class="sw" data-word="universal" onclick="pickStress(this,4)">universal</button>
+    </div>
+  </div>
+
+  <button class="reveal-btn coral" onclick="revealAllStress()">Show All Answers</button>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="go(6)">← Back</button>
+    <button class="nav-btn" onclick="go(8)">Next →</button>
+  </div>
+</div>
+
+<!-- ════════ SLIDE 8 ── DIARY GAP FILL ════════ -->
+<div class="slide" id="slide-8">
+  <div class="sh">
+    <span class="sh-tag read">Reading &amp; Gap Fill — Ex 7</span>
+    <h2 class="sh-title">The Late Friend — A Diary Entry</h2>
+    <p class="sh-sub">Complete the text using the words in brackets with the correct suffix.</p>
+  </div>
+
+  <div class="instr">📔 Fill each numbered gap. Use the word in brackets and add a suffix. You may need to change the spelling. Then click Check.</div>
+
+  <div class="diary">
+    <div class="diary-date">Tuesday, 14th October</div>
+    <h4>The situation with Marcus — I need to get this down.</h4>
+    Recently, I had an issue with a friend of mine, who was always late. In general, he's really
+    <sup class="dsup">1</sup><input class="dinp" data-answer="likeable" placeholder="(like)"> and
+    <sup class="dsup">2</sup><input class="dinp" data-answer="sensible" placeholder="(sense)">, but in terms of time-keeping, he's
+    <sup class="dsup">3</sup><input class="dinp" data-answer="hopeless" placeholder="(hope)">. He seemed to think it was
+    <sup class="dsup">4</sup><input class="dinp" data-answer="acceptable" placeholder="(accept)"> to always arrive twenty minutes late. I found this really
+    <sup class="dsup">5</sup><input class="dinp" data-answer="disrespectful" placeholder="(disrespect)">, especially because he wasn't at all
+    <sup class="dsup">6</sup><input class="dinp" data-answer="apologetic" placeholder="(apologise)">. And it was
+    <sup class="dsup">7</sup><input class="dinp" data-answer="pointless" placeholder="(point)"> trying to talk to him about it. He just said I was being
+    <sup class="dsup">8</sup><input class="dinp" data-answer="ridiculous" placeholder="(ridicule)"> and not very
+    <sup class="dsup">9</sup><input class="dinp" data-answer="reasonable" placeholder="(reason)">. Still, I didn't want to back down. I really found it
+    <sup class="dsup">10</sup><input class="dinp" data-answer="outrageous" placeholder="(outrage)"> that he made me wait, so I started turning up 30 minutes late. The funny thing is, he doesn't seem to mind at all. I guess I'm just more of a control freak than he is!
+  </div>
+
+  <button class="reveal-btn" onclick="checkDiary()" style="margin-bottom:12px;">✓ Check Answers</button>
+  <div id="diary-score" style="display:none;padding:9px 14px;border-radius:8px;font-size:.87rem;font-weight:600;border:2px solid;margin-bottom:12px;"></div>
+
+  <div class="card" style="background:#fff9f0;border-color:#e8c87a;">
+    <p style="font-weight:700;font-size:.87rem;color:#7a5800;margin-bottom:6px;">💬 Discuss with your teacher:</p>
+    <p style="font-size:.86rem;line-height:1.6;color:#5a4000;">The writer started arriving 30 minutes late on purpose. <em>Childish revenge tactic</em> or <em>reasonable response</em>? Who is more of a control freak in the end? What would you have done instead?</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="go(7)">← Back</button>
+    <button class="nav-btn" onclick="go(9)">Next →</button>
+  </div>
+</div>
+
+<!-- ════════ SLIDE 9 ── SPEAKING EX 8 ════════ -->
+<div class="slide" id="slide-9">
+  <div class="sh">
+    <span class="sh-tag speak">Speaking — Ex 8</span>
+    <h2 class="sh-title">Conflict Interview</h2>
+    <p class="sh-sub">Pick a prompt and tell your story. Try to use at least 4 words from today's lesson.</p>
+  </div>
+
+  <div class="instr">🎤 Choose one card below. Talk for at least 1 minute — tell the story, explain how you felt, what happened next. Your teacher will ask follow-up questions.</div>
+
+  <div class="conviction-grid" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="conv-card">Tell me about a time someone's behaviour felt <strong>disrespectful</strong> or <strong>outrageous</strong> to you. What did you do about it?</div>
+    <div class="conv-card">Describe a conflict where you had to back down — even though you felt you were being completely <strong>reasonable</strong>. How did that feel?</div>
+    <div class="conv-card">Have you ever come to terms with something you once found completely unacceptable? What changed your mind?</div>
+  </div>
+
+  <div class="lang-box" style="margin-top:16px;">
+    <h4>💬 Useful language</h4>
+    <div class="lang-grid">
+      <span class="lp">At the time, I found it really…</span>
+      <span class="lp">Looking back, it was a bit…</span>
+      <span class="lp">The underlying issue was…</span>
+      <span class="lp">Eventually I came to terms with…</span>
+      <span class="lp">What made it worse was that they weren't even…</span>
+      <span class="lp">In the end, I had to back down because…</span>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="go(8)">← Back</button>
+    <button class="nav-btn" onclick="go(10)">Next →</button>
+  </div>
+</div>
+
+<!-- ════════ SLIDE 10 ── SPEAKING EX 9 ════════ -->
+<div class="slide" id="slide-10">
+  <div class="sh">
+    <span class="sh-tag speak">Speaking — Ex 9</span>
+    <h2 class="sh-title">Advice Clinic</h2>
+    <p class="sh-sub">Someone's in a conflict and needs your help. What do you tell them?</p>
+  </div>
+
+  <div class="instr">🩺 Your teacher reads each situation. Give your honest advice — what should the person do or say? Be specific. Use vocabulary from the lesson.</div>
+
+  <div class="conviction-grid">
+    <div class="conv-card">Your flatmate plays music loudly until 2am. You mentioned it once and they laughed it off. You feel completely <em>disrespected</em> — but you don't want to seem <em>unreasonable</em>. What do you do?</div>
+    <div class="conv-card">A colleague keeps taking credit for your ideas in meetings. You find it <em>outrageous</em>, but they're also a friend. You've said nothing so far. What would you say — and when?</div>
+    <div class="conv-card">You've been in a <em>pointless</em> argument with a family member for three weeks. Neither of you will back down. It's getting <em>ridiculous</em>. What's your advice?</div>
+    <div class="conv-card">A close friend is always 40–50 minutes late. You've never said anything because you don't want to seem <em>unreasonable</em>. But you're close to walking away from the friendship. What should happen next?</div>
+  </div>
+
+  <div class="lang-box" style="margin-top:16px;">
+    <h4>💬 Useful language</h4>
+    <div class="lang-grid">
+      <span class="lp">If I were you, I'd…</span>
+      <span class="lp">The most sensible thing would be to…</span>
+      <span class="lp">I think the underlying issue is…</span>
+      <span class="lp">It's not unreasonable to feel…</span>
+      <span class="lp">At some point you need to back down and…</span>
+      <span class="lp">They need to come to terms with the fact that…</span>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="go(9)">← Back</button>
+    <button class="nav-btn" onclick="go(11)">Next →</button>
+  </div>
+</div>
+
+<!-- ════════ SLIDE 11 ── CONFLICT DNA ════════ -->
+<div class="slide" id="slide-11">
+  <div class="sh">
+    <span class="sh-tag wrap">Wrap-up — Ex 10</span>
+    <h2 class="sh-title">What's Your Conflict DNA?</h2>
+    <p class="sh-sub">Based on everything today — which type are you? Click to find out.</p>
+  </div>
+
+  <div class="instr">📊 Reflect with your teacher: what happened in your negotiation? Did you reach a compromise? Then — click the archetype that best describes YOU.</div>
+
+  <p style="font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:10px;">Tell your teacher: what happened in the negotiation? Who backed down? Was there a compromise?</p>
+
+  <div class="arch-grid">
+    <div class="arch-card fighter" onclick="selectArch(this,'fighter')">
+      <div class="arch-emoji">🥊</div>
+      <div class="arch-name">The Fighter</div>
+      <div class="arch-trait">Competitive · Direct · Outspoken</div>
+      <div class="arch-desc">You speak up immediately and aren't afraid to clash. You'd rather resolve it loudly than bottle it up.</div>
+    </div>
+    <div class="arch-card diplomat" onclick="selectArch(this,'diplomat')">
+      <div class="arch-emoji">🕊️</div>
+      <div class="arch-name">The Diplomat</div>
+      <div class="arch-trait">Sensible · Reasonable · Empathetic</div>
+      <div class="arch-desc">You naturally mediate. You see both sides, push for compromise, and hate it when people can't see eye to eye.</div>
+    </div>
+    <div class="arch-card avoider" onclick="selectArch(this,'avoider')">
+      <div class="arch-emoji">🚶</div>
+      <div class="arch-name">The Avoider</div>
+      <div class="arch-trait">Thoughtful · Patient · Private</div>
+      <div class="arch-desc">You back down to keep the peace and come to terms with things slowly. You rarely pick a fight — but you remember everything.</div>
+    </div>
+    <div class="arch-card strategist" onclick="selectArch(this,'strategist')">
+      <div class="arch-emoji">🎯</div>
+      <div class="arch-name">The Strategist</div>
+      <div class="arch-trait">Calculated · Perceptive · Patient</div>
+      <div class="arch-desc">You wait, watch, and pick your moment. You always understand the underlying issue — and you use that knowledge wisely.</div>
+    </div>
+  </div>
+
+  <div class="arch-reveal" id="arch-result"></div>
+
+  <div class="card" style="margin-top:14px;background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:white;border:none;">
+    <p style="font-weight:800;font-size:1rem;margin-bottom:7px;">🎉 Lesson complete!</p>
+    <p style="font-size:.87rem;opacity:.88;line-height:1.6;">Today: conflict vocabulary · adjective suffixes · the cola-wars text · a real negotiation. Did the words actually help you argue better? That's the point. Life really is too short for conflicts you can't even <em>name</em>.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="go(10)">← Back</button>
+    <button class="nav-btn" disabled>Done ✓</button>
+  </div>
+</div>
+
+</div><!-- /slides-wrap -->
+
+<script>
+/* ── NAVIGATION ── */
+const TOTAL = 11;
+const titles = [
+  "The Conflict Dossier","Flip & Learn — Conflict Phrases","Ex 3 — Diplomatic Edit",
+  "Speaking — Agony Aunt","Suffix Lab","Sort the Adjectives",
+  "Stress Detective","Diary Gap Fill","Conflict Interview","Advice Clinic","Conflict DNA"
+];
+let cur = 1;
+
+const dotsEl = document.getElementById('dots');
+for (let i = 1; i <= TOTAL; i++) {
+  const d = document.createElement('button');
+  d.className = 'dot' + (i===1?' active':'');
+  d.title = titles[i-1];
+  d.onclick = () => go(i);
+  dotsEl.appendChild(d);
+}
+
+function go(n) {
+  document.getElementById('slide-'+cur).classList.remove('active');
+  document.querySelectorAll('.dot')[cur-1].classList.remove('active');
+  cur = n;
+  document.getElementById('slide-'+cur).classList.add('active');
+  document.querySelectorAll('.dot')[cur-1].classList.add('active');
+  document.getElementById('tb-counter').textContent = cur+' / '+TOTAL;
+  document.getElementById('tb-title').textContent = '3C — '+titles[cur-1];
+  document.getElementById('prog').style.width = (cur/TOTAL*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowRight'||e.key==='ArrowDown') { if(cur<TOTAL) go(cur+1); }
+  if (e.key==='ArrowLeft' ||e.key==='ArrowUp')   { if(cur>1)     go(cur-1); }
+});
+
+/* ── SLIDE 1: CASE FILES ── */
+function castVerdict(btn, type, caseNum) {
+  const row = btn.closest('.verdict-row');
+  row.querySelectorAll('.vbtn').forEach(b => b.className='vbtn');
+  btn.classList.add(type);
+}
+
+/* ── SLIDE 3: DIPLOMATIC EDIT ── */
+function toggleAns(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+let editShown = false;
+const editIds = ['e1','e2','e3','e4','e5','e6','e7','e8','e9','e10'];
+function toggleAllEdit() {
+  editShown = !editShown;
+  editIds.forEach(id => document.getElementById(id).style.display = editShown ? 'block' : 'none');
+}
+
+/* ── SLIDE 5: SUFFIX DRAG ── */
+let sufDragging = null;
+
+function sbStart(e, badge) {
+  sufDragging = badge;
+  badge.classList.add('suf-dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', badge.dataset.suffix);
+}
+function sbEnd(badge) {
+  badge.classList.remove('suf-dragging');
+}
+function sdOver(e, zone) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  zone.classList.add('drag-over');
+}
+function sdLeave(zone) {
+  zone.classList.remove('drag-over');
+}
+function sdDrop(e, zone, zoneId) {
+  e.preventDefault();
+  zone.classList.remove('drag-over');
+  const suffix = e.dataTransfer.getData('text/plain');
+  if (!suffix) return;
+  // return any existing suffix to the palette
+  if (zone.dataset.current) returnSufToPalette(zone.dataset.current);
+  // dim the dragged badge
+  if (sufDragging) { sufDragging.classList.add('suf-used'); sufDragging.classList.remove('suf-dragging'); }
+  // place chip
+  zone.dataset.current = suffix;
+  zone.innerHTML = `<span class="placed-suf">${suffix}<span class="rm-suf" onclick="removeSuf(event,'${zoneId}','${suffix}')">✕</span></span>`;
+  sufDragging = null;
+}
+function returnSufToPalette(suffix) {
+  document.querySelectorAll('.sbadge[data-suffix]').forEach(b => {
+    if (b.dataset.suffix === suffix) b.classList.remove('suf-used');
+  });
+}
+function removeSuf(e, zoneId, suffix) {
+  e.stopPropagation();
+  const zone = document.getElementById(zoneId);
+  zone.dataset.current = '';
+  zone.innerHTML = '<span class="suf-drop-ph">drop suffix</span>';
+  returnSufToPalette(suffix);
+}
+
+/* ── SLIDE 5: SUFFIX LAB ── */
+function checkSuffixes() {
+  const inputs = document.querySelectorAll('.suf-inp');
+  let ok = 0;
+  inputs.forEach(inp => {
+    inp.classList.remove('c','w');
+    const v = inp.value.trim().toLowerCase();
+    if (!v) return;
+    const accepted = inp.dataset.answer.split('|');
+    if (accepted.includes(v)) { inp.classList.add('c'); ok++; }
+    else inp.classList.add('w');
+  });
+  const sc = document.getElementById('suf-score');
+  sc.style.display = 'block';
+  if (ok===8) {
+    sc.style.cssText = 'display:block;background:var(--good-bg);border-color:var(--good);color:#1a6b5f;margin-top:10px;padding:9px 14px;border-radius:8px;font-size:.87rem;font-weight:600;border:2px solid;';
+    sc.textContent = '🎉 8/8 — Perfect!';
+  } else {
+    sc.style.cssText = 'display:block;background:var(--navy-light);border-color:var(--navy-mid);color:var(--navy);margin-top:10px;padding:9px 14px;border-radius:8px;font-size:.87rem;font-weight:600;border:2px solid;';
+    sc.textContent = '✓ '+ok+'/8 — check the red ones and watch your spelling!';
+  }
+}
+
+/* ── SLIDE 6: CLASSIFY ── */
+const correctBins = {
+  childish:'minus', ridiculous:'minus', sensible:'plus', ethical:'plus',
+  tricky:'neutral', disrespectful:'minus', apologetic:'neutral',
+  hopeful:'plus', hopeless:'minus'
+};
+let selectedAdj = null;
+const adjPlacements = {};
+
+function selectAdj(btn) {
+  document.querySelectorAll('.adj-btn').forEach(b => b.style.outline='');
+  if (selectedAdj === btn) { selectedAdj = null; return; }
+  selectedAdj = btn;
+  btn.style.outline = '2px solid var(--navy)';
+}
+
+function dropInBin(bin, binType) {
+  if (!selectedAdj) return;
+  const word = selectedAdj.textContent;
+  selectedAdj.classList.add('used');
+  selectedAdj.style.outline = '';
+  adjPlacements[word] = binType;
+  const chip = document.createElement('span');
+  chip.className = 'cplaced';
+  chip.textContent = word;
+  chip.onclick = () => returnFromBin(chip, word);
+  document.getElementById('bin-'+binType).appendChild(chip);
+  selectedAdj = null;
+}
+
+function returnFromBin(chip, word) {
+  chip.remove();
+  delete adjPlacements[word];
+  document.querySelectorAll('.adj-btn').forEach(b => {
+    if (b.textContent === word) { b.classList.remove('used'); b.style.outline=''; }
+  });
+  // reset check state
+  document.querySelectorAll('.cplaced').forEach(c => c.classList.remove('wrong-place','right-place'));
+}
+
+function checkClassify() {
+  let ok = 0, total = Object.keys(adjPlacements).length;
+  document.querySelectorAll('.cplaced').forEach(chip => {
+    const word = chip.textContent;
+    const placed = adjPlacements[word];
+    const correct = correctBins[word];
+    chip.classList.remove('wrong-place','right-place');
+    if (placed === correct) { chip.classList.add('right-place'); ok++; }
+    else chip.classList.add('wrong-place');
+  });
+  const sc = document.getElementById('classify-score');
+  sc.style.display = 'block';
+  if (ok === 9 && total === 9) {
+    sc.style.cssText = 'display:block;background:var(--good-bg);border-color:var(--good);color:#1a6b5f;margin-top:10px;padding:9px 14px;border-radius:8px;font-size:.87rem;font-weight:600;border:2px solid;';
+    sc.textContent = '🎉 9/9 — Perfect sort!';
+  } else {
+    sc.style.cssText = 'display:block;background:var(--navy-light);border-color:var(--navy-mid);color:var(--navy);margin-top:10px;padding:9px 14px;border-radius:8px;font-size:.87rem;font-weight:600;border:2px solid;';
+    sc.textContent = '✓ '+ok+'/'+total+' correct — red chips are in the wrong bin. Click them to return and retry.';
+  }
+}
+
+/* ── SLIDE 7: STRESS DETECTIVE ── */
+const stressAnswers = {1:'outrageous',2:'comfortable',3:'colourful',4:'traditional'};
+function pickStress(btn, grp) {
+  const group = document.getElementById('sg'+grp);
+  group.querySelectorAll('.sw').forEach(b => b.classList.remove('selected-odd','confirmed-odd','confirmed-same'));
+  const clicked = btn.dataset.word;
+  const correct = stressAnswers[grp];
+  if (clicked === correct) {
+    btn.classList.add('selected-odd');
+  } else {
+    btn.classList.add('selected-odd');
+    group.querySelectorAll('.sw').forEach(b2 => {
+      if (b2.dataset.word === correct) b2.classList.add('selected-odd');
+    });
+  }
+}
+function revealAllStress() {
+  [1,2,3,4].forEach(g => {
+    const grp = document.getElementById('sg'+g);
+    const ans = stressAnswers[g];
+    grp.querySelectorAll('.sw').forEach(b => {
+      b.classList.remove('selected-odd','confirmed-odd','confirmed-same');
+      b.classList.add(b.dataset.word === ans ? 'confirmed-odd' : 'confirmed-same');
+    });
+  });
+}
+
+/* ── SLIDE 8: DIARY GAP FILL ── */
+function checkDiary() {
+  const inputs = document.querySelectorAll('.dinp');
+  let ok=0;
+  inputs.forEach(inp => {
+    inp.classList.remove('c','w');
+    const v=inp.value.trim().toLowerCase();
+    if (!v) return;
+    if (v===inp.dataset.answer){inp.classList.add('c');ok++;}
+    else inp.classList.add('w');
+  });
+  const sc=document.getElementById('diary-score');
+  sc.style.display='block';
+  if(ok===10){
+    sc.style.cssText='display:block;background:var(--good-bg);border-color:var(--good);color:#1a6b5f;padding:9px 14px;border-radius:8px;font-size:.87rem;font-weight:600;border:2px solid;margin-bottom:12px;';
+    sc.textContent='🎉 10/10 — flawless!';
+  } else {
+    sc.style.cssText='display:block;background:var(--navy-light);border-color:var(--navy-mid);color:var(--navy);padding:9px 14px;border-radius:8px;font-size:.87rem;font-weight:600;border:2px solid;margin-bottom:12px;';
+    sc.textContent='✓ '+ok+'/10 — red = try again. Watch the spelling!';
+  }
+}
+
+/* ── SLIDE 10: CONFLICT DNA ── */
+const archDescriptions = {
+  fighter:'<strong>🥊 You\'re a Fighter.</strong> You speak up, you clash, and you don\'t back down easily. The good news: you never bottle things up. The risk: you might pick a fight when compromise is actually possible.',
+  diplomat:'<strong>🕊️ You\'re a Diplomat.</strong> You see both sides, push for compromise, and mediate naturally. You rarely clash but you sometimes struggle to come to terms with the fact that not everyone wants peace.',
+  avoider:'<strong>🚶 You\'re an Avoider.</strong> You back down to keep the peace — but you remember every underlying issue. Your patience is a strength. Just make sure you don\'t let things build until you explode.',
+  strategist:'<strong>🎯 You\'re a Strategist.</strong> You understand the underlying issue before anyone else does. You pick your moment and you rarely lose. But sometimes people need you to be a little less calculated and a little more human.'
+};
+const archColors = {
+  fighter:'background:var(--bad-bg);border-color:var(--bad);color:#922b15;',
+  diplomat:'background:var(--good-bg);border-color:var(--good);color:#1a6b5f;',
+  avoider:'background:var(--navy-light);border-color:var(--navy);color:var(--navy);',
+  strategist:'background:var(--purple-light);border-color:var(--purple);color:var(--purple);'
+};
+function selectArch(card, type) {
+  document.querySelectorAll('.arch-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  const el=document.getElementById('arch-result');
+  el.style.display='block';
+  el.style.cssText='display:block;padding:14px 18px;border-radius:12px;margin-top:4px;font-size:.88rem;line-height:1.6;border:2px solid;'+archColors[type];
+  el.innerHTML=archDescriptions[type];
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+</script>
+</body>
+</html>
