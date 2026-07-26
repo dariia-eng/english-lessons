@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relative Clauses — Assignment</title>
+<style>
+:root{
+  --bg:#07071a;--surface:#0f0f2d;--surface2:#181840;--border:#2a2a60;
+  --purple:#7c6fff;--purple-light:#b3aaff;--cyan:#22d3ee;--gold:#fbbf24;
+  --green:#4ade80;--red:#f87171;--text:#ccd0f0;--text-dim:#6870a0;--white:#f0f2ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:linear-gradient(135deg,#07071a 0%,#12063a 50%,#07071a 100%);background-attachment:fixed;
+  color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:16px;line-height:1.8;min-height:100vh;}
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) ease-in-out infinite alternate}
+@keyframes twinkle{0%{opacity:.1}100%{opacity:.9}}
+.page{max-width:860px;margin:0 auto;padding:32px 20px 80px;position:relative;z-index:1}
+
+/* HEADER */
+.asgn-header{background:linear-gradient(135deg,#1a0545,#0a1a55);border:1px solid var(--border);
+  border-radius:20px;padding:36px 40px;margin-bottom:36px;position:relative;overflow:hidden;
+  box-shadow:0 0 60px rgba(124,111,255,.15)}
+.asgn-header::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 80% 20%,rgba(34,211,238,.1) 0%,transparent 60%)}
+.asgn-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(124,111,255,.2);
+  border:1px solid var(--purple);border-radius:50px;padding:6px 18px;font-size:13px;font-weight:600;
+  color:var(--purple-light);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+.asgn-header h1{font-size:2.2rem;font-weight:800;color:#fff;margin-bottom:6px}
+.asgn-header h1 span{color:var(--cyan)}
+.asgn-header p{font-size:14px;color:var(--text-dim);margin-bottom:26px}
+.name-row{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.05);
+  border:2px solid var(--purple);border-radius:14px;padding:16px 20px;flex-wrap:wrap}
+.name-row label{font-size:14px;font-weight:700;color:var(--purple-light);white-space:nowrap;min-width:120px}
+.name-row input{flex:1;min-width:200px;background:transparent;border:none;border-bottom:2px solid var(--border);
+  color:var(--white);font-size:16px;padding:4px 6px;outline:none;font-family:inherit;transition:border-color .2s}
+.name-row input:focus{border-bottom-color:var(--purple)}
+.name-row input::placeholder{color:var(--text-dim)}
+.name-required{font-size:12px;color:var(--red);font-weight:600;display:none}
+
+/* PROGRESS BAR */
+.progress-bar{background:var(--surface2);border:1px solid var(--border);border-radius:50px;
+  height:8px;margin-bottom:36px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--cyan));
+  border-radius:50px;transition:width .4s ease;width:0%}
+.progress-label{font-size:12px;color:var(--text-dim);margin-bottom:8px;text-align:right}
+
+/* SECTIONS */
+section{margin-bottom:40px}
+.ex-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:0}
+.ex-card.checked-ok{border-color:var(--green)}
+.ex-card.checked-partial{border-color:var(--gold)}
+.ex-header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.ex-badge{background:var(--purple);color:#fff;border-radius:10px;padding:4px 14px;font-size:13px;font-weight:700}
+.ex-header h2{font-size:1.1rem;font-weight:700;color:var(--white)}
+.ex-header h2 em{color:var(--cyan);font-style:normal}
+.instruction{font-size:.9rem;color:var(--text-dim);margin-bottom:18px;font-style:italic}
+
+/* MC OPTIONS */
+.mc-q-block{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px}
+.mc-q-text{font-size:14px;margin-bottom:12px;color:var(--white)}
+.mc-q-num{color:var(--gold);font-weight:700;margin-right:6px}
+.mc-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mc-opt{background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:8px 14px;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:8px;
+  transition:all .2s;color:var(--text)}
+.mc-opt:hover{border-color:var(--purple);background:rgba(124,111,255,.1)}
+.mc-opt.selected{border-color:var(--purple);background:rgba(124,111,255,.18);color:var(--purple-light)}
+.mc-opt .letter{background:var(--surface2);border:1px solid var(--border);border-radius:5px;
+  width:22px;height:22px;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:var(--text-dim);flex-shrink:0}
+.mc-opt.correct-opt{border-color:var(--green)!important;background:rgba(74,222,128,.12)!important;color:var(--green)!important}
+.mc-opt.wrong-opt{border-color:var(--red)!important;background:rgba(248,113,113,.1)!important;color:var(--red)!important}
+.mc-reveal{font-size:12px;font-weight:700;margin-top:8px;padding:5px 10px;border-radius:6px;display:none}
+.mc-reveal.show{display:block}
+.mc-reveal.ok{color:var(--green)}
+.mc-reveal.bad{background:rgba(251,191,36,.08);border:1px solid #fbbf2433;color:var(--gold)}
+
+/* FILM TEXT */
+.film-text{background:var(--surface2);border:1px solid var(--border);border-left:4px solid var(--cyan);
+  border-radius:0 14px 14px 0;padding:24px 28px;font-size:15px;line-height:2.2}
+.film-text p{margin-bottom:12px}
+.film-text p:last-child{margin-bottom:0}
+.gap-select{background:var(--surface);border:1px solid var(--purple);border-radius:7px;
+  color:var(--purple-light);font-size:14px;padding:3px 8px;outline:none;cursor:pointer;
+  font-family:inherit;transition:all .2s;vertical-align:middle}
+.gap-select:focus{border-color:var(--cyan)}
+.gap-select.correct-sel{border-color:var(--green)!important;color:var(--green)!important;background:rgba(74,222,128,.08)}
+.gap-select.wrong-sel{border-color:var(--red)!important;color:var(--red)!important;background:rgba(248,113,113,.08)}
+.gap-reveal{font-size:12px;font-weight:700;vertical-align:middle;margin-left:4px}
+
+/* FILL-IN */
+.fi-list{display:flex;flex-direction:column;gap:12px}
+.fi-item{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:13px 18px;font-size:14px}
+.fi-num{color:var(--gold);font-weight:700;margin-right:6px}
+.fi-input{background:var(--surface);border:none;border-bottom:2px solid var(--border);color:var(--white);
+  font-size:14px;padding:3px 8px;width:120px;outline:none;font-family:inherit;transition:border-color .2s;vertical-align:middle}
+.fi-input:focus{border-bottom-color:var(--purple)}
+.fi-item.ok-item{border-color:var(--green);background:rgba(74,222,128,.06)}
+.fi-item.bad-item{border-color:var(--red);background:rgba(248,113,113,.06)}
+.fi-reveal{font-size:12px;font-weight:700;margin-left:8px;vertical-align:middle}
+
+/* WRITING */
+.writing-area{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;
+  color:var(--white);font-size:14px;padding:14px 16px;min-height:130px;resize:vertical;
+  outline:none;font-family:inherit;line-height:1.9;transition:border-color .2s}
+.writing-area:focus{border-color:var(--purple)}
+.pronoun-tracker{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pronoun-chip{background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+  padding:4px 12px;font-size:13px;font-weight:600;color:var(--text-dim);transition:all .3s;font-family:monospace}
+.pronoun-chip.found{background:rgba(74,222,128,.12);border-color:#4ade8066;color:var(--green)}
+.pronoun-count{font-size:13px;color:var(--text-dim);margin-top:8px}
+.pronoun-count strong{color:var(--white)}
+.writing-warning{font-size:13px;color:var(--red);margin-top:8px;display:none}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:10px;
+  padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-check{background:var(--purple);color:#fff}
+.btn-check:hover{background:#6a5dee;transform:translateY(-1px);box-shadow:0 4px 18px rgba(124,111,255,.4)}
+.btn-reset{background:var(--surface2);border:1px solid var(--border);color:var(--text)}
+.btn-reset:hover{border-color:var(--purple);color:var(--purple-light)}
+.btn-row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;align-items:center}
+.score-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(251,191,36,.1);
+  border:1px solid #fbbf2433;border-radius:50px;padding:6px 16px;font-size:13px;font-weight:600;color:var(--gold)}
+
+/* SEND SECTION */
+.send-section{background:linear-gradient(135deg,#0d0d35,#0a1a30);border:2px solid var(--cyan);
+  border-radius:20px;padding:32px 36px;text-align:center;margin-top:8px}
+.send-section h3{font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:8px}
+.send-section p{font-size:14px;color:var(--text-dim);margin-bottom:24px}
+.send-warning{background:rgba(248,113,113,.1);border:1px solid #f8717144;border-radius:12px;
+  padding:14px 18px;font-size:13px;color:var(--red);margin-bottom:16px;text-align:left;display:none}
+.send-warning ul{margin:8px 0 0 16px}
+.send-warning li{margin-bottom:4px}
+.btn-send{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;font-size:16px;
+  font-weight:700;padding:14px 40px;border-radius:14px;border:none;cursor:pointer;
+  transition:all .3s;font-family:inherit;letter-spacing:.3px}
+.btn-send:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 30px rgba(34,211,238,.3)}
+.btn-send:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.send-note{font-size:12px;color:var(--text-dim);margin-top:12px}
+
+/* SUMMARY TABLE */
+.summary{background:var(--surface2);border:1px solid var(--border);border-radius:14px;
+  padding:18px 22px;margin-bottom:24px;display:none}
+.summary h4{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--gold);margin-bottom:12px}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.summary-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:10px 14px;text-align:center}
+.summary-item .s-label{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px}
+.summary-item .s-score{font-size:1.3rem;font-weight:800;color:var(--white)}
+.summary-item.all-green .s-score{color:var(--green)}
+.summary-item.some-orange .s-score{color:var(--gold)}
+.summary-item.none-red .s-score{color:var(--red)}
+
+@media(max-width:580px){
+  .asgn-header{padding:24px 20px}
+  .asgn-header h1{font-size:1.6rem}
+  .mc-opts{grid-template-columns:1fr}
+  .summary-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="page">
+
+<!-- HEADER -->
+<div class="asgn-header">
+  <div class="asgn-badge">📝 Assignment</div>
+  <h1>Relative <span>Clauses</span></h1>
+  <p>Complete all four exercises, then send your work to your teacher.</p>
+
+  <div class="name-row">
+    <label for="student-name">👤 Full Name</label>
+    <input type="text" id="student-name" placeholder="Type your name here…" oninput="updateSendState()">
+    <span class="name-required" id="name-req">⚠ Name required</span>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-label" id="prog-label">Progress: 0 of 4 exercises checked</div>
+<div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+
+
+<!-- ══ EX 1: MULTIPLE CHOICE ══ -->
+<section>
+  <div class="ex-card" id="card1">
+    <div class="ex-header">
+      <span class="ex-badge">Ex 1</span>
+      <h2>Multiple Choice — <em>choose the correct relative pronoun</em></h2>
+    </div>
+    <p class="instruction">Click the best option (a–d) for each sentence. Only one answer is correct.</p>
+
+    <!-- Q1 -->
+    <div class="mc-q-block" id="mc-block1">
+      <div class="mc-q-text"><span class="mc-q-num">1</span>The director _______ debut film won the Palme d'Or is now regarded as a master of world cinema.</div>
+      <div class="mc-opts">
+        <div class="mc-opt" onclick="selectMC(1,'a',this)"><span class="letter">a</span>who</div>
+        <div class="mc-opt" onclick="selectMC(1,'b',this)"><span class="letter">b</span>which</div>
+        <div class="mc-opt" onclick="selectMC(1,'c',this)"><span class="letter">c</span>whose</div>
+        <div class="mc-opt" onclick="selectMC(1,'d',this)"><span class="letter">d</span>that</div>
+      </div>
+      <div class="mc-reveal" id="mc-rev1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="mc-q-block" id="mc-block2">
+      <div class="mc-q-text"><span class="mc-q-num">2</span>The Martian, _______ was released in 2015, became one of the most successful science fiction films of the decade.</div>
+      <div class="mc-opts">
+        <div class="mc-opt" onclick="selectMC(2,'a',this)"><span class="letter">a</span>that</div>
+        <div class="mc-opt" onclick="selectMC(2,'b',this)"><span class="letter">b</span>which</div>
+        <div class="mc-opt" onclick="selectMC(2,'c',this)"><span class="letter">c</span>who</div>
+        <div class="mc-opt" onclick="selectMC(2,'d',this)"><span class="letter">d</span>whose</div>
+      </div>
+      <div class="mc-reveal" id="mc-rev2"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="mc-q-block" id="mc-block3">
+      <div class="mc-q-text"><span class="mc-q-num">3</span>Hollywood is the city _______ most large-budget films have traditionally been produced.</div>
+      <div class="mc-opts">
+        <div class="mc-opt" onclick="selectMC(3,'a',this)"><span class="letter">a</span>which</div>
+        <div class="mc-opt" onclick="selectMC(3,'b',this)"><span class="letter">b</span>who</div>
+        <div class="mc-opt" onclick="selectMC(3,'c',this)"><span class="letter">c</span>when</div>
+        <div class="mc-opt" onclick="selectMC(3,'d',this)"><span class="letter">d</span>where</div>
+      </div>
+      <div class="mc-reveal" id="mc-rev3"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="mc-q-block" id="mc-block4">
+      <div class="mc-q-text"><span class="mc-q-num">4</span>The documentary _______ I found most thought-provoking explored the ethics of artificial intelligence.</div>
+      <div class="mc-opts">
+        <div class="mc-opt" onclick="selectMC(4,'a',this)"><span class="letter">a</span>whose</div>
+        <div class="mc-opt" onclick="selectMC(4,'b',this)"><span class="letter">b</span>where</div>
+        <div class="mc-opt" onclick="selectMC(4,'c',this)"><span class="letter">c</span>that</div>
+        <div class="mc-opt" onclick="selectMC(4,'d',this)"><span class="letter">d</span>who</div>
+      </div>
+      <div class="mc-reveal" id="mc-rev4"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="mc-q-block" id="mc-block5">
+      <div class="mc-q-text"><span class="mc-q-num">5</span>The 1990s was the decade _______ independent cinema genuinely challenged the Hollywood mainstream.</div>
+      <div class="mc-opts">
+        <div class="mc-opt" onclick="selectMC(5,'a',this)"><span class="letter">a</span>which</div>
+        <div class="mc-opt" onclick="selectMC(5,'b',this)"><span class="letter">b</span>where</div>
+        <div class="mc-opt" onclick="selectMC(5,'c',this)"><span class="letter">c</span>when</div>
+        <div class="mc-opt" onclick="selectMC(5,'d',this)"><span class="letter">d</span>whose</div>
+      </div>
+      <div class="mc-reveal" id="mc-rev5"></div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="mc-q-block" id="mc-block6">
+      <div class="mc-q-text"><span class="mc-q-num">6</span>The lead actress, _______ had trained extensively at drama school, delivers a career-defining performance.</div>
+      <div class="mc-opts">
+        <div class="mc-opt" onclick="selectMC(6,'a',this)"><span class="letter">a</span>that</div>
+        <div class="mc-opt" onclick="selectMC(6,'b',this)"><span class="letter">b</span>which</div>
+        <div class="mc-opt" onclick="selectMC(6,'c',this)"><span class="letter">c</span>whose</div>
+        <div class="mc-opt" onclick="selectMC(6,'d',this)"><span class="letter">d</span>who</div>
+      </div>
+      <div class="mc-reveal" id="mc-rev6"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkEx1()">✓ Check Answers</button>
+      <span class="score-pill" id="ex1-score" style="display:none"></span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ EX 2: FILM TEXT + DROPDOWNS ══ -->
+<section>
+  <div class="ex-card" id="card2">
+    <div class="ex-header">
+      <span class="ex-badge">Ex 2</span>
+      <h2>Complete the text — <em>choose the correct relative pronoun</em></h2>
+    </div>
+    <p class="instruction">Read the film review. Select the correct relative pronoun from each dropdown (1–6). Think carefully about defining vs non-defining clauses.</p>
+
+    <div class="film-text">
+      <p style="font-size:1rem;font-weight:700;color:var(--cyan);margin-bottom:14px">The Martian (2015)</p>
+      <p><em>The Martian</em> is a science fiction survival film
+        <select class="gap-select" id="d1" onchange="updateSendState()">
+          <option value="">— (1) —</option>
+          <option value="that">that</option>
+          <option value="which">which</option>
+          <option value="who">who</option>
+          <option value="whose">whose</option>
+        </select><span class="gap-reveal" id="dr1"></span>
+        was released in 2015 and went on to receive seven Academy Award nominations.
+        It centres on an astronaut
+        <select class="gap-select" id="d2" onchange="updateSendState()">
+          <option value="">— (2) —</option>
+          <option value="who">who</option>
+          <option value="which">which</option>
+          <option value="whose">whose</option>
+          <option value="where">where</option>
+        </select><span class="gap-reveal" id="dr2"></span>
+        is accidentally left behind on Mars when his crew is forced to make an emergency departure during a violent storm.</p>
+
+      <p>The character,
+        <select class="gap-select" id="d3" onchange="updateSendState()">
+          <option value="">— (3) —</option>
+          <option value="who">who</option>
+          <option value="which">which</option>
+          <option value="whose">whose</option>
+          <option value="when">when</option>
+        </select><span class="gap-reveal" id="dr3"></span>
+        knowledge of botany ultimately becomes the key to his survival, must find a way to grow food on a hostile planet
+        <select class="gap-select" id="d4" onchange="updateSendState()">
+          <option value="">— (4) —</option>
+          <option value="when">when</option>
+          <option value="where">where</option>
+          <option value="which">which</option>
+          <option value="who">who</option>
+        </select><span class="gap-reveal" id="dr4"></span>
+        no human being has ever tried to grow anything before.</p>
+
+      <p>The film,
+        <select class="gap-select" id="d5" onchange="updateSendState()">
+          <option value="">— (5) —</option>
+          <option value="that">that</option>
+          <option value="which">which</option>
+          <option value="who">who</option>
+          <option value="whose">whose</option>
+        </select><span class="gap-reveal" id="dr5"></span>
+        was directed by Ridley Scott, was praised for bringing genuine scientific rigour to the story.
+        It was released in October 2015 — the very month
+        <select class="gap-select" id="d6" onchange="updateSendState()">
+          <option value="">— (6) —</option>
+          <option value="where">where</option>
+          <option value="when">when</option>
+          <option value="which">which</option>
+          <option value="who">who</option>
+        </select><span class="gap-reveal" id="dr6"></span>
+        NASA announced it had found evidence of liquid water on the surface of Mars.</p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkEx2()">✓ Check Answers</button>
+      <span class="score-pill" id="ex2-score" style="display:none"></span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ EX 3: TYPED FILL-IN ══ -->
+<section>
+  <div class="ex-card" id="card3">
+    <div class="ex-header">
+      <span class="ex-badge">Ex 3</span>
+      <h2>Fill in the blanks — <em>type the correct relative pronoun</em></h2>
+    </div>
+    <p class="instruction">Complete each sentence with one relative pronoun: <strong>who / which / that / whose / where / when</strong>. Sometimes more than one answer is possible.</p>
+
+    <div class="fi-list">
+      <div class="fi-item" id="fi-item1">
+        <span class="fi-num">1</span>
+        The screenwriter <input class="fi-input" id="fi1" placeholder="______" oninput="updateSendState()"> adapted the novel received two major award nominations.
+        <span class="fi-reveal" id="fir1"></span>
+      </div>
+      <div class="fi-item" id="fi-item2">
+        <span class="fi-num">2</span>
+        The studio, <input class="fi-input" id="fi2" placeholder="______" oninput="updateSendState()"> had been struggling financially for years, risked everything on this production.
+        <span class="fi-reveal" id="fir2"></span>
+      </div>
+      <div class="fi-item" id="fi-item3">
+        <span class="fi-num">3</span>
+        I recently read about a director <input class="fi-input" id="fi3" placeholder="______" oninput="updateSendState()"> entire career has been dedicated to science fiction.
+        <span class="fi-reveal" id="fir3"></span>
+      </div>
+      <div class="fi-item" id="fi-item4">
+        <span class="fi-num">4</span>
+        The desert location <input class="fi-input" id="fi4" placeholder="______" oninput="updateSendState()"> the crew spent three months filming is now a popular tourist destination.
+        <span class="fi-reveal" id="fir4"></span>
+      </div>
+      <div class="fi-item" id="fi-item5">
+        <span class="fi-num">5</span>
+        Can you think of a year <input class="fi-input" id="fi5" placeholder="______" oninput="updateSendState()"> two major science fiction films were released in the same month?
+        <span class="fi-reveal" id="fir5"></span>
+      </div>
+      <div class="fi-item" id="fi-item6">
+        <span class="fi-num">6</span>
+        The visual effects team, <input class="fi-input" id="fi6" placeholder="______" oninput="updateSendState()"> work took over two years to complete, won an Oscar for their efforts.
+        <span class="fi-reveal" id="fir6"></span>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkEx3()">✓ Check Answers</button>
+      <span class="score-pill" id="ex3-score" style="display:none"></span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ EX 4: OPEN WRITING ══ -->
+<section>
+  <div class="ex-card" id="card4">
+    <div class="ex-header">
+      <span class="ex-badge">Ex 4</span>
+      <h2>Free writing — <em>use relative clauses in your own sentences</em></h2>
+    </div>
+    <p class="instruction">Write a short paragraph (5–8 sentences) about a film, series, or documentary you have seen recently. Include <strong>at least three relative clauses</strong> using <strong>at least three different relative pronouns</strong>. The checker below will track which ones you have used.</p>
+
+    <textarea class="writing-area" id="ex4-text" placeholder="Write about a film or series you have seen recently. For example: 'I recently watched a series that explores the ethics of space colonisation. The main character, whose background in engineering proves essential, leads a team of scientists…'" oninput="trackPronouns();updateSendState()"></textarea>
+
+    <div style="margin-top:14px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-dim);margin-bottom:8px">Relative pronouns detected in your text:</div>
+      <div class="pronoun-tracker" id="pronoun-tracker">
+        <div class="pronoun-chip" id="chip-who">who</div>
+        <div class="pronoun-chip" id="chip-which">which</div>
+        <div class="pronoun-chip" id="chip-that">that</div>
+        <div class="pronoun-chip" id="chip-whose">whose</div>
+        <div class="pronoun-chip" id="chip-where">where</div>
+        <div class="pronoun-chip" id="chip-when">when</div>
+      </div>
+      <div class="pronoun-count" id="pronoun-count">Different relative pronouns used: <strong>0 / 6</strong></div>
+      <div class="writing-warning" id="writing-warn">⚠ Please use at least 3 different relative pronouns before sending.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkEx4()">✓ Check Writing</button>
+      <span class="score-pill" id="ex4-score" style="display:none"></span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ SEND TO TEACHER ══ -->
+<div class="summary" id="summary">
+  <h4>📊 Your Results Summary</h4>
+  <div class="summary-grid" id="summary-grid"></div>
+</div>
+
+<div class="send-section">
+  <h3>✉️ Send to Teacher</h3>
+  <p>When you have completed all exercises and checked your answers, send your work directly to your teacher.</p>
+
+  <div class="send-warning" id="send-warning">
+    <strong>Please complete the following before sending:</strong>
+    <ul id="warning-list"></ul>
+  </div>
+
+  <button class="btn-send" id="send-btn" onclick="sendToTeacher()" disabled>
+    🚀 Send Assignment to Teacher
+  </button>
+  <div class="send-note">This will open your email app with your answers already filled in.</div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+// ── STARS ──
+const sc=document.getElementById('stars');
+for(let i=0;i<100;i++){const s=document.createElement('div');s.className='star';s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${Math.random()<.1?2:1}px;height:${Math.random()<.1?2:1}px;--d:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s;opacity:${.3+Math.random()*.7}`;sc.appendChild(s);}
+
+// ── STATE ──
+const mcSel={};          // {1:'a', 2:'b', ...}
+const mcCorrect={1:'c',2:'b',3:'d',4:'c',5:'c',6:'d'};
+const mcLabels={
+  1:{c:'whose — "debut film" belongs to the director → possession → whose'},
+  2:{b:'which — non-defining clause (commas present) → cannot use "that"'},
+  3:{d:'where — Hollywood is a place'},
+  4:{c:'that — defining clause; pronoun is object of "found" → that (or omit)'},
+  5:{c:'when — the 1990s is a time expression'},
+  6:{d:'who — non-defining clause about a person → cannot use "that"'},
+};
+
+const ex2Correct={d1:['that','which'],d2:['who','that'],d3:['whose'],d4:['where'],d5:['which'],d6:['when']};
+const ex2Hint={
+  d1:'Defining clause → that or which',
+  d2:'Defining clause about a person → who or that',
+  d3:'Non-defining clause, possession → whose',
+  d4:'Defining clause, place → where',
+  d5:'Non-defining clause (commas) → which (not that)',
+  d6:'Time expression → when',
+};
+
+const ex3Correct={fi1:['who','that'],fi2:['which'],fi3:['whose'],fi4:['where'],fi5:['when'],fi6:['whose']};
+
+const checked={1:false,2:false,3:false,4:false};
+const scores={};
+
+// ── EX 1 ──
+function selectMC(q,val,el){
+  mcSel[q]=val;
+  document.querySelectorAll(`#mc-block${q} .mc-opt`).forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  updateSendState();
+}
+
+function checkEx1(){
+  let correct=0;
+  for(let i=1;i<=6;i++){
+    const block=document.getElementById('mc-block'+i);
+    const rev=document.getElementById('mc-rev'+i);
+    const opts=block.querySelectorAll('.mc-opt');
+    opts.forEach(o=>o.classList.remove('correct-opt','wrong-opt'));
+    // always mark the correct option
+    opts.forEach(o=>{
+      const letter=o.querySelector('.letter').textContent;
+      if(letter===mcCorrect[i]) o.classList.add('correct-opt');
+    });
+    rev.className='mc-reveal show';
+    if(mcSel[i]===mcCorrect[i]){
+      // mark student selection
+      opts.forEach(o=>{if(o.querySelector('.letter').textContent===mcSel[i])o.classList.add('correct-opt');});
+      rev.textContent='✓ Correct! '+mcLabels[i][mcCorrect[i]];
+      rev.classList.add('ok');
+      correct++;
+    } else {
+      if(mcSel[i]){opts.forEach(o=>{if(o.querySelector('.letter').textContent===mcSel[i])o.classList.add('wrong-opt');});}
+      rev.textContent='→ Correct answer: ('+mcCorrect[i].toUpperCase()+') — '+mcLabels[i][mcCorrect[i]];
+      rev.classList.add('bad');
+    }
+  }
+  scores[1]=correct;
+  document.getElementById('ex1-score').textContent=`Score: ${correct}/6`;
+  document.getElementById('ex1-score').style.display='inline-flex';
+  const card=document.getElementById('card1');
+  card.className='ex-card '+(correct===6?'checked-ok':'checked-partial');
+  checked[1]=true;
+  updateProgress();updateSendState();showSummary();
+}
+
+// ── EX 2 ──
+function checkEx2(){
+  let correct=0;
+  ['d1','d2','d3','d4','d5','d6'].forEach((id,idx)=>{
+    const sel=document.getElementById(id);
+    const rv=document.getElementById('dr'+(idx+1));
+    sel.classList.remove('correct-sel','wrong-sel');
+    const val=sel.value;
+    const ok=val&&ex2Correct[id].includes(val);
+    if(ok){sel.classList.add('correct-sel');rv.textContent=' ✓';rv.style.color='var(--green)';correct++;}
+    else{sel.classList.add('wrong-sel');rv.textContent=' → '+ex2Correct[id][0];rv.style.color='var(--gold)';}
+    rv.title=ex2Hint[id];
+  });
+  scores[2]=correct;
+  document.getElementById('ex2-score').textContent=`Score: ${correct}/6`;
+  document.getElementById('ex2-score').style.display='inline-flex';
+  const card=document.getElementById('card2');
+  card.className='ex-card '+(correct===6?'checked-ok':'checked-partial');
+  checked[2]=true;
+  updateProgress();updateSendState();showSummary();
+}
+
+// ── EX 3 ──
+function checkEx3(){
+  let correct=0;
+  for(let i=1;i<=6;i++){
+    const inp=document.getElementById('fi'+i);
+    const item=document.getElementById('fi-item'+i);
+    const rv=document.getElementById('fir'+i);
+    item.classList.remove('ok-item','bad-item');
+    const val=inp.value.trim().toLowerCase();
+    const ok=val&&ex3Correct['fi'+i].includes(val);
+    if(ok){item.classList.add('ok-item');rv.textContent='✓';rv.style.color='var(--green)';correct++;}
+    else{item.classList.add('bad-item');rv.textContent='→ '+ex3Correct['fi'+i].join(' / ');rv.style.color='var(--gold)';}
+  }
+  scores[3]=correct;
+  document.getElementById('ex3-score').textContent=`Score: ${correct}/6`;
+  document.getElementById('ex3-score').style.display='inline-flex';
+  const card=document.getElementById('card3');
+  card.className='ex-card '+(correct===6?'checked-ok':'checked-partial');
+  checked[3]=true;
+  updateProgress();updateSendState();showSummary();
+}
+
+// ── EX 4 ──
+const relPronouns=['who','which','that','whose','where','when'];
+function trackPronouns(){
+  const text=document.getElementById('ex4-text').value.toLowerCase();
+  let count=0;
+  relPronouns.forEach(p=>{
+    const found=new RegExp('\\b'+p+'\\b').test(text);
+    const chip=document.getElementById('chip-'+p);
+    chip.classList.toggle('found',found);
+    if(found)count++;
+  });
+  document.getElementById('pronoun-count').innerHTML=`Different relative pronouns used: <strong>${count} / 6</strong>`;
+  const warn=document.getElementById('writing-warn');
+  warn.style.display=count<3?'block':'none';
+}
+
+function checkEx4(){
+  const text=document.getElementById('ex4-text').value.trim();
+  trackPronouns();
+  const count=relPronouns.filter(p=>new RegExp('\\b'+p+'\\b').test(text.toLowerCase())).length;
+  const sc=document.getElementById('ex4-score');
+  const card=document.getElementById('card4');
+  if(!text){sc.textContent='Please write something first';sc.style.display='inline-flex';return;}
+  if(count>=3){
+    sc.textContent=`✓ Great — ${count} different pronoun${count>1?'s':''} found`;
+    sc.style.background='rgba(74,222,128,.12)';sc.style.borderColor='#4ade8066';sc.style.color='var(--green)';
+    card.className='ex-card checked-ok';
+  } else {
+    sc.textContent=`Only ${count} pronoun${count!==1?'s':''} found — aim for 3+`;
+    sc.style.background='rgba(251,191,36,.1)';sc.style.borderColor='#fbbf2433';sc.style.color='var(--gold)';
+    card.className='ex-card checked-partial';
+  }
+  scores[4]=count;
+  sc.style.display='inline-flex';
+  checked[4]=true;
+  updateProgress();updateSendState();showSummary();
+}
+
+// ── PROGRESS ──
+function updateProgress(){
+  const done=Object.values(checked).filter(Boolean).length;
+  document.getElementById('prog-fill').style.width=(done/4*100)+'%';
+  document.getElementById('prog-label').textContent=`Progress: ${done} of 4 exercises checked`;
+}
+
+// ── SUMMARY ──
+function showSummary(){
+  if(!Object.values(checked).some(Boolean))return;
+  const s=document.getElementById('summary');
+  const g=document.getElementById('summary-grid');
+  s.style.display='block';
+  const labels={1:'Ex 1 (MC)',2:'Ex 2 (Text)',3:'Ex 3 (Fill-in)',4:'Ex 4 (Writing)'};
+  const totals={1:6,2:6,3:6,4:'pronouns'};
+  g.innerHTML='';
+  [1,2,3,4].forEach(i=>{
+    if(!checked[i])return;
+    const div=document.createElement('div');
+    div.className='summary-item';
+    const score=scores[i];
+    const total=totals[i];
+    const cls=i<4?(score===total?'all-green':score>0?'some-orange':'none-red'):(score>=3?'all-green':score>0?'some-orange':'none-red');
+    div.classList.add(cls);
+    div.innerHTML=`<div class="s-label">${labels[i]}</div><div class="s-score">${score}${typeof total==='number'?'/'+total:' used'}</div>`;
+    g.appendChild(div);
+  });
+}
+
+// ── VALIDATION ──
+function updateSendState(){
+  const name=document.getElementById('student-name').value.trim();
+  const issues=[];
+  if(!name) issues.push('Enter your full name at the top');
+
+  // Ex1: all 6 answered
+  const unansweredMC=[1,2,3,4,5,6].filter(i=>!mcSel[i]);
+  if(unansweredMC.length>0) issues.push(`Answer all questions in Exercise 1 (${unansweredMC.length} missing)`);
+
+  // Ex2: all dropdowns selected
+  const unansweredDrops=['d1','d2','d3','d4','d5','d6'].filter(id=>!document.getElementById(id).value);
+  if(unansweredDrops.length>0) issues.push(`Complete all gaps in Exercise 2 (${unansweredDrops.length} missing)`);
+
+  // Ex3: all inputs filled
+  const emptyFills=[1,2,3,4,5,6].filter(i=>!document.getElementById('fi'+i).value.trim());
+  if(emptyFills.length>0) issues.push(`Fill in all blanks in Exercise 3 (${emptyFills.length} missing)`);
+
+  // Ex4: text written + min 3 pronouns
+  const text=document.getElementById('ex4-text').value.trim();
+  const pCount=relPronouns.filter(p=>new RegExp('\\b'+p+'\\b').test(text.toLowerCase())).length;
+  if(!text||text.length<30) issues.push('Write your paragraph in Exercise 4');
+  else if(pCount<3) issues.push(`Use at least 3 relative pronouns in Exercise 4 (${pCount} found)`);
+
+  const btn=document.getElementById('send-btn');
+  const warn=document.getElementById('send-warning');
+  const warnList=document.getElementById('warning-list');
+
+  if(issues.length===0){
+    btn.disabled=false;
+    warn.style.display='none';
+  } else {
+    btn.disabled=true;
+    warn.style.display='block';
+    warnList.innerHTML=issues.map(i=>`<li>${i}</li>`).join('');
+  }
+}
+
+// ── SEND ──
+function sendToTeacher(){
+  const name=document.getElementById('student-name').value.trim();
+  const date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+
+  const mcLines=[1,2,3,4,5,6].map(i=>{
+    const sel=mcSel[i]||'-';
+    const correct=sel===mcCorrect[i]?'✓':'✗';
+    return `  Q${i}: (${sel.toUpperCase()}) ${correct}`;
+  }).join('\n');
+
+  const dropLabels={d1:'Gap 1 (that/which)',d2:'Gap 2 (who)',d3:'Gap 3 (whose)',d4:'Gap 4 (where)',d5:'Gap 5 (which)',d6:'Gap 6 (when)'};
+  const dropLines=['d1','d2','d3','d4','d5','d6'].map((id,i)=>{
+    const val=document.getElementById(id).value||'-';
+    const ok=ex2Correct[id].includes(val)?'✓':'✗';
+    return `  ${dropLabels[id]}: ${val} ${ok}`;
+  }).join('\n');
+
+  const fillLines=[1,2,3,4,5,6].map(i=>{
+    const val=document.getElementById('fi'+i).value.trim()||'-';
+    const ok=ex3Correct['fi'+i].includes(val.toLowerCase())?'✓':'✗';
+    return `  Sentence ${i}: ${val} ${ok}`;
+  }).join('\n');
+
+  const essay=document.getElementById('ex4-text').value.trim();
+  const foundP=relPronouns.filter(p=>new RegExp('\\b'+p+'\\b').test(essay.toLowerCase()));
+
+  const totalScore=((scores[1]||0)+(scores[2]||0)+(scores[3]||0))/18*100;
+
+  const body=
+`RELATIVE CLAUSES ASSIGNMENT
+Student: ${name}
+Date: ${date}
+
+─────────────────────────────
+EXERCISE 1 — Multiple Choice
+─────────────────────────────
+${mcLines}
+Score: ${scores[1]||'not checked'}/6
+
+─────────────────────────────
+EXERCISE 2 — Film Text Gaps
+─────────────────────────────
+${dropLines}
+Score: ${scores[2]||'not checked'}/6
+
+─────────────────────────────
+EXERCISE 3 — Fill in the Blank
+─────────────────────────────
+${fillLines}
+Score: ${scores[3]||'not checked'}/6
+
+─────────────────────────────
+EXERCISE 4 — Free Writing
+─────────────────────────────
+Relative pronouns used: ${foundP.join(', ')||'none detected'}
+
+${essay}`;
+
+  const subject=`Relative Clauses Assignment — ${name} — ${date}`;
+  const mailto=`mailto:dariia.mlnk@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href=mailto;
+}
+
+// Init
+updateSendState();
+</script>
+</body>
+</html>
