@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5B Homework — Living Space</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#EDEBE6;
+  --surface:#FFFFFF;
+  --surface-2:#F5F3EE;
+  --primary:#28473A;
+  --primary-mid:#3D7057;
+  --primary-light:#E7F0EB;
+  --accent:#C86840;
+  --accent-light:#FAF0EB;
+  --blue:#446E96;
+  --blue-light:#EAF0F7;
+  --amber:#B88A1A;
+  --amber-light:#FBF5E3;
+  --text:#1A2118;
+  --text-2:#4A5E52;
+  --muted:#8A9E94;
+  --border:#E0DAD2;
+  --ok:#2D7A4F;
+  --ok-bg:#E8F5EE;
+  --err:#C0392B;
+  --err-bg:#FFECEC;
+  --shadow-xs:0 1px 3px rgba(0,0,0,.06);
+  --shadow-sm:0 1px 6px rgba(0,0,0,.07),0 2px 12px rgba(0,0,0,.05);
+  --shadow:0 2px 10px rgba(0,0,0,.08),0 4px 24px rgba(0,0,0,.06);
+  --r-sm:8px;--r:14px;
+}
+body{font-family:'Segoe UI',Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.55;padding-bottom:60px;}
+
+/* ── Header ── */
+.hw-header{background:var(--primary);color:#fff;padding:22px 20px 18px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.hw-header h1{font-size:19px;font-weight:800;margin-bottom:2px;}
+.hw-header p{font-size:13px;opacity:.75;}
+
+/* ── Name field ── */
+.name-section{background:var(--surface);border-bottom:2px solid var(--accent);padding:16px 20px;position:sticky;top:68px;z-index:99;box-shadow:var(--shadow-sm);}
+.name-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.name-label{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;}
+.name-input{flex:1;min-width:200px;border:2px solid var(--border);border-radius:var(--r-sm);padding:8px 14px;font-size:15px;font-family:inherit;color:var(--text);transition:border-color .15s;background:var(--surface);}
+.name-input:focus{outline:none;border-color:var(--primary-mid);}
+.name-input.filled{border-color:var(--ok);}
+
+/* ── Content wrapper ── */
+.content{max-width:720px;margin:0 auto;padding:22px 16px;}
+
+/* ── Section headers ── */
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border);}
+.section-badge{background:var(--primary);color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;}
+.section-title{font-size:17px;font-weight:800;color:var(--text);}
+.section-sub{font-size:13px;color:var(--muted);margin-top:2px;}
+.section-block{margin-bottom:30px;}
+
+/* ── Cards ── */
+.card{background:var(--surface);border-radius:var(--r);padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid var(--border);}
+.note-amber{background:var(--amber-light);border:1.5px solid rgba(184,138,26,.2);border-radius:var(--r);padding:12px 16px;margin-bottom:12px;}
+.lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:8px;}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:0 18px;height:40px;border:none;border-radius:var(--r-sm);font-size:13px;font-weight:700;cursor:pointer;transition:all .16s;font-family:inherit;}
+.btn-check{background:var(--primary-mid);color:#fff;}
+.btn-check:hover{background:var(--primary);}
+.btn-send{background:var(--accent);color:#fff;height:48px;font-size:15px;padding:0 28px;border-radius:var(--r);width:100%;}
+.btn-send:hover:not(:disabled){background:#a85530;}
+.btn-send:disabled{opacity:.38;cursor:not-allowed;}
+.btn-row{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;}
+
+/* ── Feedback ── */
+.fb{font-size:13px;font-weight:600;padding:8px 12px;border-radius:var(--r-sm);margin-top:10px;display:none;}
+.fb.ok{background:var(--ok-bg);color:var(--ok);display:block;}
+.fb.err{background:var(--err-bg);color:var(--err);display:block;}
+
+/* ── Match exercise ── */
+.match-layout{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
+.match-col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:8px;}
+.match-item{padding:11px 14px;border-radius:var(--r-sm);border:2px solid var(--border);background:var(--surface);font-size:14px;cursor:pointer;transition:all .18s;min-height:48px;display:flex;align-items:center;line-height:1.4;box-shadow:var(--shadow-xs);gap:8px;}
+.match-item:hover{border-color:var(--accent);box-shadow:var(--shadow-sm);}
+.match-item.sel-left{border-color:var(--accent);background:var(--accent-light);}
+.match-item.sel-right{border-color:var(--accent);background:var(--accent-light);}
+.match-item.matched{border-color:var(--primary-mid);background:var(--primary-light);cursor:default;color:var(--primary);}
+.match-item.wrong-m{border-color:var(--err);background:var(--err-bg);}
+.match-item.correct-m{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);}
+.match-badge{font-weight:800;font-size:15px;color:var(--accent);flex-shrink:0;min-width:20px;}
+.match-badge.right-badge{color:var(--blue);}
+.match-item.matched .match-badge,.match-item.correct-m .match-badge{color:var(--primary-mid);}
+.pair-line{display:flex;align-items:center;gap:6px;margin:4px 0;font-size:13px;color:var(--muted);}
+
+/* ── Ad gap fill ── */
+.ad-box{background:var(--surface);border-radius:var(--r);padding:16px 18px;border:1px solid var(--border);box-shadow:var(--shadow-sm);margin-bottom:14px;}
+.ad-title{font-size:14px;font-weight:800;color:var(--primary);margin-bottom:10px;text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.ad-body{font-size:14px;line-height:1.85;color:var(--text);}
+.ad-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+@media(max-width:500px){.ad-layout{grid-template-columns:1fr;}}
+.ad-img-placeholder{background:var(--surface-2);border-radius:var(--r-sm);border:1px solid var(--border);height:140px;display:flex;align-items:center;justify-content:center;font-size:32px;}
+.word-bank-row{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;background:var(--surface-2);border-radius:var(--r-sm);border:1.5px dashed var(--border);margin-bottom:12px;}
+.wb-chip{padding:5px 12px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;transition:all .14s;user-select:none;font-family:inherit;}
+.wb-chip:hover{border-color:var(--primary-mid);background:var(--primary-light);}
+.wb-chip.sel-wb{border-color:var(--accent);background:var(--accent-light);color:var(--accent);}
+.wb-chip.used{opacity:.35;cursor:default;pointer-events:none;text-decoration:line-through;}
+.gap-btn{display:inline-block;min-width:90px;background:var(--accent-light);border:1.5px solid var(--accent);border-radius:6px;padding:1px 10px;font-size:13.5px;font-weight:700;cursor:pointer;color:var(--text);font-family:inherit;transition:all .14s;margin:0 2px;text-align:center;vertical-align:middle;}
+.gap-btn.filled{background:var(--blue-light);border-color:var(--blue);color:var(--blue);}
+.gap-btn.correct{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);cursor:default;}
+.gap-btn.wrong{background:var(--err-bg);border-color:var(--err);color:var(--err);}
+.gap-btn:hover:not(.correct):not(.wrong){border-color:var(--primary-mid);background:var(--primary-light);}
+
+/* ── Validation checklist ── */
+.validation-box{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:16px;}
+.val-title{font-size:14px;font-weight:800;margin-bottom:10px;color:var(--text);}
+.val-item{display:flex;align-items:center;gap:9px;font-size:14px;padding:5px 0;color:var(--muted);}
+.val-item.done{color:var(--text);}
+.val-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);background:var(--surface);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .2s;}
+.val-dot.ok{background:var(--ok);border-color:var(--ok);color:#fff;}
+
+/* ── Animations ── */
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}70%{transform:translateX(4px)}}
+.shake{animation:shake .3s ease;}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="hw-header">
+  <h1>5B Homework — Living Space</h1>
+  <p>Vocabulary &amp; Grammar: Zero and First Conditional</p>
+</div>
+
+<!-- Name -->
+<div class="name-section">
+  <div class="name-row">
+    <span class="name-label">👤 Student name:</span>
+    <input type="text" class="name-input" id="student-name" placeholder="Write your full name here…" oninput="updateSend()">
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ══ EXERCISE 1 ══ -->
+<div class="section-block" id="ex1-block">
+  <div class="section-header">
+    <div class="section-badge">1</div>
+    <div>
+      <div class="section-title">Vocabulary — Match the words with the definitions.</div>
+      <div class="section-sub">Click a word (1–5), then click the correct definition (a–e).</div>
+    </div>
+  </div>
+
+  <div class="match-layout">
+    <div>
+      <div class="match-col-title">Words</div>
+      <div id="ex1-left"></div>
+    </div>
+    <div>
+      <div class="match-col-title">Definitions</div>
+      <div id="ex1-right"></div>
+    </div>
+  </div>
+
+  <!-- Matched pairs display -->
+  <div id="ex1-pairs" style="margin-top:10px;display:none;">
+    <div class="lbl">Your matches</div>
+    <div id="ex1-pairs-list"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx1()">✓ Check</button>
+  </div>
+  <div class="fb" id="fb1"></div>
+</div>
+
+
+<!-- ══ EXERCISE 2 ══ -->
+<div class="section-block" id="ex2-block">
+  <div class="section-header">
+    <div class="section-badge">2</div>
+    <div>
+      <div class="section-title">Complete the adverts with the words in the boxes.</div>
+      <div class="section-sub">Click a word from the bank, then click a gap to fill it.</div>
+    </div>
+  </div>
+
+  <!-- Advert 1 -->
+  <div class="ad-box">
+    <div class="ad-title">🏠 House for sale in Cardiff, Wales.</div>
+    <div class="lbl">Word bank</div>
+    <div class="word-bank-row" id="wb1">
+      <button class="wb-chip" data-bank="1" data-word="air conditioning" onclick="selectWB(this,'1')">air conditioning</button>
+      <button class="wb-chip" data-bank="1" data-word="central heating" onclick="selectWB(this,'1')">central heating</button>
+      <button class="wb-chip" data-bank="1" data-word="detached" onclick="selectWB(this,'1')">detached</button>
+      <button class="wb-chip" data-bank="1" data-word="patio" onclick="selectWB(this,'1')">patio</button>
+    </div>
+    <div class="ad-layout">
+      <div class="ad-body">
+        <p>Located very close to the centre of the city, this four-bedroomed
+        <span class="gap-btn" id="gap-1" data-gap="1" onclick="fillGap('1')">1 ___</span>
+        house is not to be missed! A spacious and well designed house, it has three bathrooms, a large back garden with a
+        <span class="gap-btn" id="gap-2" data-gap="2" onclick="fillGap('2')">2 ___</span>
+        and a garage. The house also has incredible views onto Roath Park and Lake.</p>
+        <p>It comes with
+        <span class="gap-btn" id="gap-3" data-gap="3" onclick="fillGap('3')">3 ___</span>
+        to keep you cool in the summer months and
+        <span class="gap-btn" id="gap-4" data-gap="4" onclick="fillGap('4')">4 ___</span>
+        to keep you warm in the winter.</p>
+        <p><em>Call us now to book a viewing as this property is certain to sell quickly.</em></p>
+      </div>
+      <div class="ad-img-placeholder">🏡</div>
+    </div>
+  </div>
+
+  <!-- Advert 2 -->
+  <div class="ad-box">
+    <div class="ad-title">🏢 To rent, a <span class="gap-btn" id="gap-5" data-gap="5" onclick="fillGap('5')">5 ___</span> in a great location.</div>
+    <div class="lbl">Word bank</div>
+    <div class="word-bank-row" id="wb2">
+      <button class="wb-chip" data-bank="2" data-word="balcony" onclick="selectWB(this,'2')">balcony</button>
+      <button class="wb-chip" data-bank="2" data-word="block of flats" onclick="selectWB(this,'2')">block of flats</button>
+      <button class="wb-chip" data-bank="2" data-word="ceilings" onclick="selectWB(this,'2')">ceilings</button>
+      <button class="wb-chip" data-bank="2" data-word="floors" onclick="selectWB(this,'2')">floors</button>
+      <button class="wb-chip" data-bank="2" data-word="studio" onclick="selectWB(this,'2')">studio</button>
+    </div>
+    <div class="ad-layout">
+      <div class="ad-body">
+        <p>Modern and smart, this is a great option for anyone working in the city. It's located in a new
+        <span class="gap-btn" id="gap-6" data-gap="6" onclick="fillGap('6')">6 ___</span>,
+        right next to a bus stop and is only a five-minute walk to the train station.</p>
+        <p>Fully furnished and with a well equipped kitchen and bathroom, the walls and
+        <span class="gap-btn" id="gap-7" data-gap="7" onclick="fillGap('7')">7 ___</span>
+        have been painted recently, and the wooden
+        <span class="gap-btn" id="gap-8" data-gap="8" onclick="fillGap('8')">8 ___</span>
+        are completely new. It also has a very big
+        <span class="gap-btn" id="gap-9" data-gap="9" onclick="fillGap('9')">9 ___</span>
+        that offers great views of the city skyline.</p>
+        <p><em>Email us now to book your appointment to see this unique home.</em></p>
+      </div>
+      <div class="ad-img-placeholder">🛋️</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx2()">✓ Check</button>
+  </div>
+  <div class="fb" id="fb2"></div>
+</div>
+
+
+<!-- ══ EXERCISE 3 — Dream House ══ -->
+<div class="section-block" id="ex3-block">
+  <div class="section-header">
+    <div class="section-badge">3</div>
+    <div>
+      <div class="section-title">Writing — Describe your dream house.</div>
+      <div class="section-sub">Write 5–6 sentences. You can also add a photo!</div>
+    </div>
+  </div>
+
+  <div class="note-amber" style="font-size:13px;margin-bottom:12px;">
+    💡 Think about: <em>type of house, location, number of rooms, special features (balcony, patio, garden…), who you live with.</em>
+  </div>
+
+  <textarea id="ex3-text" rows="7" oninput="updateEx3Count();updateSend()"
+    placeholder="My dream house is a detached cottage in the countryside…"
+    style="width:100%;border:2px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;font-size:14px;font-family:inherit;color:var(--text);background:var(--surface);resize:vertical;line-height:1.7;transition:border-color .15s;margin-bottom:6px;"
+    onfocus="this.style.borderColor='var(--primary-mid)'" onblur="this.style.borderColor=''"></textarea>
+
+  <div style="font-size:12px;color:var(--muted);margin-bottom:12px;" id="ex3-count">0 sentences written</div>
+
+  <!-- Photo upload -->
+  <div style="background:var(--surface-2);border:2px dashed var(--border);border-radius:var(--r-sm);padding:16px;text-align:center;cursor:pointer;transition:border-color .15s;" id="ex3-drop"
+    onclick="document.getElementById('ex3-img-input').click()"
+    ondragover="event.preventDefault();this.style.borderColor='var(--primary-mid)'"
+    ondragleave="this.style.borderColor=''"
+    ondrop="handleImgDrop(event)">
+    <div id="ex3-drop-label" style="font-size:13px;color:var(--muted);">📷 Click or drag &amp; drop a photo of your dream home (optional)</div>
+    <img id="ex3-preview" style="display:none;max-width:100%;max-height:240px;border-radius:var(--r-sm);margin-top:10px;box-shadow:var(--shadow-sm);">
+    <div id="ex3-remove-btn" style="display:none;margin-top:8px;">
+      <button onclick="event.stopPropagation();removeImg()" style="font-size:12px;color:var(--err);background:none;border:none;cursor:pointer;font-family:inherit;">✕ Remove photo</button>
+    </div>
+  </div>
+  <input type="file" id="ex3-img-input" accept="image/*" style="display:none;" onchange="handleImgUpload(this)">
+
+  <div class="fb" id="fb3"></div>
+</div>
+
+
+<!-- ══ SEND TO TEACHER ══ -->
+<div style="background:var(--surface);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);">
+  <div class="val-title">📋 Before you send — make sure everything is complete:</div>
+  <div class="val-item" id="val-name"><div class="val-dot" id="vd-name"></div> Student name</div>
+  <div class="val-item" id="val-1"><div class="val-dot" id="vd-1"></div> Exercise 1 — all 5 words matched</div>
+  <div class="val-item" id="val-2"><div class="val-dot" id="vd-2"></div> Exercise 2 — all 9 gaps filled</div>
+  <div class="val-item" id="val-3"><div class="val-dot" id="vd-3"></div> Exercise 3 — at least 5 sentences written</div>
+  <div style="height:14px;"></div>
+  <button class="btn btn-send" id="send-btn" onclick="sendToTeacher()" disabled>📨 Send to Teacher</button>
+</div>
+
+</div><!-- /content -->
+
+<script>
+// ─── Exercise 1 Data ───────────────────────────────────────────────────────
+const ex1Words = [
+  {n:1,w:'block of flats'},{n:2,w:'cottage'},{n:3,w:'detached house'},
+  {n:4,w:'terraced house'},{n:5,w:'studio'}
+];
+const ex1Defs = [
+  {l:'a',d:'a small flat or apartment'},
+  {l:'b',d:"a house that isn't joined to another house"},
+  {l:'c',d:"a house that's part of a group or row of similar houses"},
+  {l:'d',d:'a large building divided into flats'},
+  {l:'e',d:'a small house in the country'}
+];
+const ex1Correct = {1:'d',2:'e',3:'b',4:'c',5:'a'};
+let ex1SelLeft=null, ex1Done={};
+
+// ─── Exercise 2 Data ───────────────────────────────────────────────────────
+const ex2Correct = {
+  '1':'detached','2':'patio','3':'air conditioning','4':'central heating',
+  '5':'studio','6':'block of flats','7':'ceilings','8':'floors','9':'balcony'
+};
+let wbSel = {1:null, 2:null};
+let gapFilled = {}; // gapNum → word
+
+// ─── Exercise 3 — Dream House ─────────────────────────────────────────────
+let ex3ImgData = null; // base64 of uploaded photo
+
+function countSentences(text){
+  if(!text.trim())return 0;
+  const sentences=text.trim().split(/[.!?]+/).filter(s=>s.trim().length>3);
+  return sentences.length;
+}
+
+function updateEx3Count(){
+  const text=document.getElementById('ex3-text').value;
+  const n=countSentences(text);
+  const el=document.getElementById('ex3-count');
+  el.textContent=n+' sentence'+(n===1?'':'s')+' written';
+  el.style.color=n>=5?'var(--ok)':'var(--muted)';
+}
+
+function handleImgUpload(input){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    ex3ImgData=e.target.result;
+    showPreview(ex3ImgData);
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleImgDrop(e){
+  e.preventDefault();
+  document.getElementById('ex3-drop').style.borderColor='';
+  const file=e.dataTransfer.files[0];
+  if(!file||!file.type.startsWith('image/'))return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    ex3ImgData=ev.target.result;
+    showPreview(ex3ImgData);
+  };
+  reader.readAsDataURL(file);
+}
+
+function showPreview(src){
+  const img=document.getElementById('ex3-preview');
+  img.src=src;
+  img.style.display='block';
+  document.getElementById('ex3-drop-label').style.display='none';
+  document.getElementById('ex3-remove-btn').style.display='block';
+}
+
+function removeImg(){
+  ex3ImgData=null;
+  document.getElementById('ex3-preview').style.display='none';
+  document.getElementById('ex3-preview').src='';
+  document.getElementById('ex3-drop-label').style.display='block';
+  document.getElementById('ex3-remove-btn').style.display='none';
+  document.getElementById('ex3-img-input').value='';
+}
+
+// ─── Init Ex1 ──────────────────────────────────────────────────────────────
+function initEx1(){
+  const lContainer = document.getElementById('ex1-left');
+  const rContainer = document.getElementById('ex1-right');
+  ex1Words.forEach(item=>{
+    const el = document.createElement('div');
+    el.className='match-item';
+    el.id='e1l-'+item.n;
+    el.innerHTML=`<span class="match-badge">${item.n}</span>${item.w}`;
+    el.onclick=()=>selectEx1Left(item.n,el);
+    lContainer.appendChild(el);
+  });
+  const shuffled=[...ex1Defs].sort(()=>Math.random()-.5);
+  shuffled.forEach(item=>{
+    const el=document.createElement('div');
+    el.className='match-item';
+    el.id='e1r-'+item.l;
+    el.innerHTML=`<span class="match-badge right-badge">${item.l}</span>${item.d}`;
+    el.onclick=()=>selectEx1Right(item.l,el);
+    rContainer.appendChild(el);
+  });
+}
+
+function selectEx1Left(n,el){
+  if(ex1Done[n])return;
+  document.querySelectorAll('#ex1-left .match-item').forEach(e=>e.classList.remove('sel-left'));
+  ex1SelLeft = ex1SelLeft===n?null:n;
+  if(ex1SelLeft)el.classList.add('sel-left');
+}
+
+function selectEx1Right(l,el){
+  if(!ex1SelLeft)return;
+  const n=ex1SelLeft;
+  if(ex1Done[n])return;
+  ex1Done[n]=l;
+  ex1SelLeft=null;
+  document.querySelectorAll('#ex1-left .match-item').forEach(e=>e.classList.remove('sel-left'));
+  el.classList.add('sel-right');
+  renderEx1Pairs();
+  updateSend();
+}
+
+function renderEx1Pairs(){
+  const list=document.getElementById('ex1-pairs-list');
+  list.innerHTML='';
+  document.getElementById('ex1-pairs').style.display=Object.keys(ex1Done).length>0?'block':'none';
+  Object.entries(ex1Done).forEach(([n,l])=>{
+    const word=ex1Words.find(w=>w.n==n).w;
+    const def=ex1Defs.find(d=>d.l===l).d;
+    const div=document.createElement('div');
+    div.className='pair-line';
+    div.innerHTML=`<strong>${n}.</strong> ${word} → <strong>${l}.</strong> ${def}
+    <span style="margin-left:auto;cursor:pointer;color:var(--muted);font-size:12px;" onclick="removeEx1Pair(${n})">✕</span>`;
+    list.appendChild(div);
+  });
+}
+
+function removeEx1Pair(n){
+  delete ex1Done[n];
+  document.getElementById('e1l-'+n).classList.remove('sel-left','matched','correct-m','wrong-m');
+  renderEx1Pairs();
+  updateSend();
+}
+
+function checkEx1(){
+  let correct=0;
+  Object.entries(ex1Done).forEach(([n,l])=>{
+    const lEl=document.getElementById('e1l-'+n);
+    if(ex1Correct[n]===l){correct++;lEl.classList.add('correct-m');}
+    else lEl.classList.add('wrong-m');
+  });
+  const total=5;
+  const fb=document.getElementById('fb1');
+  fb.textContent=`${correct}/${total} correct.`;
+  fb.className=correct===total?'fb ok':'fb err';
+}
+
+// ─── Init Ex2 ──────────────────────────────────────────────────────────────
+function selectWB(el,bank){
+  const word=el.dataset.word;
+  if(el.classList.contains('used'))return;
+  if(wbSel[bank]===word){
+    wbSel[bank]=null;
+    document.querySelectorAll(`[data-bank="${bank}"]`).forEach(c=>c.classList.remove('sel-wb'));
+    return;
+  }
+  document.querySelectorAll(`[data-bank="${bank}"]`).forEach(c=>c.classList.remove('sel-wb'));
+  wbSel[bank]=word;
+  el.classList.add('sel-wb');
+}
+
+function fillGap(gapNum){
+  const bank = gapNum<='4'?'1':'2';
+  const word=wbSel[bank];
+  if(!word)return;
+  // Unuse previous word in this gap
+  if(gapFilled[gapNum]){
+    const prevWord=gapFilled[gapNum];
+    document.querySelectorAll(`[data-bank="${bank}"][data-word="${prevWord}"]`).forEach(c=>c.classList.remove('used'));
+  }
+  gapFilled[gapNum]=word;
+  const gapEl=document.getElementById('gap-'+gapNum);
+  gapEl.textContent=word;
+  gapEl.classList.add('filled');
+  gapEl.classList.remove('correct','wrong');
+  // Mark word as used
+  document.querySelectorAll(`[data-bank="${bank}"][data-word="${word}"]`).forEach(c=>{c.classList.add('used');c.classList.remove('sel-wb');});
+  wbSel[bank]=null;
+  updateSend();
+}
+
+function checkEx2(){
+  let correct=0;
+  for(let i=1;i<=9;i++){
+    const gapEl=document.getElementById('gap-'+i);
+    const ans=gapFilled[i]||'';
+    if(ans===ex2Correct[i]){correct++;gapEl.classList.add('correct');gapEl.classList.remove('wrong','filled');}
+    else if(ans){gapEl.classList.add('wrong');gapEl.classList.remove('filled');}
+  }
+  const fb=document.getElementById('fb2');
+  fb.textContent=`${correct}/9 correct.`;
+  fb.className=correct===9?'fb ok':'fb err';
+}
+
+
+// ─── Validation ───────────────────────────────────────────────────────────
+function updateSend(){
+  const name=(document.getElementById('student-name').value||'').trim();
+  const ex1Done5=Object.keys(ex1Done).length>=5;
+  const ex2Done9=Object.keys(gapFilled).filter(k=>gapFilled[k]).length>=9;
+  const ex3Text=(document.getElementById('ex3-text').value||'');
+  const ex3OK=countSentences(ex3Text)>=5;
+
+  setVal('name', !!name);
+  setVal('1', ex1Done5);
+  setVal('2', ex2Done9);
+  setVal('3', ex3OK);
+
+  document.getElementById('student-name').classList.toggle('filled',!!name);
+  document.getElementById('send-btn').disabled=!(name&&ex1Done5&&ex2Done9&&ex3OK);
+}
+
+function setVal(key,done){
+  const item=document.getElementById('val-'+key);
+  const dot=document.getElementById('vd-'+key);
+  dot.textContent=done?'✓':'';
+  dot.classList.toggle('ok',done);
+  item.classList.toggle('done',done);
+}
+
+// ─── Send to Teacher ─────────────────────────────────────────────────────
+function sendToTeacher(){
+  const name=document.getElementById('student-name').value.trim();
+  const date=new Date().toLocaleDateString('en-GB');
+
+  let ex1Text='EXERCISE 1 — Match words with definitions:\n';
+  ex1Words.forEach(item=>{
+    const l=ex1Done[item.n]||'?';
+    ex1Text+=`  ${item.n}. ${item.w} → ${l}. ${(ex1Defs.find(d=>d.l===l)||{d:'?'}).d}\n`;
+  });
+
+  let ex2Text='EXERCISE 2 — Complete the adverts:\n';
+  for(let i=1;i<=9;i++) ex2Text+=`  Gap ${i}: ${gapFilled[i]||'(empty)'}\n`;
+
+  const writingText=(document.getElementById('ex3-text').value||'').trim();
+  let ex3Text='EXERCISE 3 — My Dream House:\n'+writingText+'\n';
+  if(ex3ImgData) ex3Text+='\n[Student also attached a photo of their dream home]\n';
+
+  const body=`Student: ${name}\nDate: ${date}\n\n${ex1Text}\n${ex2Text}\n${ex3Text}`;
+  const subject=`5B Homework — ${name} — ${date}`;
+  window.location.href=`mailto:dariia.mlnk@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────
+initEx1();
+updateSend();
+</script>
+</body>
+</html>
