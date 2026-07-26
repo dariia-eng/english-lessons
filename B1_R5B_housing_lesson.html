@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5B Homework — Living Space</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#EDEBE6;
+  --surface:#FFFFFF;
+  --surface-2:#F5F3EE;
+  --primary:#28473A;
+  --primary-mid:#3D7057;
+  --primary-light:#E7F0EB;
+  --accent:#C86840;
+  --accent-light:#FAF0EB;
+  --blue:#446E96;
+  --blue-light:#EAF0F7;
+  --amber:#B88A1A;
+  --amber-light:#FBF5E3;
+  --text:#1A2118;
+  --text-2:#4A5E52;
+  --muted:#8A9E94;
+  --border:#E0DAD2;
+  --ok:#2D7A4F;
+  --ok-bg:#E8F5EE;
+  --err:#C0392B;
+  --err-bg:#FFECEC;
+  --shadow-xs:0 1px 3px rgba(0,0,0,.06);
+  --shadow-sm:0 1px 6px rgba(0,0,0,.07),0 2px 12px rgba(0,0,0,.05);
+  --shadow:0 2px 10px rgba(0,0,0,.08),0 4px 24px rgba(0,0,0,.06);
+  --r-sm:8px;--r:14px;
+}
+body{font-family:'Segoe UI',Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.55;padding-bottom:60px;}
+
+/* ── Header ── */
+.hw-header{background:var(--primary);color:#fff;padding:22px 20px 18px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.hw-header h1{font-size:19px;font-weight:800;margin-bottom:2px;}
+.hw-header p{font-size:13px;opacity:.75;}
+
+/* ── Name field ── */
+.name-section{background:var(--surface);border-bottom:2px solid var(--accent);padding:16px 20px;position:sticky;top:68px;z-index:99;box-shadow:var(--shadow-sm);}
+.name-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.name-label{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;}
+.name-input{flex:1;min-width:200px;border:2px solid var(--border);border-radius:var(--r-sm);padding:8px 14px;font-size:15px;font-family:inherit;color:var(--text);transition:border-color .15s;background:var(--surface);}
+.name-input:focus{outline:none;border-color:var(--primary-mid);}
+.name-input.filled{border-color:var(--ok);}
+
+/* ── Content wrapper ── */
+.content{max-width:720px;margin:0 auto;padding:22px 16px;}
+
+/* ── Section headers ── */
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border);}
+.section-badge{background:var(--primary);color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;}
+.section-title{font-size:17px;font-weight:800;color:var(--text);}
+.section-sub{font-size:13px;color:var(--muted);margin-top:2px;}
+.section-block{margin-bottom:30px;}
+
+/* ── Cards ── */
+.card{background:var(--surface);border-radius:var(--r);padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid var(--border);}
+.note-amber{background:var(--amber-light);border:1.5px solid rgba(184,138,26,.2);border-radius:var(--r);padding:12px 16px;margin-bottom:12px;}
+.lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:8px;}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:0 18px;height:40px;border:none;border-radius:var(--r-sm);font-size:13px;font-weight:700;cursor:pointer;transition:all .16s;font-family:inherit;}
+.btn-check{background:var(--primary-mid);color:#fff;}
+.btn-check:hover{background:var(--primary);}
+.btn-send{background:var(--accent);color:#fff;height:48px;font-size:15px;padding:0 28px;border-radius:var(--r);width:100%;}
+.btn-send:hover:not(:disabled){background:#a85530;}
+.btn-send:disabled{opacity:.38;cursor:not-allowed;}
+.btn-row{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;}
+
+/* ── Feedback ── */
+.fb{font-size:13px;font-weight:600;padding:8px 12px;border-radius:var(--r-sm);margin-top:10px;display:none;}
+.fb.ok{background:var(--ok-bg);color:var(--ok);display:block;}
+.fb.err{background:var(--err-bg);color:var(--err);display:block;}
+
+/* ── Match exercise ── */
+.match-layout{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
+.match-col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:8px;}
+.match-item{padding:11px 14px;border-radius:var(--r-sm);border:2px solid var(--border);background:var(--surface);font-size:14px;cursor:pointer;transition:all .18s;min-height:48px;display:flex;align-items:center;line-height:1.4;box-shadow:var(--shadow-xs);gap:8px;}
+.match-item:hover{border-color:var(--accent);box-shadow:var(--shadow-sm);}
+.match-item.sel-left{border-color:var(--accent);background:var(--accent-light);}
+.match-item.sel-right{border-color:var(--accent);background:var(--accent-light);}
+.match-item.matched{border-color:var(--primary-mid);background:var(--primary-light);cursor:default;color:var(--primary);}
+.match-item.wrong-m{border-color:var(--err);background:var(--err-bg);}
+.match-item.correct-m{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);}
+.match-badge{font-weight:800;font-size:15px;color:var(--accent);flex-shrink:0;min-width:20px;}
+.match-badge.right-badge{color:var(--blue);}
+.match-item.matched .match-badge,.match-item.correct-m .match-badge{color:var(--primary-mid);}
+.pair-line{display:flex;align-items:center;gap:6px;margin:4px 0;font-size:13px;color:var(--muted);}
+
+/* ── Ad gap fill ── */
+.ad-box{background:var(--surface);border-radius:var(--r);padding:16px 18px;border:1px solid var(--border);box-shadow:var(--shadow-sm);margin-bottom:14px;}
+.ad-title{font-size:14px;font-weight:800;color:var(--primary);margin-bottom:10px;text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.ad-body{font-size:14px;line-height:1.85;color:var(--text);}
+.ad-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+@media(max-width:500px){.ad-layout{grid-template-columns:1fr;}}
+.ad-img-placeholder{background:var(--surface-2);border-radius:var(--r-sm);border:1px solid var(--border);height:140px;display:flex;align-items:center;justify-content:center;font-size:32px;}
+.word-bank-row{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;background:var(--surface-2);border-radius:var(--r-sm);border:1.5px dashed var(--border);margin-bottom:12px;}
+.wb-chip{padding:5px 12px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;transition:all .14s;user-select:none;font-family:inherit;}
+.wb-chip:hover{border-color:var(--primary-mid);background:var(--primary-light);}
+.wb-chip.sel-wb{border-color:var(--accent);background:var(--accent-light);color:var(--accent);}
+.wb-chip.used{opacity:.35;cursor:default;pointer-events:none;text-decoration:line-through;}
+.gap-btn{display:inline-block;min-width:90px;background:var(--accent-light);border:1.5px solid var(--accent);border-radius:6px;padding:1px 10px;font-size:13.5px;font-weight:700;cursor:pointer;color:var(--text);font-family:inherit;transition:all .14s;margin:0 2px;text-align:center;vertical-align:middle;}
+.gap-btn.filled{background:var(--blue-light);border-color:var(--blue);color:var(--blue);}
+.gap-btn.correct{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);cursor:default;}
+.gap-btn.wrong{background:var(--err-bg);border-color:var(--err);color:var(--err);}
+.gap-btn:hover:not(.correct):not(.wrong){border-color:var(--primary-mid);background:var(--primary-light);}
+
+/* ── Email exercise ── */
+.email-box{background:#f8f9fa;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow-sm);}
+.email-toolbar{background:#e8e8e8;padding:8px 14px;display:flex;gap:6px;align-items:center;}
+.email-dot{width:10px;height:10px;border-radius:50%;}
+.email-body{padding:18px 20px;font-size:14px;line-height:2;background:#fff;}
+.email-body p{margin-bottom:12px;}
+.email-gap{display:inline-block;min-width:80px;border:none;border-bottom:2px solid var(--accent);background:transparent;font-size:14px;font-family:inherit;color:var(--primary);text-align:center;padding:0 4px;outline:none;transition:border-color .14s;vertical-align:middle;}
+.email-gap:focus{border-color:var(--primary-mid);}
+.email-gap.correct{border-color:var(--ok);color:var(--ok);}
+.email-gap.wrong{border-color:var(--err);color:var(--err);background:var(--err-bg);}
+.verb-hint{font-size:11px;color:var(--muted);font-style:italic;vertical-align:middle;}
+
+/* ── Validation checklist ── */
+.validation-box{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:16px;}
+.val-title{font-size:14px;font-weight:800;margin-bottom:10px;color:var(--text);}
+.val-item{display:flex;align-items:center;gap:9px;font-size:14px;padding:5px 0;color:var(--muted);}
+.val-item.done{color:var(--text);}
+.val-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);background:var(--surface);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .2s;}
+.val-dot.ok{background:var(--ok);border-color:var(--ok);color:#fff;}
+
+/* ── Animations ── */
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}70%{transform:translateX(4px)}}
+.shake{animation:shake .3s ease;}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="hw-header">
+  <h1>5B Homework — Living Space</h1>
+  <p>Vocabulary &amp; Grammar: Zero and First Conditional</p>
+</div>
+
+<!-- Name -->
+<div class="name-section">
+  <div class="name-row">
+    <span class="name-label">👤 Student name:</span>
+    <input type="text" class="name-input" id="student-name" placeholder="Write your full name here…" oninput="updateSend()">
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ══ EXERCISE 1 ══ -->
+<div class="section-block" id="ex1-block">
+  <div class="section-header">
+    <div class="section-badge">1</div>
+    <div>
+      <div class="section-title">Vocabulary — Match the words with the definitions.</div>
+      <div class="section-sub">Click a word (1–5), then click the correct definition (a–e).</div>
+    </div>
+  </div>
+
+  <div class="match-layout">
+    <div>
+      <div class="match-col-title">Words</div>
+      <div id="ex1-left"></div>
+    </div>
+    <div>
+      <div class="match-col-title">Definitions</div>
+      <div id="ex1-right"></div>
+    </div>
+  </div>
+
+  <!-- Matched pairs display -->
+  <div id="ex1-pairs" style="margin-top:10px;display:none;">
+    <div class="lbl">Your matches</div>
+    <div id="ex1-pairs-list"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx1()">✓ Check</button>
+  </div>
+  <div class="fb" id="fb1"></div>
+</div>
+
+
+<!-- ══ EXERCISE 2 ══ -->
+<div class="section-block" id="ex2-block">
+  <div class="section-header">
+    <div class="section-badge">2</div>
+    <div>
+      <div class="section-title">Complete the adverts with the words in the boxes.</div>
+      <div class="section-sub">Click a word from the bank, then click a gap to fill it.</div>
+    </div>
+  </div>
+
+  <!-- Advert 1 -->
+  <div class="ad-box">
+    <div class="ad-title">🏠 House for sale in Cardiff, Wales.</div>
+    <div class="lbl">Word bank</div>
+    <div class="word-bank-row" id="wb1">
+      <button class="wb-chip" data-bank="1" data-word="air conditioning" onclick="selectWB(this,'1')">air conditioning</button>
+      <button class="wb-chip" data-bank="1" data-word="central heating" onclick="selectWB(this,'1')">central heating</button>
+      <button class="wb-chip" data-bank="1" data-word="detached" onclick="selectWB(this,'1')">detached</button>
+      <button class="wb-chip" data-bank="1" data-word="patio" onclick="selectWB(this,'1')">patio</button>
+    </div>
+    <div class="ad-layout">
+      <div class="ad-body">
+        <p>Located very close to the centre of the city, this four-bedroomed
+        <span class="gap-btn" id="gap-1" data-gap="1" onclick="fillGap('1')">1 ___</span>
+        house is not to be missed! A spacious and well designed house, it has three bathrooms, a large back garden with a
+        <span class="gap-btn" id="gap-2" data-gap="2" onclick="fillGap('2')">2 ___</span>
+        and a garage. The house also has incredible views onto Roath Park and Lake.</p>
+        <p>It comes with
+        <span class="gap-btn" id="gap-3" data-gap="3" onclick="fillGap('3')">3 ___</span>
+        to keep you cool in the summer months and
+        <span class="gap-btn" id="gap-4" data-gap="4" onclick="fillGap('4')">4 ___</span>
+        to keep you warm in the winter.</p>
+        <p><em>Call us now to book a viewing as this property is certain to sell quickly.</em></p>
+      </div>
+      <div class="ad-img-placeholder">🏡</div>
+    </div>
+  </div>
+
+  <!-- Advert 2 -->
+  <div class="ad-box">
+    <div class="ad-title">🏢 To rent, a <span class="gap-btn" id="gap-5" data-gap="5" onclick="fillGap('5')">5 ___</span> in a great location.</div>
+    <div class="lbl">Word bank</div>
+    <div class="word-bank-row" id="wb2">
+      <button class="wb-chip" data-bank="2" data-word="balcony" onclick="selectWB(this,'2')">balcony</button>
+      <button class="wb-chip" data-bank="2" data-word="block of flats" onclick="selectWB(this,'2')">block of flats</button>
+      <button class="wb-chip" data-bank="2" data-word="ceilings" onclick="selectWB(this,'2')">ceilings</button>
+      <button class="wb-chip" data-bank="2" data-word="floors" onclick="selectWB(this,'2')">floors</button>
+      <button class="wb-chip" data-bank="2" data-word="studio" onclick="selectWB(this,'2')">studio</button>
+    </div>
+    <div class="ad-layout">
+      <div class="ad-body">
+        <p>Modern and smart, this is a great option for anyone working in the city. It's located in a new
+        <span class="gap-btn" id="gap-6" data-gap="6" onclick="fillGap('6')">6 ___</span>,
+        right next to a bus stop and is only a five-minute walk to the train station.</p>
+        <p>Fully furnished and with a well equipped kitchen and bathroom, the walls and
+        <span class="gap-btn" id="gap-7" data-gap="7" onclick="fillGap('7')">7 ___</span>
+        have been painted recently, and the wooden
+        <span class="gap-btn" id="gap-8" data-gap="8" onclick="fillGap('8')">8 ___</span>
+        are completely new. It also has a very big
+        <span class="gap-btn" id="gap-9" data-gap="9" onclick="fillGap('9')">9 ___</span>
+        that offers great views of the city skyline.</p>
+        <p><em>Email us now to book your appointment to see this unique home.</em></p>
+      </div>
+      <div class="ad-img-placeholder">🛋️</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx2()">✓ Check</button>
+  </div>
+  <div class="fb" id="fb2"></div>
+</div>
+
+
+<!-- ══ EXERCISE 3 ══ -->
+<div class="section-block" id="ex3-block">
+  <div class="section-header">
+    <div class="section-badge">3</div>
+    <div>
+      <div class="section-title">Grammar — Match the sentence halves.</div>
+      <div class="section-sub">Click a sentence beginning (1–5), then click the correct ending (a–e).</div>
+    </div>
+  </div>
+
+  <div class="match-layout">
+    <div>
+      <div class="match-col-title">Beginnings</div>
+      <div id="ex3-left"></div>
+    </div>
+    <div>
+      <div class="match-col-title">Endings</div>
+      <div id="ex3-right"></div>
+    </div>
+  </div>
+
+  <div id="ex3-pairs" style="margin-top:10px;display:none;">
+    <div class="lbl">Your matches</div>
+    <div id="ex3-pairs-list"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx3()">✓ Check</button>
+  </div>
+  <div class="fb" id="fb3"></div>
+</div>
+
+
+<!-- ══ EXERCISE 4 ══ -->
+<div class="section-block" id="ex4-block">
+  <div class="section-header">
+    <div class="section-badge">4</div>
+    <div>
+      <div class="section-title">Complete the email with the correct form of the verbs.</div>
+      <div class="section-sub">Type the correct verb form in each gap. Use zero or first conditional.</div>
+    </div>
+  </div>
+
+  <div class="email-box">
+    <div class="email-toolbar">
+      <div class="email-dot" style="background:#FF5F57;"></div>
+      <div class="email-dot" style="background:#FEBC2E;"></div>
+      <div class="email-dot" style="background:#28C840;"></div>
+      <span style="font-size:12px;color:#666;margin-left:8px;">New message from Laura</span>
+    </div>
+    <div class="email-body">
+      <p>Hi Mickey,</p>
+      <p>Thanks for your email. It's good to hear that you finally found a place to live. You've been looking for ages! The studio you found sounds perfect for one person. When you <input class="email-gap" id="eg1" placeholder="___" oninput="updateSend()"> <span class="verb-hint">(live)</span> alone, you <input class="email-gap" id="eg2" placeholder="___" oninput="updateSend()"> <span class="verb-hint">(not need)</span> a lot of space.</p>
+      <p>Mark and I moved into our cottage last month. I can't believe we finally own our own home. The house is beautiful and we love living in the country. It has a large back garden with a lot of flowers. When we <input class="email-gap" id="eg3" placeholder="___" oninput="updateSend()"> <span class="verb-hint">(have)</span> more time, we <input class="email-gap" id="eg4" placeholder="___" style="min-width:110px;" oninput="updateSend()"> <span class="verb-hint">(build)</span> a patio to have barbecues in the summer. If you <input class="email-gap" id="eg5" placeholder="___" oninput="updateSend()"> <span class="verb-hint">(come)</span> to see it, you <input class="email-gap" id="eg6" placeholder="___" style="min-width:110px;" oninput="updateSend()"> <span class="verb-hint">(not be)</span> disappointed.</p>
+      <p>Good luck with the move, it can be quite stressful! If you <input class="email-gap" id="eg7" placeholder="___" oninput="updateSend()"> <span class="verb-hint">(be)</span> organised, I'm sure you <input class="email-gap" id="eg8" placeholder="___" style="min-width:90px;" oninput="updateSend()"> <span class="verb-hint">(be)</span> fine. My advice is to do it at the weekend and make sure you have enough boxes!</p>
+      <p>I have a rule. Every time I <input class="email-gap" id="eg9" placeholder="___" oninput="updateSend()"> <span class="verb-hint">(get)</span> stressed out when I'm moving house, I <input class="email-gap" id="eg10" placeholder="___" oninput="updateSend()"> <span class="verb-hint">(take)</span> a break for ten minutes. Try and do the same!</p>
+      <p>Write soon,<br>Laura</p>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx4()">✓ Check</button>
+  </div>
+  <div class="fb" id="fb4"></div>
+</div>
+
+
+<!-- ══ SEND TO TEACHER ══ -->
+<div style="background:var(--surface);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);">
+  <div class="val-title">📋 Before you send — make sure everything is complete:</div>
+  <div class="val-item" id="val-name"><div class="val-dot" id="vd-name"></div> Student name</div>
+  <div class="val-item" id="val-1"><div class="val-dot" id="vd-1"></div> Exercise 1 — all 5 words matched</div>
+  <div class="val-item" id="val-2"><div class="val-dot" id="vd-2"></div> Exercise 2 — all 9 gaps filled</div>
+  <div class="val-item" id="val-3"><div class="val-dot" id="vd-3"></div> Exercise 3 — all 5 sentence halves matched</div>
+  <div class="val-item" id="val-4"><div class="val-dot" id="vd-4"></div> Exercise 4 — all 10 verb gaps completed</div>
+  <div style="height:14px;"></div>
+  <button class="btn btn-send" id="send-btn" onclick="sendToTeacher()" disabled>📨 Send to Teacher</button>
+</div>
+
+</div><!-- /content -->
+
+<script>
+// ─── Exercise 1 Data ───────────────────────────────────────────────────────
+const ex1Words = [
+  {n:1,w:'block of flats'},{n:2,w:'cottage'},{n:3,w:'detached house'},
+  {n:4,w:'terraced house'},{n:5,w:'studio'}
+];
+const ex1Defs = [
+  {l:'a',d:'a small flat or apartment'},
+  {l:'b',d:"a house that isn't joined to another house"},
+  {l:'c',d:"a house that's part of a group or row of similar houses"},
+  {l:'d',d:'a large building divided into flats'},
+  {l:'e',d:'a small house in the country'}
+];
+const ex1Correct = {1:'d',2:'e',3:'b',4:'c',5:'a'};
+let ex1SelLeft=null, ex1Done={};
+
+// ─── Exercise 2 Data ───────────────────────────────────────────────────────
+const ex2Correct = {
+  '1':'detached','2':'patio','3':'air conditioning','4':'central heating',
+  '5':'studio','6':'block of flats','7':'ceilings','8':'floors','9':'balcony'
+};
+let wbSel = {1:null, 2:null};
+let gapFilled = {}; // gapNum → word
+
+// ─── Exercise 3 Data ───────────────────────────────────────────────────────
+const ex3Starts = [
+  {n:1,s:"If I'm tired,"},
+  {n:2,s:"I don't feel nervous"},
+  {n:3,s:"If we don't go to France,"},
+  {n:4,s:"I won't sleep well"},
+  {n:5,s:"If the train is delayed,"}
+];
+const ex3Ends = [
+  {l:'a',e:"I'll tell her that we'll be late."},
+  {l:'b',e:'if I need to make a big speech.'},
+  {l:'c',e:'if I eat too much before bed.'},
+  {l:'d',e:"I'll stay home tonight."},
+  {l:'e',e:'we might go to Egypt.'}
+];
+const ex3Correct = {1:'d',2:'b',3:'e',4:'c',5:'a'};
+let ex3SelLeft=null, ex3Done={};
+
+// ─── Exercise 4 Accepted Answers ──────────────────────────────────────────
+const ex4Correct = {
+  eg1:['live'],
+  eg2:["don't need","do not need"],
+  eg3:['have'],
+  eg4:["'ll build","will build","build"],
+  eg5:['come'],
+  eg6:["won't be","will not be"],
+  eg7:['are',"'re"],
+  eg8:["'ll be","will be"],
+  eg9:['get'],
+  eg10:['take']
+};
+
+// ─── Init Ex1 ──────────────────────────────────────────────────────────────
+function initEx1(){
+  const lContainer = document.getElementById('ex1-left');
+  const rContainer = document.getElementById('ex1-right');
+  ex1Words.forEach(item=>{
+    const el = document.createElement('div');
+    el.className='match-item';
+    el.id='e1l-'+item.n;
+    el.innerHTML=`<span class="match-badge">${item.n}</span>${item.w}`;
+    el.onclick=()=>selectEx1Left(item.n,el);
+    lContainer.appendChild(el);
+  });
+  const shuffled=[...ex1Defs].sort(()=>Math.random()-.5);
+  shuffled.forEach(item=>{
+    const el=document.createElement('div');
+    el.className='match-item';
+    el.id='e1r-'+item.l;
+    el.innerHTML=`<span class="match-badge right-badge">${item.l}</span>${item.d}`;
+    el.onclick=()=>selectEx1Right(item.l,el);
+    rContainer.appendChild(el);
+  });
+}
+
+function selectEx1Left(n,el){
+  if(ex1Done[n])return;
+  document.querySelectorAll('#ex1-left .match-item').forEach(e=>e.classList.remove('sel-left'));
+  ex1SelLeft = ex1SelLeft===n?null:n;
+  if(ex1SelLeft)el.classList.add('sel-left');
+}
+
+function selectEx1Right(l,el){
+  if(!ex1SelLeft)return;
+  const n=ex1SelLeft;
+  if(ex1Done[n])return;
+  ex1Done[n]=l;
+  ex1SelLeft=null;
+  document.querySelectorAll('#ex1-left .match-item').forEach(e=>e.classList.remove('sel-left'));
+  el.classList.add('sel-right');
+  renderEx1Pairs();
+  updateSend();
+}
+
+function renderEx1Pairs(){
+  const list=document.getElementById('ex1-pairs-list');
+  list.innerHTML='';
+  document.getElementById('ex1-pairs').style.display=Object.keys(ex1Done).length>0?'block':'none';
+  Object.entries(ex1Done).forEach(([n,l])=>{
+    const word=ex1Words.find(w=>w.n==n).w;
+    const def=ex1Defs.find(d=>d.l===l).d;
+    const div=document.createElement('div');
+    div.className='pair-line';
+    div.innerHTML=`<strong>${n}.</strong> ${word} → <strong>${l}.</strong> ${def}
+    <span style="margin-left:auto;cursor:pointer;color:var(--muted);font-size:12px;" onclick="removeEx1Pair(${n})">✕</span>`;
+    list.appendChild(div);
+  });
+}
+
+function removeEx1Pair(n){
+  delete ex1Done[n];
+  document.getElementById('e1l-'+n).classList.remove('sel-left','matched','correct-m','wrong-m');
+  renderEx1Pairs();
+  updateSend();
+}
+
+function checkEx1(){
+  let correct=0;
+  Object.entries(ex1Done).forEach(([n,l])=>{
+    const lEl=document.getElementById('e1l-'+n);
+    if(ex1Correct[n]===l){correct++;lEl.classList.add('correct-m');}
+    else lEl.classList.add('wrong-m');
+  });
+  const total=5;
+  const fb=document.getElementById('fb1');
+  fb.textContent=`${correct}/${total} correct.`;
+  fb.className=correct===total?'fb ok':'fb err';
+}
+
+// ─── Init Ex2 ──────────────────────────────────────────────────────────────
+function selectWB(el,bank){
+  const word=el.dataset.word;
+  if(el.classList.contains('used'))return;
+  if(wbSel[bank]===word){
+    wbSel[bank]=null;
+    document.querySelectorAll(`[data-bank="${bank}"]`).forEach(c=>c.classList.remove('sel-wb'));
+    return;
+  }
+  document.querySelectorAll(`[data-bank="${bank}"]`).forEach(c=>c.classList.remove('sel-wb'));
+  wbSel[bank]=word;
+  el.classList.add('sel-wb');
+}
+
+function fillGap(gapNum){
+  const bank = gapNum<='4'?'1':'2';
+  const word=wbSel[bank];
+  if(!word)return;
+  // Unuse previous word in this gap
+  if(gapFilled[gapNum]){
+    const prevWord=gapFilled[gapNum];
+    document.querySelectorAll(`[data-bank="${bank}"][data-word="${prevWord}"]`).forEach(c=>c.classList.remove('used'));
+  }
+  gapFilled[gapNum]=word;
+  const gapEl=document.getElementById('gap-'+gapNum);
+  gapEl.textContent=word;
+  gapEl.classList.add('filled');
+  gapEl.classList.remove('correct','wrong');
+  // Mark word as used
+  document.querySelectorAll(`[data-bank="${bank}"][data-word="${word}"]`).forEach(c=>{c.classList.add('used');c.classList.remove('sel-wb');});
+  wbSel[bank]=null;
+  updateSend();
+}
+
+function checkEx2(){
+  let correct=0;
+  for(let i=1;i<=9;i++){
+    const gapEl=document.getElementById('gap-'+i);
+    const ans=gapFilled[i]||'';
+    if(ans===ex2Correct[i]){correct++;gapEl.classList.add('correct');gapEl.classList.remove('wrong','filled');}
+    else if(ans){gapEl.classList.add('wrong');gapEl.classList.remove('filled');}
+  }
+  const fb=document.getElementById('fb2');
+  fb.textContent=`${correct}/9 correct.`;
+  fb.className=correct===9?'fb ok':'fb err';
+}
+
+// ─── Init Ex3 ──────────────────────────────────────────────────────────────
+function initEx3(){
+  const lC=document.getElementById('ex3-left');
+  const rC=document.getElementById('ex3-right');
+  ex3Starts.forEach(item=>{
+    const el=document.createElement('div');
+    el.className='match-item';
+    el.id='e3l-'+item.n;
+    el.innerHTML=`<span class="match-badge">${item.n}</span>${item.s}`;
+    el.onclick=()=>selectEx3Left(item.n,el);
+    lC.appendChild(el);
+  });
+  const shuffled=[...ex3Ends].sort(()=>Math.random()-.5);
+  shuffled.forEach(item=>{
+    const el=document.createElement('div');
+    el.className='match-item';
+    el.id='e3r-'+item.l;
+    el.innerHTML=`<span class="match-badge right-badge">${item.l}</span>${item.e}`;
+    el.onclick=()=>selectEx3Right(item.l,el);
+    rC.appendChild(el);
+  });
+}
+
+function selectEx3Left(n,el){
+  if(ex3Done[n])return;
+  document.querySelectorAll('#ex3-left .match-item').forEach(e=>e.classList.remove('sel-left'));
+  ex3SelLeft=ex3SelLeft===n?null:n;
+  if(ex3SelLeft)el.classList.add('sel-left');
+}
+
+function selectEx3Right(l,el){
+  if(!ex3SelLeft)return;
+  const n=ex3SelLeft;
+  if(ex3Done[n])return;
+  ex3Done[n]=l;
+  ex3SelLeft=null;
+  document.querySelectorAll('#ex3-left .match-item').forEach(e=>e.classList.remove('sel-left'));
+  el.classList.add('sel-right');
+  renderEx3Pairs();
+  updateSend();
+}
+
+function renderEx3Pairs(){
+  const list=document.getElementById('ex3-pairs-list');
+  list.innerHTML='';
+  document.getElementById('ex3-pairs').style.display=Object.keys(ex3Done).length>0?'block':'none';
+  Object.entries(ex3Done).forEach(([n,l])=>{
+    const start=ex3Starts.find(s=>s.n==n).s;
+    const end=ex3Ends.find(e=>e.l===l).e;
+    const div=document.createElement('div');
+    div.className='pair-line';
+    div.innerHTML=`<strong>${n}.</strong> ${start} <strong>${l}.</strong> ${end}
+    <span style="margin-left:auto;cursor:pointer;color:var(--muted);font-size:12px;" onclick="removeEx3Pair(${n})">✕</span>`;
+    list.appendChild(div);
+  });
+}
+
+function removeEx3Pair(n){
+  const l=ex3Done[n];
+  delete ex3Done[n];
+  document.getElementById('e3l-'+n).classList.remove('sel-left','matched','correct-m','wrong-m');
+  if(l)document.getElementById('e3r-'+l).classList.remove('sel-right','matched','correct-m','wrong-m');
+  renderEx3Pairs();
+  updateSend();
+}
+
+function checkEx3(){
+  let correct=0;
+  Object.entries(ex3Done).forEach(([n,l])=>{
+    const lEl=document.getElementById('e3l-'+n);
+    if(ex3Correct[n]===l){correct++;lEl.classList.add('correct-m');}
+    else lEl.classList.add('wrong-m');
+  });
+  const fb=document.getElementById('fb3');
+  fb.textContent=`${correct}/5 correct.`;
+  fb.className=correct===5?'fb ok':'fb err';
+}
+
+// ─── Check Ex4 ────────────────────────────────────────────────────────────
+function checkEx4(){
+  let correct=0;
+  for(let i=1;i<=10;i++){
+    const el=document.getElementById('eg'+i);
+    const val=(el.value||'').trim().toLowerCase().replace(/'/g,"'");
+    const accepted=ex4Correct['eg'+i].map(a=>a.toLowerCase().replace(/'/g,"'"));
+    if(accepted.includes(val)){correct++;el.classList.add('correct');el.classList.remove('wrong');}
+    else if(val){el.classList.add('wrong');el.classList.remove('correct');}
+  }
+  const fb=document.getElementById('fb4');
+  fb.textContent=`${correct}/10 correct.`;
+  fb.className=correct===10?'fb ok':'fb err';
+}
+
+// ─── Validation ───────────────────────────────────────────────────────────
+function updateSend(){
+  const name=(document.getElementById('student-name').value||'').trim();
+  const ex1Done5=Object.keys(ex1Done).length>=5;
+  const ex2Done9=Object.keys(gapFilled).filter(k=>gapFilled[k]).length>=9;
+  const ex3Done5=Object.keys(ex3Done).length>=5;
+  let ex4Done=true;
+  for(let i=1;i<=10;i++){
+    const el=document.getElementById('eg'+i);
+    if(!(el.value||'').trim()){ex4Done=false;break;}
+  }
+
+  setVal('name', !!name);
+  setVal('1', ex1Done5);
+  setVal('2', ex2Done9);
+  setVal('3', ex3Done5);
+  setVal('4', ex4Done);
+
+  document.getElementById('student-name').classList.toggle('filled',!!name);
+  document.getElementById('send-btn').disabled=!(name&&ex1Done5&&ex2Done9&&ex3Done5&&ex4Done);
+}
+
+function setVal(key,done){
+  const item=document.getElementById('val-'+key);
+  const dot=document.getElementById('vd-'+key);
+  dot.textContent=done?'✓':'';
+  dot.classList.toggle('ok',done);
+  item.classList.toggle('done',done);
+}
+
+// ─── Send to Teacher ─────────────────────────────────────────────────────
+function sendToTeacher(){
+  const name=document.getElementById('student-name').value.trim();
+  const date=new Date().toLocaleDateString('en-GB');
+
+  let ex1Text='EXERCISE 1 — Match words with definitions:\n';
+  ex1Words.forEach(item=>{
+    const l=ex1Done[item.n]||'?';
+    ex1Text+=`  ${item.n}. ${item.w} → ${l}. ${(ex1Defs.find(d=>d.l===l)||{d:'?'}).d}\n`;
+  });
+
+  let ex2Text='EXERCISE 2 — Complete the adverts:\n';
+  for(let i=1;i<=9;i++) ex2Text+=`  Gap ${i}: ${gapFilled[i]||'(empty)'}\n`;
+
+  let ex3Text='EXERCISE 3 — Match sentence halves:\n';
+  ex3Starts.forEach(item=>{
+    const l=ex3Done[item.n]||'?';
+    ex3Text+=`  ${item.n}. ${item.s} → ${l}. ${(ex3Ends.find(e=>e.l===l)||{e:'?'}).e}\n`;
+  });
+
+  let ex4Text='EXERCISE 4 — Complete the email:\n';
+  const hints=['live','not need','have','build','come','not be','be','be','get','take'];
+  for(let i=1;i<=10;i++){
+    const val=(document.getElementById('eg'+i).value||'').trim();
+    ex4Text+=`  Gap ${i} (${hints[i-1]}): ${val||'(empty)'}\n`;
+  }
+
+  const body=`Student: ${name}\nDate: ${date}\n\n${ex1Text}\n${ex2Text}\n${ex3Text}\n${ex4Text}`;
+  const subject=`5B Homework — ${name} — ${date}`;
+  window.location.href=`mailto:dariia.mlnk@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────
+initEx1();
+initEx3();
+updateSend();
+</script>
+</body>
+</html>
