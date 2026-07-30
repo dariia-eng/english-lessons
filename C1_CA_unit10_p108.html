@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 10 · The Candle Problem</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:#eef2f7;color:#1a1a2e;min-height:100vh;padding-bottom:72px}
+
+/* HEADER */
+.hdr{background:#1e3a5f;color:#fff;position:sticky;top:0;z-index:300;box-shadow:0 2px 16px rgba(0,0,0,.25)}
+.hdr-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;gap:12px}
+.unit-badge{background:#e55a28;color:#fff;font-size:19px;font-weight:900;width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hdr-info{flex:1;min-width:0}
+.hdr-sup{font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:.14em}
+.hdr-title{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-counter{font-size:12px;background:rgba(255,255,255,.1);padding:4px 11px;border-radius:99px;white-space:nowrap;flex-shrink:0}
+.prog-rail{height:3px;background:rgba(255,255,255,.12)}
+.prog-fill{height:100%;background:#e55a28;transition:width .5s ease;width:0%}
+
+/* PAGES */
+.pages{padding:18px 14px 24px}
+.page{display:none;max-width:700px;margin:0 auto;animation:fadeUp .35s cubic-bezier(.22,1,.36,1)}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;padding:10px 16px;display:flex;align-items:center;gap:10px;z-index:300;box-shadow:0 -2px 12px rgba(0,0,0,.06)}
+.nav-btn{padding:10px 22px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap}
+.nav-btn.back{background:#f1f5f9;color:#64748b}
+.nav-btn.back:hover{background:#e2e8f0}
+.nav-btn.back:disabled{opacity:.3;cursor:default}
+.nav-btn.next{background:#1e3a5f;color:#fff;flex-shrink:0}
+.nav-btn.next:hover{background:#162d4a}
+.dots{flex:1;display:flex;justify-content:center;align-items:center;gap:5px;flex-wrap:wrap}
+.dot{width:7px;height:7px;border-radius:50%;background:#cbd5e1;cursor:pointer;transition:all .2s;border:none;padding:0}
+.dot.active{background:#1e3a5f;transform:scale(1.5)}
+.dot.done{background:#e55a28}
+
+/* CARDS */
+.card{background:#fff;border-radius:16px;padding:1.4rem;margin-bottom:1rem;border:1px solid rgba(0,0,0,.06);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+
+/* COVER */
+.cover-hero{background:linear-gradient(135deg,#1e3a5f 0%,#2563a8 100%);color:#fff;border-radius:18px;padding:2.2rem 1.8rem;margin-bottom:1rem;position:relative;overflow:hidden}
+.cover-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(229,90,40,.18);pointer-events:none}
+.cover-eyebrow{font-size:10.5px;opacity:.55;text-transform:uppercase;letter-spacing:.16em;margin-bottom:10px}
+.cover-h1{font-size:30px;font-weight:900;line-height:1.1;margin-bottom:6px}
+.cover-h1 span{color:#f5a623}
+.cover-sub{font-size:14.5px;opacity:.7;line-height:1.6;margin-bottom:1.5rem}
+.cover-pills{display:flex;flex-wrap:wrap;gap:7px}
+.cover-pill{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:4px 13px;font-size:12px}
+.plan-list{display:grid;gap:9px}
+.plan-item{display:flex;align-items:flex-start;gap:11px;font-size:13.5px;line-height:1.5;color:#374151}
+.plan-num{min-width:26px;height:26px;border-radius:50%;background:#1e3a5f;color:#fff;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.plan-num.ora{background:#e55a28}
+
+/* ACT LABELS */
+.act-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.13em;color:#e55a28;margin-bottom:3px}
+.act-h2{font-size:19px;font-weight:800;color:#1e3a5f;margin-bottom:8px;line-height:1.25}
+.act-body{font-size:13.5px;color:#4b5563;line-height:1.65}
+.act-body strong{color:#1e3a5f}
+
+/* TEACH/TIP */
+.teach{background:#eff6ff;border-left:3px solid #1e3a5f;border-radius:0 10px 10px 0;padding:12px 15px;margin-top:1rem}
+.teach-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#1e3a5f;margin-bottom:5px}
+.teach-body{font-size:13px;color:#1e40af;line-height:1.65}
+.tip{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 10px 10px 0;padding:11px 14px;margin-top:.75rem}
+.tip-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#b45309;margin-bottom:4px}
+.tip-body{font-size:13px;color:#78350f;line-height:1.6}
+
+/* WARM-UP TIMER */
+.warmup-box{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:16px;padding:1.75rem 1.5rem;text-align:center;margin-bottom:1rem}
+.wt-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#166534;margin-bottom:10px}
+.wt-display{font-size:72px;font-weight:900;color:#15803d;line-height:1;margin-bottom:18px;font-variant-numeric:tabular-nums;transition:color .3s}
+.wt-display.warn{color:#ea580c}
+.wt-display.urgent{color:#dc2626}
+.wt-display.done{color:#6b7280}
+.wt-start-btn{padding:11px 32px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .15s;background:#16a34a;color:#fff}
+.wt-start-btn:hover{background:#15803d}
+.wt-start-btn.running{background:#dc2626}
+.wt-start-btn.running:hover{background:#b91c1c}
+.wt-note{font-size:12px;color:#4b7c59;margin-top:10px}
+
+/* BADGES */
+.partner-badge{display:inline-flex;align-items:center;background:#1e3a5f;color:#fff;font-size:9.5px;font-weight:700;padding:2px 9px;border-radius:4px;vertical-align:middle;margin-left:5px}
+.class-badge{display:inline-flex;align-items:center;background:#e55a28;color:#fff;font-size:9.5px;font-weight:700;padding:2px 9px;border-radius:4px;vertical-align:middle;margin-left:5px}
+
+/* DISCUSSION */
+.disc-list{display:grid;gap:0}
+.disc-item{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-bottom:1px solid #f1f5f9;font-size:14px;line-height:1.55;color:#374151}
+.disc-item:last-child{border-bottom:none}
+.disc-num{width:25px;height:25px;border-radius:50%;background:#e55a28;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+/* EXAM ROUND-UP */
+.eru-box{border:2.5px solid #1e3a5f;border-radius:14px;padding:1.2rem 1.3rem 1.3rem;position:relative;margin-bottom:1rem}
+.eru-badge{position:absolute;top:0;right:0;background:#1e3a5f;color:#fff;font-size:9.5px;font-weight:700;padding:5px 12px;border-radius:0 11px 0 9px;line-height:1.4;text-align:center}
+.eru-intro{font-style:italic;font-weight:700;font-size:13.5px;margin-bottom:12px;color:#374151}
+.eru-lines{display:grid;gap:10px}
+.eru-line{font-size:14px;line-height:1.6;color:#374151}
+.cho{cursor:pointer;font-style:italic;font-weight:700;padding:2px 6px;border-radius:5px;border:2px solid transparent;transition:all .15s;user-select:none;display:inline-block;margin:0 1px}
+.cho:hover{background:#f1f5f9;border-color:#cbd5e1}
+.cho.pending{background:#dbeafe;border-color:#93c5fd}
+.cho.ok{background:#dcfce7;border-color:#16a34a;color:#15803d;text-decoration:underline}
+.cho.no{background:#fee2e2;border-color:#fca5a5;color:#dc2626;text-decoration:line-through;font-style:normal}
+.sep{color:#6b7280;font-style:normal;font-weight:400}
+
+/* MATCHING */
+.match-pool{display:flex;flex-wrap:wrap;gap:8px;padding:12px;background:#f8fafc;border:2px dashed #cbd5e1;border-radius:12px;min-height:52px;margin-bottom:14px;transition:all .2s}
+.match-pool.has-sel{border-color:#3b82f6;background:#eff6ff}
+.chip{padding:7px 16px;border-radius:99px;font-size:13px;font-weight:700;cursor:pointer;border:2.5px solid transparent;transition:all .2s;user-select:none;white-space:nowrap}
+.chip.c0{background:#ede9fe;color:#5b21b6}
+.chip.c1{background:#fce7f3;color:#9d174d}
+.chip.c2{background:#d1fae5;color:#065f46}
+.chip.c3{background:#fef3c7;color:#92400e}
+.chip.c0.sel{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.2);transform:scale(1.04)}
+.chip.c1.sel{border-color:#ec4899;box-shadow:0 0 0 3px rgba(236,72,153,.2);transform:scale(1.04)}
+.chip.c2.sel{border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.2);transform:scale(1.04)}
+.chip.c3.sel{border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.2);transform:scale(1.04)}
+.chip.used{opacity:.25;pointer-events:none}
+.defs{display:grid;gap:9px}
+.def-row{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:2px solid #e2e8f0;border-radius:11px;cursor:pointer;transition:all .2s}
+.def-row:hover{border-color:#94a3b8;background:#f8fafc}
+.def-row.mc0{border-color:#7c3aed;background:#faf5ff}
+.def-row.mc1{border-color:#ec4899;background:#fdf2f8}
+.def-row.mc2{border-color:#10b981;background:#f0fdf4}
+.def-row.mc3{border-color:#f59e0b;background:#fffbeb}
+.def-row.vok{border-color:#16a34a !important;background:#f0fdf4 !important}
+.def-row.vno{border-color:#dc2626 !important;background:#fef2f2 !important}
+.def-letter{font-size:13px;font-weight:700;color:#94a3b8;min-width:18px;margin-top:1px;flex-shrink:0}
+.def-body{font-size:13.5px;line-height:1.55;color:#374151;flex:1}
+.def-slot{padding:4px 14px;border-radius:99px;font-size:12px;font-weight:600;min-width:120px;text-align:center;border:1.5px dashed #cbd5e1;color:#94a3b8;font-style:italic;flex-shrink:0;transition:all .2s}
+.def-slot.sc0{border-style:solid;border-color:#7c3aed;background:#ede9fe;color:#5b21b6;font-style:normal}
+.def-slot.sc1{border-style:solid;border-color:#ec4899;background:#fce7f3;color:#9d174d;font-style:normal}
+.def-slot.sc2{border-style:solid;border-color:#10b981;background:#d1fae5;color:#065f46;font-style:normal}
+.def-slot.sc3{border-style:solid;border-color:#f59e0b;background:#fef3c7;color:#92400e;font-style:normal}
+.def-corr{font-size:11.5px;color:#15803d;font-weight:600;margin-top:5px;display:none}
+.def-corr.on{display:block}
+.match-hint{font-size:12.5px;color:#64748b;text-align:center;margin-bottom:10px;font-style:italic}
+
+/* CANDLE */
+.scenario-visual{background:linear-gradient(135deg,#fff7ed,#fef3c7);border:2px solid #fcd34d;border-radius:16px;padding:1.5rem 1.25rem;text-align:center;margin-bottom:1rem}
+.items-grid{display:flex;justify-content:center;gap:2rem;margin:1rem 0 .5rem}
+.item{display:flex;flex-direction:column;align-items:center;gap:5px}
+.item-icon{font-size:50px;line-height:1}
+.item-name{font-size:11.5px;font-weight:700;color:#92400e;background:rgba(255,255,255,.7);padding:2px 9px;border-radius:4px}
+.scenario-task{background:#fff;border:1.5px solid #e2e8f0;border-radius:11px;padding:13px 15px;font-size:13.5px;line-height:1.65;color:#374151;margin-bottom:1rem}
+.reveal-btn{background:transparent;border:2px solid #1e3a5f;border-radius:9px;color:#1e3a5f;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.reveal-btn:hover{background:#1e3a5f;color:#fff}
+.solution-box{display:none;background:#f0fdf4;border:1.5px solid #16a34a;border-radius:10px;padding:13px 15px;font-size:13.5px;line-height:1.6;color:#14532d;margin-top:.75rem;animation:fadeUp .3s ease}
+.solution-box.on{display:block}
+
+/* READING */
+.read-box{border:1.5px solid #e2e8f0;border-radius:14px;background:#fafafa;padding:1.4rem;font-size:14px;line-height:1.9;margin-bottom:1rem;color:#374151}
+.read-title{text-align:center;margin-bottom:1rem}
+.rt-kicker{font-style:italic;font-size:13.5px;color:#6b7280}
+.rt-main{font-size:26px;font-weight:900;color:#1e3a5f;line-height:1.1}
+.rpara+.rpara{margin-top:10px}
+/* reading gaps (Activity 5 – dotted lines like the book) */
+.rgap-num{font-size:9.5px;font-weight:800;color:#1e3a5f;vertical-align:super;margin:0 1px}
+.rgap{display:inline-block;border-bottom:2px dotted #94a3b8;min-width:96px;vertical-align:bottom;text-align:center;color:#9ca3af;font-style:italic;font-size:12.5px;padding:0 3px}
+.rgap.ex{border-color:#1e3a5f;color:#1e3a5f;font-style:normal;font-weight:800;font-size:13.5px;min-width:46px}
+
+/* ARTICLE + MC page: scrollable article */
+.art-scroll{max-height:270px;overflow-y:auto;border:1.5px solid #e2e8f0;border-radius:12px;background:#fafafa;padding:1.1rem 1.2rem;font-size:13px;line-height:1.85;margin-bottom:1rem;color:#374151;scroll-behavior:smooth}
+.art-scroll::-webkit-scrollbar{width:5px}
+.art-scroll::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+.scroll-hint{font-size:11.5px;color:#6b7280;text-align:center;margin-bottom:8px;font-style:italic}
+
+.gap-num{font-size:9px;font-weight:700;color:#94a3b8;vertical-align:super;margin-right:1px}
+.gap-line{display:inline-block;border-bottom:2px solid #94a3b8;min-width:70px;vertical-align:bottom;text-align:center;font-size:13px;color:#4b5563;padding:0 3px;font-style:italic;transition:all .3s}
+.gap-line.gok{border-color:#16a34a;background:rgba(220,252,231,.5);color:#15803d;font-style:normal;font-weight:700;border-radius:4px 4px 0 0;padding:1px 6px}
+.gap-line.gno{border-color:#dc2626;background:rgba(254,226,226,.5);color:#dc2626;font-style:normal;font-weight:700;border-radius:4px 4px 0 0;padding:1px 6px}
+
+.gist-area{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 11px 11px 0;padding:13px 15px;margin-top:.75rem}
+.gist-q{font-size:13.5px;font-weight:700;color:#92400e;margin-bottom:9px;line-height:1.5}
+.gist-input{width:100%;border:1.5px solid #fde68a;border-radius:8px;padding:9px 12px;font-size:13.5px;font-family:'Inter',sans-serif;resize:vertical;min-height:64px;background:#fff;line-height:1.55}
+.gist-input:focus{outline:none;border-color:#f59e0b}
+
+/* MC */
+.mc-wrap{display:grid;gap:6px}
+.mc-row{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9}
+.mc-row:last-child{border-bottom:none}
+.mc-qnum{font-size:11.5px;font-weight:700;color:#94a3b8;min-width:24px;padding-top:5px;flex-shrink:0}
+.mc-opts{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px;flex:1}
+.mc-opt{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:7px;cursor:pointer;font-size:13.5px;transition:background .15s;border:1.5px solid transparent}
+.mc-opt:hover{background:#f1f5f9;border-color:#e2e8f0}
+.mc-opt input{cursor:pointer;flex-shrink:0;accent-color:#1e3a5f}
+.mc-opt .ol{font-weight:700;color:#1e3a5f;min-width:18px;flex-shrink:0}
+.mc-opt.mok{background:#dcfce7;border-color:#16a34a}
+.mc-opt.mno{background:#fee2e2;border-color:#fca5a5}
+.mc-fb{grid-column:1/3;font-size:12.5px;line-height:1.5;padding:7px 10px;border-radius:7px;margin-top:3px;display:none}
+.mc-fb.fok{display:block;background:#dcfce7;color:#14532d}
+.mc-fb.fno{display:block;background:#fee2e2;color:#7f1d1d}
+.ex-row{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#dbeafe;border-radius:8px;border:2px solid #1e3a5f;font-size:13.5px;margin-bottom:6px;flex-wrap:wrap}
+.ex-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#1e40af;background:#bfdbfe;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.ex-ans{font-weight:700;color:#1e3a5f}
+.score-strip{display:none;background:#eff6ff;border-radius:12px;padding:1rem 1.25rem;text-align:center;margin-top:1rem;border:1.5px solid #bfdbfe}
+.score-strip.on{display:block}
+.ss-big{font-size:30px;font-weight:900;color:#1e3a5f}
+.ss-label{font-size:13px;color:#4b5563;margin-top:3px}
+
+/* PYRAMID */
+.pyr-pips{display:flex;gap:9px;justify-content:center;margin-bottom:1rem}
+.pyr-pip{width:11px;height:11px;border-radius:50%;background:#e2e8f0;transition:all .3s}
+.pyr-pip.on{background:#e55a28;transform:scale(1.35)}
+.pyr-pip.past{background:#1e3a5f}
+.pyr-topic{background:linear-gradient(135deg,#1e3a5f,#2563a8);color:#fff;border-radius:14px;padding:1.2rem 1.5rem;margin-bottom:1rem}
+.pyr-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;opacity:.6;margin-bottom:6px}
+.pyr-text{font-size:14px;font-weight:700;line-height:1.55;font-style:italic}
+.how-box{background:#f1f5f9;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+.how-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#64748b;margin-bottom:8px}
+.how-steps{display:flex;gap:0;flex-direction:column;gap:4px;font-size:13px;color:#374151;line-height:1.5}
+.how-step{display:flex;gap:8px;align-items:flex-start}
+.how-arrow{color:#e55a28;font-weight:900;flex-shrink:0;margin-top:1px}
+.stage-card{border:2px solid #e2e8f0;border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:10px}
+.stage-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.stage-icon{font-size:26px;line-height:1}
+.stage-meta{flex:1}
+.stage-name{font-size:14px;font-weight:800;color:#1e3a5f}
+.stage-dur{font-size:12px;color:#6b7280}
+.stage-desc{font-size:13.5px;color:#374151;line-height:1.55;margin-bottom:10px}
+.timer-row{display:flex;align-items:center;gap:10px}
+.t-display{font-size:22px;font-weight:900;color:#1e3a5f;font-variant-numeric:tabular-nums;min-width:48px;transition:color .3s}
+.t-display.twarn{color:#ea580c}
+.t-display.turgent{color:#dc2626}
+.t-btn{padding:7px 18px;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;border:2px solid #1e3a5f;background:transparent;color:#1e3a5f;font-family:'Inter',sans-serif;transition:all .15s}
+.t-btn:hover,.t-btn.run{background:#1e3a5f;color:#fff}
+.t-btn.done{border-color:#16a34a;color:#16a34a}
+.t-btn.done:hover{background:#16a34a;color:#fff}
+.stage-note{width:100%;margin-top:9px;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 11px;font-size:13px;font-family:'Inter',sans-serif;resize:vertical;min-height:52px;background:#f9fafb}
+.stage-note:focus{outline:none;border-color:#1e3a5f}
+.class-share-box{border:2px dashed #e2e8f0;border-radius:14px;padding:1.5rem;text-align:center}
+.cs-emoji{font-size:44px;margin-bottom:8px}
+.cs-title{font-size:15px;font-weight:800;color:#1e3a5f;margin-bottom:4px}
+.cs-sub{font-size:13px;color:#6b7280;line-height:1.55}
+
+/* RESULTS */
+.results-hero{background:linear-gradient(135deg,#1e3a5f,#2563a8);color:#fff;border-radius:18px;padding:2rem;text-align:center;margin-bottom:1rem}
+.rh-big{font-size:64px;font-weight:900;line-height:1}
+.rh-of{font-size:14px;opacity:.6;margin-bottom:4px}
+.rh-band{font-size:17px;font-weight:700;margin-top:6px}
+.rh-band span{background:rgba(255,255,255,.15);padding:3px 12px;border-radius:99px}
+.bk-grid{display:grid;gap:9px;margin-bottom:1rem}
+.bk{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border-radius:12px;padding:12px 16px;border:1px solid #e2e8f0}
+.bk-name{font-size:13.5px;font-weight:700;color:#1e3a5f}
+.bk-desc{font-size:12px;color:#6b7280;margin-top:1px}
+.bk-score{font-size:24px;font-weight:900;color:#1e3a5f}
+.key-items{display:grid;gap:8px}
+.key-item{font-size:13px;line-height:1.55;padding-left:22px;position:relative;color:#374151}
+.key-item::before{content:'✓';position:absolute;left:0;color:#16a34a;font-weight:900}
+.key-item b{color:#1e3a5f}
+.sec-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#64748b;margin-bottom:11px}
+
+/* BUTTONS */
+.btn{padding:9px 20px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:all .15s}
+.btn-p{background:#1e3a5f;color:#fff}
+.btn-p:hover{background:#162d4a}
+.btn-p:disabled{opacity:.35;cursor:default}
+.btn-o{background:#fff;color:#1e3a5f;border:2px solid #1e3a5f}
+.btn-o:hover{background:#eff6ff}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <div class="unit-badge">10</div>
+    <div class="hdr-info">
+      <div class="hdr-sup">Reading &amp; Use of English · Part 1</div>
+      <div class="hdr-title" id="hdr-title">Introduction</div>
+    </div>
+    <div class="hdr-counter" id="hdr-counter">1 / 10</div>
+  </div>
+  <div class="prog-rail"><div class="prog-fill" id="prog-fill"></div></div>
+</header>
+
+<main class="pages">
+
+<!-- ═══════════════════════════════════════════════ PAGE 0: COVER -->
+<div class="page active" id="page-0">
+  <div class="cover-hero">
+    <div class="cover-eyebrow">Unit 10 · C1 Advanced</div>
+    <div class="cover-h1">The <span>Candle</span><br>Problem</div>
+    <div class="cover-sub">Creativity, thinking skills &amp; a deceptively simple puzzle</div>
+    <div class="cover-pills">
+      <span class="cover-pill">🕯️ 13 pages</span>
+      <span class="cover-pill">⏱ ~30 minutes</span>
+      <span class="cover-pill">📝 MC Cloze</span>
+      <span class="cover-pill">🧠 Thinking skills</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="sec-lbl">Lesson overview</div>
+    <div class="plan-list">
+      <div class="plan-item"><div class="plan-num ora">W</div><span>Warm-up discussion</span></div>
+      <div class="plan-item"><div class="plan-num">2</div><span>Match thinking skills to definitions</span></div>
+      <div class="plan-item"><div class="plan-num">3</div><span>Discussion</span></div>
+      <div class="plan-item"><div class="plan-num">4</div><span>The Candle Problem</span></div>
+      <div class="plan-item"><div class="plan-num ora">1</div><span>Exam round-up</span></div>
+      <div class="plan-item"><div class="plan-num">5</div><span>Read for gist</span></div>
+      <div class="plan-item"><div class="plan-num">6</div><span>MC Cloze · 8 gaps</span></div>
+      <div class="plan-item"><div class="plan-num ora">★</div><span>Pyramid discussion</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 1: WARM-UP -->
+<div class="page" id="page-1">
+  <div class="card">
+    <div class="act-tag">Warm-up</div>
+    <div class="act-h2">Group Discussion</div>
+    <div class="act-body">Discuss the questions below in groups. Your teacher will time you — <strong>five minutes!</strong> <span class="partner-badge">👥 Groups</span></div>
+  </div>
+  <div class="card">
+    <div class="disc-list">
+      <div class="disc-item"><div class="disc-num">1</div><span>Think of a problem you solved recently — at home, at school, or with friends. How did you approach it?</span></div>
+      <div class="disc-item"><div class="disc-num">2</div><span>Have you ever tried the obvious solution to something and it just didn't work? What did you do instead?</span></div>
+      <div class="disc-item"><div class="disc-num">3</div><span>Would you describe yourself as a creative thinker? Why or why not?</span></div>
+    </div>
+  </div>
+  <div class="warmup-box">
+    <div class="wt-lbl">⏱ Teacher timer</div>
+    <div class="wt-display" id="wt-display">5:00</div>
+    <button class="wt-start-btn" id="wt-btn" onclick="toggleWarmup()">▶ Start</button>
+    <div class="wt-note">Press start when discussion begins</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 2: ACTIVITY 2 — MATCHING -->
+<div class="page" id="page-2">
+  <div class="card">
+    <div class="act-tag">Activity 2</div>
+    <div class="act-h2">Thinking Skills</div>
+    <div class="act-body"><strong>Tap a chip</strong> to select it, then <strong>tap a definition</strong> to place it there. Match all four thinking skills.</div>
+  </div>
+
+  <div class="match-pool" id="match-pool">
+    <span class="chip c0" id="chip-lateral"  onclick="selectChip('lateral',0)">lateral thinking</span>
+    <span class="chip c1" id="chip-wishful"  onclick="selectChip('wishful',1)">wishful thinking</span>
+    <span class="chip c2" id="chip-logical"  onclick="selectChip('logical',2)">logical thinking</span>
+    <span class="chip c3" id="chip-critical" onclick="selectChip('critical',3)">critical thinking</span>
+  </div>
+  <div class="match-hint" id="match-hint">Select a chip above, then tap a definition to place it</div>
+
+  <div class="defs">
+    <div class="def-row" id="def-a" onclick="placeChip('a')">
+      <div class="def-letter">a</div>
+      <div class="def-body">a way of solving a problem by thinking about it in a different and original way, not using traditional or expected methods<div class="def-corr" id="corr-a"></div></div>
+      <div class="def-slot" id="slot-a">tap to fill</div>
+    </div>
+    <div class="def-row" id="def-b" onclick="placeChip('b')">
+      <div class="def-letter">b</div>
+      <div class="def-body">imagining or discussing a very unlikely future event or situation as if it were possible and might one day happen<div class="def-corr" id="corr-b"></div></div>
+      <div class="def-slot" id="slot-b">tap to fill</div>
+    </div>
+    <div class="def-row" id="def-c" onclick="placeChip('c')">
+      <div class="def-letter">c</div>
+      <div class="def-body">solving a problem in a direct and straightforward way, following a sequence of reasons to establish each step<div class="def-corr" id="corr-c"></div></div>
+      <div class="def-slot" id="slot-c">tap to fill</div>
+    </div>
+    <div class="def-row" id="def-d" onclick="placeChip('d')">
+      <div class="def-letter">d</div>
+      <div class="def-body">the process of thinking carefully about a subject or idea without allowing feelings or opinions to affect you<div class="def-corr" id="corr-d"></div></div>
+      <div class="def-slot" id="slot-d">tap to fill</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-p" id="match-check-btn" onclick="checkMatch()" disabled>Check answers</button>
+    <button class="btn btn-o" id="match-reset-btn" onclick="resetMatch()" style="display:none">Reset</button>
+  </div>
+  <div class="score-strip" id="match-strip">
+    <div class="ss-big" id="match-score">—</div>
+    <div class="ss-label">out of 4 correct</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 3: ACTIVITY 3 — DISCUSSION -->
+<div class="page" id="page-3">
+  <div class="card">
+    <div class="act-tag">Activity 3</div>
+    <div class="act-h2">Thinking Skills in Real Life</div>
+    <div class="act-body">Think of different situations where people might use each of the four thinking skills. Discuss with a partner, then share your ideas with the class. <span class="partner-badge">👥 Partner</span></div>
+  </div>
+  <div class="card">
+    <div class="disc-list">
+      <div class="disc-item"><div class="disc-num">1</div><span>Can you think of a job or profession where <strong>lateral thinking</strong> is especially important? Why?</span></div>
+      <div class="disc-item"><div class="disc-num">2</div><span>When might <strong>logical thinking</strong> alone not be enough to solve a problem?</span></div>
+      <div class="disc-item"><div class="disc-num">3</div><span>Is <strong>wishful thinking</strong> always a bad thing? Can you think of a situation where it might actually help?</span></div>
+      <div class="disc-item"><div class="disc-num">4</div><span>How does <strong>critical thinking</strong> differ from simply disagreeing with someone?</span></div>
+    </div>
+  </div>
+  <div class="teach">
+    <div class="teach-lbl">Vocabulary in use</div>
+    <div class="teach-body">Notice that all four phrases follow the same pattern: <strong>[adjective] + thinking</strong>. This is a productive pattern in English — you can also say <em>positive thinking, negative thinking, forward thinking, creative thinking</em>. Try to use these in your discussion.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 4: ACTIVITY 4 — CANDLE PROBLEM -->
+<div class="page" id="page-4">
+  <div class="card">
+    <div class="act-tag">Activity 4</div>
+    <div class="act-h2">The Candle Problem</div>
+    <div class="act-body">Look at the items below, read the task carefully, and discuss how you would solve it with a partner. <strong>Do not read ahead!</strong> <span class="partner-badge">👥 Partner</span></div>
+  </div>
+
+  <div class="scenario-visual">
+    <div style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:4px">You have exactly three items:</div>
+    <div class="items-grid">
+      <div class="item"><div class="item-icon">🕯️</div><div class="item-name">a small candle</div></div>
+      <div class="item"><div class="item-icon">📦</div><div class="item-name">a box of drawing pins</div></div>
+      <div class="item"><div class="item-icon">🔥</div><div class="item-name">a book of matches</div></div>
+    </div>
+  </div>
+
+  <div class="scenario-task">
+    <strong>Your task:</strong> Attach the candle to the wall so that, when lit, it does not drip wax onto the floor below it. You may only use the three items shown above — nothing else.
+    <br><br>
+    💬 <em>Discuss possible solutions with your partner. What would you try first?</em>
+  </div>
+
+  <div style="text-align:center">
+    <button class="reveal-btn" onclick="toggleSolution()">💡 Reveal the solution</button>
+    <div class="solution-box" id="solution-box">
+      <strong>The solution:</strong> Empty the drawing pins from their box. Pin the box itself flat against the wall — it acts as a small shelf or platform. Place the candle inside the box and light it. The box catches any dripping wax.<br><br>
+      💡 Most people fail because they see the box only as a <em>container for pins</em>, not as a tool in itself. This mental block is called <strong>functional fixedness</strong> — and it is exactly what the next article explores.
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:1rem">
+    <div class="tip-lbl">Think about it</div>
+    <div class="tip-body">Which type of thinking is most useful here — lateral, logical, wishful, or critical? Can you explain why?</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 5: EXAM ROUND-UP -->
+<div class="page" id="page-5">
+  <div class="card">
+    <div class="act-tag">Before the exercise</div>
+    <div class="act-h2">Exam Round-up</div>
+    <div class="act-body">Before completing the Use of English task, circle the correct alternative in each statement.</div>
+  </div>
+
+  <div class="eru-box">
+    <div class="eru-badge">EXAM<br>ROUND-UP</div>
+    <div class="eru-intro">In Use of English Part 1 …</div>
+    <div class="eru-lines">
+      <div class="eru-line">1 &nbsp;there is a text with
+        <span class="cho" id="e1a" onclick="chooseEru('e1','eight')">eight</span>
+        <span class="sep"> / </span>
+        <span class="cho" id="e1b" onclick="chooseEru('e1','ten')">ten</span>
+        gaps.
+      </div>
+      <div class="eru-line">2 &nbsp;For each gap you are given a choice of
+        <span class="cho" id="e2a" onclick="chooseEru('e2','three')">three</span>
+        <span class="sep"> / </span>
+        <span class="cho" id="e2b" onclick="chooseEru('e2','four')">four</span>
+        possible answers.
+      </div>
+      <div class="eru-line">3 &nbsp;You should read the text
+        <span class="cho" id="e3a" onclick="chooseEru('e3','before')">before</span>
+        <span class="sep"> / </span>
+        <span class="cho" id="e3b" onclick="chooseEru('e3','after')">after</span>
+        reading the options.
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-p" id="eru-check-btn" onclick="checkEru()">Check answers</button>
+      <button class="btn btn-o" id="eru-reset-btn" onclick="resetEru()" style="display:none">Reset</button>
+    </div>
+  </div>
+
+  <div class="teach">
+    <div class="teach-lbl">Remember</div>
+    <div class="teach-body">Part 1 tests <strong>vocabulary</strong> — particularly collocations, fixed phrases, phrasal verbs, and easily confused words. The text always has <strong>8 gaps</strong> (plus example 0). Each gap has <strong>4 options</strong> (A, B, C, D).</div>
+  </div>
+  <div class="tip">
+    <div class="tip-lbl">Exam tip</div>
+    <div class="tip-body">Always read the <em>whole sentence</em> — and the sentences around the gap — before choosing. One word may fit grammatically but fail to collocate correctly with the surrounding words.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 6: ACTIVITY 5 — READING -->
+<div class="page" id="page-6">
+  <div class="card">
+    <div class="act-tag">Activity 5</div>
+    <div class="act-h2">Read for Gist</div>
+    <div class="act-body">Read the article. As you read, consider: <strong>which types of thinking skills do people use when trying to solve the Candle Problem?</strong></div>
+  </div>
+
+  <div class="read-box">
+    <div class="read-title">
+      <div class="rt-kicker">psychology · creativity</div>
+      <div class="rt-main">The Candle Problem</div>
+    </div>
+    <div style="font-size:12px;color:#6b7280;text-align:center;margin-bottom:12px;font-style:italic">Read the text. For gaps (1–8), consider what type of word might fit before you answer the questions on the next page.</div>
+    <div class="rpara">German psychologist Karl Duncker's 'Candle Problem' experiment <span class="rgap-num">(0)</span><span class="rgap ex">sets</span> out one way in which our minds approach tasks differently. Duncker's proposition was that, by <span class="rgap-num">(1)</span><span class="rgap">…………………</span> the power of creative thought, we can look at a familiar object and consider how it might otherwise be used in order to serve a new purpose. This test is <span class="rgap-num">(2)</span><span class="rgap">…………………</span> used by psychologists to measure the personality trait of 'functional fixedness', a type of thinking that prevents people from using their creativity to <span class="rgap-num">(3)</span><span class="rgap">…………………</span> problems.</div>
+    <div class="rpara">Those who fail to provide the correct answer to the Candle Problem usually <span class="rgap-num">(4)</span><span class="rgap">…………………</span> this trait, and they are not alone. In fact, the vast majority of people see an object purely for its <span class="rgap-num">(5)</span><span class="rgap">…………………</span> use, and rarely stop to consider an alternative, even a purpose for which it might <span class="rgap-num">(6)</span><span class="rgap">…………………</span> highly suitable. However, those who do succeed have the <span class="rgap-num">(7)</span><span class="rgap">…………………</span> to be creative and flexible thinkers who are capable of avoiding functional fixedness, and do not naturally conform to <span class="rgap-num">(8)</span><span class="rgap">…………………</span>, particularly when a problem requires them to think 'outside-of-the-box'.</div>
+  </div>
+
+  <div class="gist-area">
+    <div class="gist-q">Which types of thinking do people use when trying to solve the Candle Problem? Write your answer below.</div>
+    <textarea class="gist-input" placeholder="e.g. Lateral thinking, because…"></textarea>
+    <div style="margin-top:10px;text-align:right">
+      <button class="btn btn-o" style="font-size:12px;padding:7px 16px" onclick="toggleGistAnswer()">💡 Suggested answer</button>
+    </div>
+    <div id="gist-answer" style="display:none;margin-top:8px;background:#dcfce7;border-left:3px solid #16a34a;border-radius:0 8px 8px 0;padding:11px 14px;font-size:13px;color:#14532d;line-height:1.6">
+      <strong>Suggested answer:</strong> People who fail the Candle Problem rely on <em>logical thinking</em> — they see the box purely as a container and apply its obvious function. Those who succeed use <em>lateral thinking</em>: they break free from functional fixedness and see the box as a potential shelf. <em>Critical thinking</em> also plays a role in evaluating possible solutions and rejecting the obvious ones.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 7: ACTIVITY 6 — MC CLOZE -->
+<div class="page" id="page-7">
+  <div class="card">
+    <div class="act-tag">Activity 6 · Use of English Part 1</div>
+    <div class="act-h2">The Candle Problem</div>
+    <div class="act-body">For questions <strong>1–8</strong>, decide which answer (A, B, C or D) best fits each gap. Use the article above the questions to help you — <strong>scroll up inside the box</strong> to re-read at any time.</div>
+  </div>
+
+  <!-- Scrollable article with gaps -->
+  <div class="card" style="padding:1rem">
+    <div class="scroll-hint">↕ Scroll to re-read while answering</div>
+    <div class="art-scroll" id="art-scroll">
+      <div style="text-align:center;margin-bottom:.75rem">
+        <div style="font-style:italic;font-size:12.5px;color:#6b7280">psychology · creativity</div>
+        <div style="font-size:22px;font-weight:900;color:#1e3a5f;line-height:1.1">The Candle Problem</div>
+      </div>
+      <div class="rpara">German psychologist Karl Duncker's 'Candle Problem' experiment <span class="gap-num">0</span><span class="gap-line" style="min-width:40px;font-style:normal;font-weight:800;color:#1e3a5f;border-color:#1e3a5f">sets</span> out one way in which our minds approach tasks differently. Duncker's proposition was that, by <span class="gap-num">1</span><span class="gap-line" id="rg1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> the power of creative thought, we can look at a familiar object and consider how it might otherwise be used in order to serve a new purpose. This test is <span class="gap-num">2</span><span class="gap-line" id="rg2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> used by psychologists to measure the personality trait of 'functional fixedness', a type of thinking that prevents people from using their creativity to <span class="gap-num">3</span><span class="gap-line" id="rg3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> problems.</div>
+      <div class="rpara">Those who fail to provide the correct answer to the Candle Problem usually <span class="gap-num">4</span><span class="gap-line" id="rg4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> this trait, and they are not alone. In fact, the vast majority of people see an object purely for its <span class="gap-num">5</span><span class="gap-line" id="rg5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> use, and rarely stop to consider an alternative, even a purpose for which it might <span class="gap-num">6</span><span class="gap-line" id="rg6">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> highly suitable. However, those who do succeed have the <span class="gap-num">7</span><span class="gap-line" id="rg7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> to be creative and flexible thinkers who are capable of avoiding functional fixedness, and do not naturally conform to <span class="gap-num">8</span><span class="gap-line" id="rg8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>, particularly when a problem requires them to think 'outside-of-the-box'.</div>
+    </div>
+  </div>
+
+  <!-- MC Questions -->
+  <div class="card">
+    <div style="background:#dbeafe;border:2px solid #1e3a5f;border-radius:10px;padding:10px 13px;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+        <span class="ex-lbl">Example 0</span>
+        <span style="font-size:13px;color:#4b5563">… Karl Duncker's experiment <strong>__</strong> out one way …</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div style="display:flex;align-items:center;gap:7px;background:#16a34a;border-radius:7px;padding:6px 10px">
+          <span style="width:22px;height:22px;border-radius:50%;background:#fff;color:#16a34a;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">A</span>
+          <span style="font-size:13.5px;font-weight:700;color:#fff">sets</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.55);border-radius:7px;padding:6px 10px">
+          <span style="width:22px;height:22px;border-radius:50%;background:#93c5fd;color:#1e3a5f;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">B</span>
+          <span style="font-size:13.5px;color:#374151">lays</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.55);border-radius:7px;padding:6px 10px">
+          <span style="width:22px;height:22px;border-radius:50%;background:#93c5fd;color:#1e3a5f;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">C</span>
+          <span style="font-size:13.5px;color:#374151">puts</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.55);border-radius:7px;padding:6px 10px">
+          <span style="width:22px;height:22px;border-radius:50%;background:#93c5fd;color:#1e3a5f;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">D</span>
+          <span style="font-size:13.5px;color:#374151">maps</span>
+        </div>
+      </div>
+    </div>
+    <div class="mc-wrap">
+
+      <div class="mc-row" id="mcr-1">
+        <div class="mc-qnum">1</div>
+        <div class="mc-opts">
+          <label class="mc-opt"><input type="radio" name="q1" value="A"><span class="ol">A</span>employing</label>
+          <label class="mc-opt"><input type="radio" name="q1" value="B"><span class="ol">B</span>affirming</label>
+          <label class="mc-opt"><input type="radio" name="q1" value="C"><span class="ol">C</span>fulfilling</label>
+          <label class="mc-opt"><input type="radio" name="q1" value="D"><span class="ol">D</span>appointing</label>
+          <div class="mc-fb" id="fb-1"></div>
+        </div>
+      </div>
+
+      <div class="mc-row" id="mcr-2">
+        <div class="mc-qnum">2</div>
+        <div class="mc-opts">
+          <label class="mc-opt"><input type="radio" name="q2" value="A"><span class="ol">A</span>authentically</label>
+          <label class="mc-opt"><input type="radio" name="q2" value="B"><span class="ol">B</span>commonly</label>
+          <label class="mc-opt"><input type="radio" name="q2" value="C"><span class="ol">C</span>naturally</label>
+          <label class="mc-opt"><input type="radio" name="q2" value="D"><span class="ol">D</span>entirely</label>
+          <div class="mc-fb" id="fb-2"></div>
+        </div>
+      </div>
+
+      <div class="mc-row" id="mcr-3">
+        <div class="mc-qnum">3</div>
+        <div class="mc-opts">
+          <label class="mc-opt"><input type="radio" name="q3" value="A"><span class="ol">A</span>determine</label>
+          <label class="mc-opt"><input type="radio" name="q3" value="B"><span class="ol">B</span>address</label>
+          <label class="mc-opt"><input type="radio" name="q3" value="C"><span class="ol">C</span>reach</label>
+          <label class="mc-opt"><input type="radio" name="q3" value="D"><span class="ol">D</span>contend</label>
+          <div class="mc-fb" id="fb-3"></div>
+        </div>
+      </div>
+
+      <div class="mc-row" id="mcr-4">
+        <div class="mc-qnum">4</div>
+        <div class="mc-opts">
+          <label class="mc-opt"><input type="radio" name="q4" value="A"><span class="ol">A</span>disclose</label>
+          <label class="mc-opt"><input type="radio" name="q4" value="B"><span class="ol">B</span>expose</label>
+          <label class="mc-opt"><input type="radio" name="q4" value="C"><span class="ol">C</span>display</label>
+          <label class="mc-opt"><input type="radio" name="q4" value="D"><span class="ol">D</span>present</label>
+          <div class="mc-fb" id="fb-4"></div>
+        </div>
+      </div>
+
+      <div class="mc-row" id="mcr-5">
+        <div class="mc-qnum">5</div>
+        <div class="mc-opts">
+          <label class="mc-opt"><input type="radio" name="q5" value="A"><span class="ol">A</span>decided</label>
+          <label class="mc-opt"><input type="radio" name="q5" value="B"><span class="ol">B</span>shown</label>
+          <label class="mc-opt"><input type="radio" name="q5" value="C"><span class="ol">C</span>provided</label>
+          <label class="mc-opt"><input type="radio" name="q5" value="D"><span class="ol">D</span>given</label>
+          <div class="mc-fb" id="fb-5"></div>
+        </div>
+      </div>
+
+      <div class="mc-row" id="mcr-6">
+        <div class="mc-qnum">6</div>
+        <div class="mc-opts">
+          <label class="mc-opt"><input type="radio" name="q6" value="A"><span class="ol">A</span>verify</label>
+          <label class="mc-opt"><input type="radio" name="q6" value="B"><span class="ol">B</span>confirm</label>
+          <label class="mc-opt"><input type="radio" name="q6" value="C"><span class="ol">C</span>prove</label>
+          <label class="mc-opt"><input type="radio" name="q6" value="D"><span class="ol">D</span>demonstrate</label>
+          <div class="mc-fb" id="fb-6"></div>
+        </div>
+      </div>
+
+      <div class="mc-row" id="mcr-7">
+        <div class="mc-qnum">7</div>
+        <div class="mc-opts">
+          <label class="mc-opt"><input type="radio" name="q7" value="A"><span class="ol">A</span>privilege</label>
+          <label class="mc-opt"><input type="radio" name="q7" value="B"><span class="ol">B</span>reliability</label>
+          <label class="mc-opt"><input type="radio" name="q7" value="C"><span class="ol">C</span>principle</label>
+          <label class="mc-opt"><input type="radio" name="q7" value="D"><span class="ol">D</span>tendency</label>
+          <div class="mc-fb" id="fb-7"></div>
+        </div>
+      </div>
+
+      <div class="mc-row" id="mcr-8">
+        <div class="mc-qnum">8</div>
+        <div class="mc-opts">
+          <label class="mc-opt"><input type="radio" name="q8" value="A"><span class="ol">A</span>convention</label>
+          <label class="mc-opt"><input type="radio" name="q8" value="B"><span class="ol">B</span>assumption</label>
+          <label class="mc-opt"><input type="radio" name="q8" value="C"><span class="ol">C</span>opinion</label>
+          <label class="mc-opt"><input type="radio" name="q8" value="D"><span class="ol">D</span>prediction</label>
+          <div class="mc-fb" id="fb-8"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-p" id="mc-check-btn" onclick="checkMC()">Check answers</button>
+      <button class="btn btn-o" id="mc-reset-btn" onclick="resetMC()" style="display:none">Reset</button>
+    </div>
+    <div class="score-strip" id="mc-strip">
+      <div class="ss-big" id="mc-score">—</div>
+      <div class="ss-label">out of 8 correct</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 8: PYRAMID — STAGE 1 -->
+<div class="page" id="page-8">
+  <div class="pyr-pips">
+    <div class="pyr-pip on"></div><div class="pyr-pip"></div><div class="pyr-pip"></div><div class="pyr-pip"></div>
+  </div>
+  <div class="pyr-topic">
+    <div class="pyr-lbl">💬 Pyramid Discussion · Stage 1 of 4</div>
+    <div class="pyr-text">"What does the Candle Problem reveal about the way we approach challenges in everyday life? How can we overcome functional fixedness?"</div>
+  </div>
+  <div class="card">
+    <div style="font-size:60px;text-align:center;line-height:1;margin-bottom:12px">🧍</div>
+    <div class="act-tag">Stage 1 of 4 · Individual</div>
+    <div class="act-h2">Think Alone</div>
+    <div class="act-body">You have <strong>1 minute</strong>. Note down two or three of your own ideas <em>before</em> sharing them with anyone else. Use vocabulary from the lesson.</div>
+    <textarea class="stage-note" style="margin-top:14px" placeholder="Your ideas… (e.g. functional fixedness means that…)"></textarea>
+    <div class="timer-row" style="margin-top:13px">
+      <div class="t-display" id="td-1">1:00</div>
+      <button class="t-btn" id="tb-1" onclick="toggleStageTimer(1,60)">▶ Start</button>
+    </div>
+  </div>
+  <div class="teach">
+    <div class="teach-lbl">Think about</div>
+    <div class="teach-body">What does the Candle Problem reveal about the way humans naturally think? Can you connect it to a real experience — a moment when you felt 'stuck' by a fixed way of seeing something?</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 9: PYRAMID — STAGE 2 -->
+<div class="page" id="page-9">
+  <div class="pyr-pips">
+    <div class="pyr-pip past"></div><div class="pyr-pip on"></div><div class="pyr-pip"></div><div class="pyr-pip"></div>
+  </div>
+  <div class="pyr-topic">
+    <div class="pyr-lbl">💬 Pyramid Discussion · Stage 2 of 4</div>
+    <div class="pyr-text">"What does the Candle Problem reveal about the way we approach challenges in everyday life? How can we overcome functional fixedness?"</div>
+  </div>
+  <div class="card">
+    <div style="font-size:60px;text-align:center;line-height:1;margin-bottom:12px">👫</div>
+    <div class="act-tag">Stage 2 of 4 · Pairs</div>
+    <div class="act-h2">Discuss with a Partner</div>
+    <div class="act-body">You have <strong>2 minutes</strong>. Share your individual ideas and together agree on your <strong>single strongest point</strong> to take to the next stage.</div>
+    <textarea class="stage-note" style="margin-top:14px" placeholder="Your pair's agreed point…"></textarea>
+    <div class="timer-row" style="margin-top:13px">
+      <div class="t-display" id="td-2">2:00</div>
+      <button class="t-btn" id="tb-2" onclick="toggleStageTimer(2,120)">▶ Start</button>
+    </div>
+  </div>
+  <div class="tip">
+    <div class="tip-lbl">Useful language</div>
+    <div class="tip-body"><em>"I think the key point is…" · "I'd argue that…" · "What about the idea that…?" · "Can we narrow it down to…?"</em></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 10: PYRAMID — STAGE 3 -->
+<div class="page" id="page-10">
+  <div class="pyr-pips">
+    <div class="pyr-pip past"></div><div class="pyr-pip past"></div><div class="pyr-pip on"></div><div class="pyr-pip"></div>
+  </div>
+  <div class="pyr-topic">
+    <div class="pyr-lbl">💬 Pyramid Discussion · Stage 3 of 4</div>
+    <div class="pyr-text">"What does the Candle Problem reveal about the way we approach challenges in everyday life? How can we overcome functional fixedness?"</div>
+  </div>
+  <div class="card">
+    <div style="font-size:60px;text-align:center;line-height:1;margin-bottom:12px">👥</div>
+    <div class="act-tag">Stage 3 of 4 · Groups of Four</div>
+    <div class="act-h2">Join Another Pair</div>
+    <div class="act-body">You have <strong>3 minutes</strong>. Each pair presents their strongest point. Debate the ideas and agree on <strong>one key message</strong> to share with the class.</div>
+    <textarea class="stage-note" style="margin-top:14px" placeholder="Your group's key message…"></textarea>
+    <div class="timer-row" style="margin-top:13px">
+      <div class="t-display" id="td-3">3:00</div>
+      <button class="t-btn" id="tb-3" onclick="toggleStageTimer(3,180)">▶ Start</button>
+    </div>
+  </div>
+  <div class="tip">
+    <div class="tip-lbl">Useful language</div>
+    <div class="tip-body"><em>"Our pair thought that…" · "We found it more interesting to focus on…" · "Can we all agree that…?" · "The most important idea is probably…"</em></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 11: PYRAMID — STAGE 4 -->
+<div class="page" id="page-11">
+  <div class="pyr-pips">
+    <div class="pyr-pip past"></div><div class="pyr-pip past"></div><div class="pyr-pip past"></div><div class="pyr-pip on"></div>
+  </div>
+  <div class="pyr-topic">
+    <div class="pyr-lbl">💬 Pyramid Discussion · Stage 4 of 4</div>
+    <div class="pyr-text">"What does the Candle Problem reveal about the way we approach challenges in everyday life? How can we overcome functional fixedness?"</div>
+  </div>
+  <div class="card">
+    <div style="font-size:60px;text-align:center;line-height:1;margin-bottom:12px">🗣️</div>
+    <div class="act-tag">Stage 4 of 4 · Class</div>
+    <div class="act-h2">Class Share</div>
+    <div class="act-body">Each group presents their key message to the class. Listen carefully — can you find common threads? Work together to agree on a <strong>class conclusion</strong>.</div>
+    <div class="timer-row" style="margin-top:13px">
+      <div class="t-display" id="td-4">5:00</div>
+      <button class="t-btn" id="tb-4" onclick="toggleStageTimer(4,300)">▶ Start</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="disc-list">
+      <div class="disc-item"><div class="disc-num">1</div><span>Were any groups' key messages similar? What does this suggest about the topic?</span></div>
+      <div class="disc-item"><div class="disc-num">2</div><span>Did anything surprise you — about the Candle Problem, or about the discussion itself?</span></div>
+      <div class="disc-item"><div class="disc-num">3</div><span>How might you apply what you've learned about functional fixedness in your own life?</span></div>
+    </div>
+  </div>
+  <div class="teach">
+    <div class="teach-lbl">Class conclusion</div>
+    <div class="teach-body">Try to summarise the class's main idea in one sentence. Write it on the board — that's your shared conclusion!</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 12: RESULTS -->
+<div class="page" id="page-12">
+  <div class="results-hero">
+    <div class="rh-of">Your total score</div>
+    <div class="rh-big" id="rh-total">—</div>
+    <div style="font-size:14px;opacity:.6">/ 15</div>
+    <div class="rh-band"><span id="rh-band">Complete the exercises to see your score</span></div>
+  </div>
+
+  <div class="card">
+    <div class="sec-lbl">Score breakdown</div>
+    <div class="bk-grid">
+      <div class="bk">
+        <div><div class="bk-name">Exam Round-up</div><div class="bk-desc">Part 1 key facts (Act 1)</div></div>
+        <div class="bk-score" id="bk-eru">—/3</div>
+      </div>
+      <div class="bk">
+        <div><div class="bk-name">Thinking Skills Matching</div><div class="bk-desc">Vocabulary (Act 2)</div></div>
+        <div class="bk-score" id="bk-match">—/4</div>
+      </div>
+      <div class="bk">
+        <div><div class="bk-name">Use of English · Part 1</div><div class="bk-desc">MC Cloze · 8 gaps (Act 6)</div></div>
+        <div class="bk-score" id="bk-mc">—/8</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-lbl">Key language from this unit</div>
+    <div class="key-items">
+      <div class="key-item"><b>functional fixedness</b> — the personality trait that prevents people from using creativity to address problems</div>
+      <div class="key-item"><b>employing</b> (the power of) — making use of something as a tool or means; collocates naturally with <em>power, skill, method</em></div>
+      <div class="key-item"><b>commonly used</b> — the standard adverb collocation for widespread professional practice; not <em>authentically</em> or <em>entirely</em></div>
+      <div class="key-item"><b>address problems</b> — fixed academic collocation: to deal with or tackle; not <em>determine</em>, <em>reach</em>, or <em>contend</em></div>
+      <div class="key-item"><b>display a trait</b> — to show or exhibit a personality characteristic; the natural collocation with traits and behaviours</div>
+      <div class="key-item"><b>given use</b> — established or designated purpose (fixed adjective phrase)</div>
+      <div class="key-item"><b>prove + adjective</b> — link verb meaning "turn out to be": <em>prove highly suitable, prove difficult, prove useful</em></div>
+      <div class="key-item"><b>have a tendency to</b> — natural inclination or disposition; fixed collocation structure: <em>have the tendency to do sth</em></div>
+      <div class="key-item"><b>conform to convention</b> — fixed collocation: to follow accepted norms; not <em>assumption</em>, <em>opinion</em>, or <em>prediction</em></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-p" onclick="restart()">↩ Restart lesson</button>
+  </div>
+</div>
+
+</main>
+
+<nav class="nav">
+  <button class="nav-btn back" id="btn-back" onclick="go(-1)" disabled>← Back</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn next" id="btn-next" onclick="go(1)">Next →</button>
+</nav>
+
+<script>
+// ═══════════════════════ STATE ═══════════════════════
+const TOTAL = 13;
+let cur = 0;
+
+// Warm-up timer
+let wuInterval = null;
+let wuRemaining = 300;
+let wuRunning = false;
+
+// Exam Round-up
+const eruCorrect = {e1:'eight', e2:'four', e3:'before'};
+let eruSel = {e1:null, e2:null, e3:null};
+let eruChecked = false;
+let eruScore = 0;
+
+// Matching
+const matchAnswers = {a:'lateral', b:'wishful', c:'logical', d:'critical'};
+const chipCI = {lateral:0, wishful:1, logical:2, critical:3};
+let matchPlacements = {a:null, b:null, c:null, d:null};
+let selChip = null;
+let matchChecked = false;
+let matchScore = 0;
+
+// MC
+const mcCorrect = {q1:'A',q2:'B',q3:'B',q4:'C',q5:'D',q6:'C',q7:'D',q8:'A'};
+const mcExplain = {
+  q1:'<strong>A employing</strong> — "by <em>employing</em> the power of creative thought" = making use of / putting to work. This is the only option that naturally collocates with "the power of" as a means or tool. <em>Affirming</em> = declaring something true; <em>fulfilling</em> = completing; <em>appointing</em> = assigning a role — none fit this context.',
+  q2:'<strong>B commonly</strong> — "<em>commonly</em> used by psychologists" is the standard collocation for widespread professional practice. <em>Authentically</em> and <em>entirely</em> change the meaning; <em>naturally</em> implies it happens without effort rather than by widespread use.',
+  q3:'<strong>B address</strong> — "use their creativity to <em>address</em> problems" = deal with / tackle. This is a fixed collocation in academic English. <em>Determine</em> = find out; <em>reach</em> and <em>contend</em> do not collocate with "problems" in this way.',
+  q4:'<strong>C display</strong> — "usually <em>display</em> this trait" = show or exhibit a characteristic quality. <em>Display</em> is the natural collocation with personality traits and behaviours. <em>Disclose</em> implies revealing something hidden deliberately; <em>expose</em> suggests uncovering something negative; <em>present</em> is too formal and deliberate here.',
+  q5:'<strong>D given</strong> — "purely for its <em>given</em> use" = its established or designated purpose. This is a fixed adjective phrase. <em>Decided</em> and <em>provided</em> cannot modify "use" this way; <em>shown</em> would require a relative clause.',
+  q6:'<strong>C prove</strong> — "it might <em>prove</em> highly suitable" — here <em>prove</em> is a link verb meaning "turn out to be", like "it proved difficult". It is the only option that can be followed directly by an adjective. <em>Verify</em>, <em>confirm</em>, and <em>demonstrate</em> require an object or a <em>that</em>-clause.',
+  q7:'<strong>D tendency</strong> — "have the <em>tendency</em> to be creative and flexible thinkers" = a natural inclination or disposition. This is the fixed collocation: <em>have a tendency to do something</em>. <em>Privilege</em> implies luck or entitlement; <em>reliability</em> refers to consistency/dependability; <em>principle</em> refers to a moral rule — none fit the structure "the ___ to be" in this way.',
+  q8:'<strong>A convention</strong> — "do not naturally conform to <em>convention</em>" = standard or accepted ways of doing things. This is a fixed collocation: <em>conform to convention</em>. <em>Assumption</em>, <em>opinion</em>, and <em>prediction</em> do not collocate with "conform to" in this context.'
+};
+const mcWords = {1:'employing',2:'commonly',3:'address',4:'display',5:'given',6:'prove',7:'tendency',8:'convention'};
+let mcChecked = false;
+let mcScore = 0;
+
+// Stage timers
+const stageTimers = {};
+const stageInitial = {1:60, 2:120, 3:180, 4:300};
+
+// ═══════════════════════ NAVIGATION ═══════════════════════
+function go(dir) {
+  if (cur === TOTAL-1 && dir === 1) { restart(); return; }
+  cur = Math.max(0, Math.min(TOTAL-1, cur + dir));
+  render();
+  window.scrollTo(0, 0);
+}
+function gotoPage(n) {
+  cur = n;
+  render();
+  window.scrollTo(0, 0);
+}
+
+function render() {
+  document.querySelectorAll('.page').forEach((p,i) => p.classList.toggle('active', i === cur));
+  const dotsEl = document.getElementById('dots');
+  dotsEl.innerHTML = '';
+  for (let i=0; i<TOTAL; i++) {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i===cur?' active':'') + (i<cur?' done':'');
+    d.onclick = () => gotoPage(i);
+    d.setAttribute('aria-label', `Page ${i+1}`);
+    dotsEl.appendChild(d);
+  }
+  document.getElementById('prog-fill').style.width = ((cur/(TOTAL-1))*100) + '%';
+  const titles = ['Introduction','Warm-up','Thinking Skills','Discussion','The Candle Problem','Exam Round-up','Read the Article','Use of English','Pyramid · Stage 1','Pyramid · Stage 2','Pyramid · Stage 3','Pyramid · Stage 4','Results'];
+  document.getElementById('hdr-title').textContent = titles[cur];
+  document.getElementById('hdr-counter').textContent = `${cur+1} / ${TOTAL}`;
+  document.getElementById('btn-back').disabled = cur === 0;
+  document.getElementById('btn-next').textContent = cur === TOTAL-1 ? '↩ Restart' : cur >= 8 && cur <= 10 ? 'Next stage →' : 'Next →';
+  if (cur === TOTAL-1) updateResults();
+}
+
+// ═══════════════════════ GIST ANSWER ═══════════════════════
+function toggleGistAnswer() {
+  const el = document.getElementById('gist-answer');
+  const btn = el.previousElementSibling.querySelector('button');
+  if (el.style.display === 'none') {
+    el.style.display = 'block';
+    btn.textContent = '▲ Hide answer';
+  } else {
+    el.style.display = 'none';
+    btn.textContent = '💡 Suggested answer';
+  }
+}
+
+// ═══════════════════════ WARM-UP TIMER ═══════════════════════
+function toggleWarmup() {
+  if (wuRunning) {
+    clearInterval(wuInterval);
+    wuInterval = null;
+    wuRunning = false;
+    wuRemaining = 300;
+    document.getElementById('wt-display').textContent = '5:00';
+    document.getElementById('wt-display').className = 'wt-display';
+    document.getElementById('wt-btn').textContent = '▶ Start';
+    document.getElementById('wt-btn').className = 'wt-start-btn';
+  } else {
+    wuRunning = true;
+    document.getElementById('wt-btn').textContent = '■ Stop';
+    document.getElementById('wt-btn').className = 'wt-start-btn running';
+    wuInterval = setInterval(() => {
+      wuRemaining--;
+      const m = Math.floor(wuRemaining/60);
+      const s = wuRemaining % 60;
+      const disp = document.getElementById('wt-display');
+      disp.textContent = m + ':' + String(s).padStart(2,'0');
+      if (wuRemaining <= 15) disp.className = 'wt-display warn';
+      if (wuRemaining <= 5) disp.className = 'wt-display urgent';
+      if (wuRemaining <= 0) {
+        clearInterval(wuInterval);
+        wuRunning = false;
+        disp.textContent = '⏰';
+        disp.className = 'wt-display done';
+        document.getElementById('wt-btn').textContent = '↺ Reset';
+        document.getElementById('wt-btn').className = 'wt-start-btn stopped';
+        wuRemaining = 300;
+      }
+    }, 1000);
+  }
+}
+
+// ═══════════════════════ ERU ═══════════════════════
+function chooseEru(group, val) {
+  if (eruChecked) return;
+  eruSel[group] = val;
+  const pairs = {e1:['eight','ten'], e2:['three','four'], e3:['before','after']};
+  const ids   = {e1:['e1a','e1b'],   e2:['e2a','e2b'],   e3:['e3a','e3b']};
+  pairs[group].forEach((v,i) => {
+    const el = document.getElementById(ids[group][i]);
+    el.className = 'cho' + (eruSel[group] === v ? ' pending' : '');
+  });
+}
+function checkEru() {
+  if (eruChecked) return;
+  const ids = {e1:['e1a','e1b'], e2:['e2a','e2b'], e3:['e3a','e3b']};
+  const vals = {e1:['eight','ten'], e2:['three','four'], e3:['before','after']};
+  eruScore = 0;
+  Object.keys(ids).forEach(g => {
+    vals[g].forEach((v,i) => {
+      const el = document.getElementById(ids[g][i]);
+      const correct = v === eruCorrect[g];
+      el.className = 'cho ' + (correct ? 'ok' : 'no');
+    });
+    if (eruSel[g] === eruCorrect[g]) eruScore++;
+  });
+  eruChecked = true;
+  document.getElementById('eru-check-btn').style.display = 'none';
+  document.getElementById('eru-reset-btn').style.display = '';
+}
+function resetEru() {
+  eruSel = {e1:null, e2:null, e3:null};
+  eruChecked = false; eruScore = 0;
+  ['e1a','e1b','e2a','e2b','e3a','e3b'].forEach(id => {
+    document.getElementById(id).className = 'cho';
+  });
+  document.getElementById('eru-check-btn').style.display = '';
+  document.getElementById('eru-reset-btn').style.display = 'none';
+}
+
+// ═══════════════════════ MATCHING ═══════════════════════
+function selectChip(term, ci) {
+  if (matchChecked) return;
+  if (selChip === term) {
+    selChip = null;
+    document.getElementById('chip-'+term).classList.remove('sel');
+    document.getElementById('match-pool').classList.remove('has-sel');
+    document.getElementById('match-hint').textContent = 'Select a chip above, then tap a definition to place it';
+    return;
+  }
+  if (selChip) document.getElementById('chip-'+selChip).classList.remove('sel');
+  selChip = term;
+  document.getElementById('chip-'+term).classList.add('sel');
+  document.getElementById('match-pool').classList.add('has-sel');
+  const labels = {lateral:'lateral thinking',wishful:'wishful thinking',logical:'logical thinking',critical:'critical thinking'};
+  document.getElementById('match-hint').textContent = '"' + labels[term] + '" selected — now tap a definition';
+}
+function placeChip(letter) {
+  if (matchChecked || !selChip) return;
+  const term = selChip;
+  const ci = chipCI[term];
+  // Return previously displaced term to pool
+  Object.keys(matchPlacements).forEach(l => {
+    if (matchPlacements[l] === term && l !== letter) {
+      matchPlacements[l] = null;
+      renderSlot(l, null);
+    }
+  });
+  if (matchPlacements[letter] && matchPlacements[letter] !== term) {
+    document.getElementById('chip-'+matchPlacements[letter]).classList.remove('used');
+  }
+  matchPlacements[letter] = term;
+  renderSlot(letter, term);
+  document.getElementById('chip-'+term).classList.remove('sel');
+  document.getElementById('chip-'+term).classList.add('used');
+  selChip = null;
+  document.getElementById('match-pool').classList.remove('has-sel');
+  document.getElementById('match-hint').textContent = 'Select a chip above, then tap a definition to place it';
+  document.getElementById('match-check-btn').disabled = !Object.values(matchPlacements).every(v=>v);
+}
+function renderSlot(letter, term) {
+  const slot = document.getElementById('slot-'+letter);
+  const row = document.getElementById('def-'+letter);
+  row.className = 'def-row';
+  slot.className = 'def-slot';
+  if (term) {
+    const ci = chipCI[term];
+    slot.className = `def-slot sc${ci}`;
+    slot.textContent = term + ' thinking';
+    row.classList.add(`mc${ci}`);
+  } else {
+    slot.textContent = 'tap to fill';
+  }
+}
+function checkMatch() {
+  if (matchChecked) return;
+  matchScore = 0;
+  Object.entries(matchAnswers).forEach(([l, correct]) => {
+    const placed = matchPlacements[l];
+    const row = document.getElementById('def-'+l);
+    const corr = document.getElementById('corr-'+l);
+    row.classList.remove('mc0','mc1','mc2','mc3');
+    if (placed === correct) {
+      row.classList.add('vok');
+      matchScore++;
+    } else {
+      row.classList.add('vno');
+      corr.textContent = '✓ Correct: ' + correct + ' thinking';
+      corr.classList.add('on');
+    }
+  });
+  matchChecked = true;
+  document.getElementById('match-score').textContent = matchScore;
+  document.getElementById('match-strip').classList.add('on');
+  document.getElementById('match-check-btn').style.display = 'none';
+  document.getElementById('match-reset-btn').style.display = '';
+}
+function resetMatch() {
+  matchPlacements = {a:null,b:null,c:null,d:null};
+  selChip = null; matchChecked = false; matchScore = 0;
+  ['a','b','c','d'].forEach(l => {
+    renderSlot(l, null);
+    document.getElementById('def-'+l).className = 'def-row';
+    const corr = document.getElementById('corr-'+l);
+    corr.textContent = '';
+    corr.classList.remove('on');
+  });
+  ['lateral','wishful','logical','critical'].forEach(t => {
+    document.getElementById('chip-'+t).classList.remove('used','sel');
+  });
+  document.getElementById('match-strip').classList.remove('on');
+  document.getElementById('match-pool').classList.remove('has-sel');
+  document.getElementById('match-hint').textContent = 'Select a chip above, then tap a definition to place it';
+  document.getElementById('match-check-btn').disabled = true;
+  document.getElementById('match-check-btn').style.display = '';
+  document.getElementById('match-reset-btn').style.display = 'none';
+}
+
+// ═══════════════════════ CANDLE SOLUTION ═══════════════════════
+function toggleSolution() {
+  document.getElementById('solution-box').classList.toggle('on');
+}
+
+// ═══════════════════════ MC ═══════════════════════
+function checkMC() {
+  if (mcChecked) return;
+  mcScore = 0;
+  for (let q=1; q<=8; q++) {
+    const name = 'q'+q;
+    const correct = mcCorrect[name];
+    const sel = document.querySelector(`input[name="${name}"]:checked`);
+    document.querySelectorAll(`input[name="${name}"]`).forEach(inp => {
+      const lbl = inp.closest('.mc-opt');
+      if (inp.value === correct) lbl.classList.add('mok');
+      else if (inp.checked) lbl.classList.add('mno');
+      inp.disabled = true;
+    });
+    const fb = document.getElementById('fb-'+q);
+    const isOk = sel && sel.value === correct;
+    fb.innerHTML = mcExplain[name];
+    fb.className = 'mc-fb ' + (isOk ? 'fok' : 'fno');
+    if (isOk) mcScore++;
+    // Fill article gaps
+    const rg = document.getElementById('rg'+q);
+    if (rg) {
+      rg.textContent = mcWords[q];
+      rg.className = 'gap-line ' + (isOk ? 'gok' : 'gno');
+    }
+  }
+  mcChecked = true;
+  document.getElementById('mc-score').textContent = mcScore;
+  document.getElementById('mc-strip').classList.add('on');
+  document.getElementById('mc-check-btn').style.display = 'none';
+  document.getElementById('mc-reset-btn').style.display = '';
+}
+function resetMC() {
+  mcScore = 0; mcChecked = false;
+  for (let q=1; q<=8; q++) {
+    document.querySelectorAll(`input[name="q${q}"]`).forEach(inp => {
+      inp.checked = false;
+      inp.disabled = false;
+      inp.closest('.mc-opt').classList.remove('mok','mno');
+    });
+    const fb = document.getElementById('fb-'+q);
+    fb.className = 'mc-fb';
+    fb.textContent = '';
+    const rg = document.getElementById('rg'+q);
+    if (rg) { rg.textContent = '      '; rg.className = 'gap-line'; }
+  }
+  document.getElementById('mc-strip').classList.remove('on');
+  document.getElementById('mc-check-btn').style.display = '';
+  document.getElementById('mc-reset-btn').style.display = 'none';
+}
+
+// ═══════════════════════ STAGE TIMERS ═══════════════════════
+function toggleStageTimer(stage, totalSecs) {
+  if (stageTimers[stage] && stageTimers[stage].interval) {
+    clearInterval(stageTimers[stage].interval);
+    stageTimers[stage].interval = null;
+    stageTimers[stage].running = false;
+    // Reset
+    stageTimers[stage].remaining = totalSecs;
+    const disp = document.getElementById('td-'+stage);
+    const m = Math.floor(totalSecs/60), s = totalSecs%60;
+    disp.textContent = m + ':' + String(s).padStart(2,'0');
+    disp.className = 't-display';
+    document.getElementById('tb-'+stage).textContent = '▶ Start';
+    document.getElementById('tb-'+stage).className = 't-btn';
+    return;
+  }
+  if (!stageTimers[stage]) stageTimers[stage] = {remaining: totalSecs};
+  stageTimers[stage].remaining = totalSecs;
+  stageTimers[stage].running = true;
+  const btn = document.getElementById('tb-'+stage);
+  btn.textContent = '■ Stop';
+  btn.className = 't-btn run';
+  stageTimers[stage].interval = setInterval(() => {
+    stageTimers[stage].remaining--;
+    const rem = stageTimers[stage].remaining;
+    const m = Math.floor(rem/60), s = rem%60;
+    const disp = document.getElementById('td-'+stage);
+    disp.textContent = m + ':' + String(s).padStart(2,'0');
+    if (rem <= 30) disp.className = 't-display twarn';
+    if (rem <= 10) disp.className = 't-display turgent';
+    if (rem <= 0) {
+      clearInterval(stageTimers[stage].interval);
+      stageTimers[stage].interval = null;
+      stageTimers[stage].running = false;
+      disp.textContent = '⏰ Done!';
+      disp.className = 't-display';
+      document.getElementById('tb-'+stage).textContent = '↺ Reset';
+      document.getElementById('tb-'+stage).className = 't-btn done';
+    }
+  }, 1000);
+}
+
+// ═══════════════════════ RESULTS ═══════════════════════
+function updateResults() {
+  const total = eruScore + matchScore + mcScore;
+  document.getElementById('rh-total').textContent = total;
+  document.getElementById('bk-eru').textContent = eruScore + '/3';
+  document.getElementById('bk-match').textContent = matchScore + '/4';
+  document.getElementById('bk-mc').textContent = mcScore + '/8';
+  let band;
+  if (total === 15)     band = '🏆 Perfect score!';
+  else if (total >= 12) band = '🌟 Excellent work';
+  else if (total >= 9)  band = '👍 Good effort';
+  else if (total >= 6)  band = '📚 Keep practising';
+  else                  band = '💪 Give it another go!';
+  document.getElementById('rh-band').innerHTML = '<span>' + band + '</span>';
+}
+
+// ═══════════════════════ RESTART ═══════════════════════
+function restart() {
+  resetEru();
+  resetMatch();
+  resetMC();
+  // Reset warm-up timer
+  if (wuInterval) { clearInterval(wuInterval); wuInterval = null; }
+  wuRunning = false; wuRemaining = 300;
+  document.getElementById('wt-display').textContent = '5:00';
+  document.getElementById('wt-display').className = 'wt-display';
+  document.getElementById('wt-btn').textContent = '▶ Start';
+  document.getElementById('wt-btn').className = 'wt-start-btn';
+  // Reset stage timers
+  [1,2,3,4].forEach(s => {
+    if (stageTimers[s] && stageTimers[s].interval) clearInterval(stageTimers[s].interval);
+    const init = stageInitial[s];
+    const m = Math.floor(init/60), sec = init%60;
+    document.getElementById('td-'+s).textContent = m + ':' + String(sec).padStart(2,'0');
+    document.getElementById('td-'+s).className = 't-display';
+    document.getElementById('tb-'+s).textContent = '▶ Start';
+    document.getElementById('tb-'+s).className = 't-btn';
+    stageTimers[s] = null;
+  });
+  document.getElementById('solution-box').classList.remove('on');
+  cur = 0;
+  render();
+  window.scrollTo(0, 0);
+}
+
+// ═══════════════════════ INIT ═══════════════════════
+render();
+</script>
+</body>
+</html>
