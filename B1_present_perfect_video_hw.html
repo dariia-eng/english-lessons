@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Present Perfect – Homework</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f3f4f8;
+      color: #1a1a2e;
+      padding-bottom: 60px;
+      font-size: 16px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: #fff;
+      padding: 30px 20px 24px;
+      text-align: center;
+    }
+    header h1 { font-size: 1.55rem; margin-bottom: 6px; }
+    header p  { font-size: 0.9rem; opacity: .85; }
+    .level-tag {
+      display: inline-block;
+      background: rgba(255,255,255,.2);
+      border-radius: 20px;
+      padding: 3px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: .5px;
+      margin-top: 10px;
+    }
+
+    /* ── Layout ── */
+    .wrap { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+    }
+
+    /* ── Name ── */
+    .name-row {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .name-row label { font-weight: 700; white-space: nowrap; }
+    .name-row input {
+      flex: 1; min-width: 200px;
+      border: 2px solid #c7d2fe; border-radius: 10px;
+      padding: 10px 14px; font-size: 1rem; outline: none;
+      transition: border-color .2s;
+    }
+    .name-row input:focus { border-color: #6366f1; }
+
+    /* ── Progress ── */
+    .prog-label {
+      display: flex; justify-content: space-between;
+      font-size: 0.82rem; font-weight: 700;
+      color: #6366f1; margin-bottom: 8px;
+    }
+    .prog-bg {
+      background: #e0e7ff; border-radius: 999px; height: 13px; overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%; width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg,#6366f1,#8b5cf6);
+      transition: width .5s ease;
+    }
+
+    /* ── Video ── */
+    .video-title { font-weight: 700; color: #6366f1; margin-bottom: 12px; font-size: .95rem; }
+    .video-box {
+      position: relative; padding-bottom: 56.25%; height: 0;
+      border-radius: 10px; overflow: hidden;
+    }
+    .video-box iframe {
+      position: absolute; top:0; left:0; width:100%; height:100%; border:none;
+    }
+    .video-note {
+      margin-top: 12px;
+      background: #f0f4ff;
+      border-left: 4px solid #6366f1;
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      color: #4338ca;
+    }
+
+    /* ── Exercise heading ── */
+    .ex-head {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+    }
+    .badge {
+      background: linear-gradient(135deg,#6366f1,#8b5cf6);
+      color: #fff; border-radius: 8px;
+      padding: 3px 12px; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: .4px; white-space: nowrap;
+    }
+    .ex-head h2 { font-size: 1rem; font-weight: 700; }
+    .ex-score { margin-left: auto; font-size: .82rem; font-weight: 700; color: #7c3aed; }
+    .instr {
+      font-size: 0.875rem; color: #555; margin-bottom: 18px; line-height: 1.55;
+    }
+
+    /* ── Word bank ── */
+    .word-bank {
+      background: #f0f4ff;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 18px;
+      display: flex; flex-wrap: wrap; gap: 8px;
+      font-size: .88rem;
+    }
+    .word-bank strong { width: 100%; margin-bottom: 4px; color: #4338ca; }
+    .wb-word {
+      background: #e0e7ff; border-radius: 8px;
+      padding: 4px 12px; font-weight: 600; color: #3730a3;
+    }
+
+    /* ── Fill-in-blank ── */
+    .fib-item {
+      display: flex; flex-wrap: wrap; align-items: baseline;
+      gap: 5px; margin-bottom: 14px;
+      font-size: .97rem; line-height: 1.8;
+    }
+    .fib-num { font-weight: 700; margin-right: 2px; }
+    .fib-inp {
+      border: none; border-bottom: 2px solid #a5b4fc;
+      outline: none; font-size: .97rem;
+      padding: 2px 6px; min-width: 110px;
+      background: transparent; color: #4338ca;
+      transition: border-color .2s;
+    }
+    .fib-inp:focus  { border-color: #6366f1; }
+    .fib-inp.ok     { border-color: #22c55e; color: #15803d; }
+    .fib-inp.fail   { border-color: #ef4444; color: #b91c1c; }
+
+    /* ── MCQ ── */
+    .mcq-q { margin-bottom: 18px; }
+    .mcq-q p { font-size: .97rem; margin-bottom: 8px; line-height: 1.55; }
+    .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+    .opt {
+      border: 2px solid #c7d2fe; background: #f5f3ff;
+      border-radius: 9px; padding: 7px 18px;
+      font-size: .9rem; cursor: pointer;
+      transition: all .18s;
+    }
+    .opt:hover        { border-color: #6366f1; background: #ede9fe; }
+    .opt.sel          { border-color: #6366f1; background: #ede9fe; }
+    .opt.ok           { border-color: #22c55e; background: #dcfce7; color: #15803d; font-weight:700; }
+    .opt.fail         { border-color: #ef4444; background: #fee2e2; color: #b91c1c; }
+
+    /* ── Writing task ── */
+    .writing-prompt {
+      background: #faf5ff;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+      font-size: .9rem;
+      line-height: 1.6;
+      border: 1.5px solid #ddd6fe;
+    }
+    .writing-prompt strong { color: #7c3aed; }
+    .starters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .starter {
+      background: #ede9fe; border-radius: 8px;
+      padding: 4px 12px; font-size: .85rem;
+      color: #5b21b6; font-style: italic;
+    }
+    textarea {
+      width: 100%; border: 2px solid #c7d2fe;
+      border-radius: 10px; padding: 12px 14px;
+      font-size: .97rem; font-family: inherit;
+      resize: vertical; min-height: 130px;
+      outline: none; transition: border-color .2s;
+      line-height: 1.6;
+    }
+    textarea:focus { border-color: #6366f1; }
+
+    /* ── Buttons ── */
+    .check-btn {
+      margin-top: 18px;
+      background: linear-gradient(135deg,#6366f1,#8b5cf6);
+      color: #fff; border: none; border-radius: 10px;
+      padding: 11px 28px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; transition: opacity .2s, transform .1s;
+    }
+    .check-btn:hover  { opacity: .88; }
+    .check-btn:active { transform: scale(.97); }
+
+    .result {
+      margin-top: 10px; font-size: .88rem;
+      font-weight: 600; display: none;
+    }
+    .result.show { display: block; }
+    .result.ok   { color: #15803d; }
+    .result.nok  { color: #b91c1c; }
+
+    /* ── Send ── */
+    .send-card { text-align: center; }
+    .send-card h3 { font-size: 1.05rem; margin-bottom: 6px; color: #5b21b6; }
+    .send-card p  { font-size: .85rem; color: #666; margin-bottom: 18px; }
+    .send-btn {
+      background: linear-gradient(135deg,#059669,#10b981);
+      color: #fff; border: none; border-radius: 10px;
+      padding: 13px 36px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: opacity .2s, transform .1s;
+    }
+    .send-btn:hover  { opacity: .9; }
+    .send-btn:active { transform: scale(.97); }
+
+    @keyframes popIn {
+      0%   { opacity:0; transform: scale(.92) translateY(4px); }
+      100% { opacity:1; transform: scale(1)   translateY(0); }
+    }
+
+    @media(max-width:500px){
+      header h1 { font-size: 1.25rem; }
+      .name-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📝 Present Perfect – Homework</h1>
+  <p>"What's the most difficult thing you've ever done?"</p>
+</header>
+
+<div class="wrap">
+
+  <!-- NAME -->
+  <div class="card">
+    <div class="name-row">
+      <label for="sName">👤 Your name:</label>
+      <input id="sName" type="text" placeholder="Write your full name here…"/>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="card">
+    <div class="prog-label">
+      <span>Progress</span>
+      <span id="progTxt">0 / 2 exercises checked</span>
+    </div>
+    <div class="prog-bg"><div class="prog-fill" id="progFill"></div></div>
+  </div>
+
+  <!-- VIDEO -->
+  <div class="card">
+    <p class="video-title">🎬 Step 1 — Watch the video</p>
+    <div class="video-box">
+      <iframe src="https://www.youtube.com/embed/b4jtYKlSBIM"
+              title="70 Men Ages 5–75: What Is The Most Difficult Thing You've Ever Done?"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+    </div>
+    <div class="video-note">
+      💡 Listen for the question: <strong>"What is the most difficult thing you have <em>ever</em> done?"</strong><br>
+      Notice how people answer: <em>"I have lost…", "I have raised…", "I have never…"</em>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- EXERCISE 1 – Fill in the blank    -->
+  <!-- ══════════════════════════════════ -->
+  <div class="card" id="ex1">
+    <div class="ex-head">
+      <span class="badge">Exercise 1</span>
+      <h2>Fill in the Blank</h2>
+      <span class="ex-score" id="sc1"></span>
+    </div>
+    <p class="instr">
+      Complete the sentences with a word from the box. Use each word <strong>once</strong>.<br>
+      These sentences are similar to what the men said in the video.
+    </p>
+
+    <div class="word-bank">
+      <strong>Word bank:</strong>
+      <span class="wb-word">lost</span>
+      <span class="wb-word">raised</span>
+      <span class="wb-word">ever</span>
+      <span class="wb-word">never</span>
+      <span class="wb-word">overcome</span>
+      <span class="wb-word">been</span>
+    </div>
+
+    <div class="fib-item">
+      <span class="fib-num">1.</span>
+      <span>He has</span>
+      <input class="fib-inp" data-ans="raised" placeholder="________">
+      <span>three children alone. It was very hard.</span>
+    </div>
+
+    <div class="fib-item">
+      <span class="fib-num">2.</span>
+      <span>Have you</span>
+      <input class="fib-inp" data-ans="ever" placeholder="________">
+      <span>had to start your life again?</span>
+    </div>
+
+    <div class="fib-item">
+      <span class="fib-num">3.</span>
+      <span>I have</span>
+      <input class="fib-inp" data-ans="never" placeholder="________">
+      <span>felt so scared in my life.</span>
+    </div>
+
+    <div class="fib-item">
+      <span class="fib-num">4.</span>
+      <span>He has</span>
+      <input class="fib-inp" data-ans="lost" placeholder="________">
+      <span>someone he loved. That changed everything.</span>
+    </div>
+
+    <div class="fib-item">
+      <span class="fib-num">5.</span>
+      <span>I have</span>
+      <input class="fib-inp" data-ans="overcome" placeholder="________">
+      <span>many challenges in my life.</span>
+    </div>
+
+    <div class="fib-item">
+      <span class="fib-num">6.</span>
+      <span>Have you ever</span>
+      <input class="fib-inp" data-ans="been" placeholder="________">
+      <span>in a really difficult situation?</span>
+    </div>
+
+    <button class="check-btn" onclick="checkFib()">✔ Check my answers</button>
+    <p class="result" id="r1"></p>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- EXERCISE 2 – Multiple Choice      -->
+  <!-- ══════════════════════════════════ -->
+  <div class="card" id="ex2">
+    <div class="ex-head">
+      <span class="badge">Exercise 2</span>
+      <h2>Choose the Correct Answer</h2>
+      <span class="ex-score" id="sc2"></span>
+    </div>
+    <p class="instr">
+      Choose the best option (a, b, or c) to complete each sentence.
+    </p>
+
+    <!-- Q1 -->
+    <div class="mcq-q" data-ans="b">
+      <p>1. "What is the most difficult thing you have _____ done?"</p>
+      <div class="opts">
+        <button class="opt" data-v="a">already</button>
+        <button class="opt" data-v="b">ever</button>
+        <button class="opt" data-v="c">just</button>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="mcq-q" data-ans="a">
+      <p>2. I _____ never lived alone before. It was really hard.</p>
+      <div class="opts">
+        <button class="opt" data-v="a">have</button>
+        <button class="opt" data-v="b">has</button>
+        <button class="opt" data-v="c">did</button>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="mcq-q" data-ans="c">
+      <p>3. He has worked in a hospital _____ 10 years.</p>
+      <div class="opts">
+        <button class="opt" data-v="a">since</button>
+        <button class="opt" data-v="b">ago</button>
+        <button class="opt" data-v="c">for</button>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="mcq-q" data-ans="b">
+      <p>4. She has _____ her biggest fear. Now she is stronger.</p>
+      <div class="opts">
+        <button class="opt" data-v="a">overcame</button>
+        <button class="opt" data-v="b">overcome</button>
+        <button class="opt" data-v="c">overcoming</button>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="mcq-q" data-ans="a">
+      <p>5. _____ you ever lost someone important to you?</p>
+      <div class="opts">
+        <button class="opt" data-v="a">Have</button>
+        <button class="opt" data-v="b">Has</button>
+        <button class="opt" data-v="c">Did</button>
+      </div>
+    </div>
+
+    <button class="check-btn" onclick="checkMcq()">✔ Check my answers</button>
+    <p class="result" id="r2"></p>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- EXERCISE 3 – Your turn (writing)  -->
+  <!-- ══════════════════════════════════ -->
+  <div class="card">
+    <div class="ex-head">
+      <span class="badge">Exercise 3</span>
+      <h2>Your Turn – Write!</h2>
+    </div>
+    <p class="instr">
+      Answer the question from the video in 4–6 sentences. Use the Present Perfect.
+    </p>
+    <div class="writing-prompt">
+      <strong>❓ What is the most difficult thing you have ever done?</strong><br><br>
+      Use these sentence starters to help you:
+      <div class="starters">
+        <span class="starter">The most difficult thing I have ever done is…</span>
+        <span class="starter">I have never…</span>
+        <span class="starter">I have always…</span>
+        <span class="starter">It has been difficult because…</span>
+        <span class="starter">Since then, I have…</span>
+      </div>
+    </div>
+    <textarea id="writingAnswer" placeholder="Write your answer here… (4–6 sentences)"></textarea>
+    <div id="motivationBox" style="display:none; margin-top:14px; padding:13px 18px; border-radius:12px; background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:2px solid #86efac; font-size:.93rem; font-weight:600; color:#15803d; transition:all .3s; animation: popIn .35s ease;">
+      <span id="motivationText"></span>
+    </div>
+    <div id="sentenceCount" style="margin-top:8px; font-size:.78rem; color:#888; text-align:right;"></div>
+  </div>
+
+  <!-- SEND -->
+  <div class="card send-card">
+    <h3>📬 Send to Your Teacher</h3>
+    <p>When you finish, send your homework by email.</p>
+    <button class="send-btn" onclick="send()">✉️ Send to Teacher</button>
+  </div>
+
+</div>
+
+<script>
+/* ── Writing motivation ── */
+const motiv = [
+  "🌟 Great start! Keep going!",
+  "✍️ Excellent sentence! You're doing amazing!",
+  "💪 That's really good! One more sentence!",
+  "🔥 Wow, you're on fire! Keep writing!",
+  "👏 Beautiful! Your English is getting better!",
+  "🚀 Fantastic! You're almost there!",
+  "💡 Very good! You're thinking in English!",
+  "🎯 Perfect! That's exactly the right idea!",
+  "😊 Well done! Every sentence makes you stronger!",
+  "🏆 Outstanding! Your teacher will love this!",
+];
+let lastSentCount = 0;
+
+document.getElementById('writingAnswer').addEventListener('input', function () {
+  const text = this.value.trim();
+  // count sentences: split on . ! ? followed by space or end
+  const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  const count = sentences.length;
+
+  // update counter label
+  const label = document.getElementById('sentenceCount');
+  label.textContent = count > 0 ? count + ' sentence' + (count > 1 ? 's' : '') + ' written' : '';
+
+  // fire motivation when a new sentence is completed
+  // (user just typed a sentence-ending char and there's text after a gap)
+  const endsWithPunctuation = /[.!?]\s*$/.test(text);
+  if (endsWithPunctuation && count > lastSentCount) {
+    lastSentCount = count;
+    const box  = document.getElementById('motivationBox');
+    const span = document.getElementById('motivationText');
+    // pick message — special one for last sentence
+    let msg;
+    if (count >= 4) {
+      msg = "🏆 You've written " + count + " sentences! Amazing work! Your teacher will love this!";
+    } else {
+      msg = motiv[Math.floor(Math.random() * motiv.length)];
+    }
+    span.textContent = msg;
+    box.style.display = 'block';
+    // re-trigger animation
+    box.style.animation = 'none';
+    box.offsetHeight; // reflow
+    box.style.animation = 'popIn .35s ease';
+  }
+
+  // hide box if student deletes text below a threshold
+  if (count < lastSentCount) {
+    lastSentCount = count;
+    if (count === 0) document.getElementById('motivationBox').style.display = 'none';
+  }
+});
+
+/* ── helpers ── */
+const checked = { ex1: false, ex2: false };
+function updateBar() {
+  const n = Object.values(checked).filter(Boolean).length;
+  document.getElementById('progTxt').textContent = n + ' / 2 exercises checked';
+  document.getElementById('progFill').style.width = (n / 2 * 100) + '%';
+}
+function showResult(id, correct, total) {
+  const el = document.getElementById(id);
+  el.className = 'result show';
+  if (correct === total)         { el.className += ' ok';  el.textContent = '🎉 Perfect! All ' + total + '/' + total + ' correct!'; }
+  else if (correct >= total*.6)  { el.className += ' ok';  el.textContent = '✅ ' + correct + '/' + total + ' correct. Good job! Check the red ones.'; }
+  else                           { el.className += ' nok'; el.textContent = '❌ ' + correct + '/' + total + ' correct. Try again!'; }
+}
+
+/* ── Ex 1 ── */
+function checkFib() {
+  const inputs = document.querySelectorAll('#ex1 .fib-inp');
+  let ok = 0;
+  inputs.forEach(inp => {
+    inp.classList.remove('ok','fail');
+    if (inp.value.trim().toLowerCase() === inp.dataset.ans) { inp.classList.add('ok'); ok++; }
+    else inp.classList.add('fail');
+  });
+  document.getElementById('sc1').textContent = ok + '/' + inputs.length;
+  showResult('r1', ok, inputs.length);
+  checked.ex1 = true; updateBar();
+}
+
+/* ── Ex 2 ── */
+document.querySelectorAll('#ex2 .opt').forEach(btn => {
+  btn.addEventListener('click', function () {
+    const q = this.closest('.mcq-q');
+    if (q.dataset.locked) return;
+    q.querySelectorAll('.opt').forEach(b => b.classList.remove('sel'));
+    this.classList.add('sel');
+  });
+});
+
+function checkMcq() {
+  /* Fix: Q4 has two "overcome" options — we treat option index 0 as "a" */
+  const qs = document.querySelectorAll('#ex2 .mcq-q');
+  let ok = 0;
+  qs.forEach(q => {
+    q.dataset.locked = '1';
+    const ans = q.dataset.ans;
+    const btns = q.querySelectorAll('.opt');
+    const sel = q.querySelector('.opt.sel');
+    btns.forEach(b => { b.classList.remove('ok','fail','sel'); });
+    /* mark correct answer green */
+    const correctBtn = [...btns].find(b => b.dataset.v === ans);
+    if (correctBtn) correctBtn.classList.add('ok');
+    if (sel) {
+      if (sel.dataset.v === ans) ok++;
+      else sel.classList.add('fail');
+    }
+  });
+  document.getElementById('sc2').textContent = ok + '/' + qs.length;
+  showResult('r2', ok, qs.length);
+  checked.ex2 = true; updateBar();
+}
+
+/* ── Send ── */
+function send() {
+  const name  = document.getElementById('sName').value.trim() || 'Unknown Student';
+  const essay = document.getElementById('writingAnswer').value.trim() || '(no answer)';
+
+  /* collect ex1 */
+  let ex1lines = '';
+  document.querySelectorAll('#ex1 .fib-inp').forEach((inp,i) => {
+    ex1lines += `  Q${i+1}: "${inp.value.trim()}" — correct: "${inp.dataset.ans}" — ${inp.classList.contains('ok')?'✓':'✗'}\n`;
+  });
+
+  /* collect ex2 */
+  let ex2lines = '';
+  document.querySelectorAll('#ex2 .mcq-q').forEach((q,i) => {
+    const sel = [...q.querySelectorAll('.opt')].find(b => b.classList.contains('ok') || b.classList.contains('fail'));
+    ex2lines += `  Q${i+1}: selected "${sel?.textContent||'—'}" — correct: "${q.dataset.ans}" — ${sel?.classList.contains('ok')?'✓':'✗'}\n`;
+  });
+
+  const scores = `Ex 1: ${document.getElementById('sc1').textContent||'not checked'}  |  Ex 2: ${document.getElementById('sc2').textContent||'not checked'}`;
+
+  const body =
+`Present Perfect Homework (A2–B1)
+Student: ${name}
+Date: ${new Date().toLocaleDateString()}
+
+SCORES: ${scores}
+
+══ Exercise 1 – Fill in the Blank ══
+${ex1lines}
+══ Exercise 2 – Multiple Choice ══
+${ex2lines}
+══ Exercise 3 – Writing ══
+${essay}`;
+
+  window.location.href =
+    'mailto:dariia.mlnk@gmail.com' +
+    '?subject=' + encodeURIComponent('Present Perfect HW – ' + name) +
+    '&body='    + encodeURIComponent(body);
+}
+</script>
+</body>
+</html>
