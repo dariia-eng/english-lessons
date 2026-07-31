@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Homework · Unit 4B — Job Skills</title>
+  <style>
+    :root {
+      --blue:   #1a6faf;
+      --teal:   #0d9e8e;
+      --orange: #e87722;
+      --light:  #f0f6fb;
+      --border: #cde0f0;
+      --text:   #1c2b3a;
+      --muted:  #5a7080;
+      --green:  #1e8a4c;
+      --red:    #c0392b;
+      --purple: #6a3d9a;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#e8f1f8;color:var(--text);line-height:1.65;}
+
+    header{background:linear-gradient(135deg,var(--blue) 0%,#0d4f80 100%);color:white;padding:2rem 2.5rem 1.5rem;position:relative;overflow:hidden;}
+    header::after{content:'';position:absolute;right:-60px;top:-60px;width:260px;height:260px;background:rgba(255,255,255,.07);border-radius:50%;}
+    .unit-tag{display:inline-block;background:var(--orange);color:white;font-weight:700;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .8rem;border-radius:20px;margin-bottom:.6rem;}
+    header h1{font-size:1.8rem;font-weight:800;margin-bottom:.3rem;}
+    header .sub{opacity:.85;font-size:.92rem;}
+
+    main{max-width:860px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+
+    /* Name */
+    .name-box{background:white;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.07);padding:1.1rem 1.4rem;margin-bottom:1.4rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+    .name-box label{font-weight:700;font-size:.95rem;color:var(--blue);white-space:nowrap;}
+    .name-box input{flex:1;min-width:200px;border:1.5px solid var(--border);border-radius:8px;padding:.45rem .85rem;font-size:.95rem;outline:none;font-family:inherit;}
+    .name-box input:focus{border-color:var(--blue);}
+
+    /* Progress */
+    .progress-wrap{background:white;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.07);padding:1rem 1.4rem;margin-bottom:1.6rem;}
+    .progress-label{display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--muted);margin-bottom:.5rem;}
+    .progress-track{background:var(--light);border-radius:20px;height:13px;overflow:hidden;border:1px solid var(--border);}
+    .progress-fill{background:linear-gradient(90deg,var(--teal),var(--green));height:100%;border-radius:20px;width:0%;transition:width .45s ease;}
+
+    /* Blocks */
+    section.block{background:white;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:1.8rem;overflow:hidden;}
+    .block-header{display:flex;align-items:center;gap:.9rem;padding:1rem 1.4rem;border-bottom:2px solid var(--border);}
+    .block-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:white;flex-shrink:0;}
+    .block-header h2{font-size:.97rem;font-weight:700;flex:1;}
+    .ex-tag{background:var(--light);border:1px solid var(--border);border-radius:20px;font-size:.72rem;font-weight:700;color:var(--muted);padding:.25rem .75rem;white-space:nowrap;}
+    .block-body{padding:1.4rem;}
+
+    .instruction{background:var(--light);border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:.65rem 1rem;font-size:.88rem;margin-bottom:1rem;color:var(--muted);}
+    .instruction strong{color:var(--blue);}
+    .instr-teal{border-color:var(--teal);}  .instr-teal strong{color:var(--teal);}
+    .instr-orange{border-color:var(--orange);} .instr-orange strong{color:var(--orange);}
+    .instr-purple{border-color:var(--purple);} .instr-purple strong{color:var(--purple);}
+    .instr-green{border-color:var(--green);}  .instr-green strong{color:var(--green);}
+
+    hr.divider{border:none;border-top:2px dashed var(--border);margin:1.1rem 0;}
+
+    /* Buttons */
+    .btn{border:none;border-radius:20px;padding:.45rem 1.2rem;font-size:.84rem;font-weight:700;cursor:pointer;transition:opacity .15s;font-family:inherit;}
+    .btn:hover{opacity:.85;}
+    .btn-check{background:var(--teal);color:white;}
+    .btn-reset{background:var(--light);color:var(--muted);border:1.5px solid var(--border);}
+    .btn-row{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap;align-items:center;}
+
+    /* Feedback */
+    .feedback{margin-top:.7rem;font-size:.85rem;font-weight:600;display:none;padding:.5rem .9rem;border-radius:8px;}
+    .feedback.show-correct{display:block;background:#d4edda;color:var(--green);}
+    .feedback.show-partial{display:block;background:#fff3cd;color:#856404;}
+    .feedback.show-wrong{display:block;background:#fde8e8;color:var(--red);}
+
+    /* ── EX 1: Matching ── */
+    .match-list{display:flex;flex-direction:column;gap:.5rem;margin:.8rem 0;}
+    .match-row{display:grid;grid-template-columns:1fr auto;gap:.7rem;align-items:center;}
+    .match-sent{font-size:.88rem;padding:.45rem .85rem;background:var(--light);border-radius:8px;border:1.5px solid var(--border);transition:border-color .2s,background .2s;}
+    .match-sent.ok{border-color:var(--green);background:#d4edda;}
+    .match-sent.bad{border-color:var(--red);background:#fde8e8;}
+    .match-sel{border:1.5px solid var(--border);border-radius:8px;padding:.35rem .55rem;font-size:.88rem;outline:none;background:white;font-family:inherit;min-width:58px;transition:border-color .2s;}
+    .match-sel.ok{border-color:var(--green);background:#d4edda;}
+    .match-sel.bad{border-color:var(--red);background:#fde8e8;}
+    .opt-box{background:#f8fcff;border:1.5px solid var(--border);border-radius:10px;padding:.8rem 1rem;font-size:.87rem;line-height:1.85;margin-top:.7rem;}
+
+    /* ── EX 2: Conversation ── */
+    .conv-box{background:#f8fcff;border:1.5px solid var(--border);border-radius:12px;padding:1.1rem 1.3rem;font-size:.89rem;line-height:2.2;}
+    .spk-a{color:var(--blue);font-weight:700;}
+    .spk-b{color:var(--teal);font-weight:700;}
+    .conv-box input.gi{border:none;border-bottom:2px solid var(--blue);background:transparent;font-size:.87rem;outline:none;font-family:inherit;width:195px;padding:.05rem .3rem;vertical-align:bottom;}
+    .conv-box input.gi.ok{border-color:var(--green);background:#d4edda;}
+    .conv-box input.gi.bad{border-color:var(--red);background:#fde8e8;}
+    .glabel{font-size:.72rem;color:var(--muted);font-weight:700;margin-left:.2rem;vertical-align:super;}
+
+    /* ── EX 3: Text fill ── */
+    .fill-box{background:#f8fcff;border:1.5px solid var(--border);border-radius:12px;padding:1.2rem 1.4rem;font-size:.91rem;line-height:2.4;}
+    .fill-box input.gi{border:none;border-bottom:2px solid var(--blue);background:transparent;font-size:.88rem;outline:none;font-family:inherit;width:78px;padding:.05rem .2rem;text-align:center;vertical-align:bottom;}
+    .fill-box input.gi.ok{border-color:var(--green);background:#d4edda;}
+    .fill-box input.gi.bad{border-color:var(--red);background:#fde8e8;}
+    .gn{font-size:.68rem;font-weight:800;color:var(--blue);vertical-align:super;margin-right:.1rem;}
+    .fill-title{font-weight:800;color:var(--blue);font-size:.88rem;margin-bottom:.6rem;border-bottom:1px solid var(--border);padding-bottom:.4rem;}
+
+    /* ── EX 4: Error correction ── */
+    .err-list{display:flex;flex-direction:column;gap:.6rem;margin:.8rem 0;}
+    .err-item{background:var(--light);border-radius:10px;padding:.75rem 1rem;border:1.5px solid var(--border);transition:border-color .2s,background .2s;}
+    .err-item.ok{border-color:var(--green);background:#d4edda;}
+    .err-item.bad{border-color:var(--red);background:#fde8e8;}
+    .err-sent{font-size:.88rem;margin-bottom:.35rem;}
+    .err-num{font-weight:800;color:var(--muted);margin-right:.4rem;}
+    .err-input{border:none;border-bottom:2px solid var(--border);background:transparent;font-size:.86rem;outline:none;font-family:inherit;width:100%;padding:.15rem .2rem;}
+    .err-input:focus{border-color:var(--blue);}
+    .err-note{font-size:.72rem;color:var(--muted);margin-top:.25rem;}
+
+    /* ── EX 5: Rewrite ── */
+    .rw-list{display:flex;flex-direction:column;gap:.75rem;margin:.8rem 0;}
+    .rw-item{background:var(--light);border-radius:10px;padding:.8rem 1rem;border:1.5px solid var(--border);transition:border-color .2s,background .2s;}
+    .rw-item.ok{border-color:var(--green);background:#d4edda;}
+    .rw-item.bad{border-color:var(--red);background:#fde8e8;}
+    .rw-q{font-size:.88rem;margin-bottom:.35rem;display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;}
+    .rw-key{display:inline-block;background:var(--blue);color:white;border-radius:6px;padding:.1rem .5rem;font-size:.72rem;font-weight:800;letter-spacing:.05em;flex-shrink:0;}
+    .rw-input{border:none;border-bottom:2px solid var(--border);background:transparent;font-size:.86rem;outline:none;font-family:inherit;width:100%;padding:.15rem .2rem;margin-top:.1rem;}
+    .rw-input:focus{border-color:var(--blue);}
+
+    /* ── Send section ── */
+    .send-wrap{background:white;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.07);padding:1.6rem 1.4rem;text-align:center;margin-top:.5rem;border-top:4px solid var(--orange);}
+    .send-wrap h3{font-size:1.1rem;color:var(--orange);margin-bottom:.4rem;}
+    .send-wrap p{font-size:.86rem;color:var(--muted);margin-bottom:1.1rem;}
+    .btn-send{background:var(--orange);color:white;font-size:.95rem;padding:.65rem 2.2rem;border-radius:25px;border:none;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+    .btn-send:hover{opacity:.87;}
+    .score-summary{display:inline-flex;align-items:center;gap:.5rem;background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:.4rem 1rem;font-size:.85rem;font-weight:700;color:var(--muted);margin-bottom:1rem;}
+    .score-summary span{color:var(--blue);font-size:1.1rem;}
+
+    @media(max-width:580px){
+      header{padding:1.3rem 1.1rem 1rem;}
+      main{padding:1rem .7rem 3rem;}
+      .conv-box input.gi{width:140px;}
+      .block-header{flex-wrap:wrap;}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="unit-tag">Unit 4B · Homework</span>
+  <h1>Job Skills — Homework</h1>
+  <p class="sub">Vocabulary &amp; Grammar · Obligation &amp; Prohibition</p>
+</header>
+
+<main>
+
+  <!-- NAME -->
+  <div class="name-box">
+    <label for="sname">👤 Your name:</label>
+    <input type="text" id="sname" placeholder="Type your full name…">
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>📊 Your progress</span>
+      <span id="prog-text">0 / 5 exercises checked</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+
+  <!-- ══ EXERCISE 1 ══ -->
+  <section class="block">
+    <div class="block-header">
+      <div class="block-num" style="background:var(--blue);">1</div>
+      <h2>Match the sentence halves</h2>
+      <span class="ex-tag">Vocabulary</span>
+    </div>
+    <div class="block-body">
+      <div class="instruction"><strong>📌 Match each sentence beginning (1–6) to the correct ending (a–f).</strong> Select the letter from the dropdown.</div>
+
+      <div class="match-list">
+        <div class="match-row">
+          <div class="match-sent" id="ms1">1. Ana has a background</div>
+          <select class="match-sel" id="m1"><option value="">—</option><option>a</option><option>b</option><option>c</option><option>d</option><option>e</option><option>f</option></select>
+        </div>
+        <div class="match-row">
+          <div class="match-sent" id="ms2">2. You need at least two years'</div>
+          <select class="match-sel" id="m2"><option value="">—</option><option>a</option><option>b</option><option>c</option><option>d</option><option>e</option><option>f</option></select>
+        </div>
+        <div class="match-row">
+          <div class="match-sent" id="ms3">3. Francesco has strong communication</div>
+          <select class="match-sel" id="m3"><option value="">—</option><option>a</option><option>b</option><option>c</option><option>d</option><option>e</option><option>f</option></select>
+        </div>
+        <div class="match-row">
+          <div class="match-sent" id="ms4">4. My brother has a flair</div>
+          <select class="match-sel" id="m4"><option value="">—</option><option>a</option><option>b</option><option>c</option><option>d</option><option>e</option><option>f</option></select>
+        </div>
+        <div class="match-row">
+          <div class="match-sent" id="ms5">5. Actors have to be able to cope</div>
+          <select class="match-sel" id="m5"><option value="">—</option><option>a</option><option>b</option><option>c</option><option>d</option><option>e</option><option>f</option></select>
+        </div>
+        <div class="match-row">
+          <div class="match-sent" id="ms6">6. Everyone in my family is fluent</div>
+          <select class="match-sel" id="m6"><option value="">—</option><option>a</option><option>b</option><option>c</option><option>d</option><option>e</option><option>f</option></select>
+        </div>
+      </div>
+
+      <div class="opt-box">
+        <strong>a.</strong> skills as a manager. &nbsp;
+        <strong>b.</strong> with criticism. &nbsp;
+        <strong>c.</strong> in physics. &nbsp;
+        <strong>d.</strong> for languages so picks them up really fast. &nbsp;
+        <strong>e.</strong> in two languages. &nbsp;
+        <strong>f.</strong> experience for this job.
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx1()">✅ Check</button>
+        <button class="btn btn-reset" onclick="resetEx1()">↩ Reset</button>
+        <span id="fb1-score" style="font-size:.84rem;color:var(--muted);font-weight:700;"></span>
+      </div>
+      <div class="feedback" id="fb1"></div>
+    </div>
+  </section>
+
+  <!-- ══ EXERCISE 2 ══ -->
+  <section class="block">
+    <div class="block-header">
+      <div class="block-num" style="background:var(--teal);">2</div>
+      <h2>Complete the conversation</h2>
+      <span class="ex-tag">Vocabulary</span>
+    </div>
+    <div class="block-body">
+      <div class="instruction instr-teal"><strong>📌 Complete the conversation using the phrases in brackets.</strong> You may need to change the form.</div>
+
+      <div class="conv-box">
+        <p><span class="spk-a">A:</span> I hear you're interested in becoming a food scientist.</p>
+        <p><span class="spk-b">B:</span> Yes. I <input class="gi" id="c1" placeholder="…"> <span class="glabel">(flair)</span> cooking and I <input class="gi" id="c2" placeholder="…"> <span class="glabel">(passion)</span> science so they seem to go well together.</p>
+        <p><span class="spk-a">A:</span> Well, you'll need to <input class="gi" id="c3" placeholder="…"> <span class="glabel">(degree)</span> food science.</p>
+        <p><span class="spk-b">B:</span> I know. I've already started looking at degree courses. I'm studying sciences and I've got two years' <input class="gi" id="c4" placeholder="…"> <span class="glabel">(experience)</span> working in restaurants which should help.</p>
+        <p><span class="spk-a">A:</span> Good. Food scientists need to <input class="gi" id="c5" placeholder="…"> <span class="glabel">(critical thinking skills)</span> and a knowledge of food manufacturing. You could try to get some work experience.</p>
+        <p><span class="spk-b">B:</span> That's a good idea. That way, I could find out if I like it and if I would be able to <input class="gi" id="c6" placeholder="…"> <span class="glabel">(cope)</span> it.</p>
+        <p><span class="spk-a">A:</span> <input class="gi" id="c7" placeholder="…"> <span class="glabel">(willing)</span> give up some of your summer holidays for that?</p>
+        <p><span class="spk-b">B:</span> Sure. I <input class="gi" id="c8" placeholder="…"> <span class="glabel">(bothered)</span> losing a couple of weeks.</p>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx2()">✅ Check</button>
+        <button class="btn btn-reset" onclick="resetEx2()">↩ Reset</button>
+        <span id="fb2-score" style="font-size:.84rem;color:var(--muted);font-weight:700;"></span>
+      </div>
+      <div class="feedback" id="fb2"></div>
+    </div>
+  </section>
+
+  <!-- ══ EXERCISE 3 ══ -->
+  <section class="block">
+    <div class="block-header">
+      <div class="block-num" style="background:var(--purple);">3</div>
+      <h2>Complete the text — one word per gap</h2>
+      <span class="ex-tag">Grammar</span>
+    </div>
+    <div class="block-body">
+      <div class="instruction instr-purple"><strong>📌 Fill in each numbered gap with exactly one word.</strong> Think about obligation, prohibition, and no obligation.</div>
+
+      <div class="fill-box">
+        <div class="fill-title">Job search: how times have changed</div>
+        <p>
+          Getting a job has changed considerably over the last two decades. If you wanted to find a job previously, you had <span class="gn">1</span><input class="gi" id="g1"> look for ads in a newspaper. You <span class="gn">2</span><input class="gi" id="g2"> required to print out your CV and then you <span class="gn">3</span><input class="gi" id="g3"> to post it. These days, you can just look for ads online and then email your CV. Easy! However, no employer <span class="gn">4</span><input class="gi" id="g4"> to read through hundreds or thousands of applications. Apparently, a computer does it for them. Another difference is that you <span class="gn">5</span><input class="gi" id="g5"> have to have quite so many skills in the past. Technology skills, for example, <span class="gn">6</span><input class="gi" id="g6"> required for most jobs but today they're essential. You've also <span class="gn">7</span><input class="gi" id="g7"> to know how to use social media in order to network, but of course you <span class="gn">8</span><input class="gi" id="g8"> be careful about what you post online. In the past, you didn't <span class="gn">9</span><input class="gi" id="g9"> to worry about your employer seeing photos of your last birthday party online, but that's not true anymore!
+        </p>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx3()">✅ Check</button>
+        <button class="btn btn-reset" onclick="resetEx3()">↩ Reset</button>
+        <span id="fb3-score" style="font-size:.84rem;color:var(--muted);font-weight:700;"></span>
+      </div>
+      <div class="feedback" id="fb3"></div>
+    </div>
+  </section>
+
+  <!-- ══ EXERCISE 4 ══ -->
+  <section class="block">
+    <div class="block-header">
+      <div class="block-num" style="background:var(--orange);">4</div>
+      <h2>Correct the mistakes</h2>
+      <span class="ex-tag">Grammar</span>
+    </div>
+    <div class="block-body">
+      <div class="instruction instr-orange"><strong>📌 Five of these sentences contain a mistake with modal verbs.</strong> If the sentence is correct, write <em>Correct</em>. If it has a mistake, write the corrected sentence.</div>
+
+      <div class="err-list">
+        <div class="err-item" id="ei1">
+          <div class="err-sent"><span class="err-num">1.</span> I have to leave in five minutes for my dentist's appointment.</div>
+          <input class="err-input" id="e1" placeholder="Correct / Your correction…">
+        </div>
+        <div class="err-item" id="ei2">
+          <div class="err-sent"><span class="err-num">2.</span> You don't have to eat in here. It's forbidden.</div>
+          <input class="err-input" id="e2" placeholder="Correct / Your correction…">
+        </div>
+        <div class="err-item" id="ei3">
+          <div class="err-sent"><span class="err-num">3.</span> Jamie's got to go to the next meeting but I didn't have to.</div>
+          <input class="err-input" id="e3" placeholder="Correct / Your correction…">
+        </div>
+        <div class="err-item" id="ei4">
+          <div class="err-sent"><span class="err-num">4.</span> All guests are required to wear formal dress at the event.</div>
+          <input class="err-input" id="e4" placeholder="Correct / Your correction…">
+        </div>
+        <div class="err-item" id="ei5">
+          <div class="err-sent"><span class="err-num">5.</span> We weren't needed to stay up late when we were kids.</div>
+          <input class="err-input" id="e5" placeholder="Correct / Your correction…">
+        </div>
+        <div class="err-item" id="ei6">
+          <div class="err-sent"><span class="err-num">6.</span> I've got to go out and buy some milk for breakfast.</div>
+          <input class="err-input" id="e6" placeholder="Correct / Your correction…">
+        </div>
+        <div class="err-item" id="ei7">
+          <div class="err-sent"><span class="err-num">7.</span> You mustn't call me tomorrow but you can if you want.</div>
+          <input class="err-input" id="e7" placeholder="Correct / Your correction…">
+        </div>
+        <div class="err-item" id="ei8">
+          <div class="err-sent"><span class="err-num">8.</span> Alison doesn't have to go to work yesterday.</div>
+          <input class="err-input" id="e8" placeholder="Correct / Your correction…">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx4()">✅ Check</button>
+        <button class="btn btn-reset" onclick="resetEx4()">↩ Reset</button>
+        <span id="fb4-score" style="font-size:.84rem;color:var(--muted);font-weight:700;"></span>
+      </div>
+      <div class="feedback" id="fb4"></div>
+    </div>
+  </section>
+
+  <!-- ══ EXERCISE 5 ══ -->
+  <section class="block">
+    <div class="block-header">
+      <div class="block-num" style="background:var(--green);">5</div>
+      <h2>Rewrite the sentences</h2>
+      <span class="ex-tag">Grammar</span>
+    </div>
+    <div class="block-body">
+      <div class="instruction instr-green"><strong>📌 Rewrite each sentence using the word in bold so it means the same.</strong> Do not change the given word.</div>
+
+      <div class="rw-list">
+        <div class="rw-item" id="ri1">
+          <div class="rw-q"><span>1. It's necessary for us to get up early tomorrow.</span> <span class="rw-key">HAVE</span></div>
+          <input class="rw-input" id="r1" placeholder="We…">
+        </div>
+        <div class="rw-item" id="ri2">
+          <div class="rw-q"><span>2. I was prohibited from going out alone at night when I was a child.</span> <span class="rw-key">ALLOWED</span></div>
+          <input class="rw-input" id="r2" placeholder="I…">
+        </div>
+        <div class="rw-item" id="ri3">
+          <div class="rw-q"><span>3. It wasn't necessary for Sara to go into work early, but she did anyway.</span> <span class="rw-key">REQUIRED</span></div>
+          <input class="rw-input" id="r3" placeholder="Sara…">
+        </div>
+        <div class="rw-item" id="ri4">
+          <div class="rw-q"><span>4. It's really necessary for you to see a dentist about your tooth.</span> <span class="rw-key">MUST</span></div>
+          <input class="rw-input" id="r4" placeholder="You…">
+        </div>
+        <div class="rw-item" id="ri5">
+          <div class="rw-q"><span>5. You're prohibited from bringing your own food into the cinema.</span> <span class="rw-key">CAN'T</span></div>
+          <input class="rw-input" id="r5" placeholder="You…">
+        </div>
+        <div class="rw-item" id="ri6">
+          <div class="rw-q"><span>6. It's not necessary for David to come to the meeting.</span> <span class="rw-key">NEED</span></div>
+          <input class="rw-input" id="r6" placeholder="David…">
+        </div>
+        <div class="rw-item" id="ri7">
+          <div class="rw-q"><span>7. It's necessary to pay more attention to me when I'm speaking!</span> <span class="rw-key">GOT</span></div>
+          <input class="rw-input" id="r7" placeholder="You've…">
+        </div>
+        <div class="rw-item" id="ri8">
+          <div class="rw-q"><span>8. It really wasn't necessary for you to bring me a present.</span> <span class="rw-key">HAVE</span></div>
+          <input class="rw-input" id="r8" placeholder="You…">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx5()">✅ Check</button>
+        <button class="btn btn-reset" onclick="resetEx5()">↩ Reset</button>
+        <span id="fb5-score" style="font-size:.84rem;color:var(--muted);font-weight:700;"></span>
+      </div>
+      <div class="feedback" id="fb5"></div>
+    </div>
+  </section>
+
+  <!-- ══ SEND ══ -->
+  <div class="send-wrap">
+    <h3>📬 Send to teacher</h3>
+    <p>All done? Click below to send your homework to your teacher. Your default email app will open with all your answers ready.</p>
+    <div class="score-summary">Total score: <span id="total-score">0 / 37</span></div><br>
+    <button class="btn-send" onclick="sendToTeacher()">✉️ Send to dariia.mlnk@gmail.com</button>
+  </div>
+
+</main>
+
+<script>
+  // ── Progress tracking ──
+  const done = new Set();
+  let totalCorrect = 0, totalItems = 37; // 6+8+9+8+8 = 39... let me count: Ex1=6, Ex2=8, Ex3=9, Ex4=8, Ex5=8 = 39... wait: Ex4 has 8 items but 3 are correct (1,4,6) + 5 mistakes = 8. Ex5 = 8. So 6+8+9+8+8 = 39
+
+  function markDone(n, correct, total) {
+    done.add(n);
+    const pct = (done.size / 5) * 100;
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-text').textContent = done.size + ' / 5 exercises checked';
+    // update total score display
+    updateTotalScore();
+  }
+
+  const exScores = {1:0,2:0,3:0,4:0,5:0};
+  const exTotals = {1:6,2:8,3:9,4:8,5:8};
+
+  function updateTotalScore() {
+    let t = 0;
+    for (let k of Object.keys(exScores)) t += exScores[k];
+    const tot = Object.values(exTotals).reduce((a,b)=>a+b,0);
+    document.getElementById('total-score').textContent = t + ' / ' + tot;
+  }
+
+  function setFb(id, correct, total) {
+    const el = document.getElementById(id);
+    el.textContent = correct === total
+      ? '🎉 Perfect! All ' + total + ' correct!'
+      : correct + ' / ' + total + ' correct. Check the highlighted items.';
+    el.className = 'feedback ' + (correct === total ? 'show-correct' : correct >= total/2 ? 'show-partial' : 'show-wrong');
+  }
+
+  // ── EX 1 ──
+  const ex1ans = {m1:'c',m2:'f',m3:'a',m4:'d',m5:'b',m6:'e'};
+  function checkEx1() {
+    let c = 0;
+    for (let [id, ans] of Object.entries(ex1ans)) {
+      const sel = document.getElementById(id);
+      const row = document.getElementById('ms' + id.slice(1));
+      const ok = sel.value.toLowerCase() === ans;
+      sel.className = 'match-sel ' + (ok ? 'ok' : (sel.value ? 'bad' : ''));
+      row.className = 'match-sent ' + (ok ? 'ok' : (sel.value ? 'bad' : ''));
+      if (ok) c++;
+    }
+    document.getElementById('fb1-score').textContent = c + ' / 6';
+    exScores[1] = c;
+    setFb('fb1', c, 6);
+    markDone(1, c, 6);
+  }
+  function resetEx1() {
+    for (let id of Object.keys(ex1ans)) {
+      document.getElementById(id).value = '';
+      document.getElementById(id).className = 'match-sel';
+      document.getElementById('ms'+id.slice(1)).className = 'match-sent';
+    }
+    document.getElementById('fb1').className = 'feedback';
+    document.getElementById('fb1-score').textContent = '';
+  }
+
+  // ── EX 2 ──
+  // key phrases that must appear in the answer (case-insensitive)
+  const ex2keys = {
+    c1: ['flair for'],
+    c2: ['passion for'],
+    c3: ['degree in'],
+    c4: ['experience'],
+    c5: ['critical thinking'],
+    c6: ['cope with'],
+    c7: ['willing to'],
+    c8: ['bothered']
+  };
+  function checkEx2() {
+    let c = 0;
+    for (let [id, keys] of Object.entries(ex2keys)) {
+      const inp = document.getElementById(id);
+      const val = inp.value.toLowerCase().trim();
+      const ok = val && keys.some(k => val.includes(k.toLowerCase()));
+      inp.className = 'gi ' + (val ? (ok ? 'ok' : 'bad') : '');
+      if (ok) c++;
+    }
+    document.getElementById('fb2-score').textContent = c + ' / 8';
+    exScores[2] = c;
+    setFb('fb2', c, 8);
+    markDone(2, c, 8);
+  }
+  function resetEx2() {
+    for (let id of Object.keys(ex2keys)) {
+      const inp = document.getElementById(id);
+      inp.value = ''; inp.className = 'gi';
+    }
+    document.getElementById('fb2').className = 'feedback';
+    document.getElementById('fb2-score').textContent = '';
+  }
+
+  // ── EX 3 ──
+  const ex3ans = {
+    g1: ['to'],
+    g2: ['were'],
+    g3: ['had','needed'],
+    g4: ['has','needs','need'],
+    g5: ['didn\'t',"didn't"],
+    g6: ['weren\'t',"weren't"],
+    g7: ['got'],
+    g8: ['must','have'],
+    g9: ['have','need']
+  };
+  function checkEx3() {
+    let c = 0;
+    for (let [id, accepted] of Object.entries(ex3ans)) {
+      const inp = document.getElementById(id);
+      const val = inp.value.toLowerCase().trim();
+      const ok = accepted.includes(val);
+      inp.className = 'gi ' + (val ? (ok ? 'ok' : 'bad') : '');
+      if (ok) c++;
+    }
+    document.getElementById('fb3-score').textContent = c + ' / 9';
+    exScores[3] = c;
+    setFb('fb3', c, 9);
+    markDone(3, c, 9);
+  }
+  function resetEx3() {
+    for (let id of Object.keys(ex3ans)) {
+      const inp = document.getElementById(id);
+      inp.value = ''; inp.className = 'gi';
+    }
+    document.getElementById('fb3').className = 'feedback';
+    document.getElementById('fb3-score').textContent = '';
+  }
+
+  // ── EX 4 ──
+  // correct = {type:'ok'} — student should write 'correct'
+  // mistake = {type:'fix', must: [...words student must include], mustnot: [...words that signal they didn't fix it]}
+  const ex4config = [
+    { id:'e1', ei:'ei1', type:'ok' },
+    { id:'e2', ei:'ei2', type:'fix', must:["mustn't","must not","aren't allowed","not allowed","can't","cannot"] },
+    { id:'e3', ei:'ei3', type:'fix', must:["don't have to","didn't have to"] },
+    { id:'e4', ei:'ei4', type:'ok' },
+    { id:'e5', ei:'ei5', type:'fix', must:["weren't allowed","was not allowed","wasn't allowed"] },
+    { id:'e6', ei:'ei6', type:'ok' },
+    { id:'e7', ei:'ei7', type:'fix', must:["don't have to","don't need to","doesn't need to"] },
+    { id:'e8', ei:'ei8', type:'fix', must:["didn't have to","doesn't have to"] }
+  ];
+  function checkEx4() {
+    let c = 0;
+    for (let cfg of ex4config) {
+      const inp = document.getElementById(cfg.id);
+      const item = document.getElementById(cfg.ei);
+      const val = inp.value.toLowerCase().trim();
+      let ok = false;
+      if (!val) { item.className = 'err-item'; continue; }
+      if (cfg.type === 'ok') {
+        ok = val.includes('correct') || val.includes('no mistake') || val.includes('ok');
+      } else {
+        ok = cfg.must.some(m => val.includes(m.toLowerCase()));
+      }
+      item.className = 'err-item ' + (ok ? 'ok' : 'bad');
+      if (ok) c++;
+    }
+    document.getElementById('fb4-score').textContent = c + ' / 8';
+    exScores[4] = c;
+    setFb('fb4', c, 8);
+    markDone(4, c, 8);
+  }
+  function resetEx4() {
+    for (let cfg of ex4config) {
+      document.getElementById(cfg.id).value = '';
+      document.getElementById(cfg.ei).className = 'err-item';
+    }
+    document.getElementById('fb4').className = 'feedback';
+    document.getElementById('fb4-score').textContent = '';
+  }
+
+  // ── EX 5 ──
+  const ex5keys = {
+    r1: ['have to get up','have to wake'],
+    r2: ["wasn't allowed","was not allowed"],
+    r3: ["wasn't required","was not required"],
+    r4: ['must see','must go'],
+    r5: ["can't bring","cannot bring","can't take"],
+    r6: ["doesn't need","does not need","needn't","need not"],
+    r7: ["got to pay","got to listen","got to"],
+    r8: ["didn't have to bring","didn't have to get","didn't have to"]
+  };
+  function checkEx5() {
+    let c = 0;
+    for (let [id, keys] of Object.entries(ex5keys)) {
+      const inp = document.getElementById(id);
+      const item = document.getElementById('r' + id.slice(1).replace('r','i'));
+      const val = inp.value.toLowerCase().trim();
+      const ok = val && keys.some(k => val.includes(k.toLowerCase()));
+      document.getElementById('ri'+id.slice(1)).className = 'rw-item ' + (val ? (ok ? 'ok' : 'bad') : '');
+      if (ok) c++;
+    }
+    document.getElementById('fb5-score').textContent = c + ' / 8';
+    exScores[5] = c;
+    setFb('fb5', c, 8);
+    markDone(5, c, 8);
+  }
+  function resetEx5() {
+    for (let id of Object.keys(ex5keys)) {
+      document.getElementById(id).value = '';
+      document.getElementById('ri'+id.slice(1)).className = 'rw-item';
+    }
+    document.getElementById('fb5').className = 'feedback';
+    document.getElementById('fb5-score').textContent = '';
+  }
+
+  // ── SEND TO TEACHER ──
+  function sendToTeacher() {
+    const name = document.getElementById('sname').value.trim() || '(no name)';
+    const date = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'long',year:'numeric'});
+    const totalSc = Object.values(exScores).reduce((a,b)=>a+b,0);
+    const totalPoss = Object.values(exTotals).reduce((a,b)=>a+b,0);
+
+    let body = `HOMEWORK — Unit 4B: Job Skills\n`;
+    body += `Student: ${name}\n`;
+    body += `Date: ${date}\n`;
+    body += `Total score: ${totalSc} / ${totalPoss}\n`;
+    body += `${'─'.repeat(40)}\n\n`;
+
+    body += `EXERCISE 1 — Match the sentence halves (score: ${exScores[1]}/6)\n`;
+    const m1ans = {m1:'c',m2:'f',m3:'a',m4:'d',m5:'b',m6:'e'};
+    for (let i=1;i<=6;i++) body += `  ${i}: ${document.getElementById('m'+i).value || '—'}\n`;
+
+    body += `\nEXERCISE 2 — Complete the conversation (score: ${exScores[2]}/8)\n`;
+    const c2labels = {c1:'(flair)',c2:'(passion)',c3:'(degree)',c4:'(experience)',c5:'(critical thinking skills)',c6:'(cope)',c7:'(willing)',c8:'(bothered)'};
+    for (let i=1;i<=8;i++) body += `  Gap ${i} ${c2labels['c'+i]}: ${document.getElementById('c'+i).value || '—'}\n`;
+
+    body += `\nEXERCISE 3 — Text gap fill (score: ${exScores[3]}/9)\n`;
+    for (let i=1;i<=9;i++) body += `  Gap ${i}: ${document.getElementById('g'+i).value || '—'}\n`;
+
+    body += `\nEXERCISE 4 — Correct the mistakes (score: ${exScores[4]}/8)\n`;
+    for (let i=1;i<=8;i++) body += `  ${i}: ${document.getElementById('e'+i).value || '—'}\n`;
+
+    body += `\nEXERCISE 5 — Rewrite the sentences (score: ${exScores[5]}/8)\n`;
+    for (let i=1;i<=8;i++) body += `  ${i}: ${document.getElementById('r'+i).value || '—'}\n`;
+
+    const subject = `Homework · Unit 4B · ${name}`;
+    window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+
+  // Fix ex5 item id lookup
+  document.querySelectorAll('.rw-item').forEach((el, i) => { el.id = 'ri' + (i+1); });
+</script>
+
+</body>
+</html>
