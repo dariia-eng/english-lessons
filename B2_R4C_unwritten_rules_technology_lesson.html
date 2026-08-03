@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unwritten Rules – Lesson 1: Words & Stories</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1a1a2e; }
+
+  /* Header */
+  .hero {
+    background: linear-gradient(135deg, #1a6b8a 0%, #0d4f6b 50%, #16213e 100%);
+    color: white; padding: 40px 30px 50px; text-align: center; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%); animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+  .hero .tag { background: #e8a838; color: #1a1a2e; padding: 4px 14px; border-radius: 20px; font-size: 0.8em; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; display: inline-block; margin-bottom: 12px; }
+  .hero h1 { font-size: 2.2em; font-weight: 800; margin-bottom: 6px; }
+  .hero p { font-size: 1.05em; opacity: 0.85; }
+  .lesson-nav { display: flex; justify-content: center; gap: 8px; margin-top: 22px; flex-wrap: wrap; }
+  .nav-dot { background: rgba(255,255,255,0.25); color: white; border: none; padding: 6px 16px; border-radius: 20px; font-size: 0.82em; cursor: pointer; transition: background 0.2s; }
+  .nav-dot:hover { background: rgba(255,255,255,0.45); }
+
+  /* Sections */
+  .section { max-width: 860px; margin: 30px auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+  .section-header { padding: 20px 28px 16px; display: flex; align-items: center; gap: 14px; border-bottom: 2px solid #f0f4f8; }
+  .section-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4em; flex-shrink: 0; }
+  .icon-warmup { background: #fff3cd; }
+  .icon-vocab { background: #d1ecf1; }
+  .icon-quiz { background: #d4edda; }
+  .icon-reading { background: #f8d7da; }
+  .icon-discussion { background: #e2d9f3; }
+  .icon-game { background: #fde2c8; }
+  .section-title { font-size: 1.25em; font-weight: 700; color: #1a1a2e; }
+  .section-subtitle { font-size: 0.88em; color: #666; margin-top: 2px; }
+  .section-body { padding: 24px 28px; }
+
+  /* Instruction box */
+  .instr { background: #f8f9ff; border-left: 4px solid #1a6b8a; border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 20px; font-size: 0.93em; color: #444; line-height: 1.5; }
+  .instr strong { color: #1a6b8a; }
+
+  /* Discussion cards */
+  .disc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .disc-card { background: linear-gradient(135deg, #1a6b8a, #0d4f6b); color: white; border-radius: 12px; padding: 18px 16px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+  .disc-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(26,107,138,0.3); }
+  .disc-card .q-num { font-size: 0.75em; opacity: 0.7; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .disc-card .q-text { font-size: 0.97em; line-height: 1.5; font-weight: 500; }
+
+  /* Word bank */
+  .word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; padding: 16px; background: #f0f4f8; border-radius: 10px; }
+  .word-chip {
+    background: white; border: 2px solid #1a6b8a; color: #1a6b8a; padding: 6px 14px; border-radius: 20px;
+    font-size: 0.88em; font-weight: 600; cursor: pointer; transition: all 0.2s; user-select: none;
+  }
+  .word-chip:hover { background: #1a6b8a; color: white; }
+  .word-chip.used { background: #ccc; border-color: #ccc; color: #888; cursor: default; pointer-events: none; }
+  .word-chip.correct { background: #28a745; border-color: #28a745; color: white; pointer-events: none; }
+
+  /* Fill blank */
+  .quiz-list { list-style: none; }
+  .quiz-item { display: flex; align-items: baseline; gap: 6px; padding: 10px 0; border-bottom: 1px solid #f0f4f8; font-size: 0.95em; line-height: 1.6; flex-wrap: wrap; }
+  .quiz-item:last-child { border-bottom: none; }
+  .q-num-small { color: #1a6b8a; font-weight: 700; min-width: 22px; flex-shrink: 0; }
+  .blank {
+    display: inline-block; min-width: 120px; border-bottom: 2px dashed #1a6b8a; padding: 2px 8px;
+    cursor: pointer; color: #1a6b8a; font-weight: 600; background: #f0f8ff; border-radius: 4px 4px 0 0;
+    transition: background 0.2s; text-align: center; font-size: 0.92em;
+  }
+  .blank:hover { background: #e0f0ff; }
+  .blank.filled-correct { background: #d4edda; color: #155724; border-color: #28a745; cursor: default; }
+  .blank.filled-wrong { background: #f8d7da; color: #721c24; border-color: #dc3545; cursor: pointer; }
+
+  /* Category sort */
+  .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-top: 16px; }
+  .category-box { border: 2px dashed #aaa; border-radius: 10px; padding: 12px; min-height: 100px; transition: border-color 0.2s; }
+  .category-box.active { border-color: #1a6b8a; border-style: solid; background: #f0f8ff; }
+  .category-box h4 { font-size: 0.82em; text-transform: uppercase; letter-spacing: 0.5px; color: #666; margin-bottom: 8px; font-weight: 700; }
+  .placed-chip { background: #1a6b8a; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.82em; margin: 3px; display: inline-block; cursor: pointer; }
+  .placed-chip:hover { background: #c0392b; }
+
+  /* Reading */
+  .reading-text { background: #fafbff; border-radius: 10px; padding: 20px 22px; font-size: 0.95em; line-height: 1.75; color: #333; border-left: 4px solid #e8a838; margin-bottom: 22px; }
+  .reading-text .attribution { font-size: 0.85em; color: #888; margin-top: 10px; font-style: italic; }
+
+  /* Accordion Q&A */
+  .qa-item { border: 1px solid #e8ecf0; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+  .qa-q { padding: 14px 18px; background: #f8f9ff; cursor: pointer; font-weight: 600; font-size: 0.93em; display: flex; justify-content: space-between; align-items: center; }
+  .qa-q:hover { background: #eef2ff; }
+  .qa-q .arrow { transition: transform 0.3s; color: #1a6b8a; }
+  .qa-q.open .arrow { transform: rotate(180deg); }
+  .qa-a { display: none; padding: 14px 18px; font-size: 0.92em; line-height: 1.6; color: #444; background: white; border-top: 1px solid #e8ecf0; }
+  .qa-a.visible { display: block; }
+
+  /* Advice cards */
+  .advice-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .advice-card { border-radius: 12px; padding: 18px 20px; border: 2px solid transparent; transition: border-color 0.2s; }
+  .advice-mo { background: #e8f4fd; border-color: #bde0f7; }
+  .advice-ali { background: #fef9e7; border-color: #f9e79f; }
+  .advice-lisa { background: #eafaf1; border-color: #a9dfbf; }
+  .advice-collette { background: #f5eef8; border-color: #d7bde2; }
+  .advice-name { font-weight: 800; font-size: 1em; margin-bottom: 6px; }
+  .name-mo { color: #1a6b8a; }
+  .name-ali { color: #b7950b; }
+  .name-lisa { color: #1e8449; }
+  .name-collette { color: #7d3c98; }
+  .advice-text { font-size: 0.92em; line-height: 1.6; color: #444; font-style: italic; margin-bottom: 12px; }
+  .advice-disc { margin-top: 10px; }
+  .advice-disc p { font-size: 0.85em; font-weight: 600; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .think-btn { background: none; border: 1px solid #aaa; padding: 5px 12px; border-radius: 20px; font-size: 0.82em; cursor: pointer; color: #555; transition: all 0.2s; margin: 3px; }
+  .think-btn:hover { background: #1a6b8a; color: white; border-color: #1a6b8a; }
+
+  /* Buttons */
+  .btn { padding: 10px 22px; border: none; border-radius: 8px; font-size: 0.92em; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-primary { background: #1a6b8a; color: white; }
+  .btn-primary:hover { background: #0d4f6b; transform: translateY(-1px); }
+  .btn-success { background: #28a745; color: white; }
+  .btn-success:hover { background: #1e7e34; }
+  .btn-outline { background: white; color: #1a6b8a; border: 2px solid #1a6b8a; }
+  .btn-outline:hover { background: #1a6b8a; color: white; }
+  .btn-answer { background: #e8a838; color: #1a1a2e; }
+  .btn-answer:hover { background: #d4821a; color: white; transform: translateY(-1px); }
+  .btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+
+  /* Score */
+  .score-box { text-align: center; padding: 20px; background: #f0f8ff; border-radius: 10px; margin-top: 16px; display: none; }
+  .score-box.visible { display: block; }
+  .score-num { font-size: 2.5em; font-weight: 800; color: #1a6b8a; }
+  .score-msg { font-size: 1em; color: #555; margin-top: 4px; }
+
+  /* Taboo game */
+  .taboo-card { background: linear-gradient(135deg, #e8a838, #d4821a); color: white; border-radius: 16px; padding: 30px; text-align: center; max-width: 380px; margin: 0 auto; }
+  .taboo-word { font-size: 2em; font-weight: 900; margin-bottom: 14px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+  .taboo-avoid { background: rgba(0,0,0,0.2); border-radius: 10px; padding: 12px; }
+  .taboo-avoid p { font-size: 0.78em; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; margin-bottom: 8px; font-weight: 700; }
+  .taboo-words { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .taboo-words span { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.9em; font-weight: 600; }
+  .taboo-controls { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+
+  /* Highlight */
+  .highlight { background: #fff3cd; padding: 2px 5px; border-radius: 3px; }
+
+  /* Footer */
+  .section-footer { padding: 14px 28px; background: #f8f9ff; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 0.82em; color: #888; }
+
+  /* Progress bar */
+  .progress-bar { height: 5px; background: #e0e0e0; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #e8a838, #1a6b8a); transition: width 0.5s; }
+
+  .tag-green { background: #d4edda; color: #155724; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 600; }
+  .tag-blue { background: #cce5ff; color: #004085; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 600; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.6em; }
+    .section-body { padding: 18px 16px; }
+    .advice-grid { grid-template-columns: 1fr; }
+    .disc-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="tag">Lesson 1 of 2</div>
+  <h1>Unwritten Rules</h1>
+  <p>21st-Century Words, Stories & Ideas</p>
+  <nav class="lesson-nav">
+    <button class="nav-dot" onclick="scrollTo('warm-up')">🔥 Warm-Up</button>
+    <button class="nav-dot" onclick="scrollTo('vocab')">📚 Vocabulary</button>
+    <button class="nav-dot" onclick="scrollTo('quiz')">❓ Quiz</button>
+    <button class="nav-dot" onclick="scrollTo('reading')">📖 Reading</button>
+    <button class="nav-dot" onclick="scrollTo('advice')">💬 Discussion</button>
+    <button class="nav-dot" onclick="scrollTo('game')">🎮 Game</button>
+    <button class="nav-dot" onclick="scrollTo('revision')">🔤 Revision</button>
+  </nav>
+</div>
+
+<!-- ─── WARM-UP ─────────────────────────────────────────────── -->
+<div class="section" id="warm-up">
+  <div class="progress-bar"><div class="progress-fill" style="width:10%"></div></div>
+  <div class="section-header">
+    <div class="section-icon icon-warmup">🔥</div>
+    <div>
+      <div class="section-title">Warm-Up: Tech Check</div>
+      <div class="section-subtitle">Get the conversation started</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="instr"><strong>Step 1:</strong> Read each statement. Give it a personal score from <strong>1 (never)</strong> to <strong>5 (all the time)</strong> — in your head or on paper. Then compare with your partner.</div>
+
+    <div class="disc-grid" id="tech-check-grid">
+      <div class="disc-card">
+        <div class="q-num">Statement 1</div>
+        <div class="q-text">I check my phone within 5 minutes of waking up.</div>
+      </div>
+      <div class="disc-card">
+        <div class="q-num">Statement 2</div>
+        <div class="q-text">I've doomscrolled through bad news for so long I forgot why I picked up my phone.</div>
+      </div>
+      <div class="disc-card">
+        <div class="q-num">Statement 3</div>
+        <div class="q-text">I ask an AI tool questions instead of googling or asking a person.</div>
+      </div>
+      <div class="disc-card">
+        <div class="q-num">Statement 4</div>
+        <div class="q-text">I've used an AI virtual assistant (Claude, ChatGPT, Gemini) today.</div>
+      </div>
+      <div class="disc-card">
+        <div class="q-num">Statement 5</div>
+        <div class="q-text">I've come across AI slop recently — content that felt obviously generated and empty.</div>
+      </div>
+      <div class="disc-card">
+        <div class="q-num">Statement 6</div>
+        <div class="q-text">I feel always-on — even on weekends, I can't truly switch off from work or notifications.</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px; padding: 18px; background: #fff9f0; border-radius: 10px; border: 1px solid #fde2c8;">
+      <p style="font-weight: 700; color: #c0672a; margin-bottom: 10px;">💬 Discuss with your partner:</p>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+        <li style="display:flex;gap:8px;"><span>▸</span><span>Which statement surprised you most about your partner's score?</span></li>
+        <li style="display:flex;gap:8px;"><span>▸</span><span>Think of one behaviour that is <em>completely normal in 2026</em> but would have seemed <em>very strange</em> ten years ago. Tell your partner.</span></li>
+        <li style="display:flex;gap:8px;"><span>▸</span><span>AI copilots can now write messages, generate deepfakes, and prompt answers for you. Does this make technology more helpful or less human?</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="section-footer">🔥 Warm-Up <span><span class="tag-blue">Pair work</span></span></div>
+</div>
+
+<!-- ─── VOCABULARY ─────────────────────────────────────────── -->
+<div class="section" id="vocab">
+  <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+  <div class="section-header">
+    <div class="section-icon icon-vocab">📚</div>
+    <div>
+      <div class="section-title">Vocabulary: Sort It!</div>
+      <div class="section-subtitle">2026 buzzwords — where do they belong?</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="instr"><strong>How to play:</strong> Click a word from the bank, then click the category it belongs to. Some words belong to <strong>more than one category</strong> — try to find them all! Click a placed word to remove it.</div>
+
+    <div class="word-bank" id="word-bank">
+      <div class="word-chip" onclick="selectWord(this, 'doomscroll')">doomscroll (v)</div>
+      <div class="word-chip" onclick="selectWord(this, 'ghost')">ghost (v)</div>
+      <div class="word-chip" onclick="selectWord(this, 'deepfake')">deepfake (n)</div>
+      <div class="word-chip" onclick="selectWord(this, 'prompt')">prompt (v/n)</div>
+      <div class="word-chip" onclick="selectWord(this, 'the algorithm')">the algorithm</div>
+      <div class="word-chip" onclick="selectWord(this, 'digital detox')">digital detox</div>
+      <div class="word-chip" onclick="selectWord(this, 'deinfluence')">deinfluence (v)</div>
+      <div class="word-chip" onclick="selectWord(this, 'brain rot')">brain rot</div>
+      <div class="word-chip" onclick="selectWord(this, 'chronically online')">chronically online</div>
+      <div class="word-chip" onclick="selectWord(this, 'AI slop')">AI slop</div>
+      <div class="word-chip" onclick="selectWord(this, 'soft-launch')">soft-launch (v)</div>
+      <div class="word-chip" onclick="selectWord(this, 'always-on')">always-on (adj)</div>
+      <div class="word-chip" onclick="selectWord(this, 'AI-literate')">AI-literate (adj)</div>
+      <div class="word-chip" onclick="selectWord(this, 'AI copilot')">AI copilot</div>
+      <div class="word-chip" onclick="selectWord(this, 'short-form content')">short-form content</div>
+    </div>
+
+    <div class="cat-grid">
+      <div class="category-box" id="cat-ai" onclick="placeWord('ai')">
+        <h4>🤖 AI &amp; Technology</h4>
+        <div id="placed-ai"></div>
+      </div>
+      <div class="category-box" id="cat-online" onclick="placeWord('online')">
+        <h4>📱 Online Behaviour</h4>
+        <div id="placed-online"></div>
+      </div>
+      <div class="category-box" id="cat-work" onclick="placeWord('work')">
+        <h4>💼 Work &amp; Wellbeing</h4>
+        <div id="placed-work"></div>
+      </div>
+      <div class="category-box" id="cat-content" onclick="placeWord('content')">
+        <h4>🎬 Content &amp; Media</h4>
+        <div id="placed-content"></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="showCatAnswers()">Check Answers</button>
+      <button class="btn btn-answer" onclick="showAllCatAnswers()">Show All Answers</button>
+      <button class="btn btn-outline" onclick="resetCategories()">Reset</button>
+    </div>
+    <div id="cat-feedback" style="margin-top: 14px; font-size: 0.92em; color: #444; display: none;"></div>
+
+    <div style="margin-top: 24px; padding: 16px; background: #f0f8ff; border-radius: 10px;">
+      <p style="font-weight: 700; color: #1a6b8a; margin-bottom: 10px;">💬 Quick discussion:</p>
+      <p style="font-size: 0.93em; line-height: 1.6;">Choose <strong>3 words</strong> from the bank. For each one, tell your partner: <em>when did you first hear this word? Have you used it this week? Does your language have a word for it?</em></p>
+    </div>
+  </div>
+  <div class="section-footer">📚 Vocabulary <span><span class="tag-green">Interactive</span></span></div>
+</div>
+
+<!-- ─── HAVE YOU EVER QUIZ ─────────────────────────────────── -->
+<div class="section" id="quiz">
+  <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
+  <div class="section-header">
+    <div class="section-icon icon-quiz">❓</div>
+    <div>
+      <div class="section-title">Have You Ever…?</div>
+      <div class="section-subtitle">Complete the quiz, then compare with a partner</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="instr">
+      <strong>Part A – Fill the gaps:</strong> Click a word from the bank below, then click the blank where it fits. <br>
+      <strong>Part B – Answer honestly!</strong> After checking, go through the questions with a partner. Who has done more of these things?
+    </div>
+
+    <div class="word-bank" id="quiz-bank">
+      <div class="word-chip" onclick="selectQuizWord(this, 'doomscrolled')">doomscrolled</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'ghosted')">ghosted</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'deepfake')">deepfake</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'prompted')">prompted</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'the algorithm')">the algorithm</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'digital detox')">digital detox</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'deinfluenced')">deinfluenced</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'brain rot')">brain rot</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'chronically online')">chronically online</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'AI slop')">AI slop</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'soft-launched')">soft-launched</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'always-on')">always-on</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'AI-literate')">AI-literate</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'AI copilot')">AI copilot</div>
+      <div class="word-chip" onclick="selectQuizWord(this, 'short-form content')">short-form content</div>
+    </div>
+
+    <ul class="quiz-list" id="quiz-questions">
+      <li class="quiz-item"><span class="q-num-small">1</span> <span class="blank" data-answer="doomscrolled" onclick="fillBlank(this)">_______</span> through bad news for so long you forgot why you picked up your phone?</li>
+      <li class="quiz-item"><span class="q-num-small">2</span> <span class="blank" data-answer="ghosted" onclick="fillBlank(this)">_______</span> someone — just stopped replying without any explanation?</li>
+      <li class="quiz-item"><span class="q-num-small">3</span> been tricked by a <span class="blank" data-answer="deepfake" onclick="fillBlank(this)">_______</span> — a fake video or photo of a real person that looked completely real?</li>
+      <li class="quiz-item"><span class="q-num-small">4</span> <span class="blank" data-answer="prompted" onclick="fillBlank(this)">_______</span> an AI tool to write something for you — an email, a caption, or an essay?</li>
+      <li class="quiz-item"><span class="q-num-small">5</span> noticed <span class="blank" data-answer="the algorithm" onclick="fillBlank(this)">_______</span> feeding you the same type of content over and over?</li>
+      <li class="quiz-item"><span class="q-num-small">6</span> done a <span class="blank" data-answer="digital detox" onclick="fillBlank(this)">_______</span> — switched off your phone for a full day or longer?</li>
+      <li class="quiz-item"><span class="q-num-small">7</span> <span class="blank" data-answer="deinfluenced" onclick="fillBlank(this)">_______</span> someone — talked a friend out of buying or trying something?</li>
+      <li class="quiz-item"><span class="q-num-small">8</span> consumed so much <span class="blank" data-answer="brain rot" onclick="fillBlank(this)">_______</span> content online that you felt your concentration getting worse?</li>
+      <li class="quiz-item"><span class="q-num-small">9</span> felt <span class="blank" data-answer="chronically online" onclick="fillBlank(this)">_______</span> — like internet culture felt more real to you than real life?</li>
+      <li class="quiz-item"><span class="q-num-small">10</span> scrolled past <span class="blank" data-answer="AI slop" onclick="fillBlank(this)">_______</span> — content that was clearly AI-generated and felt fake or empty?</li>
+      <li class="quiz-item"><span class="q-num-small">11</span> <span class="blank" data-answer="soft-launched" onclick="fillBlank(this)">_______</span> something on social media — posted a hint about a new job, relationship, or project before the official announcement?</li>
+      <li class="quiz-item"><span class="q-num-small">12</span> felt <span class="blank" data-answer="always-on" onclick="fillBlank(this)">_______</span> — unable to truly switch off even when you weren't working?</li>
+      <li class="quiz-item"><span class="q-num-small">13</span> wished you were more <span class="blank" data-answer="AI-literate" onclick="fillBlank(this)">_______</span> when everyone around you seemed to use AI tools confidently?</li>
+      <li class="quiz-item"><span class="q-num-small">14</span> used an <span class="blank" data-answer="AI copilot" onclick="fillBlank(this)">_______</span> — like ChatGPT or Claude — to help you with a professional or study task?</li>
+      <li class="quiz-item"><span class="q-num-small">15</span> chosen <span class="blank" data-answer="short-form content" onclick="fillBlank(this)">_______</span> — a quick video or post — over reading a full article or watching something long?</li>
+    </ul>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkQuiz()">Check Answers</button>
+      <button class="btn btn-answer" onclick="showAllQuizAnswers()">Show All Answers</button>
+      <button class="btn btn-outline" onclick="resetQuiz()">Try Again</button>
+    </div>
+
+    <div class="score-box" id="quiz-score">
+      <div class="score-num" id="score-num">0/15</div>
+      <div class="score-msg" id="score-msg"></div>
+      <div style="margin-top: 16px; padding: 14px; background: white; border-radius: 8px; text-align: left;">
+        <p style="font-weight: 700; margin-bottom: 8px; color: #1a6b8a;">💬 Now answer for real:</p>
+        <p style="font-size: 0.9em; color: #555; line-height: 1.6;">Go through questions 1–15 with a partner. For each "Yes", tell them <em>when</em> or <em>how often</em>. Who scored the highest number of "Yes" answers? Choose 2 questions to explain in more detail.</p>
+      </div>
+    </div>
+  </div>
+  <div class="section-footer">❓ Quiz <span><span class="tag-green">Interactive</span></span></div>
+</div>
+
+<!-- ─── READING ─────────────────────────────────────────────── -->
+<div class="section" id="reading">
+  <div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div>
+  <div class="section-header">
+    <div class="section-icon icon-reading">📖</div>
+    <div>
+      <div class="section-title">Reading: Back to the World</div>
+      <div class="section-subtitle">Read, understand, and discuss</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <div class="instr">
+      <strong>Before you read:</strong> It's 2026. Imagine Frank has just been released after 14 years with zero access to technology. Look at the list below — which three would shock him the most, and why? Discuss with a partner before reading.
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+        <span style="background:#e8f4fd;border:1px solid #bde0f7;padding:4px 12px;border-radius:20px;font-size:0.85em;">🤖 An AI copilot writes your emails for you</span>
+        <span style="background:#e8f4fd;border:1px solid #bde0f7;padding:4px 12px;border-radius:20px;font-size:0.85em;">🎭 Deepfakes — fake videos of real people saying things they never said</span>
+        <span style="background:#e8f4fd;border:1px solid #bde0f7;padding:4px 12px;border-radius:20px;font-size:0.85em;">📱 People doomscroll for hours without noticing</span>
+        <span style="background:#e8f4fd;border:1px solid #bde0f7;padding:4px 12px;border-radius:20px;font-size:0.85em;">🌀 The algorithm decides what you see, buy, and think</span>
+        <span style="background:#e8f4fd;border:1px solid #bde0f7;padding:4px 12px;border-radius:20px;font-size:0.85em;">👻 People ghost friends — just stop replying with no explanation</span>
+        <span style="background:#e8f4fd;border:1px solid #bde0f7;padding:4px 12px;border-radius:20px;font-size:0.85em;">🧠 Short-form content has replaced books, long films, and conversations</span>
+      </div>
+    </div>
+
+    <div class="reading-text">
+      <p>In those first few days of freedom, I did all the things I'd dreamt about for nearly fourteen years: I ate out, I slept in, I met up with people and I walked and walked in the spring sunshine. It was glorious but deeply confusing – so much had changed. People said things that I simply didn't understand: <span class="highlight">'Just prompt it'</span>, <span class="highlight">'The algorithm will find something'</span> or <span class="highlight">'Are you even AI-literate?'</span> When I looked blank, they'd shake their heads and move on.</p>
+      <p style="margin-top: 14px;">Fourteen years ago, people had used phones for talking. Now they barely looked up at all. They scrolled endlessly — <span class="highlight">doomscrolling</span>, someone called it — and talked to invisible assistants instead of each other. I watched a man <span class="highlight">ghost</span> his friend in real time: a conversation that just… stopped. No explanation. And everywhere I went, screens showed me faces of people saying things I was told they had never actually said. <span class="highlight">Deepfakes</span>, they called them. I didn't know what was real.</p>
+      <p style="margin-top: 14px;">What I found hardest was the speed of it all. Everything was short — short videos, short messages, short attention spans. People were <span class="highlight">always-on</span> but somehow never present. I had been away for fourteen years, but standing there among them, I felt like I had arrived from a different planet entirely.</p>
+      <div class="attribution">— Frank</div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+      <p style="font-weight: 700; color: #1a1a2e;">📝 Comprehension — click each question to reveal a model answer:</p>
+      <button class="btn btn-answer" onclick="showAllQA()">Show All Answers</button>
+    </div>
+
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">
+        1. What did Frank find confusing when he came back to the world? <span class="arrow">▼</span>
+      </div>
+      <div class="qa-a">He found almost everything confusing. Language had changed — people used phrases like "just prompt it" or "are you AI-literate?" that meant nothing to him. Behaviour had changed too: people doomscrolled instead of talking, and ghosted friends without a word. He also couldn't trust what he saw on screen, because deepfakes made videos of real people saying things they had never said.</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">
+        2. What specific language did Frank hear that he didn't understand? <span class="arrow">▼</span>
+      </div>
+      <div class="qa-a">He heard phrases like "just prompt it", "the algorithm will find something", and "are you even AI-literate?" These expressions come from a world built around AI tools that didn't exist when Frank went to prison.</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">
+        3. How had the way people communicate changed? <span class="arrow">▼</span>
+      </div>
+      <div class="qa-a">People no longer really talked to each other. Instead, they doomscrolled through screens, asked AI assistants questions, and ghosted people — ending friendships by simply going silent. Frank noticed they were always-on but somehow never fully present.</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q" onclick="toggleQA(this)">
+        4. What did Frank mean when he said he "didn't know what was real"? <span class="arrow">▼</span>
+      </div>
+      <div class="qa-a">He was referring to deepfakes — AI-generated videos showing real people saying things they had never actually said. In 2026, it is no longer possible to trust a video just because you can see someone's face. For Frank, coming from a world with no such technology, this was particularly disorienting.</div>
+    </div>
+
+    <div style="margin-top: 20px; padding: 16px; background: #fff9f0; border-radius: 10px; border: 1px solid #fde2c8;">
+      <p style="font-weight: 700; color: #c0672a; margin-bottom: 8px;">💬 Discuss:</p>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 7px; font-size: 0.93em;">
+        <li>▸ Frank was confused by phrases like "just prompt it" and "are you AI-literate?" Which three phrases from 2026 do you think would shock him most — and why?</li>
+        <li>▸ Frank noticed people were always-on but never present. Do you recognise that feeling in your own life?</li>
+        <li>▸ Frank couldn't tell what was real because of deepfakes. Can you? How do you decide whether a video or image is genuine in 2026?</li>
+        <li>▸ What aspect of digital life today do you think we'll look back on as strange — or even embarrassing — in ten years?</li>
+      </ul>
+    </div>
+  </div>
+  <div class="section-footer">📖 Reading <span><span class="tag-blue">Individual → Class</span></span></div>
+</div>
+
+<!-- ─── ADVICE DISCUSSION ───────────────────────────────────── -->
+<div class="section" id="advice">
+  <div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div>
+  <div class="section-header">
+    <div class="section-icon icon-discussion">💬</div>
+    <div>
+      <div class="section-title">What Would You Tell Frank?</div>
+      <div class="section-subtitle">Read the advice — then rate it and debate it</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="instr">Frank's family and friends offered four different pieces of advice. <strong>Read them all, then answer the questions below.</strong></div>
+
+    <div class="advice-grid">
+      <div class="advice-card advice-mo">
+        <div class="advice-name name-mo">Mo says:</div>
+        <div class="advice-text">"The first thing you need to do is become AI-literate — learn what AI tools can do, and how people use them every day. Most people now use an AI copilot to write emails, plan tasks, or search for information. Start there. But be careful: online you'll find a lot of AI slop — content that looks real but is empty and generated by a machine. Not everything you read is written by a human."</div>
+        <div class="advice-disc">
+          <p>Does this advice make sense for Frank?</p>
+          <button class="think-btn" onclick="toggleAdvice(this)">Yes, because…</button>
+          <button class="think-btn" onclick="toggleAdvice(this)">No, because…</button>
+          <button class="think-btn" onclick="toggleAdvice(this)">It depends…</button>
+        </div>
+      </div>
+      <div class="advice-card advice-ali">
+        <div class="advice-name name-ali">Ali says:</div>
+        <div class="advice-text">"Before you trust anyone online, prompt an AI copilot to help you check who they are — look at their digital footprint, their posts, their history. And remember: even a video of someone's face saying something might be a deepfake. Don't believe everything you see. If someone makes you uncomfortable, it's completely normal to ghost them — just stop responding. You don't owe anyone an explanation online."</div>
+        <div class="advice-disc">
+          <p>Does this advice make sense for Frank?</p>
+          <button class="think-btn" onclick="toggleAdvice(this)">Yes, because…</button>
+          <button class="think-btn" onclick="toggleAdvice(this)">No, because…</button>
+          <button class="think-btn" onclick="toggleAdvice(this)">It depends…</button>
+        </div>
+      </div>
+      <div class="advice-card advice-lisa">
+        <div class="advice-name name-lisa">Lisa says:</div>
+        <div class="advice-text">"The hardest thing to understand is the algorithm. It decides what you see, what you read, and even what you think you want — and it is designed to keep you scrolling. Most people now consume short-form content instead of reading properly, and it is doing real damage to concentration. Researchers are calling it brain rot. Stay curious, read long things, and don't let the algorithm decide who you are."</div>
+        <div class="advice-disc">
+          <p>Does this advice make sense for Frank?</p>
+          <button class="think-btn" onclick="toggleAdvice(this)">Yes, because…</button>
+          <button class="think-btn" onclick="toggleAdvice(this)">No, because…</button>
+          <button class="think-btn" onclick="toggleAdvice(this)">It depends…</button>
+        </div>
+      </div>
+      <div class="advice-card advice-collette">
+        <div class="advice-name name-collette">Collette says:</div>
+        <div class="advice-text">"Whatever you do, don't let yourself become always-on. Everyone around you will seem chronically online — checking their phones constantly, doomscrolling at dinner, replying to work messages at midnight. You don't have to live like that. Do a digital detox one day a week. Meet people face to face. You spent fourteen years without a screen — that is actually your advantage, not your problem."</div>
+        <div class="advice-disc">
+          <p>Does this advice make sense for Frank?</p>
+          <button class="think-btn" onclick="toggleAdvice(this)">Yes, because…</button>
+          <button class="think-btn" onclick="toggleAdvice(this)">No, because…</button>
+          <button class="think-btn" onclick="toggleAdvice(this)">It depends…</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 22px; padding: 18px; background: #f8f9ff; border-radius: 10px; border: 1px solid #e0e4ff;">
+      <p style="font-weight: 700; color: #1a1a2e; margin-bottom: 10px;">🎯 Discussion questions:</p>
+      <ol style="list-style: none; display: flex; flex-direction: column; gap: 9px; font-size: 0.93em; line-height: 1.6;">
+        <li><strong>1.</strong> Mo says Frank needs to become AI-literate. What does that mean in practice? What would you teach him first?</li>
+        <li><strong>2.</strong> Ali says it's "completely normal" to ghost someone online. Do you agree? Is ghosting ever acceptable — or always rude?</li>
+        <li><strong>3.</strong> Lisa warns Frank about brain rot from short-form content and the algorithm. Do you feel the algorithm controls what you think — or do you stay in control?</li>
+        <li><strong>4.</strong> Collette says Frank's fourteen years without screens is "an advantage, not a problem." What does she mean? Do you think she's right?</li>
+        <li><strong>5.</strong> Whose advice do <em>you</em> think is the most important for Frank — and the most important for <em>you personally</em>? Are they the same person?</li>
+        <li><strong>6.</strong> Write one extra sentence of advice for Frank that none of the four people gave. Use at least one word from today's vocabulary.</li>
+      </ol>
+    </div>
+  </div>
+  <div class="section-footer">💬 Discussion <span><span class="tag-blue">Pair / Group</span></span></div>
+</div>
+
+<!-- ─── TABOO GAME ──────────────────────────────────────────── -->
+<div class="section" id="game">
+  <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+  <div class="section-header">
+    <div class="section-icon icon-game">🎮</div>
+    <div>
+      <div class="section-title">Game: Digital Taboo</div>
+      <div class="section-subtitle">Explain the word — without using the forbidden words!</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="instr">
+      <strong>How to play:</strong> One student sees the card. They must describe the <strong>main word</strong> to their partner without saying any of the <em>forbidden words</em>. Their partner guesses. Then swap!
+    </div>
+
+    <div class="taboo-card" id="taboo-card">
+      <div class="taboo-word" id="taboo-main">SELFIE</div>
+      <div class="taboo-avoid">
+        <p>❌ Don't say these words:</p>
+        <div class="taboo-words" id="taboo-forbidden">
+          <span>photo</span><span>camera</span><span>yourself</span><span>phone</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="taboo-controls">
+      <button class="btn btn-primary" onclick="nextTaboo()">Next Card ➜</button>
+      <button class="btn btn-outline" onclick="shuffleTaboo()">Shuffle All 🔀</button>
+    </div>
+
+    <div style="margin-top: 20px; text-align: center; font-size: 0.88em; color: #888;" id="taboo-counter">Card 1 of 10</div>
+  </div>
+  <div class="section-footer">🎮 Game <span><span class="tag-green">Group activity</span></span></div>
+</div>
+
+<!-- ─── EXTRA REVISION ──────────────────────────────────────── -->
+<div class="section" id="revision">
+  <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+  <div class="section-header">
+    <div class="section-icon icon-vocab" style="background:#e8f4fd;">🔤</div>
+    <div>
+      <div class="section-title">Extra Revision: Adjectives to Describe Things</div>
+      <div class="section-subtitle">Sort, fill in, and describe!</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <!-- ── Exercise 1 ── -->
+    <p style="font-weight:700;color:#1a1a2e;margin-bottom:6px;">Exercise 1 — Sort the adjectives into the correct column</p>
+    <div class="instr"><strong>How to play:</strong> Click an adjective from the bank, then click the column it belongs to. Click a placed word to remove it.</div>
+
+    <div class="word-bank" id="adj-bank">
+      <div class="word-chip" onclick="selAdj(this,'cotton')">cotton</div>
+      <div class="word-chip" onclick="selAdj(this,'bizarre')">bizarre</div>
+      <div class="word-chip" onclick="selAdj(this,'massive')">massive</div>
+      <div class="word-chip" onclick="selAdj(this,'circular')">circular</div>
+      <div class="word-chip" onclick="selAdj(this,'artificial')">artificial</div>
+      <div class="word-chip" onclick="selAdj(this,'delicate')">delicate</div>
+      <div class="word-chip" onclick="selAdj(this,'stunning')">stunning</div>
+      <div class="word-chip" onclick="selAdj(this,'wooden')">wooden</div>
+      <div class="word-chip" onclick="selAdj(this,'oval')">oval</div>
+      <div class="word-chip" onclick="selAdj(this,'hi-tech')">hi-tech</div>
+      <div class="word-chip" onclick="selAdj(this,'exclusive')">exclusive</div>
+      <div class="word-chip" onclick="selAdj(this,'rectangular')">rectangular</div>
+    </div>
+
+    <div style="overflow-x:auto;margin-bottom:6px;">
+      <table id="adj-table" style="width:100%;border-collapse:collapse;font-size:0.9em;">
+        <thead>
+          <tr>
+            <th onclick="placeAdj('opinion')"  style="background:#1a6b8a;color:white;padding:10px 8px;border-radius:8px 0 0 0;cursor:pointer;user-select:none;">Opinion 🖱️</th>
+            <th onclick="placeAdj('size')"     style="background:#0d4f6b;color:white;padding:10px 8px;cursor:pointer;user-select:none;">Size 🖱️</th>
+            <th onclick="placeAdj('quality')"  style="background:#1a6b8a;color:white;padding:10px 8px;cursor:pointer;user-select:none;">Quality 🖱️</th>
+            <th onclick="placeAdj('shape')"    style="background:#0d4f6b;color:white;padding:10px 8px;cursor:pointer;user-select:none;">Shape 🖱️</th>
+            <th onclick="placeAdj('material')" style="background:#1a6b8a;color:white;padding:10px 8px;border-radius:0 8px 0 0;cursor:pointer;user-select:none;">Material 🖱️</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="vertical-align:top;">
+            <td id="col-opinion"  onclick="placeAdj('opinion')"  style="border:2px dashed #aaa;padding:10px 8px;min-width:110px;min-height:60px;cursor:pointer;background:#fafbff;"></td>
+            <td id="col-size"     onclick="placeAdj('size')"     style="border:2px dashed #aaa;padding:10px 8px;min-width:80px;cursor:pointer;background:#fafbff;"></td>
+            <td id="col-quality"  onclick="placeAdj('quality')"  style="border:2px dashed #aaa;padding:10px 8px;min-width:110px;cursor:pointer;background:#fafbff;"></td>
+            <td id="col-shape"    onclick="placeAdj('shape')"    style="border:2px dashed #aaa;padding:10px 8px;min-width:110px;cursor:pointer;background:#fafbff;"></td>
+            <td id="col-material" onclick="placeAdj('material')" style="border:2px dashed #aaa;padding:10px 8px;min-width:100px;cursor:pointer;background:#fafbff;"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkAdjTable()">Check Answers</button>
+      <button class="btn btn-answer"  onclick="showAllAdjAnswers()">Show All Answers</button>
+      <button class="btn btn-outline"  onclick="resetAdjTable()">Reset</button>
+    </div>
+    <div id="adj-feedback" style="margin-top:12px;font-size:0.9em;color:#444;display:none;line-height:1.7;"></div>
+
+    <!-- ── Exercise 2a ── -->
+    <div style="margin-top:32px;">
+      <p style="font-weight:700;color:#1a1a2e;margin-bottom:6px;">Exercise 2a — Complete the sentences with adjectives from Exercise 1</p>
+      <div class="instr">Click an adjective from the bank below, then click the blank where it fits. Each adjective is used <strong>once</strong>.</div>
+
+      <div class="word-bank" id="sent-bank">
+        <div class="word-chip" onclick="selSent(this,'bizarre')">bizarre</div>
+        <div class="word-chip" onclick="selSent(this,'exclusive')">exclusive</div>
+        <div class="word-chip" onclick="selSent(this,'delicate')">delicate</div>
+        <div class="word-chip" onclick="selSent(this,'massive')">massive</div>
+        <div class="word-chip" onclick="selSent(this,'circular')">circular</div>
+        <div class="word-chip" onclick="selSent(this,'stunning')">stunning</div>
+        <div class="word-chip" onclick="selSent(this,'hi-tech')">hi-tech</div>
+        <div class="word-chip" onclick="selSent(this,'oval')">oval</div>
+        <div class="word-chip" onclick="selSent(this,'artificial')">artificial</div>
+      </div>
+
+      <div style="display:flex;gap:14px;margin-bottom:18px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Kaftan_style.jpg/320px-Kaftan_style.jpg" alt="Colourful kaftans" style="width:100%;height:140px;object-fit:cover;" onerror="this.style.display='none'">
+          <div style="background:#f0f8ff;padding:8px 10px;font-size:0.8em;font-weight:700;color:#555;text-align:center;">Photo 1 — Kaftans</div>
+        </div>
+        <div style="flex:1;min-width:200px;border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;">
+          <div style="width:100%;height:140px;background:linear-gradient(135deg,#1a6b8a,#16213e);display:flex;align-items:center;justify-content:center;">
+            <div style="width:90px;height:90px;border:10px solid white;border-radius:50%;opacity:0.7;"></div>
+          </div>
+          <div style="background:#f0f8ff;padding:8px 10px;font-size:0.8em;font-weight:700;color:#555;text-align:center;">Photo 2 — Steel sculpture</div>
+        </div>
+        <div style="flex:1;min-width:200px;border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;">
+          <div style="width:100%;height:140px;background:linear-gradient(135deg,#2c2c2c,#555);display:flex;align-items:center;justify-content:center;gap:10px;">
+            <div style="width:40px;height:90px;background:#888;border-radius:6px;"></div>
+            <div style="width:60px;height:60px;background:#999;border-radius:50%;"></div>
+          </div>
+          <div style="background:#f0f8ff;padding:8px 10px;font-size:0.8em;font-weight:700;color:#555;text-align:center;">Photo 3 — Music system</div>
+        </div>
+      </div>
+
+      <ul class="quiz-list" id="sent-questions">
+        <li class="quiz-item" style="flex-direction:column;align-items:flex-start;gap:4px;">
+          <span style="font-weight:700;color:#1a6b8a;">1.</span>
+          <span>That boutique sells <span class="blank" data-answer="bizarre" onclick="fillSent(this)">_______</span>, <span class="blank" data-answer="exclusive" onclick="fillSent(this)">_______</span> kaftans — perfect for warm summer evenings, made from <span class="blank" data-answer="delicate" onclick="fillSent(this)">_______</span> silk.</span>
+        </li>
+        <li class="quiz-item" style="flex-direction:column;align-items:flex-start;gap:4px;">
+          <span style="font-weight:700;color:#1a6b8a;">2.</span>
+          <span>Have you seen the new sculpture in the square? It's <span class="blank" data-answer="massive" onclick="fillSent(this)">_______</span>! Standing next to it I felt tiny — it's a huge, <span class="blank" data-answer="circular" onclick="fillSent(this)">_______</span> steel hoop. I think it's really <span class="blank" data-answer="stunning" onclick="fillSent(this)">_______</span>.</span>
+        </li>
+        <li class="quiz-item" style="flex-direction:column;align-items:flex-start;gap:4px;">
+          <span style="font-weight:700;color:#1a6b8a;">3.</span>
+          <span>You know how much Louisa loves gadgets? She's just bought a(n) <span class="blank" data-answer="hi-tech" onclick="fillSent(this)">_______</span> music system. The speaker is quite tall and <span class="blank" data-answer="oval" onclick="fillSent(this)">_______</span> in shape, and the whole system runs on <span class="blank" data-answer="artificial" onclick="fillSent(this)">_______</span> intelligence — totally state-of-the-art.</span>
+        </li>
+      </ul>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="checkSent()">Check Answers</button>
+        <button class="btn btn-answer"  onclick="showAllSentAnswers()">Show All Answers</button>
+        <button class="btn btn-outline"  onclick="resetSent()">Try Again</button>
+      </div>
+      <div class="score-box" id="sent-score">
+        <div class="score-num" id="sent-score-num">0/9</div>
+        <div class="score-msg" id="sent-score-msg"></div>
+      </div>
+    </div>
+
+    <!-- ── Exercise 2b ── -->
+    <div style="margin-top:24px;padding:18px;background:#f0f8ff;border-radius:10px;border:1px solid #bde0f7;">
+      <p style="font-weight:700;color:#1a6b8a;margin-bottom:10px;">💬 Exercise 2b — Describe a possession</p>
+      <p style="font-size:0.93em;line-height:1.6;margin-bottom:12px;">Work in pairs. Choose something you own — a phone, a piece of clothing, a bag, headphones, anything. Describe it to your partner using <strong>at least three adjectives</strong> from Exercise 1. Your partner must guess what it is!</p>
+      <div style="background:white;border-radius:8px;padding:14px;font-size:0.88em;color:#555;line-height:1.8;">
+        <p style="font-weight:700;color:#1a1a2e;margin-bottom:6px;">Useful sentence starters:</p>
+        <p>▸ <em>"It's quite ______ in shape and made from ______..."</em></p>
+        <p>▸ <em>"I'd describe it as ______ — it's definitely not ordinary!"</em></p>
+        <p>▸ <em>"The design is really ______ and the material feels ______..."</em></p>
+        <p>▸ <em>"It's a bit ______ but that's what I love about it."</em></p>
+      </div>
+    </div>
+
+  </div>
+  <div class="section-footer">🔤 Extra Revision <span><span class="tag-blue">Pair / Individual</span></span></div>
+</div>
+
+<div style="text-align: center; padding: 30px; color: #888; font-size: 0.88em;">
+  <p>🎉 <strong>End of Lesson 1</strong> — Well done! Continue with <strong>Lesson 2: Language & Speaking</strong></p>
+</div>
+
+<script>
+// ── CATEGORY SORT ──
+let selectedWord = null;
+const catAnswers = {
+  ai:      ['prompt','AI copilot','AI-literate','deepfake','AI slop'],
+  online:  ['doomscroll','ghost','chronically online','soft-launch','the algorithm'],
+  work:    ['always-on','digital detox','deinfluence','AI-literate','brain rot'],
+  content: ['short-form content','deepfake','AI slop','doomscroll','brain rot']
+};
+const placed = { ai: [], online: [], work: [], content: [] };
+
+function selectWord(el, word) {
+  if (el.classList.contains('used')) return;
+  document.querySelectorAll('.word-chip.selected').forEach(c => c.classList.remove('selected'));
+  if (selectedWord === word) { selectedWord = null; return; }
+  selectedWord = word;
+  el.style.outline = '3px solid #e8a838';
+  el.dataset.selected = 'true';
+}
+
+function placeWord(cat) {
+  if (!selectedWord) return;
+  const chips = document.querySelectorAll('.word-chip');
+  chips.forEach(c => {
+    if (c.dataset.selected === 'true') {
+      c.style.outline = '';
+      delete c.dataset.selected;
+    }
+  });
+  if (!placed[cat].includes(selectedWord)) {
+    placed[cat].push(selectedWord);
+    renderPlaced(cat);
+  }
+  selectedWord = null;
+}
+
+function renderPlaced(cat) {
+  const container = document.getElementById('placed-' + cat);
+  container.innerHTML = '';
+  placed[cat].forEach(w => {
+    const chip = document.createElement('span');
+    chip.className = 'placed-chip';
+    chip.textContent = w;
+    chip.onclick = (e) => { e.stopPropagation(); removePlaced(cat, w); };
+    container.appendChild(chip);
+  });
+}
+
+function removePlaced(cat, word) {
+  placed[cat] = placed[cat].filter(w => w !== word);
+  renderPlaced(cat);
+}
+
+function showCatAnswers() {
+  let msg = '<strong>Suggested answers:</strong><br>';
+  const labels = { ai: '🤖 AI & Technology', online: '📱 Online Behaviour', work: '💼 Work & Wellbeing', content: '🎬 Content & Media' };
+  for (const cat in catAnswers) {
+    msg += `<br><em>${labels[cat]}:</em> ${catAnswers[cat].join(', ')}`;
+  }
+  msg += '<br><br><em>Note: some words fit multiple categories — great if you found overlaps!</em>';
+  const fb = document.getElementById('cat-feedback');
+  fb.innerHTML = msg;
+  fb.style.display = 'block';
+}
+
+function resetCategories() {
+  for (const cat in placed) { placed[cat] = []; renderPlaced(cat); }
+  document.getElementById('cat-feedback').style.display = 'none';
+  selectedWord = null;
+}
+
+// ── QUIZ ──
+let selectedQuizWord = null;
+
+function selectQuizWord(el, word) {
+  document.querySelectorAll('#quiz-bank .word-chip').forEach(c => c.style.outline = '');
+  if (selectedQuizWord === word) { selectedQuizWord = null; return; }
+  selectedQuizWord = word;
+  el.style.outline = '3px solid #e8a838';
+}
+
+function fillBlank(el) {
+  if (!selectedQuizWord) return;
+  el.textContent = selectedQuizWord;
+  el.dataset.filled = selectedQuizWord;
+  el.classList.remove('filled-correct', 'filled-wrong');
+  document.querySelectorAll('#quiz-bank .word-chip').forEach(c => c.style.outline = '');
+  selectedQuizWord = null;
+}
+
+function checkQuiz() {
+  let correct = 0;
+  document.querySelectorAll('.blank').forEach(b => {
+    if (b.dataset.filled) {
+      if (b.dataset.filled.toLowerCase() === b.dataset.answer.toLowerCase()) {
+        b.classList.add('filled-correct');
+        b.classList.remove('filled-wrong');
+        correct++;
+      } else {
+        b.classList.add('filled-wrong');
+        b.classList.remove('filled-correct');
+      }
+    }
+  });
+  const scoreBox = document.getElementById('quiz-score');
+  scoreBox.classList.add('visible');
+  document.getElementById('score-num').textContent = correct + '/15';
+  const msgs = ['Keep trying — almost there!','Good effort! Review the tricky ones.','Solid work!','Very good! You know your digital vocab.','Perfect! You\'re tech-savvy indeed! 🎉'];
+  document.getElementById('score-msg').textContent = msgs[Math.min(Math.floor(correct/3), 4)];
+}
+
+function resetQuiz() {
+  document.querySelectorAll('.blank').forEach(b => {
+    b.textContent = '_______';
+    b.classList.remove('filled-correct','filled-wrong');
+    delete b.dataset.filled;
+  });
+  document.getElementById('quiz-score').classList.remove('visible');
+  selectedQuizWord = null;
+  document.querySelectorAll('#quiz-bank .word-chip').forEach(c => c.style.outline = '');
+}
+
+// ── Show All Cat Answers ──
+function showAllCatAnswers() {
+  resetCategories();
+  for (const cat in catAnswers) {
+    catAnswers[cat].forEach(w => {
+      if (!placed[cat].includes(w)) { placed[cat].push(w); }
+    });
+    renderPlaced(cat);
+  }
+  showCatAnswers();
+}
+
+// ── Show All Quiz Answers ──
+function showAllQuizAnswers() {
+  document.querySelectorAll('.blank').forEach(b => {
+    b.textContent = b.dataset.answer;
+    b.dataset.filled = b.dataset.answer;
+    b.classList.add('filled-correct');
+    b.classList.remove('filled-wrong');
+  });
+  document.querySelectorAll('#quiz-bank .word-chip').forEach(c => c.style.outline = '');
+  selectedQuizWord = null;
+  const scoreBox = document.getElementById('quiz-score');
+  scoreBox.classList.add('visible');
+  document.getElementById('score-num').textContent = '15/15';
+  document.getElementById('score-msg').textContent = 'All answers revealed!';
+}
+
+// ── Show All Q&A ──
+function showAllQA() {
+  document.querySelectorAll('.qa-q').forEach(q => {
+    q.classList.add('open');
+    q.nextElementSibling.classList.add('visible');
+  });
+}
+
+// ── Q&A Accordion ──
+function toggleQA(header) {
+  header.classList.toggle('open');
+  const answer = header.nextElementSibling;
+  answer.classList.toggle('visible');
+}
+
+// ── Advice buttons ──
+function toggleAdvice(btn) {
+  const siblings = btn.parentElement.querySelectorAll('.think-btn');
+  siblings.forEach(s => s.style.background = '');
+  btn.style.background = '#1a6b8a';
+  btn.style.color = 'white';
+  btn.style.borderColor = '#1a6b8a';
+}
+
+// ── TABOO GAME ──
+const tabooCards = [
+  { word: 'DOOMSCROLL', forbidden: ['scroll','phone','news','negative','cannot stop'] },
+  { word: 'GHOST', forbidden: ['reply','message','contact','ignore','disappear'] },
+  { word: 'DEEPFAKE', forbidden: ['fake','AI','video','generated','real person'] },
+  { word: 'PROMPT', forbidden: ['instruct','AI','type','ChatGPT','ask'] },
+  { word: 'THE ALGORITHM', forbidden: ['app','feed','decide','show','TikTok'] },
+  { word: 'DIGITAL DETOX', forbidden: ['phone','screen','break','offline','social media'] },
+  { word: 'DEINFLUENCE', forbidden: ["don't buy",'recommend','influencer','review','avoid'] },
+  { word: 'BRAIN ROT', forbidden: ['mindless','scroll','attention','videos','dumb'] },
+  { word: 'CHRONICALLY ONLINE', forbidden: ['internet','always','24/7','offline','real life'] },
+  { word: 'AI SLOP', forbidden: ['fake','generated','low quality','content','artificial'] },
+];
+let tabooIndex = 0;
+let tabooOrder = [...Array(tabooCards.length).keys()];
+
+function showTaboo(i) {
+  const card = tabooCards[tabooOrder[i]];
+  document.getElementById('taboo-main').textContent = card.word;
+  const forbEl = document.getElementById('taboo-forbidden');
+  forbEl.innerHTML = card.forbidden.map(w => `<span>${w}</span>`).join('');
+  document.getElementById('taboo-counter').textContent = `Card ${i+1} of ${tabooCards.length}`;
+}
+
+function nextTaboo() {
+  tabooIndex = (tabooIndex + 1) % tabooCards.length;
+  showTaboo(tabooIndex);
+}
+
+function shuffleTaboo() {
+  for (let i = tabooOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [tabooOrder[i], tabooOrder[j]] = [tabooOrder[j], tabooOrder[i]];
+  }
+  tabooIndex = 0;
+  showTaboo(0);
+}
+
+// ── NAV ──
+function scrollTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ══════════════════════════════════════════
+// ── EXTRA REVISION: ADJECTIVE TABLE ──────
+// ══════════════════════════════════════════
+const adjTableAnswers = {
+  opinion:  ['bizarre','stunning','exclusive'],
+  size:     ['massive'],
+  quality:  ['artificial','delicate','hi-tech'],
+  shape:    ['circular','oval','rectangular'],
+  material: ['cotton','wooden']
+};
+const adjPlaced = { opinion:[], size:[], quality:[], shape:[], material:[] };
+let selectedAdj = null;
+
+function selAdj(el, word) {
+  document.querySelectorAll('#adj-bank .word-chip').forEach(c => c.style.outline = '');
+  if (selectedAdj === word) { selectedAdj = null; return; }
+  selectedAdj = word;
+  el.style.outline = '3px solid #e8a838';
+}
+
+function placeAdj(col) {
+  if (!selectedAdj) return;
+  // Remove from any other column first
+  for (const c in adjPlaced) adjPlaced[c] = adjPlaced[c].filter(w => w !== selectedAdj);
+  adjPlaced[col].push(selectedAdj);
+  document.querySelectorAll('#adj-bank .word-chip').forEach(c => c.style.outline = '');
+  selectedAdj = null;
+  renderAdjTable();
+}
+
+function renderAdjTable() {
+  ['opinion','size','quality','shape','material'].forEach(col => {
+    const td = document.getElementById('col-' + col);
+    td.innerHTML = adjPlaced[col].map(w =>
+      `<span style="display:inline-block;background:#1a6b8a;color:white;padding:3px 10px;border-radius:12px;font-size:0.82em;margin:3px;cursor:pointer;" onclick="removeAdj('${col}','${w}')">${w}</span>`
+    ).join('');
+  });
+}
+
+function removeAdj(col, word) {
+  adjPlaced[col] = adjPlaced[col].filter(w => w !== word);
+  renderAdjTable();
+}
+
+function checkAdjTable() {
+  let feedback = '<strong>Correct answers:</strong><br>';
+  const labels = { opinion:'Opinion', size:'Size', quality:'Quality', shape:'Shape', material:'Material' };
+  let allRight = true;
+  for (const col in adjTableAnswers) {
+    const correct = adjTableAnswers[col].sort().join(', ');
+    const given   = [...adjPlaced[col]].sort().join(', ');
+    const ok = correct === given;
+    if (!ok) allRight = false;
+    feedback += `<br><em>${labels[col]}:</em> <span style="color:${ok?'#28a745':'#dc3545'}">${correct}</span>`;
+  }
+  if (allRight) feedback += '<br><br>✅ <strong>All correct!</strong>';
+  const fb = document.getElementById('adj-feedback');
+  fb.innerHTML = feedback;
+  fb.style.display = 'block';
+}
+
+function showAllAdjAnswers() {
+  resetAdjTable();
+  for (const col in adjTableAnswers) {
+    adjTableAnswers[col].forEach(w => { if (!adjPlaced[col].includes(w)) adjPlaced[col].push(w); });
+  }
+  renderAdjTable();
+  checkAdjTable();
+}
+
+function resetAdjTable() {
+  for (const col in adjPlaced) adjPlaced[col] = [];
+  renderAdjTable();
+  document.querySelectorAll('#adj-bank .word-chip').forEach(c => c.style.outline = '');
+  document.getElementById('adj-feedback').style.display = 'none';
+  selectedAdj = null;
+}
+
+// ── EXTRA REVISION: SENTENCE FILL ────────
+let selectedSentWord = null;
+
+function selSent(el, word) {
+  document.querySelectorAll('#sent-bank .word-chip').forEach(c => c.style.outline = '');
+  if (selectedSentWord === word) { selectedSentWord = null; return; }
+  selectedSentWord = word;
+  el.style.outline = '3px solid #e8a838';
+}
+
+function fillSent(el) {
+  if (!selectedSentWord) return;
+  el.textContent = selectedSentWord;
+  el.dataset.filled = selectedSentWord;
+  el.classList.remove('filled-correct','filled-wrong');
+  document.querySelectorAll('#sent-bank .word-chip').forEach(c => c.style.outline = '');
+  selectedSentWord = null;
+}
+
+function checkSent() {
+  let correct = 0, total = 0;
+  document.querySelectorAll('#sent-questions .blank').forEach(b => {
+    total++;
+    if (b.dataset.filled) {
+      if (b.dataset.filled === b.dataset.answer) { b.classList.add('filled-correct'); b.classList.remove('filled-wrong'); correct++; }
+      else { b.classList.add('filled-wrong'); b.classList.remove('filled-correct'); }
+    }
+  });
+  const box = document.getElementById('sent-score');
+  box.classList.add('visible');
+  document.getElementById('sent-score-num').textContent = correct + '/' + total;
+  const msgs = ['Review the adjective categories and try again.','Good try — check the ones in red.','Nearly there!','Almost perfect!','All correct! Excellent work! 🎉'];
+  document.getElementById('sent-score-msg').textContent = msgs[Math.min(Math.floor(correct / 2), 4)];
+}
+
+function showAllSentAnswers() {
+  document.querySelectorAll('#sent-questions .blank').forEach(b => {
+    b.textContent = b.dataset.answer;
+    b.dataset.filled = b.dataset.answer;
+    b.classList.add('filled-correct');
+    b.classList.remove('filled-wrong');
+  });
+  document.querySelectorAll('#sent-bank .word-chip').forEach(c => c.style.outline = '');
+  selectedSentWord = null;
+  const box = document.getElementById('sent-score');
+  box.classList.add('visible');
+  const total = document.querySelectorAll('#sent-questions .blank').length;
+  document.getElementById('sent-score-num').textContent = total + '/' + total;
+  document.getElementById('sent-score-msg').textContent = 'All answers revealed!';
+}
+
+function resetSent() {
+  document.querySelectorAll('#sent-questions .blank').forEach(b => {
+    b.textContent = '_______';
+    b.classList.remove('filled-correct','filled-wrong');
+    delete b.dataset.filled;
+  });
+  document.getElementById('sent-score').classList.remove('visible');
+  document.querySelectorAll('#sent-bank .word-chip').forEach(c => c.style.outline = '');
+  selectedSentWord = null;
+}
+
+showTaboo(0);
+
+// ── Shuffle quiz word bank on page load ──
+(function shuffleQuizBank() {
+  const bank = document.getElementById('quiz-bank');
+  const chips = Array.from(bank.children);
+  for (let i = chips.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    bank.appendChild(chips[j]);
+    chips.splice(j, 1);
+  }
+})();
+</script>
+</body>
+</html>
