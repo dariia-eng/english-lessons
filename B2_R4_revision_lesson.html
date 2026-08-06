@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clash &amp; Compromise — Units 3 &amp; 4</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1a1a2e; }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, #1a6b4e 0%, #0d4f38 50%, #16213e 100%);
+    color: white; padding: 40px 30px 50px; text-align: center; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+  .hero .tag { background: #e8a838; color: #1a1a2e; padding: 4px 14px; border-radius: 20px; font-size: 0.8em; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; display: inline-block; margin-bottom: 12px; }
+  .hero h1 { font-size: 2.2em; font-weight: 800; margin-bottom: 6px; }
+  .hero p { font-size: 1.05em; opacity: 0.85; }
+  .lesson-nav { display: flex; justify-content: center; gap: 8px; margin-top: 22px; flex-wrap: wrap; }
+  .nav-dot { background: rgba(255,255,255,0.25); color: white; border: none; padding: 6px 16px; border-radius: 20px; font-size: 0.82em; cursor: pointer; transition: background 0.2s; }
+  .nav-dot:hover { background: rgba(255,255,255,0.45); }
+
+  /* ── Sections ── */
+  .section { max-width: 860px; margin: 30px auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+  .section-header { padding: 20px 28px 16px; display: flex; align-items: center; gap: 14px; border-bottom: 2px solid #f0f4f8; }
+  .section-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4em; flex-shrink: 0; }
+  .section-title { font-size: 1.25em; font-weight: 700; color: #1a1a2e; }
+  .section-subtitle { font-size: 0.88em; color: #666; margin-top: 2px; }
+  .section-body { padding: 24px 28px; }
+  .section-footer { padding: 14px 28px; background: #f8fdfb; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 0.82em; color: #888; }
+  .progress-bar { height: 5px; background: #e0e0e0; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #e8a838, #1a6b4e); transition: width 0.5s; }
+
+  /* ── Tags ── */
+  .tag-green { background: #d4edda; color: #155724; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 600; }
+  .tag-blue  { background: #cce5ff; color: #004085; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 600; }
+  .tag-amber { background: #fff3cd; color: #856404; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 600; }
+
+  /* ── Instruction ── */
+  .instr { background: #f0f8f4; border-left: 4px solid #1a6b4e; border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 20px; font-size: 0.93em; color: #444; line-height: 1.5; }
+  .instr strong { color: #1a6b4e; }
+
+  /* ── Buttons ── */
+  .btn { padding: 10px 22px; border: none; border-radius: 8px; font-size: 0.92em; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-primary { background: #1a6b4e; color: white; }
+  .btn-primary:hover { background: #0d4f38; transform: translateY(-1px); }
+  .btn-outline { background: white; color: #1a6b4e; border: 2px solid #1a6b4e; }
+  .btn-outline:hover { background: #1a6b4e; color: white; }
+  .btn-answer { background: #e8a838; color: #1a1a2e; }
+  .btn-answer:hover { background: #d4982a; }
+  .btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+
+  /* ── Score ── */
+  .score-box { text-align: center; padding: 20px; background: #e8f5ef; border-radius: 10px; margin-top: 16px; display: none; }
+  .score-box.visible { display: block; }
+  .score-num { font-size: 2.5em; font-weight: 800; color: #1a6b4e; }
+  .score-msg { font-size: 1em; color: #555; margin-top: 4px; }
+
+  /* ── Text inputs ── */
+  .t-input {
+    border: none; border-bottom: 2px solid #1a6b4e; outline: none; font-family: inherit;
+    font-size: 0.95em; color: #1a1a2e; background: transparent; padding: 2px 6px;
+    min-width: 110px; transition: border-color 0.2s;
+  }
+  .t-input:focus { border-color: #e8a838; }
+  .t-input.correct { border-color: #28a745; background: #d4edda; border-radius: 4px; color: #155724; }
+  .t-input.wrong   { border-color: #dc3545; background: #f8d7da; border-radius: 4px; color: #721c24; }
+
+  /* ── Word bank ── */
+  .word-bank { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: #f0f4f8; border-radius: 10px; margin-bottom: 18px; }
+  .word-chip {
+    background: white; border: 2px solid #1a6b4e; color: #1a6b4e; padding: 5px 13px;
+    border-radius: 20px; font-size: 0.87em; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; user-select: none;
+  }
+  .word-chip:hover { background: #1a6b4e; color: white; }
+  .word-chip.selected { background: #e8a838; border-color: #e8a838; color: #1a1a2e; }
+  .word-chip.used { background: #ccc; border-color: #ccc; color: #888; cursor: default; pointer-events: none; }
+
+  /* ── Blanks ── */
+  .blank {
+    display: inline-block; min-width: 130px; border-bottom: 2px solid #1a6b4e;
+    padding: 2px 8px; cursor: pointer; font-weight: 600; color: #1a6b4e;
+    border-radius: 4px; text-align: center; transition: all 0.2s; font-size: 0.94em;
+  }
+  .blank:hover { background: #e8f5ef; }
+  .blank.filled-correct { background: #d4edda; color: #155724; border-color: #28a745; cursor: default; }
+  .blank.filled-wrong   { background: #f8d7da; color: #721c24; border-color: #dc3545; }
+
+  /* ── Warm-up scenarios ── */
+  .scenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+  .scenario-card { border: 2px solid #c8e6d4; border-radius: 14px; padding: 18px; background: #f8fdfb; }
+  .scenario-num  { font-size: 0.73em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #1a6b4e; margin-bottom: 8px; }
+  .scenario-text { font-size: 0.91em; line-height: 1.6; color: #1a1a2e; margin-bottom: 12px; }
+  .scenario-opts { display: flex; flex-direction: column; gap: 6px; }
+  .sc-opt {
+    width: 100%; text-align: left; padding: 8px 12px; border: 1.5px solid #c5d8cd;
+    border-radius: 8px; background: white; font-size: 0.86em; font-family: inherit;
+    cursor: pointer; transition: all 0.18s; color: #1a1a2e;
+  }
+  .sc-opt:hover   { background: #e8f5ef; border-color: #1a6b4e; }
+  .sc-opt.selected { background: #1a6b4e; color: white; border-color: #1a6b4e; }
+
+  /* ── Idiom cards ── */
+  .idiom-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(195px, 1fr)); gap: 12px; margin-bottom: 26px; }
+  .idiom-card {
+    background: #f0f8f4; border: 2px solid #b8ddc9; border-radius: 12px; padding: 16px 14px;
+    cursor: pointer; transition: all 0.2s; min-height: 78px;
+  }
+  .idiom-card:hover { border-color: #1a6b4e; box-shadow: 0 4px 14px rgba(26,107,78,0.15); }
+  .idiom-card.flipped { background: #e8f5ef; border-color: #1a6b4e; }
+  .idiom-front { font-weight: 700; font-size: 0.96em; color: #1a6b4e; }
+  .idiom-pos   { font-size: 0.72em; color: #aaa; font-style: italic; margin-top: 2px; }
+  .idiom-hint  { font-size: 0.73em; color: #bbb; margin-top: 6px; }
+  .idiom-back  { display: none; margin-top: 10px; font-size: 0.85em; color: #333; line-height: 1.5; border-top: 1px solid #b8ddc9; padding-top: 8px; }
+  .idiom-card.flipped .idiom-back { display: block; }
+  .idiom-card.flipped .idiom-hint { display: none; }
+
+  /* ── Story paragraph ── */
+  .story-p { background: #f8fdfb; border: 1.5px solid #c8e6d4; border-radius: 10px; padding: 20px; font-size: 0.94em; line-height: 2.2; color: #1a1a2e; margin-bottom: 18px; }
+
+  /* ── Grammar box ── */
+  .grammar-box { background: linear-gradient(135deg, #e8f5ef, #d4eddf); border: 2px solid #b8ddc9; border-radius: 12px; padding: 20px; margin-bottom: 22px; }
+  .grammar-box h3 { color: #1a6b4e; font-size: 1em; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .tense-row { display: grid; grid-template-columns: 180px 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(26,107,78,0.15); font-size: 0.9em; }
+  .tense-row:last-child { border-bottom: none; }
+  .tense-name { font-weight: 700; color: #1a6b4e; line-height: 1.4; }
+  .tense-ex { color: #333; font-style: italic; line-height: 1.6; }
+  .tense-ex span { font-weight: 700; font-style: normal; color: #0d4f38; }
+
+  /* ── Adjective table ── */
+  .adj-table { width: 100%; border-collapse: collapse; margin-bottom: 22px; font-size: 0.9em; }
+  .adj-table th { background: #1a6b4e; color: white; padding: 10px 14px; text-align: left; font-size: 0.88em; }
+  .adj-table td { padding: 9px 14px; border-bottom: 1px solid #e0e8e4; vertical-align: middle; }
+  .adj-table tr:hover td { background: #f0f8f4; }
+  .adj-pill { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 700; }
+  .adj-hidden { background: #dde8e3; color: #dde8e3; cursor: pointer; transition: all 0.2s; }
+  .adj-hidden:hover { background: #c5d8d0; color: #c5d8d0; }
+  .adj-revealed { background: #1a6b4e; color: white; cursor: default; }
+
+  /* ── 21st-century cards ── */
+  .century-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .century-card { background: #f8fdfb; border: 1.5px solid #c8e6d4; border-radius: 10px; padding: 14px 16px; }
+  .century-def  { font-size: 0.88em; color: #444; line-height: 1.55; margin-bottom: 8px; }
+  .c-input {
+    border: none; border-bottom: 2px solid #1a6b4e; outline: none; font-family: inherit;
+    font-size: 0.93em; font-weight: 700; color: #1a6b4e; background: transparent;
+    padding: 2px 4px; min-width: 100px; transition: border-color 0.2s;
+  }
+  .c-input:focus { border-color: #e8a838; }
+  .c-input.correct { border-color: #28a745; color: #155724; background: #d4edda; border-radius: 4px; }
+  .c-input.wrong   { border-color: #dc3545; color: #721c24; background: #f8d7da; border-radius: 4px; }
+
+  /* ── Personality quiz ── */
+  .adj-quiz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .adj-chip {
+    padding: 9px 14px; border: 2px solid #c8e6d4; border-radius: 10px; background: white;
+    font-size: 0.88em; font-weight: 600; cursor: pointer; text-align: center;
+    transition: all 0.2s; color: #1a1a2e;
+  }
+  .adj-chip:hover   { background: #e8f5ef; border-color: #1a6b4e; }
+  .adj-chip.picked  { background: #1a6b4e; color: white; border-color: #1a6b4e; }
+  .adj-chip .adj-tip { font-size: 0.78em; color: rgba(255,255,255,0.8); margin-top: 2px; display: none; }
+  .adj-chip.picked .adj-tip { display: block; }
+
+  /* ── Debate cards ── */
+  .debate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+  .debate-card {
+    background: linear-gradient(135deg, #1a6b4e, #0d4f38); color: white;
+    border-radius: 14px; padding: 20px 18px; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .debate-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(26,107,78,0.3); }
+  .debate-num  { font-size: 0.73em; opacity: 0.7; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .debate-text { font-size: 0.94em; line-height: 1.55; font-weight: 500; }
+  .debate-card .idiom-use { font-size: 0.77em; opacity: 0.75; margin-top: 10px; font-style: italic; }
+
+  /* ── Phrase box ── */
+  .phrase-box { padding: 18px; background: #fff9e6; border-radius: 10px; border: 1px solid #fde2c8; margin-bottom: 22px; }
+  .phrase-box h4 { color: #c0672a; margin-bottom: 12px; font-size: 0.95em; font-weight: 700; }
+  .phrase-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .p-chip { background: white; border: 1.5px solid #e8a838; color: #856404; padding: 5px 12px; border-radius: 20px; font-size: 0.83em; }
+
+  /* ── Word order ── */
+  .wo-list { display: flex; flex-direction: column; gap: 16px; }
+  .wo-item { background: #f8fdfb; border: 1.5px solid #c8e6d4; border-radius: 10px; padding: 16px 18px; }
+  .wo-scrambled { font-size: 0.88em; color: #1a6b4e; font-weight: 600; margin-bottom: 6px; }
+  .wo-starter   { font-size: 0.82em; color: #888; margin-bottom: 8px; }
+  .wo-reveal {
+    min-height: 34px; background: white; border: 2px dashed #c8e6d4; border-radius: 8px;
+    padding: 6px 12px; font-size: 0.9em; color: #bbb; font-style: italic; cursor: pointer; transition: all 0.2s;
+  }
+  .wo-reveal:hover { background: #f0f8f4; border-color: #1a6b4e; color: #888; }
+  .wo-reveal.shown { color: #1a6b4e; font-style: normal; font-weight: 600; border-style: solid; border-color: #1a6b4e; background: #e8f5ef; cursor: default; }
+
+  /* ── Discussion box ── */
+  .disc-box { margin-top: 22px; padding: 18px; background: #f0f8f4; border-radius: 10px; border: 1px solid #c8e6d4; }
+  .disc-box h4 { color: #1a6b4e; margin-bottom: 10px; font-size: 0.95em; }
+  .disc-box ul { list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 0.91em; color: #444; }
+  .disc-box li { display: flex; gap: 8px; line-height: 1.6; }
+
+  /* ── Responsive ── */
+  @media (max-width: 620px) {
+    .hero h1 { font-size: 1.6em; }
+    .section-body { padding: 18px 16px; }
+    .scenario-grid, .adj-quiz-grid, .debate-grid, .century-grid, .idiom-grid { grid-template-columns: 1fr; }
+    .tense-row { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="tag">Units 3 &amp; 4</div>
+  <h1>Clash &amp; Compromise</h1>
+  <p>Language for people, opinions &amp; modern life</p>
+  <nav class="lesson-nav">
+    <button class="nav-dot" onclick="goTo('warmup')">🧠 Warm-Up</button>
+    <button class="nav-dot" onclick="goTo('idioms')">⚔️ Conflict Idioms</button>
+    <button class="nav-dot" onclick="goTo('grammar')">⏰ Past Tenses</button>
+    <button class="nav-dot" onclick="goTo('adjectives')">🔤 Adjectives</button>
+    <button class="nav-dot" onclick="goTo('discussion')">💬 Discussion</button>
+    <button class="nav-dot" onclick="goTo('hottake')">🎲 Hot Takes</button>
+  </nav>
+</div>
+
+<!-- ── WARM-UP ─────────────────────────────────────────────── -->
+<div class="section" id="warmup">
+  <div class="progress-bar"><div class="progress-fill" style="width:8%"></div></div>
+  <div class="section-header">
+    <div class="section-icon" style="background:#d4edda;">🧠</div>
+    <div>
+      <div class="section-title">What's Your Conflict Style?</div>
+      <div class="section-subtitle">How do you handle disagreements?</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="instr"><strong>Step 1:</strong> Read each situation. Click the response that sounds most like you. <strong>Step 2:</strong> Compare answers with your teacher and discuss — are you an Avoider, a Negotiator, or a Fighter?</div>
+
+    <div class="scenario-grid">
+      <div class="scenario-card">
+        <div class="scenario-num">Situation 1 — At Work</div>
+        <div class="scenario-text">Your colleague keeps interrupting you in meetings and taking credit for your ideas. What do you do?</div>
+        <div class="scenario-opts">
+          <button class="sc-opt" onclick="pickOpt(this)">A. I stay quiet and hope it stops on its own.</button>
+          <button class="sc-opt" onclick="pickOpt(this)">B. I speak to them directly and calmly after the meeting.</button>
+          <button class="sc-opt" onclick="pickOpt(this)">C. I make sure everyone knows whose idea it really was — loudly.</button>
+        </div>
+      </div>
+      <div class="scenario-card">
+        <div class="scenario-num">Situation 2 — Online</div>
+        <div class="scenario-text">Someone posts something you strongly disagree with on social media. What do you do?</div>
+        <div class="scenario-opts">
+          <button class="sc-opt" onclick="pickOpt(this)">A. I scroll past. Not worth my energy.</button>
+          <button class="sc-opt" onclick="pickOpt(this)">B. I write a calm, thoughtful reply with evidence.</button>
+          <button class="sc-opt" onclick="pickOpt(this)">C. I share it with a devastating meme that destroys their argument.</button>
+        </div>
+      </div>
+      <div class="scenario-card">
+        <div class="scenario-num">Situation 3 — With a Friend</div>
+        <div class="scenario-text">You've been arguing for 20 minutes. You suddenly realise your friend might actually have a point. What do you do?</div>
+        <div class="scenario-opts">
+          <button class="sc-opt" onclick="pickOpt(this)">A. I back down straight away. Peace is more important than being right.</button>
+          <button class="sc-opt" onclick="pickOpt(this)">B. I acknowledge their point but explain where I still disagree.</button>
+          <button class="sc-opt" onclick="pickOpt(this)">C. I keep going. I don't like to admit I'm wrong.</button>
+        </div>
+      </div>
+      <div class="scenario-card">
+        <div class="scenario-num">Situation 4 — In a Meeting</div>
+        <div class="scenario-text">Two colleagues are getting heated over a project decision. Everyone looks uncomfortable. What do you do?</div>
+        <div class="scenario-opts">
+          <button class="sc-opt" onclick="pickOpt(this)">A. I stay quiet. It's not my conflict.</button>
+          <button class="sc-opt" onclick="pickOpt(this)">B. I suggest a short break and try to find a middle ground.</button>
+          <button class="sc-opt" onclick="pickOpt(this)">C. I take sides with whoever I think is right.</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:18px; background:#e8f5ef; border-radius:10px; border:1px solid #b8ddc9;">
+      <p style="font-weight:700; color:#1a6b4e; margin-bottom:12px;">💬 Discuss your results:</p>
+      <div style="display:flex; flex-direction:column; gap:10px; font-size:0.91em; color:#333;">
+        <div style="display:flex; gap:10px;"><span style="font-weight:700; color:#1a6b4e; min-width:70px;">Mostly A →</span><span><strong>The Avoider.</strong> You prefer peace, even if it means swallowing your feelings. Is this always healthy? Can avoiding conflict make things worse?</span></div>
+        <div style="display:flex; gap:10px;"><span style="font-weight:700; color:#1a6b4e; min-width:70px;">Mostly B →</span><span><strong>The Negotiator.</strong> You look for common ground. Is it always possible to find a compromise? Or is it sometimes better to take a clear side?</span></div>
+        <div style="display:flex; gap:10px;"><span style="font-weight:700; color:#1a6b4e; min-width:70px;">Mostly C →</span><span><strong>The Fighter.</strong> You like to win. Does being <em>determined</em> sometimes cross the line into being <em>stubborn</em>? What's the difference?</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="section-footer">🧠 Warm-Up <span><span class="tag-blue">Discussion</span></span></div>
+</div>
+
+<!-- ── CONFLICT IDIOMS ──────────────────────────────────────── -->
+<div class="section" id="idioms">
+  <div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div>
+  <div class="section-header">
+    <div class="section-icon" style="background:#fde2c8;">⚔️</div>
+    <div>
+      <div class="section-title">Conflict Idioms</div>
+      <div class="section-subtitle">8 expressions for disagreement — essential for real-life English</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="instr"><strong>Step 1:</strong> Click each card to reveal the meaning and example. Try to memorise them before moving on. <strong>Step 2:</strong> Type the correct idiom in each gap — <strong>no word bank this time!</strong> Spelling counts. Refer back to the cards if you get stuck.</div>
+
+    <div class="idiom-grid">
+      <div class="idiom-card" onclick="flipCard(this)">
+        <div class="idiom-front">clash (with sb)</div>
+        <div class="idiom-pos">verb</div>
+        <div class="idiom-hint">👆 click to see meaning</div>
+        <div class="idiom-back">To disagree strongly and openly with someone.<br><em>"They clashed over the new remote-work policy."</em></div>
+      </div>
+      <div class="idiom-card" onclick="flipCard(this)">
+        <div class="idiom-front">contradict (sb)</div>
+        <div class="idiom-pos">verb</div>
+        <div class="idiom-hint">👆 click to see meaning</div>
+        <div class="idiom-back">To say the opposite of what someone else (or you yourself) just said.<br><em>"He kept contradicting himself."</em></div>
+      </div>
+      <div class="idiom-card" onclick="flipCard(this)">
+        <div class="idiom-front">back down</div>
+        <div class="idiom-pos">phrasal verb</div>
+        <div class="idiom-hint">👆 click to see meaning</div>
+        <div class="idiom-back">To stop arguing; to admit defeat and give up your position.<br><em>"Neither side was willing to back down."</em></div>
+      </div>
+      <div class="idiom-card" onclick="flipCard(this)">
+        <div class="idiom-front">find a compromise</div>
+        <div class="idiom-pos">phrase</div>
+        <div class="idiom-hint">👆 click to see meaning</div>
+        <div class="idiom-back">To reach a middle-ground agreement where both sides give something up.<br><em>"Eventually they found a compromise they could both live with."</em></div>
+      </div>
+      <div class="idiom-card" onclick="flipCard(this)">
+        <div class="idiom-front">see eye to eye (with sb)</div>
+        <div class="idiom-pos">idiom</div>
+        <div class="idiom-hint">👆 click to see meaning</div>
+        <div class="idiom-back">To agree with someone; to share the same view.<br><em>"We don't always see eye to eye on politics."</em></div>
+      </div>
+      <div class="idiom-card" onclick="flipCard(this)">
+        <div class="idiom-front">pick a fight (with sb)</div>
+        <div class="idiom-pos">idiom</div>
+        <div class="idiom-hint">👆 click to see meaning</div>
+        <div class="idiom-back">To deliberately start an argument or conflict with someone.<br><em>"He was in a bad mood and picking a fight with everyone."</em></div>
+      </div>
+      <div class="idiom-card" onclick="flipCard(this)">
+        <div class="idiom-front">the underlying issue</div>
+        <div class="idiom-pos">noun phrase</div>
+        <div class="idiom-hint">👆 click to see meaning</div>
+        <div class="idiom-back">The real, hidden cause of a problem — not the surface argument.<br><em>"The argument was about money, but the underlying issue was trust."</em></div>
+      </div>
+      <div class="idiom-card" onclick="flipCard(this)">
+        <div class="idiom-front">gang up on (sb)</div>
+        <div class="idiom-pos">phrasal verb</div>
+        <div class="idiom-hint">👆 click to see meaning</div>
+        <div class="idiom-back">When several people join forces to oppose or criticise one person.<br><em>"She felt her colleagues were all ganging up on her."</em></div>
+      </div>
+    </div>
+
+    <p style="font-weight:700; margin-bottom:14px; color:#1a1a2e;">📖 Complete the story. Use each idiom from above once:</p>
+
+    <div id="idiom-story" style="line-height:2.6; font-size:0.94em;">
+      Last month, our team had a tense meeting. Jake
+      <input class="t-input" style="min-width:155px;" data-answer="clashed with" placeholder="idiom 1">
+      the project manager over the new deadline. Jake kept
+      <input class="t-input" style="min-width:145px;" data-answer="contradicting" placeholder="idiom 2">
+      himself — first he agreed with the plan, then he said it was completely unrealistic. Neither side would
+      <input class="t-input" style="min-width:120px;" data-answer="back down" placeholder="idiom 3">.
+      The manager finally suggested they try to
+      <input class="t-input" style="min-width:185px;" data-answer="find a compromise" placeholder="idiom 4">
+      on the timeline. They weren't
+      <input class="t-input" style="min-width:185px;" data-answer="seeing eye to eye" placeholder="idiom 5">
+      at all, but at least they were still talking. Jake later admitted he hadn't meant to
+      <input class="t-input" style="min-width:135px;" data-answer="pick a fight" placeholder="idiom 6">
+      — he was just exhausted and stressed. The real
+      <input class="t-input" style="min-width:165px;" data-answer="underlying issue" placeholder="idiom 7">
+      was that he hadn't received enough support from the team. He felt like everyone had been
+      <input class="t-input" style="min-width:145px;" data-answer="ganging up on" placeholder="idiom 8">
+      him for months.
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkStory()">Check Answers</button>
+      <button class="btn btn-answer" onclick="showStory()">Show All Answers</button>
+      <button class="btn btn-outline" onclick="resetStory()">Reset</button>
+    </div>
+    <div class="score-box" id="idiom-score">
+      <div class="score-num" id="idiom-score-num">0/8</div>
+      <div class="score-msg" id="idiom-score-msg"></div>
+    </div>
+
+    <div class="disc-box">
+      <h4>💬 Have you ever…?</h4>
+      <ul>
+        <li><span>▸</span><span>…<em>clashed with</em> a colleague or boss? What was the <em>underlying issue</em>?</span></li>
+        <li><span>▸</span><span>…<em>backed down</em> in an argument you were actually right about? Was it the right call?</span></li>
+        <li><span>▸</span><span>…felt like people were <em>ganging up on</em> you? How did you handle it?</span></li>
+        <li><span>▸</span><span>…managed to <em>find a compromise</em> after a really difficult conflict? What helped?</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="section-footer">⚔️ Conflict Idioms <span><span class="tag-green">Interactive</span></span></div>
+</div>
+
+<!-- ── PAST TENSES ──────────────────────────────────────────── -->
+<div class="section" id="grammar">
+  <div class="progress-bar"><div class="progress-fill" style="width:44%"></div></div>
+  <div class="section-header">
+    <div class="section-icon" style="background:#cce5ff;">⏰</div>
+    <div>
+      <div class="section-title">Past Tenses — Telling Stories</div>
+      <div class="section-subtitle">Past simple, past perfect simple &amp; past perfect continuous</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="grammar-box">
+      <h3>📐 When do we use each tense?</h3>
+      <div class="tense-row">
+        <div class="tense-name">Past Simple</div>
+        <div class="tense-ex">A completed action at a specific time in the past.<br>"I <span>posted</span> the comment and then went to bed."</div>
+      </div>
+      <div class="tense-row">
+        <div class="tense-name">Past Perfect Simple<br><em style="font-weight:400; font-size:0.9em;">(had + past participle)</em></div>
+        <div class="tense-ex">An action that happened <em>before</em> another past action.<br>"By the time she replied, I <span>had already left</span> the group chat."</div>
+      </div>
+      <div class="tense-row">
+        <div class="tense-name">Past Perfect Continuous<br><em style="font-weight:400; font-size:0.9em;">(had been + -ing)</em></div>
+        <div class="tense-ex">An ongoing action that continued up to a past moment — emphasises the duration.<br>"She <span>had been waiting</span> for two hours when he finally called."</div>
+      </div>
+    </div>
+
+    <div class="instr"><strong>Complete the story</strong> using the correct past tense. No verb prompts this time — use context clues and the grammar box above to decide which tense fits. More than one answer is sometimes possible — discuss with your teacher.</div>
+
+    <div class="story-p" id="grammar-story">
+      Last summer, I planned a long weekend in Lisbon with two friends. We
+      <input class="t-input" data-answer="had booked" placeholder="book →">
+      our flights months in advance. On the morning of the trip, my friend Mia realised she
+      <input class="t-input" data-answer="had left" placeholder="leave →">
+      her passport at home. She
+      <input class="t-input" data-answer="had been packing" placeholder="pack →">
+      all night when the alarm went off and simply
+      <input class="t-input" data-answer="had forgotten" placeholder="forget →">
+      to check her documents. We waited at the departure gate for two hours while she went back. By the time she returned, we
+      <input class="t-input" data-answer="had missed" placeholder="miss →">
+      our original flight. Fortunately, the airline
+      <input class="t-input" data-answer="had" placeholder="have →">
+      a flexible rebooking policy, so we
+      <input class="t-input" data-answer="managed" placeholder="manage →">
+      to get on the next one. That evening, we finally
+      <input class="t-input" data-answer="arrived" placeholder="arrive →">
+      in Lisbon — exhausted, but laughing about it already.
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkGrammar()">Check Answers</button>
+      <button class="btn btn-answer" onclick="showGrammar()">Show All Answers</button>
+      <button class="btn btn-outline" onclick="resetGrammar()">Try Again</button>
+    </div>
+    <div class="score-box" id="grammar-score">
+      <div class="score-num" id="g-num">0/8</div>
+      <div class="score-msg" id="g-msg"></div>
+    </div>
+
+    <div class="disc-box" style="margin-top:22px;">
+      <h4>✈️ Now tell your own story!</h4>
+      <ul>
+        <li><span>▸</span><span>Think of a time when something went wrong — a trip, a meeting, a misunderstanding. Tell your teacher using at least <strong>one past perfect simple</strong> and <strong>one past perfect continuous</strong>.</span></li>
+        <li><span>▸</span><span>Useful starters: <em>"Last time I…"</em> / <em>"A few years ago…"</em> / <em>"I remember once when…"</em></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="section-footer">⏰ Grammar <span><span class="tag-amber">Past Tenses</span></span></div>
+</div>
+
+<!-- ── ADJECTIVES ──────────────────────────────────────────── -->
+<div class="section" id="adjectives">
+  <div class="progress-bar"><div class="progress-fill" style="width:62%"></div></div>
+  <div class="section-header">
+    <div class="section-icon" style="background:#d4edda;">🔤</div>
+    <div>
+      <div class="section-title">Word Building — Adjectives</div>
+      <div class="section-subtitle">Prefixes, suffixes, and personality vocabulary</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <!-- Part A: Personality adjectives word-complete game -->
+    <p style="font-weight:700; margin-bottom:8px; color:#1a1a2e;">Part A — Personality Adjectives</p>
+    <div class="instr">Click on any adjective below that describes you — or someone you know. The meaning appears when you click. How many can you complete from memory?</div>
+
+    <div class="adj-quiz-grid">
+      <div class="adj-chip" onclick="pickAdj(this)">
+        in<strong>ex</strong>perienced
+        <div class="adj-tip">lacks experience; new to a job or situation</div>
+      </div>
+      <div class="adj-chip" onclick="pickAdj(this)">
+        <strong>co</strong>mpetitive
+        <div class="adj-tip">always wants to win or be better than others</div>
+      </div>
+      <div class="adj-chip" onclick="pickAdj(this)">
+        st<strong>ub</strong>born
+        <div class="adj-tip">refuses to change their mind, even when wrong</div>
+      </div>
+      <div class="adj-chip" onclick="pickAdj(this)">
+        <strong>co</strong>nfident
+        <div class="adj-tip">believes in their own abilities; sure of themselves</div>
+      </div>
+      <div class="adj-chip" onclick="pickAdj(this)">
+        un<strong>pr</strong>edictable
+        <div class="adj-tip">you never know what they'll do or say next</div>
+      </div>
+      <div class="adj-chip" onclick="pickAdj(this)">
+        re<strong>ce</strong>ptive
+        <div class="adj-tip">open and willing to listen to new ideas</div>
+      </div>
+      <div class="adj-chip" onclick="pickAdj(this)">
+        <strong>de</strong>termined
+        <div class="adj-tip">very focused on achieving their goals; doesn't give up</div>
+      </div>
+      <div class="adj-chip" onclick="pickAdj(this)">
+        <strong>th</strong>oughtful
+        <div class="adj-tip">considers others' feelings; thinks carefully before acting</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:26px; padding:14px; background:#fff9e6; border-radius:10px; border:1px solid #fde2c8;">
+      <p style="font-weight:700; color:#c0672a; margin-bottom:8px; font-size:0.92em;">💬 Describe someone you know using 3 of these words — without saying their name. Can your teacher guess who it is?</p>
+    </div>
+
+    <!-- Part B: Adjective formation table -->
+    <p style="font-weight:700; margin-bottom:8px; color:#1a1a2e;">Part B — Adjective Formation</p>
+    <div class="instr"><strong>Click</strong> each adjective in the table to reveal it. Learn the pattern, then try the gap-fill below without looking.</div>
+
+    <table class="adj-table">
+      <tr><th>Root word</th><th>Pattern</th><th>Adjective — click to reveal</th><th>Example sentence</th></tr>
+      <tr>
+        <td>point</td><td>+ <em>-less</em></td>
+        <td><span class="adj-pill adj-hidden" onclick="revealAdj(this)">pointless</span></td>
+        <td style="font-size:0.85em; color:#555; font-style:italic;">"Arguing on Twitter is completely pointless."</td>
+      </tr>
+      <tr>
+        <td>danger</td><td>+ <em>-ous</em></td>
+        <td><span class="adj-pill adj-hidden" onclick="revealAdj(this)">dangerous</span></td>
+        <td style="font-size:0.85em; color:#555; font-style:italic;">"Distracted driving is extremely dangerous."</td>
+      </tr>
+      <tr>
+        <td>scare</td><td>→ <em>scary</em></td>
+        <td><span class="adj-pill adj-hidden" onclick="revealAdj(this)">scary</span></td>
+        <td style="font-size:0.85em; color:#555; font-style:italic;">"He gets quite scary when he's angry."</td>
+      </tr>
+      <tr>
+        <td>trick</td><td>+ <em>-y</em></td>
+        <td><span class="adj-pill adj-hidden" onclick="revealAdj(this)">tricky</span></td>
+        <td style="font-size:0.85em; color:#555; font-style:italic;">"That was a really tricky question."</td>
+      </tr>
+      <tr>
+        <td>do</td><td>+ <em>-able</em></td>
+        <td><span class="adj-pill adj-hidden" onclick="revealAdj(this)">doable</span></td>
+        <td style="font-size:0.85em; color:#555; font-style:italic;">"It's difficult, but it's completely doable."</td>
+      </tr>
+      <tr>
+        <td>child</td><td>+ <em>-ish</em></td>
+        <td><span class="adj-pill adj-hidden" onclick="revealAdj(this)">childish</span></td>
+        <td style="font-size:0.85em; color:#555; font-style:italic;">"That reaction was very childish."</td>
+      </tr>
+      <tr>
+        <td>colour</td><td>+ <em>-ful</em></td>
+        <td><span class="adj-pill adj-hidden" onclick="revealAdj(this)">colourful</span></td>
+        <td style="font-size:0.85em; color:#555; font-style:italic;">"She's a very colourful character."</td>
+      </tr>
+      <tr>
+        <td>accept</td><td><em>un-</em> + -able</td>
+        <td><span class="adj-pill adj-hidden" onclick="revealAdj(this)">unacceptable</span></td>
+        <td style="font-size:0.85em; color:#555; font-style:italic;">"That kind of behaviour is completely unacceptable."</td>
+      </tr>
+      <tr>
+        <td>disrespect</td><td>+ <em>-ful</em></td>
+        <td><span class="adj-pill adj-hidden" onclick="revealAdj(this)">disrespectful</span></td>
+        <td style="font-size:0.85em; color:#555; font-style:italic;">"Constantly interrupting people is very disrespectful."</td>
+      </tr>
+      <tr>
+        <td>allergy</td><td>→ <em>allergic</em></td>
+        <td><span class="adj-pill adj-hidden" onclick="revealAdj(this)">allergic</span></td>
+        <td style="font-size:0.85em; color:#555; font-style:italic;">"I'm allergic to cats — my eyes go completely red."</td>
+      </tr>
+    </table>
+
+    <!-- Part C: gap-fill -->
+    <p style="font-weight:700; margin-bottom:14px; color:#1a1a2e;">Part C — Complete each sentence with the right adjective from the table above. No hints!</p>
+    <ol style="list-style:none; display:flex; flex-direction:column; gap:14px;" id="adj-gaps">
+      <li style="display:flex; gap:10px; align-items:baseline; font-size:0.94em; line-height:1.9;">
+        <span style="font-weight:700; color:#1a6b4e; min-width:18px;">1.</span>
+        <span>Most online arguments are completely <input class="t-input" data-answer="pointless" placeholder="adj?">. Nobody wins and nobody changes their mind.</span>
+      </li>
+      <li style="display:flex; gap:10px; align-items:baseline; font-size:0.94em; line-height:1.9;">
+        <span style="font-weight:700; color:#1a6b4e; min-width:18px;">2.</span>
+        <span>Picking a fight with him was <input class="t-input" data-answer="dangerous" placeholder="adj?"> — he gets quite <input class="t-input" data-answer="scary" placeholder="adj?"> when he's angry.</span>
+      </li>
+      <li style="display:flex; gap:10px; align-items:baseline; font-size:0.94em; line-height:1.9;">
+        <span style="font-weight:700; color:#1a6b4e; min-width:18px;">3.</span>
+        <span>It's a <input class="t-input" data-answer="tricky" placeholder="adj?"> situation, but it's perfectly <input class="t-input" data-answer="doable" placeholder="adj?"> if we work together.</span>
+      </li>
+      <li style="display:flex; gap:10px; align-items:baseline; font-size:0.94em; line-height:1.9;">
+        <span style="font-weight:700; color:#1a6b4e; min-width:18px;">4.</span>
+        <span>He can be quite <input class="t-input" data-answer="childish" placeholder="adj?"> in arguments, but he's actually a very <input class="t-input" data-answer="colourful" placeholder="adj?"> character outside work.</span>
+      </li>
+      <li style="display:flex; gap:10px; align-items:baseline; font-size:0.94em; line-height:1.9;">
+        <span style="font-weight:700; color:#1a6b4e; min-width:18px;">5.</span>
+        <span>It's not <input class="t-input" data-answer="unacceptable" placeholder="adj?"> to disagree with people, but being <input class="t-input" data-answer="disrespectful" placeholder="adj?"> certainly is.</span>
+      </li>
+    </ol>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkAdj()">Check Answers</button>
+      <button class="btn btn-answer" onclick="showAdj()">Show All Answers</button>
+      <button class="btn btn-outline" onclick="resetAdj()">Try Again</button>
+    </div>
+    <div class="score-box" id="adj-score">
+      <div class="score-num" id="adj-num">0/9</div>
+      <div class="score-msg" id="adj-msg"></div>
+    </div>
+  </div>
+  <div class="section-footer">🔤 Word Building <span><span class="tag-green">Interactive</span></span></div>
+</div>
+
+<!-- ── DISCUSSION & OPINIONS ─────────────────────────────────── -->
+<div class="section" id="discussion">
+  <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+  <div class="section-header">
+    <div class="section-icon" style="background:#e2d9f3;">💬</div>
+    <div>
+      <div class="section-title">Opinion Workout — Debate Cards</div>
+      <div class="section-subtitle">Put everything you've learned to work</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="instr"><strong>Choose a card.</strong> React to the statement. Agree? Disagree? Depends? Use the conflict idioms and opinion phrases below. Aim to use at least <strong>3 expressions</strong> from today's lesson in your response.</div>
+
+    <div class="debate-grid">
+      <div class="debate-card">
+        <div class="debate-num">Statement 1</div>
+        <div class="debate-text">"Social media has made people far more likely to <em>pick fights</em> than to <em>find compromises</em>."</div>
+        <div class="idiom-use">🔑 clash, underlying issue, see eye to eye</div>
+      </div>
+      <div class="debate-card">
+        <div class="debate-num">Statement 2</div>
+        <div class="debate-text">"It is always better to <em>back down</em> in a conflict than to damage a working relationship."</div>
+        <div class="idiom-use">🔑 back down, determined, stubborn</div>
+      </div>
+      <div class="debate-card">
+        <div class="debate-num">Statement 3</div>
+        <div class="debate-text">"The most <em>competitive</em> people are also the most <em>determined</em> — and that's always a good thing."</div>
+        <div class="idiom-use">🔑 competitive, unacceptable, childish</div>
+      </div>
+      <div class="debate-card">
+        <div class="debate-num">Statement 4</div>
+        <div class="debate-text">"People who <em>binge-watch</em> TV are simply <em>time-poor</em> — they're not really relaxing, just escaping."</div>
+        <div class="idiom-use">🔑 underlying issue, contradicting, pointless</div>
+      </div>
+      <div class="debate-card">
+        <div class="debate-num">Statement 5</div>
+        <div class="debate-text">"When people <em>crowdsource</em> opinions online, the underlying issue is that they don't trust their own judgement."</div>
+        <div class="idiom-use">🔑 receptive, confident, underlying issue</div>
+      </div>
+      <div class="debate-card">
+        <div class="debate-num">Statement 6</div>
+        <div class="debate-text">"A <em>stubborn</em> person and a <em>determined</em> person are doing the same thing — the only difference is whether you agree with them."</div>
+        <div class="idiom-use">🔑 contradict, see eye to eye, thoughtful</div>
+      </div>
+    </div>
+
+    <div class="phrase-box">
+      <h4>💬 Useful phrases for opinions &amp; debate:</h4>
+      <div class="phrase-chips">
+        <span class="p-chip">I'd argue that…</span>
+        <span class="p-chip">To some extent I agree, but…</span>
+        <span class="p-chip">The underlying issue here is…</span>
+        <span class="p-chip">I don't think we see eye to eye on…</span>
+        <span class="p-chip">I'd be willing to find a compromise if…</span>
+        <span class="p-chip">That's a fair point, but…</span>
+        <span class="p-chip">In my experience…</span>
+        <span class="p-chip">I strongly believe that…</span>
+        <span class="p-chip">You make a valid point. However…</span>
+        <span class="p-chip">It depends on the situation.</span>
+      </div>
+    </div>
+
+    <div style="margin-top:24px; padding:18px; background:#e8f5ef; border-radius:10px; border:1px solid #b8ddc9;">
+      <p style="font-weight:700; color:#1a6b4e; margin-bottom:10px;">🔁 Reflect: How confident do you feel?</p>
+      <p style="font-size:0.9em; color:#555; margin-bottom:12px;">Rate yourself 1–5 on each skill (1 = not confident yet, 5 = very confident):</p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.88em; color:#333;">
+        <span>▸ I can use conflict idioms naturally in conversation.</span>
+        <span>▸ I can form adjectives with prefixes and suffixes.</span>
+        <span>▸ I can tell a story using past perfect tenses.</span>
+        <span>▸ I can use 21st-century vocabulary correctly.</span>
+        <span>▸ I can express and defend an opinion clearly.</span>
+        <span>▸ I can find a compromise when I disagree with someone!</span>
+      </div>
+    </div>
+  </div>
+  <div class="section-footer">💬 Discussion <span><span class="tag-blue">Pair / 1-to-1</span></span></div>
+</div>
+
+<!-- ── HOT TAKE GENERATOR ─────────────────────────────────────── -->
+<div class="section" id="hottake">
+  <div class="progress-bar"><div class="progress-fill" style="width:100%; background:linear-gradient(90deg,#e8a838,#c0672a);"></div></div>
+  <div class="section-header">
+    <div class="section-icon" style="background:#fff3cd;">🎲</div>
+    <div>
+      <div class="section-title">Hot Take Generator</div>
+      <div class="section-subtitle">Spin for a controversial opinion — then defend it, destroy it, or complicate it</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="instr">Click <strong>Spin!</strong> to get a random hot take. You have <strong>60 seconds</strong> to respond — agree, disagree, or say "it depends." Try to use at least <strong>2 expressions</strong> from today's lesson. Your teacher will challenge you!</div>
+
+    <div style="text-align:center; margin-bottom:24px;">
+      <button class="btn btn-primary" onclick="spinHotTake()" id="spin-btn" style="font-size:1.1em; padding:14px 40px; background:#e8a838; color:#1a1a2e; border-radius:30px; box-shadow:0 4px 18px rgba(232,168,56,0.4);">🎲 Spin!</button>
+    </div>
+
+    <div id="ht-card-wrap" style="display:none; margin-bottom:22px;">
+      <div id="ht-card" style="
+        background: linear-gradient(135deg, #1a6b4e, #0d4f38);
+        color: white; border-radius: 20px; padding: 32px 28px; text-align: center;
+        font-size: 1.12em; font-weight: 600; line-height: 1.65;
+        box-shadow: 0 8px 28px rgba(26,107,78,0.3); transition: opacity 0.3s;
+        position: relative;
+      ">
+        <div style="font-size:0.7em; opacity:0.65; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:14px;">Hot Take #<span id="ht-num">1</span></div>
+        <div id="ht-text">"…"</div>
+        <div style="margin-top:20px; font-size:0.78em; opacity:0.7; font-style:italic;" id="ht-prompt"></div>
+      </div>
+
+      <!-- Timer -->
+      <div style="text-align:center; margin-top:18px;">
+        <div id="ht-timer-display" style="font-size:2.4em; font-weight:800; color:#1a6b4e; display:none;">1:00</div>
+        <div style="display:flex; justify-content:center; gap:10px; margin-top:10px; flex-wrap:wrap;">
+          <button class="btn btn-outline" onclick="startTimer()" id="timer-btn">⏱ Start 60s timer</button>
+          <button class="btn" style="background:#f0f4f8; color:#555;" onclick="spinHotTake()">🔄 New take</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phrase reminder -->
+    <div class="phrase-box" id="ht-phrases" style="display:none;">
+      <h4>💬 Remember — use these to respond:</h4>
+      <div class="phrase-chips">
+        <span class="p-chip">I'd argue that…</span>
+        <span class="p-chip">To some extent I agree, but…</span>
+        <span class="p-chip">The underlying issue here is…</span>
+        <span class="p-chip">I don't think we see eye to eye on…</span>
+        <span class="p-chip">That's a fair point, but…</span>
+        <span class="p-chip">It depends on the situation.</span>
+        <span class="p-chip">You make a valid point. However…</span>
+        <span class="p-chip">I strongly believe that…</span>
+      </div>
+    </div>
+
+    <div style="padding:16px 18px; background:#e8f5ef; border-radius:10px; border:1px solid #b8ddc9; margin-top:20px;">
+      <p style="font-weight:700; color:#1a6b4e; margin-bottom:8px; font-size:0.93em;">🎓 Teacher's challenge moves:</p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.87em; color:#444;">
+        <span>▸ "Can you give a real example from your life?"</span>
+        <span>▸ "What would someone who disagrees say?"</span>
+        <span>▸ "Is there an <em>underlying issue</em> behind this?"</span>
+        <span>▸ "Would you <em>back down</em> if I pushed back?"</span>
+        <span>▸ "Use a past tense to tell me a story about this."</span>
+        <span>▸ "Which adjective from today best describes this situation?"</span>
+      </div>
+    </div>
+  </div>
+  <div class="section-footer">🎲 Hot Takes <span><span class="tag-amber">Speaking</span> <span class="tag-green">1-to-1</span></span></div>
+</div>
+
+<div style="text-align:center; padding:30px; color:#888; font-size:0.88em;">
+  <p>🎉 <strong>End of Lesson — Clash &amp; Compromise</strong>. Great work on Units 3 &amp; 4!</p>
+</div>
+
+<script>
+// ── Navigation ──
+function goTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Warm-up scenarios ──
+function pickOpt(btn) {
+  const opts = btn.closest('.scenario-opts').querySelectorAll('.sc-opt');
+  opts.forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+// ── Idiom flip cards ──
+function flipCard(card) {
+  card.classList.toggle('flipped');
+}
+
+// ── Word bank chip selection (one at a time, global) ──
+let activeChip = null;
+
+function selectChip(chip, bankId) {
+  if (activeChip && activeChip !== chip) {
+    activeChip.classList.remove('selected');
+  }
+  if (chip.classList.contains('selected')) {
+    chip.classList.remove('selected');
+    activeChip = null;
+  } else {
+    chip.classList.add('selected');
+    activeChip = chip;
+  }
+}
+
+function fillBlank(blank, bankId) {
+  if (!activeChip) return;
+  blank.textContent = activeChip.textContent;
+  blank.dataset.filled = activeChip.textContent.trim();
+  blank.classList.remove('filled-correct', 'filled-wrong');
+  activeChip.classList.add('used');
+  activeChip.classList.remove('selected');
+  activeChip = null;
+}
+
+// ── Check idiom story ──
+function checkStory() {
+  const inputs = document.querySelectorAll('#idiom-story .t-input');
+  let correct = 0;
+  inputs.forEach(inp => {
+    const ans = inp.value.trim().toLowerCase();
+    if (ans === inp.dataset.answer.toLowerCase()) {
+      inp.classList.add('correct'); inp.classList.remove('wrong'); correct++;
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+    }
+  });
+  showScore('idiom-score','idiom-score-num','idiom-score-msg', correct, inputs.length,
+    ['Go back to the flip cards and try again!','A few to fix — check the red ones.','Solid recall!','Almost perfect!','All 8 correct — impressive! ✅']);
+}
+
+function showStory() {
+  const inputs = document.querySelectorAll('#idiom-story .t-input');
+  inputs.forEach(inp => { inp.value = inp.dataset.answer; inp.classList.add('correct'); inp.classList.remove('wrong'); });
+  const box = document.getElementById('idiom-score');
+  box.classList.add('visible');
+  document.getElementById('idiom-score-num').textContent = inputs.length + '/' + inputs.length;
+  document.getElementById('idiom-score-msg').textContent = 'All answers revealed!';
+}
+
+function resetStory() {
+  document.querySelectorAll('#idiom-story .t-input').forEach(inp => {
+    inp.value = ''; inp.classList.remove('correct','wrong');
+  });
+  document.getElementById('idiom-score').classList.remove('visible');
+}
+
+// ── Grammar ──
+function checkGrammar() {
+  const inputs = document.querySelectorAll('#grammar-story .t-input');
+  let correct = 0;
+  inputs.forEach(inp => {
+    const ans = inp.value.trim().toLowerCase();
+    if (ans === inp.dataset.answer.toLowerCase()) {
+      inp.classList.add('correct'); inp.classList.remove('wrong'); correct++;
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+    }
+  });
+  showScore('grammar-score','g-num','g-msg', correct, inputs.length,
+    ['Review the grammar box and try again.','Getting there — check the ones in red.','Good work!','Nearly perfect!','All correct! 🎉']);
+}
+
+function showGrammar() {
+  const inputs = document.querySelectorAll('#grammar-story .t-input');
+  inputs.forEach(inp => { inp.value = inp.dataset.answer; inp.classList.add('correct'); inp.classList.remove('wrong'); });
+  const box = document.getElementById('grammar-score');
+  box.classList.add('visible');
+  document.getElementById('g-num').textContent = inputs.length + '/' + inputs.length;
+  document.getElementById('g-msg').textContent = 'All answers revealed!';
+}
+
+function resetGrammar() {
+  document.querySelectorAll('#grammar-story .t-input').forEach(inp => {
+    inp.value = ''; inp.classList.remove('correct','wrong');
+  });
+  document.getElementById('grammar-score').classList.remove('visible');
+}
+
+// ── Personality adj chips ──
+function pickAdj(chip) {
+  chip.classList.toggle('picked');
+}
+
+// ── Adj table reveal ──
+function revealAdj(span) {
+  span.classList.remove('adj-hidden');
+  span.classList.add('adj-revealed');
+  span.onclick = null;
+}
+
+// ── Adj gap-fill ──
+function checkAdj() {
+  const inputs = document.querySelectorAll('#adj-gaps .t-input');
+  let correct = 0;
+  inputs.forEach(inp => {
+    const ans = inp.value.trim().toLowerCase();
+    if (ans === inp.dataset.answer.toLowerCase()) {
+      inp.classList.add('correct'); inp.classList.remove('wrong'); correct++;
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+    }
+  });
+  showScore('adj-score','adj-num','adj-msg', correct, inputs.length,
+    ['Review the table and try again.','Keep going!','Good effort!','Almost there!','All correct! 🎉']);
+}
+
+function showAdj() {
+  const inputs = document.querySelectorAll('#adj-gaps .t-input');
+  inputs.forEach(inp => { inp.value = inp.dataset.answer; inp.classList.add('correct'); inp.classList.remove('wrong'); });
+  const box = document.getElementById('adj-score');
+  box.classList.add('visible');
+  document.getElementById('adj-num').textContent = inputs.length + '/' + inputs.length;
+  document.getElementById('adj-msg').textContent = 'All answers revealed!';
+}
+
+function resetAdj() {
+  document.querySelectorAll('#adj-gaps .t-input').forEach(inp => {
+    inp.value = ''; inp.classList.remove('correct','wrong');
+  });
+  document.getElementById('adj-score').classList.remove('visible');
+}
+
+// ── 21st century words ──
+function checkCentury() {
+  const inputs = document.querySelectorAll('#century .c-input');
+  let correct = 0;
+  inputs.forEach(inp => {
+    const ans = inp.value.trim().toLowerCase();
+    if (ans === inp.dataset.answer.toLowerCase()) {
+      inp.classList.add('correct'); inp.classList.remove('wrong'); correct++;
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+    }
+  });
+  showScore('century-score','c-num','c-msg', correct, inputs.length,
+    ['Give it another go!','Not bad — a few more to get.','Good effort!','Almost all correct!','All 7 correct! Very 21st century! 🎉']);
+}
+
+function showCentury() {
+  const inputs = document.querySelectorAll('#century .c-input');
+  inputs.forEach(inp => { inp.value = inp.dataset.answer; inp.classList.add('correct'); inp.classList.remove('wrong'); });
+  const box = document.getElementById('century-score');
+  box.classList.add('visible');
+  document.getElementById('c-num').textContent = inputs.length + '/' + inputs.length;
+  document.getElementById('c-msg').textContent = 'All answers revealed!';
+}
+
+function resetCentury() {
+  document.querySelectorAll('#century .c-input').forEach(inp => {
+    inp.value = ''; inp.classList.remove('correct','wrong');
+  });
+  document.getElementById('century-score').classList.remove('visible');
+}
+
+// ── Word order reveal ──
+function showWO(el, sentence) {
+  el.textContent = sentence;
+  el.classList.add('shown');
+  el.onclick = null;
+}
+
+// ── Hot Take Generator ──
+const hotTakes = [
+  { text: "Crying during an argument is always a manipulation tactic.", prompt: "Is showing emotion in a conflict ever genuine — or is it always a power move?" },
+  { text: "If you screenshot someone's message and share it without permission, you deserve to be ghosted.", prompt: "Where is the line between sharing information and betraying trust?" },
+  { text: "Being stubborn and being determined are exactly the same thing. The only difference is whether people agree with you.", prompt: "Is this always true? Can you think of a counterexample?" },
+  { text: "Online arguments are completely pointless. The internet has never changed anyone's mind.", prompt: "Has anything you've read online ever genuinely changed how you think?" },
+  { text: "The most dangerous colleague is the one who always agrees with everyone.", prompt: "Why might constant agreement be a problem? What's the underlying issue?" },
+  { text: "The person who stays calm in a conflict is either very wise — or doesn't actually care.", prompt: "Which is more likely in your experience? Have you ever been that person?" },
+  { text: "Saying 'let's find a compromise' is just a polite way of saying you've already given up.", prompt: "Is compromise always a defeat? Or is it sometimes the stronger position?" },
+  { text: "If two people always see eye to eye, at least one of them isn't really thinking.", prompt: "Is complete agreement between two people a sign of closeness — or something more worrying?" },
+  { text: "The worst conflicts are the ones nobody talks about.", prompt: "Think of an example — personal, political, or at work. Is silence always worse than confrontation?" },
+  { text: "People who pick fights online would never say the same things to someone's face.", prompt: "Why does the internet make people bolder? Is that always a bad thing?" },
+  { text: "In any argument, the first person to back down is actually the more intelligent one.", prompt: "Do you agree? When is backing down wisdom, and when is it weakness?" },
+  { text: "The most unacceptable thing a person can do in a conflict is pretend there is no conflict.", prompt: "Have you ever done this? What happened?" }
+];
+
+let htIndex = -1, timerInterval = null, timerSeconds = 60;
+
+function spinHotTake() {
+  let next;
+  do { next = Math.floor(Math.random() * hotTakes.length); } while (next === htIndex && hotTakes.length > 1);
+  htIndex = next;
+  const ht = hotTakes[htIndex];
+
+  const card = document.getElementById('ht-card');
+  card.style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('ht-num').textContent = htIndex + 1;
+    document.getElementById('ht-text').textContent = '“' + ht.text + '”';
+    document.getElementById('ht-prompt').textContent = '💭 ' + ht.prompt;
+    card.style.opacity = '1';
+  }, 200);
+
+  document.getElementById('ht-card-wrap').style.display = 'block';
+  document.getElementById('ht-phrases').style.display = 'block';
+  resetTimer();
+}
+
+function startTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  timerSeconds = 60;
+  const display = document.getElementById('ht-timer-display');
+  const btn = document.getElementById('timer-btn');
+  display.style.display = 'block';
+  display.style.color = '#1a6b4e';
+  display.textContent = '1:00';
+  btn.textContent = '⏹ Stop';
+  btn.onclick = resetTimer;
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    const m = Math.floor(timerSeconds / 60);
+    const s = timerSeconds % 60;
+    display.textContent = m + ':' + String(s).padStart(2,'0');
+    if (timerSeconds <= 10) display.style.color = '#dc3545';
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval); timerInterval = null;
+      display.textContent = "⏰ Time's up!";
+      btn.textContent = '⏱ Start 60s timer';
+      btn.onclick = startTimer;
+    }
+  }, 1000);
+}
+
+function resetTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  timerSeconds = 60;
+  const display = document.getElementById('ht-timer-display');
+  display.style.display = 'none';
+  const btn = document.getElementById('timer-btn');
+  btn.textContent = '⏱ Start 60s timer';
+  btn.onclick = startTimer;
+}
+
+// ── Generic score helper ──
+function showScore(boxId, numId, msgId, correct, total, msgs) {
+  document.getElementById(boxId).classList.add('visible');
+  document.getElementById(numId).textContent = correct + '/' + total;
+  const idx = Math.min(Math.floor(correct / total * (msgs.length - 1) + 0.01), msgs.length - 1);
+  document.getElementById(msgId).textContent = msgs[correct === total ? msgs.length - 1 : Math.min(Math.floor(correct * (msgs.length - 1) / total), msgs.length - 2)];
+}
+</script>
+</body>
+</html>
