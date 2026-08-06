@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework — The Good Life</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f2ee; color: #1a1a2e; }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, #5c7a6b 0%, #3d5c4e 60%, #2a3d35 100%);
+    color: white; padding: 40px 30px 52px; text-align: center; position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
+    height: 30px; background: #f5f2ee; border-radius: 30px 30px 0 0;
+  }
+  .hero .tag { background: #e8a85a; color: #2a1a0a; padding: 4px 16px; border-radius: 20px; font-size: 0.78em; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; display: inline-block; margin-bottom: 12px; }
+  .hero h1 { font-size: 2.2em; font-weight: 800; margin-bottom: 6px; }
+  .hero p  { font-size: 0.98em; opacity: 0.82; }
+
+  /* ── Name field ── */
+  .name-section { max-width: 820px; margin: 28px auto 0; background: white; border-radius: 16px; padding: 22px 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.07); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .name-label { font-weight: 700; color: #5c7a6b; font-size: 0.95em; white-space: nowrap; }
+  .name-input {
+    flex: 1; min-width: 200px; border: 2px solid #c5d8cc; border-radius: 10px;
+    padding: 10px 16px; font-size: 0.95em; font-family: inherit; color: #1a1a2e;
+    outline: none; transition: border-color 0.2s;
+  }
+  .name-input:focus { border-color: #5c7a6b; }
+  .name-note { font-size: 0.82em; color: #aaa; }
+
+  /* ── Sections ── */
+  .section { max-width: 820px; margin: 22px auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 18px rgba(0,0,0,0.07); }
+  .section-header { padding: 20px 26px 14px; display: flex; align-items: center; gap: 14px; border-bottom: 2px solid #f0ede8; }
+  .section-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4em; flex-shrink: 0; }
+  .section-title    { font-size: 1.15em; font-weight: 700; color: #1a1a2e; }
+  .section-subtitle { font-size: 0.86em; color: #777; margin-top: 3px; }
+  .section-body { padding: 24px 26px; }
+  .section-footer { padding: 12px 26px; background: #f8f6f2; border-top: 1px solid #ece9e3; display: flex; justify-content: space-between; align-items: center; font-size: 0.8em; color: #999; }
+
+  /* ── Tags ── */
+  .tag-green { background: #d6ede0; color: #2a5a3d; padding: 3px 10px; border-radius: 12px; font-size: 0.78em; font-weight: 600; }
+  .tag-amber { background: #fde9c9; color: #8a5a1a; padding: 3px 10px; border-radius: 12px; font-size: 0.78em; font-weight: 600; }
+
+  /* ── Instr ── */
+  .instr { background: #f0f5f2; border-left: 4px solid #5c7a6b; border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 20px; font-size: 0.91em; color: #444; line-height: 1.6; }
+  .instr strong { color: #5c7a6b; }
+
+  /* ── Word bank (reference) ── */
+  .word-bank-ref { background: #f8f6f2; border: 1.5px solid #e0dbd3; border-radius: 10px; padding: 13px 16px; margin-bottom: 20px; }
+  .wb-label { font-size: 0.78em; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .wb-words { display: flex; flex-wrap: wrap; gap: 8px; }
+  .wb-word { background: white; border: 1.5px solid #c5d8cc; color: #3d5c4e; padding: 4px 12px; border-radius: 20px; font-size: 0.84em; font-weight: 600; }
+
+  /* ── Gap-fill ── */
+  .gf-list { display: flex; flex-direction: column; gap: 16px; }
+  .gf-item { display: flex; gap: 10px; align-items: baseline; font-size: 0.93em; line-height: 1.9; }
+  .gf-num { font-weight: 800; color: #5c7a6b; min-width: 20px; }
+  .t-input {
+    border: none; border-bottom: 2px solid #5c7a6b; outline: none; font-family: inherit;
+    font-size: 0.95em; color: #1a1a2e; background: transparent; padding: 2px 6px;
+    min-width: 160px; transition: border-color 0.2s;
+  }
+  .t-input:focus { border-color: #e8a85a; }
+  .t-input.correct { border-color: #3a8a5a; background: #d6ede0; border-radius: 4px; color: #1a4a2a; }
+  .t-input.wrong   { border-color: #c04a4a; background: #fde8e8; border-radius: 4px; color: #7a1a1a; }
+
+  /* ── Multiple choice ── */
+  .mc-list { display: flex; flex-direction: column; gap: 18px; }
+  .mc-item { }
+  .mc-q    { font-size: 0.93em; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; line-height: 1.5; }
+  .mc-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mc-opt {
+    padding: 7px 18px; border: 1.5px solid #c5d8cc; border-radius: 20px;
+    background: white; font-size: 0.87em; font-weight: 600; font-family: inherit;
+    cursor: pointer; transition: all 0.18s; color: #1a1a2e;
+  }
+  .mc-opt:hover { background: #e8f2ec; border-color: #5c7a6b; }
+  .mc-opt.selected { background: #5c7a6b; color: white; border-color: #5c7a6b; }
+  .mc-opt.correct  { background: #3a8a5a !important; color: white !important; border-color: #3a8a5a !important; }
+  .mc-opt.wrong    { background: #c04a4a !important; color: white !important; border-color: #c04a4a !important; }
+  .mc-opt.reveal   { background: #d6ede0; color: #1a4a2a; border-color: #3a8a5a; font-weight: 700; }
+
+  /* ── Write your own ── */
+  .write-list { display: flex; flex-direction: column; gap: 16px; }
+  .write-item { }
+  .write-starter { font-size: 0.93em; font-weight: 700; color: #3d5c4e; margin-bottom: 8px; display: flex; gap: 8px; }
+  .write-starter .num { color: #5c7a6b; min-width: 20px; }
+  textarea {
+    width: 100%; border: 1.5px solid #c5d8cc; border-radius: 10px;
+    padding: 10px 14px; font-size: 0.91em; font-family: inherit; color: #1a1a2e;
+    resize: vertical; min-height: 60px; outline: none; transition: border-color 0.2s;
+    line-height: 1.6;
+  }
+  textarea:focus { border-color: #5c7a6b; }
+
+  /* ── Score ── */
+  .score-box { text-align: center; padding: 16px; background: #e8f2ec; border-radius: 10px; margin-top: 14px; display: none; }
+  .score-box.visible { display: block; }
+  .score-num { font-size: 2em; font-weight: 800; color: #5c7a6b; }
+  .score-msg { font-size: 0.92em; color: #555; margin-top: 4px; }
+
+  /* ── Buttons ── */
+  .btn { padding: 10px 22px; border: none; border-radius: 9px; font-size: 0.91em; font-weight: 600; cursor: pointer; transition: all 0.18s; font-family: inherit; }
+  .btn-primary { background: #5c7a6b; color: white; }
+  .btn-primary:hover { background: #3d5c4e; transform: translateY(-1px); }
+  .btn-outline { background: white; color: #5c7a6b; border: 2px solid #5c7a6b; }
+  .btn-outline:hover { background: #5c7a6b; color: white; }
+  .btn-amber { background: #e8a85a; color: #2a1a0a; font-size: 1em; padding: 14px 32px; border-radius: 12px; }
+  .btn-amber:hover { background: #d4962a; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(232,168,90,0.35); }
+  .btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+
+  /* ── Send section ── */
+  .send-section { max-width: 820px; margin: 22px auto 40px; background: white; border-radius: 16px; padding: 28px 26px; box-shadow: 0 4px 18px rgba(0,0,0,0.07); text-align: center; }
+  .send-section h3 { font-size: 1.1em; color: #1a1a2e; margin-bottom: 6px; }
+  .send-section p  { font-size: 0.89em; color: #777; margin-bottom: 20px; line-height: 1.6; }
+
+  /* ── Done state ── */
+  .submitted-note { background: #e8f2ec; border: 1.5px solid #b8ddc9; border-radius: 10px; padding: 12px 16px; font-size: 0.88em; color: #2a5a3d; margin-top: 12px; display: none; }
+  .submitted-note.visible { display: block; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.6em; }
+    .section-body { padding: 18px 16px; }
+    .name-section { padding: 18px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="tag">Homework · Lesson 1 · B1</div>
+  <h1>☀️ The Good Life</h1>
+  <p>Complete the exercises below and send them to your teacher when you're done.</p>
+</div>
+
+<!-- ── NAME ── -->
+<div class="name-section">
+  <span class="name-label">👤 Your name:</span>
+  <input class="name-input" id="student-name" type="text" placeholder="Type your name here…">
+  <span class="name-note">Required before sending</span>
+</div>
+
+<!-- ══ EXERCISE 1 — VOCABULARY GAP-FILL ══════════════════════ -->
+<div class="section" id="ex1">
+  <div class="section-header">
+    <div class="section-icon" style="background:#fde9c9;">📝</div>
+    <div>
+      <div class="section-title">Exercise 1 — Vocabulary: Gap-fill</div>
+      <div class="section-subtitle">Complete each sentence with the correct word or phrase</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="instr"><strong>Choose</strong> from the word bank below. Use each word or phrase once. Type it exactly as shown.</div>
+
+    <div class="word-bank-ref">
+      <div class="wb-label">Word bank</div>
+      <div class="wb-words" id="wb1"></div>
+    </div>
+
+    <div class="gf-list" id="ex1-gaps">
+      <div class="gf-item">
+        <span class="gf-num">1.</span>
+        <span>After a long stressful week, I love to <input class="t-input" data-answer="unwind" placeholder="___________"> by going for a walk or reading.</span>
+      </div>
+      <div class="gf-item">
+        <span class="gf-num">2.</span>
+        <span>I don't set an alarm on Saturdays — I prefer to <input class="t-input" data-answer="sleep in" placeholder="___________"> and wake up naturally.</span>
+      </div>
+      <div class="gf-item">
+        <span class="gf-num">3.</span>
+        <span>You've been working so hard lately — you should <input class="t-input" data-answer="treat yourself" placeholder="___________"> to a nice dinner or a day out!</span>
+      </div>
+      <div class="gf-item">
+        <span class="gf-num">4.</span>
+        <span>I haven't seen my best friend in months. I really need to <input class="t-input" data-answer="catch up with" placeholder="___________"> her this weekend.</span>
+      </div>
+      <div class="gf-item">
+        <span class="gf-num">5.</span>
+        <span>Being around people all day exhausts me — I need some quiet time alone to <input class="t-input" data-answer="recharge" placeholder="___________">.</span>
+      </div>
+      <div class="gf-item">
+        <span class="gf-num">6.</span>
+        <span>Sunday morning is my <input class="t-input" data-answer="me time" placeholder="___________">. I switch my phone off and do exactly what I want.</span>
+      </div>
+      <div class="gf-item">
+        <span class="gf-num">7.</span>
+        <span>We had nothing planned all weekend, so we decided to stay in and <input class="t-input" data-answer="binge-watch" placeholder="___________"> the whole series.</span>
+      </div>
+      <div class="gf-item">
+        <span class="gf-num">8.</span>
+        <span>The weather was absolutely beautiful, so we tried to <input class="t-input" data-answer="make the most of" placeholder="___________"> it and spent the whole day outside.</span>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkEx1()">✓ Check my answers</button>
+      <button class="btn btn-outline" onclick="resetEx1()">Reset</button>
+    </div>
+    <div class="score-box" id="ex1-score">
+      <div class="score-num" id="ex1-num">0/8</div>
+      <div class="score-msg" id="ex1-msg"></div>
+    </div>
+  </div>
+  <div class="section-footer">Exercise 1 <span><span class="tag-amber">Vocabulary</span></span></div>
+</div>
+
+<!-- ══ EXERCISE 2 — CHOOSE THE RIGHT WORD ════════════════════ -->
+<div class="section" id="ex2">
+  <div class="section-header">
+    <div class="section-icon" style="background:#d6ede0;">🔤</div>
+    <div>
+      <div class="section-title">Exercise 2 — Choose the Right Word</div>
+      <div class="section-subtitle">Click the correct option to complete each sentence</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="instr"><strong>Read each sentence carefully</strong> and click the word or phrase that fits best.</div>
+
+    <div class="mc-list">
+      <div class="mc-item">
+        <div class="mc-q">1. "After work, Maria likes to _____ with a long bath and some music."</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="pickMC(this, true)">unwind</button>
+          <button class="mc-opt" onclick="pickMC(this, false)">rewind</button>
+          <button class="mc-opt" onclick="pickMC(this, false)">wind up</button>
+        </div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-q">2. "I love Sundays because I can _____ until 10 o'clock — no alarm!"</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="pickMC(this, false)">sleep out</button>
+          <button class="mc-opt" onclick="pickMC(this, true)">sleep in</button>
+          <button class="mc-opt" onclick="pickMC(this, false)">sleep over</button>
+        </div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-q">3. "Let's _____ this weekend — I haven't seen you in ages!"</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="pickMC(this, false)">catch down with</button>
+          <button class="mc-opt" onclick="pickMC(this, false)">catch up for</button>
+          <button class="mc-opt" onclick="pickMC(this, true)">catch up with</button>
+        </div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-q">4. "The sun finally came out, so we decided to _____ it and have a picnic."</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="pickMC(this, false)">make the least of</button>
+          <button class="mc-opt" onclick="pickMC(this, true)">make the most of</button>
+          <button class="mc-opt" onclick="pickMC(this, false)">do the most of</button>
+        </div>
+      </div>
+      <div class="mc-item">
+        <div class="mc-q">5. "You've been so stressed lately. Why don't you _____ and book a massage?"</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="pickMC(this, false)">treat someone</button>
+          <button class="mc-opt" onclick="pickMC(this, false)">treat him</button>
+          <button class="mc-opt" onclick="pickMC(this, true)">treat yourself</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkEx2()">✓ Check my answers</button>
+    </div>
+    <div class="score-box" id="ex2-score">
+      <div class="score-num" id="ex2-num">0/5</div>
+      <div class="score-msg" id="ex2-msg"></div>
+    </div>
+  </div>
+  <div class="section-footer">Exercise 2 <span><span class="tag-amber">Vocabulary</span></span></div>
+</div>
+
+<!-- ══ EXERCISE 3 — MY PERFECT WEEKEND ═══════════════════════ -->
+<div class="section" id="ex5">
+  <div class="section-header">
+    <div class="section-icon" style="background:#d6ede0;">🗣</div>
+    <div>
+      <div class="section-title">Exercise 3 — My Perfect Weekend</div>
+      <div class="section-subtitle">Write 6–10 sentences describing your ideal weekend</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="instr">
+      Describe your <strong>perfect weekend</strong> — from Saturday morning to Sunday night. Try to use <strong>at least 4 words</strong> from the vocabulary list below.
+    </div>
+
+    <div class="word-bank-ref" style="margin-bottom:16px;">
+      <div class="wb-label">Try to use some of these</div>
+      <div class="wb-words">
+        <span class="wb-word">unwind</span>
+        <span class="wb-word">sleep in</span>
+        <span class="wb-word">treat myself</span>
+        <span class="wb-word">catch up with</span>
+        <span class="wb-word">recharge</span>
+        <span class="wb-word">me time</span>
+        <span class="wb-word">binge-watch</span>
+        <span class="wb-word">make the most of</span>
+        <span class="wb-word">a change of scenery</span>
+        <span class="wb-word">lazy morning</span>
+      </div>
+    </div>
+
+    <textarea id="w6" style="min-height:160px;" placeholder="My perfect weekend starts on Saturday morning…"></textarea>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="markEx5()">✓ Mark as done</button>
+    </div>
+    <div class="submitted-note" id="ex5-done">✅ Lovely! Your teacher will enjoy reading this.</div>
+  </div>
+  <div class="section-footer">Exercise 3 <span><span class="tag-green">Free writing</span></span></div>
+</div>
+
+<!-- ══ SEND TO TEACHER ════════════════════════════════════════ -->
+<div class="send-section">
+  <div style="font-size:2em; margin-bottom:10px;">📬</div>
+  <h3>All done? Send your homework!</h3>
+  <p>Click the button below to open your email with all your answers filled in automatically.<br>Your teacher will receive it at <strong>dariia.mlnk@gmail.com</strong>.</p>
+  <button class="btn btn-amber" onclick="sendHomework()">📧 Send to Teacher</button>
+  <div class="submitted-note" id="send-warning" style="margin-top:14px; background:#fde9c9; border-color:#e8a85a; color:#7a4a1a;">
+    ⚠️ Please enter your name at the top of the page before sending!
+  </div>
+</div>
+
+<div style="text-align:center; padding:20px; color:#bbb; font-size:0.82em;">
+  The Good Life · Homework · B1 Speaking
+</div>
+
+<script>
+// ── Word bank shuffle ──
+document.addEventListener('DOMContentLoaded', () => {
+  const words = ['unwind','sleep in','treat yourself','catch up with','recharge','me time','binge-watch','make the most of'];
+  // Fisher-Yates shuffle
+  for (let i = words.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [words[i], words[j]] = [words[j], words[i]];
+  }
+  const wb = document.getElementById('wb1');
+  words.forEach(w => {
+    const span = document.createElement('span');
+    span.className = 'wb-word';
+    span.textContent = w;
+    wb.appendChild(span);
+  });
+});
+
+// ── Ex 1: Gap-fill check ──
+function checkEx1() {
+  const inputs = document.querySelectorAll('#ex1-gaps .t-input');
+  let correct = 0;
+  inputs.forEach(inp => {
+    const ans = inp.value.trim().toLowerCase();
+    if (ans === inp.dataset.answer.toLowerCase()) {
+      inp.classList.add('correct'); inp.classList.remove('wrong'); correct++;
+    } else {
+      inp.classList.add('wrong'); inp.classList.remove('correct');
+    }
+  });
+  showScore('ex1-score', 'ex1-num', 'ex1-msg', correct, inputs.length,
+    ['Try again — check the word bank!', 'A few to fix. Check the red ones.', 'Not bad! A couple more to go.', 'Really good!', 'Perfect — all 8 correct! 🎉']);
+}
+function resetEx1() {
+  document.querySelectorAll('#ex1-gaps .t-input').forEach(inp => {
+    inp.value = ''; inp.classList.remove('correct','wrong');
+  });
+  document.getElementById('ex1-score').classList.remove('visible');
+}
+
+// ── Ex 2: Multiple choice ──
+function pickMC(btn, isCorrect) {
+  const opts = btn.closest('.mc-opts').querySelectorAll('.mc-opt');
+  // clear any previous check results so student can re-try
+  opts.forEach(b => b.classList.remove('selected', 'correct', 'wrong', 'reveal'));
+  btn.classList.add('selected');
+  btn.dataset.chosen = isCorrect ? 'correct' : 'wrong';
+}
+function checkEx2() {
+  const items = document.querySelectorAll('#ex2 .mc-item');
+  let correct = 0;
+  items.forEach(item => {
+    const opts = item.querySelectorAll('.mc-opt');
+    opts.forEach(b => {
+      if (b.classList.contains('selected')) {
+        if (b.dataset.chosen === 'correct') {
+          b.classList.add('correct'); correct++;
+        } else {
+          b.classList.add('wrong');
+          opts.forEach(ob => { if (ob.dataset.chosen === 'correct') ob.classList.add('reveal'); });
+        }
+      }
+    });
+  });
+  showScore('ex2-score','ex2-num','ex2-msg', correct, 5,
+    ['Have another go!', 'Getting there!', 'Good work!', 'Almost perfect!', 'All 5 correct! ✅']);
+}
+
+// ── Ex 3 (writing): mark done ──
+function markEx5() { document.getElementById('ex5-done').classList.add('visible'); }
+
+// ── Generic score ──
+function showScore(boxId, numId, msgId, correct, total, msgs) {
+  document.getElementById(boxId).classList.add('visible');
+  document.getElementById(numId).textContent = correct + '/' + total;
+  const i = correct === total ? msgs.length - 1 : Math.min(Math.floor(correct * (msgs.length - 1) / total), msgs.length - 2);
+  document.getElementById(msgId).textContent = msgs[i];
+}
+
+// ── Send to teacher ──
+function sendHomework() {
+  const name = document.getElementById('student-name').value.trim();
+  if (!name) {
+    document.getElementById('send-warning').classList.add('visible');
+    document.getElementById('student-name').focus();
+    return;
+  }
+  document.getElementById('send-warning').classList.remove('visible');
+
+  const ex1 = [...document.querySelectorAll('#ex1-gaps .t-input')].map((inp, i) => `  ${i+1}. ${inp.value || '(blank)'}`).join('\n');
+  const ex2 = [...document.querySelectorAll('#ex2 .mc-item')].map((item, i) => {
+    const sel = item.querySelector('.mc-opt.selected');
+    return `  ${i+1}. ${sel ? sel.textContent : '(not answered)'}`;
+  }).join('\n');
+  const w6 = document.getElementById('w6').value || '(blank)';
+
+  const body =
+`Hello Dariia!
+
+Here is my homework from Lesson 1 — The Good Life.
+Student: ${name}
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+EXERCISE 1 — Vocabulary Gap-fill
+━━━━━━━━━━━━━━━━━━━━━━━━
+${ex1}
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+EXERCISE 2 — Choose the Right Word
+━━━━━━━━━━━━━━━━━━━━━━━━
+${ex2}
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+EXERCISE 3 — My Perfect Weekend
+━━━━━━━━━━━━━━━━━━━━━━━━
+${w6}
+`;
+
+  const subject = encodeURIComponent(`Homework — The Good Life (${name})`);
+  const bodyEnc = encodeURIComponent(body);
+  window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${subject}&body=${bodyEnc}`;
+}
+</script>
+</body>
+</html>
