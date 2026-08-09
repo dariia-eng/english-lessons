@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5B Homework — Grammar</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#EDEBE6;
+  --surface:#FFFFFF;
+  --surface-2:#F5F3EE;
+  --primary:#28473A;
+  --primary-mid:#3D7057;
+  --primary-light:#E7F0EB;
+  --accent:#C86840;
+  --accent-light:#FAF0EB;
+  --blue:#446E96;
+  --blue-light:#EAF0F7;
+  --amber:#B88A1A;
+  --amber-light:#FBF5E3;
+  --text:#1A2118;
+  --text-2:#4A5E52;
+  --muted:#8A9E94;
+  --border:#E0DAD2;
+  --ok:#2D7A4F;
+  --ok-bg:#E8F5EE;
+  --err:#C0392B;
+  --err-bg:#FFECEC;
+  --shadow-xs:0 1px 3px rgba(0,0,0,.06);
+  --shadow-sm:0 1px 6px rgba(0,0,0,.07),0 2px 12px rgba(0,0,0,.05);
+  --shadow:0 2px 10px rgba(0,0,0,.08),0 4px 24px rgba(0,0,0,.06);
+  --r-sm:8px;--r:14px;
+}
+body{font-family:'Segoe UI',Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.55;padding-bottom:60px;}
+
+/* ── Header ── */
+.hw-header{background:var(--primary);color:#fff;padding:22px 20px 18px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.hw-header h1{font-size:19px;font-weight:800;margin-bottom:2px;}
+.hw-header p{font-size:13px;opacity:.75;}
+
+/* ── Name field ── */
+.name-section{background:var(--surface);border-bottom:2px solid var(--accent);padding:16px 20px;position:sticky;top:68px;z-index:99;box-shadow:var(--shadow-sm);}
+.name-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.name-label{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;}
+.name-input{flex:1;min-width:200px;border:2px solid var(--border);border-radius:var(--r-sm);padding:8px 14px;font-size:15px;font-family:inherit;color:var(--text);transition:border-color .15s;background:var(--surface);}
+.name-input:focus{outline:none;border-color:var(--primary-mid);}
+.name-input.filled{border-color:var(--ok);}
+
+/* ── Content wrapper ── */
+.content{max-width:720px;margin:0 auto;padding:22px 16px;}
+
+/* ── Grammar box ── */
+.grammar-box{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.gram-card{border-radius:var(--r);padding:14px 16px;border:2px solid;}
+.gram-zero{border-color:rgba(45,122,79,.3);background:var(--ok-bg);}
+.gram-first{border-color:rgba(68,110,150,.3);background:var(--blue-light);}
+.gram-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+.gram-zero .gram-label{color:var(--ok);}
+.gram-first .gram-label{color:var(--blue);}
+.gram-formula{font-size:13px;font-weight:700;margin-bottom:4px;}
+.gram-use{font-size:12px;font-style:italic;color:var(--muted);margin-bottom:6px;}
+.gram-eg{font-size:13px;color:var(--text-2);}
+@media(max-width:480px){.grammar-box{grid-template-columns:1fr;}}
+
+/* ── Section headers ── */
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border);}
+.section-badge{background:var(--primary);color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;}
+.section-title{font-size:17px;font-weight:800;color:var(--text);}
+.section-sub{font-size:13px;color:var(--muted);margin-top:2px;}
+.section-block{margin-bottom:30px;}
+
+/* ── Cards ── */
+.card{background:var(--surface);border-radius:var(--r);padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid var(--border);}
+.note-amber{background:var(--amber-light);border:1.5px solid rgba(184,138,26,.2);border-radius:var(--r);padding:12px 16px;margin-bottom:12px;font-size:13.5px;}
+.lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:8px;}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:0 18px;height:40px;border:none;border-radius:var(--r-sm);font-size:13px;font-weight:700;cursor:pointer;transition:all .16s;font-family:inherit;}
+.btn-check{background:var(--primary-mid);color:#fff;}
+.btn-check:hover{background:var(--primary);}
+.btn-send{background:var(--accent);color:#fff;height:48px;font-size:15px;padding:0 28px;border-radius:var(--r);width:100%;}
+.btn-send:hover:not(:disabled){background:#a85530;}
+.btn-send:disabled{opacity:.38;cursor:not-allowed;}
+.btn-row{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;}
+
+/* ── Feedback ── */
+.fb{font-size:13px;font-weight:600;padding:8px 12px;border-radius:var(--r-sm);margin-top:10px;display:none;}
+.fb.ok{background:var(--ok-bg);color:var(--ok);display:block;}
+.fb.err{background:var(--err-bg);color:var(--err);display:block;}
+
+/* ── Match exercise (sentence halves) ── */
+.match-layout{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
+.match-col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:8px;}
+.match-item{padding:11px 14px;border-radius:var(--r-sm);border:2px solid var(--border);background:var(--surface);font-size:14px;cursor:pointer;transition:all .18s;min-height:48px;display:flex;align-items:center;line-height:1.4;box-shadow:var(--shadow-xs);gap:8px;}
+.match-item:hover{border-color:var(--accent);box-shadow:var(--shadow-sm);}
+.match-item.sel-left{border-color:var(--accent);background:var(--accent-light);}
+.match-item.sel-right{border-color:var(--accent);background:var(--accent-light);}
+.match-item.matched{border-color:var(--primary-mid);background:var(--primary-light);cursor:default;color:var(--primary);}
+.match-item.wrong-m{border-color:var(--err);background:var(--err-bg);}
+.match-item.correct-m{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);}
+.match-badge{font-weight:800;font-size:15px;color:var(--accent);flex-shrink:0;min-width:20px;}
+.match-badge.right-badge{color:var(--blue);}
+.match-item.matched .match-badge,.match-item.correct-m .match-badge{color:var(--primary-mid);}
+
+/* ── Email exercise ── */
+.email-box{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow-sm);border:1px solid var(--border);overflow:hidden;margin-bottom:12px;}
+.email-chrome{background:#F0EFED;border-bottom:1px solid var(--border);padding:8px 14px;display:flex;gap:6px;align-items:center;}
+.email-dot{width:12px;height:12px;border-radius:50%;}
+.email-body{padding:18px 20px;font-size:14px;line-height:1.9;}
+.email-greeting{font-weight:700;margin-bottom:10px;}
+.email-sign{margin-top:10px;font-style:italic;color:var(--muted);}
+.gap-inp{display:inline-block;min-width:110px;border:none;border-bottom:2px solid var(--accent);background:transparent;font-size:14px;font-family:inherit;color:var(--text);padding:1px 4px;text-align:center;transition:border-color .15s;vertical-align:baseline;}
+.gap-inp:focus{outline:none;border-bottom-color:var(--primary);}
+.gap-inp.correct{border-bottom-color:var(--ok);color:var(--ok);font-weight:700;}
+.gap-inp.wrong{border-bottom-color:var(--err);color:var(--err);}
+.gap-inp.corrected{border-bottom-color:var(--ok);color:var(--ok);font-weight:700;}
+.gap-num{font-size:11px;font-weight:700;color:var(--accent);vertical-align:super;line-height:1;margin-right:1px;}
+.hint-verb{font-size:12px;color:var(--muted);font-style:italic;}
+
+/* ── Validation checklist ── */
+.validation-box{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:16px;}
+.val-title{font-size:14px;font-weight:800;margin-bottom:10px;color:var(--text);}
+.val-item{display:flex;align-items:center;gap:9px;font-size:14px;padding:5px 0;color:var(--muted);}
+.val-item.done{color:var(--text);}
+.val-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);background:var(--surface);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .2s;}
+.val-dot.ok{background:var(--ok);border-color:var(--ok);color:#fff;}
+
+/* ── Animations ── */
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}70%{transform:translateX(4px)}}
+.shake{animation:shake .3s ease;}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="hw-header">
+  <h1>5B Homework — Grammar</h1>
+  <p>Zero and First Conditional</p>
+</div>
+
+<!-- Name -->
+<div class="name-section">
+  <div class="name-row">
+    <span class="name-label">👤 Student name:</span>
+    <input type="text" class="name-input" id="student-name" placeholder="Write your full name here…" oninput="updateSend()">
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ══ GRAMMAR REFERENCE ══ -->
+<div class="grammar-box">
+  <div class="gram-card gram-zero">
+    <div class="gram-label">Zero Conditional</div>
+    <div class="gram-formula">If + present simple, present simple</div>
+    <div class="gram-use">general truth / always true</div>
+    <div class="gram-eg">e.g. <em>"If you live in a van, you save money."</em></div>
+  </div>
+  <div class="gram-card gram-first">
+    <div class="gram-label">First Conditional</div>
+    <div class="gram-formula">If + present simple, will + infinitive</div>
+    <div class="gram-use">possible future situation</div>
+    <div class="gram-eg">e.g. <em>"If the van breaks down, I'll call a mechanic."</em></div>
+  </div>
+</div>
+
+<!-- ══ EXERCISE 3 ══ -->
+<div class="section-block" id="ex3-block">
+  <div class="section-header">
+    <div class="section-badge">3</div>
+    <div>
+      <div class="section-title">Match the sentence halves.</div>
+      <div class="section-sub">Click a sentence beginning (1–5), then click the correct ending (a–e).</div>
+    </div>
+  </div>
+
+  <div class="match-layout">
+    <div>
+      <div class="match-col-title">Beginnings</div>
+      <div id="ex3-left"></div>
+    </div>
+    <div>
+      <div class="match-col-title">Endings</div>
+      <div id="ex3-right"></div>
+    </div>
+  </div>
+
+  <div id="ex3-pairs" style="margin-top:10px;display:none;">
+    <div class="lbl">Your matches</div>
+    <div id="ex3-pairs-list"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx3()">✓ Check</button>
+  </div>
+  <div class="fb" id="fb3"></div>
+</div>
+
+
+<!-- ══ EXERCISE 4 ══ -->
+<div class="section-block" id="ex4-block">
+  <div class="section-header">
+    <div class="section-badge">4</div>
+    <div>
+      <div class="section-title">Complete the email with the correct form of the verbs in brackets.</div>
+      <div class="section-sub">Type the correct verb form into each gap.</div>
+    </div>
+  </div>
+
+  <div class="note-amber">💡 Think about which conditional to use — zero (always true) or first (possible future)?</div>
+
+  <div class="email-box">
+    <div class="email-chrome">
+      <div class="email-dot" style="background:#ff5f57;"></div>
+      <div class="email-dot" style="background:#febc2e;"></div>
+      <div class="email-dot" style="background:#28c840;"></div>
+    </div>
+    <div class="email-body">
+      <div class="email-greeting">Hi Mickey,</div>
+
+      <p>Thanks for your email. It's good to hear that you finally found a place to live. You've been looking for ages! The studio you found sounds perfect for one person. When you <span class="gap-num">1</span><input class="gap-inp" id="g1" data-ans="live" placeholder="live" oninput="updateSend()"> alone, you <span class="gap-num">2</span><input class="gap-inp" id="g2" data-ans="don't need" placeholder="not need" oninput="updateSend()"> a lot of space.</p>
+
+      <p style="margin-top:12px;">Mark and I moved into our cottage last month. I can't believe we finally own our own home. The house is beautiful and we love living in the country. It has a large back garden with a lot of flowers. When we <span class="gap-num">3</span><input class="gap-inp" id="g3" data-ans="have" placeholder="have" oninput="updateSend()"> more time, we <span class="gap-num">4</span><input class="gap-inp" id="g4" data-ans="'ll build" placeholder="build" oninput="updateSend()"> a patio to have barbecues in the summer. If you <span class="gap-num">5</span><input class="gap-inp" id="g5" data-ans="come" placeholder="come" oninput="updateSend()"> to see it, you <span class="gap-num">6</span><input class="gap-inp" id="g6" data-ans="won't be" placeholder="not be" oninput="updateSend()"> disappointed.</p>
+
+      <p style="margin-top:12px;">Good luck with the move, it can be quite stressful! If you <span class="gap-num">7</span><input class="gap-inp" id="g7" data-ans="are" placeholder="be" oninput="updateSend()"> organised, I'm sure you <span class="gap-num">8</span><input class="gap-inp" id="g8" data-ans="'ll be" placeholder="be" oninput="updateSend()"> fine. My advice is to do it at the weekend and make sure you have enough boxes!</p>
+
+      <p style="margin-top:12px;">I have a rule. Every time I <span class="gap-num">9</span><input class="gap-inp" id="g9" data-ans="get" placeholder="get" oninput="updateSend()"> stressed out when I'm moving house, I <span class="gap-num">10</span><input class="gap-inp" id="g10" data-ans="take" placeholder="take" oninput="updateSend()"> a break for ten minutes. Try and do the same!</p>
+
+      <div class="email-sign">Write soon,<br>Laura</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx4()">✓ Check</button>
+  </div>
+  <div class="fb" id="fb4"></div>
+</div>
+
+
+<!-- ══ SEND SECTION ══ -->
+<div class="card" style="margin-top:8px;">
+  <div class="validation-box" style="margin-bottom:14px;">
+    <div class="val-title">✅ Before you send, check:</div>
+    <div class="val-item" id="val-name"><div class="val-dot" id="vd-name"></div> Student name</div>
+    <div class="val-item" id="val-3"><div class="val-dot" id="vd-3"></div> Exercise 3 — all 5 pairs matched</div>
+    <div class="val-item" id="val-4"><div class="val-dot" id="vd-4"></div> Exercise 4 — all 10 gaps filled</div>
+  </div>
+  <button class="btn btn-send" id="send-btn" onclick="sendToTeacher()" disabled>📩 Send to Teacher</button>
+</div>
+
+</div><!-- /content -->
+
+<script>
+/* ─── Exercise 3 — Match sentence halves ─── */
+const ex3Lefts = [
+  {n:'1', text:'If I\'m tired,'},
+  {n:'2', text:'I don\'t feel nervous'},
+  {n:'3', text:'If we don\'t go to France,'},
+  {n:'4', text:'I won\'t sleep well'},
+  {n:'5', text:'If the train is delayed,'},
+];
+const ex3Rights = [
+  {l:'a', text:'I\'ll tell her that we\'ll be late.'},
+  {l:'b', text:'if I need to make a big speech.'},
+  {l:'c', text:'if I eat too much before bed.'},
+  {l:'d', text:'I\'ll stay home tonight.'},
+  {l:'e', text:'we might go to Egypt.'},
+];
+const ex3Correct = {1:'d',2:'b',3:'e',4:'c',5:'a'};
+
+let ex3SelLeft = null;   // selected number string
+let ex3Done = {};        // {number: letter}
+
+function buildEx3(){
+  const leftCont = document.getElementById('ex3-left');
+  const rightCont = document.getElementById('ex3-right');
+  // shuffle right side
+  const rights = [...ex3Rights].sort(()=>Math.random()-.5);
+
+  ex3Lefts.forEach(item=>{
+    const el = document.createElement('div');
+    el.className='match-item';
+    el.id='ex3-L-'+item.n;
+    el.innerHTML=`<span class="match-badge">${item.n}.</span>${item.text}`;
+    el.onclick=()=>selectEx3Left(item.n);
+    leftCont.appendChild(el);
+  });
+
+  rights.forEach(item=>{
+    const el = document.createElement('div');
+    el.className='match-item';
+    el.id='ex3-R-'+item.l;
+    el.innerHTML=`<span class="match-badge right-badge">${item.l}.</span>${item.text}`;
+    el.onclick=()=>selectEx3Right(item.l);
+    rightCont.appendChild(el);
+  });
+}
+
+function selectEx3Left(n){
+  if(ex3Done[n]) return;
+  // deselect any previous left
+  document.querySelectorAll('#ex3-left .match-item').forEach(el=>el.classList.remove('sel-left'));
+  ex3SelLeft = n;
+  document.getElementById('ex3-L-'+n).classList.add('sel-left');
+}
+
+function selectEx3Right(l){
+  if(!ex3SelLeft) return;
+  const n = ex3SelLeft;
+  // check if right side already used
+  if(Object.values(ex3Done).includes(l)) return;
+  ex3Done[n] = l;
+  ex3SelLeft = null;
+
+  const lEl = document.getElementById('ex3-L-'+n);
+  const rEl = document.getElementById('ex3-R-'+l);
+  lEl.classList.remove('sel-left');
+  lEl.classList.add('matched');
+  rEl.classList.add('matched');
+
+  updateEx3Pairs();
+  updateSend();
+}
+
+function updateEx3Pairs(){
+  const pairs = document.getElementById('ex3-pairs');
+  const list = document.getElementById('ex3-pairs-list');
+  const keys = Object.keys(ex3Done);
+  if(keys.length===0){pairs.style.display='none';return;}
+  pairs.style.display='block';
+  list.innerHTML='';
+  keys.sort().forEach(n=>{
+    const l = ex3Done[n];
+    const left = ex3Lefts.find(x=>x.n===n);
+    const right = ex3Rights.find(x=>x.l===l);
+    const div = document.createElement('div');
+    div.style.cssText='display:flex;align-items:center;gap:6px;margin:4px 0;font-size:13px;color:var(--muted);';
+    div.innerHTML=`<strong style="color:var(--accent)">${n}.</strong> ${left.text} <span style="color:var(--border)">→</span> <strong style="color:var(--blue)">${l}.</strong> ${right.text}`;
+    list.appendChild(div);
+  });
+}
+
+function checkEx3(){
+  const fb = document.getElementById('fb3');
+  fb.className='fb';
+  if(Object.keys(ex3Done).length < 5){
+    fb.textContent='Match all 5 pairs first!';
+    fb.className='fb err';
+    return;
+  }
+  let correct=0, wrong=[];
+  for(let n in ex3Done){
+    const lEl = document.getElementById('ex3-L-'+n);
+    const rEl = document.getElementById('ex3-R-'+ex3Done[n]);
+    if(ex3Done[n]===ex3Correct[n]){
+      correct++;
+      lEl.classList.remove('matched');lEl.classList.add('correct-m');
+      rEl.classList.remove('matched');rEl.classList.add('correct-m');
+    } else {
+      wrong.push(n);
+      lEl.classList.remove('matched');lEl.classList.add('wrong-m');
+      rEl.classList.remove('matched');rEl.classList.add('wrong-m');
+      lEl.classList.add('shake');
+      setTimeout(()=>lEl.classList.remove('shake'),400);
+    }
+  }
+  if(correct===5){
+    fb.textContent='✓ Perfect! All 5 matches correct.';
+    fb.className='fb ok';
+  } else {
+    fb.textContent=`${correct}/5 correct. The wrong ones are highlighted — try again!`;
+    fb.className='fb err';
+    // reset wrong ones so student can retry
+    wrong.forEach(n=>{
+      const l=ex3Done[n];
+      delete ex3Done[n];
+      const lEl=document.getElementById('ex3-L-'+n);
+      const rEl=document.getElementById('ex3-R-'+l);
+      setTimeout(()=>{
+        lEl.classList.remove('wrong-m');lEl.classList.add('matched');
+        rEl.classList.remove('wrong-m');rEl.classList.add('matched');
+        // actually unmatch them for retry
+        lEl.classList.remove('matched');
+        rEl.classList.remove('matched');
+      },800);
+    });
+    setTimeout(updateEx3Pairs,850);
+  }
+  updateSend();
+}
+
+/* ─── Exercise 4 — Email gap fill ─── */
+// Accepted answer variants (all lower-case for comparison)
+const ex4Answers = {
+  g1:  ['live'],
+  g2:  ["don't need","do not need"],
+  g3:  ['have'],
+  g4:  ["'ll build","will build","i'll build"],
+  g5:  ['come'],
+  g6:  ["won't be","will not be"],
+  g7:  ['are'],
+  g8:  ["'ll be","will be","i'll be"],
+  g9:  ['get'],
+  g10: ['take'],
+};
+
+function normalise(s){
+  return s.trim().toLowerCase()
+    .replace(/['']/g,"'")
+    .replace(/\s+/g,' ');
+}
+
+function checkEx4(){
+  const fb = document.getElementById('fb4');
+  fb.className='fb';
+  let filled=0, correct=0, wrong=[];
+  for(let id in ex4Answers){
+    const inp = document.getElementById(id);
+    const val = normalise(inp.value);
+    if(!val){continue;}
+    filled++;
+    if(ex4Answers[id].includes(val)){
+      correct++;
+      inp.classList.remove('wrong','corrected');
+      inp.classList.add('correct');
+    } else {
+      wrong.push(id);
+      inp.classList.remove('correct','corrected');
+      inp.classList.add('wrong');
+      inp.classList.add('shake');
+      setTimeout(()=>inp.classList.remove('shake'),400);
+    }
+  }
+  if(filled < 10){
+    fb.textContent=`Fill in all 10 gaps first! (${filled}/10 filled)`;
+    fb.className='fb err';
+    return;
+  }
+  if(correct===10){
+    fb.textContent='✓ Excellent! All 10 gaps correct!';
+    fb.className='fb ok';
+  } else {
+    fb.textContent=`${correct}/10 correct. Wrong gaps are highlighted in red — try again!`;
+    fb.className='fb err';
+  }
+  updateSend();
+}
+
+/* ─── Validation & Send ─── */
+function setVal(id, done){
+  const item = document.getElementById('val-'+id);
+  const dot  = document.getElementById('vd-'+id);
+  if(!item||!dot)return;
+  dot.className='val-dot'+(done?' ok':'');
+  dot.textContent=done?'✓':'';
+  item.className='val-item'+(done?' done':'');
+}
+
+function countFilled(){
+  let n=0;
+  for(let id in ex4Answers){
+    if((document.getElementById(id).value||'').trim()) n++;
+  }
+  return n;
+}
+
+function updateSend(){
+  const name=(document.getElementById('student-name').value||'').trim();
+  const ex3All=Object.keys(ex3Done).length>=5;
+  const ex4All=countFilled()>=10;
+
+  setVal('name', !!name);
+  setVal('3', ex3All);
+  setVal('4', ex4All);
+
+  document.getElementById('student-name').classList.toggle('filled',!!name);
+  document.getElementById('send-btn').disabled=!(name&&ex3All&&ex4All);
+}
+
+function sendToTeacher(){
+  const name=document.getElementById('student-name').value.trim();
+  const date=new Date().toLocaleDateString('en-GB');
+
+  let ex3Text='EXERCISE 3 — Match the sentence halves:\n';
+  for(let n=1;n<=5;n++){
+    const l=ex3Done[n.toString()]||'?';
+    const left=ex3Lefts.find(x=>x.n===n.toString());
+    const right=ex3Rights.find(x=>x.l===l);
+    ex3Text+=`  ${n}. ${left?left.text:'?'} → ${l}. ${right?right.text:'?'}\n`;
+  }
+
+  let ex4Text='EXERCISE 4 — Complete the email:\n';
+  for(let i=1;i<=10;i++){
+    const val=(document.getElementById('g'+i).value||'').trim();
+    ex4Text+=`  Gap ${i}: ${val||'(empty)'}\n`;
+  }
+
+  const body=`Student: ${name}\nDate: ${date}\n\n${ex3Text}\n${ex4Text}`;
+  const subject=`5B Grammar Homework — ${name} — ${date}`;
+  window.location.href=`mailto:dariia.mlnk@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+/* ─── Init ─── */
+buildEx3();
+updateSend();
+</script>
+</body>
+</html>
