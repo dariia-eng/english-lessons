@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework — Splashing Out (Unit 5A)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#F0F4F8;color:#1E293B;line-height:1.65;font-size:16px}
+
+header{background:linear-gradient(135deg,#1E40AF 0%,#3B82F6 100%);color:#fff;padding:2.5rem 1.5rem 2rem;text-align:center}
+header h1{font-size:2rem;margin-bottom:.35rem;letter-spacing:-.5px}
+header .subtitle{opacity:.9;font-size:1rem;margin-bottom:1.2rem}
+.tags{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem}
+.tag{background:rgba(255,255,255,.18);padding:.3rem .9rem;border-radius:20px;font-size:.82rem;font-weight:500}
+.progress-wrap{background:rgba(255,255,255,.25);border-radius:10px;height:6px;margin-top:1.2rem;max-width:440px;margin-left:auto;margin-right:auto}
+.progress-fill{background:#fff;height:100%;border-radius:10px;width:0;transition:width .5s}
+.progress-label{font-size:.78rem;opacity:.75;margin-top:.45rem;letter-spacing:.03em}
+
+.container{max-width:860px;margin:2rem auto;padding:0 1rem 3rem}
+
+/* NAME CARD */
+.name-card{background:#fff;border-radius:16px;padding:1.4rem 1.8rem;margin-bottom:1.6rem;box-shadow:0 2px 16px rgba(0,0,0,.07);display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.name-label{font-weight:700;color:#1E40AF;font-size:.95rem;white-space:nowrap}
+.name-input{flex:1;min-width:200px;border:2px solid #CBD5E1;border-radius:8px;padding:.5rem .9rem;font-size:.95rem;font-family:inherit;color:#1E293B;outline:none;transition:border-color .2s}
+.name-input:focus{border-color:#3B82F6}
+.name-note{font-size:.8rem;color:#94A3B8}
+
+/* CARDS */
+.card{background:#fff;border-radius:16px;padding:2rem;margin-bottom:1.8rem;box-shadow:0 2px 16px rgba(0,0,0,.07)}
+.sec-head{display:flex;align-items:center;gap:1rem;margin-bottom:1.4rem;padding-bottom:1.1rem;border-bottom:2px solid #E2E8F0}
+.sec-num{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.05rem;flex-shrink:0;color:#fff}
+.n1{background:#8B5CF6}.n2{background:#EF4444}.n3{background:#F97316}.n4{background:#10B981}
+.sec-info h2{font-size:1.2rem;color:#1E293B;margin-bottom:.1rem}
+.sec-time{font-size:.82rem;color:#94A3B8;font-weight:500}
+
+/* INSTR */
+.instr{background:#EFF6FF;border-left:4px solid #3B82F6;padding:.85rem 1rem;border-radius:0 10px 10px 0;margin-bottom:1.4rem;font-size:.92rem;color:#1E40AF;font-style:italic}
+
+/* WORD BANK */
+.word-bank{display:flex;flex-wrap:wrap;gap:.5rem;padding:.9rem 1.1rem;background:#FFFBEB;border:2px dashed #FCD34D;border-radius:10px;margin-bottom:1.4rem}
+.chip{background:#fff;border:1px solid #FCD34D;padding:.3rem .75rem;border-radius:20px;font-size:.86rem;color:#92400E;font-weight:600}
+
+/* GAP FILL */
+.gf-list{display:flex;flex-direction:column;gap:14px}
+.gf-item{display:flex;gap:10px;align-items:baseline;font-size:.94rem;line-height:1.9}
+.gf-num{font-weight:800;color:#3B82F6;min-width:22px;flex-shrink:0}
+.t-inp{border:none;border-bottom:2.5px solid #3B82F6;outline:none;font-family:inherit;font-size:.93rem;color:#1E293B;background:transparent;padding:2px 6px;min-width:170px;transition:border-color .2s}
+.t-inp:focus{border-color:#1E40AF}
+.t-inp.correct{border-color:#10B981;background:#ECFDF5;border-radius:4px;color:#065F46;padding:2px 6px}
+.t-inp.wrong{border-color:#EF4444;background:#FEF2F2;border-radius:4px;color:#991B1B;padding:2px 6px}
+
+/* MULTIPLE CHOICE */
+.mc-list{display:flex;flex-direction:column;gap:18px}
+.mc-q{font-size:.94rem;font-weight:600;color:#1E293B;margin-bottom:9px;line-height:1.55}
+.mc-opts{display:flex;flex-wrap:wrap;gap:8px}
+.mc-opt{padding:.45rem 1.1rem;border:2px solid #CBD5E1;border-radius:20px;background:#fff;font-size:.87rem;font-weight:600;font-family:inherit;cursor:pointer;transition:all .18s;color:#334155}
+.mc-opt:hover{background:#EFF6FF;border-color:#3B82F6}
+.mc-opt.selected{background:#3B82F6;color:#fff;border-color:#3B82F6}
+.mc-opt.correct{background:#10B981!important;color:#fff!important;border-color:#10B981!important}
+.mc-opt.wrong{background:#EF4444!important;color:#fff!important;border-color:#EF4444!important}
+.mc-opt.reveal{background:#ECFDF5;color:#065F46;border-color:#10B981;font-weight:700}
+
+/* TRANSFORM */
+.ex-item{padding:1rem 1.1rem;border-radius:10px;border:1.5px solid #E2E8F0;margin-bottom:.9rem;background:#F8FAFC;transition:border-color .2s,background .2s}
+.ex-item.correct{background:#F0FDF4;border-color:#86EFAC}
+.ex-item.wrong{background:#FEF2F2;border-color:#FCA5A5}
+.ex-item p{margin-bottom:.45rem;font-size:.94rem;line-height:1.65}
+.ex-item p:last-of-type{margin-bottom:0}
+input[type="text"].wide{border:2px solid #CBD5E1;border-radius:7px;padding:.35rem .65rem;font-size:.9rem;font-family:inherit;outline:none;transition:border-color .2s;background:#fff;color:#1E293B;min-width:220px}
+input[type="text"].wide:focus{border-color:#3B82F6}
+
+/* FEEDBACK */
+.fb{font-size:.82rem;font-weight:600;margin-top:.4rem}
+.fb.ok{color:#16A34A}
+.fb.no{color:#DC2626}
+
+/* WRITING */
+textarea{width:100%;border:2px solid #CBD5E1;border-radius:10px;padding:.75rem 1rem;font-size:.92rem;font-family:inherit;color:#1E293B;resize:vertical;min-height:130px;outline:none;transition:border-color .2s;line-height:1.65}
+textarea:focus{border-color:#3B82F6}
+.vocab-ref{background:#F3F4F6;border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1rem;font-size:.85rem;color:#475569}
+.vocab-ref strong{color:#1E40AF}
+
+/* SCORE */
+.score{margin-top:1rem;padding:.75rem 1.1rem;border-radius:9px;font-weight:600;font-size:.9rem;display:none}
+.score.good{background:#F0FDF4;color:#166534;border:1px solid #BBF7D0}
+.score.ok{background:#FFFBEB;color:#92400E;border:1px solid #FDE68A}
+.score.low{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA}
+
+/* BUTTONS */
+.btn-group{display:flex;gap:.7rem;margin-top:1.3rem;flex-wrap:wrap}
+.btn{padding:.6rem 1.3rem;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-check{background:#2563EB;color:#fff}
+.btn-check:hover{background:#1D4ED8}
+.btn-reveal{background:#F1F5F9;color:#475569;border:2px solid #CBD5E1}
+.btn-reveal:hover{background:#E2E8F0}
+.btn-reset{background:#FEF3C7;color:#92400E;border:2px solid #FDE68A}
+.btn-reset:hover{background:#FDE68A}
+.btn-done{background:#10B981;color:#fff}
+.btn-done:hover{background:#059669}
+
+/* DONE NOTE */
+.done-note{background:#ECFDF5;border:1.5px solid #A7F3D0;border-radius:9px;padding:.65rem 1rem;font-size:.88rem;color:#065F46;margin-top:.8rem;display:none}
+.done-note.show{display:block}
+
+/* SEND SECTION */
+.send-section{background:#fff;border-radius:16px;padding:2rem 1.8rem;margin-bottom:2rem;box-shadow:0 2px 16px rgba(0,0,0,.07);text-align:center}
+.send-section h3{font-size:1.1rem;color:#1E293B;margin-bottom:.4rem}
+.send-section p{font-size:.9rem;color:#64748B;margin-bottom:1.4rem;line-height:1.6}
+.btn-send{background:linear-gradient(135deg,#1E40AF,#3B82F6);color:#fff;border:none;border-radius:10px;padding:.85rem 2rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;box-shadow:0 4px 14px rgba(37,99,235,.3)}
+.btn-send:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,99,235,.4)}
+.warn-note{background:#FEF3C7;border:1.5px solid #FDE68A;border-radius:9px;padding:.65rem 1rem;font-size:.87rem;color:#92400E;margin-top:.9rem;display:none}
+.warn-note.show{display:block}
+.tip{background:#ECFDF5;border:1px solid #A7F3D0;border-radius:9px;padding:.75rem 1rem;margin-bottom:1rem;font-size:.88rem;color:#065F46}
+.tip strong{color:#047857}
+
+@media(max-width:600px){
+  .btn-group{flex-direction:column}
+  .gf-item{flex-wrap:wrap}
+  .t-inp{min-width:140px}
+  input[type="text"].wide{min-width:100%;width:100%}
+  header h1{font-size:1.55rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💸 Splashing Out — Homework</h1>
+  <p class="subtitle">Unit 5A · Money phrasal verbs &amp; mistakes in the past · B2</p>
+  <div class="tags">
+    <span class="tag">📝 4 exercises</span>
+    <span class="tag">🎯 B2 Level</span>
+    <span class="tag">✉️ Send to teacher when done</span>
+  </div>
+  <div class="progress-wrap"><div class="progress-fill" id="prog"></div></div>
+  <div class="progress-label" id="prog-label">0 / 4 exercises checked</div>
+</header>
+
+<div class="container">
+
+<!-- NAME -->
+<div class="name-card">
+  <span class="name-label">👤 Your name:</span>
+  <input class="name-input" id="student-name" type="text" placeholder="Type your name here…">
+  <span class="name-note">Required before sending</span>
+</div>
+
+
+<!-- ══ EX 1 — VOCABULARY GAP-FILL ══ -->
+<div class="card">
+  <div class="sec-head">
+    <div class="sec-num n1">1</div>
+    <div class="sec-info">
+      <h2>Vocabulary: Gap-Fill</h2>
+      <div class="sec-time">Money phrasal verbs from the lesson</div>
+    </div>
+  </div>
+  <div class="instr">📌 Complete each sentence with the correct phrase from the word bank. Use each phrase <strong>once</strong>.</div>
+
+  <div class="word-bank" id="wb1"></div>
+
+  <div class="gf-list" id="ex1-gaps">
+    <div class="gf-item">
+      <span class="gf-num">1.</span>
+      <span>I only earn €900 a month — after rent and bills, I have about €400 to <input class="t-inp" data-answer="live on" placeholder="____________">.</span>
+    </div>
+    <div class="gf-item">
+      <span class="gf-num">2.</span>
+      <span>After she lost her job, she had to <input class="t-inp" data-answer="cut back on" placeholder="____________"> eating out and other luxuries.</span>
+    </div>
+    <div class="gf-item">
+      <span class="gf-num">3.</span>
+      <span>He <input class="t-inp" data-answer="splashed out on" placeholder="____________"> a designer watch for his birthday — it cost over €500.</span>
+    </div>
+    <div class="gf-item">
+      <span class="gf-num">4.</span>
+      <span>I always <input class="t-inp" data-answer="stock up on" placeholder="____________"> tinned food and pasta when they're on offer at the supermarket.</span>
+    </div>
+    <div class="gf-item">
+      <span class="gf-num">5.</span>
+      <span>It's important to <input class="t-inp" data-answer="set aside" placeholder="____________"> a little money each month — you never know when an emergency will happen.</span>
+    </div>
+    <div class="gf-item">
+      <span class="gf-num">6.</span>
+      <span>She borrowed €200 from her friend last year but still hasn't <input class="t-inp" data-answer="paid it back" placeholder="____________">.</span>
+    </div>
+    <div class="gf-item">
+      <span class="gf-num">7.</span>
+      <span>He <input class="t-inp" data-answer="took out" placeholder="____________"> €300 in cash at the airport because the hotel didn't accept cards.</span>
+    </div>
+    <div class="gf-item">
+      <span class="gf-num">8.</span>
+      <span>She kept spending more than she earned until she finally <input class="t-inp" data-answer="got into debt" placeholder="____________">.</span>
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-check" onclick="checkEx1()">✓ Check answers</button>
+    <button class="btn btn-reset" onclick="resetEx1()">↺ Reset</button>
+  </div>
+  <div class="score" id="score-ex1"></div>
+</div>
+
+
+<!-- ══ EX 2 — MULTIPLE CHOICE: GRAMMAR ══ -->
+<div class="card">
+  <div class="sec-head">
+    <div class="sec-num n2">2</div>
+    <div class="sec-info">
+      <h2>Grammar: Choose the Correct Form</h2>
+      <div class="sec-time">wish / if only · should / could / ought to have · supposed to</div>
+    </div>
+  </div>
+  <div class="instr">🎯 Click the option that correctly completes each sentence.</div>
+
+  <div class="mc-list">
+
+    <div class="mc-item">
+      <div class="mc-q">1. &nbsp;"I _______ that brand-new laptop. I barely use it and now I can't pay my rent."</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pickMC(this,false)">shouldn't buy</button>
+        <button class="mc-opt" onclick="pickMC(this,true)">shouldn't have bought</button>
+        <button class="mc-opt" onclick="pickMC(this,false)">didn't have to buy</button>
+      </div>
+    </div>
+
+    <div class="mc-item">
+      <div class="mc-q">2. &nbsp;"If only she _______ the reviews before ordering — it was clearly a scam."</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pickMC(this,false)">reads</button>
+        <button class="mc-opt" onclick="pickMC(this,false)">would read</button>
+        <button class="mc-opt" onclick="pickMC(this,true)">had read</button>
+      </div>
+    </div>
+
+    <div class="mc-item">
+      <div class="mc-q">3. &nbsp;"You _______ travel insurance before the trip — now you've lost everything."</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pickMC(this,false)">ought to get</button>
+        <button class="mc-opt" onclick="pickMC(this,false)">ought have got</button>
+        <button class="mc-opt" onclick="pickMC(this,true)">ought to have got</button>
+      </div>
+    </div>
+
+    <div class="mc-item">
+      <div class="mc-q">4. &nbsp;"We _______ split the bill equally, but somehow I ended up paying for everything."</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pickMC(this,false)">supposed to</button>
+        <button class="mc-opt" onclick="pickMC(this,true)">were supposed to</button>
+        <button class="mc-opt" onclick="pickMC(this,false)">are supposed to</button>
+      </div>
+    </div>
+
+    <div class="mc-item">
+      <div class="mc-q">5. &nbsp;"He _______ a second-hand car instead of taking out a loan for a new one."</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pickMC(this,false)">could buy</button>
+        <button class="mc-opt" onclick="pickMC(this,true)">could have bought</button>
+        <button class="mc-opt" onclick="pickMC(this,false)">must have bought</button>
+      </div>
+    </div>
+
+    <div class="mc-item">
+      <div class="mc-q">6. &nbsp;"I wish I _______ all my savings on that online course — I didn't even finish it."</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pickMC(this,false)">didn't spend</button>
+        <button class="mc-opt" onclick="pickMC(this,false)">haven't spent</button>
+        <button class="mc-opt" onclick="pickMC(this,true)">hadn't spent</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-check" onclick="checkEx2()">✓ Check answers</button>
+    <button class="btn btn-reset" onclick="resetEx2()">↺ Reset</button>
+  </div>
+  <div class="score" id="score-ex2"></div>
+</div>
+
+
+<!-- ══ EX 3 — SENTENCE TRANSFORMATION ══ -->
+<div class="card">
+  <div class="sec-head">
+    <div class="sec-num n3">3</div>
+    <div class="sec-info">
+      <h2>Sentence Transformation</h2>
+      <div class="sec-time">Use the keyword to rewrite each sentence</div>
+    </div>
+  </div>
+  <div class="instr">✏️ Complete the second sentence so it has the same meaning as the first. Use the word in brackets. Type <strong>only the missing words</strong>.</div>
+  <div class="tip"><strong>💡 Tip:</strong> Think about which structure fits: <em>wish/if only</em>, <em>should/could/ought to have</em>, or <em>supposed to</em>?</div>
+
+  <div class="ex-item" id="p3q1">
+    <p><strong>1.</strong> I regret not saving more money when I had the chance.</p>
+    <p>I wish I <input type="text" class="wide" data-answer="had saved" placeholder="…"> more money when I had the chance. <em>(had)</em></p>
+    <div class="fb"></div>
+  </div>
+
+  <div class="ex-item" id="p3q2">
+    <p><strong>2.</strong> It was wrong of her not to read the contract before signing it.</p>
+    <p>She <input type="text" class="wide" data-answer="ought to have read" placeholder="…"> the contract before signing it. <em>(ought)</em></p>
+    <div class="fb"></div>
+  </div>
+
+  <div class="ex-item" id="p3q3">
+    <p><strong>3.</strong> It was possible for him to get a student discount, but he didn't ask.</p>
+    <p>He <input type="text" class="wide" data-answer="could have got|could have gotten" placeholder="…"> a student discount. <em>(could)</em></p>
+    <div class="fb"></div>
+  </div>
+
+  <div class="ex-item" id="p3q4">
+    <p><strong>4.</strong> The plan was that they would share the rent equally, but she paid more.</p>
+    <p>They <input type="text" class="wide" data-answer="were supposed to share" placeholder="…"> the rent equally. <em>(supposed)</em></p>
+    <div class="fb"></div>
+  </div>
+
+  <div class="ex-item" id="p3q5">
+    <p><strong>5.</strong> I regret spending all my bonus on that holiday when I was already in debt.</p>
+    <p>If only I <input type="text" class="wide" data-answer="hadn't spent" placeholder="…"> all my bonus on that holiday. <em>(hadn't)</em></p>
+    <div class="fb"></div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-check" onclick="checkEx3()">✓ Check answers</button>
+    <button class="btn btn-reveal" onclick="revealEx3()">👁 Show answers</button>
+    <button class="btn btn-reset" onclick="resetEx3()">↺ Reset</button>
+  </div>
+  <div class="score" id="score-ex3"></div>
+</div>
+
+
+<!-- ══ EX 4 — WRITING ══ -->
+<div class="card">
+  <div class="sec-head">
+    <div class="sec-num n4">4</div>
+    <div class="sec-info">
+      <h2>Writing: A Purchase I Regret</h2>
+      <div class="sec-time">Free writing — your own words</div>
+    </div>
+  </div>
+  <div class="instr">✍️ Think of a purchase you regret. Write <strong>5–8 sentences</strong> describing what happened and what you should/could have done differently. Use at least <strong>3 grammar structures</strong> from the lesson.</div>
+
+  <div class="vocab-ref">
+    <strong>Try to use:</strong> &nbsp;I wish I had… &nbsp;·&nbsp; If only I hadn't… &nbsp;·&nbsp; I should have… &nbsp;·&nbsp; I could have… &nbsp;·&nbsp; I ought to have… &nbsp;·&nbsp; I was supposed to… &nbsp;·&nbsp; I splashed out on… &nbsp;·&nbsp; I got into debt… &nbsp;·&nbsp; I should have set aside…
+  </div>
+
+  <textarea id="writing" placeholder="For example: Last year I splashed out on a gym membership…"></textarea>
+
+  <div class="btn-group">
+    <button class="btn btn-done" onclick="markDone()">✓ Mark as done</button>
+  </div>
+  <div class="done-note" id="done-note">✅ Great — your teacher will look forward to reading this!</div>
+</div>
+
+
+<!-- ══ SEND ══ -->
+<div class="send-section">
+  <div style="font-size:2.2rem;margin-bottom:.6rem">📬</div>
+  <h3>All done? Send your homework!</h3>
+  <p>Click below to open your email app with all your answers filled in automatically.<br>Your teacher will receive it at <strong>dariia.mlnk@gmail.com</strong>.</p>
+  <button class="btn-send" onclick="sendHomework()">📧 Send to Teacher</button>
+  <div class="warn-note" id="warn-name">⚠️ Please enter your name at the top of the page first!</div>
+  <div class="warn-note" id="warn-ex">⚠️ Please complete and check at least one exercise before sending.</div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+/* ── Word bank shuffle ── */
+document.addEventListener('DOMContentLoaded', () => {
+  const words = ['live on','cut back on','splashed out on','stock up on','set aside','paid it back','took out','got into debt'];
+  for(let i=words.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[words[i],words[j]]=[words[j],words[i]];}
+  const wb=document.getElementById('wb1');
+  words.forEach(w=>{const s=document.createElement('span');s.className='chip';s.textContent=w;wb.appendChild(s);});
+});
+
+/* ── Helpers ── */
+function norm(s){return s.trim().toLowerCase().replace(/\s+/g,' ');}
+let checkedCount = 0;
+const checkedExs = new Set();
+
+function markChecked(id){
+  if(!checkedExs.has(id)){checkedExs.add(id);checkedCount++;}
+  const pct = Math.min(Math.round(checkedCount/4*100),100);
+  document.getElementById('prog').style.width = pct+'%';
+  document.getElementById('prog-label').textContent = checkedCount+' / 4 exercises checked';
+}
+
+function setScore(id, correct, total){
+  const el=document.getElementById('score-'+id);
+  const pct=total>0?Math.round(correct/total*100):0;
+  let msg,cls;
+  if(correct===total){msg='🎉 Perfect!';cls='good';}
+  else if(pct>=70){msg='👍 Well done!';cls='ok';}
+  else{msg='📖 Keep practising!';cls='low';}
+  el.className='score '+cls;
+  el.style.display='block';
+  el.textContent=`Score: ${correct}/${total} (${pct}%) — ${msg}`;
+  markChecked(id);
+}
+
+/* ── EX 1: Vocabulary gap-fill ── */
+function checkEx1(){
+  const inputs=document.querySelectorAll('#ex1-gaps .t-inp');
+  let correct=0;
+  inputs.forEach(inp=>{
+    const ans=norm(inp.value);
+    const expected=inp.dataset.answer.toLowerCase();
+    if(ans===expected){inp.classList.add('correct');inp.classList.remove('wrong');correct++;}
+    else{inp.classList.add('wrong');inp.classList.remove('correct');}
+  });
+  setScore('ex1',correct,inputs.length);
+}
+function revealEx1(){
+  const inputs=document.querySelectorAll('#ex1-gaps .t-inp');
+  inputs.forEach(inp=>{inp.value=inp.dataset.answer;inp.classList.add('correct');inp.classList.remove('wrong');});
+  setScore('ex1',inputs.length,inputs.length);
+}
+function resetEx1(){
+  document.querySelectorAll('#ex1-gaps .t-inp').forEach(inp=>{inp.value='';inp.classList.remove('correct','wrong');});
+  const sc=document.getElementById('score-ex1');sc.style.display='none';sc.textContent='';
+  checkedExs.delete('ex1');recalcProgress();
+}
+
+/* ── EX 2: Multiple choice ── */
+function pickMC(btn, isCorrect){
+  const opts=btn.closest('.mc-opts').querySelectorAll('.mc-opt');
+  opts.forEach(b=>b.classList.remove('selected','correct','wrong','reveal'));
+  btn.classList.add('selected');
+  btn.dataset.chosen=isCorrect?'correct':'wrong';
+}
+function checkEx2(){
+  const items=document.querySelectorAll('.mc-item');
+  let correct=0,total=0;
+  items.forEach(item=>{
+    const opts=item.querySelectorAll('.mc-opt');
+    const sel=item.querySelector('.mc-opt.selected');
+    if(!sel) return;
+    total++;
+    if(sel.dataset.chosen==='correct'){sel.classList.add('correct');correct++;}
+    else{
+      sel.classList.add('wrong');
+      opts.forEach(b=>{if(b.dataset.chosen==='correct')b.classList.add('reveal');});
+    }
+  });
+  if(total===0){const sc=document.getElementById('score-ex2');sc.className='score low';sc.style.display='block';sc.textContent='Please answer at least one question first!';return;}
+  setScore('ex2',correct,total);
+}
+function resetEx2(){
+  document.querySelectorAll('.mc-opt').forEach(b=>b.classList.remove('selected','correct','wrong','reveal'));
+  const sc=document.getElementById('score-ex2');sc.style.display='none';sc.textContent='';
+  checkedExs.delete('ex2');recalcProgress();
+}
+
+/* ── EX 3: Sentence transformation ── */
+function checkEx3(){
+  let correct=0,total=0;
+  for(let i=1;i<=5;i++){
+    const item=document.getElementById('p3q'+i);
+    const inp=item.querySelector('input[type="text"]');
+    const fb=item.querySelector('.fb');
+    const answers=inp.dataset.answer.split('|').map(a=>norm(a));
+    const val=norm(inp.value);
+    item.classList.remove('correct','wrong');
+    if(!val){fb.textContent='';fb.className='fb';continue;}
+    total++;
+    if(answers.includes(val)){correct++;item.classList.add('correct');fb.textContent='✓ Correct!';fb.className='fb ok';}
+    else{item.classList.add('wrong');fb.textContent='✗ Not quite — check the keyword and grammar structure.';fb.className='fb no';}
+  }
+  if(total===0){const sc=document.getElementById('score-ex3');sc.className='score low';sc.style.display='block';sc.textContent='Please answer at least one question first!';return;}
+  setScore('ex3',correct,total);
+}
+function revealEx3(){
+  let total=0;
+  for(let i=1;i<=5;i++){
+    const item=document.getElementById('p3q'+i);
+    const inp=item.querySelector('input[type="text"]');
+    const fb=item.querySelector('.fb');
+    total++;
+    inp.value=inp.dataset.answer.split('|')[0];
+    item.classList.remove('wrong');item.classList.add('correct');
+    fb.textContent='✓ Correct!';fb.className='fb ok';
+  }
+  setScore('ex3',total,total);
+}
+function resetEx3(){
+  for(let i=1;i<=5;i++){
+    const item=document.getElementById('p3q'+i);
+    const inp=item.querySelector('input[type="text"]');
+    const fb=item.querySelector('.fb');
+    if(inp)inp.value='';
+    item.classList.remove('correct','wrong');
+    if(fb){fb.textContent='';fb.className='fb';}
+  }
+  const sc=document.getElementById('score-ex3');sc.style.display='none';sc.textContent='';
+  checkedExs.delete('ex3');recalcProgress();
+}
+
+/* ── EX 4: Writing ── */
+function markDone(){
+  document.getElementById('done-note').classList.add('show');
+  markChecked('ex4');
+  document.getElementById('prog').style.width=Math.min(Math.round(checkedExs.size/4*100),100)+'%';
+  document.getElementById('prog-label').textContent=checkedExs.size+' / 4 exercises checked';
+}
+
+function recalcProgress(){
+  const pct=Math.min(Math.round(checkedExs.size/4*100),100);
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('prog-label').textContent=checkedExs.size+' / 4 exercises checked';
+}
+
+/* ── Send to teacher ── */
+function sendHomework(){
+  const name=document.getElementById('student-name').value.trim();
+  document.getElementById('warn-name').classList.remove('show');
+  document.getElementById('warn-ex').classList.remove('show');
+
+  if(!name){document.getElementById('warn-name').classList.add('show');document.getElementById('student-name').focus();return;}
+  if(checkedExs.size===0){document.getElementById('warn-ex').classList.add('show');return;}
+
+  // Collect Ex1
+  const ex1=[];
+  document.querySelectorAll('#ex1-gaps .t-inp').forEach((inp,i)=>{
+    ex1.push(`  ${i+1}. ${inp.value||'(blank)'}`);
+  });
+
+  // Collect Ex2
+  const ex2=[];
+  document.querySelectorAll('.mc-item').forEach((item,i)=>{
+    const sel=item.querySelector('.mc-opt.selected');
+    ex2.push(`  ${i+1}. ${sel?sel.textContent.trim():'(not answered)'}`);
+  });
+
+  // Collect Ex3
+  const ex3=[];
+  for(let i=1;i<=5;i++){
+    const item=document.getElementById('p3q'+i);
+    const inp=item?item.querySelector('input[type="text"]'):null;
+    ex3.push(`  ${i}. ${inp&&inp.value?inp.value:'(blank)'}`);
+  }
+
+  // Collect Ex4
+  const writing=document.getElementById('writing').value||'(blank)';
+
+  const body=
+`Hello Dariia!
+
+Here is my homework for Unit 5A — Splashing Out.
+Student: ${name}
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+EXERCISE 1 — Vocabulary Gap-Fill
+━━━━━━━━━━━━━━━━━━━━━━━━
+${ex1.join('\n')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+EXERCISE 2 — Grammar: Multiple Choice
+━━━━━━━━━━━━━━━━━━━━━━━━
+${ex2.join('\n')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+EXERCISE 3 — Sentence Transformation
+━━━━━━━━━━━━━━━━━━━━━━━━
+${ex3.join('\n')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+EXERCISE 4 — Writing: A Purchase I Regret
+━━━━━━━━━━━━━━━━━━━━━━━━
+${writing}
+`;
+
+  const subject=encodeURIComponent(`Homework — Splashing Out Unit 5A (${name})`);
+  const bodyEnc=encodeURIComponent(body);
+  window.location.href=`mailto:dariia.mlnk@gmail.com?subject=${subject}&body=${bodyEnc}`;
+}
+</script>
+</body>
+</html>
