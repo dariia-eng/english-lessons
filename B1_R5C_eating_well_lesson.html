@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eating Well | B1 English Lesson</title>
+<style>
+:root {
+  --primary: #6C3FC5; --primary-light: #9B72D9; --primary-pale: #F0EBFF;
+  --teal: #00A896; --teal-light: #E0F5F3;
+  --bg: #F7F8FC; --white: #FFFFFF; --text: #2D2D2D; --text-light: #6B7280;
+  --border: #E5E7EB; --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --radius: 12px; --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* Progress */
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--teal); transition: width 0.5s ease; z-index: 200; }
+
+/* Header */
+.lesson-header { background: linear-gradient(135deg, #6C3FC5 0%, #9B59B6 100%); color: white; padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 16px rgba(108,63,197,0.3); }
+.lesson-title { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.02em; }
+.lesson-meta { font-size: 0.78rem; opacity: 0.8; margin-top: 2px; }
+.print-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.4); color: white; border-radius: 20px; padding: 6px 16px; cursor: pointer; font-size: 0.8rem; font-family: inherit; }
+.print-btn:hover { background: rgba(255,255,255,0.25); }
+
+/* Stage nav */
+.stage-nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 28px; display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; position: sticky; top: 66px; z-index: 90; }
+.stage-nav::-webkit-scrollbar { display: none; }
+.snav-btn { padding: 12px 14px; border: none; background: none; cursor: pointer; font-size: 0.8rem; font-weight: 500; color: var(--text-light); white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.2s; font-family: inherit; }
+.snav-btn:hover { color: var(--primary); }
+.snav-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
+.snav-btn.done { color: var(--teal); }
+.snav-btn.done::before { content: '✓ '; }
+
+/* Main */
+.main { max-width: 840px; margin: 0 auto; padding: 28px 24px 80px; }
+
+/* Stage */
+.stage { display: none; animation: fadeIn 0.3s ease; }
+.stage.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Stage header */
+.stage-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; gap: 16px; }
+.stage-badge { display: inline-block; background: var(--primary-pale); color: var(--primary); font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.stage-title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; }
+.stage-subtitle { font-size: 0.85rem; color: var(--text-light); margin-top: 4px; }
+
+/* Timer */
+.timer-wrap { text-align: center; flex-shrink: 0; }
+.timer-display { font-size: 1.6rem; font-weight: 800; color: var(--primary); font-variant-numeric: tabular-nums; min-width: 76px; }
+.timer-label { font-size: 0.65rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; }
+.timer-controls { display: flex; gap: 4px; justify-content: center; margin-top: 5px; }
+.timer-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); background: var(--white); cursor: pointer; font-size: 0.75rem; transition: all 0.2s; }
+.timer-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* Cards */
+.card { background: var(--white); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); margin-bottom: 18px; }
+.card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+
+/* Teacher note */
+.tn-toggle { background: none; border: 1px solid #FDE68A; border-radius: 20px; padding: 4px 12px; font-size: 0.74rem; color: #92400E; cursor: pointer; margin-bottom: 10px; font-family: inherit; }
+.tn-toggle:hover { background: #FFFBEB; }
+.teacher-note { background: #FFFBEB; border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 14px; font-size: 0.83rem; color: #92400E; line-height: 1.55; }
+.teacher-note.hidden { display: none; }
+
+/* Headlines */
+.headline-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow); margin-bottom: 10px; }
+.headline-emoji { font-size: 1.6rem; flex-shrink: 0; }
+.headline-source { font-size: 0.66rem; color: var(--text-light); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+.headline-text { font-size: 0.95rem; font-weight: 700; line-height: 1.35; }
+
+/* Rating */
+.rating-wrap { display: flex; align-items: center; gap: 10px; margin: 14px 0; flex-wrap: wrap; }
+.rating-label { font-size: 0.88rem; font-weight: 600; }
+.rating-btns { display: flex; gap: 5px; }
+.rating-btn { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border); background: var(--white); font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.2s; color: var(--text-light); font-family: inherit; }
+.rating-btn:hover, .rating-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
+.rating-result { font-size: 0.83rem; color: var(--text-light); font-style: italic; }
+
+/* Divider */
+.divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+/* Prompt chips */
+.prompt-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { background: var(--primary-pale); color: var(--primary); padding: 9px 16px; border-radius: 24px; font-size: 0.86rem; font-weight: 500; cursor: pointer; border: 1.5px solid transparent; transition: all 0.2s; user-select: none; }
+.chip:hover, .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* Vocab */
+.vocab-bank { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: var(--bg); border: 2px dashed var(--border); border-radius: var(--radius-sm); min-height: 54px; margin-bottom: 18px; }
+.vocab-word { background: var(--white); border: 2px solid var(--border); border-radius: 24px; padding: 7px 16px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; user-select: none; }
+.vocab-word:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow); }
+.vocab-word.placed { opacity: 0.35; pointer-events: none; }
+.sort-cats { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 14px; }
+.sort-cat { border-radius: var(--radius-sm); overflow: hidden; border: 2px solid; }
+.sort-cat.taste { border-color: #FCA5A5; }
+.sort-cat.method { border-color: #6EE7B7; }
+.sort-cat.quality { border-color: #93C5FD; }
+.sort-cat-hd { padding: 9px 12px; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.sort-cat.taste .sort-cat-hd { background: #FEE2E2; color: #991B1B; }
+.sort-cat.method .sort-cat-hd { background: #D1FAE5; color: #065F46; }
+.sort-cat.quality .sort-cat-hd { background: #DBEAFE; color: #1E3A8A; }
+.sort-cat-body { min-height: 72px; padding: 8px; display: flex; flex-wrap: wrap; gap: 5px; align-content: flex-start; }
+.placed-word { border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+.placed-word:hover { opacity: 0.65; }
+.sort-cat.taste .placed-word { background: #FEE2E2; color: #991B1B; }
+.sort-cat.method .placed-word { background: #D1FAE5; color: #065F46; }
+.sort-cat.quality .placed-word { background: #DBEAFE; color: #1E3A8A; }
+.sentence-frame { background: var(--primary-pale); border-left: 4px solid var(--primary); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 12px 16px; font-size: 0.88rem; color: var(--primary); font-style: italic; }
+
+/* Posts */
+.posts-grid { display: grid; gap: 14px; }
+.post-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+.post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; flex-shrink: 0; }
+.post-name { font-weight: 700; font-size: 0.92rem; }
+.post-handle { font-size: 0.74rem; color: var(--text-light); }
+.post-body { font-size: 0.9rem; line-height: 1.65; color: #374151; }
+.post-tag { display: inline-block; color: var(--primary); font-size: 0.78rem; margin-top: 8px; font-weight: 500; }
+.post-likes { margin-top: 10px; font-size: 0.76rem; color: var(--text-light); }
+
+/* Comp questions */
+.comp-q-list { list-style: none; counter-reset: q; }
+.comp-q { counter-increment: q; display: flex; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+.comp-q:last-child { border-bottom: none; }
+.comp-q::before { content: counter(q); background: var(--primary); color: white; width: 22px; height: 22px; min-width: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; margin-top: 1px; }
+
+/* Grammar table */
+.gtable { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-bottom: 18px; }
+.gtable th { background: var(--primary); color: white; padding: 9px 12px; text-align: left; font-size: 0.76rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.gtable td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+.gtable tr:nth-child(even) td { background: var(--bg); }
+.tag { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; }
+.tag-pos { background: #D1FAE5; color: #065F46; }
+.tag-neg { background: #FEE2E2; color: #991B1B; }
+.tag-q { background: #DBEAFE; color: #1E3A8A; }
+.gh { font-weight: 700; color: var(--primary); }
+.ge { font-style: italic; color: var(--text-light); font-size: 0.8rem; display: block; margin-top: 1px; }
+
+/* Word bank */
+.word-bank { background: var(--bg); border: 2px dashed var(--border); border-radius: var(--radius-sm); padding: 12px; display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+.wb-label { width: 100%; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light); margin-bottom: 3px; }
+.wb-word { background: var(--white); border: 1.5px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 0.82rem; font-weight: 600; color: var(--primary); }
+
+/* Gap fill */
+.gf-list { list-style: none; counter-reset: gf; }
+.gf-item { counter-increment: gf; display: flex; align-items: center; gap: 8px; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 0.92rem; flex-wrap: wrap; line-height: 1.5; }
+.gf-item:last-child { border-bottom: none; }
+.gf-num { background: var(--primary-pale); color: var(--primary); width: 24px; height: 24px; min-width: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+.gf-input { border: 2px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 0.88rem; font-family: inherit; width: 120px; outline: none; transition: border-color 0.2s; color: var(--text); }
+.gf-input:focus { border-color: var(--primary); }
+.gf-input.correct { border-color: #10B981; background: #D1FAE5; color: #065F46; }
+.gf-input.wrong { border-color: #EF4444; background: #FEE2E2; }
+.gf-hint { font-size: 0.74rem; color: var(--text-light); font-style: italic; }
+
+/* Check area */
+.check-area { display: flex; align-items: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.check-result { font-size: 0.86rem; font-weight: 600; }
+.check-result.good { color: #059669; }
+.check-result.ok { color: #D97706; }
+
+/* Speaking cards */
+.q-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.q-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px 14px; text-align: center; cursor: pointer; transition: all 0.25s; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; min-height: 110px; }
+.q-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+.q-card.hl { border-color: var(--primary); background: var(--primary-pale); }
+.q-icon { font-size: 1.4rem; }
+.q-text { font-size: 0.84rem; font-weight: 600; line-height: 1.4; color: var(--text); }
+.q-quant { font-size: 0.7rem; color: var(--primary); font-weight: 700; background: var(--primary-pale); padding: 2px 8px; border-radius: 20px; }
+
+/* Phrases */
+.phrases-box { background: var(--teal-light); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 18px; }
+.phrases-title { font-size: 0.74rem; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.phrases { display: flex; flex-wrap: wrap; gap: 7px; }
+.phrase { background: var(--white); border: 1px solid var(--teal); color: #065F46; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
+
+/* Menu */
+.scenario-box { background: linear-gradient(135deg, var(--teal-light), #E0F2FE); border-radius: var(--radius); padding: 18px; margin-bottom: 18px; border: 1px solid var(--teal); }
+.scenario-title { font-weight: 700; color: var(--teal); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 0.95rem; }
+.scenario-text { font-size: 0.88rem; color: #374151; line-height: 1.55; }
+.guest-card { background: var(--white); border: 1px solid #FDE68A; border-radius: var(--radius-sm); padding: 10px 14px; margin-top: 12px; font-size: 0.83rem; color: #92400E; display: flex; align-items: flex-start; gap: 8px; }
+.menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+.menu-section-title { font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light); margin-bottom: 6px; }
+.menu-input { width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 9px 12px; font-size: 0.87rem; font-family: inherit; resize: vertical; min-height: 76px; outline: none; transition: border-color 0.2s; color: var(--text); }
+.menu-input:focus { border-color: var(--primary); }
+
+/* Feedback */
+.feedback-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+.fb-title { font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 7px; }
+.fb-title.green { color: #059669; }
+.fb-title.orange { color: #D97706; }
+.fb-textarea { width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 9px 12px; font-size: 0.85rem; font-family: inherit; resize: vertical; min-height: 88px; outline: none; transition: border-color 0.2s; color: var(--text); }
+.fb-textarea:focus { border-color: var(--primary); }
+.vocab-review { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+.vr-item { background: var(--primary-pale); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
+.vr-word { font-weight: 700; color: var(--primary); font-size: 0.92rem; }
+.vr-def { font-size: 0.72rem; color: var(--text-light); margin-top: 2px; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 5px; padding: 9px 20px; border-radius: 24px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 600; font-family: inherit; transition: all 0.2s; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: #5630A8; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(108,63,197,0.3); }
+.btn-outline { background: var(--white); color: var(--primary); border: 2px solid var(--primary); }
+.btn-outline:hover { background: var(--primary-pale); }
+.btn-teal { background: var(--teal); color: white; }
+.btn-teal:hover { background: #008577; }
+.btn-ghost { background: var(--bg); border: 1px solid var(--border); color: var(--text-light); }
+.btn-ghost:hover { background: var(--border); }
+.btn-sm { padding: 6px 14px; font-size: 0.78rem; }
+
+/* Nav buttons */
+.nav-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--border); }
+
+/* Complete card */
+.complete-card { background: linear-gradient(135deg, var(--primary-pale), var(--teal-light)); border-radius: var(--radius); padding: 24px; text-align: center; }
+.complete-card h2 { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+.complete-card p { font-size: 0.9rem; color: var(--text); line-height: 1.6; }
+
+/* Rank items */
+.rank-item { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 12px; cursor: pointer; transition: all 0.2s; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.rank-item:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow); }
+.rank-item.ranked { border-color: var(--primary); background: var(--primary-pale); }
+
+/* Hot take cards */
+.hotcard { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px; min-height: 100px; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 700; font-size: 0.9rem; box-shadow: var(--shadow); }
+.hotcard:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+.hotcard.revealed { border-color: var(--teal); background: var(--teal-light); }
+.hotcard-back { font-size: 0.92rem; font-weight: 500; line-height: 1.55; color: #065F46; font-style: italic; }
+.hotcard-back.hidden { display: none; }
+
+@media (max-width: 640px) {
+  .sort-cats, .menu-grid, .feedback-grid, .vocab-review { grid-template-columns: 1fr; }
+  .q-cards { grid-template-columns: 1fr 1fr; }
+  .main { padding: 18px 14px 60px; }
+  .lesson-header { padding: 14px 18px; }
+  .stage-nav { padding: 0 14px; }
+}
+@media print {
+  .stage-nav, .lesson-header, .nav-buttons, .timer-wrap, .tn-toggle, .check-area, .progress-bar { display: none !important; }
+  .stage { display: block !important; page-break-after: always; }
+  .card { box-shadow: none; border: 1px solid #ddd; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar" style="width:14%"></div>
+
+<header class="lesson-header">
+  <div>
+    <div class="lesson-title">🥗 Eating Well</div>
+    <div class="lesson-meta">B1 · 1-to-1 · 60–70 min · Communicative</div>
+  </div>
+  <button class="print-btn" onclick="window.print()">🖨 Print</button>
+</header>
+
+<nav class="stage-nav" id="stageNav">
+  <button class="snav-btn active" onclick="goTo(0)">1 · Warmer</button>
+  <button class="snav-btn" onclick="goTo(1)">2 · Vocabulary</button>
+  <button class="snav-btn" onclick="goTo(2)">3 · Reading</button>
+  <button class="snav-btn" onclick="goTo(3)">4 · Grammar</button>
+  <button class="snav-btn" onclick="goTo(4)">5 · Speaking 1</button>
+  <button class="snav-btn" onclick="goTo(5)">6 · Speaking 2</button>
+  <button class="snav-btn" onclick="goTo(6)">7 · Wrap-up</button>
+</nav>
+
+<main class="main">
+
+<!-- ======================== STAGE 1 ======================== -->
+<section class="stage active" id="s0">
+  <div class="stage-header">
+    <div>
+      <div class="stage-badge">Stage 1 · 5–7 min</div>
+      <h1 class="stage-title">Warmer: Eating in 2026</h1>
+      <p class="stage-subtitle">Activate ideas — get talking, no pressure</p>
+    </div>
+    <div class="timer-wrap">
+      <div class="timer-display" id="t0">7:00</div>
+      <div class="timer-label">timer</div>
+      <div class="timer-controls">
+        <button class="timer-btn" onclick="startT(0,7)" title="Start">▶</button>
+        <button class="timer-btn" onclick="resetT(0,7)" title="Reset">↺</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="tn-toggle" onclick="toggleNote(this)">📋 Teacher notes ▾</button>
+  <div class="teacher-note hidden">
+    Show the three headlines one at a time and ask for a quick reaction — don't correct at this stage. Keep it natural. End with: <em>"So, do YOU eat well?"</em> and let them rate themselves. This personalises the lesson from the start.
+  </div>
+
+  <div class="card">
+    <div class="card-title">📰 Three food headlines — 2026</div>
+    <p style="font-size:0.83rem;color:var(--text-light);margin-bottom:14px;">Look at each headline. Which one surprises you most? Does any of them affect your life?</p>
+    <div class="headline-card">
+      <div class="headline-emoji">🏠</div>
+      <div>
+        <div class="headline-source">FoodTech Weekly · 2026</div>
+        <div class="headline-text">"Home cooking is back: more people are cooking at home than at any time in the last 20 years"</div>
+      </div>
+    </div>
+    <div class="headline-card">
+      <div class="headline-emoji">⚠️</div>
+      <div>
+        <div class="headline-source">Health Today · 2026</div>
+        <div class="headline-text">"Scientists say 60% of what we eat in the world is now ultra-processed food"</div>
+      </div>
+    </div>
+    <div class="headline-card">
+      <div class="headline-emoji">🌱</div>
+      <div>
+        <div class="headline-source">The Guardian Food · 2026</div>
+        <div class="headline-text">"Plant-based eating grows again — but people want real food, not fake meat"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💬 Quick discussion</div>
+    <div class="rating-wrap">
+      <div class="rating-label">How healthy is your diet? Rate 1–5:</div>
+      <div class="rating-btns">
+        <button class="rating-btn" onclick="rate(this,1)">1</button>
+        <button class="rating-btn" onclick="rate(this,2)">2</button>
+        <button class="rating-btn" onclick="rate(this,3)">3</button>
+        <button class="rating-btn" onclick="rate(this,4)">4</button>
+        <button class="rating-btn" onclick="rate(this,5)">5</button>
+      </div>
+      <span class="rating-result" id="ratingResult"></span>
+    </div>
+    <div class="divider"></div>
+    <p style="font-size:0.82rem;color:var(--text-light);margin-bottom:10px;">Click a question to highlight it:</p>
+    <div class="prompt-chips">
+      <div class="chip" onclick="this.classList.toggle('active')">What did you eat yesterday?</div>
+      <div class="chip" onclick="this.classList.toggle('active')">Has your diet changed recently?</div>
+      <div class="chip" onclick="this.classList.toggle('active')">What does "eating well" mean to you?</div>
+      <div class="chip" onclick="this.classList.toggle('active')">Do any of the headlines surprise you?</div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <div></div>
+    <button class="btn btn-primary" onclick="goTo(1)">Next: Vocabulary →</button>
+  </div>
+</section>
+
+
+<!-- ======================== STAGE 2 ======================== -->
+<section class="stage" id="s1">
+  <div class="stage-header">
+    <div>
+      <div class="stage-badge">Stage 2 · 10 min</div>
+      <h1 class="stage-title">Vocabulary: Describing Food</h1>
+      <p class="stage-subtitle">Sort 12 adjectives, then use them</p>
+    </div>
+    <div class="timer-wrap">
+      <div class="timer-display" id="t1">10:00</div>
+      <div class="timer-label">timer</div>
+      <div class="timer-controls">
+        <button class="timer-btn" onclick="startT(1,10)">▶</button>
+        <button class="timer-btn" onclick="resetT(1,10)">↺</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="tn-toggle" onclick="toggleNote(this)">📋 Teacher notes ▾</button>
+  <div class="teacher-note hidden">
+    Student clicks a word to place it in a category. They can click a placed word to remove it. After checking, move to the speaking frame — make sure they produce a real sentence using at least 3 adjectives. Don't correct pronunciation heavily here; focus on meaning.
+  </div>
+
+  <div class="card">
+    <div class="card-title">🗂 Sort the adjectives into three groups</div>
+    <p style="font-size:0.83rem;color:var(--text-light);margin-bottom:12px;">Click each word, then choose its category. Click a placed word to remove it.</p>
+
+    <div class="vocab-bank" id="vocabBank">
+      <div class="vocab-word" onclick="placeWord(this,'quality')">fresh</div>
+      <div class="vocab-word" onclick="placeWord(this,'method')">fried</div>
+      <div class="vocab-word" onclick="placeWord(this,'taste')">sweet</div>
+      <div class="vocab-word" onclick="placeWord(this,'quality')">heavy</div>
+      <div class="vocab-word" onclick="placeWord(this,'taste')">savoury</div>
+      <div class="vocab-word" onclick="placeWord(this,'method')">grilled</div>
+      <div class="vocab-word" onclick="placeWord(this,'taste')">bitter</div>
+      <div class="vocab-word" onclick="placeWord(this,'quality')">light</div>
+      <div class="vocab-word" onclick="placeWord(this,'method')">homemade</div>
+      <div class="vocab-word" onclick="placeWord(this,'taste')">spicy</div>
+      <div class="vocab-word" onclick="placeWord(this,'quality')">processed</div>
+      <div class="vocab-word" onclick="placeWord(this,'quality')">healthy</div>
+    </div>
+
+    <div class="sort-cats">
+      <div class="sort-cat taste">
+        <div class="sort-cat-hd">👅 How it tastes</div>
+        <div class="sort-cat-body" id="body-taste"></div>
+      </div>
+      <div class="sort-cat method">
+        <div class="sort-cat-hd">🍳 How it's cooked</div>
+        <div class="sort-cat-body" id="body-method"></div>
+      </div>
+      <div class="sort-cat quality">
+        <div class="sort-cat-hd">✨ Quality / feel</div>
+        <div class="sort-cat-body" id="body-quality"></div>
+      </div>
+    </div>
+
+    <div class="check-area">
+      <button class="btn btn-teal btn-sm" onclick="checkVocab()">✓ Check answers</button>
+      <button class="btn btn-ghost btn-sm" onclick="resetVocab()">↺ Reset</button>
+      <span class="check-result" id="vocabResult"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🗣 Speak! Use 3 adjectives</div>
+    <p style="font-size:0.88rem;margin-bottom:12px;">Describe something you ate in the last two days. Use at least <strong>3 adjectives from the activity above</strong>.</p>
+    <div class="sentence-frame">
+      💬 "It was quite <strong>[adjective]</strong> and a bit <strong>[adjective]</strong>. I think it was / wasn't very <strong>[adjective]</strong>."
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-outline" onclick="goTo(0)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(2)">Next: Reading →</button>
+  </div>
+</section>
+
+
+<!-- ======================== STAGE 3 ======================== -->
+<section class="stage" id="s2">
+  <div class="stage-header">
+    <div>
+      <div class="stage-badge">Stage 3 · 10–12 min</div>
+      <h1 class="stage-title">Reading: Food Habits</h1>
+      <p class="stage-subtitle">Read four social media posts, then discuss</p>
+    </div>
+    <div class="timer-wrap">
+      <div class="timer-display" id="t2">12:00</div>
+      <div class="timer-label">timer</div>
+      <div class="timer-controls">
+        <button class="timer-btn" onclick="startT(2,12)">▶</button>
+        <button class="timer-btn" onclick="resetT(2,12)">↺</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="tn-toggle" onclick="toggleNote(this)">📋 Teacher notes ▾</button>
+  <div class="teacher-note hidden">
+    Student reads silently (2 min), then discusses. The italic words are all quantifiers — point this out <em>after</em> the discussion, as a bridge into Stage 4. Use the comprehension questions as conversation springboards, not a test. B1 target: 3–4 sentences per answer.
+  </div>
+
+  <div class="posts-grid">
+    <div class="post-card">
+      <div class="post-header">
+        <div class="avatar" style="background:#FEE2E2;color:#991B1B;">M</div>
+        <div>
+          <div class="post-name">Mia</div>
+          <div class="post-handle">@mia_eats · 2 days ago</div>
+        </div>
+      </div>
+      <div class="post-body">I used to order food delivery almost every day — it was so easy! But this year I decided to cook at home more. I don't spend <em>a lot of</em> time in the kitchen, maybe 30 minutes a day. I eat <em>a lot of</em> vegetables and pasta, and I feel <em>much</em> better. Do I miss the deliveries? <em>A little!</em> 🍝</div>
+      <div class="post-tag">#homecooking #eatingwell</div>
+      <div class="post-likes">❤️ 142 · 💬 34 comments</div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-header">
+        <div class="avatar" style="background:#D1FAE5;color:#065F46;">B</div>
+        <div>
+          <div class="post-name">Ben</div>
+          <div class="post-handle">@ben_reads_labels · 5 days ago</div>
+        </div>
+      </div>
+      <div class="post-body">Six months ago, I started reading food labels properly. I was shocked! So <em>many</em> things I ate every day were ultra-processed — <em>lots of</em> additives and very <em>little</em> real nutrition. Now I try to buy food with just <em>a few</em> simple ingredients. I don't eat perfectly, but I'm making progress! 🥗</div>
+      <div class="post-tag">#realfood #ultraprocessed</div>
+      <div class="post-likes">❤️ 89 · 💬 21 comments</div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-header">
+        <div class="avatar" style="background:#DBEAFE;color:#1E3A8A;">S</div>
+        <div>
+          <div class="post-name">Sofia</div>
+          <div class="post-handle">@sofia_plantbased · 1 week ago</div>
+        </div>
+      </div>
+      <div class="post-body">I eat mostly plant-based food — <em>lots of</em> vegetables, lentils, and whole grains. I don't eat <em>much</em> meat, maybe once a week. People think it's difficult, but there are so <em>many</em> delicious options now! I feel full of energy and I think this diet works really well for my lifestyle. 🌱</div>
+      <div class="post-tag">#plantbased #flexitarian</div>
+      <div class="post-likes">❤️ 213 · 💬 56 comments</div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-header">
+        <div class="avatar" style="background:#F3E8FF;color:#6B21A8;">P</div>
+        <div>
+          <div class="post-name">Pedro</div>
+          <div class="post-handle">@pedro_wfh · 3 days ago</div>
+        </div>
+      </div>
+      <div class="post-body">Working from home has completely changed how I eat. I don't have a big lunch anymore — just <em>a few</em> snacks and <em>some</em> fruit during the day. Then I cook a proper dinner in the evening. I try not to eat <em>too much</em> sugar because it makes me feel sleepy at my desk. 🏠</div>
+      <div class="post-tag">#wfhlife #smallmeals</div>
+      <div class="post-likes">❤️ 67 · 💬 18 comments</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title">💬 Discuss</div>
+    <ul class="comp-q-list">
+      <li class="comp-q">Which person eats most like you? Why?</li>
+      <li class="comp-q">Which person do you most agree with?</li>
+      <li class="comp-q">What advice would you give to one of them?</li>
+      <li class="comp-q">Can you find any grammar words in the posts? (Look at the <em>italic</em> words — what do you notice?)</li>
+    </ul>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-outline" onclick="goTo(1)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(3)">Next: Grammar →</button>
+  </div>
+</section>
+
+
+<!-- ======================== STAGE 4 ======================== -->
+<section class="stage" id="s3">
+  <div class="stage-header">
+    <div>
+      <div class="stage-badge">Stage 4 · 12–15 min</div>
+      <h1 class="stage-title">Grammar: Quantifiers</h1>
+      <p class="stage-subtitle">Learn the rules, then practise with your own life</p>
+    </div>
+    <div class="timer-wrap">
+      <div class="timer-display" id="t3">15:00</div>
+      <div class="timer-label">timer</div>
+      <div class="timer-controls">
+        <button class="timer-btn" onclick="startT(3,15)">▶</button>
+        <button class="timer-btn" onclick="resetT(3,15)">↺</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="tn-toggle" onclick="toggleNote(this)">📋 Teacher notes ▾</button>
+  <div class="teacher-note hidden">
+    Elicit from what the student said in earlier stages: <em>"You mentioned you eat a lot of pasta — can you see that in the table?"</em> Point to the italic words from Stage 3. The gap-fill uses familiar contexts. Accept <strong>much / a lot of</strong> as both correct where both apply. Focus error correction on ONE key point only.
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Grammar: How to use quantifiers</div>
+    <table class="gtable">
+      <thead>
+        <tr>
+          <th>Use</th>
+          <th>Countable nouns <span style="font-weight:400;opacity:0.8">(meals, portions…)</span></th>
+          <th>Uncountable nouns <span style="font-weight:400;opacity:0.8">(meat, sugar…)</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag-pos">+</span> Positive</td>
+          <td><span class="gh">many, a few, a lot of / lots of</span><span class="ge">There are many great recipes online.</span><span class="ge">I eat a few vegetables every day.</span></td>
+          <td><span class="gh">a little, a lot of / lots of</span><span class="ge">I add a little salt to my food.</span><span class="ge">I drink lots of water.</span></td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-neg">–</span> Negative</td>
+          <td><span class="gh">many, any</span><span class="ge">I don't eat many sweets.</span></td>
+          <td><span class="gh">much, any</span><span class="ge">I don't drink much coffee.</span></td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-q">?</span> Questions</td>
+          <td><span class="gh">many, any</span><span class="ge">How many meals do you cook a week?</span></td>
+          <td><span class="gh">much, any</span><span class="ge">Do you drink much tea?</span></td>
+        </tr>
+        <tr>
+          <td>⚠️ Too much/many</td>
+          <td colspan="2"><span class="gh">too many</span> (countable) · <span class="gh">too much</span> (uncountable) = "more than we need"<span class="ge">I eat too many takeaways. I drink too much coffee.</span></td>
+        </tr>
+        <tr>
+          <td>✅ Enough</td>
+          <td colspan="2"><span class="gh">enough</span> = the right amount (countable and uncountable)<span class="ge">Do you eat enough fruit? I don't get enough sleep.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">✏️ Gap fill — complete the sentences</div>
+    <div class="word-bank">
+      <div class="wb-label">Word bank</div>
+      <div class="wb-word">much</div>
+      <div class="wb-word">many</div>
+      <div class="wb-word">a little</div>
+      <div class="wb-word">a few</div>
+      <div class="wb-word">a lot of</div>
+      <div class="wb-word">too much</div>
+      <div class="wb-word">too many</div>
+      <div class="wb-word">enough</div>
+    </div>
+    <ul class="gf-list">
+      <li class="gf-item">
+        <span class="gf-num">1</span>
+        I don't drink
+        <input class="gf-input" id="g1" data-answer="much" placeholder="…" autocomplete="off">
+        coffee — just one small cup in the morning.
+      </li>
+      <li class="gf-item">
+        <span class="gf-num">2</span>
+        There are
+        <input class="gf-input" id="g2" data-answer="many|a lot of" placeholder="…" autocomplete="off">
+        great plant-based restaurants in my city now.
+        <span class="gf-hint">(2 answers possible)</span>
+      </li>
+      <li class="gf-item">
+        <span class="gf-num">3</span>
+        I add
+        <input class="gf-input" id="g3" data-answer="a little" placeholder="…" autocomplete="off">
+        olive oil to my cooking, but not too much.
+      </li>
+      <li class="gf-item">
+        <span class="gf-num">4</span>
+        She doesn't eat
+        <input class="gf-input" id="g4" data-answer="many" placeholder="…" autocomplete="off">
+        sweets — maybe one or two a week.
+      </li>
+      <li class="gf-item">
+        <span class="gf-num">5</span>
+        We need
+        <input class="gf-input" id="g5" data-answer="a few" placeholder="…" autocomplete="off">
+        eggs for this recipe — about four.
+      </li>
+      <li class="gf-item">
+        <span class="gf-num">6</span>
+        I think I eat
+        <input class="gf-input" id="g6" data-answer="too much|too many" placeholder="…" autocomplete="off">
+        processed food. I really need to change that.
+        <span class="gf-hint">(think: countable or uncountable?)</span>
+      </li>
+    </ul>
+    <div class="check-area">
+      <button class="btn btn-teal btn-sm" onclick="checkGF()">✓ Check answers</button>
+      <button class="btn btn-ghost btn-sm" onclick="resetGF()">↺ Reset</button>
+      <span class="check-result" id="gfResult"></span>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-outline" onclick="goTo(2)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(4)">Next: Speaking 1 →</button>
+  </div>
+</section>
+
+
+<!-- ======================== STAGE 5 ======================== -->
+<section class="stage" id="s4">
+  <div class="stage-header">
+    <div>
+      <div class="stage-badge">Stage 5 · 8–10 min</div>
+      <h1 class="stage-title">Speaking 1: Diet Discussion</h1>
+      <p class="stage-subtitle">Use quantifiers in real conversation</p>
+    </div>
+    <div class="timer-wrap">
+      <div class="timer-display" id="t4">10:00</div>
+      <div class="timer-label">timer</div>
+      <div class="timer-controls">
+        <button class="timer-btn" onclick="startT(4,10)">▶</button>
+        <button class="timer-btn" onclick="resetT(4,10)">↺</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="tn-toggle" onclick="toggleNote(this)">📋 Teacher notes ▾</button>
+  <div class="teacher-note hidden">
+    Teacher asks the questions first — keep it conversational, follow up on anything interesting. Note any quantifier errors quietly. Then flip it: student asks the teacher at least 3 questions back. This is a real exchange, not a drill. Goal: natural, fluent quantifier use.
+  </div>
+
+  <div class="card">
+    <div class="card-title">✏️ Step 1 — Complete the questions with a quantifier</div>
+    <p style="font-size:0.83rem;color:var(--text-light);margin-bottom:14px;">Choose the correct word for each gap, then check your answers before moving to Step 2.</p>
+
+    <div class="word-bank" style="margin-bottom:18px;">
+      <div class="wb-label">Word bank</div>
+      <div class="wb-word">much</div>
+      <div class="wb-word">many</div>
+      <div class="wb-word">much</div>
+      <div class="wb-word">many</div>
+      <div class="wb-word">enough</div>
+      <div class="wb-word">too many</div>
+      <div class="wb-word">much</div>
+      <div class="wb-word">too much</div>
+    </div>
+
+    <ul class="gf-list">
+      <li class="gf-item">
+        <span class="gf-num">1</span>
+        <span class="q-icon" style="font-size:1.1rem;">🥩</span>
+        How <input class="gf-input" id="sq1" data-answer="much" placeholder="…" autocomplete="off" style="width:90px;"> meat do you eat?
+      </li>
+      <li class="gf-item">
+        <span class="gf-num">2</span>
+        <span class="q-icon" style="font-size:1.1rem;">🥦</span>
+        How <input class="gf-input" id="sq2" data-answer="many" placeholder="…" autocomplete="off" style="width:90px;"> portions of fruit or vegetables do you have a day?
+      </li>
+      <li class="gf-item">
+        <span class="gf-num">3</span>
+        <span class="q-icon" style="font-size:1.1rem;">☕</span>
+        Do you drink <input class="gf-input" id="sq3" data-answer="much" placeholder="…" autocomplete="off" style="width:90px;"> coffee or tea?
+      </li>
+      <li class="gf-item">
+        <span class="gf-num">4</span>
+        <span class="q-icon" style="font-size:1.1rem;">🍳</span>
+        How <input class="gf-input" id="sq4" data-answer="many" placeholder="…" autocomplete="off" style="width:90px;"> times a week do you cook at home?
+      </li>
+      <li class="gf-item">
+        <span class="gf-num">5</span>
+        <span class="q-icon" style="font-size:1.1rem;">🛒</span>
+        Do you eat <input class="gf-input" id="sq5" data-answer="enough" placeholder="…" autocomplete="off" style="width:90px;"> fresh food? Or <input class="gf-input" id="sq5b" data-answer="too many" placeholder="…" autocomplete="off" style="width:100px;"> processed things?
+      </li>
+      <li class="gf-item">
+        <span class="gf-num">6</span>
+        <span class="q-icon" style="font-size:1.1rem;">🍫</span>
+        How <input class="gf-input" id="sq6" data-answer="much" placeholder="…" autocomplete="off" style="width:90px;"> sugar do you eat a day? Is it <input class="gf-input" id="sq6b" data-answer="too much" placeholder="…" autocomplete="off" style="width:100px;">?
+      </li>
+    </ul>
+    <div class="check-area">
+      <button class="btn btn-teal btn-sm" onclick="checkSQ()">✓ Check answers</button>
+      <button class="btn btn-ghost btn-sm" onclick="resetSQ()">↺ Reset</button>
+      <span class="check-result" id="sqResult"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💬 Step 2 — Now answer the questions!</div>
+    <p style="font-size:0.88rem;color:var(--text);margin-bottom:12px;">Go through each question and give a <strong>real answer</strong> about your life. Use the quantifier from Step 1 in your answer.</p>
+    <div class="sentence-frame">
+      💬 "I eat <strong>a lot of</strong> meat — maybe 4 or 5 times a week." &nbsp;|&nbsp; "I don't eat <strong>much</strong> meat, to be honest."
+    </div>
+    <div style="margin-top:14px;">
+      <div class="phrases-title" style="color:var(--primary);font-size:0.74rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">🔄 Then ask the teacher!</div>
+      <div class="phrases">
+        <div class="phrase">How much ___ do you eat?</div>
+        <div class="phrase">How many ___ do you have a week?</div>
+        <div class="phrase">Do you eat too much ___?</div>
+        <div class="phrase">Do you eat enough ___?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-outline" onclick="goTo(3)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(5)">Next: Speaking 2 →</button>
+  </div>
+</section>
+
+
+<!-- ======================== STAGE 6 ======================== -->
+<section class="stage" id="s5">
+  <div class="stage-header">
+    <div>
+      <div class="stage-badge">Stage 6 · 12–15 min</div>
+      <h1 class="stage-title">Speaking 2: Plan a Special Occasion</h1>
+      <p class="stage-subtitle">Main production task — use everything from today</p>
+    </div>
+    <div class="timer-wrap">
+      <div class="timer-display" id="t5">15:00</div>
+      <div class="timer-label">timer</div>
+      <div class="timer-controls">
+        <button class="timer-btn" onclick="startT(5,15)">▶</button>
+        <button class="timer-btn" onclick="resetT(5,15)">↺</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="tn-toggle" onclick="toggleNote(this)">📋 Teacher notes ▾</button>
+  <div class="teacher-note hidden">
+    Student leads — they decide the occasion, plan the menu, and explain their choices out loud. Teacher plays the guest role and introduces one constraint. Keep it fun and spontaneous. Note natural quantifier use for the feedback stage — positive examples work well here.
+  </div>
+
+  <div class="scenario-box">
+    <div class="scenario-title">🎉 The scenario</div>
+    <div class="scenario-text">You are planning a <strong>special meal for a friend or colleague</strong>. Choose your occasion below, then plan the menu and shopping list. The teacher will play the role of a guest!</div>
+    <div class="prompt-chips" style="margin-top:14px;">
+      <div class="chip" onclick="pickOccasion(this)">🍽 Dinner party (4 people)</div>
+      <div class="chip" onclick="pickOccasion(this)">🎂 Birthday lunch</div>
+      <div class="chip" onclick="pickOccasion(this)">🌿 Garden BBQ</div>
+      <div class="chip" onclick="pickOccasion(this)">🏢 Lunch for colleagues</div>
+    </div>
+    <div class="guest-card">
+      🙋 <strong>Your guest says:</strong> "I don't eat much meat, and I'm trying to avoid too many fried foods. But I love fresh, flavourful dishes!"
+    </div>
+  </div>
+
+  <div class="phrases-box">
+    <div class="phrases-title">💬 Useful phrases</div>
+    <div class="phrases">
+      <div class="phrase">Let's get some…</div>
+      <div class="phrase">We need a lot of…</div>
+      <div class="phrase">I don't think we need many…</div>
+      <div class="phrase">How about a little…?</div>
+      <div class="phrase">We should get enough… for everyone</div>
+      <div class="phrase">I'd like to avoid too much…</div>
+      <div class="phrase">A few… would be perfect</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 Menu planner — write your ideas</div>
+    <div class="menu-grid">
+      <div>
+        <div class="menu-section-title">🥗 Starter</div>
+        <textarea class="menu-input" placeholder="e.g. A fresh salad with a few cherry tomatoes and a little olive oil…"></textarea>
+      </div>
+      <div>
+        <div class="menu-section-title">🍽 Main course</div>
+        <textarea class="menu-input" placeholder="e.g. Grilled vegetables with lots of herbs and some homemade sauce…"></textarea>
+      </div>
+      <div>
+        <div class="menu-section-title">🍰 Dessert</div>
+        <textarea class="menu-input" placeholder="e.g. Something light — not too much sugar…"></textarea>
+      </div>
+      <div>
+        <div class="menu-section-title">🛒 Shopping list (use quantifiers!)</div>
+        <textarea class="menu-input" placeholder="e.g. a lot of tomatoes, a little olive oil, a few lemons…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-outline" onclick="goTo(4)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(6)">Next: Wrap-up →</button>
+  </div>
+</section>
+
+
+<!-- ======================== STAGE 7 ======================== -->
+<section class="stage" id="s6">
+  <div class="stage-header">
+    <div>
+      <div class="stage-badge">Stage 7 · 12–15 min</div>
+      <h1 class="stage-title">Speaking 3: Food in 2026</h1>
+      <p class="stage-subtitle">Trends, choices, and hot takes</p>
+    </div>
+    <div class="timer-wrap">
+      <div class="timer-display" id="t6">15:00</div>
+      <div class="timer-label">timer</div>
+      <div class="timer-controls">
+        <button class="timer-btn" onclick="startT(6,15)">▶</button>
+        <button class="timer-btn" onclick="resetT(6,15)">↺</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="tn-toggle" onclick="toggleNote(this)">📋 Teacher notes ▾</button>
+  <div class="teacher-note hidden">
+    Pick one, two, or all three activities depending on time and energy. Activity 1 works best as a conversation — student reacts, teacher asks follow-up questions. Activity 2 can be done quickly (2 min to rank, then discuss). Activity 3 is great for fluency — push for reasons, not just agree/disagree.
+  </div>
+
+  <!-- ACTIVITY 1 -->
+  <div class="card">
+    <div class="card-title">🌍 Activity 1 — 2026 Food Trends: Would you try it?</div>
+    <p style="font-size:0.83rem;color:var(--text-light);margin-bottom:14px;">Click a trend card to highlight it. React to each one — would you try it? How does it fit your lifestyle? Use quantifiers where you can!</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:16px;">
+
+      <div class="q-card" onclick="this.classList.toggle('hl')" style="min-height:140px;align-items:flex-start;text-align:left;padding:16px;">
+        <div style="font-size:1.3rem;">🦠</div>
+        <div style="font-weight:700;font-size:0.88rem;margin:4px 0 2px;">Gut health foods</div>
+        <div style="font-size:0.79rem;color:var(--text-light);line-height:1.5;">Fermented foods like kefir, kimchi, and kombucha are everywhere. Scientists say eating <em>a few</em> portions a day can change your health completely.</div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('hl')" style="min-height:140px;align-items:flex-start;text-align:left;padding:16px;">
+        <div style="font-size:1.3rem;">🕐</div>
+        <div style="font-weight:700;font-size:0.88rem;margin:4px 0 2px;">Time-restricted eating</div>
+        <div style="font-size:0.79rem;color:var(--text-light);line-height:1.5;">Only eating during an 8-hour window — e.g. 12pm to 8pm. No food outside those hours. <em>A lot of</em> people say they feel more energetic.</div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('hl')" style="min-height:140px;align-items:flex-start;text-align:left;padding:16px;">
+        <div style="font-size:1.3rem;">🤖</div>
+        <div style="font-weight:700;font-size:0.88rem;margin:4px 0 2px;">AI nutrition apps</div>
+        <div style="font-size:0.79rem;color:var(--text-light);line-height:1.5;">An app analyses everything you eat and tells you exactly how <em>much</em> of each nutrient you need. Your personalised diet, in your pocket.</div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('hl')" style="min-height:140px;align-items:flex-start;text-align:left;padding:16px;">
+        <div style="font-size:1.3rem;">🌿</div>
+        <div style="font-weight:700;font-size:0.88rem;margin:4px 0 2px;">Whole-food plant-based</div>
+        <div style="font-size:0.79rem;color:var(--text-light);line-height:1.5;">Not fake meat — real vegetables, grains, and legumes. <em>A lot of</em> nutritionists say this is better than processed plant-based products.</div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('hl')" style="min-height:140px;align-items:flex-start;text-align:left;padding:16px;">
+        <div style="font-size:1.3rem;">🐛</div>
+        <div style="font-weight:700;font-size:0.88rem;margin:4px 0 2px;">Insect protein</div>
+        <div style="font-size:0.79rem;color:var(--text-light);line-height:1.5;">Crickets and mealworms are high in protein and have very <em>little</em> environmental impact. Would you eat <em>a little</em> insect flour in your bread?</div>
+      </div>
+
+      <div class="q-card" onclick="this.classList.toggle('hl')" style="min-height:140px;align-items:flex-start;text-align:left;padding:16px;">
+        <div style="font-size:1.3rem;">🧬</div>
+        <div style="font-weight:700;font-size:0.88rem;margin:4px 0 2px;">Longevity diet</div>
+        <div style="font-size:0.79rem;color:var(--text-light);line-height:1.5;">Based on how people in Blue Zones (places where people live longest) eat: <em>a lot of</em> legumes, very <em>little</em> meat, <em>many</em> vegetables, not <em>too much</em> sugar.</div>
+      </div>
+
+    </div>
+
+    <div class="phrases-box" style="margin-bottom:0;">
+      <div class="phrases-title">💬 Useful reactions</div>
+      <div class="phrases">
+        <div class="phrase">I'd definitely try…</div>
+        <div class="phrase">I could never eat…</div>
+        <div class="phrase">I already eat a lot of…</div>
+        <div class="phrase">I don't think I eat enough…</div>
+        <div class="phrase">That sounds interesting, but…</div>
+        <div class="phrase">To be honest, too many people…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY 2 -->
+  <div class="card">
+    <div class="card-title">🛒 Activity 2 — How do you choose your food?</div>
+    <p style="font-size:0.83rem;color:var(--text-light);margin-bottom:14px;">Rank these factors from <strong>1 (most important)</strong> to <strong>6 (least important)</strong> when you buy food. Then compare with the teacher and explain your choices.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:16px;">
+      <div class="rank-item" onclick="cycleRank(this)">
+        <div class="rank-num" style="background:var(--primary);color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;margin-bottom:6px;">?</div>
+        <div style="font-size:0.88rem;font-weight:700;">💰 Price</div>
+        <div style="font-size:0.73rem;color:var(--text-light);">Is it good value?</div>
+      </div>
+      <div class="rank-item" onclick="cycleRank(this)">
+        <div class="rank-num" style="background:var(--primary);color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;margin-bottom:6px;">?</div>
+        <div style="font-size:0.88rem;font-weight:700;">🌿 Freshness</div>
+        <div style="font-size:0.73rem;color:var(--text-light);">Is it fresh and natural?</div>
+      </div>
+      <div class="rank-item" onclick="cycleRank(this)">
+        <div class="rank-num" style="background:var(--primary);color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;margin-bottom:6px;">?</div>
+        <div style="font-size:0.88rem;font-weight:700;">🏷 Ingredients</div>
+        <div style="font-size:0.73rem;color:var(--text-light);">Do you read the label?</div>
+      </div>
+      <div class="rank-item" onclick="cycleRank(this)">
+        <div class="rank-num" style="background:var(--primary);color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;margin-bottom:6px;">?</div>
+        <div style="font-size:0.88rem;font-weight:700;">🌍 Local / organic</div>
+        <div style="font-size:0.73rem;color:var(--text-light);">Where does it come from?</div>
+      </div>
+      <div class="rank-item" onclick="cycleRank(this)">
+        <div class="rank-num" style="background:var(--primary);color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;margin-bottom:6px;">?</div>
+        <div style="font-size:0.88rem;font-weight:700;">⚡ Convenience</div>
+        <div style="font-size:0.73rem;color:var(--text-light);">Is it quick and easy?</div>
+      </div>
+      <div class="rank-item" onclick="cycleRank(this)">
+        <div class="rank-num" style="background:var(--primary);color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;margin-bottom:6px;">?</div>
+        <div style="font-size:0.88rem;font-weight:700;">😋 Taste</div>
+        <div style="font-size:0.73rem;color:var(--text-light);">Does it taste good?</div>
+      </div>
+    </div>
+
+    <div class="sentence-frame">
+      💬 "For me, <strong>[factor]</strong> is the most important because…" &nbsp;|&nbsp; "I don't think <strong>[factor]</strong> matters <strong>much</strong> because…"
+    </div>
+  </div>
+
+  <!-- ACTIVITY 3 -->
+  <div class="card">
+    <div class="card-title">🔥 Activity 3 — Hot takes: Agree or disagree?</div>
+    <p style="font-size:0.83rem;color:var(--text-light);margin-bottom:14px;">Click a card to reveal a statement. Do you agree? Give <strong>at least two reasons</strong>.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div class="hotcard" onclick="flipHot(this)">
+        <div class="hotcard-front">🤔 Hot take #1<br><span style="font-size:0.72rem;opacity:0.7;">click to reveal</span></div>
+        <div class="hotcard-back hidden">"It's <em>impossible</em> to eat healthily if you work full time."</div>
+      </div>
+      <div class="hotcard" onclick="flipHot(this)">
+        <div class="hotcard-front">🤔 Hot take #2<br><span style="font-size:0.72rem;opacity:0.7;">click to reveal</span></div>
+        <div class="hotcard-back hidden">"Eating well is mostly about money — healthy food costs <em>too much</em>."</div>
+      </div>
+      <div class="hotcard" onclick="flipHot(this)">
+        <div class="hotcard-front">🤔 Hot take #3<br><span style="font-size:0.72rem;opacity:0.7;">click to reveal</span></div>
+        <div class="hotcard-back hidden">"Reading food labels is a waste of time — <em>most</em> people don't understand them anyway."</div>
+      </div>
+      <div class="hotcard" onclick="flipHot(this)">
+        <div class="hotcard-front">🤔 Hot take #4<br><span style="font-size:0.72rem;opacity:0.7;">click to reveal</span></div>
+        <div class="hotcard-back hidden">"You can enjoy life AND eat well — it's just about making <em>a few</em> small changes."</div>
+      </div>
+    </div>
+
+    <div class="phrases-box" style="margin-bottom:0;">
+      <div class="phrases-title">💬 Language for agreeing / disagreeing</div>
+      <div class="phrases">
+        <div class="phrase">I completely agree because…</div>
+        <div class="phrase">I'm not sure about that…</div>
+        <div class="phrase">I partly agree, but…</div>
+        <div class="phrase">That's not true in my experience…</div>
+        <div class="phrase">It depends on how much…</div>
+        <div class="phrase">A lot of people think… but…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="complete-card">
+    <h2>🎉 Lesson complete!</h2>
+    <p>Great work today! You practised <strong>food vocabulary</strong>, <strong>quantifiers</strong>, and used English in lots of real conversations — from planning a meal to debating food trends. See you next time! 🥗</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn btn-outline" onclick="goTo(5)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(0)">↺ Start again</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+// ── State ──────────────────────────────────────────────────────
+let current = 0;
+const TOTAL = 7;
+const timers = {};
+
+// ── Navigation ──────────────────────────────────────────────────
+function goTo(n) {
+  document.getElementById('s' + current).classList.remove('active');
+  const btns = document.querySelectorAll('.snav-btn');
+  btns[current].classList.remove('active');
+  if (current < n) btns[current].classList.add('done');
+  current = n;
+  document.getElementById('s' + n).classList.add('active');
+  btns[n].classList.add('active');
+  btns[n].classList.remove('done');
+  document.getElementById('progressBar').style.width = Math.round((n+1)/TOTAL*100) + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  btns[n].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
+// ── Timer ──────────────────────────────────────────────────────
+function startT(id, mins) {
+  if (timers[id]) clearInterval(timers[id]);
+  let secs = mins * 60;
+  const el = document.getElementById('t' + id);
+  el.style.color = 'var(--primary)';
+  updateT(el, secs);
+  timers[id] = setInterval(() => {
+    secs--;
+    updateT(el, secs);
+    if (secs <= 0) { clearInterval(timers[id]); el.style.color = '#EF4444'; }
+  }, 1000);
+}
+
+function resetT(id, mins) {
+  if (timers[id]) clearInterval(timers[id]);
+  const el = document.getElementById('t' + id);
+  el.style.color = 'var(--primary)';
+  updateT(el, mins * 60);
+}
+
+function updateT(el, secs) {
+  const m = Math.floor(secs / 60), s = secs % 60;
+  el.textContent = (m<10?'0':'') + m + ':' + (s<10?'0':'') + s;
+}
+
+// ── Teacher note toggle ─────────────────────────────────────────
+function toggleNote(btn) {
+  const note = btn.nextElementSibling;
+  note.classList.toggle('hidden');
+  btn.textContent = note.classList.contains('hidden') ? '📋 Teacher notes ▾' : '📋 Teacher notes ▴';
+}
+
+// ── Rating ──────────────────────────────────────────────────────
+const ratingComments = {
+  1: "Hmm, quite unhealthy! Lots of room to improve 😅",
+  2: "Not great, but you're honest! Let's talk about why.",
+  3: "Pretty average — what could you do better?",
+  4: "Not bad at all! What do you do well?",
+  5: "Excellent! What's your secret? 🌟"
+};
+function rate(btn, val) {
+  document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('ratingResult').textContent = ratingComments[val];
+}
+
+// ── Vocab sort ──────────────────────────────────────────────────
+const correctCats = {
+  taste: ['sweet','bitter','spicy','savoury'],
+  method: ['fried','grilled','homemade'],
+  quality: ['light','fresh','healthy','heavy','processed']
+};
+
+function placeWord(el, cat) {
+  const word = el.textContent.trim();
+  el.classList.add('placed');
+  const body = document.getElementById('body-' + cat);
+  const pw = document.createElement('span');
+  pw.className = 'placed-word';
+  pw.textContent = word;
+  pw.setAttribute('data-word', word);
+  pw.onclick = function() {
+    this.remove();
+    document.querySelectorAll('.vocab-word').forEach(w => {
+      if (w.textContent.trim() === word) w.classList.remove('placed');
+    });
+    document.getElementById('vocabResult').textContent = '';
+  };
+  body.appendChild(pw);
+}
+
+function checkVocab() {
+  let correct = 0, total = 0;
+  ['taste','method','quality'].forEach(cat => {
+    document.querySelectorAll('#body-' + cat + ' .placed-word').forEach(el => {
+      total++;
+      if (correctCats[cat].includes(el.getAttribute('data-word'))) {
+        correct++; el.style.outline = '2px solid #10B981';
+      } else {
+        el.style.outline = '2px solid #EF4444';
+      }
+    });
+  });
+  const r = document.getElementById('vocabResult');
+  r.textContent = correct + '/12 correct' + (correct === 12 ? ' — perfect! 🎉' : '');
+  r.className = 'check-result ' + (correct >= 10 ? 'good' : 'ok');
+}
+
+function resetVocab() {
+  ['taste','method','quality'].forEach(cat => document.getElementById('body-' + cat).innerHTML = '');
+  document.querySelectorAll('.vocab-word').forEach(w => { w.classList.remove('placed'); });
+  document.getElementById('vocabResult').textContent = '';
+}
+
+// ── Gap fill ──────────────────────────────────────────────────────
+function checkGF() {
+  let correct = 0;
+  for (let i = 1; i <= 6; i++) {
+    const inp = document.getElementById('g' + i);
+    const val = inp.value.trim().toLowerCase();
+    const answers = inp.getAttribute('data-answer').split('|');
+    if (answers.includes(val)) {
+      inp.classList.remove('wrong'); inp.classList.add('correct'); correct++;
+    } else {
+      inp.classList.remove('correct'); inp.classList.add('wrong');
+    }
+  }
+  const r = document.getElementById('gfResult');
+  r.textContent = correct + '/6 correct' + (correct === 6 ? ' — excellent! 🎉' : '');
+  r.className = 'check-result ' + (correct >= 5 ? 'good' : 'ok');
+}
+
+function resetGF() {
+  for (let i = 1; i <= 6; i++) {
+    const inp = document.getElementById('g' + i);
+    inp.value = ''; inp.classList.remove('correct','wrong');
+  }
+  document.getElementById('gfResult').textContent = '';
+}
+
+// ── Occasion picker ─────────────────────────────────────────────
+function pickOccasion(el) {
+  document.querySelectorAll('.scenario-box .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── Stage 5 speaking gap fill ────────────────────────────────────
+function checkSQ() {
+  const ids = ['sq1','sq2','sq3','sq4','sq5','sq5b','sq6','sq6b'];
+  let correct = 0;
+  ids.forEach(id => {
+    const inp = document.getElementById(id);
+    if (!inp) return;
+    const val = inp.value.trim().toLowerCase();
+    const answers = inp.getAttribute('data-answer').split('|');
+    if (answers.includes(val)) {
+      inp.classList.remove('wrong'); inp.classList.add('correct'); correct++;
+    } else {
+      inp.classList.remove('correct'); inp.classList.add('wrong');
+    }
+  });
+  const total = ids.filter(id => document.getElementById(id)).length;
+  const r = document.getElementById('sqResult');
+  r.textContent = correct + '/' + total + ' correct' + (correct === total ? ' — perfect! 🎉' : '');
+  r.className = 'check-result ' + (correct >= total - 1 ? 'good' : 'ok');
+}
+
+function resetSQ() {
+  ['sq1','sq2','sq3','sq4','sq5','sq5b','sq6','sq6b'].forEach(id => {
+    const inp = document.getElementById(id);
+    if (inp) { inp.value = ''; inp.classList.remove('correct','wrong'); }
+  });
+  document.getElementById('sqResult').textContent = '';
+}
+
+// ── Rank items (Activity 2) ──────────────────────────────────────
+function cycleRank(el) {
+  const numEl = el.querySelector('.rank-num');
+  let cur = parseInt(numEl.textContent);
+  if (isNaN(cur)) cur = 0;
+  cur = cur >= 6 ? 1 : cur + 1;
+  numEl.textContent = cur;
+  el.classList.add('ranked');
+  const colors = ['','#6C3FC5','#00A896','#F59E0B','#3B82F6','#EC4899','#6B7280'];
+  numEl.style.background = colors[cur] || 'var(--primary)';
+}
+
+// ── Hot takes (Activity 3) ───────────────────────────────────────
+function flipHot(el) {
+  const front = el.querySelector('.hotcard-front');
+  const back = el.querySelector('.hotcard-back');
+  if (back.classList.contains('hidden')) {
+    front.style.display = 'none';
+    back.classList.remove('hidden');
+    el.classList.add('revealed');
+  } else {
+    front.style.display = '';
+    back.classList.add('hidden');
+    el.classList.remove('revealed');
+  }
+}
+</script>
+</body>
+</html>
