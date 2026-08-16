@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eating Well — Homework | B1</title>
+<style>
+:root {
+  --primary: #6C3FC5; --primary-light: #9B72D9; --primary-pale: #F0EBFF;
+  --teal: #00A896; --teal-light: #E0F5F3;
+  --bg: #F7F8FC; --white: #FFFFFF; --text: #2D2D2D; --text-light: #6B7280;
+  --border: #E5E7EB; --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --radius: 12px; --radius-sm: 8px;
+  --green: #059669; --green-pale: #D1FAE5;
+  --red: #DC2626; --red-pale: #FEE2E2;
+  --amber: #D97706; --amber-pale: #FEF3C7;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* Progress */
+.hw-progress-wrap { background: var(--white); border-bottom: 1px solid var(--border); padding: 10px 32px; position: sticky; top: 66px; z-index: 80; display: flex; align-items: center; gap: 14px; }
+.hw-progress-bar-bg { flex: 1; height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.hw-progress-bar { height: 100%; background: linear-gradient(90deg, var(--teal), var(--primary)); border-radius: 4px; transition: width 0.5s ease; width: 0%; }
+.hw-progress-label { font-size: 0.78rem; font-weight: 700; color: var(--primary); white-space: nowrap; min-width: 60px; }
+
+/* Header */
+.hw-header { background: linear-gradient(135deg, #6C3FC5 0%, #9B59B6 100%); color: white; padding: 18px 32px 22px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 16px rgba(108,63,197,0.3); }
+.hw-header-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.hw-title { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.02em; }
+.hw-meta { font-size: 0.78rem; opacity: 0.8; margin-top: 2px; }
+.print-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.4); color: white; border-radius: 20px; padding: 6px 16px; cursor: pointer; font-size: 0.8rem; font-family: inherit; flex-shrink: 0; }
+.print-btn:hover { background: rgba(255,255,255,0.25); }
+
+/* Name field */
+.name-strip { background: rgba(255,255,255,0.12); border-radius: var(--radius-sm); padding: 10px 16px; margin-top: 14px; display: flex; align-items: center; gap: 12px; }
+.name-strip label { font-size: 0.82rem; font-weight: 600; white-space: nowrap; opacity: 0.9; }
+.name-input { flex: 1; background: rgba(255,255,255,0.9); border: none; border-radius: 6px; padding: 7px 12px; font-size: 0.9rem; font-family: inherit; color: var(--text); outline: none; max-width: 360px; }
+.name-input::placeholder { color: #aaa; }
+
+/* Main */
+.main { max-width: 840px; margin: 0 auto; padding: 28px 24px 100px; }
+
+/* Section title */
+.section-title { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em; margin: 28px 0 4px; display: flex; align-items: center; gap: 8px; }
+.section-title::after { content: ''; flex: 1; height: 2px; background: var(--border); border-radius: 1px; }
+.section-pill { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 10px; border-radius: 20px; background: var(--primary-pale); color: var(--primary); margin-bottom: 2px; display: inline-block; }
+
+/* Exercise card */
+.ex-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden; border: 1.5px solid var(--border); }
+.ex-card.checked-ok { border-color: var(--green); }
+.ex-card.checked-partial { border-color: var(--amber); }
+.ex-card.checked-wrong { border-color: var(--red); }
+.ex-header { padding: 16px 20px 12px; border-bottom: 1px solid var(--border); }
+.ex-num { font-size: 0.72rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.ex-title { font-size: 0.97rem; font-weight: 700; line-height: 1.35; }
+.ex-body { padding: 18px 20px; }
+.ex-footer { padding: 12px 20px; background: var(--bg); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.score-badge { font-size: 0.8rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+.score-badge.green { background: var(--green-pale); color: var(--green); }
+.score-badge.amber { background: var(--amber-pale); color: var(--amber); }
+.score-badge.red { background: var(--red-pale); color: var(--red); }
+.score-badge.hidden { display: none; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 5px; padding: 8px 18px; border-radius: 24px; border: none; cursor: pointer; font-size: 0.82rem; font-weight: 600; font-family: inherit; transition: all 0.2s; }
+.btn-check { background: var(--primary); color: white; }
+.btn-check:hover { background: #5630A8; }
+.btn-check:disabled { opacity: 0.5; cursor: default; }
+.btn-reset { background: var(--bg); border: 1px solid var(--border); color: var(--text-light); }
+.btn-reset:hover { background: var(--border); }
+.btn-send { background: var(--teal); color: white; padding: 11px 28px; font-size: 0.9rem; border-radius: 24px; border: none; cursor: pointer; font-weight: 700; font-family: inherit; transition: all 0.2s; display: flex; align-items: center; gap: 7px; }
+.btn-send:hover { background: #008577; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,168,150,0.35); }
+
+/* Ex 1 — Matching */
+.match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.match-col-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light); margin-bottom: 8px; }
+.match-sentence { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; font-size: 0.88rem; line-height: 1.45; background: var(--white); }
+.match-sentence.correct-s { border-color: var(--green); background: var(--green-pale); }
+.match-sentence.wrong-s { border-color: var(--red); background: var(--red-pale); }
+.match-num { background: var(--primary-pale); color: var(--primary); font-weight: 800; font-size: 0.78rem; width: 24px; height: 24px; min-width: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.match-select { border: 1.5px solid var(--border); border-radius: 6px; padding: 4px 8px; font-size: 0.83rem; font-family: inherit; color: var(--text); background: var(--white); cursor: pointer; min-width: 48px; outline: none; }
+.match-select:focus { border-color: var(--primary); }
+.match-ending { padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; font-size: 0.87rem; line-height: 1.5; display: flex; gap: 8px; }
+.match-letter { font-weight: 800; color: var(--primary); flex-shrink: 0; }
+em { font-style: normal; font-weight: 700; }
+
+/* Ex 2 — Cross out */
+.crossout-list { list-style: none; counter-reset: cx; }
+.crossout-item { counter-increment: cx; display: flex; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; line-height: 1.6; flex-wrap: wrap; align-items: flex-start; }
+.crossout-item:last-child { border-bottom: none; }
+.cx-num { background: var(--primary-pale); color: var(--primary); font-weight: 800; font-size: 0.75rem; width: 24px; height: 24px; min-width: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.cx-word { display: inline-block; border: 1.5px solid var(--border); border-radius: 6px; padding: 1px 8px; margin: 0 2px; font-weight: 700; cursor: pointer; transition: all 0.2s; background: var(--white); font-size: 0.87rem; }
+.cx-word:hover { border-color: var(--primary); color: var(--primary); }
+.cx-word.crossed { border-color: var(--red); background: var(--red-pale); color: var(--red); text-decoration: line-through; text-decoration-thickness: 2px; }
+.cx-word.correct-cross { border-color: var(--green); background: var(--green-pale); color: var(--green); text-decoration: line-through; }
+.cx-word.wrong-cross { border-color: var(--red); background: var(--red-pale); color: var(--red); }
+.cx-word.should-cross { outline: 2px solid var(--green); outline-offset: 1px; }
+
+/* Ex 3 — Gap fill review */
+.review-card { background: #FAFAFA; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px; font-size: 0.9rem; line-height: 2.1; }
+.review-card .place { font-size: 0.72rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 10px; }
+.review-card h4 { font-size: 1rem; font-weight: 800; margin-bottom: 2px; }
+.review-card .stars { color: #F59E0B; margin-bottom: 10px; font-size: 0.85rem; }
+.gf-select { border: 2px solid var(--primary-pale); border-radius: 6px; padding: 2px 6px; font-size: 0.86rem; font-family: inherit; color: var(--primary); font-weight: 600; background: var(--primary-pale); cursor: pointer; outline: none; transition: all 0.2s; }
+.gf-select:focus { border-color: var(--primary); }
+.gf-select.correct { border-color: var(--green); background: var(--green-pale); color: var(--green); }
+.gf-select.wrong { border-color: var(--red); background: var(--red-pale); color: var(--red); }
+.word-bank-strip { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; background: var(--bg); border-radius: var(--radius-sm); padding: 10px 12px; border: 1px dashed var(--border); }
+.wb-label { width: 100%; font-size: 0.68rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+.wb-chip { background: var(--white); border: 1.5px solid var(--border); border-radius: 20px; padding: 3px 11px; font-size: 0.8rem; font-weight: 600; color: var(--primary); }
+
+/* Ex 4 — Tick */
+.tick-pairs { display: grid; gap: 10px; }
+.tick-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tick-pair-num { font-size: 0.7rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; grid-column: 1/-1; padding-top: 4px; }
+.tick-option { display: flex; align-items: flex-start; gap: 9px; padding: 10px 13px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; font-size: 0.86rem; line-height: 1.5; transition: all 0.2s; background: var(--white); }
+.tick-option:hover { border-color: var(--primary); }
+.tick-option.selected { border-color: var(--primary); background: var(--primary-pale); }
+.tick-option.correct { border-color: var(--green); background: var(--green-pale); color: var(--green); }
+.tick-option.wrong { border-color: var(--red); background: var(--red-pale); color: var(--red); }
+.tick-option.show-right { border-color: var(--green); background: var(--green-pale); }
+.radio-dot { width: 18px; height: 18px; min-width: 18px; border-radius: 50%; border: 2px solid var(--border); margin-top: 1px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+.tick-option.selected .radio-dot { border-color: var(--primary); background: var(--primary); }
+.tick-option.selected .radio-dot::after { content: ''; width: 6px; height: 6px; background: white; border-radius: 50%; }
+.tick-option.correct .radio-dot, .tick-option.show-right .radio-dot { border-color: var(--green); background: var(--green); }
+.tick-option.correct .radio-dot::after, .tick-option.show-right .radio-dot::after { content: ''; width: 6px; height: 6px; background: white; border-radius: 50%; }
+.tick-option.wrong .radio-dot { border-color: var(--red); background: var(--red); }
+.tick-option.wrong .radio-dot::after { content: ''; width: 6px; height: 6px; background: white; border-radius: 50%; }
+
+/* Hint letter chip */
+.hint-letter { display: inline-block; font-size: 0.72rem; font-weight: 800; font-style: italic; background: rgba(255,255,255,0.28); border: 1px solid rgba(255,255,255,0.45); border-radius: 4px; padding: 0 5px; margin: 0 2px; vertical-align: middle; letter-spacing: 0.02em; color: white; }
+.bubble.received .hint-letter { background: var(--primary-pale); border-color: var(--primary-light); color: var(--primary); }
+
+/* Ex 5 — Text messages */
+.msg-thread { display: flex; flex-direction: column; gap: 16px; }
+.msg-group { background: #FAFAFA; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+.msg-group-label { font-size: 0.68rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; padding: 7px 12px; border-bottom: 1px solid var(--border); background: var(--bg); }
+.msg-bubbles { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.bubble { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 0.88rem; line-height: 1.6; }
+.bubble.sent { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+.bubble.sent .msg-select { background: rgba(255,255,255,0.25); border: 1.5px solid rgba(255,255,255,0.5); color: white; border-radius: 6px; padding: 1px 6px; font-size: 0.82rem; font-family: inherit; cursor: pointer; outline: none; }
+.bubble.sent .msg-select option { color: var(--text); background: var(--white); }
+.bubble.sent .msg-select.correct { background: rgba(255,255,255,0.4); border-color: #86EFAC; }
+.bubble.sent .msg-select.wrong { background: rgba(239,68,68,0.3); border-color: #FCA5A5; }
+.bubble.received { background: var(--white); border: 1px solid var(--border); color: var(--text); align-self: flex-start; border-bottom-left-radius: 4px; }
+.sender { font-size: 0.68rem; font-weight: 700; margin-bottom: 2px; opacity: 0.7; }
+
+/* Send to teacher */
+.send-section { background: var(--white); border: 1.5px solid var(--teal); border-radius: var(--radius); padding: 20px 22px; margin-top: 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; box-shadow: var(--shadow); }
+.send-info { flex: 1; }
+.send-title { font-weight: 800; font-size: 1rem; color: var(--teal); margin-bottom: 4px; }
+.send-desc { font-size: 0.82rem; color: var(--text-light); line-height: 1.5; }
+.send-warning { font-size: 0.76rem; color: var(--amber); margin-top: 5px; display: none; font-weight: 600; }
+
+/* Total score */
+.total-score { background: linear-gradient(135deg, var(--primary-pale), var(--teal-light)); border-radius: var(--radius); padding: 18px 22px; margin-top: 16px; display: none; }
+.total-score h3 { font-size: 1.1rem; font-weight: 800; color: var(--primary); margin-bottom: 6px; }
+.total-score p { font-size: 0.88rem; color: var(--text); }
+
+@media (max-width: 640px) {
+  .match-grid, .tick-pair { grid-template-columns: 1fr; }
+  .main { padding: 16px 14px 80px; }
+  .hw-header { padding: 14px 16px 18px; }
+  .hw-progress-wrap { padding: 8px 16px; }
+  .send-section { flex-direction: column; }
+}
+@media print {
+  .hw-header, .hw-progress-wrap, .ex-footer, .send-section, .total-score { display: none !important; }
+  .ex-card { box-shadow: none; border: 1px solid #ddd; margin-bottom: 14px; }
+}
+</style>
+</head>
+<body>
+
+<header class="hw-header">
+  <div class="hw-header-row">
+    <div>
+      <div class="hw-title">🥗 Eating Well — Homework</div>
+      <div class="hw-meta">B1 · Vocabulary &amp; Quantifiers · 5 exercises</div>
+    </div>
+    <button class="print-btn" onclick="window.print()">🖨 Print</button>
+  </div>
+  <div class="name-strip">
+    <label for="studentName">👤 Your name:</label>
+    <input type="text" id="studentName" class="name-input" placeholder="Type your full name here…" oninput="updateName()">
+  </div>
+</header>
+
+<div class="hw-progress-wrap">
+  <div class="hw-progress-bar-bg"><div class="hw-progress-bar" id="progressBar"></div></div>
+  <div class="hw-progress-label" id="progressLabel">0 / 5 done</div>
+</div>
+
+<main class="main">
+
+<!-- ══════════════════════════════════════
+     VOCABULARY SECTION
+══════════════════════════════════════ -->
+
+<div class="section-pill">Vocabulary</div>
+<div class="section-title">Describing Food</div>
+
+<!-- ── EXERCISE 1 ── -->
+<div class="ex-card" id="ex1card">
+  <div class="ex-header">
+    <div class="ex-num">Exercise 1</div>
+    <div class="ex-title">Match the sentence halves. Choose the correct ending (a–e) for each sentence.</div>
+  </div>
+  <div class="ex-body">
+    <div class="match-grid">
+      <div>
+        <div class="match-col-label">Sentences</div>
+        <div class="match-sentence" id="m1">
+          <span class="match-num">1</span>
+          <span style="flex:1">I ordered the salmon — I was in the mood for something light and</span>
+          <select class="match-select" id="ms1" onchange="clearEx1()"><option value="">—</option><option>a</option><option>b</option><option>c</option><option>d</option><option>e</option></select>
+        </div>
+        <div class="match-sentence" id="m2">
+          <span class="match-num">2</span>
+          <span style="flex:1">I never buy bread from the supermarket. It's so much better when it's</span>
+          <select class="match-select" id="ms2" onchange="clearEx1()"><option value="">—</option><option>a</option><option>b</option><option>c</option><option>d</option><option>e</option></select>
+        </div>
+        <div class="match-sentence" id="m3">
+          <span class="match-num">3</span>
+          <span style="flex:1">Be careful — the chef warned us the curry might be very</span>
+          <select class="match-select" id="ms3" onchange="clearEx1()"><option value="">—</option><option>a</option><option>b</option><option>c</option><option>d</option><option>e</option></select>
+        </div>
+        <div class="match-sentence" id="m4">
+          <span class="match-num">4</span>
+          <span style="flex:1">I love snacks that aren't sweet at all — I prefer things that are</span>
+          <select class="match-select" id="ms4" onchange="clearEx1()"><option value="">—</option><option>a</option><option>b</option><option>c</option><option>d</option><option>e</option></select>
+        </div>
+        <div class="match-sentence" id="m5">
+          <span class="match-num">5</span>
+          <span style="flex:1">I couldn't drink my coffee this morning. It was so</span>
+          <select class="match-select" id="ms5" onchange="clearEx1()"><option value="">—</option><option>a</option><option>b</option><option>c</option><option>d</option><option>e</option></select>
+        </div>
+      </div>
+      <div>
+        <div class="match-col-label">Endings</div>
+        <div class="match-ending"><span class="match-letter">a</span><span>salty and <em>savoury</em>.</span></div>
+        <div class="match-ending"><span class="match-letter">b</span><span><em>spicy</em> — eat it slowly or you'll regret it!</span></div>
+        <div class="match-ending"><span class="match-letter">c</span><span><em>bitter</em> that I had to add three spoons of sugar.</span></div>
+        <div class="match-ending"><span class="match-letter">d</span><span>lightly <em>grilled</em>, not too heavy.</span></div>
+        <div class="match-ending"><span class="match-letter">e</span><span><em>homemade</em>, straight from the oven.</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="ex-footer">
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn btn-check" onclick="checkEx1()">✓ Check</button>
+      <button class="btn btn-reset" onclick="resetEx1()">↺ Reset</button>
+    </div>
+    <span class="score-badge hidden" id="ex1score"></span>
+  </div>
+</div>
+
+
+<!-- ── EXERCISE 2 ── -->
+<div class="ex-card" id="ex2card">
+  <div class="ex-header">
+    <div class="ex-num">Exercise 2</div>
+    <div class="ex-title">Cross out the adjective that does NOT fit in each sentence. Click the wrong word.</div>
+  </div>
+  <div class="ex-body">
+    <ul class="crossout-list">
+
+      <li class="crossout-item">
+        <span class="cx-num">1</span>
+        <span>I love soup when it's hot, <span class="cx-word" data-correct="false" data-ans="fried" onclick="crossWord(this,1,'spicy')">spicy</span> / <span class="cx-word" data-correct="false" data-ans="fried" onclick="crossWord(this,1,'savoury')">savoury</span> / <span class="cx-word" data-correct="false" data-ans="fried" onclick="crossWord(this,1,'fried')">fried</span> and really filling.</span>
+      </li>
+
+      <li class="crossout-item">
+        <span class="cx-num">2</span>
+        <span>She doesn't like her morning coffee too <span class="cx-word" data-ans="homemade" onclick="crossWord(this,2,'bitter')">bitter</span> / <span class="cx-word" data-ans="homemade" onclick="crossWord(this,2,'strong')">strong</span> / <span class="cx-word" data-ans="homemade" onclick="crossWord(this,2,'homemade')">homemade</span>.</span>
+      </li>
+
+      <li class="crossout-item">
+        <span class="cx-num">3</span>
+        <span>That restaurant is famous for its <span class="cx-word" data-ans="sweet" onclick="crossWord(this,3,'grilled')">grilled</span> / <span class="cx-word" data-ans="sweet" onclick="crossWord(this,3,'spicy')">spicy</span> / <span class="cx-word" data-ans="sweet" onclick="crossWord(this,3,'sweet')">sweet</span> chicken dishes.</span>
+      </li>
+
+      <li class="crossout-item">
+        <span class="cx-num">4</span>
+        <span>The desserts here are absolutely <span class="cx-word" data-ans="fried" onclick="crossWord(this,4,'delicious')">delicious</span> / <span class="cx-word" data-ans="fried" onclick="crossWord(this,4,'tasty')">tasty</span> / <span class="cx-word" data-ans="fried" onclick="crossWord(this,4,'fried')">fried</span>!</span>
+      </li>
+
+      <li class="crossout-item">
+        <span class="cx-num">5</span>
+        <span>I prefer vegetables that are <span class="cx-word" data-ans="homemade" onclick="crossWord(this,5,'fresh')">fresh</span> / <span class="cx-word" data-ans="homemade" onclick="crossWord(this,5,'grilled')">grilled</span> / <span class="cx-word" data-ans="homemade" onclick="crossWord(this,5,'homemade')">homemade</span> rather than canned.</span>
+      </li>
+
+      <li class="crossout-item">
+        <span class="cx-num">6</span>
+        <span>Dark chocolate can be quite <span class="cx-word" data-ans="spicy" onclick="crossWord(this,6,'bitter')">bitter</span> / <span class="cx-word" data-ans="spicy" onclick="crossWord(this,6,'light')">light</span> / <span class="cx-word" data-ans="spicy" onclick="crossWord(this,6,'spicy')">spicy</span> if you're not used to it.</span>
+      </li>
+
+    </ul>
+  </div>
+  <div class="ex-footer">
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn btn-check" onclick="checkEx2()">✓ Check</button>
+      <button class="btn btn-reset" onclick="resetEx2()">↺ Reset</button>
+    </div>
+    <span class="score-badge hidden" id="ex2score"></span>
+  </div>
+</div>
+
+
+<!-- ── EXERCISE 3 ── -->
+<div class="ex-card" id="ex3card">
+  <div class="ex-header">
+    <div class="ex-num">Exercise 3</div>
+    <div class="ex-title">Complete the restaurant review. Choose a word from the box for each gap.</div>
+  </div>
+  <div class="ex-body">
+    <div class="word-bank-strip">
+      <div class="wb-label">Word bank — use each word once</div>
+      <div class="wb-chip">bitter</div>
+      <div class="wb-chip">fried</div>
+      <div class="wb-chip">grilled</div>
+      <div class="wb-chip">homemade</div>
+      <div class="wb-chip">savoury</div>
+      <div class="wb-chip">spicy</div>
+      <div class="wb-chip">sweet</div>
+      <div class="wb-chip">tasty</div>
+    </div>
+    <div class="review-card">
+      <div class="place">📍 The Kitchen Table · City Centre</div>
+      <h4>The Kitchen Table</h4>
+      <div class="stars">★★★★★ <span style="color:var(--text-light);font-size:0.78rem;">Reviewed this week</span></div>
+
+      <p>The Kitchen Table is a wonderful little restaurant near my office. The chef makes everything fresh, and the bread is completely
+      <select class="gf-select" id="g1" data-answer="homemade"><option value="">▾ choose</option><option>bitter</option><option>fried</option><option>grilled</option><option>homemade</option><option>savoury</option><option>spicy</option><option>sweet</option><option>tasty</option></select>
+      — baked fresh every morning using an old family recipe. It tastes nothing like shop-bought bread!</p>
+
+      <p>For my starter, I had a rich
+      <select class="gf-select" id="g2" data-answer="savoury"><option value="">▾ choose</option><option>bitter</option><option>fried</option><option>grilled</option><option>homemade</option><option>savoury</option><option>spicy</option><option>sweet</option><option>tasty</option></select>
+      mushroom soup — not sweet at all, but salty and full of herbs. Absolutely perfect.</p>
+
+      <p>My main course was
+      <select class="gf-select" id="g3" data-answer="grilled"><option value="">▾ choose</option><option>bitter</option><option>fried</option><option>grilled</option><option>homemade</option><option>savoury</option><option>spicy</option><option>sweet</option><option>tasty</option></select>
+      salmon with roasted vegetables and lemon. Very light and healthy. My friend ordered the
+      <select class="gf-select" id="g4" data-answer="spicy"><option value="">▾ choose</option><option>bitter</option><option>fried</option><option>grilled</option><option>homemade</option><option>savoury</option><option>spicy</option><option>sweet</option><option>tasty</option></select>
+      king prawns — very hot and full of chilli. A bit too much for me, but she loved every bite!</p>
+
+      <p>For a side dish, we shared some
+      <select class="gf-select" id="g5" data-answer="fried"><option value="">▾ choose</option><option>bitter</option><option>fried</option><option>grilled</option><option>homemade</option><option>savoury</option><option>spicy</option><option>sweet</option><option>tasty</option></select>
+      potatoes — golden and crispy. For dessert, we both chose the
+      <select class="gf-select" id="g6" data-answer="sweet"><option value="">▾ choose</option><option>bitter</option><option>fried</option><option>grilled</option><option>homemade</option><option>savoury</option><option>spicy</option><option>sweet</option><option>tasty</option></select>
+      chocolate cake. Just the right amount of sugar!</p>
+
+      <p>The only small issue: the lemon tart was slightly too
+      <select class="gf-select" id="g7" data-answer="bitter"><option value="">▾ choose</option><option>bitter</option><option>fried</option><option>grilled</option><option>homemade</option><option>savoury</option><option>spicy</option><option>sweet</option><option>tasty</option></select>
+      for my taste — though my partner disagreed and said that was perfect.</p>
+
+      <p>All in all, everything was completely
+      <select class="gf-select" id="g8" data-answer="tasty"><option value="">▾ choose</option><option>bitter</option><option>fried</option><option>grilled</option><option>homemade</option><option>savoury</option><option>spicy</option><option>sweet</option><option>tasty</option></select>
+      from start to finish. We will definitely be going back!</p>
+    </div>
+  </div>
+  <div class="ex-footer">
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn btn-check" onclick="checkEx3()">✓ Check</button>
+      <button class="btn btn-reset" onclick="resetEx3()">↺ Reset</button>
+    </div>
+    <span class="score-badge hidden" id="ex3score"></span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     GRAMMAR SECTION
+══════════════════════════════════════ -->
+
+<div class="section-pill" style="margin-top:10px;">Grammar</div>
+<div class="section-title">Quantifiers</div>
+
+<!-- ── EXERCISE 4 ── -->
+<div class="ex-card" id="ex4card">
+  <div class="ex-header">
+    <div class="ex-num">Exercise 4</div>
+    <div class="ex-title">Tick (✓) the correct sentence in each pair. Click to select your answer.</div>
+  </div>
+  <div class="ex-body">
+    <div class="tick-pairs">
+
+      <div>
+        <div class="tick-pair-num">1</div>
+        <div class="tick-pair">
+          <div class="tick-option" id="t1a" onclick="selectTick(1,'a')" data-correct="false">
+            <div class="radio-dot"></div>
+            <span>a &nbsp; We don't have <em>some</em> eggs — we need to buy them.</span>
+          </div>
+          <div class="tick-option" id="t1b" onclick="selectTick(1,'b')" data-correct="true">
+            <div class="radio-dot"></div>
+            <span>b &nbsp; We don't have <em>any</em> eggs — we need to buy them.</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tick-pair-num">2</div>
+        <div class="tick-pair">
+          <div class="tick-option" id="t2a" onclick="selectTick(2,'a')" data-correct="true">
+            <div class="radio-dot"></div>
+            <span>a &nbsp; You should eat <em>plenty of</em> fresh fruit and vegetables every day.</span>
+          </div>
+          <div class="tick-option" id="t2b" onclick="selectTick(2,'b')" data-correct="false">
+            <div class="radio-dot"></div>
+            <span>b &nbsp; You should eat <em>plenty</em> fresh fruit and vegetables every day.</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tick-pair-num">3</div>
+        <div class="tick-pair">
+          <div class="tick-option" id="t3a" onclick="selectTick(3,'a')" data-correct="false">
+            <div class="radio-dot"></div>
+            <span>a &nbsp; I like <em>a little of</em> sugar in my tea, but not too much.</span>
+          </div>
+          <div class="tick-option" id="t3b" onclick="selectTick(3,'b')" data-correct="true">
+            <div class="radio-dot"></div>
+            <span>b &nbsp; I like <em>a little</em> sugar in my tea, but not too much.</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tick-pair-num">4</div>
+        <div class="tick-pair">
+          <div class="tick-option" id="t4a" onclick="selectTick(4,'a')" data-correct="false">
+            <div class="radio-dot"></div>
+            <span>a &nbsp; There is <em>too many</em> sugar in this dessert for my taste.</span>
+          </div>
+          <div class="tick-option" id="t4b" onclick="selectTick(4,'b')" data-correct="true">
+            <div class="radio-dot"></div>
+            <span>b &nbsp; There is <em>too much</em> sugar in this dessert for my taste.</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tick-pair-num">5</div>
+        <div class="tick-pair">
+          <div class="tick-option" id="t5a" onclick="selectTick(5,'a')" data-correct="false">
+            <div class="radio-dot"></div>
+            <span>a &nbsp; We don't eat <em>no</em> snacks between breakfast and dinner.</span>
+          </div>
+          <div class="tick-option" id="t5b" onclick="selectTick(5,'b')" data-correct="true">
+            <div class="radio-dot"></div>
+            <span>b &nbsp; We don't eat <em>any</em> snacks between breakfast and dinner.</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tick-pair-num">6</div>
+        <div class="tick-pair">
+          <div class="tick-option" id="t6a" onclick="selectTick(6,'a')" data-correct="false">
+            <div class="radio-dot"></div>
+            <span>a &nbsp; How <em>much</em> oranges would you like for the salad?</span>
+          </div>
+          <div class="tick-option" id="t6b" onclick="selectTick(6,'b')" data-correct="true">
+            <div class="radio-dot"></div>
+            <span>b &nbsp; How <em>many</em> oranges would you like for the salad?</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tick-pair-num">7</div>
+        <div class="tick-pair">
+          <div class="tick-option" id="t7a" onclick="selectTick(7,'a')" data-correct="false">
+            <div class="radio-dot"></div>
+            <span>a &nbsp; I only drink <em>a few</em> coffee in the morning — just one small cup.</span>
+          </div>
+          <div class="tick-option" id="t7b" onclick="selectTick(7,'b')" data-correct="true">
+            <div class="radio-dot"></div>
+            <span>b &nbsp; I only drink <em>a little</em> coffee in the morning — just one small cup.</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tick-pair-num">8</div>
+        <div class="tick-pair">
+          <div class="tick-option" id="t8a" onclick="selectTick(8,'a')" data-correct="false">
+            <div class="radio-dot"></div>
+            <span>a &nbsp; Did you buy bread <em>enough</em> for everyone at the party?</span>
+          </div>
+          <div class="tick-option" id="t8b" onclick="selectTick(8,'b')" data-correct="true">
+            <div class="radio-dot"></div>
+            <span>b &nbsp; Did you buy <em>enough</em> bread for everyone at the party?</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="ex-footer">
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn btn-check" onclick="checkEx4()">✓ Check</button>
+      <button class="btn btn-reset" onclick="resetEx4()">↺ Reset</button>
+    </div>
+    <span class="score-badge hidden" id="ex4score"></span>
+  </div>
+</div>
+
+
+<!-- ── EXERCISE 5 ── -->
+<div class="ex-card" id="ex5card">
+  <div class="ex-header">
+    <div class="ex-num">Exercise 5</div>
+    <div class="ex-title">Complete the text messages with the correct quantifier from the list.</div>
+  </div>
+  <div class="ex-body">
+    <div class="word-bank-strip" style="margin-bottom:16px;">
+      <div class="wb-label">Word bank — words can be used more than once</div>
+      <div class="wb-chip">much</div><div class="wb-chip">many</div><div class="wb-chip">some</div><div class="wb-chip">any</div>
+      <div class="wb-chip">a little</div><div class="wb-chip">a few</div><div class="wb-chip">a lot of</div>
+      <div class="wb-chip">too much</div><div class="wb-chip">too many</div><div class="wb-chip">enough</div>
+    </div>
+
+    <div class="msg-thread">
+
+      <!-- Message group 1 -->
+      <div class="msg-group">
+        <div class="msg-group-label">💬 Conversation 1 — At the supermarket</div>
+        <div class="msg-bubbles">
+          <div class="bubble sent">
+            <div class="sender">You</div>
+            Hi! I'm at the shops. How
+            <span class="hint-letter">m…</span> <select class="msg-select" id="q1" data-answer="much"><option value="">▾</option><option>much</option><option>many</option><option>some</option><option>any</option><option>a little</option><option>a few</option><option>a lot of</option><option>too much</option><option>too many</option><option>enough</option></select>
+            pasta do we have at home? I think we also need
+            <span class="hint-letter">a…</span> <select class="msg-select" id="q2" data-answer="a few"><option value="">▾</option><option>much</option><option>many</option><option>some</option><option>any</option><option>a little</option><option>a few</option><option>a lot of</option><option>too much</option><option>too many</option><option>enough</option></select>
+            lemons — maybe three or four? 🍋
+          </div>
+          <div class="bubble received">
+            <div class="sender">Flatmate</div>
+            We have loads of pasta! But yes, please get some lemons. Oh, and we don't have
+            <span class="hint-letter">a…</span> <select class="msg-select" id="q3" data-answer="any"><option value="">▾</option><option>much</option><option>many</option><option>some</option><option>any</option><option>a little</option><option>a few</option><option>a lot of</option><option>too much</option><option>too many</option><option>enough</option></select>
+            olive oil left either!
+          </div>
+        </div>
+      </div>
+
+      <!-- Message group 2 -->
+      <div class="msg-group">
+        <div class="msg-group-label">💬 Conversation 2 — Starting a diet</div>
+        <div class="msg-bubbles">
+          <div class="bubble sent">
+            <div class="sender">You</div>
+            Starting my healthy diet tomorrow! 💪 I'm going to eat
+            <span class="hint-letter">a…</span> <select class="msg-select" id="q4" data-answer="a lot of"><option value="">▾</option><option>much</option><option>many</option><option>some</option><option>any</option><option>a little</option><option>a few</option><option>a lot of</option><option>too much</option><option>too many</option><option>enough</option></select>
+            vegetables and not
+            <span class="hint-letter">t…</span> <select class="msg-select" id="q5" data-answer="too much"><option value="">▾</option><option>much</option><option>many</option><option>some</option><option>any</option><option>a little</option><option>a few</option><option>a lot of</option><option>too much</option><option>too many</option><option>enough</option></select>
+            sugar. Also, no
+            <span class="hint-letter">t…</span> <select class="msg-select" id="q6" data-answer="too many"><option value="">▾</option><option>much</option><option>many</option><option>some</option><option>any</option><option>a little</option><option>a few</option><option>a lot of</option><option>too much</option><option>too many</option><option>enough</option></select>
+            takeaways this month!
+          </div>
+          <div class="bubble received">
+            <div class="sender">Friend</div>
+            Good luck! Maybe allow yourself
+            <span class="hint-letter">a…</span> <select class="msg-select" id="q7" data-answer="a few"><option value="">▾</option><option>much</option><option>many</option><option>some</option><option>any</option><option>a little</option><option>a few</option><option>a lot of</option><option>too much</option><option>too many</option><option>enough</option></select>
+            treats a week — it's easier to stick to a diet that way 😄
+          </div>
+        </div>
+      </div>
+
+      <!-- Message group 3 -->
+      <div class="msg-group">
+        <div class="msg-group-label">💬 Conversation 3 — Coffee order ☕</div>
+        <div class="msg-bubbles">
+          <div class="bubble received">
+            <div class="sender">Colleague</div>
+            I'm getting coffee downstairs! Do you want
+            <span class="hint-letter">s…</span> <select class="msg-select" id="q8" data-answer="some"><option value="">▾</option><option>much</option><option>many</option><option>some</option><option>any</option><option>a little</option><option>a few</option><option>a lot of</option><option>too much</option><option>too many</option><option>enough</option></select>
+            ? How
+            <span class="hint-letter">m…</span> <select class="msg-select" id="q9" data-answer="much"><option value="">▾</option><option>much</option><option>many</option><option>some</option><option>any</option><option>a little</option><option>a few</option><option>a lot of</option><option>too much</option><option>too many</option><option>enough</option></select>
+            milk do you usually have?
+          </div>
+          <div class="bubble sent">
+            <div class="sender">You</div>
+            Yes please! Just
+            <span class="hint-letter">a…</span> <select class="msg-select" id="q10" data-answer="a little"><option value="">▾</option><option>much</option><option>many</option><option>some</option><option>any</option><option>a little</option><option>a few</option><option>a lot of</option><option>too much</option><option>too many</option><option>enough</option></select>
+            milk, and no sugar — I've already had
+            <span class="hint-letter">t…</span> <select class="msg-select" id="q11" data-answer="too much"><option value="">▾</option><option>much</option><option>many</option><option>some</option><option>any</option><option>a little</option><option>a few</option><option>a lot of</option><option>too much</option><option>too many</option><option>enough</option></select>
+            sugar today! 😅
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="ex-footer">
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn btn-check" onclick="checkEx5()">✓ Check</button>
+      <button class="btn btn-reset" onclick="resetEx5()">↺ Reset</button>
+    </div>
+    <span class="score-badge hidden" id="ex5score"></span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     SEND TO TEACHER
+══════════════════════════════════════ -->
+
+<div class="total-score" id="totalScore"></div>
+
+<div class="send-section">
+  <div class="send-info">
+    <div class="send-title">📨 Send to your teacher</div>
+    <div class="send-desc">When you've finished all exercises, click the button to send your answers to your teacher by email. Check all exercises first!</div>
+    <div class="send-warning" id="sendWarning">⚠️ Please enter your name before sending.</div>
+  </div>
+  <button class="btn-send" onclick="sendToTeacher()">✉️ Send to Teacher</button>
+</div>
+
+</main>
+
+<script>
+// ── State ──────────────────────────────────────────────────────
+const checkedExs = { ex1: false, ex2: false, ex3: false, ex4: false, ex5: false };
+const scores = {};
+const ex2Selected = {}; // {1: 'word', 2: 'word', ...}
+const tickSelected = {}; // {1: 'a'/'b', ...}
+
+// ── Progress ──────────────────────────────────────────────────
+function updateProgress() {
+  const done = Object.values(checkedExs).filter(Boolean).length;
+  const pct = done / 5 * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = done + ' / 5 done';
+  if (done === 5) showTotal();
+}
+
+function showTotal() {
+  const t = document.getElementById('totalScore');
+  const total = Object.values(scores).reduce((a,b) => a + b[0], 0);
+  const max = Object.values(scores).reduce((a,b) => a + b[1], 0);
+  const pct = max > 0 ? Math.round(total/max*100) : 0;
+  const emoji = pct >= 85 ? '🎉' : pct >= 60 ? '👍' : '📚';
+  t.innerHTML = `<h3>${emoji} Total Score: ${total} / ${max} (${pct}%)</h3><p>${pct >= 85 ? 'Excellent work! You have a strong grasp of food vocabulary and quantifiers.' : pct >= 60 ? 'Good effort! Review the exercises marked in orange or red and try again.' : 'Keep practising! Look back at your lesson notes and try the exercises again.'}</p>`;
+  t.style.display = 'block';
+}
+
+function updateName() { /* name live update — no action needed */ }
+
+// ── Exercise 1: Matching ────────────────────────────────────────
+const ex1Answers = { ms1:'d', ms2:'e', ms3:'b', ms4:'a', ms5:'c' };
+
+function clearEx1() {
+  ['m1','m2','m3','m4','m5'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('correct-s','wrong-s');
+  });
+  const s = document.getElementById('ex1score');
+  s.className = 'score-badge hidden'; s.textContent = '';
+  document.getElementById('ex1card').className = 'ex-card';
+  checkedExs.ex1 = false; updateProgress();
+}
+
+function checkEx1() {
+  let correct = 0, total = 5;
+  Object.entries(ex1Answers).forEach(([id, ans]) => {
+    const sel = document.getElementById(id);
+    const row = document.getElementById('m' + id.slice(-1));
+    if (sel.value === ans) { correct++; row.classList.add('correct-s'); row.classList.remove('wrong-s'); }
+    else { row.classList.add('wrong-s'); row.classList.remove('correct-s'); }
+  });
+  setScore('ex1', correct, total);
+}
+
+// ── Exercise 2: Cross out ──────────────────────────────────────
+function crossWord(el, sentNum, word) {
+  const siblings = el.parentElement.querySelectorAll('.cx-word');
+  siblings.forEach(s => s.classList.remove('crossed'));
+  el.classList.add('crossed');
+  ex2Selected[sentNum] = word;
+  document.getElementById('ex2score').className = 'score-badge hidden';
+  document.getElementById('ex2score').textContent = '';
+  document.getElementById('ex2card').className = 'ex-card';
+  checkedExs.ex2 = false; updateProgress();
+}
+
+function checkEx2() {
+  const correctAnswers = { 1:'fried', 2:'homemade', 3:'sweet', 4:'fried', 5:'homemade', 6:'spicy' };
+  let correct = 0;
+  document.querySelectorAll('.crossout-item').forEach((item, i) => {
+    const num = i + 1;
+    const words = item.querySelectorAll('.cx-word');
+    words.forEach(w => {
+      w.classList.remove('correct-cross','wrong-cross','should-cross','crossed');
+      if (w.getAttribute('onclick').includes("'" + correctAnswers[num] + "'")) {
+        if (ex2Selected[num] === correctAnswers[num]) {
+          w.classList.add('correct-cross'); correct++;
+        } else {
+          w.classList.add('should-cross');
+        }
+      } else if (ex2Selected[num] === w.getAttribute('onclick').match(/'([^']+)'\)$/)?.[1]) {
+        w.classList.add('wrong-cross');
+      }
+    });
+  });
+  setScore('ex2', correct, 6);
+}
+
+function resetEx2() {
+  document.querySelectorAll('.cx-word').forEach(w => w.classList.remove('crossed','correct-cross','wrong-cross','should-cross'));
+  for (let k in ex2Selected) delete ex2Selected[k];
+  const s = document.getElementById('ex2score'); s.className = 'score-badge hidden'; s.textContent = '';
+  document.getElementById('ex2card').className = 'ex-card';
+  checkedExs.ex2 = false; updateProgress();
+}
+
+// ── Exercise 3: Review gap fill ────────────────────────────────
+function checkEx3() {
+  let correct = 0, total = 8;
+  for (let i = 1; i <= 8; i++) {
+    const sel = document.getElementById('g' + i);
+    if (sel.value === sel.getAttribute('data-answer')) {
+      sel.classList.add('correct'); sel.classList.remove('wrong'); correct++;
+    } else {
+      sel.classList.add('wrong'); sel.classList.remove('correct');
+    }
+  }
+  setScore('ex3', correct, total);
+}
+
+function resetEx3() {
+  for (let i = 1; i <= 8; i++) {
+    const sel = document.getElementById('g' + i);
+    sel.value = ''; sel.classList.remove('correct','wrong');
+  }
+  const s = document.getElementById('ex3score'); s.className = 'score-badge hidden'; s.textContent = '';
+  document.getElementById('ex3card').className = 'ex-card';
+  checkedExs.ex3 = false; updateProgress();
+}
+
+// ── Exercise 4: Tick ──────────────────────────────────────────
+function selectTick(num, letter) {
+  ['a','b'].forEach(l => {
+    const el = document.getElementById('t' + num + l);
+    if (el) { el.classList.remove('selected','correct','wrong','show-right'); }
+  });
+  document.getElementById('t' + num + letter).classList.add('selected');
+  tickSelected[num] = letter;
+  document.getElementById('ex4score').className = 'score-badge hidden';
+  document.getElementById('ex4card').className = 'ex-card';
+  checkedExs.ex4 = false; updateProgress();
+}
+
+function checkEx4() {
+  let correct = 0, total = 8;
+  for (let i = 1; i <= 8; i++) {
+    const a = document.getElementById('t' + i + 'a');
+    const b = document.getElementById('t' + i + 'b');
+    const sel = tickSelected[i];
+    const correctEl = a.getAttribute('data-correct') === 'true' ? 'a' : 'b';
+    [a,b].forEach(el => el.classList.remove('selected','correct','wrong','show-right'));
+    if (!sel) { (correctEl === 'a' ? a : b).classList.add('show-right'); continue; }
+    if (sel === correctEl) {
+      document.getElementById('t' + i + sel).classList.add('correct'); correct++;
+    } else {
+      document.getElementById('t' + i + sel).classList.add('wrong');
+      (correctEl === 'a' ? a : b).classList.add('show-right');
+    }
+  }
+  setScore('ex4', correct, total);
+}
+
+function resetEx4() {
+  for (let i = 1; i <= 8; i++) {
+    ['a','b'].forEach(l => {
+      const el = document.getElementById('t' + i + l);
+      if (el) el.classList.remove('selected','correct','wrong','show-right');
+    });
+    delete tickSelected[i];
+  }
+  const s = document.getElementById('ex4score'); s.className = 'score-badge hidden'; s.textContent = '';
+  document.getElementById('ex4card').className = 'ex-card';
+  checkedExs.ex4 = false; updateProgress();
+}
+
+// ── Exercise 5: Text messages ──────────────────────────────────
+function checkEx5() {
+  let correct = 0, total = 11;
+  for (let i = 1; i <= 11; i++) {
+    const sel = document.getElementById('q' + i);
+    if (!sel) continue;
+    const ans = sel.getAttribute('data-answer');
+    if (sel.value === ans) {
+      sel.classList.add('correct'); sel.classList.remove('wrong'); correct++;
+    } else {
+      sel.classList.add('wrong'); sel.classList.remove('correct');
+    }
+  }
+  setScore('ex5', correct, total);
+}
+
+function resetEx5() {
+  for (let i = 1; i <= 11; i++) {
+    const sel = document.getElementById('q' + i);
+    if (sel) { sel.value = ''; sel.classList.remove('correct','wrong'); }
+  }
+  const s = document.getElementById('ex5score'); s.className = 'score-badge hidden'; s.textContent = '';
+  document.getElementById('ex5card').className = 'ex-card';
+  checkedExs.ex5 = false; updateProgress();
+}
+
+// ── Score helper ───────────────────────────────────────────────
+function setScore(exId, correct, total) {
+  const s = document.getElementById(exId + 'score');
+  const card = document.getElementById(exId + 'card');
+  const pct = correct / total;
+  let cls, cardCls;
+  if (pct >= 0.85) { cls = 'green'; cardCls = 'checked-ok'; }
+  else if (pct >= 0.5) { cls = 'amber'; cardCls = 'checked-partial'; }
+  else { cls = 'red'; cardCls = 'checked-wrong'; }
+  s.className = 'score-badge ' + cls;
+  s.textContent = correct + ' / ' + total;
+  card.className = 'ex-card ' + cardCls;
+  scores[exId] = [correct, total];
+  checkedExs[exId] = true;
+  updateProgress();
+}
+
+// ── Reset per exercise ─────────────────────────────────────────
+function resetEx1() {
+  ['ms1','ms2','ms3','ms4','ms5'].forEach(id => document.getElementById(id).value = '');
+  clearEx1();
+}
+
+// ── Send to Teacher ────────────────────────────────────────────
+function sendToTeacher() {
+  const name = document.getElementById('studentName').value.trim();
+  const warn = document.getElementById('sendWarning');
+  if (!name) { warn.style.display = 'block'; return; }
+  warn.style.display = 'none';
+
+  const ex1Answers = { ms1:'d', ms2:'e', ms3:'b', ms4:'a', ms5:'c' };
+  const ex3Correct = ['homemade','savoury','grilled','spicy','fried','sweet','bitter','tasty'];
+  const ex4Correct = ['b','a','b','b','b','b','b','b'];
+  const ex5Correct = ['much','a few','any','a lot of','too much','too many','a few','some','much','a little','too much'];
+
+  let body = `EATING WELL — HOMEWORK\nStudent: ${name}\nDate: ${new Date().toLocaleDateString()}\n`;
+  body += `${'='.repeat(45)}\n\n`;
+
+  // Ex 1
+  body += `EXERCISE 1 — Match the sentence halves\n`;
+  ['ms1','ms2','ms3','ms4','ms5'].forEach((id, i) => {
+    const val = document.getElementById(id).value || '(no answer)';
+    const correct = ex1Answers[id];
+    body += `  Sentence ${i+1}: ${val} ${val===correct?'✓':'✗ (correct: '+correct+')'}\n`;
+  });
+  if (scores.ex1) body += `  Score: ${scores.ex1[0]}/${scores.ex1[1]}\n`;
+  body += '\n';
+
+  // Ex 2
+  body += `EXERCISE 2 — Cross out the wrong adjective\n`;
+  const ex2Correct = {1:'fried',2:'homemade',3:'sweet',4:'fried',5:'homemade',6:'spicy'};
+  for (let i=1;i<=6;i++) {
+    const sel = ex2Selected[i] || '(no answer)';
+    const correct = ex2Correct[i];
+    body += `  Sentence ${i}: "${sel}" ${sel===correct?'✓':'✗ (correct: '+correct+')'}\n`;
+  }
+  if (scores.ex2) body += `  Score: ${scores.ex2[0]}/${scores.ex2[1]}\n`;
+  body += '\n';
+
+  // Ex 3
+  body += `EXERCISE 3 — Restaurant review gap fill\n`;
+  for (let i=1;i<=8;i++) {
+    const sel = document.getElementById('g'+i);
+    const val = sel ? sel.value || '(no answer)' : '(no answer)';
+    const correct = ex3Correct[i-1];
+    body += `  Gap ${i}: "${val}" ${val===correct?'✓':'✗ (correct: '+correct+')'}\n`;
+  }
+  if (scores.ex3) body += `  Score: ${scores.ex3[0]}/${scores.ex3[1]}\n`;
+  body += '\n';
+
+  // Ex 4
+  body += `EXERCISE 4 — Tick the correct sentence\n`;
+  for (let i=1;i<=8;i++) {
+    const sel = tickSelected[i] || '(no answer)';
+    const correct = ex4Correct[i-1];
+    body += `  Pair ${i}: "${sel}" ${sel===correct?'✓':'✗ (correct: '+correct+')'}\n`;
+  }
+  if (scores.ex4) body += `  Score: ${scores.ex4[0]}/${scores.ex4[1]}\n`;
+  body += '\n';
+
+  // Ex 5
+  body += `EXERCISE 5 — Text message quantifiers\n`;
+  for (let i=1;i<=11;i++) {
+    const sel = document.getElementById('q'+i);
+    const val = sel ? sel.value || '(no answer)' : '(no answer)';
+    const correct = ex5Correct[i-1];
+    body += `  Gap ${i}: "${val}" ${val===correct?'✓':'✗ (correct: '+correct+')'}\n`;
+  }
+  if (scores.ex5) body += `  Score: ${scores.ex5[0]}/${scores.ex5[1]}\n`;
+  body += '\n';
+
+  // Total
+  if (Object.keys(scores).length > 0) {
+    const total = Object.values(scores).reduce((a,b) => a+b[0], 0);
+    const max = Object.values(scores).reduce((a,b) => a+b[1], 0);
+    body += `${'='.repeat(45)}\nTOTAL SCORE: ${total}/${max} (${Math.round(total/max*100)}%)\n`;
+  }
+
+  const subject = encodeURIComponent(`Homework: Eating Well — ${name}`);
+  const encodedBody = encodeURIComponent(body);
+  window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${subject}&body=${encodedBody}`;
+}
+</script>
+</body>
+</html>
