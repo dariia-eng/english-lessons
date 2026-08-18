@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nice to Meet You | A0 | Lesson 1</title>
+<style>
+:root{
+  --primary:#2563EB;--primary-dark:#1D4ED8;
+  --green:#16A34A;--green-pale:#DCFCE7;--red:#DC2626;
+  --bg:#F0F9FF;--white:#fff;--border:#BFDBFE;--text:#1E3A5F;
+  --muted:#6B7280;--radius:14px;--radius-sm:8px;
+  --shadow:0 2px 10px rgba(37,99,235,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:16px;min-height:100vh;}
+.lesson-header{background:var(--primary);color:#fff;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.lesson-header h1{font-size:1.3rem;font-weight:800;}
+.lesson-meta{font-size:.85rem;opacity:.85;}
+.progress-bar{background:rgba(255,255,255,.25);height:7px;border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:#fff;border-radius:4px;transition:width .4s;}
+.stage-nav{display:flex;gap:6px;padding:12px 20px;background:#fff;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.sn-btn{background:none;border:2px solid var(--border);border-radius:20px;padding:5px 14px;font-size:.82rem;cursor:pointer;transition:all .2s;font-weight:600;}
+.sn-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.sn-btn.done{background:var(--green-pale);color:var(--green);border-color:var(--green);}
+.stage{display:none;padding:22px;max-width:880px;margin:0 auto;}
+.stage.active{display:block;}
+.stage-title{font-size:1.3rem;font-weight:800;color:var(--primary);margin-bottom:4px;}
+.stage-sub{color:var(--muted);font-size:.95rem;margin-bottom:20px;}
+.card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);padding:20px 24px;margin-bottom:16px;box-shadow:var(--shadow);}
+.num-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-bottom:16px;}
+.num-tile{background:var(--primary);color:#fff;border-radius:var(--radius);padding:14px 8px;text-align:center;cursor:pointer;transition:all .2s;}
+.num-tile:hover{background:var(--primary-dark);transform:translateY(-2px);}
+.num-tile .digit{font-size:2rem;font-weight:900;display:block;}
+.num-tile .word{font-size:.95rem;font-weight:600;margin-top:4px;display:block;}
+.opt-group{display:inline-flex;flex-wrap:wrap;gap:6px;}
+.opt-group.col{flex-direction:column;align-items:flex-start;width:100%;}
+.opt-btn{background:var(--bg);border:2px solid var(--border);border-radius:20px;padding:6px 16px;font-size:.95rem;cursor:pointer;transition:all .15s;font-weight:500;}
+.opt-btn:hover{border-color:var(--primary);color:var(--primary);}
+.opt-btn.selected{background:var(--primary);color:#fff;border-color:var(--primary);}
+.opt-btn.correct{background:var(--green-pale);color:var(--green);border-color:var(--green);}
+.opt-btn.wrong{background:#FEE2E2;color:var(--red);border-color:var(--red);}
+.btn-primary{background:var(--primary);color:#fff;border:none;border-radius:24px;padding:10px 24px;cursor:pointer;font-size:1rem;font-weight:700;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-outline{background:#fff;color:var(--primary);border:2px solid var(--primary);border-radius:24px;padding:8px 20px;cursor:pointer;font-size:.95rem;font-weight:700;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center;}
+.next-btn{background:var(--primary);color:#fff;border:none;border-radius:24px;padding:11px 28px;cursor:pointer;font-size:1rem;font-weight:800;margin-top:24px;}
+.next-btn:hover{background:var(--primary-dark);}
+.score-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-weight:700;font-size:.95rem;}
+.badge-green{background:var(--green-pale);color:var(--green);}
+.badge-amber{background:#FEF3C7;color:#D97706;}
+.badge-red{background:#FEE2E2;color:var(--red);}
+.ans-wrap{margin-top:12px;}
+.ans-btn{background:none;border:none;color:#16A085;font-size:.88rem;cursor:pointer;text-decoration:underline;}
+.ans-body{display:none;background:#F0FDF4;border-left:3px solid var(--green);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:10px 14px;margin-top:6px;font-size:.9rem;line-height:1.8;}
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px;}
+.vocab-card{background:#fff;border:2px solid var(--border);border-radius:var(--radius);padding:14px 10px;text-align:center;}
+.vocab-card .vc-emoji{font-size:2.2rem;display:block;margin-bottom:6px;}
+.vocab-card .vc-word{font-size:.88rem;font-weight:700;color:var(--text);}
+.gram-box{background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:2px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:16px;}
+.gram-title{font-size:1.1rem;font-weight:800;color:var(--primary);margin-bottom:12px;}
+.gram-row{display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid #BFDBFE;font-size:1rem;flex-wrap:wrap;}
+.gram-row:last-child{border-bottom:none;}
+.gram-short{background:var(--primary);color:#fff;border-radius:8px;padding:3px 12px;font-weight:800;font-size:1rem;min-width:70px;text-align:center;}
+.gram-full{color:var(--muted);font-size:.88rem;}
+.gram-example{font-style:italic;color:var(--text);}
+.bubble-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;}
+.bubble-row .speaker{font-size:.8rem;font-weight:700;color:var(--muted);min-width:60px;padding-top:4px;}
+.bubble{display:inline-block;border-radius:12px;padding:10px 16px;font-size:.95rem;line-height:1.4;}
+.bubble-a{background:#DBEAFE;color:#1E3A5F;}
+.bubble-b{background:var(--primary);color:#fff;}
+.sent-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);}
+.sent-row:last-child{border-bottom:none;}
+.sent-num{font-weight:800;color:var(--primary);min-width:24px;}
+h3{font-size:1rem;font-weight:700;margin-bottom:12px;color:var(--text);}
+.speak-card{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1px solid #86EFAC;border-radius:var(--radius);padding:14px 18px;margin-bottom:10px;font-size:.95rem;line-height:1.5;}
+.fam-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:16px;}
+.fam-card{border-radius:12px;padding:12px 8px;text-align:center;}
+.fam-card .fc-emoji{font-size:2rem;display:block;margin-bottom:5px;}
+.fam-card .fc-word{font-weight:800;font-size:.9rem;}
+</style>
+</head>
+<body>
+<div class="lesson-header">
+  <div>
+    <div class="lesson-meta">A0 &middot; Beginner &middot; Lesson 1 of 2</div>
+    <h1>&#128075; Nice to Meet You!</h1>
+  </div>
+  <div style="text-align:right">
+    <div class="lesson-meta" id="stageLabel">Stage 1 / 6</div>
+    <div class="progress-bar" style="width:140px;margin-top:6px"><div class="progress-fill" id="progFill" style="width:16.6%"></div></div>
+  </div>
+</div>
+<div class="stage-nav">
+  <button class="sn-btn active" id="snb-1" onclick="goTo(1)">1 &middot; Numbers</button>
+  <button class="sn-btn" id="snb-2" onclick="goTo(2)">2 &middot; Key Words</button>
+  <button class="sn-btn" id="snb-3" onclick="goTo(3)">3 &middot; Hello!</button>
+  <button class="sn-btn" id="snb-4" onclick="goTo(4)">4 &middot; Family</button>
+  <button class="sn-btn" id="snb-5" onclick="goTo(5)">5 &middot; Grammar</button>
+  <button class="sn-btn" id="snb-6" onclick="goTo(6)">6 &middot; Practice</button>
+</div>
+
+<!-- STAGE 1: Numbers -->
+<div class="stage active" id="stage-1">
+  <div class="stage-title">Numbers 1&ndash;12 &#128290;</div>
+  <div class="stage-sub">Click a number to hear it!</div>
+  <div class="num-grid">
+    <div class="num-tile" onclick="sayNum(this,'one')"><span class="digit">1</span><span class="word">one</span></div>
+    <div class="num-tile" onclick="sayNum(this,'two')"><span class="digit">2</span><span class="word">two</span></div>
+    <div class="num-tile" onclick="sayNum(this,'three')"><span class="digit">3</span><span class="word">three</span></div>
+    <div class="num-tile" onclick="sayNum(this,'four')"><span class="digit">4</span><span class="word">four</span></div>
+    <div class="num-tile" onclick="sayNum(this,'five')"><span class="digit">5</span><span class="word">five</span></div>
+    <div class="num-tile" onclick="sayNum(this,'six')"><span class="digit">6</span><span class="word">six</span></div>
+    <div class="num-tile" onclick="sayNum(this,'seven')"><span class="digit">7</span><span class="word">seven</span></div>
+    <div class="num-tile" onclick="sayNum(this,'eight')"><span class="digit">8</span><span class="word">eight</span></div>
+    <div class="num-tile" onclick="sayNum(this,'nine')"><span class="digit">9</span><span class="word">nine</span></div>
+    <div class="num-tile" onclick="sayNum(this,'ten')"><span class="digit">10</span><span class="word">ten</span></div>
+    <div class="num-tile" onclick="sayNum(this,'eleven')"><span class="digit">11</span><span class="word">eleven</span></div>
+    <div class="num-tile" onclick="sayNum(this,'twelve')"><span class="digit">12</span><span class="word">twelve</span></div>
+  </div>
+
+  <div class="card">
+    <h3>&#9997; Exercise A &mdash; Digit to word. Click the correct word.</h3>
+    <div class="sent-row">
+      <span class="sent-num">1.</span><span style="font-size:1.6rem;font-weight:900;color:var(--primary)">3</span>
+      <div class="opt-group" id="n1" data-answer="three"><button class="opt-btn" data-val="one" onclick="selectOpt(this)">one</button><button class="opt-btn" data-val="three" onclick="selectOpt(this)">three</button><button class="opt-btn" data-val="six" onclick="selectOpt(this)">six</button></div>
+    </div>
+    <div class="sent-row">
+      <span class="sent-num">2.</span><span style="font-size:1.6rem;font-weight:900;color:var(--primary)">7</span>
+      <div class="opt-group" id="n2" data-answer="seven"><button class="opt-btn" data-val="five" onclick="selectOpt(this)">five</button><button class="opt-btn" data-val="nine" onclick="selectOpt(this)">nine</button><button class="opt-btn" data-val="seven" onclick="selectOpt(this)">seven</button></div>
+    </div>
+    <div class="sent-row">
+      <span class="sent-num">3.</span><span style="font-size:1.6rem;font-weight:900;color:var(--primary)">11</span>
+      <div class="opt-group" id="n3" data-answer="eleven"><button class="opt-btn" data-val="ten" onclick="selectOpt(this)">ten</button><button class="opt-btn" data-val="eleven" onclick="selectOpt(this)">eleven</button><button class="opt-btn" data-val="twelve" onclick="selectOpt(this)">twelve</button></div>
+    </div>
+    <div class="sent-row">
+      <span class="sent-num">4.</span><span style="font-size:1.6rem;font-weight:900;color:var(--primary)">4</span>
+      <div class="opt-group" id="n4" data-answer="four"><button class="opt-btn" data-val="four" onclick="selectOpt(this)">four</button><button class="opt-btn" data-val="two" onclick="selectOpt(this)">two</button><button class="opt-btn" data-val="eight" onclick="selectOpt(this)">eight</button></div>
+    </div>
+    <div class="sent-row">
+      <span class="sent-num">5.</span><span style="font-size:1.6rem;font-weight:900;color:var(--primary)">9</span>
+      <div class="opt-group" id="n5" data-answer="nine"><button class="opt-btn" data-val="six" onclick="selectOpt(this)">six</button><button class="opt-btn" data-val="nine" onclick="selectOpt(this)">nine</button><button class="opt-btn" data-val="one" onclick="selectOpt(this)">one</button></div>
+    </div>
+    <div class="sent-row">
+      <span class="sent-num">6.</span><span style="font-size:1.6rem;font-weight:900;color:var(--primary)">12</span>
+      <div class="opt-group" id="n6" data-answer="twelve"><button class="opt-btn" data-val="two" onclick="selectOpt(this)">two</button><button class="opt-btn" data-val="ten" onclick="selectOpt(this)">ten</button><button class="opt-btn" data-val="twelve" onclick="selectOpt(this)">twelve</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['n1','n2','n3','n4','n5','n6'],'sc-na')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['n1','n2','n3','n4','n5','n6'],'sc-na')">Reset</button>
+      <span id="sc-na"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#9997; Exercise B &mdash; Word to digit. Click the correct number.</h3>
+    <div class="sent-row">
+      <span class="sent-num">1.</span><span style="font-size:1.1rem;font-weight:700">five</span>
+      <div class="opt-group" id="d1" data-answer="5"><button class="opt-btn" data-val="3" onclick="selectOpt(this)">3</button><button class="opt-btn" data-val="5" onclick="selectOpt(this)">5</button><button class="opt-btn" data-val="7" onclick="selectOpt(this)">7</button></div>
+    </div>
+    <div class="sent-row">
+      <span class="sent-num">2.</span><span style="font-size:1.1rem;font-weight:700">two</span>
+      <div class="opt-group" id="d2" data-answer="2"><button class="opt-btn" data-val="2" onclick="selectOpt(this)">2</button><button class="opt-btn" data-val="4" onclick="selectOpt(this)">4</button><button class="opt-btn" data-val="6" onclick="selectOpt(this)">6</button></div>
+    </div>
+    <div class="sent-row">
+      <span class="sent-num">3.</span><span style="font-size:1.1rem;font-weight:700">eight</span>
+      <div class="opt-group" id="d3" data-answer="8"><button class="opt-btn" data-val="6" onclick="selectOpt(this)">6</button><button class="opt-btn" data-val="8" onclick="selectOpt(this)">8</button><button class="opt-btn" data-val="10" onclick="selectOpt(this)">10</button></div>
+    </div>
+    <div class="sent-row">
+      <span class="sent-num">4.</span><span style="font-size:1.1rem;font-weight:700">twelve</span>
+      <div class="opt-group" id="d4" data-answer="12"><button class="opt-btn" data-val="11" onclick="selectOpt(this)">11</button><button class="opt-btn" data-val="12" onclick="selectOpt(this)">12</button><button class="opt-btn" data-val="10" onclick="selectOpt(this)">10</button></div>
+    </div>
+    <div class="sent-row">
+      <span class="sent-num">5.</span><span style="font-size:1.1rem;font-weight:700">one</span>
+      <div class="opt-group" id="d5" data-answer="1"><button class="opt-btn" data-val="1" onclick="selectOpt(this)">1</button><button class="opt-btn" data-val="7" onclick="selectOpt(this)">7</button><button class="opt-btn" data-val="11" onclick="selectOpt(this)">11</button></div>
+    </div>
+    <div class="sent-row">
+      <span class="sent-num">6.</span><span style="font-size:1.1rem;font-weight:700">six</span>
+      <div class="opt-group" id="d6" data-answer="6"><button class="opt-btn" data-val="9" onclick="selectOpt(this)">9</button><button class="opt-btn" data-val="6" onclick="selectOpt(this)">6</button><button class="opt-btn" data-val="3" onclick="selectOpt(this)">3</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['d1','d2','d3','d4','d5','d6'],'sc-db')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['d1','d2','d3','d4','d5','d6'],'sc-db')">Reset</button>
+      <span id="sc-db"></span>
+    </div>
+    <div class="ans-wrap"><button class="ans-btn" onclick="toggleAns('ans-nums')">Show answers</button>
+      <div class="ans-body" id="ans-nums">A: 1&rarr;three &nbsp;2&rarr;seven &nbsp;3&rarr;eleven &nbsp;4&rarr;four &nbsp;5&rarr;nine &nbsp;6&rarr;twelve<br>B: 1&rarr;5 &nbsp;2&rarr;2 &nbsp;3&rarr;8 &nbsp;4&rarr;12 &nbsp;5&rarr;1 &nbsp;6&rarr;6</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#127775; Bonus &mdash; Number Bingo! Tell your teacher a number 1&ndash;12.</h3>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+      <div style="background:#DBEAFE;border-radius:8px;padding:12px;text-align:center;font-size:1.4rem;font-weight:900;">5</div>
+      <div style="background:#DBEAFE;border-radius:8px;padding:12px;text-align:center;font-size:1.4rem;font-weight:900;">11</div>
+      <div style="background:#DBEAFE;border-radius:8px;padding:12px;text-align:center;font-size:1.4rem;font-weight:900;">3</div>
+      <div style="background:#DBEAFE;border-radius:8px;padding:12px;text-align:center;font-size:1.4rem;font-weight:900;">8</div>
+      <div style="background:#DBEAFE;border-radius:8px;padding:12px;text-align:center;font-size:1.4rem;font-weight:900;">1</div>
+      <div style="background:#DBEAFE;border-radius:8px;padding:12px;text-align:center;font-size:1.4rem;font-weight:900;">7</div>
+      <div style="background:#DBEAFE;border-radius:8px;padding:12px;text-align:center;font-size:1.4rem;font-weight:900;">12</div>
+      <div style="background:#DBEAFE;border-radius:8px;padding:12px;text-align:center;font-size:1.4rem;font-weight:900;">4</div>
+    </div>
+    <div style="margin-top:10px;color:var(--muted);font-size:.88rem;">Say the word in English. Cross off the number if your teacher says it!</div>
+  </div>
+
+  <button class="next-btn" onclick="goTo(2)">Next: Key Words &#8594;</button>
+</div>
+
+<!-- STAGE 2: Useful Phrases -->
+<div class="stage" id="stage-2">
+  <div class="stage-title">Useful Phrases &#128172;</div>
+  <div class="stage-sub">5 phrases you will use every lesson. Read, listen and repeat!</div>
+
+  <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+    <div style="background:#fff;border:2px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow)">
+      <span style="font-size:2.4rem;min-width:48px;text-align:center">&#128075;</span>
+      <div>
+        <div style="font-size:1.15rem;font-weight:900;color:var(--primary)">How are you?</div>
+        <div style="font-size:1rem;color:var(--text);margin-top:2px">&ldquo;I&apos;m fine, thanks!&rdquo; &nbsp;/&nbsp; &ldquo;I&apos;m OK, thanks!&rdquo;</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:3px">Як справи? &mdash; Дякую, добре!</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:2px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow)">
+      <span style="font-size:2.4rem;min-width:48px;text-align:center">&#127758;</span>
+      <div>
+        <div style="font-size:1.15rem;font-weight:900;color:var(--primary)">I&apos;m from Ukraine.</div>
+        <div style="font-size:1rem;color:var(--text);margin-top:2px">&ldquo;I&apos;m from [your country / city].&rdquo;</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:3px">Я з України / Я з [місто].</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:2px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow)">
+      <span style="font-size:2.4rem;min-width:48px;text-align:center">&#129300;</span>
+      <div>
+        <div style="font-size:1.15rem;font-weight:900;color:var(--primary)">Sorry, can you repeat that?</div>
+        <div style="font-size:1rem;color:var(--text);margin-top:2px">When you don&apos;t hear something. &#128266;</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:3px">Вибачте, можете повторити?</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:2px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow)">
+      <span style="font-size:2.4rem;min-width:48px;text-align:center">&#129335;</span>
+      <div>
+        <div style="font-size:1.15rem;font-weight:900;color:var(--primary)">I don&apos;t understand.</div>
+        <div style="font-size:1rem;color:var(--text);margin-top:2px">When something is difficult. &#128533;</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:3px">Я не розумію.</div>
+      </div>
+    </div>
+    <div style="background:#fff;border:2px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow)">
+      <span style="font-size:2.4rem;min-width:48px;text-align:center">&#128075;</span>
+      <div>
+        <div style="font-size:1.15rem;font-weight:900;color:var(--primary)">Goodbye! See you later!</div>
+        <div style="font-size:1rem;color:var(--text);margin-top:2px">At the end of class. &#127891;</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-top:3px">До побачення! До зустрічі!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#9997; Exercise A &mdash; When do you say it? Click the correct phrase. / Коли це кажуть?</h3>
+    <div class="sent-row"><span class="sent-num">1.</span><span>The lesson starts. Your teacher says &ldquo;Hello!&rdquo; &#128075;</span>
+      <div class="opt-group" id="ph1" data-answer="How are you?"><button class="opt-btn" data-val="How are you?" onclick="selectOpt(this)">How are you?</button><button class="opt-btn" data-val="Goodbye!" onclick="selectOpt(this)">Goodbye!</button><button class="opt-btn" data-val="I don't understand." onclick="selectOpt(this)">I don&apos;t understand.</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">2.</span><span>The teacher speaks very fast. You can&apos;t hear. &#128266;</span>
+      <div class="opt-group" id="ph2" data-answer="Sorry, can you repeat that?"><button class="opt-btn" data-val="I'm fine, thanks!" onclick="selectOpt(this)">I&apos;m fine, thanks!</button><button class="opt-btn" data-val="Sorry, can you repeat that?" onclick="selectOpt(this)">Sorry, can you repeat that?</button><button class="opt-btn" data-val="I'm from Ukraine." onclick="selectOpt(this)">I&apos;m from Ukraine.</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">3.</span><span>Your teacher asks &ldquo;Where are you from?&rdquo; &#127758;</span>
+      <div class="opt-group" id="ph3" data-answer="I'm from Ukraine."><button class="opt-btn" data-val="I don't understand." onclick="selectOpt(this)">I don&apos;t understand.</button><button class="opt-btn" data-val="I'm from Ukraine." onclick="selectOpt(this)">I&apos;m from Ukraine.</button><button class="opt-btn" data-val="Goodbye!" onclick="selectOpt(this)">Goodbye!</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">4.</span><span>The grammar is very difficult. &#128533;</span>
+      <div class="opt-group" id="ph4" data-answer="I don't understand."><button class="opt-btn" data-val="How are you?" onclick="selectOpt(this)">How are you?</button><button class="opt-btn" data-val="See you later!" onclick="selectOpt(this)">See you later!</button><button class="opt-btn" data-val="I don't understand." onclick="selectOpt(this)">I don&apos;t understand.</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">5.</span><span>The lesson ends. You leave. &#127891;</span>
+      <div class="opt-group" id="ph5" data-answer="Goodbye! See you later!"><button class="opt-btn" data-val="I'm fine, thanks!" onclick="selectOpt(this)">I&apos;m fine, thanks!</button><button class="opt-btn" data-val="How are you?" onclick="selectOpt(this)">How are you?</button><button class="opt-btn" data-val="Goodbye! See you later!" onclick="selectOpt(this)">Goodbye! See you later!</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['ph1','ph2','ph3','ph4','ph5'],'sc-ph')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['ph1','ph2','ph3','ph4','ph5'],'sc-ph')">Reset</button>
+      <span id="sc-ph"></span>
+    </div>
+    <div class="ans-wrap"><button class="ans-btn" onclick="toggleAns('ans-ph')">Show answers</button>
+      <div class="ans-body" id="ans-ph">1&rarr;How are you? &nbsp;|&nbsp; 2&rarr;Sorry, can you repeat that? &nbsp;|&nbsp; 3&rarr;I&apos;m from Ukraine. &nbsp;|&nbsp; 4&rarr;I don&apos;t understand. &nbsp;|&nbsp; 5&rarr;Goodbye! See you later!</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#9997; Exercise B &mdash; Complete the phrase. / Доповни фразу.</h3>
+    <div class="sent-row"><span class="sent-num">1.</span><span>How ___ you?</span>
+      <div class="opt-group" id="ph6" data-answer="are"><button class="opt-btn" data-val="is" onclick="selectOpt(this)">is</button><button class="opt-btn" data-val="are" onclick="selectOpt(this)">are</button><button class="opt-btn" data-val="am" onclick="selectOpt(this)">am</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">2.</span><span>I&apos;m ___, thanks!</span>
+      <div class="opt-group" id="ph7" data-answer="fine"><button class="opt-btn" data-val="good" onclick="selectOpt(this)">good</button><button class="opt-btn" data-val="fine" onclick="selectOpt(this)">fine</button><button class="opt-btn" data-val="great" onclick="selectOpt(this)">great</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">3.</span><span>I&apos;m ___ Ukraine.</span>
+      <div class="opt-group" id="ph8" data-answer="from"><button class="opt-btn" data-val="in" onclick="selectOpt(this)">in</button><button class="opt-btn" data-val="at" onclick="selectOpt(this)">at</button><button class="opt-btn" data-val="from" onclick="selectOpt(this)">from</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">4.</span><span>Sorry, can you ___ that?</span>
+      <div class="opt-group" id="ph9" data-answer="repeat"><button class="opt-btn" data-val="say" onclick="selectOpt(this)">say</button><button class="opt-btn" data-val="repeat" onclick="selectOpt(this)">repeat</button><button class="opt-btn" data-val="tell" onclick="selectOpt(this)">tell</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">5.</span><span>See you ___!</span>
+      <div class="opt-group" id="ph10" data-answer="later"><button class="opt-btn" data-val="soon" onclick="selectOpt(this)">soon</button><button class="opt-btn" data-val="later" onclick="selectOpt(this)">later</button><button class="opt-btn" data-val="next" onclick="selectOpt(this)">next</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['ph6','ph7','ph8','ph9','ph10'],'sc-ph2')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['ph6','ph7','ph8','ph9','ph10'],'sc-ph2')">Reset</button>
+      <span id="sc-ph2"></span>
+    </div>
+    <div class="ans-wrap"><button class="ans-btn" onclick="toggleAns('ans-ph2')">Show answers</button>
+      <div class="ans-body" id="ans-ph2">1&rarr;are | 2&rarr;fine | 3&rarr;from | 4&rarr;repeat | 5&rarr;later</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#128483; Speaking practice / Говоримо!</h3>
+    <div class="speak-card">&#128075; Teacher: &ldquo;How are you?&rdquo; &rarr; You: <strong>&ldquo;I&apos;m fine, thanks! And you?&rdquo;</strong></div>
+    <div class="speak-card">&#127758; Teacher: &ldquo;Where are you from?&rdquo; &rarr; You: <strong>&ldquo;I&apos;m from [your city]!&rdquo;</strong></div>
+    <div class="speak-card">&#127891; End of activity &rarr; You: <strong>&ldquo;Goodbye! See you later!&rdquo;</strong></div>
+  </div>
+
+  <button class="next-btn" onclick="goTo(3)">Next: Hello! &#8594;</button>
+</div>
+
+<!-- STAGE 3: Hello! -->
+<div class="stage" id="stage-3">
+  <div class="stage-title">Hello! &#128075;</div>
+  <div class="stage-sub">Learn to introduce yourself and others.</div>
+
+  <div class="card">
+    <h3>&#128172; Key phrases &mdash; say them!</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px">
+      <div style="background:#DBEAFE;border-radius:12px;padding:14px;text-align:center"><div style="font-size:1.5rem">&#128075;</div><div style="font-weight:800;font-size:1rem">What&apos;s your name?</div></div>
+      <div style="background:#DBEAFE;border-radius:12px;padding:14px;text-align:center"><div style="font-size:1.5rem">&#128104;</div><div style="font-weight:800;font-size:1rem">I&apos;m [name].</div><div style="font-size:.82rem;color:var(--muted)">(= I am)</div></div>
+      <div style="background:#DBEAFE;border-radius:12px;padding:14px;text-align:center"><div style="font-size:1.5rem">&#129309;</div><div style="font-weight:800;font-size:1rem">Nice to meet you.</div></div>
+      <div style="background:#DBEAFE;border-radius:12px;padding:14px;text-align:center"><div style="font-size:1.5rem">&#128522;</div><div style="font-weight:800;font-size:1rem">Yes. You too.</div></div>
+      <div style="background:#DBEAFE;border-radius:12px;padding:14px;text-align:center;grid-column:1/-1"><div style="font-size:1.5rem">&#128101;</div><div style="font-weight:800;font-size:1rem">This is my friend [name].</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#127908; Conversation 1 &mdash; read it aloud!</h3>
+    <div class="bubble-row"><span class="speaker">Teacher</span><span class="bubble bubble-a">What&apos;s your name?</span></div>
+    <div class="bubble-row" style="justify-content:flex-end"><span class="bubble bubble-b">Hi. I&apos;m Greg.</span><span class="speaker" style="text-align:right">Student</span></div>
+    <div class="bubble-row"><span class="speaker">Teacher</span><span class="bubble bubble-a">Nice to meet you, Greg.</span></div>
+    <div class="bubble-row" style="justify-content:flex-end"><span class="bubble bubble-b">Yes. You too.</span><span class="speaker" style="text-align:right">Student</span></div>
+  </div>
+
+  <div class="card">
+    <h3>&#9997; Exercise A &mdash; Complete the conversation. Click the answer.</h3>
+    <div class="sent-row"><span class="sent-num">1.</span><span>A: ___ your name?</span>
+      <div class="opt-group" id="h1" data-answer="What's"><button class="opt-btn" data-val="Who's" onclick="selectOpt(this)">Who&apos;s</button><button class="opt-btn" data-val="What's" onclick="selectOpt(this)">What&apos;s</button><button class="opt-btn" data-val="Where's" onclick="selectOpt(this)">Where&apos;s</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">2.</span><span>B: Hi. ___ Lara.</span>
+      <div class="opt-group" id="h2" data-answer="I'm"><button class="opt-btn" data-val="He's" onclick="selectOpt(this)">He&apos;s</button><button class="opt-btn" data-val="She's" onclick="selectOpt(this)">She&apos;s</button><button class="opt-btn" data-val="I'm" onclick="selectOpt(this)">I&apos;m</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">3.</span><span>A: Nice to ___ you.</span>
+      <div class="opt-group" id="h3" data-answer="meet"><button class="opt-btn" data-val="see" onclick="selectOpt(this)">see</button><button class="opt-btn" data-val="meet" onclick="selectOpt(this)">meet</button><button class="opt-btn" data-val="talk" onclick="selectOpt(this)">talk</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">4.</span><span>B: Yes. You ___.</span>
+      <div class="opt-group" id="h4" data-answer="too"><button class="opt-btn" data-val="also" onclick="selectOpt(this)">also</button><button class="opt-btn" data-val="too" onclick="selectOpt(this)">too</button><button class="opt-btn" data-val="well" onclick="selectOpt(this)">well</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['h1','h2','h3','h4'],'sc-h')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['h1','h2','h3','h4'],'sc-h')">Reset</button>
+      <span id="sc-h"></span>
+    </div>
+    <div class="ans-wrap"><button class="ans-btn" onclick="toggleAns('ans-hello')">Show answers</button>
+      <div class="ans-body" id="ans-hello">1 &rarr; What&apos;s &nbsp;|&nbsp; 2 &rarr; I&apos;m &nbsp;|&nbsp; 3 &rarr; meet &nbsp;|&nbsp; 4 &rarr; too</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#127908; Conversation 2 &mdash; Introducing a friend</h3>
+    <div class="bubble-row"><span class="speaker">Khalid</span><span class="bubble bubble-a">Lara, this is my friend Dom.</span></div>
+    <div class="bubble-row" style="justify-content:flex-end"><span class="bubble bubble-b">Hi! Nice to meet you.</span><span class="speaker" style="text-align:right">Lara</span></div>
+    <div class="bubble-row"><span class="speaker">Dom</span><span class="bubble bubble-a">Yes. You too.</span></div>
+  </div>
+
+  <div class="card">
+    <h3>&#9997; Exercise B &mdash; True &#9989; or False &#10060;?</h3>
+    <div class="sent-row"><span class="sent-num">1.</span><span>Dom is Khalid&apos;s friend.</span>
+      <div class="opt-group" id="tf1" data-answer="T"><button class="opt-btn" data-val="T" onclick="selectOpt(this)">&#9989; True</button><button class="opt-btn" data-val="F" onclick="selectOpt(this)">&#10060; False</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">2.</span><span>Lara introduces Dom.</span>
+      <div class="opt-group" id="tf2" data-answer="F"><button class="opt-btn" data-val="T" onclick="selectOpt(this)">&#9989; True</button><button class="opt-btn" data-val="F" onclick="selectOpt(this)">&#10060; False</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">3.</span><span>Lara says "Nice to meet you."</span>
+      <div class="opt-group" id="tf3" data-answer="T"><button class="opt-btn" data-val="T" onclick="selectOpt(this)">&#9989; True</button><button class="opt-btn" data-val="F" onclick="selectOpt(this)">&#10060; False</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">4.</span><span>Dom says "Nice to meet you."</span>
+      <div class="opt-group" id="tf4" data-answer="F"><button class="opt-btn" data-val="T" onclick="selectOpt(this)">&#9989; True</button><button class="opt-btn" data-val="F" onclick="selectOpt(this)">&#10060; False</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['tf1','tf2','tf3','tf4'],'sc-tf')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['tf1','tf2','tf3','tf4'],'sc-tf')">Reset</button>
+      <span id="sc-tf"></span>
+    </div>
+    <div class="ans-wrap"><button class="ans-btn" onclick="toggleAns('ans-tfh')">Show answers</button>
+      <div class="ans-body" id="ans-tfh">1 &rarr; True &nbsp;|&nbsp; 2 &rarr; False (Khalid introduces Dom) &nbsp;|&nbsp; 3 &rarr; True &nbsp;|&nbsp; 4 &rarr; False (Dom says "You too")</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#128483; Speaking &mdash; Now you try!</h3>
+    <div class="speak-card">Stand up! Introduce yourself to your teacher: <strong>Hi! I&apos;m [name]. Nice to meet you!</strong></div>
+    <div class="speak-card">Introduce a friend or family member from a photo: <strong>This is my friend / sister / mother. His / Her name is ___.</strong></div>
+  </div>
+
+  <button class="next-btn" onclick="goTo(4)">Next: Family &#8594;</button>
+</div>
+
+<!-- STAGE 4: Family -->
+<div class="stage" id="stage-4">
+  <div class="stage-title">Family &amp; People &#128106;</div>
+  <div class="stage-sub">Meet the Hall family! Learn the words.</div>
+
+  <!-- FAMILY TREE -->
+  <div style="background:#fff;border:2px solid var(--border);border-radius:var(--radius);padding:28px 20px;margin-bottom:20px;box-shadow:var(--shadow);overflow-x:auto">
+    <div style="min-width:340px">
+
+      <!-- Row 1: Bob + Tina (parents) -->
+      <div style="display:flex;justify-content:center;align-items:flex-end;gap:0;position:relative;margin-bottom:0">
+        <!-- Bob -->
+        <div style="text-align:center;width:140px">
+          <div style="font-size:3rem">&#128104;</div>
+          <div style="background:#DBEAFE;border-radius:10px;padding:6px 10px;margin-top:4px">
+            <div style="font-weight:900;font-size:1rem">Bob</div>
+            <div style="font-size:.78rem;color:#1D4ED8;font-weight:700">husband &#128104;</div>
+            <div style="font-size:.78rem;color:#1D4ED8;font-weight:700">father &#128104;</div>
+          </div>
+        </div>
+        <!-- Heart connector -->
+        <div style="font-size:1.6rem;padding-bottom:52px;margin:0 4px">&#10084;&#65039;</div>
+        <!-- Tina -->
+        <div style="text-align:center;width:140px">
+          <div style="font-size:3rem">&#128105;</div>
+          <div style="background:#FCE7F3;border-radius:10px;padding:6px 10px;margin-top:4px">
+            <div style="font-weight:900;font-size:1rem">Tina</div>
+            <div style="font-size:.78rem;color:#9D174D;font-weight:700">wife &#128105;</div>
+            <div style="font-size:.78rem;color:#9D174D;font-weight:700">mother &#128105;</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vertical line down from parents -->
+      <div style="display:flex;justify-content:center">
+        <div style="width:2px;height:32px;background:#BFDBFE"></div>
+      </div>
+
+      <!-- Horizontal line connecting children -->
+      <div style="display:flex;justify-content:center">
+        <div style="width:160px;height:2px;background:#BFDBFE"></div>
+      </div>
+
+      <!-- Lines down to each child -->
+      <div style="display:flex;justify-content:center;gap:156px">
+        <div style="width:2px;height:20px;background:#BFDBFE"></div>
+        <div style="width:2px;height:20px;background:#BFDBFE"></div>
+      </div>
+
+      <!-- Row 2: Connor + Poppy (children) -->
+      <div style="display:flex;justify-content:center;gap:20px">
+        <!-- Connor -->
+        <div style="text-align:center;width:140px">
+          <div style="font-size:2.6rem">&#128102;</div>
+          <div style="background:#DBEAFE;border-radius:10px;padding:6px 10px;margin-top:4px">
+            <div style="font-weight:900;font-size:1rem">Connor</div>
+            <div style="font-size:.78rem;color:#1D4ED8;font-weight:700">son &#128102;</div>
+            <div style="font-size:.78rem;color:#1D4ED8;font-weight:700">brother &#128102;</div>
+          </div>
+        </div>
+        <!-- Poppy -->
+        <div style="text-align:center;width:140px">
+          <div style="font-size:2.6rem">&#128103;</div>
+          <div style="background:#FCE7F3;border-radius:10px;padding:6px 10px;margin-top:4px">
+            <div style="font-weight:900;font-size:1rem">Poppy</div>
+            <div style="font-size:.78rem;color:#9D174D;font-weight:700">daughter &#128103;</div>
+            <div style="font-size:.78rem;color:#9D174D;font-weight:700">sister &#128103;</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div style="display:flex;justify-content:center;gap:16px;margin-top:20px;flex-wrap:wrap">
+        <div style="background:#DBEAFE;border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;color:#1D4ED8">&#128104; = male</div>
+        <div style="background:#FCE7F3;border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;color:#9D174D">&#128105; = female</div>
+        <div style="background:#F0FDF4;border-radius:8px;padding:5px 12px;font-size:.8rem;font-weight:700;color:#16A34A">&#10084;&#65039; = married</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Word bank -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:20px">
+    <div style="background:#DBEAFE;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.5rem">&#128104;</div><div style="font-weight:800;font-size:.9rem">husband</div></div>
+    <div style="background:#FCE7F3;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.5rem">&#128105;</div><div style="font-weight:800;font-size:.9rem">wife</div></div>
+    <div style="background:#DBEAFE;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.5rem">&#128104;</div><div style="font-weight:800;font-size:.9rem">father</div></div>
+    <div style="background:#FCE7F3;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.5rem">&#128105;</div><div style="font-weight:800;font-size:.9rem">mother</div></div>
+    <div style="background:#DBEAFE;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.5rem">&#128102;</div><div style="font-weight:800;font-size:.9rem">brother</div></div>
+    <div style="background:#FCE7F3;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.5rem">&#128103;</div><div style="font-weight:800;font-size:.9rem">sister</div></div>
+    <div style="background:#DBEAFE;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.5rem">&#128102;</div><div style="font-weight:800;font-size:.9rem">son</div></div>
+    <div style="background:#FCE7F3;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.5rem">&#128103;</div><div style="font-weight:800;font-size:.9rem">daughter</div></div>
+  </div>
+
+  <div class="card">
+    <h3>&#9997; Exercise A &mdash; He &#128104; or She &#128105;? Click the correct pronoun.</h3>
+    <div class="sent-row"><span class="sent-num">1.</span><span>&#128105; mother</span>
+      <div class="opt-group" id="hs1" data-answer="She"><button class="opt-btn" data-val="He" onclick="selectOpt(this)">He</button><button class="opt-btn" data-val="She" onclick="selectOpt(this)">She</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">2.</span><span>&#128102; brother</span>
+      <div class="opt-group" id="hs2" data-answer="He"><button class="opt-btn" data-val="He" onclick="selectOpt(this)">He</button><button class="opt-btn" data-val="She" onclick="selectOpt(this)">She</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">3.</span><span>&#128105; wife</span>
+      <div class="opt-group" id="hs3" data-answer="She"><button class="opt-btn" data-val="He" onclick="selectOpt(this)">He</button><button class="opt-btn" data-val="She" onclick="selectOpt(this)">She</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">4.</span><span>&#128102; son</span>
+      <div class="opt-group" id="hs4" data-answer="He"><button class="opt-btn" data-val="He" onclick="selectOpt(this)">He</button><button class="opt-btn" data-val="She" onclick="selectOpt(this)">She</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">5.</span><span>&#128103; daughter</span>
+      <div class="opt-group" id="hs5" data-answer="She"><button class="opt-btn" data-val="He" onclick="selectOpt(this)">He</button><button class="opt-btn" data-val="She" onclick="selectOpt(this)">She</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">6.</span><span>&#128104; father</span>
+      <div class="opt-group" id="hs6" data-answer="He"><button class="opt-btn" data-val="He" onclick="selectOpt(this)">He</button><button class="opt-btn" data-val="She" onclick="selectOpt(this)">She</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">7.</span><span>&#128105; sister</span>
+      <div class="opt-group" id="hs7" data-answer="She"><button class="opt-btn" data-val="He" onclick="selectOpt(this)">He</button><button class="opt-btn" data-val="She" onclick="selectOpt(this)">She</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['hs1','hs2','hs3','hs4','hs5','hs6','hs7'],'sc-hs')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['hs1','hs2','hs3','hs4','hs5','hs6','hs7'],'sc-hs')">Reset</button>
+      <span id="sc-hs"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#9997; Exercise B &mdash; Who is it? Complete the sentence.</h3>
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:14px">Meet the Halls: Bob &#128104; + Tina &#128105;. Children: Connor &#128102; and Poppy &#128103;.</p>
+    <div class="sent-row"><span class="sent-num">1.</span><span>Bob is Tina&apos;s ___.</span>
+      <div class="opt-group" id="fam1" data-answer="husband"><button class="opt-btn" data-val="husband" onclick="selectOpt(this)">husband</button><button class="opt-btn" data-val="son" onclick="selectOpt(this)">son</button><button class="opt-btn" data-val="brother" onclick="selectOpt(this)">brother</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">2.</span><span>Tina is Bob&apos;s ___.</span>
+      <div class="opt-group" id="fam2" data-answer="wife"><button class="opt-btn" data-val="sister" onclick="selectOpt(this)">sister</button><button class="opt-btn" data-val="daughter" onclick="selectOpt(this)">daughter</button><button class="opt-btn" data-val="wife" onclick="selectOpt(this)">wife</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">3.</span><span>Poppy is Bob and Tina&apos;s ___.</span>
+      <div class="opt-group" id="fam3" data-answer="daughter"><button class="opt-btn" data-val="sister" onclick="selectOpt(this)">sister</button><button class="opt-btn" data-val="daughter" onclick="selectOpt(this)">daughter</button><button class="opt-btn" data-val="wife" onclick="selectOpt(this)">wife</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">4.</span><span>Connor is Poppy&apos;s big ___.</span>
+      <div class="opt-group" id="fam4" data-answer="brother"><button class="opt-btn" data-val="friend" onclick="selectOpt(this)">friend</button><button class="opt-btn" data-val="father" onclick="selectOpt(this)">father</button><button class="opt-btn" data-val="brother" onclick="selectOpt(this)">brother</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">5.</span><span>Tina works in a school. She is a ___.</span>
+      <div class="opt-group" id="fam5" data-answer="teacher"><button class="opt-btn" data-val="doctor" onclick="selectOpt(this)">doctor</button><button class="opt-btn" data-val="teacher" onclick="selectOpt(this)">teacher</button><button class="opt-btn" data-val="mother" onclick="selectOpt(this)">mother</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">6.</span><span>Bob is Connor and Poppy&apos;s ___.</span>
+      <div class="opt-group" id="fam6" data-answer="father"><button class="opt-btn" data-val="friend" onclick="selectOpt(this)">friend</button><button class="opt-btn" data-val="father" onclick="selectOpt(this)">father</button><button class="opt-btn" data-val="brother" onclick="selectOpt(this)">brother</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['fam1','fam2','fam3','fam4','fam5','fam6'],'sc-fam')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['fam1','fam2','fam3','fam4','fam5','fam6'],'sc-fam')">Reset</button>
+      <span id="sc-fam"></span>
+    </div>
+    <div class="ans-wrap"><button class="ans-btn" onclick="toggleAns('ans-fam')">Show answers</button>
+      <div class="ans-body" id="ans-fam">1 &rarr; husband &nbsp;|&nbsp; 2 &rarr; wife &nbsp;|&nbsp; 3 &rarr; daughter &nbsp;|&nbsp; 4 &rarr; brother &nbsp;|&nbsp; 5 &rarr; teacher &nbsp;|&nbsp; 6 &rarr; father</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#128483; Speaking &mdash; Show a photo!</h3>
+    <div class="speak-card">Show a photo on your phone and say: <strong>This is my [mother]. Her name is ___. She is a [teacher].</strong></div>
+    <div class="speak-card">Point to a person and ask your teacher: <strong>Who is this? &rarr; He&apos;s / She&apos;s my [brother / friend].</strong></div>
+  </div>
+
+  <button class="next-btn" onclick="goTo(5)">Next: Grammar &#8594;</button>
+</div>
+
+<!-- STAGE 5: Grammar -->
+<div class="stage" id="stage-5">
+  <div class="stage-title">Grammar: I&apos;m &bull; He&apos;s &bull; She&apos;s &#128218;</div>
+  <div class="stage-sub">Short forms of <em>am</em>, <em>is</em>, <em>are</em>. Easy!</div>
+
+  <div class="gram-box">
+    <div class="gram-title">&#128218; Short forms ('m / 's / 're)</div>
+    <div class="gram-row"><span class="gram-short">I&apos;m</span><span class="gram-example">I&apos;m Andrew.</span><span class="gram-full">= I am Andrew.</span></div>
+    <div class="gram-row"><span class="gram-short">He&apos;s</span><span class="gram-example">He&apos;s my brother.</span><span class="gram-full">= He is</span></div>
+    <div class="gram-row"><span class="gram-short">She&apos;s</span><span class="gram-example">She&apos;s a doctor.</span><span class="gram-full">= She is</span></div>
+    <div class="gram-row"><span class="gram-short">You&apos;re</span><span class="gram-example">You&apos;re Naomi, right?</span><span class="gram-full">= You are</span></div>
+    <div class="gram-row"><span class="gram-short">We&apos;re</span><span class="gram-example">We&apos;re your teachers.</span><span class="gram-full">= We are</span></div>
+    <div class="gram-row"><span class="gram-short">They&apos;re</span><span class="gram-example">They&apos;re in my class.</span><span class="gram-full">= They are</span></div>
+  </div>
+
+  <div class="card">
+    <h3>&#9997; Exercise A &mdash; Choose the correct short form.</h3>
+    <div class="sent-row"><span class="sent-num">1.</span><span>___ Andrew. (I am)</span>
+      <div class="opt-group" id="g1" data-answer="I'm"><button class="opt-btn" data-val="I'm" onclick="selectOpt(this)">I&apos;m</button><button class="opt-btn" data-val="He's" onclick="selectOpt(this)">He&apos;s</button><button class="opt-btn" data-val="She's" onclick="selectOpt(this)">She&apos;s</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">2.</span><span>___ a doctor. (She is)</span>
+      <div class="opt-group" id="g2" data-answer="She's"><button class="opt-btn" data-val="I'm" onclick="selectOpt(this)">I&apos;m</button><button class="opt-btn" data-val="He's" onclick="selectOpt(this)">He&apos;s</button><button class="opt-btn" data-val="She's" onclick="selectOpt(this)">She&apos;s</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">3.</span><span>___ my brother. (He is)</span>
+      <div class="opt-group" id="g3" data-answer="He's"><button class="opt-btn" data-val="I'm" onclick="selectOpt(this)">I&apos;m</button><button class="opt-btn" data-val="He's" onclick="selectOpt(this)">He&apos;s</button><button class="opt-btn" data-val="They're" onclick="selectOpt(this)">They&apos;re</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">4.</span><span>___ in my class. (They are)</span>
+      <div class="opt-group" id="g4" data-answer="They're"><button class="opt-btn" data-val="We're" onclick="selectOpt(this)">We&apos;re</button><button class="opt-btn" data-val="They're" onclick="selectOpt(this)">They&apos;re</button><button class="opt-btn" data-val="You're" onclick="selectOpt(this)">You&apos;re</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">5.</span><span>___ Naomi, right? (You are)</span>
+      <div class="opt-group" id="g5" data-answer="You're"><button class="opt-btn" data-val="We're" onclick="selectOpt(this)">We&apos;re</button><button class="opt-btn" data-val="They're" onclick="selectOpt(this)">They&apos;re</button><button class="opt-btn" data-val="You're" onclick="selectOpt(this)">You&apos;re</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">6.</span><span>___ your teachers. (We are)</span>
+      <div class="opt-group" id="g6" data-answer="We're"><button class="opt-btn" data-val="I'm" onclick="selectOpt(this)">I&apos;m</button><button class="opt-btn" data-val="We're" onclick="selectOpt(this)">We&apos;re</button><button class="opt-btn" data-val="She's" onclick="selectOpt(this)">She&apos;s</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['g1','g2','g3','g4','g5','g6'],'sc-g')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['g1','g2','g3','g4','g5','g6'],'sc-g')">Reset</button>
+      <span id="sc-g"></span>
+    </div>
+    <div class="ans-wrap"><button class="ans-btn" onclick="toggleAns('ans-gram')">Show answers</button>
+      <div class="ans-body" id="ans-gram">1&rarr;I&apos;m | 2&rarr;She&apos;s | 3&rarr;He&apos;s | 4&rarr;They&apos;re | 5&rarr;You&apos;re | 6&rarr;We&apos;re</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#9997; Exercise B &mdash; am, is, or are?</h3>
+    <div class="sent-row"><span class="sent-num">1.</span><span>She ___ my wife.</span>
+      <div class="opt-group" id="be1" data-answer="is"><button class="opt-btn" data-val="am" onclick="selectOpt(this)">am</button><button class="opt-btn" data-val="is" onclick="selectOpt(this)">is</button><button class="opt-btn" data-val="are" onclick="selectOpt(this)">are</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">2.</span><span>He ___ our teacher.</span>
+      <div class="opt-group" id="be2" data-answer="is"><button class="opt-btn" data-val="am" onclick="selectOpt(this)">am</button><button class="opt-btn" data-val="is" onclick="selectOpt(this)">is</button><button class="opt-btn" data-val="are" onclick="selectOpt(this)">are</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">3.</span><span>You ___ Ana, right?</span>
+      <div class="opt-group" id="be3" data-answer="are"><button class="opt-btn" data-val="am" onclick="selectOpt(this)">am</button><button class="opt-btn" data-val="is" onclick="selectOpt(this)">is</button><button class="opt-btn" data-val="are" onclick="selectOpt(this)">are</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">4.</span><span>They ___ my children!</span>
+      <div class="opt-group" id="be4" data-answer="are"><button class="opt-btn" data-val="am" onclick="selectOpt(this)">am</button><button class="opt-btn" data-val="is" onclick="selectOpt(this)">is</button><button class="opt-btn" data-val="are" onclick="selectOpt(this)">are</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">5.</span><span>I ___ in your class.</span>
+      <div class="opt-group" id="be5" data-answer="am"><button class="opt-btn" data-val="am" onclick="selectOpt(this)">am</button><button class="opt-btn" data-val="is" onclick="selectOpt(this)">is</button><button class="opt-btn" data-val="are" onclick="selectOpt(this)">are</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">6.</span><span>We ___ from Ukraine.</span>
+      <div class="opt-group" id="be6" data-answer="are"><button class="opt-btn" data-val="am" onclick="selectOpt(this)">am</button><button class="opt-btn" data-val="is" onclick="selectOpt(this)">is</button><button class="opt-btn" data-val="are" onclick="selectOpt(this)">are</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['be1','be2','be3','be4','be5','be6'],'sc-be')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['be1','be2','be3','be4','be5','be6'],'sc-be')">Reset</button>
+      <span id="sc-be"></span>
+    </div>
+    <div class="ans-wrap"><button class="ans-btn" onclick="toggleAns('ans-be')">Show answers</button>
+      <div class="ans-body" id="ans-be">1&rarr;is | 2&rarr;is | 3&rarr;are | 4&rarr;are | 5&rarr;am | 6&rarr;are</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#9997; Exercise C &mdash; Write the short form. Click the correct option.</h3>
+    <div class="sent-row"><span class="sent-num">1.</span><span>He is a doctor. &rarr; ___ a doctor.</span>
+      <div class="opt-group" id="sf1" data-answer="He's"><button class="opt-btn" data-val="He's" onclick="selectOpt(this)">He&apos;s</button><button class="opt-btn" data-val="She's" onclick="selectOpt(this)">She&apos;s</button><button class="opt-btn" data-val="I'm" onclick="selectOpt(this)">I&apos;m</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">2.</span><span>I am your teacher. &rarr; ___ your teacher.</span>
+      <div class="opt-group" id="sf2" data-answer="I'm"><button class="opt-btn" data-val="He's" onclick="selectOpt(this)">He&apos;s</button><button class="opt-btn" data-val="I'm" onclick="selectOpt(this)">I&apos;m</button><button class="opt-btn" data-val="We're" onclick="selectOpt(this)">We&apos;re</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">3.</span><span>They are my friends. &rarr; ___ my friends.</span>
+      <div class="opt-group" id="sf3" data-answer="They're"><button class="opt-btn" data-val="We're" onclick="selectOpt(this)">We&apos;re</button><button class="opt-btn" data-val="You're" onclick="selectOpt(this)">You&apos;re</button><button class="opt-btn" data-val="They're" onclick="selectOpt(this)">They&apos;re</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">4.</span><span>She is my sister. &rarr; ___ my sister.</span>
+      <div class="opt-group" id="sf4" data-answer="She's"><button class="opt-btn" data-val="He's" onclick="selectOpt(this)">He&apos;s</button><button class="opt-btn" data-val="She's" onclick="selectOpt(this)">She&apos;s</button><button class="opt-btn" data-val="I'm" onclick="selectOpt(this)">I&apos;m</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['sf1','sf2','sf3','sf4'],'sc-sf')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['sf1','sf2','sf3','sf4'],'sc-sf')">Reset</button>
+      <span id="sc-sf"></span>
+    </div>
+    <div class="ans-wrap"><button class="ans-btn" onclick="toggleAns('ans-sf')">Show answers</button>
+      <div class="ans-body" id="ans-sf">1&rarr;He&apos;s | 2&rarr;I&apos;m | 3&rarr;They&apos;re | 4&rarr;She&apos;s</div>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="goTo(6)">Next: Big Practice &#8594;</button>
+</div>
+
+<!-- STAGE 6: Practice -->
+<div class="stage" id="stage-6">
+  <div class="stage-title">Big Practice! &#127775;</div>
+  <div class="stage-sub">Everything from today &mdash; let&apos;s go!</div>
+
+  <div class="card">
+    <h3>&#9997; Exercise A &mdash; He, She, or They?</h3>
+    <div class="sent-row"><span class="sent-num">1.</span><span>___ is my husband. &#128104;</span>
+      <div class="opt-group" id="w1" data-answer="He"><button class="opt-btn" data-val="He" onclick="selectOpt(this)">He</button><button class="opt-btn" data-val="She" onclick="selectOpt(this)">She</button><button class="opt-btn" data-val="They" onclick="selectOpt(this)">They</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">2.</span><span>___ is my sister. &#128103;</span>
+      <div class="opt-group" id="w2" data-answer="She"><button class="opt-btn" data-val="He" onclick="selectOpt(this)">He</button><button class="opt-btn" data-val="She" onclick="selectOpt(this)">She</button><button class="opt-btn" data-val="They" onclick="selectOpt(this)">They</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">3.</span><span>___ are my children. &#128102;&#128103;</span>
+      <div class="opt-group" id="w3" data-answer="They"><button class="opt-btn" data-val="He" onclick="selectOpt(this)">He</button><button class="opt-btn" data-val="She" onclick="selectOpt(this)">She</button><button class="opt-btn" data-val="They" onclick="selectOpt(this)">They</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">4.</span><span>___ is a doctor. &#128104;&#8205;&#9877;</span>
+      <div class="opt-group" id="w4" data-answer="He"><button class="opt-btn" data-val="He" onclick="selectOpt(this)">He</button><button class="opt-btn" data-val="She" onclick="selectOpt(this)">She</button><button class="opt-btn" data-val="They" onclick="selectOpt(this)">They</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">5.</span><span>___ is my mother. &#128105;</span>
+      <div class="opt-group" id="w5" data-answer="She"><button class="opt-btn" data-val="He" onclick="selectOpt(this)">He</button><button class="opt-btn" data-val="She" onclick="selectOpt(this)">She</button><button class="opt-btn" data-val="They" onclick="selectOpt(this)">They</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['w1','w2','w3','w4','w5'],'sc-w')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['w1','w2','w3','w4','w5'],'sc-w')">Reset</button>
+      <span id="sc-w"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#9997; Exercise B &mdash; Big mix! What / Who + am / is / are</h3>
+    <div class="sent-row"><span class="sent-num">1.</span><span>A: ___ &apos;s your name? B: I&apos;m Tom.</span>
+      <div class="opt-group" id="fp1" data-answer="What"><button class="opt-btn" data-val="Who" onclick="selectOpt(this)">Who</button><button class="opt-btn" data-val="What" onclick="selectOpt(this)">What</button><button class="opt-btn" data-val="Where" onclick="selectOpt(this)">Where</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">2.</span><span>A: ___ is she? B: My mother.</span>
+      <div class="opt-group" id="fp2" data-answer="Who"><button class="opt-btn" data-val="Who" onclick="selectOpt(this)">Who</button><button class="opt-btn" data-val="What" onclick="selectOpt(this)">What</button><button class="opt-btn" data-val="Where" onclick="selectOpt(this)">Where</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">3.</span><span>Nice to ___ you.</span>
+      <div class="opt-group" id="fp3" data-answer="meet"><button class="opt-btn" data-val="see" onclick="selectOpt(this)">see</button><button class="opt-btn" data-val="meet" onclick="selectOpt(this)">meet</button><button class="opt-btn" data-val="know" onclick="selectOpt(this)">know</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">4.</span><span>She ___ a teacher.</span>
+      <div class="opt-group" id="fp4" data-answer="is"><button class="opt-btn" data-val="am" onclick="selectOpt(this)">am</button><button class="opt-btn" data-val="is" onclick="selectOpt(this)">is</button><button class="opt-btn" data-val="are" onclick="selectOpt(this)">are</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">5.</span><span>They ___ in the same class.</span>
+      <div class="opt-group" id="fp5" data-answer="are"><button class="opt-btn" data-val="am" onclick="selectOpt(this)">am</button><button class="opt-btn" data-val="is" onclick="selectOpt(this)">is</button><button class="opt-btn" data-val="are" onclick="selectOpt(this)">are</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">6.</span><span>A: ___ is my friend, Dom. B: Hi!</span>
+      <div class="opt-group" id="fp6" data-answer="This"><button class="opt-btn" data-val="This" onclick="selectOpt(this)">This</button><button class="opt-btn" data-val="That" onclick="selectOpt(this)">That</button><button class="opt-btn" data-val="Here" onclick="selectOpt(this)">Here</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">7.</span><span>I ___ 10 years old.</span>
+      <div class="opt-group" id="fp7" data-answer="am"><button class="opt-btn" data-val="am" onclick="selectOpt(this)">am</button><button class="opt-btn" data-val="is" onclick="selectOpt(this)">is</button><button class="opt-btn" data-val="are" onclick="selectOpt(this)">are</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">8.</span><span>He ___ my father. He&apos;s a doctor.</span>
+      <div class="opt-group" id="fp8" data-answer="is"><button class="opt-btn" data-val="am" onclick="selectOpt(this)">am</button><button class="opt-btn" data-val="is" onclick="selectOpt(this)">is</button><button class="opt-btn" data-val="are" onclick="selectOpt(this)">are</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['fp1','fp2','fp3','fp4','fp5','fp6','fp7','fp8'],'sc-fp')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['fp1','fp2','fp3','fp4','fp5','fp6','fp7','fp8'],'sc-fp')">Reset</button>
+      <span id="sc-fp"></span>
+    </div>
+    <div class="ans-wrap"><button class="ans-btn" onclick="toggleAns('ans-fp')">Show answers</button>
+      <div class="ans-body" id="ans-fp">1&rarr;What | 2&rarr;Who | 3&rarr;meet | 4&rarr;is | 5&rarr;are | 6&rarr;This | 7&rarr;am | 8&rarr;is</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#9997; Exercise C &mdash; True &#9989; or False &#10060;?</h3>
+    <div class="sent-row"><span class="sent-num">1.</span><span>"I&apos;m" = I am.</span>
+      <div class="opt-group" id="gr1" data-answer="T"><button class="opt-btn" data-val="T" onclick="selectOpt(this)">&#9989; True</button><button class="opt-btn" data-val="F" onclick="selectOpt(this)">&#10060; False</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">2.</span><span>"She&apos;s" = She are.</span>
+      <div class="opt-group" id="gr2" data-answer="F"><button class="opt-btn" data-val="T" onclick="selectOpt(this)">&#9989; True</button><button class="opt-btn" data-val="F" onclick="selectOpt(this)">&#10060; False</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">3.</span><span>"They&apos;re" = They are.</span>
+      <div class="opt-group" id="gr3" data-answer="T"><button class="opt-btn" data-val="T" onclick="selectOpt(this)">&#9989; True</button><button class="opt-btn" data-val="F" onclick="selectOpt(this)">&#10060; False</button></div>
+    </div>
+    <div class="sent-row"><span class="sent-num">4.</span><span>"He&apos;s" = He am.</span>
+      <div class="opt-group" id="gr4" data-answer="F"><button class="opt-btn" data-val="T" onclick="selectOpt(this)">&#9989; True</button><button class="opt-btn" data-val="F" onclick="selectOpt(this)">&#10060; False</button></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="checkSet(['gr1','gr2','gr3','gr4'],'sc-gr')">Check &#10003;</button>
+      <button class="btn-outline" onclick="resetSet(['gr1','gr2','gr3','gr4'],'sc-gr')">Reset</button>
+      <span id="sc-gr"></span>
+    </div>
+    <div class="ans-wrap"><button class="ans-btn" onclick="toggleAns('ans-gr')">Show answers</button>
+      <div class="ans-body" id="ans-gr">1 &rarr; True &nbsp;|&nbsp; 2 &rarr; False (She&apos;s = She IS) &nbsp;|&nbsp; 3 &rarr; True &nbsp;|&nbsp; 4 &rarr; False (He&apos;s = He IS)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>&#128483; Speaking Round-up &mdash; Say it!</h3>
+    <div class="speak-card">&#129309; Introduce yourself: <strong>Hi! I&apos;m [name]. Nice to meet you!</strong></div>
+    <div class="speak-card">&#128101; Introduce your family (use a photo!): <strong>This is my [mother / father / sister]. Her / His name is ___. She / He is a [teacher / doctor].</strong></div>
+    <div class="speak-card">&#10067; Ask your teacher: <strong>Who is she? &rarr; She&apos;s my [sister]. / I don&apos;t know!</strong></div>
+    <div class="speak-card">&#128290; Count with your teacher &mdash; take turns: <strong>One, two, three&hellip; twelve!</strong></div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,#1D4ED8,#2563EB);border-radius:var(--radius);padding:24px;text-align:center;color:#fff;margin-top:10px">
+    <div style="font-size:2.5rem;margin-bottom:8px">&#127881;</div>
+    <div style="font-size:1.3rem;font-weight:900;margin-bottom:6px">Lesson 1 Complete!</div>
+    <div style="opacity:.85;font-size:.95rem">You know: numbers 1&ndash;12, 12 key words, greetings, family words, and am / is / are!</div>
+  </div>
+</div>
+
+<script>
+var totalStages=6;
+function goTo(n){
+  document.querySelectorAll('.stage').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('stage-'+n).classList.add('active');
+  for(var i=1;i<=totalStages;i++){
+    var b=document.getElementById('snb-'+i);
+    b.classList.remove('active','done');
+    if(i===n){b.classList.add('active');}
+    else if(i<n){b.classList.add('done');}
+  }
+  document.getElementById('stageLabel').textContent='Stage '+n+' / '+totalStages;
+  document.getElementById('progFill').style.width=(n/totalStages*100)+'%';
+  window.scrollTo(0,0);
+}
+function selectOpt(btn){
+  var g=btn.parentElement;
+  g.querySelectorAll('.opt-btn').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+  btn.classList.add('selected');
+  g.dataset.selected=btn.dataset.val;
+}
+function checkGroup(id){
+  var g=document.getElementById(id),sel=g.dataset.selected,ans=g.dataset.answer;
+  if(!sel){return 0;}
+  var ok=sel===ans;
+  g.querySelectorAll('.opt-btn').forEach(function(b){
+    b.classList.remove('correct','wrong');
+    if(b.dataset.val===sel){b.classList.add(ok?'correct':'wrong');}
+  });
+  return ok?1:0;
+}
+function resetGroup(id){
+  var g=document.getElementById(id);
+  g.querySelectorAll('.opt-btn').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+  delete g.dataset.selected;
+}
+function setScore(el,s,t){
+  var e=document.getElementById(el);
+  e.textContent=s+' / '+t;
+  e.className='score-badge '+(s===t?'badge-green':s>=Math.ceil(t/2)?'badge-amber':'badge-red');
+}
+function checkSet(ids,scoreEl){
+  var s=0;
+  ids.forEach(function(id){s+=checkGroup(id);});
+  setScore(scoreEl,s,ids.length);
+}
+function resetSet(ids,scoreEl){
+  ids.forEach(function(id){resetGroup(id);});
+  var e=document.getElementById(scoreEl);
+  if(e){e.textContent='';e.className='';}
+}
+function toggleAns(id){
+  var el=document.getElementById(id);
+  el.style.display=el.style.display==='block'?'none':'block';
+}
+function sayNum(tile,word){
+  tile.style.transform='scale(1.1)';
+  setTimeout(function(){tile.style.transform='';},180);
+  if(window.speechSynthesis){
+    var u=new SpeechSynthesisUtterance(word);
+    u.lang='en-GB';
+    window.speechSynthesis.speak(u);
+  }
+}
+</script>
+</body>
+</html>
