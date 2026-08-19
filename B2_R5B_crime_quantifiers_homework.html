@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework — Crime &amp; Quantifiers B2</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dark:#1c2333;--dark2:#111827;--red:#b03030;--red2:#8c1f1f;
+  --bg:#f2f3f7;--card:#fff;--border:#dde2ec;--text:#1c2333;--muted:#6b7280;
+  --green:#1e6b3e;--green-l:#d0ede0;--err:#b03030;--err-l:#fde8e8;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--dark2) 0%,var(--dark) 60%,#2d3550 100%);color:#fff;padding:38px 24px 52px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'🕵️';position:absolute;font-size:9em;opacity:.05;top:-10px;right:-10px;pointer-events:none;}
+.hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:28px;background:var(--bg);border-radius:28px 28px 0 0;}
+.hero-icon{font-size:2.3em;display:block;margin-bottom:11px;}
+.badges{display:inline-flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;}
+.badge{padding:4px 13px;border-radius:20px;font-size:.77em;font-weight:700;}
+.badge-dark{background:rgba(255,255,255,.12);color:#fff;}
+.badge-red{background:var(--red);color:#fff;}
+.hero h1{font-size:2em;font-weight:800;margin-bottom:4px;}
+.hero p{font-size:.92em;opacity:.75;}
+
+.wrap{max-width:780px;margin:0 auto;padding:20px 16px 60px;}
+
+/* NAME */
+.name-card{background:var(--card);border-radius:16px;padding:20px 24px;box-shadow:0 2px 14px rgba(28,35,51,.07);border:1px solid var(--border);margin-bottom:22px;}
+.name-label{font-size:.8em;font-weight:800;color:var(--dark);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.name-inp{width:100%;padding:11px 15px;border:2px solid var(--border);border-radius:10px;font-size:1em;font-family:inherit;color:var(--text);outline:none;transition:border-color .2s;}
+.name-inp:focus{border-color:var(--dark);}
+
+/* CARD */
+.card{background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 2px 14px rgba(28,35,51,.07);border:1px solid var(--border);margin-bottom:22px;}
+.card-header{padding:17px 24px 13px;display:flex;align-items:center;gap:13px;border-bottom:2px solid #f4f5f8;}
+.card-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.25em;flex-shrink:0;}
+.card-title{font-size:1.08em;font-weight:800;}
+.card-sub{font-size:.81em;color:var(--muted);margin-top:2px;}
+.card-body{padding:22px 24px;}
+.card-footer{padding:10px 24px;background:#f9f9fb;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:.77em;color:#aaa;}
+.prog{height:4px;background:var(--border);}
+.prog-fill{height:100%;background:linear-gradient(90deg,#e05050,var(--dark));}
+
+.instr{background:#f5f6fa;border-left:4px solid var(--dark);border-radius:0 9px 9px 0;padding:11px 15px;margin-bottom:18px;font-size:.89em;color:#333;line-height:1.6;}
+.instr strong{color:var(--dark);}
+
+/* ── EX 1: MATCHING ── */
+.match-row{display:flex;align-items:flex-start;gap:12px;background:#f9f9fb;border:1.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:10px;}
+.match-num{font-size:.78em;font-weight:800;color:var(--red);min-width:20px;padding-top:2px;}
+.match-sent{font-size:.92em;flex:1;line-height:1.55;}
+.match-sel{padding:7px 10px;border:2px solid var(--border);border-radius:8px;font-size:.88em;font-family:inherit;color:var(--text);background:#fff;outline:none;cursor:pointer;min-width:240px;transition:border-color .2s;}
+.match-sel:focus{border-color:var(--dark);}
+.match-sel.correct{border-color:var(--green);background:var(--green-l);color:var(--green);}
+.match-sel.wrong{border-color:var(--red);background:var(--err-l);color:var(--red);}
+.match-fb{font-size:.8em;font-weight:700;margin-top:5px;}
+.match-fb.ok{color:var(--green);}
+.match-fb.err{color:var(--red);}
+
+/* ── EX 2: ARTICLE GAP FILL ── */
+.phrase-bank{display:flex;flex-wrap:wrap;gap:8px;row-gap:8px;padding:12px 14px;background:#f5f6fa;border-radius:10px;margin-bottom:18px;}
+.pb-chip{background:#fff;border:1.5px solid var(--border);color:var(--dark);padding:5px 13px;border-radius:16px;font-size:.82em;font-weight:700;}
+.article-box{background:#f9f9fb;border:1.5px solid var(--border);border-radius:13px;padding:18px 20px;font-size:.93em;line-height:2.1;color:#1c2333;}
+.article-box strong{color:var(--dark);font-size:.95em;}
+.art-inp{border:none;border-bottom:2.5px solid var(--red);outline:none;font-family:inherit;font-size:.92em;color:var(--text);background:transparent;padding:2px 5px;min-width:100px;transition:border-color .2s;}
+.art-inp:focus{border-color:var(--dark);}
+.art-inp.correct{border-color:var(--green);background:var(--green-l);border-radius:4px;padding:2px 8px;color:var(--green);}
+.art-inp.wrong{border-color:var(--red);background:var(--err-l);border-radius:4px;padding:2px 8px;color:var(--red);}
+
+/* ── EX 3: CHOOSE ALTERNATIVE ── */
+.alt-item{background:#f9f9fb;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+.alt-num{font-size:.75em;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+.alt-sent{font-size:.93em;line-height:1.65;margin-bottom:10px;}
+.alt-opts{display:flex;gap:8px;flex-wrap:wrap;}
+.alt-opt{padding:6px 18px;border:2px solid var(--border);border-radius:18px;background:#fff;font-size:.87em;font-weight:700;cursor:pointer;font-family:inherit;transition:all .17s;color:#555;}
+.alt-opt:hover{border-color:var(--dark);background:#f0f1f5;}
+.alt-opt.selected{border-color:var(--dark);background:var(--dark);color:#fff;}
+.alt-opt.correct{border-color:var(--green);background:var(--green);color:#fff;}
+.alt-opt.wrong{border-color:var(--red);background:var(--err-l);color:var(--red);text-decoration:line-through;}
+.alt-opt.reveal{border-color:var(--green);background:var(--green-l);color:var(--green);opacity:.85;}
+.alt-fb{margin-top:8px;font-size:.82em;font-weight:600;display:none;line-height:1.5;}
+.alt-fb.show{display:block;}
+.fb-ok{color:var(--green);}
+.fb-err{color:var(--red);}
+
+/* ── EX 4: ERROR CORRECTION ── */
+.err-item{background:#f9f9fb;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+.err-num{font-size:.75em;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;}
+.err-orig{font-size:.93em;line-height:1.6;margin-bottom:10px;color:#333;}
+.err-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.err-label{font-size:.8em;font-weight:700;color:var(--muted);white-space:nowrap;}
+.err-inp{flex:1;min-width:180px;padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:.9em;font-family:inherit;color:var(--text);outline:none;transition:border-color .2s;background:#fff;}
+.err-inp:focus{border-color:var(--dark);}
+.err-inp.correct{border-color:var(--green);background:var(--green-l);color:var(--green);}
+.err-inp.wrong{border-color:var(--red);background:var(--err-l);color:var(--red);}
+.err-fb{margin-top:7px;font-size:.81em;font-weight:700;display:none;}
+.err-fb.show{display:block;}
+
+/* BUTTONS */
+.btn{padding:10px 22px;border:none;border-radius:9px;font-size:.88em;font-weight:700;cursor:pointer;transition:all .17s;font-family:inherit;}
+.btn-dark{background:var(--dark);color:#fff;}
+.btn-dark:hover{background:var(--dark2);transform:translateY(-1px);}
+.btn-out{background:#fff;color:var(--dark);border:2px solid var(--dark);}
+.btn-out:hover{background:var(--dark);color:#fff;}
+.score-pill{display:none;background:var(--green-l);color:var(--green);font-weight:700;font-size:.82em;padding:6px 14px;border-radius:18px;}
+.score-pill.show{display:inline-block;}
+
+/* SEND */
+.send-card{max-width:780px;margin:0 auto 16px;background:linear-gradient(135deg,var(--dark2),var(--dark));border-radius:18px;padding:28px 24px;color:#fff;text-align:center;}
+.send-card h3{font-size:1.2em;font-weight:800;margin-bottom:7px;}
+.send-card p{font-size:.89em;opacity:.78;margin-bottom:20px;line-height:1.6;}
+.btn-send{background:rgba(255,255,255,.14);color:#fff;border:2px solid rgba(255,255,255,.35);padding:13px 28px;font-size:1em;border-radius:12px;width:100%;cursor:pointer;font-family:inherit;font-weight:700;transition:all .2s;}
+.btn-send:hover{background:rgba(255,255,255,.24);transform:translateY(-2px);}
+
+.finish{text-align:center;padding:22px 20px 40px;}
+.finish-icon{font-size:2.5em;margin-bottom:10px;}
+.finish h2{font-size:1.3em;font-weight:800;color:var(--dark);margin-bottom:6px;}
+.finish p{color:var(--muted);font-size:.89em;line-height:1.7;}
+
+@media(max-width:580px){
+  .hero h1{font-size:1.6em;}
+  .match-row{flex-direction:column;}
+  .match-sel{min-width:100%;width:100%;}
+  .card-body{padding:16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="hero-icon">🕵️</span>
+  <div class="badges">
+    <span class="badge badge-dark">📚 B2</span>
+    <span class="badge badge-red">🔒 Crime &amp; Quantifiers</span>
+    <span class="badge badge-dark">✏️ Homework</span>
+  </div>
+  <h1>Crime Scene — Homework</h1>
+  <p>Vocabulary · Grammar · Quantifiers</p>
+</div>
+
+<div class="wrap">
+
+<!-- Name -->
+<div class="name-card">
+  <div class="name-label">Your name</div>
+  <input class="name-inp" id="sname" type="text" placeholder="Type your name here…">
+</div>
+
+<!-- ══ EX 1: MATCHING ══════════════════════════════ -->
+<div class="card">
+  <div class="prog"><div class="prog-fill" style="width:0%"></div></div>
+  <div class="card-header">
+    <div class="card-icon" style="background:#f5f6fa;">🔗</div>
+    <div>
+      <div class="card-title">Exercise 1 — Match the sentence halves</div>
+      <div class="card-sub">Vocabulary · 8 items · Choose the correct ending (a–h)</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="instr"><strong>Match each sentence beginning (1–8) to the correct ending (a–h).</strong> Each letter is used once only.</div>
+
+    <div style="background:#f5f6fa;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.85em;line-height:1.9;">
+      <strong>Endings:</strong><br>
+      <strong>a.</strong> arrest for six months. &nbsp;·&nbsp;
+      <strong>b.</strong> the scene of the crime. &nbsp;·&nbsp;
+      <strong>c.</strong> to five years in jail. &nbsp;·&nbsp;
+      <strong>d.</strong> not guilty. &nbsp;·&nbsp;
+      <strong>e.</strong> planned their robbery carefully. &nbsp;·&nbsp;
+      <strong>f.</strong> by the police. &nbsp;·&nbsp;
+      <strong>g.</strong> trial four months later. &nbsp;·&nbsp;
+      <strong>h.</strong> guilty of their crime.
+    </div>
+
+    <div class="match-row" id="m1">
+      <div class="match-num">1.</div>
+      <div class="match-sent" style="flex:1">The burglars researched and</div>
+      <div style="flex:1">
+        <select class="match-sel" data-ans="e">
+          <option value="">— choose ending —</option>
+          <option value="a">a. arrest for six months.</option>
+          <option value="b">b. the scene of the crime.</option>
+          <option value="c">c. to five years in jail.</option>
+          <option value="d">d. not guilty.</option>
+          <option value="e">e. planned their robbery carefully.</option>
+          <option value="f">f. by the police.</option>
+          <option value="g">g. trial four months later.</option>
+          <option value="h">h. guilty of their crime.</option>
+        </select>
+        <div class="match-fb" id="mfb1"></div>
+      </div>
+    </div>
+
+    <div class="match-row" id="m2">
+      <div class="match-num">2.</div>
+      <div class="match-sent" style="flex:1">They stole the diamonds and then left</div>
+      <div style="flex:1">
+        <select class="match-sel" data-ans="b">
+          <option value="">— choose ending —</option>
+          <option value="a">a. arrest for six months.</option>
+          <option value="b">b. the scene of the crime.</option>
+          <option value="c">c. to five years in jail.</option>
+          <option value="d">d. not guilty.</option>
+          <option value="e">e. planned their robbery carefully.</option>
+          <option value="f">f. by the police.</option>
+          <option value="g">g. trial four months later.</option>
+          <option value="h">h. guilty of their crime.</option>
+        </select>
+        <div class="match-fb" id="mfb2"></div>
+      </div>
+    </div>
+
+    <div class="match-row" id="m3">
+      <div class="match-num">3.</div>
+      <div class="match-sent" style="flex:1">They evaded</div>
+      <div style="flex:1">
+        <select class="match-sel" data-ans="a">
+          <option value="">— choose ending —</option>
+          <option value="a">a. arrest for six months.</option>
+          <option value="b">b. the scene of the crime.</option>
+          <option value="c">c. to five years in jail.</option>
+          <option value="d">d. not guilty.</option>
+          <option value="e">e. planned their robbery carefully.</option>
+          <option value="f">f. by the police.</option>
+          <option value="g">g. trial four months later.</option>
+          <option value="h">h. guilty of their crime.</option>
+        </select>
+        <div class="match-fb" id="mfb3"></div>
+      </div>
+    </div>
+
+    <div class="match-row" id="m4">
+      <div class="match-num">4.</div>
+      <div class="match-sent" style="flex:1">Eventually, they were caught</div>
+      <div style="flex:1">
+        <select class="match-sel" data-ans="f">
+          <option value="">— choose ending —</option>
+          <option value="a">a. arrest for six months.</option>
+          <option value="b">b. the scene of the crime.</option>
+          <option value="c">c. to five years in jail.</option>
+          <option value="d">d. not guilty.</option>
+          <option value="e">e. planned their robbery carefully.</option>
+          <option value="f">f. by the police.</option>
+          <option value="g">g. trial four months later.</option>
+          <option value="h">h. guilty of their crime.</option>
+        </select>
+        <div class="match-fb" id="mfb4"></div>
+      </div>
+    </div>
+
+    <div class="match-row" id="m5">
+      <div class="match-num">5.</div>
+      <div class="match-sent" style="flex:1">They went on</div>
+      <div style="flex:1">
+        <select class="match-sel" data-ans="g">
+          <option value="">— choose ending —</option>
+          <option value="a">a. arrest for six months.</option>
+          <option value="b">b. the scene of the crime.</option>
+          <option value="c">c. to five years in jail.</option>
+          <option value="d">d. not guilty.</option>
+          <option value="e">e. planned their robbery carefully.</option>
+          <option value="f">f. by the police.</option>
+          <option value="g">g. trial four months later.</option>
+          <option value="h">h. guilty of their crime.</option>
+        </select>
+        <div class="match-fb" id="mfb5"></div>
+      </div>
+    </div>
+
+    <div class="match-row" id="m6">
+      <div class="match-num">6.</div>
+      <div class="match-sent" style="flex:1">They pleaded</div>
+      <div style="flex:1">
+        <select class="match-sel" data-ans="d">
+          <option value="">— choose ending —</option>
+          <option value="a">a. arrest for six months.</option>
+          <option value="b">b. the scene of the crime.</option>
+          <option value="c">c. to five years in jail.</option>
+          <option value="d">d. not guilty.</option>
+          <option value="e">e. planned their robbery carefully.</option>
+          <option value="f">f. by the police.</option>
+          <option value="g">g. trial four months later.</option>
+          <option value="h">h. guilty of their crime.</option>
+        </select>
+        <div class="match-fb" id="mfb6"></div>
+      </div>
+    </div>
+
+    <div class="match-row" id="m7">
+      <div class="match-num">7.</div>
+      <div class="match-sent" style="flex:1">The jury found them</div>
+      <div style="flex:1">
+        <select class="match-sel" data-ans="h">
+          <option value="">— choose ending —</option>
+          <option value="a">a. arrest for six months.</option>
+          <option value="b">b. the scene of the crime.</option>
+          <option value="c">c. to five years in jail.</option>
+          <option value="d">d. not guilty.</option>
+          <option value="e">e. planned their robbery carefully.</option>
+          <option value="f">f. by the police.</option>
+          <option value="g">g. trial four months later.</option>
+          <option value="h">h. guilty of their crime.</option>
+        </select>
+        <div class="match-fb" id="mfb7"></div>
+      </div>
+    </div>
+
+    <div class="match-row" id="m8">
+      <div class="match-num">8.</div>
+      <div class="match-sent" style="flex:1">They were sentenced</div>
+      <div style="flex:1">
+        <select class="match-sel" data-ans="c">
+          <option value="">— choose ending —</option>
+          <option value="a">a. arrest for six months.</option>
+          <option value="b">b. the scene of the crime.</option>
+          <option value="c">c. to five years in jail.</option>
+          <option value="d">d. not guilty.</option>
+          <option value="e">e. planned their robbery carefully.</option>
+          <option value="f">f. by the police.</option>
+          <option value="g">g. trial four months later.</option>
+          <option value="h">h. guilty of their crime.</option>
+        </select>
+        <div class="match-fb" id="mfb8"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;align-items:center;">
+      <button class="btn btn-dark" onclick="checkEx1()">✓ Check Exercise 1</button>
+      <button class="btn btn-out" onclick="resetEx1()">↺ Reset</button>
+      <span class="score-pill" id="sc1"></span>
+    </div>
+  </div>
+  <div class="card-footer">🔗 Sentence Matching <span style="background:#f5f6fa;color:var(--dark);padding:3px 10px;border-radius:12px;font-weight:700;">8 items</span></div>
+</div>
+
+<!-- ══ EX 2: ARTICLE GAP FILL ══════════════════════ -->
+<div class="card">
+  <div class="prog"><div class="prog-fill" style="width:25%"></div></div>
+  <div class="card-header">
+    <div class="card-icon" style="background:#fdf0f0;">📰</div>
+    <div>
+      <div class="card-title">Exercise 2 — Complete the article</div>
+      <div class="card-sub">Vocabulary · Use the phrases in the box</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="instr"><strong>Complete the article</strong> with the phrases from the box. Each phrase is used once.</div>
+
+    <div class="phrase-bank">
+      <span class="pb-chip">broke into</span>
+      <span class="pb-chip">charge him with</span>
+      <span class="pb-chip">evade arrest</span>
+      <span class="pb-chip">plead guilty</span>
+      <span class="pb-chip">leaving the scene of the crime</span>
+      <span class="pb-chip">planned</span>
+      <span class="pb-chip">sentenced to</span>
+    </div>
+
+    <div class="article-box">
+      <strong>A robbery gone wrong</strong><br><br>
+      There are plenty of videos of unsuccessful burglars online. One perfect example is of a man who <sup>1</sup><input class="art-inp" data-ans="broke into" placeholder="____________"> a store one night, falling through the ceiling. He clearly hadn't <sup>2</sup><input class="art-inp" data-ans="planned" placeholder="____________"> the raid very carefully because when he tried to leave via the front door he couldn't get out. He tried to exit through the hole in the ceiling but fell back down again. Realising that he wasn't able to <sup>3</sup><input class="art-inp" data-ans="evade arrest" placeholder="____________"> by <sup>4</sup><input class="art-inp" data-ans="leaving the scene of the crime" placeholder="____________________">, he sat down calmly and waited for the police to arrive and <sup>5</sup><input class="art-inp" data-ans="charge him with" placeholder="____________"> robbery. With the CCTV video evidence, he sensibly decided to <sup>6</sup><input class="art-inp" data-ans="plead guilty" placeholder="____________"> and was later <sup>7</sup><input class="art-inp" data-ans="sentenced to" placeholder="____________"> three years in prison.
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center;">
+      <button class="btn btn-dark" onclick="checkEx2()">✓ Check Exercise 2</button>
+      <button class="btn btn-out" onclick="resetEx2()">↺ Reset</button>
+      <span class="score-pill" id="sc2"></span>
+    </div>
+  </div>
+  <div class="card-footer">📰 Article Gap Fill <span style="background:#fdf0f0;color:var(--red);padding:3px 10px;border-radius:12px;font-weight:700;">7 gaps</span></div>
+</div>
+
+<!-- ══ EX 3: CHOOSE ALTERNATIVES ══════════════════ -->
+<div class="card">
+  <div class="prog"><div class="prog-fill" style="width:50%"></div></div>
+  <div class="card-header">
+    <div class="card-icon" style="background:#f0f5ff;">⚖️</div>
+    <div>
+      <div class="card-title">Exercise 3 — Choose the correct alternative</div>
+      <div class="card-sub">Grammar · Quantifiers · 8 sentences</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="instr"><strong>Choose the correct word</strong> in each sentence. Think about: countable or uncountable? Singular or plural? Exactly two, or more?</div>
+
+    <div class="alt-item" id="a1">
+      <div class="alt-num">1.</div>
+      <div class="alt-sent">Some of us ___ going to the Chinese restaurant later.</div>
+      <div class="alt-opts">
+        <button class="alt-opt" onclick="pickAlt(this,1,'wrong','are')">is</button>
+        <button class="alt-opt" onclick="pickAlt(this,1,'correct','are')">are</button>
+      </div>
+      <div class="alt-fb" id="afb1"></div>
+    </div>
+
+    <div class="alt-item" id="a2">
+      <div class="alt-num">2.</div>
+      <div class="alt-sent">Each of my brothers ___ very outgoing.</div>
+      <div class="alt-opts">
+        <button class="alt-opt" onclick="pickAlt(this,2,'correct','is')">is</button>
+        <button class="alt-opt" onclick="pickAlt(this,2,'wrong','is')">are</button>
+      </div>
+      <div class="alt-fb" id="afb2"></div>
+    </div>
+
+    <div class="alt-item" id="a3">
+      <div class="alt-num">3.</div>
+      <div class="alt-sent">Every ___ in my class wished me a happy birthday.</div>
+      <div class="alt-opts">
+        <button class="alt-opt" onclick="pickAlt(this,3,'correct','person')">person</button>
+        <button class="alt-opt" onclick="pickAlt(this,3,'wrong','person')">people</button>
+      </div>
+      <div class="alt-fb" id="afb3"></div>
+    </div>
+
+    <div class="alt-item" id="a4">
+      <div class="alt-num">4.</div>
+      <div class="alt-sent">We've been here a couple of ___ before.</div>
+      <div class="alt-opts">
+        <button class="alt-opt" onclick="pickAlt(this,4,'wrong','times')">time</button>
+        <button class="alt-opt" onclick="pickAlt(this,4,'correct','times')">times</button>
+      </div>
+      <div class="alt-fb" id="afb4"></div>
+    </div>
+
+    <div class="alt-item" id="a5">
+      <div class="alt-num">5.</div>
+      <div class="alt-sent">No cars ___ allowed on the roads during the carnival.</div>
+      <div class="alt-opts">
+        <button class="alt-opt" onclick="pickAlt(this,5,'wrong','were')">was</button>
+        <button class="alt-opt" onclick="pickAlt(this,5,'correct','were')">were</button>
+      </div>
+      <div class="alt-fb" id="afb5"></div>
+    </div>
+
+    <div class="alt-item" id="a6">
+      <div class="alt-num">6.</div>
+      <div class="alt-sent">We don't have ___ coffee left.</div>
+      <div class="alt-opts">
+        <button class="alt-opt" onclick="pickAlt(this,6,'correct','much')">much</button>
+        <button class="alt-opt" onclick="pickAlt(this,6,'wrong','much')">many</button>
+      </div>
+      <div class="alt-fb" id="afb6"></div>
+    </div>
+
+    <div class="alt-item" id="a7">
+      <div class="alt-num">7.</div>
+      <div class="alt-sent">We should take both ___ in case we come home separately.</div>
+      <div class="alt-opts">
+        <button class="alt-opt" onclick="pickAlt(this,7,'wrong','keys')">key</button>
+        <button class="alt-opt" onclick="pickAlt(this,7,'correct','keys')">keys</button>
+      </div>
+      <div class="alt-fb" id="afb7"></div>
+    </div>
+
+    <div class="alt-item" id="a8">
+      <div class="alt-num">8.</div>
+      <div class="alt-sent">Can either of you ___ me £5?</div>
+      <div class="alt-opts">
+        <button class="alt-opt" onclick="pickAlt(this,8,'correct','lend')">lend</button>
+        <button class="alt-opt" onclick="pickAlt(this,8,'wrong','lend')">lends</button>
+      </div>
+      <div class="alt-fb" id="afb8"></div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;align-items:center;">
+      <button class="btn btn-dark" onclick="checkEx3()">✓ Check Exercise 3</button>
+      <button class="btn btn-out" onclick="resetEx3()">↺ Reset</button>
+      <span class="score-pill" id="sc3"></span>
+    </div>
+  </div>
+  <div class="card-footer">⚖️ Quantifiers <span style="background:#f0f5ff;color:#2a4abd;padding:3px 10px;border-radius:12px;font-weight:700;">8 sentences</span></div>
+</div>
+
+<!-- ══ EX 4: ERROR CORRECTION ══════════════════════ -->
+<div class="card">
+  <div class="prog"><div class="prog-fill" style="width:75%"></div></div>
+  <div class="card-header">
+    <div class="card-icon" style="background:#fff8e5;">🔍</div>
+    <div>
+      <div class="card-title">Exercise 4 — Correct the mistakes</div>
+      <div class="card-sub">Grammar · 5 sentences have mistakes · 3 are correct</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="instr"><strong>Five sentences contain a mistake.</strong> Three are correct. If a sentence is wrong, write the correction. If it is correct, write <em>"correct"</em>.</div>
+
+    <div class="err-item">
+      <div class="err-num">1.</div>
+      <div class="err-orig">I woke up several time during the night last night.</div>
+      <div class="err-row">
+        <span class="err-label">Your answer:</span>
+        <input class="err-inp" type="text" data-ans="several times" data-correct="false" placeholder="Correction or 'correct'…">
+      </div>
+      <div class="err-fb" id="efb1"></div>
+    </div>
+
+    <div class="err-item">
+      <div class="err-num">2.</div>
+      <div class="err-orig">Are there any biscuits in the cupboard?</div>
+      <div class="err-row">
+        <span class="err-label">Your answer:</span>
+        <input class="err-inp" type="text" data-ans="correct" data-correct="true" placeholder="Correction or 'correct'…">
+      </div>
+      <div class="err-fb" id="efb2"></div>
+    </div>
+
+    <div class="err-item">
+      <div class="err-num">3.</div>
+      <div class="err-orig">There are loads of people in town today.</div>
+      <div class="err-row">
+        <span class="err-label">Your answer:</span>
+        <input class="err-inp" type="text" data-ans="correct" data-correct="true" placeholder="Correction or 'correct'…">
+      </div>
+      <div class="err-fb" id="efb3"></div>
+    </div>
+
+    <div class="err-item">
+      <div class="err-num">4.</div>
+      <div class="err-orig">I only have little time before I have to go to a meeting.</div>
+      <div class="err-row">
+        <span class="err-label">Your answer:</span>
+        <input class="err-inp" type="text" data-ans="a little time" data-correct="false" placeholder="Correction or 'correct'…">
+      </div>
+      <div class="err-fb" id="efb4"></div>
+    </div>
+
+    <div class="err-item">
+      <div class="err-num">5.</div>
+      <div class="err-orig">No people has ever said that to me before!</div>
+      <div class="err-row">
+        <span class="err-label">Your answer:</span>
+        <input class="err-inp" type="text" data-ans="nobody|no one" data-correct="false" placeholder="Correction or 'correct'…">
+      </div>
+      <div class="err-fb" id="efb5"></div>
+    </div>
+
+    <div class="err-item">
+      <div class="err-num">6.</div>
+      <div class="err-orig">Both Jack and Jemma are on holiday today.</div>
+      <div class="err-row">
+        <span class="err-label">Your answer:</span>
+        <input class="err-inp" type="text" data-ans="correct" data-correct="true" placeholder="Correction or 'correct'…">
+      </div>
+      <div class="err-fb" id="efb6"></div>
+    </div>
+
+    <div class="err-item">
+      <div class="err-num">7.</div>
+      <div class="err-orig">There are plenty of food for everyone.</div>
+      <div class="err-row">
+        <span class="err-label">Your answer:</span>
+        <input class="err-inp" type="text" data-ans="there is" data-correct="false" placeholder="Correction or 'correct'…">
+      </div>
+      <div class="err-fb" id="efb7"></div>
+    </div>
+
+    <div class="err-item">
+      <div class="err-num">8.</div>
+      <div class="err-orig">Neither of the six children looked happy.</div>
+      <div class="err-row">
+        <span class="err-label">Your answer:</span>
+        <input class="err-inp" type="text" data-ans="none of" data-correct="false" placeholder="Correction or 'correct'…">
+      </div>
+      <div class="err-fb" id="efb8"></div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;align-items:center;">
+      <button class="btn btn-dark" onclick="checkEx4()">✓ Check Exercise 4</button>
+      <button class="btn btn-out" onclick="resetEx4()">↺ Reset</button>
+      <span class="score-pill" id="sc4"></span>
+    </div>
+  </div>
+  <div class="card-footer">🔍 Error Correction <span style="background:#fff8e5;color:#8a6200;padding:3px 10px;border-radius:12px;font-weight:700;">8 sentences</span></div>
+</div>
+
+<!-- ══ EX 5: MONA LISA GAP FILL ══════════════════ -->
+<div class="card">
+  <div class="prog"><div class="prog-fill" style="width:92%"></div></div>
+  <div class="card-header">
+    <div class="card-icon" style="background:#f5f6fa;">🖼️</div>
+    <div>
+      <div class="card-title">Exercise 5 — Complete the article</div>
+      <div class="card-sub">Grammar · Quantifiers · The day the Mona Lisa became famous</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="instr"><strong>Complete the article</strong> with the quantifiers from the box. Each word is used once only.</div>
+
+    <div class="phrase-bank">
+      <span class="pb-chip">all</span>
+      <span class="pb-chip">both</span>
+      <span class="pb-chip">every</span>
+      <span class="pb-chip">a few</span>
+      <span class="pb-chip">few</span>
+      <span class="pb-chip">neither</span>
+      <span class="pb-chip">none</span>
+      <span class="pb-chip">several</span>
+    </div>
+
+    <div class="article-box">
+      <strong>The day the Mona Lisa became famous</strong><br><br>
+      The theft of the Mona Lisa in 1911 was significant for one main reason. It made the painting famous. Prior to the theft, <sup>1</sup><input class="art-inp" id="ml1" data-ans="few" placeholder="______"> people outside the art world had heard of it. After the theft, <sup>2</sup><input class="art-inp" id="ml2" data-ans="every" placeholder="______"> major newspaper around the world carried the story. People even flocked to the gallery to look at the empty space where it had hung.<br><br>
+      The theft was carried out by a group of three Italians. As the museum was closing, <sup>3</sup><input class="art-inp" id="ml3" data-ans="all" placeholder="______"> three of the men hid in a cupboard in the gallery. After the staff had left, they took the painting out of its frame and out of the museum. <sup>4</sup><input class="art-inp" id="ml4" data-ans="none" placeholder="______"> of the Louvre staff noticed. The theft was discovered by a visiting artist <sup>5</sup><input class="art-inp" id="ml5" data-ans="a few" placeholder="______"> hours later.<br><br>
+      The police spent weeks searching for the missing work of art. They even questioned <sup>6</sup><input class="art-inp" id="ml6" data-ans="several" placeholder="______"> famous people. <sup>7</sup><input class="art-inp" id="ml7" data-ans="both" placeholder="______"> American tycoon JP Morgan and artist Pablo Picasso were interviewed. <sup>8</sup><input class="art-inp" id="ml8" data-ans="neither" placeholder="______"> of them were involved. Eventually, 28 months after taking the painting, one of the thieves tried to sell it. The dealer was suspicious and contacted the police. The man was arrested and sentenced to eight months in jail.
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center;">
+      <button class="btn btn-dark" onclick="checkEx5()">✓ Check Exercise 5</button>
+      <button class="btn btn-out" onclick="resetEx5()">↺ Reset</button>
+      <span class="score-pill" id="sc5"></span>
+    </div>
+  </div>
+  <div class="card-footer">🖼️ Mona Lisa Article <span style="background:#f5f6fa;color:var(--dark);padding:3px 10px;border-radius:12px;font-weight:700;">8 gaps</span></div>
+</div>
+
+<!-- Send -->
+<div class="send-card">
+  <h3>📬 Send to Teacher</h3>
+  <p>Finished? Click below to send all your answers by email.</p>
+  <button class="btn-send" onclick="sendHW()">📨 Send to Teacher</button>
+  <div id="send-msg" style="margin-top:11px;font-size:.85em;opacity:.75;display:none;"></div>
+</div>
+
+<div class="finish">
+  <div class="finish-icon">🔒</div>
+  <h2>Case closed!</h2>
+  <p>You practised crime vocabulary and quantifiers.<br>See you in the next lesson!</p>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── EX 1: MATCHING ──
+const m_ans = {1:'e',2:'b',3:'a',4:'f',5:'g',6:'d',7:'h',8:'c'};
+const m_exp = {
+  1:"The burglars researched and <strong>planned their robbery carefully</strong>.",
+  2:"They stole the diamonds and then left <strong>the scene of the crime</strong>.",
+  3:"They evaded <strong>arrest for six months</strong>.",
+  4:"Eventually, they were caught <strong>by the police</strong>.",
+  5:"They went on <strong>trial four months later</strong>.",
+  6:"They pleaded <strong>not guilty</strong>.",
+  7:"The jury found them <strong>guilty of their crime</strong>.",
+  8:"They were sentenced <strong>to five years in jail</strong>."
+};
+function checkEx1() {
+  let score = 0;
+  for (let i=1;i<=8;i++) {
+    const sel = document.querySelector('#m'+i+' .match-sel');
+    const fb  = document.getElementById('mfb'+i);
+    if (!sel.value) { fb.className='match-fb err'; fb.innerHTML='Please choose an ending.'; continue; }
+    if (sel.value === m_ans[i]) {
+      sel.classList.add('correct'); fb.className='match-fb ok'; fb.innerHTML='✓ '+m_exp[i]; score++;
+    } else {
+      sel.classList.add('wrong'); fb.className='match-fb ok'; fb.innerHTML='✓ '+m_exp[i];
+    }
+  }
+  const sc=document.getElementById('sc1'); sc.textContent=score+' / 8'; sc.classList.add('show');
+}
+function resetEx1() {
+  for (let i=1;i<=8;i++) {
+    const sel=document.querySelector('#m'+i+' .match-sel');
+    sel.value=''; sel.className='match-sel';
+    const fb=document.getElementById('mfb'+i); fb.className='match-fb'; fb.innerHTML='';
+  }
+  document.getElementById('sc1').classList.remove('show');
+}
+
+// ── EX 2: ARTICLE GAP FILL ──
+function checkEx2() {
+  const inputs = document.querySelectorAll('.article-box .art-inp');
+  let score = 0;
+  inputs.forEach(inp => {
+    const ans = inp.dataset.ans.toLowerCase().trim();
+    const val = inp.value.toLowerCase().trim();
+    inp.classList.remove('correct','wrong');
+    if (!val) return;
+    if (val === ans) { inp.classList.add('correct'); score++; }
+    else { inp.classList.add('wrong'); }
+  });
+  const sc=document.getElementById('sc2'); sc.textContent=score+' / 7'; sc.classList.add('show');
+}
+function resetEx2() {
+  document.querySelectorAll('.article-box .art-inp').forEach(i=>{i.value='';i.classList.remove('correct','wrong');});
+  document.getElementById('sc2').classList.remove('show');
+}
+
+// ── EX 3: CHOOSE ALTERNATIVE ──
+const alt_ans={1:'are',2:'is',3:'person',4:'times',5:'were',6:'much',7:'keys',8:'lend'};
+const alt_exp={
+  1:'Some of us → plural subject → <strong>are</strong>.',
+  2:'Each of my brothers → Each = singular → <strong>is</strong>.',
+  3:'Every + singular noun → <strong>every person</strong>, not "every people".',
+  4:'A couple of → always plural → <strong>times</strong>.',
+  5:'No cars → plural subject → <strong>were</strong>.',
+  6:'Coffee is uncountable → use <strong>much</strong>, not "many".',
+  7:'Both + plural noun → <strong>both keys</strong>.',
+  8:'Either of you → base form → <strong>lend</strong>.'
+};
+function pickAlt(btn, n, result, correct) {
+  btn.closest('.alt-opts').querySelectorAll('.alt-opt').forEach(b=>b.classList.remove('selected','correct','wrong','reveal'));
+  btn.classList.add('selected'); btn.dataset.result=result; btn.dataset.correct=correct;
+}
+function checkEx3() {
+  let score=0;
+  for(let i=1;i<=8;i++){
+    const item=document.getElementById('a'+i);
+    const sel=item.querySelector('.alt-opt.selected');
+    const fb=document.getElementById('afb'+i);
+    if(!sel){fb.innerHTML='<span class="fb-err">Please choose an answer.</span>';fb.classList.add('show');continue;}
+    if(sel.dataset.result==='correct'){
+      sel.classList.remove('selected');sel.classList.add('correct');
+      fb.innerHTML='<span class="fb-ok">✓ '+alt_exp[i]+'</span>';score++;
+    } else {
+      sel.classList.remove('selected');sel.classList.add('wrong');
+      item.querySelectorAll('.alt-opt').forEach(b=>{if(b.dataset.result==='correct')b.classList.add('reveal');});
+      fb.innerHTML='<span class="fb-err">✗ The answer is <strong>'+alt_ans[i]+'</strong>. '+alt_exp[i]+'</span>';
+    }
+    fb.classList.add('show');
+  }
+  const sc=document.getElementById('sc3');sc.textContent=score+' / 8';sc.classList.add('show');
+}
+function resetEx3(){
+  for(let i=1;i<=8;i++){
+    document.getElementById('a'+i).querySelectorAll('.alt-opt').forEach(b=>b.classList.remove('selected','correct','wrong','reveal'));
+    const fb=document.getElementById('afb'+i);fb.classList.remove('show');fb.innerHTML='';
+  }
+  document.getElementById('sc3').classList.remove('show');
+}
+
+// ── EX 4: ERROR CORRECTION ──
+const err_exp = {
+  1: {ok:false, ans:"several times", exp:"<strong>several time</strong> → <strong>several times</strong> (countable plural)"},
+  2: {ok:true,  ans:"correct", exp:"Correct ✓ — <em>any</em> is fine in questions with countable nouns."},
+  3: {ok:true,  ans:"correct", exp:"Correct ✓ — <em>loads of</em> is informal but grammatically correct."},
+  4: {ok:false, ans:"a little time", exp:"<strong>little time</strong> → <strong>a little time</strong> ('little' without 'a' sounds very negative/formal here; 'a little' = some)."},
+  5: {ok:false, ans:"nobody/no one has", exp:"<strong>No people has</strong> → <strong>Nobody / No one has</strong> ('no people' is not natural; use 'nobody' or 'no one' + singular verb)."},
+  6: {ok:true,  ans:"correct", exp:"Correct ✓ — <em>both</em> with 'and' takes a plural verb."},
+  7: {ok:false, ans:"there is plenty", exp:"<strong>There are plenty of food</strong> → <strong>There is plenty of food</strong> ('food' is uncountable → singular verb)."},
+  8: {ok:false, ans:"none of", exp:"<strong>Neither of</strong> the six → <strong>None of</strong> the six ('neither' is for exactly two; use 'none of' for more than two)."}
+};
+function checkEx4(){
+  let score=0;
+  document.querySelectorAll('.err-inp').forEach((inp,i)=>{
+    const n=i+1;
+    const e=err_exp[n];
+    const val=inp.value.toLowerCase().trim();
+    const fb=document.getElementById('efb'+n);
+    inp.classList.remove('correct','wrong');
+    if(!val){fb.innerHTML='<span class="fb-err">Please write an answer.</span>';fb.classList.add('show');return;}
+    let ok=false;
+    if(e.ok){
+      ok = val==='correct'||val==='✓'||val.includes('correct');
+    } else {
+      // check against acceptable answers (pipe-separated)
+      const accept=e.ans.toLowerCase().split('|');
+      ok=accept.some(a=>val.includes(a.trim()));
+    }
+    if(ok){inp.classList.add('correct');fb.innerHTML='<span class="fb-ok">✓ '+e.exp+'</span>';score++;}
+    else{inp.classList.add('wrong');fb.innerHTML='<span class="fb-err">✗ '+e.exp+'</span>';}
+    fb.classList.add('show');
+  });
+  const sc=document.getElementById('sc4');sc.textContent=score+' / 8';sc.classList.add('show');
+}
+function resetEx4(){
+  document.querySelectorAll('.err-inp').forEach(i=>{i.value='';i.classList.remove('correct','wrong');});
+  for(let i=1;i<=8;i++){const fb=document.getElementById('efb'+i);if(fb){fb.classList.remove('show');fb.innerHTML='';}}
+  document.getElementById('sc4').classList.remove('show');
+}
+
+// ── EX 5: MONA LISA ──
+function checkEx5(){
+  const inputs=document.querySelectorAll('#ml1,#ml2,#ml3,#ml4,#ml5,#ml6,#ml7,#ml8');
+  let score=0;
+  inputs.forEach(inp=>{
+    const ans=inp.dataset.ans.toLowerCase().trim();
+    const val=inp.value.toLowerCase().trim();
+    inp.classList.remove('correct','wrong');
+    if(!val)return;
+    if(val===ans){inp.classList.add('correct');score++;}
+    else{inp.classList.add('wrong');}
+  });
+  const sc=document.getElementById('sc5');sc.textContent=score+' / 8';sc.classList.add('show');
+}
+function resetEx5(){
+  document.querySelectorAll('#ml1,#ml2,#ml3,#ml4,#ml5,#ml6,#ml7,#ml8').forEach(i=>{i.value='';i.classList.remove('correct','wrong');});
+  document.getElementById('sc5').classList.remove('show');
+}
+
+// ── SEND ──
+function sendHW(){
+  const name=document.getElementById('sname').value.trim()||'Student';
+
+  // ── SCORE CALCULATION ──
+
+  // Ex 1
+  let s1=0;
+  for(let i=1;i<=8;i++){
+    if((document.querySelector('#m'+i+' .match-sel').value||'')=== m_ans[i]) s1++;
+  }
+
+  // Ex 2 (only the robbery article inputs, not ml*)
+  const ex2inputs=document.querySelectorAll('.article-box .art-inp:not([id^="ml"])');
+  let s2=0;
+  ex2inputs.forEach(inp=>{
+    if(inp.value.toLowerCase().trim()===inp.dataset.ans.toLowerCase().trim()) s2++;
+  });
+  const t2=ex2inputs.length;
+
+  // Ex 3
+  let s3=0;
+  for(let i=1;i<=8;i++){
+    const sel=document.querySelector('#a'+i+' .alt-opt.selected');
+    if(sel && sel.dataset.result==='correct') s3++;
+  }
+
+  // Ex 4
+  let s4=0;
+  document.querySelectorAll('.err-inp').forEach((inp,i)=>{
+    const n=i+1; const e=err_exp[n];
+    const val=inp.value.toLowerCase().trim();
+    if(!val) return;
+    let ok=false;
+    if(e.ok){ ok=val==='correct'||val==='✓'||val.includes('correct'); }
+    else { ok=e.ans.toLowerCase().split('|').some(a=>val.includes(a.trim())); }
+    if(ok) s4++;
+  });
+
+  // Ex 5
+  const mlIds=['ml1','ml2','ml3','ml4','ml5','ml6','ml7','ml8'];
+  let s5=0;
+  mlIds.forEach(id=>{
+    const inp=document.getElementById(id);
+    if(inp.value.toLowerCase().trim()===inp.dataset.ans.toLowerCase().trim()) s5++;
+  });
+
+  const total=s1+s2+s3+s4+s5;
+  const maxTotal=8+t2+8+8+8;
+
+  function bar(score,max){
+    const w=max>0?Math.round(score/max*10):0;
+    return '['+('█'.repeat(w))+('.'.repeat(10-w))+'] '+score+'/'+max;
+  }
+
+  const summary=
+    'SCORE SUMMARY\n'+
+    '='.repeat(40)+'\n'+
+    'Exercise 1 — Matching:          '+bar(s1,8)+'\n'+
+    'Exercise 2 — Gap fill (robbery):'+bar(s2,t2)+'\n'+
+    'Exercise 3 — Alternatives:      '+bar(s3,8)+'\n'+
+    'Exercise 4 — Error correction:  '+bar(s4,8)+'\n'+
+    'Exercise 5 — Gap fill (Mona Lisa):'+bar(s5,8)+'\n'+
+    '-'.repeat(40)+'\n'+
+    'TOTAL:                          '+bar(total,maxTotal)+'\n'+
+    '='.repeat(40)+'\n\n';
+
+  // ── ANSWERS ──
+
+  // Ex 1
+  let e1='';
+  const halfLabels={a:'a) carefully',b:'b) scene of the crime',c:'c) five years in jail',d:'d) not guilty',e:'e) carefully (planned)',f:'f) by the police',g:'g) guilty',h:'h) five years in jail'};
+  for(let i=1;i<=8;i++){
+    const v=document.querySelector('#m'+i+' .match-sel').value;
+    const correct=v===m_ans[i];
+    e1+=(i)+'. → '+(v||'(no answer)')+' '+(v?(correct?'✓':'✗ (correct: '+m_ans[i]+')'):'')+ '\n';
+  }
+
+  // Ex 2
+  const art=['broke into','planned','evade arrest','leaving the scene of the crime','charge him with','plead guilty','sentenced to'];
+  let e2='';
+  ex2inputs.forEach((inp,i)=>{
+    const val=inp.value.trim()||'(blank)';
+    const correct=val.toLowerCase()===art[i];
+    e2+=(i+1)+'. → '+val+' '+(inp.value.trim()?(correct?'✓':'✗ (correct: '+art[i]+')'):'')+ '\n';
+  });
+
+  // Ex 3
+  const q3=['Some of us is/are','Each of my brothers is/are','Every person/people','a couple of time/times','No cars was/were','much/many coffee','both key/keys','either of you lend/lends'];
+  let e3='';
+  for(let i=1;i<=8;i++){
+    const sel=document.querySelector('#a'+i+' .alt-opt.selected');
+    const val=sel?sel.textContent.trim():'(no answer)';
+    const correct=sel&&sel.dataset.result==='correct';
+    e3+=(i)+'. '+q3[i-1]+' → '+val+' '+(sel?(correct?'✓':'✗ (correct: '+alt_ans[i]+')'):'')+ '\n';
+  }
+
+  // Ex 4
+  const q4=['I woke up several time…','Are there any biscuits…','There are loads of people…','I only have little time…','No people has ever said…','Both Jack and Jemma are…','There are plenty of food…','Neither of the six children…'];
+  let e4='';
+  document.querySelectorAll('.err-inp').forEach((inp,i)=>{
+    const n=i+1; const e=err_exp[n];
+    const val=inp.value.trim()||'(blank)';
+    let ok=false;
+    if(val!=='(blank)'){
+      const lv=val.toLowerCase();
+      if(e.ok){ ok=lv==='correct'||lv==='✓'||lv.includes('correct'); }
+      else { ok=e.ans.toLowerCase().split('|').some(a=>lv.includes(a.trim())); }
+    }
+    e4+=(n)+'. '+q4[i]+' → '+val+' '+(val!=='(blank)'?(ok?'✓':'✗ (correct: '+e.ans+')'):'')+ '\n';
+  });
+
+  // Ex 5
+  const ml5=['few','every','all','none','a few','several','both','neither'];
+  const labels=['Prior to the theft…','major newspaper…','three of the men…','Louvre staff…','hours later','questioned…famous','JP Morgan & Picasso','of them were involved'];
+  let e5='';
+  mlIds.forEach((id,i)=>{
+    const val=document.getElementById(id).value.trim()||'(blank)';
+    const correct=val.toLowerCase()===ml5[i];
+    e5+=(i+1)+'. ('+labels[i]+') → '+val+' '+(val!=='(blank)'?(correct?'✓':'✗ (correct: '+ml5[i]+')'):'')+ '\n';
+  });
+
+  const body=
+    'HOMEWORK: Crime & Quantifiers (B2)\nStudent: '+name+'\n'+'='.repeat(40)+'\n\n'+
+    summary+
+    'EXERCISE 1 — Match the sentence halves\n'+'-'.repeat(30)+'\n'+e1+'\n'+
+    'EXERCISE 2 — Complete the article (A robbery gone wrong)\n'+'-'.repeat(30)+'\n'+e2+'\n'+
+    'EXERCISE 3 — Choose the correct alternative\n'+'-'.repeat(30)+'\n'+e3+'\n'+
+    'EXERCISE 4 — Correct the mistakes\n'+'-'.repeat(30)+'\n'+e4+'\n'+
+    'EXERCISE 5 — Complete the article (Mona Lisa)\n'+'-'.repeat(30)+'\n'+e5;
+
+  window.location.href='mailto:dariia.mlnk@gmail.com?subject='+encodeURIComponent('B2 Homework: Crime & Quantifiers — '+name)+'&body='+encodeURIComponent(body);
+  const msg=document.getElementById('send-msg');
+  msg.style.display='block';
+  msg.textContent='Your email app should open now!';
+}
+</script>
+</body>
+</html>
