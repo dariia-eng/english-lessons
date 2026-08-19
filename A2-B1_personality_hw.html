@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>👤 Personality Homework — A2–B1</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f0fb; color: #1a1a2e; }
+
+.hero {
+  background: linear-gradient(135deg, #6c3fc7 0%, #4a2a9a 50%, #2a1a6a 100%);
+  color: white; padding: 40px 24px 54px; text-align: center; position: relative; overflow: hidden;
+}
+.hero::after { content:''; position:absolute; bottom:-2px; left:0; right:0; height:30px; background:#f4f0fb; border-radius:30px 30px 0 0; }
+.hero-icon { font-size:2.6em; display:block; margin-bottom:12px; }
+.hero .badge { display:inline-flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:14px; }
+.hero .chip { background:rgba(255,255,255,0.18); color:white; padding:4px 13px; border-radius:20px; font-size:0.79em; font-weight:600; }
+.hero h1 { font-size:2.2em; font-weight:800; margin-bottom:6px; }
+.hero p { font-size:1em; opacity:0.82; }
+
+.card { max-width:780px; margin:24px auto; background:white; border-radius:18px; overflow:hidden; box-shadow:0 4px 20px rgba(100,60,200,0.09); }
+.card-header { padding:20px 26px 14px; display:flex; align-items:center; gap:13px; border-bottom:2px solid #f0edf8; }
+.card-icon { width:44px; height:44px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:1.35em; flex-shrink:0; }
+.card-title { font-size:1.15em; font-weight:700; color:#1a1a2e; }
+.card-sub { font-size:0.85em; color:#888; margin-top:2px; }
+.card-body { padding:24px 26px; }
+.card-footer { padding:12px 26px; background:#faf8ff; border-top:1px solid #ede9f8; display:flex; justify-content:space-between; align-items:center; font-size:0.8em; color:#aaa; }
+.progress-bar { height:5px; background:#ede9f8; }
+.progress-fill { height:100%; background:linear-gradient(90deg,#a78bfa,#6c3fc7); }
+
+.instr { background:#f7f3ff; border-left:4px solid #8b5cf6; border-radius:0 8px 8px 0; padding:12px 15px; margin-bottom:20px; font-size:0.91em; color:#444; line-height:1.6; }
+.instr strong { color:#6c3fc7; }
+
+/* Name field */
+.name-wrap { max-width:780px; margin:0 auto 0; background:white; border-radius:18px; padding:22px 26px; box-shadow:0 4px 20px rgba(100,60,200,0.09); }
+.name-label { font-size:0.85em; font-weight:700; color:#6c3fc7; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+.name-inp { width:100%; padding:12px 16px; border:2px solid #c4b5f7; border-radius:10px; font-size:1em; font-family:inherit; color:#1a1a2e; outline:none; transition:border-color 0.2s; }
+.name-inp:focus { border-color:#6c3fc7; }
+
+/* MC */
+.ex-item { background:#faf8ff; border:1.5px solid #ede9f8; border-radius:12px; padding:15px 17px; margin-bottom:11px; }
+.ex-num { font-size:0.74em; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#8b5cf6; margin-bottom:5px; }
+.ex-sent { font-size:0.93em; color:#1a1a2e; line-height:1.6; margin-bottom:11px; }
+.mc-opts { display:flex; flex-wrap:wrap; gap:8px; }
+.mc-opt { padding:7px 15px; border:2px solid #ede9f8; border-radius:20px; background:white; font-size:0.87em; font-weight:600; cursor:pointer; font-family:inherit; transition:all 0.18s; color:#444; }
+.mc-opt:hover { border-color:#8b5cf6; background:#f7f3ff; }
+.mc-opt.selected { border-color:#6c3fc7; background:#6c3fc7; color:white; transform:translateY(-1px); box-shadow:0 3px 10px rgba(108,63,199,0.3); }
+.mc-opt.correct  { border-color:#3d8a5a; background:#3d8a5a; color:white; }
+.mc-opt.wrong    { border-color:#c04a4a; background:#fde8e8; color:#7a1a1a; text-decoration:line-through; }
+.mc-opt.reveal   { border-color:#3d8a5a; background:#d6ede0; color:#1a4a2a; opacity:0.8; }
+.ex-feedback { margin-top:9px; font-size:0.84em; font-weight:600; display:none; line-height:1.5; }
+.ex-feedback.show { display:block; }
+.fb-ok  { color:#3d8a5a; }
+.fb-err { color:#c04a4a; }
+
+/* Gap fill */
+.gf-inp { border:none; border-bottom:2.5px solid #8b5cf6; outline:none; font-family:inherit; font-size:0.93em; color:#1a1a2e; background:transparent; padding:2px 5px; min-width:110px; transition:border-color 0.2s; }
+.gf-inp:focus { border-color:#a78bfa; }
+.gf-inp.correct { border-color:#3d8a5a; background:#d6ede0; border-radius:4px; padding:2px 7px; color:#1a4a2a; }
+.gf-inp.wrong   { border-color:#c04a4a; background:#fde8e8; border-radius:4px; padding:2px 7px; color:#7a1a1a; }
+.word-bank { display:flex; flex-wrap:wrap; gap:8px; row-gap:8px; padding:11px 13px; background:#f7f3ff; border-radius:10px; margin-bottom:16px; }
+.wb-chip { background:white; border:1.5px solid #c4b5f7; color:#6c3fc7; padding:4px 12px; border-radius:16px; font-size:0.83em; font-weight:700; }
+
+/* Writing */
+.writing-area { width:100%; min-height:110px; padding:12px 14px; border:2px solid #c4b5f7; border-radius:10px; font-size:0.92em; font-family:inherit; color:#1a1a2e; resize:vertical; outline:none; transition:border-color 0.2s; line-height:1.7; }
+.writing-area:focus { border-color:#6c3fc7; }
+.writing-prompt { background:#f7f3ff; border-left:4px solid #c4b5f7; border-radius:0 10px 10px 0; padding:12px 15px; margin-bottom:14px; font-size:0.91em; color:#444; line-height:1.6; }
+
+/* Buttons */
+.btn { padding:10px 22px; border:none; border-radius:9px; font-size:0.9em; font-weight:600; cursor:pointer; transition:all 0.18s; font-family:inherit; }
+.btn-purple { background:#6c3fc7; color:white; }
+.btn-purple:hover { background:#5530a0; transform:translateY(-1px); }
+.btn-outline { background:white; color:#6c3fc7; border:2px solid #6c3fc7; }
+.btn-outline:hover { background:#6c3fc7; color:white; }
+.btn-send { background:linear-gradient(135deg,#6c3fc7,#4a2a9a); color:white; padding:13px 30px; font-size:1em; border-radius:12px; width:100%; margin-top:6px; }
+.btn-send:hover { opacity:0.9; transform:translateY(-2px); box-shadow:0 6px 18px rgba(108,63,199,0.35); }
+.score-badge { display:none; background:#d6ede0; color:#1a4a2a; font-weight:700; font-size:0.84em; padding:6px 14px; border-radius:20px; }
+.score-badge.show { display:inline-block; }
+
+/* Send section */
+.send-card { max-width:780px; margin:24px auto; background:linear-gradient(135deg,#6c3fc7,#4a2a9a); border-radius:18px; padding:30px 26px; color:white; text-align:center; }
+.send-card h3 { font-size:1.3em; font-weight:800; margin-bottom:8px; }
+.send-card p { font-size:0.91em; opacity:0.85; margin-bottom:22px; line-height:1.6; }
+
+.finish { text-align:center; padding:30px 20px 40px; }
+.finish-icon { font-size:2.8em; margin-bottom:10px; }
+.finish h2 { font-size:1.4em; font-weight:800; color:#6c3fc7; margin-bottom:6px; }
+.finish p { color:#888; font-size:0.91em; line-height:1.7; }
+
+/* Flashcards */
+.fc-section { max-width:780px; margin:24px auto; }
+.fc-header { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.fc-title { font-size:1.1em; font-weight:800; color:#1a1a2e; }
+.fc-sub { font-size:0.83em; color:#888; }
+.fc-nav { display:flex; align-items:center; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
+.fc-counter { font-size:0.88em; font-weight:700; color:#6c3fc7; background:#f7f3ff; padding:5px 14px; border-radius:20px; }
+.fc-progress { flex:1; height:6px; background:#ede9f8; border-radius:3px; min-width:80px; }
+.fc-prog-fill { height:100%; background:linear-gradient(90deg,#a78bfa,#6c3fc7); border-radius:3px; transition:width 0.3s; }
+
+.fc-stage { perspective:1000px; height:200px; cursor:pointer; position:relative; margin-bottom:14px; }
+.fc-inner { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.45s cubic-bezier(.4,0,.2,1); }
+.fc-stage.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-face { position:absolute; inset:0; border-radius:18px; display:flex; flex-direction:column; align-items:center; justify-content:center; backface-visibility:hidden; -webkit-backface-visibility:hidden; padding:20px; }
+.fc-front { background:linear-gradient(135deg,#6c3fc7,#4a2a9a); color:white; box-shadow:0 6px 24px rgba(108,63,199,0.25); }
+.fc-back  { background:white; border:2px solid #ede9f8; transform:rotateY(180deg); box-shadow:0 6px 24px rgba(108,63,199,0.10); }
+
+.fc-word  { font-size:2.1em; font-weight:800; letter-spacing:0.5px; margin-bottom:6px; }
+.fc-hint  { font-size:0.82em; opacity:0.7; }
+.fc-tap   { font-size:0.75em; opacity:0.55; position:absolute; bottom:14px; right:18px; }
+
+.fc-back-word { font-size:1.6em; font-weight:800; color:#6c3fc7; margin-bottom:14px; }
+.fc-langs { display:flex; gap:24px; flex-wrap:wrap; justify-content:center; }
+.fc-lang  { text-align:center; }
+.fc-flag  { font-size:1.3em; margin-bottom:3px; }
+.fc-translation { font-size:1em; font-weight:700; color:#1a1a2e; }
+.fc-lang-label  { font-size:0.72em; color:#aaa; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; margin-top:2px; }
+
+.fc-btn-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.fc-btn { padding:9px 20px; border:2px solid #ede9f8; border-radius:22px; background:white; font-family:inherit; font-size:0.86em; font-weight:700; cursor:pointer; transition:all 0.18s; color:#444; }
+.fc-btn:hover { border-color:#8b5cf6; background:#f7f3ff; color:#6c3fc7; }
+.fc-btn.active { background:#6c3fc7; color:white; border-color:#6c3fc7; }
+
+@media (max-width:600px) {
+  .hero h1 { font-size:1.7em; }
+  .card-body { padding:18px 16px; }
+  .fc-word { font-size:1.6em; }
+  .fc-back-word { font-size:1.2em; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="hero-icon">👤</span>
+  <div class="badge">
+    <span class="chip">📚 A2–B1</span>
+    <span class="chip">✏️ Homework</span>
+    <span class="chip">👤 Personality &amp; People</span>
+  </div>
+  <h1>Personality Homework</h1>
+  <p>Complete all three exercises, then send to your teacher!</p>
+</div>
+
+<!-- Name -->
+<div style="max-width:780px; margin:24px auto 0; padding:0 0;">
+  <div class="name-wrap">
+    <div class="name-label">Your name</div>
+    <input class="name-inp" id="student-name" type="text" placeholder="Type your name here…">
+  </div>
+</div>
+
+<!-- ── FLASHCARDS ──────────────────────────────────────────────── -->
+<div class="fc-section" id="flashcards">
+  <div style="background:white; border-radius:18px; padding:22px 26px; box-shadow:0 4px 20px rgba(100,60,200,0.09);">
+    <div class="fc-header">
+      <div style="width:44px;height:44px;border-radius:11px;background:#f7f3ff;display:flex;align-items:center;justify-content:center;font-size:1.35em;flex-shrink:0;">🃏</div>
+      <div>
+        <div class="fc-title">Study the words first!</div>
+        <div class="fc-sub">Click each card to see the translations · 12 words</div>
+      </div>
+    </div>
+
+    <div class="fc-nav">
+      <span class="fc-counter" id="fc-count">1 / 12</span>
+      <div class="fc-progress"><div class="fc-prog-fill" id="fc-prog" style="width:8%"></div></div>
+      <div class="fc-btn-row">
+        <button class="fc-btn" id="fc-prev" onclick="fcMove(-1)">← Prev</button>
+        <button class="fc-btn" id="fc-next" onclick="fcMove(1)">Next →</button>
+        <button class="fc-btn" onclick="fcShuffle()">🔀 Shuffle</button>
+      </div>
+    </div>
+
+    <div class="fc-stage" id="fc-stage" onclick="fcFlip()">
+      <div class="fc-inner" id="fc-inner">
+        <div class="fc-face fc-front">
+          <div class="fc-word" id="fc-word">confident</div>
+          <div class="fc-hint" id="fc-hint">adjective</div>
+          <div class="fc-tap">tap to flip 👆</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-back-word" id="fc-back-word">confident</div>
+          <div class="fc-langs">
+            <div class="fc-lang">
+              <div class="fc-flag">🇺🇦</div>
+              <div class="fc-translation" id="fc-ukr">впевнений</div>
+              <div class="fc-lang-label">Ukrainian</div>
+            </div>
+            <div class="fc-lang" style="border-left:1px solid #ede9f8; padding-left:24px;">
+              <div class="fc-flag">🇩🇪</div>
+              <div class="fc-translation" id="fc-de">selbstbewusst</div>
+              <div class="fc-lang-label">German</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── EXERCISE 1 — Multiple Choice ──────────────────────────── -->
+<div class="card" id="ex1">
+  <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+  <div class="card-header">
+    <div class="card-icon" style="background:#f7f3ff;">🔵</div>
+    <div>
+      <div class="card-title">Exercise 1 — Choose the right word</div>
+      <div class="card-sub">6 questions · Choose the adjective that best fits each situation</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="instr"><strong>Read each situation.</strong> Choose the adjective that describes this person best. Only one answer is correct!</div>
+
+    <div class="ex-item" id="q1">
+      <div class="ex-num">1.</div>
+      <div class="ex-sent">Maria has been my best friend for ten years. She has never lied to me, not even once — not even when the truth was uncomfortable.</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pick(this,'q1','wrong')">creative</button>
+        <button class="mc-opt" onclick="pick(this,'q1','correct')">honest</button>
+        <button class="mc-opt" onclick="pick(this,'q1','wrong')">bossy</button>
+        <button class="mc-opt" onclick="pick(this,'q1','wrong')">laid-back</button>
+      </div>
+      <div class="ex-feedback" id="fb-q1"></div>
+    </div>
+
+    <div class="ex-item" id="q2">
+      <div class="ex-num">2.</div>
+      <div class="ex-sent">My colleague gets upset very easily. Yesterday I suggested a small change to his report and he did not speak to me for the rest of the day.</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pick(this,'q2','wrong')">generous</button>
+        <button class="mc-opt" onclick="pick(this,'q2','wrong')">sociable</button>
+        <button class="mc-opt" onclick="pick(this,'q2','correct')">sensitive</button>
+        <button class="mc-opt" onclick="pick(this,'q2','wrong')">ambitious</button>
+      </div>
+      <div class="ex-feedback" id="fb-q2"></div>
+    </div>
+
+    <div class="ex-item" id="q3">
+      <div class="ex-num">3.</div>
+      <div class="ex-sent">He is only 26 but already has a five-year plan, a savings goal, and a list of skills he wants to learn. He is focused and motivated.</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pick(this,'q3','wrong')">shy</button>
+        <button class="mc-opt" onclick="pick(this,'q3','correct')">ambitious</button>
+        <button class="mc-opt" onclick="pick(this,'q3','wrong')">reliable</button>
+        <button class="mc-opt" onclick="pick(this,'q3','wrong')">stubborn</button>
+      </div>
+      <div class="ex-feedback" id="fb-q3"></div>
+    </div>
+
+    <div class="ex-item" id="q4">
+      <div class="ex-num">4.</div>
+      <div class="ex-sent">She walks into every meeting and immediately starts telling everyone what to do, even if she does not know the project well.</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pick(this,'q4','correct')">bossy</button>
+        <button class="mc-opt" onclick="pick(this,'q4','wrong')">laid-back</button>
+        <button class="mc-opt" onclick="pick(this,'q4','wrong')">honest</button>
+        <button class="mc-opt" onclick="pick(this,'q4','wrong')">creative</button>
+      </div>
+      <div class="ex-feedback" id="fb-q4"></div>
+    </div>
+
+    <div class="ex-item" id="q5">
+      <div class="ex-num">5.</div>
+      <div class="ex-sent">You can always count on him. If he says he will call you at 7pm, he calls at 7pm. He never forgets promises.</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pick(this,'q5','wrong')">sensitive</button>
+        <button class="mc-opt" onclick="pick(this,'q5','wrong')">sociable</button>
+        <button class="mc-opt" onclick="pick(this,'q5','wrong')">stubborn</button>
+        <button class="mc-opt" onclick="pick(this,'q5','correct')">reliable</button>
+      </div>
+      <div class="ex-feedback" id="fb-q5"></div>
+    </div>
+
+    <div class="ex-item" id="q6">
+      <div class="ex-num">6.</div>
+      <div class="ex-sent">Nothing seems to stress her out. Missed train? She shrugs. Last-minute changes? No problem. She is always calm and relaxed.</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pick(this,'q6','correct')">laid-back</button>
+        <button class="mc-opt" onclick="pick(this,'q6','wrong')">confident</button>
+        <button class="mc-opt" onclick="pick(this,'q6','wrong')">generous</button>
+        <button class="mc-opt" onclick="pick(this,'q6','wrong')">creative</button>
+      </div>
+      <div class="ex-feedback" id="fb-q6"></div>
+    </div>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; align-items:center;">
+      <button class="btn btn-purple" onclick="checkEx1()">✓ Check Exercise 1</button>
+      <button class="btn btn-outline" onclick="resetEx1()">↺ Reset</button>
+      <span class="score-badge" id="score1"></span>
+    </div>
+  </div>
+  <div class="card-footer">🔵 Multiple Choice <span style="font-size:0.8em; background:#ede9f8; color:#5c2fa0; padding:3px 10px; border-radius:12px; font-weight:600;">6 items</span></div>
+</div>
+
+<!-- ── EXERCISE 2 — Gap Fill ──────────────────────────────────── -->
+<div class="card" id="ex2">
+  <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
+  <div class="card-header">
+    <div class="card-icon" style="background:#fce8f3;">✍️</div>
+    <div>
+      <div class="card-title">Exercise 2 — Fill in the gaps</div>
+      <div class="card-sub">6 sentences · Use the word bank below</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="instr"><strong>Use a word from the box</strong> to complete each sentence. Each word is used once only. You may need to change the form.</div>
+
+    <div class="word-bank">
+      <span class="wb-chip">shy</span>
+      <span class="wb-chip">generous</span>
+      <span class="wb-chip">stubborn</span>
+      <span class="wb-chip">sociable</span>
+      <span class="wb-chip">creative</span>
+      <span class="wb-chip">confident</span>
+    </div>
+
+    <div class="ex-item"><div class="ex-sent">1. She is very <input class="gf-inp" data-answer="shy" placeholder="…"> at first — she barely speaks in a group — but once you know her she is very funny.</div></div>
+    <div class="ex-item"><div class="ex-sent">2. He decorated the whole flat himself, with unusual colours and handmade furniture. He is incredibly <input class="gf-inp" data-answer="creative" placeholder="…">.</div></div>
+    <div class="ex-item"><div class="ex-sent">3. She always pays for everyone at dinner and says it is her pleasure. I have never met anyone more <input class="gf-inp" data-answer="generous" placeholder="…">.</div></div>
+    <div class="ex-item"><div class="ex-sent">4. My brother is so <input class="gf-inp" data-answer="stubborn" placeholder="…"> — once he makes a decision, nothing and nobody can change his mind.</div></div>
+    <div class="ex-item"><div class="ex-sent">5. She walks into every presentation without any notes and speaks perfectly. She is so <input class="gf-inp" data-answer="confident" placeholder="…"> in front of a crowd.</div></div>
+    <div class="ex-item"><div class="ex-sent">6. He knows everyone in the neighbourhood — he is one of those naturally <input class="gf-inp" data-answer="sociable" placeholder="…"> people who finds it easy to talk to anyone.</div></div>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; align-items:center;">
+      <button class="btn btn-purple" onclick="checkEx2()">✓ Check Exercise 2</button>
+      <button class="btn btn-outline" onclick="resetEx2()">↺ Reset</button>
+      <span class="score-badge" id="score2"></span>
+    </div>
+  </div>
+  <div class="card-footer">✍️ Gap Fill <span style="font-size:0.8em; background:#fce8f3; color:#a0306a; padding:3px 10px; border-radius:12px; font-weight:600;">6 sentences</span></div>
+</div>
+
+<!-- ── EXERCISE 3 — Writing ───────────────────────────────────── -->
+<div class="card" id="ex3">
+  <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+  <div class="card-header">
+    <div class="card-icon" style="background:#d6ede0;">✏️</div>
+    <div>
+      <div class="card-title">Exercise 3 — Write about someone</div>
+      <div class="card-sub">Use at least 4 personality adjectives from the lesson</div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="instr"><strong>Choose one person</strong> — a friend, a family member, a colleague, or a famous person. Write 5–7 sentences describing their personality. Use at least <strong>4 adjectives</strong> from today's lesson in your answer.</div>
+
+    <div class="writing-prompt">
+      <strong>Adjectives to choose from:</strong><br>
+      <span style="color:#6c3fc7; font-weight:700;">confident · shy · generous · stubborn · ambitious · honest · sociable · reliable · creative · bossy · sensitive · laid-back</span>
+    </div>
+
+    <div style="margin-bottom:10px; font-size:0.88em; font-weight:700; color:#888;">Your answer:</div>
+    <textarea class="writing-area" id="writing-ans" placeholder="Write your answer here…"></textarea>
+
+    <div style="margin-top:12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+      <span id="word-count" style="font-size:0.83em; color:#aaa;">0 words</span>
+      <span id="adj-count" style="font-size:0.83em; color:#8b5cf6; font-weight:700; display:none;"></span>
+    </div>
+  </div>
+  <div class="card-footer">✏️ Writing Task <span style="font-size:0.8em; background:#d6ede0; color:#1a6a3a; padding:3px 10px; border-radius:12px; font-weight:600;">5–7 sentences</span></div>
+</div>
+
+<!-- ── SEND TO TEACHER ─────────────────────────────────────────── -->
+<div class="send-card">
+  <h3>📬 Send to Teacher</h3>
+  <p>When you are happy with your answers, click the button below to send your homework by email. Your teacher will receive all your answers automatically!</p>
+  <button class="btn btn-send" onclick="sendHomework()">📨 Send to Teacher</button>
+  <div id="send-msg" style="margin-top:14px; font-size:0.88em; opacity:0.85; display:none;"></div>
+</div>
+
+<div class="finish">
+  <div class="finish-icon">🌟</div>
+  <h2>Great work!</h2>
+  <p>You practised 12 personality adjectives.<br>See you in the next lesson!</p>
+</div>
+
+<script>
+// ── Flashcards ──
+const fcData = [
+  { word:"confident",  ukr:"впевнений / впевнена",     de:"selbstbewusst"  },
+  { word:"shy",        ukr:"сором'язливий / -ва",       de:"schüchtern"     },
+  { word:"generous",   ukr:"щедрий / щедра",            de:"großzügig"      },
+  { word:"stubborn",   ukr:"впертий / вперта",          de:"stur"           },
+  { word:"ambitious",  ukr:"амбітний / амбітна",        de:"ehrgeizig"      },
+  { word:"honest",     ukr:"чесний / чесна",            de:"ehrlich"        },
+  { word:"sociable",   ukr:"товариський / -ка",         de:"gesellig"       },
+  { word:"reliable",   ukr:"надійний / надійна",        de:"zuverlässig"    },
+  { word:"creative",   ukr:"творчий / творча",          de:"kreativ"        },
+  { word:"bossy",      ukr:"владний / владна",          de:"herrisch"       },
+  { word:"sensitive",  ukr:"чутливий / чутлива",        de:"sensibel"       },
+  { word:"laid-back",  ukr:"розслаблений / безтурботний", de:"entspannt / locker" }
+];
+let fcOrder = [...Array(fcData.length).keys()];
+let fcIdx = 0;
+
+function fcRender() {
+  const d = fcData[fcOrder[fcIdx]];
+  document.getElementById('fc-word').textContent = d.word;
+  document.getElementById('fc-hint').textContent = "adjective · personality";
+  document.getElementById('fc-back-word').textContent = d.word;
+  document.getElementById('fc-ukr').textContent = d.ukr;
+  document.getElementById('fc-de').textContent = d.de;
+  document.getElementById('fc-count').textContent = (fcIdx+1) + " / " + fcData.length;
+  document.getElementById('fc-prog').style.width = Math.round((fcIdx+1)/fcData.length*100) + "%";
+  document.getElementById('fc-stage').classList.remove('flipped');
+}
+function fcFlip() { document.getElementById('fc-stage').classList.toggle('flipped'); }
+function fcMove(dir) {
+  fcIdx = (fcIdx + dir + fcData.length) % fcData.length;
+  fcRender();
+}
+function fcShuffle() {
+  for (let i = fcOrder.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [fcOrder[i],fcOrder[j]] = [fcOrder[j],fcOrder[i]];
+  }
+  fcIdx = 0; fcRender();
+}
+fcRender();
+
+// ── Exercise 1 ──
+function pick(btn, id, result) {
+  btn.closest('.mc-opts').querySelectorAll('.mc-opt').forEach(b => b.classList.remove('selected','correct','wrong','reveal'));
+  btn.classList.add('selected');
+  btn.dataset.result = result;
+}
+
+const ex1Exp = {
+  q1:"Correct! Honest = always tells the truth, even when it is hard.",
+  q2:"Correct! Sensitive = gets upset easily by what others say or do.",
+  q3:"Correct! Ambitious = wanting to achieve a lot and working hard for it.",
+  q4:"Correct! Bossy = always telling others what to do in an annoying way.",
+  q5:"Correct! Reliable = you can always count on this person.",
+  q6:"Correct! Laid-back = very relaxed and not stressed by things."
+};
+const ex1Wrong = {
+  q1:"Not quite. Think about honesty — she never lied. The answer is: honest.",
+  q2:"Not quite. He gets upset by small things — the answer is: sensitive.",
+  q3:"Not quite. He has plans and goals and is very motivated. The answer is: ambitious.",
+  q4:"Not quite. She tells everyone what to do — the answer is: bossy.",
+  q5:"Not quite. He always keeps his word. The answer is: reliable.",
+  q6:"Not quite. She is always calm and not stressed. The answer is: laid-back."
+};
+
+function checkEx1() {
+  let score = 0;
+  ["q1","q2","q3","q4","q5","q6"].forEach(id => {
+    const item = document.getElementById(id);
+    const sel = item.querySelector('.mc-opt.selected');
+    const fb = document.getElementById("fb-" + id);
+    if (!sel) { fb.innerHTML = '<span class="fb-err">Please choose an answer.</span>'; fb.classList.add('show'); return; }
+    if (sel.dataset.result === 'correct') {
+      sel.classList.remove('selected'); sel.classList.add('correct');
+      fb.innerHTML = '<span class="fb-ok">✓ ' + ex1Exp[id] + '</span>';
+      score++;
+    } else {
+      sel.classList.remove('selected'); sel.classList.add('wrong');
+      item.querySelectorAll('.mc-opt').forEach(b => { if (b.dataset.result === 'correct') b.classList.add('reveal'); });
+      fb.innerHTML = '<span class="fb-err">✗ ' + ex1Wrong[id] + '</span>';
+    }
+    fb.classList.add('show');
+  });
+  const sc = document.getElementById('score1');
+  sc.textContent = score + ' / 6'; sc.classList.add('show');
+}
+function resetEx1() {
+  ["q1","q2","q3","q4","q5","q6"].forEach(id => {
+    document.getElementById(id).querySelectorAll('.mc-opt').forEach(b => b.classList.remove('selected','correct','wrong','reveal'));
+    const fb = document.getElementById("fb-" + id); fb.classList.remove('show'); fb.innerHTML = '';
+  });
+  document.getElementById('score1').classList.remove('show');
+}
+
+// ── Exercise 2 ──
+function checkEx2() {
+  const inputs = document.querySelectorAll('#ex2 .gf-inp');
+  let score = 0;
+  inputs.forEach(inp => {
+    const ans = inp.dataset.answer.toLowerCase().trim();
+    const val = inp.value.toLowerCase().trim();
+    inp.classList.remove('correct','wrong');
+    if (!val) return;
+    if (val === ans || ans.startsWith(val)) { inp.classList.add('correct'); score++; }
+    else { inp.classList.add('wrong'); }
+  });
+  const sc = document.getElementById('score2');
+  sc.textContent = score + ' / ' + inputs.length; sc.classList.add('show');
+}
+function resetEx2() {
+  document.querySelectorAll('#ex2 .gf-inp').forEach(i => { i.value = ''; i.classList.remove('correct','wrong'); });
+  document.getElementById('score2').classList.remove('show');
+}
+
+// ── Word count + adjective spotter ──
+const adjectives = ['confident','shy','generous','stubborn','ambitious','honest','sociable','reliable','creative','bossy','sensitive','laid-back'];
+const writingEl = document.getElementById('writing-ans');
+writingEl.addEventListener('input', () => {
+  const text = writingEl.value.trim();
+  const words = text ? text.split(/\s+/).length : 0;
+  document.getElementById('word-count').textContent = words + ' word' + (words === 1 ? '' : 's');
+  const found = adjectives.filter(a => text.toLowerCase().includes(a));
+  const ac = document.getElementById('adj-count');
+  if (found.length > 0) {
+    ac.style.display = 'inline';
+    ac.textContent = found.length + ' adjective' + (found.length === 1 ? '' : 's') + ' used: ' + found.join(', ');
+  } else {
+    ac.style.display = 'none';
+  }
+});
+
+// ── Send to Teacher ──
+function sendHomework() {
+  const name = document.getElementById('student-name').value.trim() || 'Student';
+
+  // Exercise 1
+  const ex1Labels = { q1:'Maria — never lied', q2:'Colleague gets upset easily', q3:'26 with a 5-year plan', q4:'Takes over every meeting', q5:'Always calls at 7pm', q6:'Never stressed about anything' };
+  let ex1Text = '';
+  ["q1","q2","q3","q4","q5","q6"].forEach((id,i) => {
+    const sel = document.getElementById(id).querySelector('.mc-opt.selected');
+    const chosen = sel ? sel.textContent.trim() : '(no answer)';
+    ex1Text += (i+1) + '. ' + ex1Labels[id] + ' → ' + chosen + '\n';
+  });
+
+  // Exercise 2
+  const ex2Sentences = ['She barely speaks at first but is funny one-on-one', 'Decorated flat with unusual colours, handmade furniture', 'Always pays for everyone at dinner', 'Once he decides, nothing changes his mind', 'Speaks in presentations without notes', 'Knows everyone in the neighbourhood'];
+  let ex2Text = '';
+  document.querySelectorAll('#ex2 .gf-inp').forEach((inp, i) => {
+    ex2Text += (i+1) + '. ' + ex2Sentences[i] + ' → ' + (inp.value.trim() || '(blank)') + '\n';
+  });
+
+  // Exercise 3
+  const writing = document.getElementById('writing-ans').value.trim() || '(no answer written)';
+
+  const body =
+    'PERSONALITY HOMEWORK\n' +
+    'Student: ' + name + '\n' +
+    '='.repeat(40) + '\n\n' +
+    'EXERCISE 1 — Multiple Choice\n' +
+    '-'.repeat(30) + '\n' +
+    ex1Text + '\n' +
+    'EXERCISE 2 — Gap Fill\n' +
+    '-'.repeat(30) + '\n' +
+    ex2Text + '\n' +
+    'EXERCISE 3 — Writing\n' +
+    '-'.repeat(30) + '\n' +
+    writing + '\n';
+
+  const subject = 'Personality Homework — ' + name;
+  window.location.href = 'mailto:dariia.mlnk@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+
+  const msg = document.getElementById('send-msg');
+  msg.style.display = 'block';
+  msg.textContent = 'Your email app should open now. If nothing happens, check that you have an email app set up on this device!';
+}
+</script>
+</body>
+</html>
