@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework: for &amp; since — A2–B1</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pri:#1b7068;--pri-d:#124f49;--pri-dark:#0c3530;
+  --acc:#24c4a8;--bg:#f0faf8;--border:#c8ede8;
+  --text:#0d2a27;--muted:#5a8a84;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+
+.hero{background:linear-gradient(135deg,var(--pri) 0%,var(--pri-d) 55%,var(--pri-dark) 100%);color:#fff;padding:38px 24px 52px;text-align:center;position:relative;overflow:hidden;}
+.hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:28px;background:var(--bg);border-radius:28px 28px 0 0;}
+.hero-icon{font-size:2.5em;display:block;margin-bottom:12px;}
+.badge{display:inline-flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;}
+.chip{background:rgba(255,255,255,0.17);color:#fff;padding:4px 13px;border-radius:20px;font-size:.78em;font-weight:700;}
+.hero h1{font-size:2.1em;font-weight:800;margin-bottom:5px;}
+.hero p{font-size:.93em;opacity:.8;}
+
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px;}
+
+/* Name */
+.name-card{background:#fff;border-radius:16px;padding:20px 24px;box-shadow:0 3px 16px rgba(27,112,104,.08);border:1px solid var(--border);margin-bottom:22px;}
+.name-label{font-size:.82em;font-weight:800;color:var(--pri);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.name-inp{width:100%;padding:11px 15px;border:2px solid var(--border);border-radius:10px;font-size:1em;font-family:inherit;color:var(--text);outline:none;transition:border-color .2s;}
+.name-inp:focus{border-color:var(--pri);}
+
+/* Cards */
+.card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 3px 16px rgba(27,112,104,.08);border:1px solid var(--border);margin-bottom:22px;}
+.card-header{padding:18px 24px 14px;display:flex;align-items:center;gap:13px;border-bottom:2px solid #f0fdf9;}
+.card-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3em;flex-shrink:0;}
+.card-title{font-size:1.1em;font-weight:800;color:var(--text);}
+.card-sub{font-size:.82em;color:var(--muted);margin-top:2px;}
+.card-body{padding:22px 24px;}
+.card-footer{padding:11px 24px;background:#f7fffe;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:.78em;color:#aaa;}
+.prog-bar{height:4px;background:var(--border);}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--pri));}
+
+.instr{background:#f0fdf9;border-left:4px solid var(--acc);border-radius:0 9px 9px 0;padding:11px 15px;margin-bottom:18px;font-size:.9em;color:#1a4a45;line-height:1.6;}
+.instr strong{color:var(--pri);}
+
+/* MC */
+.ex-item{background:#f7fffe;border:1.5px solid var(--border);border-radius:12px;padding:15px 17px;margin-bottom:11px;}
+.ex-num{font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--acc);margin-bottom:5px;}
+.ex-sent{font-size:.94em;color:var(--text);line-height:1.65;margin-bottom:10px;}
+.mc-opts{display:flex;gap:9px;flex-wrap:wrap;}
+.mc-opt{padding:7px 22px;border:2px solid var(--border);border-radius:20px;background:#fff;font-size:.88em;font-weight:700;cursor:pointer;font-family:inherit;transition:all .17s;color:#444;}
+.mc-opt:hover{border-color:var(--acc);background:#f0fdf9;}
+.mc-opt.selected{border-color:var(--pri);background:var(--pri);color:#fff;transform:translateY(-1px);box-shadow:0 3px 10px rgba(27,112,104,.28);}
+.mc-opt.correct{border-color:#2e9a5e;background:#2e9a5e;color:#fff;}
+.mc-opt.wrong{border-color:#c04a4a;background:#fde8e8;color:#7a1a1a;text-decoration:line-through;}
+.mc-opt.reveal{border-color:#2e9a5e;background:#d6ede0;color:#1a4a2a;opacity:.8;}
+.ex-fb{margin-top:8px;font-size:.83em;font-weight:600;display:none;line-height:1.5;}
+.ex-fb.show{display:block;}
+.fb-ok{color:#2e9a5e;}
+.fb-err{color:#c04a4a;}
+
+/* Gap fill */
+.gf-inp{border:none;border-bottom:2.5px solid var(--acc);outline:none;font-family:inherit;font-size:.94em;color:var(--text);background:transparent;padding:2px 6px;min-width:72px;transition:border-color .2s;}
+.gf-inp:focus{border-color:var(--pri);}
+.gf-inp.correct{border-color:#2e9a5e;background:#d6ede0;border-radius:4px;padding:2px 8px;color:#1a4a2a;}
+.gf-inp.wrong{border-color:#c04a4a;background:#fde8e8;border-radius:4px;padding:2px 8px;color:#7a1a1a;}
+
+/* Writing */
+.writing-area{width:100%;min-height:120px;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:.93em;font-family:inherit;color:var(--text);resize:vertical;outline:none;transition:border-color .2s;line-height:1.75;}
+.writing-area:focus{border-color:var(--pri);}
+.writing-prompt{background:#f0fdf9;border-left:4px solid var(--border);border-radius:0 10px 10px 0;padding:12px 15px;margin-bottom:14px;font-size:.9em;color:#1a4a45;line-height:1.6;}
+.writing-prompt strong{color:var(--pri);}
+
+/* Buttons */
+.btn{padding:10px 22px;border:none;border-radius:9px;font-size:.89em;font-weight:700;cursor:pointer;transition:all .18s;font-family:inherit;}
+.btn-pri{background:var(--pri);color:#fff;}
+.btn-pri:hover{background:var(--pri-d);transform:translateY(-1px);}
+.btn-out{background:#fff;color:var(--pri);border:2px solid var(--pri);}
+.btn-out:hover{background:var(--pri);color:#fff;}
+.score-pill{display:none;background:#d4f5ee;color:#0d5045;font-weight:700;font-size:.83em;padding:6px 14px;border-radius:18px;}
+.score-pill.show{display:inline-block;}
+
+/* Send */
+.send-card{max-width:760px;margin:0 auto 16px;background:linear-gradient(135deg,var(--pri),var(--pri-d));border-radius:18px;padding:28px 24px;color:#fff;text-align:center;}
+.send-card h3{font-size:1.25em;font-weight:800;margin-bottom:7px;}
+.send-card p{font-size:.9em;opacity:.82;margin-bottom:20px;line-height:1.6;}
+.btn-send{background:rgba(255,255,255,0.15);color:#fff;border:2px solid rgba(255,255,255,0.4);padding:13px 30px;font-size:1em;border-radius:12px;width:100%;cursor:pointer;font-family:inherit;font-weight:700;transition:all .2s;}
+.btn-send:hover{background:rgba(255,255,255,0.25);transform:translateY(-2px);}
+
+.finish{text-align:center;padding:24px 20px 40px;}
+.finish-icon{font-size:2.6em;margin-bottom:10px;}
+.finish h2{font-size:1.35em;font-weight:800;color:var(--pri);margin-bottom:6px;}
+.finish p{color:var(--muted);font-size:.9em;line-height:1.7;}
+
+.wc{font-size:.82em;color:#aaa;margin-top:10px;}
+.fs-chip{font-size:.82em;color:var(--acc);font-weight:700;margin-top:4px;display:none;}
+
+@media(max-width:580px){
+  .hero h1{font-size:1.65em;}
+  .card-body{padding:16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="hero-icon">⏱️</span>
+  <div class="badge">
+    <span class="chip">📚 A2–B1</span>
+    <span class="chip">✏️ Homework</span>
+    <span class="chip">⏱️ for &amp; since</span>
+  </div>
+  <h1>How long have you…?</h1>
+  <p>Present Perfect with <em>for</em> &amp; <em>since</em> — homework</p>
+</div>
+
+<div class="wrap">
+
+  <!-- Name -->
+  <div class="name-card">
+    <div class="name-label">Your name</div>
+    <input class="name-inp" id="student-name" type="text" placeholder="Type your name here…">
+  </div>
+
+  <!-- ── EXERCISE 1 — MC ── -->
+  <div class="card">
+    <div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>
+    <div class="card-header">
+      <div class="card-icon" style="background:#f0fdf9;">🔵</div>
+      <div>
+        <div class="card-title">Exercise 1 — for or since?</div>
+        <div class="card-sub">6 questions · Choose the correct word</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="instr"><strong>Read each sentence.</strong> Choose <em>for</em> or <em>since</em>. Remember: <strong>for</strong> = a period of time · <strong>since</strong> = a starting point.</div>
+
+      <div class="ex-item" id="q1">
+        <div class="ex-num">1.</div>
+        <div class="ex-sent">She has lived in Vienna ___ 2021.</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="pick(this,'q1','wrong')">for</button>
+          <button class="mc-opt" onclick="pick(this,'q1','correct')">since</button>
+        </div>
+        <div class="ex-fb" id="fb-q1"></div>
+      </div>
+
+      <div class="ex-item" id="q2">
+        <div class="ex-num">2.</div>
+        <div class="ex-sent">He has snowboarded ___ almost twelve years.</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="pick(this,'q2','correct')">for</button>
+          <button class="mc-opt" onclick="pick(this,'q2','wrong')">since</button>
+        </div>
+        <div class="ex-fb" id="fb-q2"></div>
+      </div>
+
+      <div class="ex-item" id="q3">
+        <div class="ex-num">3.</div>
+        <div class="ex-sent">I haven't been back to my home country ___ last Christmas.</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="pick(this,'q3','wrong')">for</button>
+          <button class="mc-opt" onclick="pick(this,'q3','correct')">since</button>
+        </div>
+        <div class="ex-fb" id="fb-q3"></div>
+      </div>
+
+      <div class="ex-item" id="q4">
+        <div class="ex-num">4.</div>
+        <div class="ex-sent">They have played table tennis together ___ ages.</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="pick(this,'q4','correct')">for</button>
+          <button class="mc-opt" onclick="pick(this,'q4','wrong')">since</button>
+        </div>
+        <div class="ex-fb" id="fb-q4"></div>
+      </div>
+
+      <div class="ex-item" id="q5">
+        <div class="ex-num">5.</div>
+        <div class="ex-sent">She has wanted to travel to Japan ___ she watched a documentary about it.</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="pick(this,'q5','wrong')">for</button>
+          <button class="mc-opt" onclick="pick(this,'q5','correct')">since</button>
+        </div>
+        <div class="ex-fb" id="fb-q5"></div>
+      </div>
+
+      <div class="ex-item" id="q6">
+        <div class="ex-num">6.</div>
+        <div class="ex-sent">He hasn't had a proper holiday ___ two years.</div>
+        <div class="mc-opts">
+          <button class="mc-opt" onclick="pick(this,'q6','correct')">for</button>
+          <button class="mc-opt" onclick="pick(this,'q6','wrong')">since</button>
+        </div>
+        <div class="ex-fb" id="fb-q6"></div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;align-items:center;">
+        <button class="btn btn-pri" onclick="checkEx1()">✓ Check Exercise 1</button>
+        <button class="btn btn-out" onclick="resetEx1()">↺ Reset</button>
+        <span class="score-pill" id="score1"></span>
+      </div>
+    </div>
+    <div class="card-footer">🔵 Multiple Choice <span style="background:#e0f5f1;color:#0d5045;padding:3px 10px;border-radius:12px;font-weight:700;">6 items</span></div>
+  </div>
+
+  <!-- ── EXERCISE 2 — Gap Fill ── -->
+  <div class="card">
+    <div class="prog-bar"><div class="prog-fill" style="width:50%"></div></div>
+    <div class="card-header">
+      <div class="card-icon" style="background:#fce8f3;">✍️</div>
+      <div>
+        <div class="card-title">Exercise 2 — Fill in the gaps</div>
+        <div class="card-sub">6 sentences · Type <em>for</em> or <em>since</em></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="instr"><strong>Write <em>for</em> or <em>since</em></strong> to complete each sentence.</div>
+
+      <div class="ex-item"><div class="ex-sent">1. I have lived in this city <input class="gf-inp" data-answer="for" placeholder="___"> three years, and I still discover new places every week.</div></div>
+      <div class="ex-item"><div class="ex-sent">2. She has known her travel partner <input class="gf-inp" data-answer="since" placeholder="___"> they met on a train in Portugal.</div></div>
+      <div class="ex-item"><div class="ex-sent">3. He has snowboarded <input class="gf-inp" data-answer="since" placeholder="___"> his first trip to the Alps — and he has never looked back.</div></div>
+      <div class="ex-item"><div class="ex-sent">4. I haven't played table tennis <input class="gf-inp" data-answer="for" placeholder="___"> a few months, but I want to start again.</div></div>
+      <div class="ex-item"><div class="ex-sent">5. They have worked in the same country <input class="gf-inp" data-answer="for" placeholder="___"> over a decade.</div></div>
+      <div class="ex-item"><div class="ex-sent">6. She has spoken the local language well <input class="gf-inp" data-answer="since" placeholder="___"> she passed her B2 exam.</div></div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;align-items:center;">
+        <button class="btn btn-pri" onclick="checkEx2()">✓ Check Exercise 2</button>
+        <button class="btn btn-out" onclick="resetEx2()">↺ Reset</button>
+        <span class="score-pill" id="score2"></span>
+      </div>
+    </div>
+    <div class="card-footer">✍️ Gap Fill <span style="background:#fce8f3;color:#a0306a;padding:3px 10px;border-radius:12px;font-weight:700;">6 sentences</span></div>
+  </div>
+
+  <!-- ── EXERCISE 3 — Writing ── -->
+  <div class="card">
+    <div class="prog-bar"><div class="prog-fill" style="width:85%"></div></div>
+    <div class="card-header">
+      <div class="card-icon" style="background:#d4f5ee;">✏️</div>
+      <div>
+        <div class="card-title">Exercise 3 — Write about your life</div>
+        <div class="card-sub">Use for &amp; since — your own true sentences</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="instr"><strong>Write 5–7 sentences</strong> about your own life. Use <strong>for</strong> at least twice and <strong>since</strong> at least twice. You can write about living abroad, snowboarding, table tennis, travel — or anything else that is true for you.</div>
+
+      <div class="writing-prompt">
+        <strong>Ideas:</strong> How long have you lived where you live? How long have you snowboarded or played table tennis? Something you haven't done for a while? A place you've wanted to visit since…?
+      </div>
+
+      <textarea class="writing-area" id="writing-ans" placeholder="Write your sentences here…"></textarea>
+      <div class="wc" id="wc">0 words</div>
+      <div class="fs-chip" id="fs-chip"></div>
+    </div>
+    <div class="card-footer">✏️ Writing <span style="background:#d4f5ee;color:#0d5045;padding:3px 10px;border-radius:12px;font-weight:700;">5–7 sentences</span></div>
+  </div>
+
+  <!-- Send -->
+  <div class="send-card">
+    <h3>📬 Send to Teacher</h3>
+    <p>Happy with your answers? Click below and your homework will open in your email app, ready to send!</p>
+    <button class="btn-send" onclick="sendHW()">📨 Send to Teacher</button>
+    <div id="send-msg" style="margin-top:12px;font-size:.86em;opacity:.8;display:none;"></div>
+  </div>
+
+  <div class="finish">
+    <div class="finish-icon">🌟</div>
+    <h2>Well done!</h2>
+    <p>You practised <em>for</em> &amp; <em>since</em> with Present Perfect.<br>See you in the next lesson!</p>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── Exercise 1 ──
+const ex1correct = { q1:'since', q2:'for', q3:'since', q4:'for', q5:'since', q6:'for' };
+const ex1exp = {
+  q1:"2021 is a specific year — a starting point → since.",
+  q2:"Twelve years is a period of time → for.",
+  q3:"Last Christmas is a specific moment → since.",
+  q4:"Ages is a period of time → for.",
+  q5:"She watched a documentary = a specific event → since.",
+  q6:"Two years is a period of time → for."
+};
+
+function pick(btn, id, result) {
+  btn.closest('.mc-opts').querySelectorAll('.mc-opt').forEach(b => b.classList.remove('selected','correct','wrong','reveal'));
+  btn.classList.add('selected');
+  btn.dataset.result = result;
+}
+
+function checkEx1() {
+  let score = 0;
+  Object.keys(ex1correct).forEach(id => {
+    const item = document.getElementById(id);
+    const sel  = item.querySelector('.mc-opt.selected');
+    const fb   = document.getElementById('fb-' + id);
+    if (!sel) { fb.innerHTML = '<span class="fb-err">Please choose an answer.</span>'; fb.classList.add('show'); return; }
+    if (sel.dataset.result === 'correct') {
+      sel.classList.remove('selected'); sel.classList.add('correct');
+      fb.innerHTML = '<span class="fb-ok">✓ Correct! ' + ex1exp[id] + '</span>';
+      score++;
+    } else {
+      sel.classList.remove('selected'); sel.classList.add('wrong');
+      item.querySelectorAll('.mc-opt').forEach(b => { if (b.dataset.result === 'correct') b.classList.add('reveal'); });
+      fb.innerHTML = '<span class="fb-err">✗ The answer is <strong>' + ex1correct[id] + '</strong>. ' + ex1exp[id] + '</span>';
+    }
+    fb.classList.add('show');
+  });
+  const sc = document.getElementById('score1');
+  sc.textContent = score + ' / 6'; sc.classList.add('show');
+}
+
+function resetEx1() {
+  ['q1','q2','q3','q4','q5','q6'].forEach(id => {
+    document.getElementById(id).querySelectorAll('.mc-opt').forEach(b => b.classList.remove('selected','correct','wrong','reveal'));
+    const fb = document.getElementById('fb-' + id); fb.classList.remove('show'); fb.innerHTML = '';
+  });
+  document.getElementById('score1').classList.remove('show');
+}
+
+// ── Exercise 2 ──
+function checkEx2() {
+  const inputs = document.querySelectorAll('.gf-inp');
+  let score = 0;
+  inputs.forEach(inp => {
+    const val = inp.value.toLowerCase().trim();
+    const ans = inp.dataset.answer;
+    inp.classList.remove('correct','wrong');
+    if (!val) return;
+    if (val === ans) { inp.classList.add('correct'); score++; }
+    else { inp.classList.add('wrong'); }
+  });
+  const sc = document.getElementById('score2');
+  sc.textContent = score + ' / ' + inputs.length; sc.classList.add('show');
+}
+
+function resetEx2() {
+  document.querySelectorAll('.gf-inp').forEach(i => { i.value = ''; i.classList.remove('correct','wrong'); });
+  document.getElementById('score2').classList.remove('show');
+}
+
+// ── Writing word count + for/since spotter ──
+const writingEl = document.getElementById('writing-ans');
+writingEl.addEventListener('input', () => {
+  const text = writingEl.value.trim();
+  const words = text ? text.split(/\s+/).length : 0;
+  document.getElementById('wc').textContent = words + ' word' + (words === 1 ? '' : 's');
+  const lower = text.toLowerCase();
+  const forCount   = (lower.match(/\bfor\b/g) || []).length;
+  const sinceCount = (lower.match(/\bsince\b/g) || []).length;
+  const chip = document.getElementById('fs-chip');
+  if (forCount + sinceCount > 0) {
+    chip.style.display = 'block';
+    chip.textContent = 'for: ' + forCount + ' time' + (forCount === 1 ? '' : 's') + ' · since: ' + sinceCount + ' time' + (sinceCount === 1 ? '' : 's');
+  } else {
+    chip.style.display = 'none';
+  }
+});
+
+// ── Send to Teacher ──
+function sendHW() {
+  const name = document.getElementById('student-name').value.trim() || 'Student';
+
+  const ex1labels = { q1:'She has lived in Vienna ___', q2:'He has snowboarded ___ almost twelve years', q3:"I haven't been back ___ last Christmas", q4:'They have played table tennis together ___', q5:'She has wanted to visit Japan ___ she watched a documentary', q6:"He hasn't had a holiday ___ two years" };
+  let ex1text = '';
+  ['q1','q2','q3','q4','q5','q6'].forEach((id,i) => {
+    const sel = document.getElementById(id).querySelector('.mc-opt.selected');
+    ex1text += (i+1) + '. ' + ex1labels[id] + ' → ' + (sel ? sel.textContent.trim() : '(no answer)') + '\n';
+  });
+
+  const ex2prompts = ['I have lived in this city ___ three years', 'She has known her travel partner ___ they met', 'He has snowboarded ___ his first trip to the Alps', "I haven't played table tennis ___ a few months", 'They have worked in the same country ___ a decade', 'She has spoken the local language well ___ her B2 exam'];
+  let ex2text = '';
+  document.querySelectorAll('.gf-inp').forEach((inp, i) => {
+    ex2text += (i+1) + '. ' + ex2prompts[i] + ' → ' + (inp.value.trim() || '(blank)') + '\n';
+  });
+
+  const writing = document.getElementById('writing-ans').value.trim() || '(no answer)';
+
+  const body =
+    'HOMEWORK: for & since\n' +
+    'Student: ' + name + '\n' +
+    '='.repeat(40) + '\n\n' +
+    'EXERCISE 1 — for or since? (Multiple Choice)\n' +
+    '-'.repeat(30) + '\n' +
+    ex1text + '\n' +
+    'EXERCISE 2 — Fill in the gaps\n' +
+    '-'.repeat(30) + '\n' +
+    ex2text + '\n' +
+    'EXERCISE 3 — Writing\n' +
+    '-'.repeat(30) + '\n' +
+    writing + '\n';
+
+  window.location.href = 'mailto:dariia.mlnk@gmail.com?subject=' + encodeURIComponent('Homework: for & since — ' + name) + '&body=' + encodeURIComponent(body);
+  const msg = document.getElementById('send-msg');
+  msg.style.display = 'block';
+  msg.textContent = 'Your email app should open now!';
+}
+</script>
+</body>
+</html>
