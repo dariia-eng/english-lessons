@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Homework | I'm Brazilian. And You? | A0 Lesson 2</title>
+<style>
+:root{
+  --primary:#0D9488;--primary-dark:#0F766E;
+  --green:#16A34A;--green-pale:#DCFCE7;--red:#DC2626;
+  --bg:#F0FDFA;--white:#fff;--border:#99F6E4;--text:#134E4A;
+  --muted:#6B7280;--radius:14px;--radius-sm:8px;
+  --shadow:0 2px 10px rgba(13,148,136,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:16px;min-height:100vh;}
+.hw-header{background:var(--primary);color:#fff;padding:18px 24px;}
+.hw-header h1{font-size:1.2rem;font-weight:800;margin-bottom:4px;}
+.hw-meta{font-size:.85rem;opacity:.82;margin-bottom:12px;}
+.prog-bar-wrap{background:rgba(255,255,255,.25);height:8px;border-radius:4px;overflow:hidden;margin-bottom:4px;}
+.prog-bar-fill{height:100%;background:#fff;border-radius:4px;transition:width .5s ease;}
+.prog-label{font-size:.78rem;opacity:.85;}
+.body{max-width:820px;margin:0 auto;padding:24px;}
+.section{background:#fff;border-radius:var(--radius);border:1px solid var(--border);padding:20px 24px;margin-bottom:20px;box-shadow:var(--shadow);transition:border-color .3s;}
+.section.checked{border-color:var(--green);}
+.sec-title{font-size:1.05rem;font-weight:800;color:var(--primary);margin-bottom:3px;}
+.sec-sub{font-size:.85rem;color:var(--muted);margin-bottom:14px;}
+.opt-group{display:inline-flex;flex-wrap:wrap;gap:6px;}
+.opt-btn{background:var(--bg);border:2px solid var(--border);border-radius:20px;padding:6px 16px;font-size:.95rem;cursor:pointer;transition:all .15s;font-weight:500;}
+.opt-btn:hover{border-color:var(--primary);color:var(--primary);}
+.opt-btn.selected{background:var(--primary);color:#fff;border-color:var(--primary);}
+.opt-btn.correct{background:var(--green-pale);color:var(--green);border-color:var(--green);}
+.opt-btn.wrong{background:#FEE2E2;color:var(--red);border-color:var(--red);}
+.btn-primary{background:var(--primary);color:#fff;border:none;border-radius:24px;padding:10px 24px;cursor:pointer;font-size:1rem;font-weight:700;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-outline{background:#fff;color:var(--primary);border:2px solid var(--primary);border-radius:24px;padding:8px 20px;cursor:pointer;font-size:.95rem;font-weight:700;}
+.btn-send{background:linear-gradient(135deg,#16A34A,#15803D);color:#fff;border:none;border-radius:24px;padding:12px 30px;cursor:pointer;font-size:1rem;font-weight:800;}
+.btn-send:hover{opacity:.9;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center;}
+.score-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-weight:700;font-size:.95rem;}
+.badge-green{background:var(--green-pale);color:var(--green);}
+.badge-amber{background:#FEF3C7;color:#D97706;}
+.badge-red{background:#FEE2E2;color:var(--red);}
+.sent-row{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start;flex-wrap:wrap;}
+.sent-num{font-weight:800;color:var(--primary);min-width:24px;padding-top:6px;}
+.write-box{border:none;border-bottom:2px solid var(--border);padding:4px 8px;font-size:.95rem;font-family:inherit;color:var(--text);background:transparent;width:180px;outline:none;}
+.write-box:focus{border-bottom-color:var(--primary);}
+.write-box.correct-input{border-bottom-color:var(--green);color:var(--green);}
+.write-box.wrong-input{border-bottom-color:var(--red);color:var(--red);}
+.check-mark{display:none;color:var(--green);font-weight:700;font-size:.85rem;margin-left:8px;}
+.section.checked .check-mark{display:inline;}
+.word-box{background:#F0FDFA;border:2px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.word-tag{background:#fff;border:1.5px solid var(--border);border-radius:6px;padding:3px 12px;font-size:.88rem;font-weight:600;color:var(--primary);}
+.bubble-wrap{background:#EFF6FF;border-radius:12px;padding:16px 18px;margin-bottom:16px;}
+.brow{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start;}
+.brow.right{justify-content:flex-end;}
+.bname{font-size:.78rem;font-weight:700;color:var(--muted);min-width:50px;padding-top:8px;}
+.bname.right{text-align:right;}
+.bubble{border-radius:12px;padding:9px 14px;font-size:.95rem;max-width:85%;}
+.bubble-a{background:#CCFBF1;}
+.bubble-b{background:var(--primary);color:#fff;}
+.gap-input{border:none;border-bottom:2px solid var(--primary);padding:2px 6px;font-size:.9rem;font-family:inherit;background:transparent;outline:none;width:120px;color:var(--text);vertical-align:middle;}
+.bubble-b .gap-input{border-bottom-color:rgba(255,255,255,.6);color:#fff;}
+.bubble-b .gap-input::placeholder{color:rgba(255,255,255,.5);}
+.gap-input.correct-input{border-bottom-color:var(--green)!important;}
+.gap-input.wrong-input{border-bottom-color:var(--red)!important;}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.match-left{font-weight:600;color:var(--text);}
+.flag{font-size:1.2rem;margin-right:4px;}
+.audio-box{background:#F0FDFA;border:2px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+.audio-btn{background:var(--primary);color:#fff;border:none;border-radius:50%;width:42px;height:42px;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<div class="hw-header">
+  <h1>&#128218; Homework &mdash; Lesson 2: I&apos;m Brazilian. And You?</h1>
+  <div class="hw-meta">A0 Beginner &nbsp;&middot;&nbsp; 1.1 &amp; 1.2 &nbsp;&middot;&nbsp; Виконай вдома! &#127968;</div>
+  <div class="prog-bar-wrap"><div class="prog-bar-fill" id="progFill" style="width:0%"></div></div>
+  <div class="prog-label">Progress / Прогрес: <span id="progText">0 / 5 exercises checked</span></div>
+</div>
+
+<div class="body">
+
+<!-- VIDEO -->
+<div class="section" id="sec-video">
+  <div class="sec-title">&#127909; Watch the video! / Подивись відео!</div>
+  <div class="sec-sub">Watch and listen. Then answer the question. / Дивись і слухай. Потім дай відповідь.</div>
+  <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;margin-bottom:16px">
+    <iframe src="https://www.youtube.com/embed/5ZJFfp62oCE"
+      style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;border-radius:10px"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
+  </div>
+  <div class="sec-sub">After watching: / Після перегляду:</div>
+  <div class="sent-row">
+    <span class="sent-num">1.</span>
+    <span>The video teaches you about&hellip; / Відео вчить вас&hellip;</span>
+    <div class="opt-group" id="vq1" data-answer="countries and nationalities">
+      <button class="opt-btn" data-val="numbers and colours" onclick="selectOpt(this)">numbers &amp; colours &#127912;</button>
+      <button class="opt-btn" data-val="countries and nationalities" onclick="selectOpt(this)">countries &amp; nationalities &#127758;</button>
+      <button class="opt-btn" data-val="food and drinks" onclick="selectOpt(this)">food &amp; drinks &#127829;</button>
+    </div>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">2.</span>
+    <span>Tick the countries you hear: / Відзнач країни, які чуєш:</span>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;padding:6px 0 14px 30px">
+    <button class="opt-btn" onclick="toggleWord(this)">&#127463;&#127479; Brazil</button>
+    <button class="opt-btn" onclick="toggleWord(this)">&#127463;&#127468; Bulgaria</button>
+    <button class="opt-btn" onclick="toggleWord(this)">&#127468;&#127463; United Kingdom</button>
+    <button class="opt-btn" onclick="toggleWord(this)">&#127471;&#127477; Japan</button>
+    <button class="opt-btn" onclick="toggleWord(this)">&#127482;&#127462; Ukraine</button>
+    <button class="opt-btn" onclick="toggleWord(this)">&#127474;&#127485; Mexico</button>
+    <button class="opt-btn" onclick="toggleWord(this)">&#127467;&#127479; France</button>
+    <button class="opt-btn" onclick="toggleWord(this)">&#127472;&#127479; South Korea</button>
+  </div>
+  <div class="btn-row">
+    <button class="btn-primary" onclick="checkSec('sec-video',['vq1'],'sc-v')">Check &#10003;</button>
+    <button class="btn-outline" onclick="resetSec(['vq1'],'sc-v','sec-video')">Reset</button>
+    <span id="sc-v"></span><span class="check-mark">&#10003; Done!</span>
+  </div>
+</div>
+
+<!-- EX 1: Countries & Nationalities -->
+<div class="section" id="sec-1">
+  <div class="sec-title">&#127758; Exercise 1 &mdash; Countries &amp; Nationalities / Країни та національності</div>
+  <div class="sec-sub">Click the correct answer. / Оберіть правильну відповідь. &nbsp;(1.1, Ex 1)</div>
+
+  <div class="sent-row"><span class="sent-num">1.</span><span>I&apos;m from Lima in ___. I&apos;m Peruvian.</span>
+    <div class="opt-group" id="c1" data-answer="Peru"><button class="opt-btn" data-val="Chile" onclick="selectOpt(this)">Chile</button><button class="opt-btn" data-val="Peru" onclick="selectOpt(this)">Peru</button><button class="opt-btn" data-val="Colombia" onclick="selectOpt(this)">Colombia</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">2.</span><span>I&apos;m ___. I&apos;m from Tokyo in Japan.</span>
+    <div class="opt-group" id="c2" data-answer="Japanese"><button class="opt-btn" data-val="Korean" onclick="selectOpt(this)">Korean</button><button class="opt-btn" data-val="Chinese" onclick="selectOpt(this)">Chinese</button><button class="opt-btn" data-val="Japanese" onclick="selectOpt(this)">Japanese</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">3.</span><span>I&apos;m ___. I&apos;m from Madrid in Spain.</span>
+    <div class="opt-group" id="c3" data-answer="Spanish"><button class="opt-btn" data-val="Spanish" onclick="selectOpt(this)">Spanish</button><button class="opt-btn" data-val="Italian" onclick="selectOpt(this)">Italian</button><button class="opt-btn" data-val="Peruvian" onclick="selectOpt(this)">Peruvian</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">4.</span><span>I&apos;m from Medell&iacute;n in ___. I&apos;m Colombian.</span>
+    <div class="opt-group" id="c4" data-answer="Colombia"><button class="opt-btn" data-val="Mexico" onclick="selectOpt(this)">Mexico</button><button class="opt-btn" data-val="Colombia" onclick="selectOpt(this)">Colombia</button><button class="opt-btn" data-val="Ecuador" onclick="selectOpt(this)">Ecuador</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">5.</span><span>I&apos;m ___. I&apos;m from Rio de Janeiro in Brazil.</span>
+    <div class="opt-group" id="c5" data-answer="Brazilian"><button class="opt-btn" data-val="Argentinian" onclick="selectOpt(this)">Argentinian</button><button class="opt-btn" data-val="Brazilian" onclick="selectOpt(this)">Brazilian</button><button class="opt-btn" data-val="Chilean" onclick="selectOpt(this)">Chilean</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">6.</span><span>I&apos;m from Beijing in ___. I&apos;m Chinese.</span>
+    <div class="opt-group" id="c6" data-answer="China"><button class="opt-btn" data-val="China" onclick="selectOpt(this)">China</button><button class="opt-btn" data-val="Japan" onclick="selectOpt(this)">Japan</button><button class="opt-btn" data-val="Russia" onclick="selectOpt(this)">Russia</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">7.</span><span>I&apos;m ___. I&apos;m from Moscow in Russia.</span>
+    <div class="opt-group" id="c7" data-answer="Russian"><button class="opt-btn" data-val="Chinese" onclick="selectOpt(this)">Chinese</button><button class="opt-btn" data-val="Russian" onclick="selectOpt(this)">Russian</button><button class="opt-btn" data-val="American" onclick="selectOpt(this)">American</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">8.</span><span>I&apos;m from Miami in ___. I&apos;m American.</span>
+    <div class="opt-group" id="c8" data-answer="the USA"><button class="opt-btn" data-val="Canada" onclick="selectOpt(this)">Canada</button><button class="opt-btn" data-val="the UK" onclick="selectOpt(this)">the UK</button><button class="opt-btn" data-val="the USA" onclick="selectOpt(this)">the USA</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">9.</span><span>I&apos;m from Seoul in South Korea. I&apos;m ___.</span>
+    <div class="opt-group" id="c9" data-answer="Korean"><button class="opt-btn" data-val="Japanese" onclick="selectOpt(this)">Japanese</button><button class="opt-btn" data-val="Korean" onclick="selectOpt(this)">Korean</button><button class="opt-btn" data-val="Chinese" onclick="selectOpt(this)">Chinese</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">10.</span><span>I&apos;m ___. I&apos;m from Mexico City in Mexico.</span>
+    <div class="opt-group" id="c10" data-answer="Mexican"><button class="opt-btn" data-val="Chilean" onclick="selectOpt(this)">Chilean</button><button class="opt-btn" data-val="Ecuadorian" onclick="selectOpt(this)">Ecuadorian</button><button class="opt-btn" data-val="Mexican" onclick="selectOpt(this)">Mexican</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">11.</span><span>I&apos;m from Quito in Ecuador. I&apos;m ___.</span>
+    <div class="opt-group" id="c11" data-answer="Ecuadorian"><button class="opt-btn" data-val="Ecuadorian" onclick="selectOpt(this)">Ecuadorian</button><button class="opt-btn" data-val="Honduran" onclick="selectOpt(this)">Honduran</button><button class="opt-btn" data-val="Colombian" onclick="selectOpt(this)">Colombian</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">12.</span><span>I&apos;m ___. I&apos;m from Paris in France.</span>
+    <div class="opt-group" id="c12" data-answer="French"><button class="opt-btn" data-val="Spanish" onclick="selectOpt(this)">Spanish</button><button class="opt-btn" data-val="French" onclick="selectOpt(this)">French</button><button class="opt-btn" data-val="Italian" onclick="selectOpt(this)">Italian</button></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-primary" onclick="checkSec('sec-1',['c1','c2','c3','c4','c5','c6','c7','c8','c9','c10','c11','c12'],'sc-1')">Check &#10003;</button>
+    <button class="btn-outline" onclick="resetSec(['c1','c2','c3','c4','c5','c6','c7','c8','c9','c10','c11','c12'],'sc-1','sec-1')">Reset</button>
+    <span id="sc-1"></span><span class="check-mark">&#10003; Done!</span>
+  </div>
+</div>
+
+<!-- EX 2: Grammar am/are -->
+<div class="section" id="sec-2">
+  <div class="sec-title">&#128218; Exercise 2 &mdash; Grammar: <em>am</em> / <em>are</em></div>
+  <div class="sec-sub">Click the correct word. / Оберіть правильне слово. &nbsp;(1.1, Ex 2A)</div>
+  <div class="sent-row"><span class="sent-num">1.</span><span>I <strong>___</strong> Mexican.</span>
+    <div class="opt-group" id="g1" data-answer="am"><button class="opt-btn" data-val="am" onclick="selectOpt(this)">am</button><button class="opt-btn" data-val="are" onclick="selectOpt(this)">are</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">2.</span><span><strong>___</strong> you from Russia?</span>
+    <div class="opt-group" id="g2" data-answer="Are"><button class="opt-btn" data-val="Am" onclick="selectOpt(this)">Am</button><button class="opt-btn" data-val="Are" onclick="selectOpt(this)">Are</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">3.</span><span><strong>___</strong> you Mar&iacute;a?</span>
+    <div class="opt-group" id="g3" data-answer="Are"><button class="opt-btn" data-val="Am" onclick="selectOpt(this)">Am</button><button class="opt-btn" data-val="Are" onclick="selectOpt(this)">Are</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">4.</span><span>No, I <strong>&apos;m / &apos;re</strong> Diana.</span>
+    <div class="opt-group" id="g4" data-answer="'m"><button class="opt-btn" data-val="'m" onclick="selectOpt(this)">&apos;m</button><button class="opt-btn" data-val="'re" onclick="selectOpt(this)">&apos;re</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">5.</span><span>You <strong>&apos;m / &apos;re</strong> not Ivan.</span>
+    <div class="opt-group" id="g5" data-answer="'re"><button class="opt-btn" data-val="'m" onclick="selectOpt(this)">&apos;m</button><button class="opt-btn" data-val="'re" onclick="selectOpt(this)">&apos;re</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">6.</span><span>Yes, I <strong>&apos;m / &apos;re</strong> in Seoul!</span>
+    <div class="opt-group" id="g6" data-answer="'m"><button class="opt-btn" data-val="'m" onclick="selectOpt(this)">&apos;m</button><button class="opt-btn" data-val="'re" onclick="selectOpt(this)">&apos;re</button></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-primary" onclick="checkSec('sec-2',['g1','g2','g3','g4','g5','g6'],'sc-2')">Check &#10003;</button>
+    <button class="btn-outline" onclick="resetSec(['g1','g2','g3','g4','g5','g6'],'sc-2','sec-2')">Reset</button>
+    <span id="sc-2"></span><span class="check-mark">&#10003; Done!</span>
+  </div>
+</div>
+
+<!-- EX 3: Complete the conversation -->
+<div class="section" id="sec-3">
+  <div class="sec-title">&#127908; Exercise 3 &mdash; Complete the Conversation / Доповни діалог</div>
+  <div class="sec-sub">Use the words in the box. / Використай слова з рамки. &nbsp;(1.1, Ex 2B)</div>
+  <div class="word-box">
+    <span style="font-size:.8rem;font-weight:700;color:var(--muted);margin-right:4px">Word box:</span>
+    <span class="word-tag">&apos;m</span><span class="word-tag">are</span><span class="word-tag">Are you</span><span class="word-tag">I am</span><span class="word-tag">I&apos;m</span><span class="word-tag">I&apos;m not</span><span class="word-tag">you</span><span class="word-tag">you&apos;re</span>
+  </div>
+  <div class="bubble-wrap">
+    <!-- Tony 1 -->
+    <div class="brow">
+      <span class="bname">Tony</span>
+      <div class="bubble bubble-a"><sup>1</sup> <input class="gap-input" id="d1" placeholder="___"> Ana?</div>
+    </div>
+    <!-- Ana 2 -->
+    <div class="brow right">
+      <div class="bubble bubble-b">Yes, <sup>2</sup> <input class="gap-input" id="d2" placeholder="___">.</div>
+      <span class="bname right">Ana</span>
+    </div>
+    <!-- Tony 3 -->
+    <div class="brow">
+      <span class="bname">Tony</span>
+      <div class="bubble bubble-a">Hi, <sup>3</sup> <input class="gap-input" id="d3" placeholder="___"> Tony. I&apos;m from Lima.</div>
+    </div>
+    <!-- Ana 4+5 -->
+    <div class="brow right">
+      <div class="bubble bubble-b">Oh, <sup>4</sup> <input class="gap-input" id="d4" placeholder="___"> Peruvian. I <sup>5</sup> <input class="gap-input" id="d5" placeholder="___" style="width:80px"> Brazilian.</div>
+      <span class="bname right">Ana</span>
+    </div>
+    <!-- Tony 6 -->
+    <div class="brow">
+      <span class="bname">Tony</span>
+      <div class="bubble bubble-a"><sup>6</sup> <input class="gap-input" id="d6" placeholder="___" style="width:60px"> you from Rio?</div>
+    </div>
+    <!-- Ana 7 -->
+    <div class="brow right">
+      <div class="bubble bubble-b">No, <sup>7</sup> <input class="gap-input" id="d7" placeholder="___">. I&apos;m not from Rio or S&atilde;o Paulo.</div>
+      <span class="bname right">Ana</span>
+    </div>
+    <!-- Tony 8 -->
+    <div class="brow">
+      <span class="bname">Tony</span>
+      <div class="bubble bubble-a">Are <sup>8</sup> <input class="gap-input" id="d8" placeholder="___" style="width:60px"> from Bras&iacute;lia?</div>
+    </div>
+    <!-- Ana -->
+    <div class="brow right">
+      <div class="bubble bubble-b">Yes.</div>
+      <span class="bname right">Ana</span>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-primary" onclick="checkDialogue()">Check &#10003;</button>
+    <button class="btn-outline" onclick="resetDialogue()">Reset</button>
+    <span id="sc-3"></span><span class="check-mark">&#10003; Done!</span>
+  </div>
+</div>
+
+<!-- EX 4: Alphabet - Listen -->
+<div class="section" id="sec-audio">
+  <div class="sec-title">&#127897;&#65039; Exercise 4 &mdash; The Alphabet: Listen &amp; Write / Абетка: Слухай &amp; Пиши</div>
+  <div class="sec-sub">Click the &#9654; button to open the audio. Listen and write the words the speakers spell. / Натисни &#9654; щоб відкрити аудіо. Слухай і напиши слова, які вимовляють по буквах. &nbsp;(1.2, Ex 1A)</div>
+  <div class="audio-box">
+    <a class="audio-btn" href="https://www.youtube.com/watch?v=kuj8hPpPplA&list=PLVs--rpogoEMFnZ9SjaBNPZbj1fyeBS8N&index=12" target="_blank" title="Open audio">&#9654;</a>
+    <div>
+      <div style="font-weight:700;color:var(--primary);margin-bottom:2px">&#127897;&#65039; Track 1.01 — Spelling</div>
+      <div style="font-size:.82rem;color:var(--muted)">Click to open in YouTube. Listen carefully &rarr; / Натисни, щоб відкрити. Слухай уважно &rarr;</div>
+    </div>
+  </div>
+  <div style="background:#FFFBEB;border-radius:8px;padding:10px 14px;font-size:.85rem;color:#92400E;margin-bottom:14px">
+    &#128161; <strong>Tip / Порада:</strong> You can pause and rewind the audio as many times as you need! / Ти можеш ставити на паузу і перемотувати скільки завгодно!
+  </div>
+  <div class="sent-row"><span class="sent-num">1.</span><span>&#9654; <em>Palmira</em> (example / приклад)</span></div>
+  <div class="sent-row"><span class="sent-num">2.</span><input class="write-box" id="a2" placeholder="write here&hellip;" style="width:200px"></div>
+  <div class="sent-row"><span class="sent-num">3.</span><input class="write-box" id="a3" placeholder="write here&hellip;" style="width:200px"></div>
+  <div class="sent-row"><span class="sent-num">4.</span><input class="write-box" id="a4" placeholder="write here&hellip;" style="width:200px"></div>
+  <div class="sent-row"><span class="sent-num">5.</span><input class="write-box" id="a5" placeholder="write here&hellip;" style="width:200px"></div>
+  <div style="margin-top:12px;font-size:.83rem;color:var(--muted);font-style:italic">&#128338; Teacher will check this exercise. / Вчитель перевірить це завдання.</div>
+</div>
+
+<!-- EX 5: Match personal info -->
+<div class="section" id="sec-4">
+  <div class="sec-title">&#128101; Exercise 5 &mdash; Personal Information / Особиста інформація</div>
+  <div class="sec-sub">Click the correct category. / Оберіть правильну категорію. &nbsp;(1.2, Ex 1B)</div>
+  <div class="sent-row"><span class="sent-num">1.</span><span style="min-width:240px;font-weight:600">Harvard University</span>
+    <div class="opt-group" id="m1" data-answer="college"><button class="opt-btn" data-val="company" onclick="selectOpt(this)">company</button><button class="opt-btn" data-val="college" onclick="selectOpt(this)">college</button><button class="opt-btn" data-val="first name" onclick="selectOpt(this)">first name</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">2.</span><span style="min-width:240px;font-weight:600">Toyota</span>
+    <div class="opt-group" id="m2" data-answer="company"><button class="opt-btn" data-val="last name" onclick="selectOpt(this)">last name</button><button class="opt-btn" data-val="college" onclick="selectOpt(this)">college</button><button class="opt-btn" data-val="company" onclick="selectOpt(this)">company</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">3.</span><span style="min-width:240px;font-weight:600">tonyravella@mymail.org</span>
+    <div class="opt-group" id="m3" data-answer="email address"><button class="opt-btn" data-val="email address" onclick="selectOpt(this)">email address</button><button class="opt-btn" data-val="company" onclick="selectOpt(this)">company</button><button class="opt-btn" data-val="first name" onclick="selectOpt(this)">first name</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">4.</span><span style="min-width:240px;font-weight:600">Ravella</span>
+    <div class="opt-group" id="m4" data-answer="last name"><button class="opt-btn" data-val="first name" onclick="selectOpt(this)">first name</button><button class="opt-btn" data-val="last name" onclick="selectOpt(this)">last name</button><button class="opt-btn" data-val="college" onclick="selectOpt(this)">college</button></div>
+  </div>
+  <div class="sent-row"><span class="sent-num">5.</span><span style="min-width:240px;font-weight:600">Tony</span>
+    <div class="opt-group" id="m5" data-answer="first name"><button class="opt-btn" data-val="last name" onclick="selectOpt(this)">last name</button><button class="opt-btn" data-val="email address" onclick="selectOpt(this)">email address</button><button class="opt-btn" data-val="first name" onclick="selectOpt(this)">first name</button></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-primary" onclick="checkSec('sec-4',['m1','m2','m3','m4','m5'],'sc-4')">Check &#10003;</button>
+    <button class="btn-outline" onclick="resetSec(['m1','m2','m3','m4','m5'],'sc-4','sec-4')">Reset</button>
+    <span id="sc-4"></span><span class="check-mark">&#10003; Done!</span>
+  </div>
+</div>
+
+<!-- EX 6: Make sentences -->
+<div class="section" id="sec-5">
+  <div class="sec-title">&#9997; Exercise 6 &mdash; Make Sentences / Склади речення</div>
+  <div class="sec-sub">Complete the sentences about Tony. / Доповни речення про Тоні. &nbsp;(1.2, Ex 1C)</div>
+  <div style="background:#F0FDFA;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.9rem">
+    &#128161; Example / Приклад: &nbsp;<em>My college is Harvard University.</em>
+  </div>
+  <div class="sent-row"><span class="sent-num">2.</span><input class="write-box" id="s2" data-answer="My company is Toyota." placeholder="Write a sentence&hellip;" style="width:340px"></div>
+  <div class="sent-row"><span class="sent-num">3.</span><input class="write-box" id="s3" data-answer="My email address is tonyravella@mymail.org." placeholder="Write a sentence&hellip;" style="width:340px"></div>
+  <div class="sent-row"><span class="sent-num">4.</span><input class="write-box" id="s4" data-answer="My last name is Ravella." placeholder="Write a sentence&hellip;" style="width:340px"></div>
+  <div class="sent-row"><span class="sent-num">5.</span><input class="write-box" id="s5" data-answer="My first name is Tony." placeholder="Write a sentence&hellip;" style="width:340px"></div>
+  <div class="btn-row">
+    <button class="btn-primary" onclick="checkWriteSec('sec-5',['s2','s3','s4','s5'],'sc-5')">Check &#10003;</button>
+    <button class="btn-outline" onclick="resetWriteSec2(['s2','s3','s4','s5'],'sc-5','sec-5')">Reset</button>
+    <span id="sc-5"></span><span class="check-mark">&#10003; Done!</span>
+  </div>
+</div>
+
+<!-- SEND TO TEACHER -->
+<div class="section" style="text-align:center;background:linear-gradient(135deg,#F0FDFA,#CCFBF1)">
+  <div style="font-size:2rem;margin-bottom:8px">&#128140;</div>
+  <div class="sec-title" style="text-align:center;font-size:1.1rem;margin-bottom:6px">Send to Teacher / Надіслати вчителю</div>
+  <div class="sec-sub" style="text-align:center;margin-bottom:18px">Check all exercises first, then send! / Спочатку перевір всі завдання, потім надішли!</div>
+  <div id="send-warning" style="color:#D97706;font-weight:700;font-size:.88rem;margin-bottom:12px;display:none">&#9888; Please check exercises 1&ndash;5 first! / Спочатку перевір завдання 1&ndash;5!</div>
+  <button class="btn-send" onclick="sendToTeacher()">&#128140; Send to Teacher / Надіслати вчителю</button>
+</div>
+
+</div><!-- /body -->
+
+<script>
+var checkedSections = {};
+var totalSections = 5;
+
+function updateProgress(){
+  var count = Object.keys(checkedSections).length;
+  var pct = Math.round(count / totalSections * 100);
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progText').textContent = count + ' / ' + totalSections + ' exercises checked';
+}
+
+function toggleWord(btn){ btn.classList.toggle('selected'); }
+
+function selectOpt(btn){
+  var g = btn.parentElement;
+  g.querySelectorAll('.opt-btn').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+  btn.classList.add('selected');
+  g.dataset.selected = btn.dataset.val;
+}
+
+function checkGroup(id){
+  var g = document.getElementById(id);
+  var sel = g.dataset.selected, ans = g.dataset.answer;
+  if(!sel){ return 0; }
+  var ok = sel === ans;
+  g.querySelectorAll('.opt-btn').forEach(function(b){
+    b.classList.remove('correct','wrong');
+    if(b.dataset.val === sel){ b.classList.add(ok ? 'correct' : 'wrong'); }
+  });
+  return ok ? 1 : 0;
+}
+
+function setScore(el, s, t){
+  var e = document.getElementById(el);
+  e.textContent = s + ' / ' + t;
+  e.className = 'score-badge ' + (s === t ? 'badge-green' : s >= Math.ceil(t/2) ? 'badge-amber' : 'badge-red');
+}
+
+function checkSec(secId, ids, scoreEl){
+  var s = 0, t = ids.length;
+  ids.forEach(function(id){ s += checkGroup(id); });
+  setScore(scoreEl, s, t);
+  document.getElementById(secId).classList.add('checked');
+  checkedSections[secId] = {score: s, total: t};
+  updateProgress();
+}
+
+function resetSec(ids, scoreEl, secId){
+  ids.forEach(function(id){
+    var g = document.getElementById(id);
+    g.querySelectorAll('.opt-btn').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    delete g.dataset.selected;
+  });
+  var e = document.getElementById(scoreEl);
+  if(e){ e.textContent = ''; e.className = ''; }
+  document.getElementById(secId).classList.remove('checked');
+  delete checkedSections[secId];
+  updateProgress();
+}
+
+var dialogueAnswers = {d1:"are you",d2:"i am",d3:"im",d4:"youre",d5:"m not",d6:"are",d7:"im not",d8:"you"};
+function normalise(v){ return v.trim().toLowerCase().replace(/['‘’]/g,'').replace(/\s+/g,' '); }
+function checkDialogue(){
+  var s=0, t=8;
+  ['d1','d2','d3','d4','d5','d6','d7','d8'].forEach(function(id){
+    var inp=document.getElementById(id);
+    inp.classList.remove('correct-input','wrong-input');
+    var ok = normalise(inp.value) === dialogueAnswers[id];
+    inp.classList.add(ok?'correct-input':'wrong-input');
+    if(ok) s++;
+  });
+  setScore('sc-3',s,t);
+  document.getElementById('sec-3').classList.add('checked');
+  checkedSections['sec-3']={score:s,total:t};
+  updateProgress();
+}
+function resetDialogue(){
+  ['d1','d2','d3','d4','d5','d6','d7','d8'].forEach(function(id){
+    var inp=document.getElementById(id);
+    inp.value='';
+    inp.classList.remove('correct-input','wrong-input');
+  });
+  var e=document.getElementById('sc-3');
+  if(e){e.textContent='';e.className='';}
+  document.getElementById('sec-3').classList.remove('checked');
+  delete checkedSections['sec-3'];
+  updateProgress();
+}
+function checkWriteSec(secId, ids, scoreEl){
+  var s = 0, t = ids.length;
+  ids.forEach(function(id){
+    var inp = document.getElementById(id);
+    inp.classList.remove('correct-input','wrong-input');
+    var val = inp.value.trim().toLowerCase().replace(/\s+/g,' ');
+    var ans = inp.dataset.answer.toLowerCase().replace(/\./g,'').trim();
+    var valClean = val.replace(/\./g,'').trim();
+    if(valClean === ans){ inp.classList.add('correct-input'); s++; }
+    else { inp.classList.add('wrong-input'); }
+  });
+  setScore(scoreEl, s, t);
+  document.getElementById(secId).classList.add('checked');
+  checkedSections[secId] = {score: s, total: t};
+  updateProgress();
+}
+
+function resetWriteSec2(ids, scoreEl, secId){
+  ids.forEach(function(id){
+    var inp = document.getElementById(id);
+    inp.value = '';
+    inp.classList.remove('correct-input','wrong-input');
+  });
+  var e = document.getElementById(scoreEl);
+  if(e){ e.textContent = ''; e.className = ''; }
+  document.getElementById(secId).classList.remove('checked');
+  delete checkedSections[secId];
+  updateProgress();
+}
+
+function getResult(secKey, label){
+  var r = checkedSections[secKey];
+  if(!r){ return label + ': not checked\n'; }
+  return label + ': ' + r.score + ' / ' + r.total + '\n';
+}
+
+function sendToTeacher(){
+  if(Object.keys(checkedSections).length < totalSections){
+    document.getElementById('send-warning').style.display = 'block';
+    return;
+  }
+  document.getElementById('send-warning').style.display = 'none';
+
+  var lines = [];
+  lines.push("HOMEWORK RESULTS - Lesson 2: I'm Brazilian. And You?");
+  lines.push('Student: A0 Beginner');
+  lines.push('--------------------------------------------');
+  lines.push(getResult('sec-video', 'Video question'));
+  lines.push(getResult('sec-1',     'Ex 1 - Countries & Nationalities (12 q)'));
+  lines.push(getResult('sec-2',     'Ex 2 - Grammar am/are (6 q)'));
+  lines.push(getResult('sec-3',     'Ex 3 - Tony & Ana dialogue (8 q)'));
+  lines.push(getResult('sec-4',     'Ex 5 - Personal Info matching (5 q)'));
+  lines.push(getResult('sec-5',     'Ex 6 - Make sentences (4 q)'));
+
+  var a2 = document.getElementById('a2').value||'(empty)';
+  var a3 = document.getElementById('a3').value||'(empty)';
+  var a4 = document.getElementById('a4').value||'(empty)';
+  var a5 = document.getElementById('a5').value||'(empty)';
+  lines.push('Ex 4 - Alphabet listening (teacher check): ' + [a2,a3,a4,a5].join(', '));
+
+  var total = 0, max = 0;
+  Object.values(checkedSections).forEach(function(r){ total += r.score; max += r.total; });
+  lines.push('--------------------------------------------');
+  lines.push('TOTAL: ' + total + ' / ' + max);
+
+  var body = encodeURIComponent(lines.join('\n'));
+  var subject = encodeURIComponent("Homework Results - A0 Lesson 2 (I'm Brazilian)");
+  window.location.href = 'mailto:dariia.mlnk@gmail.com?subject=' + subject + '&body=' + body;
+}
+</script>
+</body>
+</html>
