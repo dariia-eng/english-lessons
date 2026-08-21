@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2-B1 Homework — Comparatives &amp; Superlatives</title>
+<style>
+:root {
+  --primary: #7C3AED;
+  --primary-light: #EDE9FE;
+  --secondary: #DB2777;
+  --green: #16A34A;
+  --green-pale: #DCFCE7;
+  --red: #DC2626;
+  --red-pale: #FEE2E2;
+  --amber: #D97706;
+  --amber-pale: #FEF3C7;
+  --text: #1F2937;
+  --muted: #6B7280;
+  --border: #E5E7EB;
+  --bg: #F9FAFB;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+
+/* Header */
+.hw-header {
+  background: linear-gradient(135deg, #7C3AED 0%, #DB2777 100%);
+  color: #fff;
+  padding: 28px 24px 20px;
+  text-align: center;
+}
+.hw-title { font-size: 1.45rem; font-weight: 800; margin-bottom: 4px; }
+.hw-sub { font-size: .9rem; opacity: .85; margin-bottom: 18px; }
+.progress-wrap { background: rgba(255,255,255,.25); border-radius: 20px; height: 10px; max-width: 420px; margin: 0 auto; }
+.progress-bar { background: #fff; border-radius: 20px; height: 10px; width: 0%; transition: width .4s; }
+.progress-label { font-size: .8rem; opacity: .8; margin-top: 7px; }
+
+/* Container */
+.container { max-width: 780px; margin: 0 auto; padding: 28px 16px 16px; }
+
+/* Cards */
+.sec-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 5px rgba(0,0,0,.08);
+}
+.sec-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+.sec-icon { font-size: 1.35rem; }
+.sec-title { font-size: 1.05rem; font-weight: 800; color: var(--primary); }
+.sec-checked { display: none; background: var(--green-pale); color: var(--green); font-size: .78rem; font-weight: 700; border-radius: 12px; padding: 2px 10px; }
+.sec-desc { color: var(--muted); font-size: .9rem; margin-bottom: 16px; line-height: 1.55; }
+
+/* Word box */
+.word-box {
+  background: var(--primary-light);
+  border: 2px solid #C4B5FD;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 18px;
+  letter-spacing: .3px;
+}
+
+/* Exercise items */
+.ex-item { margin-bottom: 18px; }
+.ex-q { font-size: .95rem; margin-bottom: 8px; line-height: 1.55; }
+.ex-num { font-weight: 700; color: var(--primary); }
+
+/* Options */
+.opt-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.opt {
+  background: #F3F4F6; border: 2px solid transparent; border-radius: 8px;
+  padding: 7px 14px; font-size: .88rem; cursor: pointer; font-family: inherit; transition: all .15s;
+}
+.opt:hover { border-color: var(--primary); background: var(--primary-light); }
+.opt.sel { background: var(--primary-light); border-color: var(--primary); color: var(--primary); font-weight: 600; }
+.opt.correct { background: var(--green-pale); border-color: var(--green); color: var(--green); font-weight: 600; }
+.opt.wrong { background: var(--red-pale); border-color: var(--red); color: var(--red); }
+
+/* Gap inputs */
+.gap-input {
+  border: none; border-bottom: 2px solid var(--primary);
+  padding: 2px 6px; font-size: .9rem; font-family: inherit;
+  background: transparent; outline: none; width: 180px;
+  color: var(--text); vertical-align: middle;
+}
+.gap-input.correct-input { border-bottom-color: var(--green) !important; }
+.gap-input.wrong-input { border-bottom-color: var(--red) !important; }
+
+/* Write boxes */
+.write-box {
+  width: 100%; border: 2px solid var(--border); border-radius: 8px;
+  padding: 10px 12px; font-size: .9rem; font-family: inherit;
+  outline: none; margin-top: 6px; color: var(--text);
+  resize: vertical; min-height: 44px;
+}
+.write-box:focus { border-color: var(--primary); }
+.write-row { margin-bottom: 18px; }
+.write-label { font-size: .9rem; font-weight: 600; color: var(--text); }
+
+/* Feedback */
+.fb { font-size: .85rem; margin-top: 6px; padding: 4px 8px; border-radius: 6px; display: none; }
+.fb.show { display: block; }
+.fb.ok { background: var(--green-pale); color: var(--green); }
+.fb.err { background: var(--red-pale); color: var(--red); }
+
+/* Score badge */
+.score-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: .85rem; font-weight: 700; margin-left: 8px; }
+.badge-green { background: var(--green-pale); color: var(--green); }
+.badge-amber { background: var(--amber-pale); color: var(--amber); }
+.badge-red { background: var(--red-pale); color: var(--red); }
+
+/* Buttons */
+.btn-row { display: flex; align-items: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.btn-check {
+  background: linear-gradient(135deg, #7C3AED, #DB2777);
+  color: #fff; border: none; border-radius: 8px;
+  padding: 9px 20px; font-size: .9rem; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+}
+.btn-check:hover { opacity: .88; }
+.btn-reset {
+  background: #F3F4F6; color: var(--muted); border: none;
+  border-radius: 8px; padding: 9px 16px; font-size: .88rem;
+  cursor: pointer; font-family: inherit;
+}
+
+/* Tip box */
+.tip-box {
+  background: var(--amber-pale); border-left: 4px solid var(--amber);
+  border-radius: 8px; padding: 10px 14px; font-size: .88rem;
+  color: #78350F; margin-bottom: 16px;
+}
+
+/* Send section */
+.send-section { text-align: center; padding: 24px 0 48px; }
+.btn-send {
+  background: linear-gradient(135deg, #7C3AED, #DB2777);
+  color: #fff; border: none; border-radius: 12px;
+  padding: 14px 36px; font-size: 1rem; font-weight: 800;
+  cursor: pointer; font-family: inherit;
+  box-shadow: 0 4px 14px rgba(124,58,237,.3);
+}
+.btn-send:hover { opacity: .88; }
+.send-label { font-size: .85rem; color: var(--muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<div class="hw-header">
+  <div class="hw-title">🧠 Homework — Comparatives &amp; Superlatives</div>
+  <div class="hw-sub">A2-B1 Lesson 2 &nbsp;·&nbsp; Complete all 5 exercises, then send to your teacher!</div>
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+  <div class="progress-label" id="progress-label">0 / 5 sections complete</div>
+</div>
+
+<div class="container">
+
+  <!-- ===== SECTION 1: VOCABULARY ===== -->
+  <div class="sec-card" id="sec-1">
+    <div class="sec-title-row">
+      <span class="sec-icon">📚</span>
+      <span class="sec-title">Exercise 1 — Vocabulary</span>
+      <span class="sec-checked" id="check-1">✓ Done</span>
+    </div>
+    <p class="sec-desc">Read each description and choose the correct adjective from the box.</p>
+    <div class="word-box">logical &nbsp;·&nbsp; imaginative &nbsp;·&nbsp; curious &nbsp;·&nbsp; organised &nbsp;·&nbsp; competitive &nbsp;·&nbsp; determined</div>
+
+    <div class="ex-item" id="v1">
+      <div class="ex-q"><span class="ex-num">1.</span> This person loves to learn new things and always asks questions.</div>
+      <div class="opt-group">
+        <button class="opt" data-q="v1" data-val="curious" onclick="pickA(this)">curious</button>
+        <button class="opt" data-q="v1" data-val="logical" onclick="pickA(this)">logical</button>
+        <button class="opt" data-q="v1" data-val="organised" onclick="pickA(this)">organised</button>
+      </div>
+      <div class="fb" id="fb-v1"></div>
+    </div>
+
+    <div class="ex-item" id="v2">
+      <div class="ex-q"><span class="ex-num">2.</span> This person always plans ahead and keeps everything neat and in order.</div>
+      <div class="opt-group">
+        <button class="opt" data-q="v2" data-val="determined" onclick="pickA(this)">determined</button>
+        <button class="opt" data-q="v2" data-val="organised" onclick="pickA(this)">organised</button>
+        <button class="opt" data-q="v2" data-val="competitive" onclick="pickA(this)">competitive</button>
+      </div>
+      <div class="fb" id="fb-v2"></div>
+    </div>
+
+    <div class="ex-item" id="v3">
+      <div class="ex-q"><span class="ex-num">3.</span> This person never gives up and works hard to reach their goals.</div>
+      <div class="opt-group">
+        <button class="opt" data-q="v3" data-val="imaginative" onclick="pickA(this)">imaginative</button>
+        <button class="opt" data-q="v3" data-val="curious" onclick="pickA(this)">curious</button>
+        <button class="opt" data-q="v3" data-val="determined" onclick="pickA(this)">determined</button>
+      </div>
+      <div class="fb" id="fb-v3"></div>
+    </div>
+
+    <div class="ex-item" id="v4">
+      <div class="ex-q"><span class="ex-num">4.</span> This person can easily think of new and original ideas.</div>
+      <div class="opt-group">
+        <button class="opt" data-q="v4" data-val="logical" onclick="pickA(this)">logical</button>
+        <button class="opt" data-q="v4" data-val="imaginative" onclick="pickA(this)">imaginative</button>
+        <button class="opt" data-q="v4" data-val="competitive" onclick="pickA(this)">competitive</button>
+      </div>
+      <div class="fb" id="fb-v4"></div>
+    </div>
+
+    <div class="ex-item" id="v5">
+      <div class="ex-q"><span class="ex-num">5.</span> This person uses clear thinking and reasoning to solve problems.</div>
+      <div class="opt-group">
+        <button class="opt" data-q="v5" data-val="competitive" onclick="pickA(this)">competitive</button>
+        <button class="opt" data-q="v5" data-val="determined" onclick="pickA(this)">determined</button>
+        <button class="opt" data-q="v5" data-val="logical" onclick="pickA(this)">logical</button>
+      </div>
+      <div class="fb" id="fb-v5"></div>
+    </div>
+
+    <div class="ex-item" id="v6">
+      <div class="ex-q"><span class="ex-num">6.</span> This person always wants to win and really hates losing.</div>
+      <div class="opt-group">
+        <button class="opt" data-q="v6" data-val="organised" onclick="pickA(this)">organised</button>
+        <button class="opt" data-q="v6" data-val="competitive" onclick="pickA(this)">competitive</button>
+        <button class="opt" data-q="v6" data-val="imaginative" onclick="pickA(this)">imaginative</button>
+      </div>
+      <div class="fb" id="fb-v6"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkSec1()">✓ Check</button>
+      <button class="btn-reset" onclick="resetSec1()">↺ Reset</button>
+      <span id="sc-1"></span>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2: COMPARATIVES ===== -->
+  <div class="sec-card" id="sec-2">
+    <div class="sec-title-row">
+      <span class="sec-icon">📊</span>
+      <span class="sec-title">Exercise 2 — Write the Comparative</span>
+      <span class="sec-checked" id="check-2">✓ Done</span>
+    </div>
+    <p class="sec-desc">Write the correct comparative form of the adjective in brackets.</p>
+    <div class="tip-box">💡 Remember: long adjectives → <strong>more + adjective</strong> &nbsp;|&nbsp; short adjectives → <strong>adjective + -er</strong></div>
+
+    <div class="ex-item" id="c1">
+      <div class="ex-q"><span class="ex-num">1.</span> My sister is <input class="gap-input" id="ci1" data-answer="more creative" placeholder="___________"> (creative) than me.</div>
+      <div class="fb" id="fb-c1"></div>
+    </div>
+    <div class="ex-item" id="c2">
+      <div class="ex-q"><span class="ex-num">2.</span> Rikki is <input class="gap-input" id="ci2" data-answer="more competitive" placeholder="___________"> (competitive) than Emma.</div>
+      <div class="fb" id="fb-c2"></div>
+    </div>
+    <div class="ex-item" id="c3">
+      <div class="ex-q"><span class="ex-num">3.</span> Analytical people are often <input class="gap-input" id="ci3" data-answer="more logical" placeholder="___________"> (logical) than creative people.</div>
+      <div class="fb" id="fb-c3"></div>
+    </div>
+    <div class="ex-item" id="c4">
+      <div class="ex-q"><span class="ex-num">4.</span> She is <input class="gap-input" id="ci4" data-answer="more determined" placeholder="___________"> (determined) than anyone I know.</div>
+      <div class="fb" id="fb-c4"></div>
+    </div>
+    <div class="ex-item" id="c5">
+      <div class="ex-q"><span class="ex-num">5.</span> The new student seems <input class="gap-input" id="ci5" data-answer="more curious" placeholder="___________"> (curious) than the others.</div>
+      <div class="fb" id="fb-c5"></div>
+    </div>
+    <div class="ex-item" id="c6">
+      <div class="ex-q"><span class="ex-num">6.</span> He is <input class="gap-input" id="ci6" data-answer="more organised" placeholder="___________"> (organised) than his brother.</div>
+      <div class="fb" id="fb-c6"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkSec2()">✓ Check</button>
+      <button class="btn-reset" onclick="resetSec2()">↺ Reset</button>
+      <span id="sc-2"></span>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 3: SUPERLATIVES ===== -->
+  <div class="sec-card" id="sec-3">
+    <div class="sec-title-row">
+      <span class="sec-icon">🥇</span>
+      <span class="sec-title">Exercise 3 — Write the Superlative</span>
+      <span class="sec-checked" id="check-3">✓ Done</span>
+    </div>
+    <p class="sec-desc">Write the correct superlative form of the adjective in brackets.</p>
+    <div class="tip-box">💡 Remember: long adjectives → <strong>the most + adjective</strong> &nbsp;|&nbsp; short adjectives → <strong>the + adjective + -est</strong></div>
+
+    <div class="ex-item" id="s1">
+      <div class="ex-q"><span class="ex-num">1.</span> She is <input class="gap-input" id="si1" data-answer="the most imaginative" placeholder="___________"> (imaginative) person in our class.</div>
+      <div class="fb" id="fb-s1"></div>
+    </div>
+    <div class="ex-item" id="s2">
+      <div class="ex-q"><span class="ex-num">2.</span> He is <input class="gap-input" id="si2" data-answer="the most competitive" placeholder="___________"> (competitive) player on the team.</div>
+      <div class="fb" id="fb-s2"></div>
+    </div>
+    <div class="ex-item" id="s3">
+      <div class="ex-q"><span class="ex-num">3.</span> My mum is <input class="gap-input" id="si3" data-answer="the most organised" placeholder="___________"> (organised) person I have ever met.</div>
+      <div class="fb" id="fb-s3"></div>
+    </div>
+    <div class="ex-item" id="s4">
+      <div class="ex-q"><span class="ex-num">4.</span> Of all the girls, Rikki is <input class="gap-input" id="si4" data-answer="the most determined" placeholder="___________"> (determined).</div>
+      <div class="fb" id="fb-s4"></div>
+    </div>
+    <div class="ex-item" id="s5">
+      <div class="ex-q"><span class="ex-num">5.</span> That was <input class="gap-input" id="si5" data-answer="the most curious" placeholder="___________"> (curious) question of the whole lesson!</div>
+      <div class="fb" id="fb-s5"></div>
+    </div>
+    <div class="ex-item" id="s6">
+      <div class="ex-q"><span class="ex-num">6.</span> He always gives <input class="gap-input" id="si6" data-answer="the most logical" placeholder="___________"> (logical) explanations.</div>
+      <div class="fb" id="fb-s6"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkSec3()">✓ Check</button>
+      <button class="btn-reset" onclick="resetSec3()">↺ Reset</button>
+      <span id="sc-3"></span>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 4: MIXED MCQ ===== -->
+  <div class="sec-card" id="sec-4">
+    <div class="sec-title-row">
+      <span class="sec-icon">🔀</span>
+      <span class="sec-title">Exercise 4 — Comparative or Superlative?</span>
+      <span class="sec-checked" id="check-4">✓ Done</span>
+    </div>
+    <p class="sec-desc">Choose the correct form — comparative or superlative — to complete each sentence.</p>
+
+    <div class="ex-item" id="m1">
+      <div class="ex-q"><span class="ex-num">1.</span> London is ___ city in England.</div>
+      <div class="opt-group">
+        <button class="opt" data-q="m1" data-val="the biggest" onclick="pickA(this)">the biggest</button>
+        <button class="opt" data-q="m1" data-val="bigger" onclick="pickA(this)">bigger</button>
+        <button class="opt" data-q="m1" data-val="big" onclick="pickA(this)">big</button>
+      </div>
+      <div class="fb" id="fb-m1"></div>
+    </div>
+
+    <div class="ex-item" id="m2">
+      <div class="ex-q"><span class="ex-num">2.</span> My best friend is ___ than my sister.</div>
+      <div class="opt-group">
+        <button class="opt" data-q="m2" data-val="more sociable" onclick="pickA(this)">more sociable</button>
+        <button class="opt" data-q="m2" data-val="the most sociable" onclick="pickA(this)">the most sociable</button>
+        <button class="opt" data-q="m2" data-val="sociable" onclick="pickA(this)">sociable</button>
+      </div>
+      <div class="fb" id="fb-m2"></div>
+    </div>
+
+    <div class="ex-item" id="m3">
+      <div class="ex-q"><span class="ex-num">3.</span> She is ___ student in the whole school.</div>
+      <div class="opt-group">
+        <button class="opt" data-q="m3" data-val="more reliable" onclick="pickA(this)">more reliable</button>
+        <button class="opt" data-q="m3" data-val="the most reliable" onclick="pickA(this)">the most reliable</button>
+        <button class="opt" data-q="m3" data-val="reliable" onclick="pickA(this)">reliable</button>
+      </div>
+      <div class="fb" id="fb-m3"></div>
+    </div>
+
+    <div class="ex-item" id="m4">
+      <div class="ex-q"><span class="ex-num">4.</span> This book is ___ than the last one.</div>
+      <div class="opt-group">
+        <button class="opt" data-q="m4" data-val="more interesting" onclick="pickA(this)">more interesting</button>
+        <button class="opt" data-q="m4" data-val="the most interesting" onclick="pickA(this)">the most interesting</button>
+        <button class="opt" data-q="m4" data-val="interesting" onclick="pickA(this)">interesting</button>
+      </div>
+      <div class="fb" id="fb-m4"></div>
+    </div>
+
+    <div class="ex-item" id="m5">
+      <div class="ex-q"><span class="ex-num">5.</span> He is ___ player on the whole team.</div>
+      <div class="opt-group">
+        <button class="opt" data-q="m5" data-val="the most ambitious" onclick="pickA(this)">the most ambitious</button>
+        <button class="opt" data-q="m5" data-val="more ambitious" onclick="pickA(this)">more ambitious</button>
+        <button class="opt" data-q="m5" data-val="ambitious" onclick="pickA(this)">ambitious</button>
+      </div>
+      <div class="fb" id="fb-m5"></div>
+    </div>
+
+    <div class="ex-item" id="m6">
+      <div class="ex-q"><span class="ex-num">6.</span> Yesterday was ___ day of the whole year!</div>
+      <div class="opt-group">
+        <button class="opt" data-q="m6" data-val="the worst" onclick="pickA(this)">the worst</button>
+        <button class="opt" data-q="m6" data-val="worse" onclick="pickA(this)">worse</button>
+        <button class="opt" data-q="m6" data-val="bad" onclick="pickA(this)">bad</button>
+      </div>
+      <div class="fb" id="fb-m6"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkSec4()">✓ Check</button>
+      <button class="btn-reset" onclick="resetSec4()">↺ Reset</button>
+      <span id="sc-4"></span>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 5: ABOUT ME ===== -->
+  <div class="sec-card" id="sec-5">
+    <div class="sec-title-row">
+      <span class="sec-icon">✍️</span>
+      <span class="sec-title">Exercise 5 — About Me!</span>
+      <span class="sec-checked" id="check-5">✓ Done</span>
+    </div>
+    <p class="sec-desc">Write your own sentences using comparatives and superlatives. Your teacher will read these — try to write at least 1–2 sentences for each prompt! 🙂</p>
+
+    <div class="write-row">
+      <div class="write-label">1. 👨‍👩‍👧 Compare yourself to someone in your family:</div>
+      <input class="write-box" id="w1" placeholder='Use a comparative: "I am more ___ than ___ because..."'>
+    </div>
+    <div class="write-row">
+      <div class="write-label">2. 🌟 Write about the most interesting or impressive person you know:</div>
+      <input class="write-box" id="w2" placeholder='Use a superlative: "___ is the most ___ person I know because..."'>
+    </div>
+    <div class="write-row">
+      <div class="write-label">3. 🏫 Write something true about your class or school:</div>
+      <input class="write-box" id="w3" placeholder='E.g. "The most ___ student in my class is..." or "My school is more ___ than..."'>
+    </div>
+    <div class="write-row">
+      <div class="write-label">4. 🧠 Are you more creative or more analytical? Explain in 2–3 sentences:</div>
+      <textarea class="write-box" id="w4" rows="3" placeholder="I think I am more ___ than ___ because... For example, I..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkSec5()">✓ Mark as Done</button>
+      <span id="sc-5"></span>
+    </div>
+  </div>
+
+  <!-- SEND TO TEACHER -->
+  <div class="send-section">
+    <button class="btn-send" onclick="sendToTeacher()">📧 Send to Teacher</button>
+    <div class="send-label">Sends your scores and writing to dariia.mlnk@gmail.com</div>
+  </div>
+
+</div>
+
+<script>
+var checkedSections = {};
+var totalSections = 5;
+
+function updateProgress(){
+  var done = Object.keys(checkedSections).length;
+  var pct = Math.round(done / totalSections * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = done + ' / ' + totalSections + ' sections complete';
+}
+
+function setScore(elId, s, t){
+  var el = document.getElementById(elId);
+  if(!el) return;
+  var pct = t > 0 ? s / t : 0;
+  var cls = pct >= 0.8 ? 'badge-green' : pct >= 0.5 ? 'badge-amber' : 'badge-red';
+  el.textContent = s + '/' + t;
+  el.className = 'score-badge ' + cls;
+}
+
+function normalise(v){
+  return v.trim().toLowerCase().replace(/['']/g, "'").replace(/\s+/g, ' ');
+}
+
+function pickA(btn){
+  var q = btn.dataset.q;
+  document.querySelectorAll('[data-q="' + q + '"]').forEach(function(b){
+    b.classList.remove('sel', 'correct', 'wrong');
+  });
+  btn.classList.add('sel');
+}
+
+function markDone(secId, s, t){
+  checkedSections[secId] = { score: s, total: t };
+  var num = secId.replace('sec-', '');
+  var chk = document.getElementById('check-' + num);
+  if(chk) chk.style.display = 'inline-block';
+  updateProgress();
+}
+
+/* ---- MCQ group checker ---- */
+function checkExGroup(answers, scoreId, secId){
+  var s = 0, t = Object.keys(answers).length;
+  Object.keys(answers).forEach(function(q){
+    var fb = document.getElementById('fb-' + q);
+    var item = document.getElementById(q);
+    var picked = null;
+    document.querySelectorAll('[data-q="' + q + '"]').forEach(function(b){
+      if(b.classList.contains('sel')) picked = b.dataset.val;
+    });
+    if(!picked) return;
+    var ok = picked === answers[q];
+    if(item){ item.classList.toggle('correct', ok); item.classList.toggle('wrong', !ok); }
+    document.querySelectorAll('[data-q="' + q + '"]').forEach(function(b){
+      if(b.classList.contains('sel')) b.classList.add(ok ? 'correct' : 'wrong');
+    });
+    if(fb){ fb.textContent = ok ? '✓ Correct!' : '✗ Answer: ' + answers[q]; fb.className = 'fb show ' + (ok ? 'ok' : 'err'); }
+    if(ok) s++;
+  });
+  setScore(scoreId, s, t);
+  markDone(secId, s, t);
+}
+
+/* ---- Gap-fill group checker ---- */
+function checkGapGroup(inputIds, prefix, scoreId, secId){
+  var s = 0, t = inputIds.length;
+  inputIds.forEach(function(id, i){
+    var inp = document.getElementById(id);
+    var n = i + 1;
+    var fb = document.getElementById('fb-' + prefix + n);
+    var item = document.getElementById(prefix + n);
+    inp.classList.remove('correct-input', 'wrong-input');
+    if(item) item.classList.remove('correct', 'wrong');
+    var ok = normalise(inp.value) === inp.dataset.answer;
+    inp.classList.add(ok ? 'correct-input' : 'wrong-input');
+    if(item){ item.classList.toggle('correct', ok); item.classList.toggle('wrong', !ok); }
+    if(fb){ fb.textContent = ok ? '✓ Correct!' : '✗ Answer: ' + inp.dataset.answer; fb.className = 'fb show ' + (ok ? 'ok' : 'err'); }
+    if(ok) s++;
+  });
+  setScore(scoreId, s, t);
+  markDone(secId, s, t);
+}
+
+/* ---- Reset helpers ---- */
+function resetMCQ(answers, scoreId){
+  Object.keys(answers).forEach(function(q){
+    var item = document.getElementById(q); if(item) item.classList.remove('correct', 'wrong');
+    document.querySelectorAll('[data-q="' + q + '"]').forEach(function(b){ b.classList.remove('sel', 'correct', 'wrong'); });
+    var fb = document.getElementById('fb-' + q); if(fb) fb.className = 'fb';
+  });
+  var sc = document.getElementById(scoreId); if(sc){ sc.textContent = ''; sc.className = ''; }
+}
+function resetGap(inputIds, prefix, scoreId){
+  inputIds.forEach(function(id, i){
+    var inp = document.getElementById(id);
+    if(inp){ inp.value = ''; inp.classList.remove('correct-input', 'wrong-input'); }
+    var n = i + 1;
+    var fb = document.getElementById('fb-' + prefix + n); if(fb) fb.className = 'fb';
+    var item = document.getElementById(prefix + n); if(item) item.classList.remove('correct', 'wrong');
+  });
+  var sc = document.getElementById(scoreId); if(sc){ sc.textContent = ''; sc.className = ''; }
+}
+
+/* ---- Section 1: Vocabulary ---- */
+var answersV = { v1:'curious', v2:'organised', v3:'determined', v4:'imaginative', v5:'logical', v6:'competitive' };
+function checkSec1(){ checkExGroup(answersV, 'sc-1', 'sec-1'); }
+function resetSec1(){ resetMCQ(answersV, 'sc-1'); }
+
+/* ---- Section 2: Comparatives ---- */
+var compInputs = ['ci1','ci2','ci3','ci4','ci5','ci6'];
+function checkSec2(){ checkGapGroup(compInputs, 'c', 'sc-2', 'sec-2'); }
+function resetSec2(){ resetGap(compInputs, 'c', 'sc-2'); }
+
+/* ---- Section 3: Superlatives ---- */
+var supInputs = ['si1','si2','si3','si4','si5','si6'];
+function checkSec3(){ checkGapGroup(supInputs, 's', 'sc-3', 'sec-3'); }
+function resetSec3(){ resetGap(supInputs, 's', 'sc-3'); }
+
+/* ---- Section 4: Mixed ---- */
+var answersM = {
+  m1:'the biggest', m2:'more sociable', m3:'the most reliable',
+  m4:'more interesting', m5:'the most ambitious', m6:'the worst'
+};
+function checkSec4(){ checkExGroup(answersM, 'sc-4', 'sec-4'); }
+function resetSec4(){ resetMCQ(answersM, 'sc-4'); }
+
+/* ---- Section 5: About Me ---- */
+function checkSec5(){
+  var hasContent = ['w1','w2','w3','w4'].some(function(id){
+    return document.getElementById(id).value.trim().length > 0;
+  });
+  if(!hasContent){ alert('Please write at least one sentence before marking as done! ✏️'); return; }
+  var sc = document.getElementById('sc-5');
+  sc.textContent = '✓ Sent to teacher!';
+  sc.className = 'score-badge badge-green';
+  markDone('sec-5', 1, 1);
+}
+
+/* ---- Send to Teacher ---- */
+function sendToTeacher(){
+  function getScore(secId){
+    var d = checkedSections[secId];
+    if(!d) return '(not checked yet)';
+    if(d.total === 1 && d.score === 1) return '(free writing — see below)';
+    return d.score + '/' + d.total;
+  }
+  var lines = [
+    'A2-B1 Homework — Comparatives & Superlatives',
+    '',
+    'SCORES:',
+    'Ex 1 Vocabulary:    ' + getScore('sec-1'),
+    'Ex 2 Comparatives:  ' + getScore('sec-2'),
+    'Ex 3 Superlatives:  ' + getScore('sec-3'),
+    'Ex 4 Mixed:         ' + getScore('sec-4'),
+    '',
+    'Ex 5 — ABOUT ME (writing):',
+    '1. ' + (document.getElementById('w1').value || '(blank)'),
+    '2. ' + (document.getElementById('w2').value || '(blank)'),
+    '3. ' + (document.getElementById('w3').value || '(blank)'),
+    '4. ' + (document.getElementById('w4').value || '(blank)')
+  ];
+  var body = lines.join('\n');
+  window.location.href = 'mailto:dariia.mlnk@gmail.com'
+    + '?subject=' + encodeURIComponent('A2-B1 HW — Comparatives & Superlatives')
+    + '&body=' + encodeURIComponent(body);
+}
+</script>
+</body>
+</html>
