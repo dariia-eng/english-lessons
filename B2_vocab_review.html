@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vocabulary Self-Review</title>
+<style>
+:root{
+  --primary:#C0392B;--primary-dark:#96281B;
+  --bg:#F7F8FC;--white:#fff;--border:#D1D5DB;--text:#1F2937;--muted:#6B7280;
+  --know-bg:#D1FAE5;--know-b:#059669;
+  --notsure-bg:#FEF3C7;--notsure-b:#D97706;
+  --revise-bg:#FEE2E2;--revise-b:#EF4444;
+  --radius:12px;--shadow:0 2px 8px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.header{background:var(--primary);color:#fff;padding:16px 24px;}
+.header h1{font-size:1.15rem;font-weight:700;}
+.header p{font-size:.85rem;opacity:.8;margin-top:2px;}
+.instructions{background:#EFF6FF;border-left:3px solid #3B82F6;padding:10px 16px;margin:16px 24px;border-radius:0 8px 8px 0;font-size:.88rem;color:#1E40AF;}
+.pool-label{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:0 24px 8px;}
+#wordPool{
+  min-height:80px;background:#fff;border:2px dashed var(--border);
+  border-radius:var(--radius);margin:0 24px 20px;padding:14px;
+  display:flex;flex-wrap:wrap;gap:8px;transition:border-color .2s;
+}
+#wordPool.over{border-color:var(--primary);}
+.chip{
+  background:#fff;border:2px solid var(--border);border-radius:20px;
+  padding:6px 14px;font-size:.88rem;cursor:grab;user-select:none;
+  transition:all .15s;box-shadow:var(--shadow);
+}
+.chip:hover{border-color:var(--primary);color:var(--primary);}
+.chip.dragging{opacity:.4;transform:scale(.96);}
+.columns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:0 24px 20px;}
+@media(max-width:600px){.columns{grid-template-columns:1fr;}}
+.col{border-radius:var(--radius);padding:14px;min-height:200px;border:2px solid;transition:opacity .2s;}
+.col.over{opacity:.85;}
+.col-know{background:var(--know-bg);border-color:var(--know-b);}
+.col-notsure{background:var(--notsure-bg);border-color:var(--notsure-b);}
+.col-revise{background:var(--revise-bg);border-color:var(--revise-b);}
+.col-header{font-weight:800;font-size:.95rem;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid rgba(0,0,0,.1);}
+.col-know .col-header{color:var(--know-b);}
+.col-notsure .col-header{color:var(--notsure-b);}
+.col-revise .col-header{color:var(--revise-b);}
+.col .chip{margin-bottom:6px;}
+.col-know .chip{background:var(--know-bg);border-color:var(--know-b);color:#065F46;}
+.col-notsure .chip{background:#FEF9C3;border-color:var(--notsure-b);color:#78350F;}
+.col-revise .chip{background:var(--revise-bg);border-color:var(--revise-b);color:#991B1B;}
+.bottom-row{display:flex;justify-content:space-between;align-items:center;margin:0 24px 24px;flex-wrap:wrap;gap:10px;}
+.count-row{display:flex;gap:8px;flex-wrap:wrap;}
+.count-badge{border-radius:20px;padding:4px 14px;font-size:.82rem;font-weight:700;}
+.count-know{background:var(--know-bg);color:var(--know-b);}
+.count-notsure{background:var(--notsure-bg);color:var(--notsure-b);}
+.count-revise{background:var(--revise-bg);color:var(--revise-b);}
+.reset-btn{background:var(--primary);color:#fff;border:none;border-radius:20px;padding:8px 20px;cursor:pointer;font-size:.88rem;font-weight:700;}
+.reset-btn:hover{background:var(--primary-dark);}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>&#128218; Vocabulary Self-Review</h1>
+  <p>Drag each word into the column that best describes how well you know it.</p>
+</div>
+
+<p class="instructions">&#128161; Drag words from the pool into one of the three columns. Be honest &mdash; this is just for you!</p>
+
+<p class="pool-label">Word pool (35 words)</p>
+<div id="wordPool"
+  ondragover="dzOver(event,'pool')" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'pool')">
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">carry out research</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">tackle the problem</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">crack down on</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">enforce a law</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">offer alternatives</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">warn about the dangers</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">ban the use of</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">reserved</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">suspicious</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">trusting</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">outgoing</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">careless</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">get carried away</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">get on someone&#39;s nerves</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">get straight to the point</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">get to do something</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">get the feeling</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">tough</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">raw</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">spicy</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">salty</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">filling</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">bland</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">crunchy</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">creamy</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">greasy</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">set aside</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">stock up on</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">have a flair for</div>
+    
+<div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">beverage</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">chopsticks</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">conscientious</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">neurotic</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">reserved</div>
+    <div class="chip" draggable="true" ondragstart="dStart(event)" ondragend="dEnd(event)">thoughtless</div>
+    </div>
+
+<div class="columns">
+  <div class="col col-know" id="dz-know"
+    ondragover="dzOver(event,'know')" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'know')">
+    <div class="col-header">&#10003; I know this</div>
+  </div>
+  <div class="col col-notsure" id="dz-notsure"
+    ondragover="dzOver(event,'notsure')" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'notsure')">
+    <div class="col-header">? Not sure</div>
+  </div>
+  <div class="col col-revise" id="dz-revise"
+    ondragover="dzOver(event,'revise')" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'revise')">
+    <div class="col-header">&#10007; Have to revise</div>
+  </div>
+</div>
+
+<div class="bottom-row">
+  <div class="count-row">
+    <span class="count-badge count-know">&#10003; <span id="cnt-know">0</span></span>
+    <span class="count-badge count-notsure">? <span id="cnt-notsure">0</span></span>
+    <span class="count-badge count-revise">&#10007; <span id="cnt-revise">0</span></span>
+    <span style="color:var(--muted);font-size:.82rem;align-self:center">Sorted: <span id="cnt-total">0</span> / 35</span>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+var dragged = null;
+function dStart(e) {
+  dragged = e.target;
+  setTimeout(function() { if(dragged) dragged.classList.add('dragging'); }, 0);
+}
+function dEnd(e) {
+  if (dragged) dragged.classList.remove('dragging');
+  updateCounts();
+}
+function dzOver(e, zone) { e.preventDefault(); e.currentTarget.classList.add('over'); }
+function dzLeave(e) { e.currentTarget.classList.remove('over'); }
+function dzDrop(e, zone) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('over');
+  if (!dragged) return;
+  if (zone === 'pool') { document.getElementById('wordPool').appendChild(dragged); }
+  else { document.getElementById('dz-' + zone).appendChild(dragged); }
+  updateCounts();
+}
+function updateCounts() {
+  var k = document.getElementById('dz-know').querySelectorAll('.chip').length;
+  var n = document.getElementById('dz-notsure').querySelectorAll('.chip').length;
+  var r = document.getElementById('dz-revise').querySelectorAll('.chip').length;
+  document.getElementById('cnt-know').textContent = k;
+  document.getElementById('cnt-notsure').textContent = n;
+  document.getElementById('cnt-revise').textContent = r;
+  document.getElementById('cnt-total').textContent = k + n + r;
+}
+function resetAll() {
+  var pool = document.getElementById('wordPool');
+  ['dz-know','dz-notsure','dz-revise'].forEach(function(id) {
+    document.getElementById(id).querySelectorAll('.chip').forEach(function(c) { pool.appendChild(c); });
+  });
+  updateCounts();
+}
+</script>
+</body>
+</html>
