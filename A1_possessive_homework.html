@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework — Numbers &amp; Objects</title>
+<style>
+:root {
+  --primary: #2563EB;
+  --primary-light: #EFF6FF;
+  --green: #16A34A;
+  --green-pale: #DCFCE7;
+  --red: #DC2626;
+  --red-pale: #FEE2E2;
+  --amber: #D97706;
+  --amber-pale: #FEF3C7;
+  --text: #1F2937;
+  --muted: #6B7280;
+  --border: #E5E7EB;
+  --bg: #F0F7FF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+
+.hw-header {
+  background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 60%, #3B82F6 100%);
+  color: #fff; padding: 26px 24px 18px; text-align: center;
+}
+.hw-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
+.hw-sub { font-size: .88rem; opacity: .85; margin-bottom: 18px; }
+.progress-wrap { background: rgba(255,255,255,.25); border-radius: 20px; height: 10px; max-width: 420px; margin: 0 auto; }
+.progress-bar { background: #fff; border-radius: 20px; height: 10px; width: 0%; transition: width .4s; }
+.progress-label { font-size: .8rem; opacity: .8; margin-top: 7px; }
+
+.container { max-width: 780px; margin: 0 auto; padding: 28px 16px 16px; }
+
+.sec-card {
+  background: #fff; border-radius: 14px; padding: 22px;
+  margin-bottom: 22px; box-shadow: 0 1px 5px rgba(0,0,0,.08);
+}
+.sec-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+.sec-icon { font-size: 1.35rem; }
+.sec-title { font-size: 1.05rem; font-weight: 800; color: var(--primary); }
+.sec-checked { display: none; background: var(--green-pale); color: var(--green); font-size: .78rem; font-weight: 700; border-radius: 12px; padding: 2px 10px; }
+.sec-desc { color: var(--muted); font-size: .9rem; margin-bottom: 14px; line-height: 1.55; }
+
+/* Word bank */
+.word-bank {
+  background: var(--primary-light);
+  border: 2px solid #BFDBFE;
+  border-radius: 10px;
+  padding: 11px 16px;
+  margin-bottom: 18px;
+  font-size: .88rem;
+  line-height: 1.8;
+}
+.word-bank strong { color: var(--primary); display: block; margin-bottom: 4px; font-size: .82rem; text-transform: uppercase; letter-spacing: .5px; }
+.wb-word {
+  display: inline-block;
+  background: #fff;
+  border: 2px solid #BFDBFE;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin: 3px 4px 3px 0;
+  font-weight: 600;
+  color: var(--primary);
+  font-size: .88rem;
+}
+
+/* Grammar box */
+.gram-box {
+  background: #F0F7FF; border: 2px solid #BFDBFE;
+  border-radius: 10px; padding: 12px 16px; margin-bottom: 18px;
+  font-size: .88rem; line-height: 1.8;
+}
+.gram-box strong { color: var(--primary); }
+
+/* Gap-fill items */
+.ex-item { margin-bottom: 16px; }
+.ex-q { font-size: .95rem; line-height: 2; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+.ex-num { font-weight: 700; color: var(--primary); margin-right: 4px; }
+.gap-input {
+  border: none; border-bottom: 2px solid var(--primary);
+  background: transparent; font-size: .95rem; font-family: inherit;
+  color: var(--text); outline: none; padding: 1px 6px;
+  min-width: 120px; text-align: center;
+  transition: border-color .15s;
+}
+.gap-input:focus { border-color: #1D4ED8; }
+.gap-input.correct-input { border-color: var(--green); color: var(--green); background: var(--green-pale); border-radius: 4px; border-style: solid; }
+.gap-input.wrong-input { border-color: var(--red); color: var(--red); background: var(--red-pale); border-radius: 4px; border-style: solid; }
+
+.fb { font-size: .83rem; margin-top: 3px; padding: 3px 8px; border-radius: 6px; display: none; }
+.fb.show { display: block; }
+.fb.ok { background: var(--green-pale); color: var(--green); }
+.fb.err { background: var(--red-pale); color: var(--red); }
+
+.score-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: .85rem; font-weight: 700; margin-left: 8px; }
+.badge-green { background: var(--green-pale); color: var(--green); }
+.badge-amber { background: var(--amber-pale); color: var(--amber); }
+.badge-red { background: var(--red-pale); color: var(--red); }
+
+.btn-row { display: flex; align-items: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.btn-check {
+  background: var(--primary); color: #fff; border: none;
+  border-radius: 8px; padding: 9px 22px; font-size: .9rem;
+  font-weight: 700; cursor: pointer; font-family: inherit; transition: opacity .15s;
+}
+.btn-check:hover { opacity: .88; }
+.btn-reset {
+  background: #F3F4F6; color: var(--muted); border: none;
+  border-radius: 8px; padding: 9px 16px; font-size: .88rem;
+  cursor: pointer; font-family: inherit;
+}
+
+.send-section { text-align: center; padding: 24px 0 48px; }
+.btn-send {
+  background: linear-gradient(135deg, #1D4ED8, #3B82F6);
+  color: #fff; border: none; border-radius: 12px;
+  padding: 14px 36px; font-size: 1rem; font-weight: 800;
+  cursor: pointer; font-family: inherit;
+  box-shadow: 0 4px 14px rgba(37,99,235,.3);
+}
+.btn-send:hover { opacity: .88; }
+.send-label { font-size: .85rem; color: var(--muted); margin-top: 8px; }
+
+/* Video embed */
+.video-wrap { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 10px; margin-bottom: 18px; background: #000; }
+.video-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 10px; }
+.tiktok-wrap { display: flex; justify-content: center; margin-bottom: 18px; }
+.tiktok-wrap iframe { border-radius: 12px; border: none; }
+
+/* Write box */
+.write-label { font-size: .92rem; font-weight: 600; margin-bottom: 6px; color: var(--text); display: block; }
+.write-box {
+  width: 100%; border: 2px solid var(--border); border-radius: 8px;
+  padding: 10px 12px; font-size: .92rem; font-family: inherit;
+  outline: none; color: var(--text); resize: vertical; min-height: 52px;
+}
+.write-box:focus { border-color: var(--primary); }
+.write-row { margin-bottom: 16px; }
+.teacher-note { font-size: .8rem; color: var(--muted); font-style: italic; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="hw-header">
+  <div class="hw-title">📦 Homework — Numbers &amp; Objects</div>
+  <div class="hw-sub">Starters · Week 2 &nbsp;·&nbsp; Fill in all the gaps, then send to your teacher!</div>
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+  <div class="progress-label" id="progress-label">0 / 6 sections complete</div>
+</div>
+
+<div class="container">
+
+  <!-- ===== SECTION 0: VIDEO ===== -->
+  <div class="sec-card">
+    <div class="sec-title-row">
+      <span class="sec-icon">🎬</span>
+      <span class="sec-title">Watch &amp; Answer</span>
+      <span class="sec-checked" id="check-0">✓ Done</span>
+    </div>
+    <p class="sec-desc">Watch the video. Chris shows what is in his bag. Answer the questions below.</p>
+
+    <div class="tiktok-wrap">
+      <iframe
+        src="https://www.tiktok.com/embed/v2/7578576277184007438"
+        width="340" height="600"
+        allow="encrypted-media"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="write-row">
+      <label class="write-label" for="wv1">1. 👀 What objects do you see in Chris's bag? Write as many as you can.</label>
+      <textarea class="write-box" id="wv1" rows="3" placeholder="e.g. a wallet, sunglasses, …"></textarea>
+      <div class="teacher-note">✏️ Teacher checks</div>
+    </div>
+
+    <div class="write-row">
+      <label class="write-label" for="wv2">2. 🔢 How many objects does he show in total?</label>
+      <textarea class="write-box" id="wv2" rows="1" placeholder="Write the number…" style="min-height:40px"></textarea>
+      <div class="teacher-note">✏️ Teacher checks</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="markVideoSec()">✓ Mark as Done</button>
+      <span id="sc-0"></span>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 1: VOCABULARY ===== -->
+  <div class="sec-card">
+    <div class="sec-title-row">
+      <span class="sec-icon">📚</span>
+      <span class="sec-title">Exercise 1 — Vocabulary</span>
+      <span class="sec-checked" id="check-1">✓ Done</span>
+    </div>
+    <p class="sec-desc">Read the description. Write the correct object from the word bank.</p>
+
+    <div class="word-bank">
+      <strong>Word bank</strong>
+      <span class="wb-word">an identity card</span>
+      <span class="wb-word">a charger</span>
+      <span class="wb-word">a notebook</span>
+      <span class="wb-word">sunglasses</span>
+      <span class="wb-word">a wallet</span>
+      <span class="wb-word">a smartphone</span>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">1.</span>
+        You use this to call people and go online. 📱 →
+        <input class="gap-input" id="g1-1" data-answer="a smartphone" placeholder="…" autocomplete="off">
+      </div>
+      <div class="fb" id="fb-g1-1"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">2.</span>
+        You put your money and credit cards in this. 💳 →
+        <input class="gap-input" id="g1-2" data-answer="a wallet" placeholder="…" autocomplete="off">
+      </div>
+      <div class="fb" id="fb-g1-2"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">3.</span>
+        You wear these on your eyes when it is sunny. ☀️ →
+        <input class="gap-input" id="g1-3" data-answer="sunglasses" placeholder="…" autocomplete="off">
+      </div>
+      <div class="fb" id="fb-g1-3"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">4.</span>
+        You use this to power your phone when the battery is flat. 🔌 →
+        <input class="gap-input" id="g1-4" data-answer="a charger" placeholder="…" autocomplete="off">
+      </div>
+      <div class="fb" id="fb-g1-4"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">5.</span>
+        You write notes and ideas in this. 📓 →
+        <input class="gap-input" id="g1-5" data-answer="a notebook" placeholder="…" autocomplete="off">
+      </div>
+      <div class="fb" id="fb-g1-5"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">6.</span>
+        You show this at the airport to prove who you are. 🪪 →
+        <input class="gap-input" id="g1-6" data-answer="an identity card" placeholder="…" autocomplete="off">
+      </div>
+      <div class="fb" id="fb-g1-6"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkGap(['g1-1','g1-2','g1-3','g1-4','g1-5','g1-6'], 'sc-1', 'sec-1')">✓ Check</button>
+      <button class="btn-reset" onclick="resetGap(['g1-1','g1-2','g1-3','g1-4','g1-5','g1-6'], 'sc-1')">↺ Reset</button>
+      <span id="sc-1"></span>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2: PLURALS ===== -->
+  <div class="sec-card">
+    <div class="sec-title-row">
+      <span class="sec-icon">✌️</span>
+      <span class="sec-title">Exercise 2 — Singular and Plural</span>
+      <span class="sec-checked" id="check-2">✓ Done</span>
+    </div>
+    <p class="sec-desc">Use the rules to write the correct plural form.</p>
+
+    <div class="gram-box">
+      📐 most nouns → add <strong>-s</strong> &nbsp;|&nbsp;
+      after ch, sh, ss, s, x → add <strong>-es</strong> &nbsp;|&nbsp;
+      consonant + y → <strong>-ies</strong>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">1.</span> one watch → two
+        <input class="gap-input" id="g2-1" data-answer="watches" placeholder="…" autocomplete="off">
+      </div>
+      <div class="fb" id="fb-g2-1"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">2.</span> one country → many
+        <input class="gap-input" id="g2-2" data-answer="countries" placeholder="…" autocomplete="off">
+      </div>
+      <div class="fb" id="fb-g2-2"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">3.</span> one box → four
+        <input class="gap-input" id="g2-3" data-answer="boxes" placeholder="…" autocomplete="off">
+      </div>
+      <div class="fb" id="fb-g2-3"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">4.</span> one charger → five
+        <input class="gap-input" id="g2-4" data-answer="chargers" placeholder="…" autocomplete="off">
+      </div>
+      <div class="fb" id="fb-g2-4"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">5.</span> one dress → three
+        <input class="gap-input" id="g2-5" data-answer="dresses" placeholder="…" autocomplete="off">
+      </div>
+      <div class="fb" id="fb-g2-5"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">6.</span> one credit card → two
+        <input class="gap-input" id="g2-6" data-answer="credit cards" placeholder="…" autocomplete="off">
+      </div>
+      <div class="fb" id="fb-g2-6"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkGap(['g2-1','g2-2','g2-3','g2-4','g2-5','g2-6'], 'sc-2', 'sec-2')">✓ Check</button>
+      <button class="btn-reset" onclick="resetGap(['g2-1','g2-2','g2-3','g2-4','g2-5','g2-6'], 'sc-2')">↺ Reset</button>
+      <span id="sc-2"></span>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 3: THIS / THAT / THESE / THOSE ===== -->
+  <div class="sec-card">
+    <div class="sec-title-row">
+      <span class="sec-icon">👉</span>
+      <span class="sec-title">Exercise 3 — This, That, These, Those</span>
+      <span class="sec-checked" id="check-3">✓ Done</span>
+    </div>
+    <p class="sec-desc">Fill in the gap with the correct word from the word bank.</p>
+
+    <div class="gram-box">
+      📐 <strong>HERE:</strong> <strong>this</strong> (one) · <strong>these</strong> (many) &nbsp;&nbsp;
+      📐 <strong>THERE:</strong> <strong>that</strong> (one) · <strong>those</strong> (many)
+    </div>
+
+    <div class="word-bank">
+      <strong>Word bank</strong>
+      <span class="wb-word">those</span>
+      <span class="wb-word">These</span>
+      <span class="wb-word">That</span>
+      <span class="wb-word">this</span>
+      <span class="wb-word">Those</span>
+      <span class="wb-word">This</span>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">1.</span>
+        <input class="gap-input" id="g3-1" data-answer="this" placeholder="…" autocomplete="off" style="min-width:80px">
+        is my bag. <em style="color:var(--muted);font-size:.85rem">(here, one)</em>
+      </div>
+      <div class="fb" id="fb-g3-1"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">2.</span>
+        <input class="gap-input" id="g3-2" data-answer="those" placeholder="…" autocomplete="off" style="min-width:80px">
+        are our keys. <em style="color:var(--muted);font-size:.85rem">(there, many)</em>
+      </div>
+      <div class="fb" id="fb-g3-2"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">3.</span>
+        <input class="gap-input" id="g3-3" data-answer="that" placeholder="…" autocomplete="off" style="min-width:80px">
+        is her laptop over there. <em style="color:var(--muted);font-size:.85rem">(there, one)</em>
+      </div>
+      <div class="fb" id="fb-g3-3"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">4.</span>
+        <input class="gap-input" id="g3-4" data-answer="these" placeholder="…" autocomplete="off" style="min-width:80px">
+        are my new sunglasses! <em style="color:var(--muted);font-size:.85rem">(here, many)</em>
+      </div>
+      <div class="fb" id="fb-g3-4"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">5.</span>
+        Is
+        <input class="gap-input" id="g3-5" data-answer="this" placeholder="…" autocomplete="off" style="min-width:80px">
+        your phone? <em style="color:var(--muted);font-size:.85rem">(here, one)</em>
+      </div>
+      <div class="fb" id="fb-g3-5"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">6.</span>
+        Who are
+        <input class="gap-input" id="g3-6" data-answer="those" placeholder="…" autocomplete="off" style="min-width:80px">
+        people? <em style="color:var(--muted);font-size:.85rem">(there, many)</em>
+      </div>
+      <div class="fb" id="fb-g3-6"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkGap(['g3-1','g3-2','g3-3','g3-4','g3-5','g3-6'], 'sc-3', 'sec-3')">✓ Check</button>
+      <button class="btn-reset" onclick="resetGap(['g3-1','g3-2','g3-3','g3-4','g3-5','g3-6'], 'sc-3')">↺ Reset</button>
+      <span id="sc-3"></span>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 4: POSSESSIVE PRONOUNS ===== -->
+  <div class="sec-card">
+    <div class="sec-title-row">
+      <span class="sec-icon">🙋</span>
+      <span class="sec-title">Exercise 4 — Possessive Pronouns</span>
+      <span class="sec-checked" id="check-4">✓ Done</span>
+    </div>
+    <p class="sec-desc">Write the correct possessive pronoun. The subject is given in brackets.</p>
+
+    <div class="gram-box">
+      <strong>I → my</strong> · <strong>you → your</strong> · <strong>he → his</strong> ·
+      <strong>she → her</strong> · <strong>it → its</strong> · <strong>we → our</strong> · <strong>they → their</strong>
+    </div>
+
+    <div class="word-bank">
+      <strong>Word bank</strong>
+      <span class="wb-word">their</span>
+      <span class="wb-word">his</span>
+      <span class="wb-word">our</span>
+      <span class="wb-word">my</span>
+      <span class="wb-word">your</span>
+      <span class="wb-word">its</span>
+      <span class="wb-word">her</span>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">1.</span> These are
+        <input class="gap-input" id="g4-1" data-answer="my" placeholder="…" autocomplete="off" style="min-width:70px">
+        shoes. <em style="color:var(--muted);font-size:.85rem">(I)</em>
+      </div>
+      <div class="fb" id="fb-g4-1"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">2.</span> This is
+        <input class="gap-input" id="g4-2" data-answer="his" placeholder="…" autocomplete="off" style="min-width:70px">
+        car. <em style="color:var(--muted);font-size:.85rem">(he)</em>
+      </div>
+      <div class="fb" id="fb-g4-2"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">3.</span> That is
+        <input class="gap-input" id="g4-3" data-answer="her" placeholder="…" autocomplete="off" style="min-width:70px">
+        laptop. <em style="color:var(--muted);font-size:.85rem">(she)</em>
+      </div>
+      <div class="fb" id="fb-g4-3"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">4.</span> This is
+        <input class="gap-input" id="g4-4" data-answer="our" placeholder="…" autocomplete="off" style="min-width:70px">
+        new restaurant. <em style="color:var(--muted);font-size:.85rem">(we)</em>
+      </div>
+      <div class="fb" id="fb-g4-4"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">5.</span> The dog wags
+        <input class="gap-input" id="g4-5" data-answer="its" placeholder="…" autocomplete="off" style="min-width:70px">
+        tail. <em style="color:var(--muted);font-size:.85rem">(it)</em>
+      </div>
+      <div class="fb" id="fb-g4-5"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">6.</span> Those are
+        <input class="gap-input" id="g4-6" data-answer="their" placeholder="…" autocomplete="off" style="min-width:70px">
+        wallets. <em style="color:var(--muted);font-size:.85rem">(they)</em>
+      </div>
+      <div class="fb" id="fb-g4-6"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkGap(['g4-1','g4-2','g4-3','g4-4','g4-5','g4-6'], 'sc-4', 'sec-4')">✓ Check</button>
+      <button class="btn-reset" onclick="resetGap(['g4-1','g4-2','g4-3','g4-4','g4-5','g4-6'], 'sc-4')">↺ Reset</button>
+      <span id="sc-4"></span>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 5: MIXED REVIEW ===== -->
+  <div class="sec-card">
+    <div class="sec-title-row">
+      <span class="sec-icon">🔀</span>
+      <span class="sec-title">Exercise 5 — Mixed Review</span>
+      <span class="sec-checked" id="check-5">✓ Done</span>
+    </div>
+    <p class="sec-desc">Fill in the gaps. Think carefully — pronouns, possessives, and demonstratives are all mixed!</p>
+
+    <div class="word-bank">
+      <strong>Word bank</strong>
+      <span class="wb-word">Her</span>
+      <span class="wb-word">my</span>
+      <span class="wb-word">This</span>
+      <span class="wb-word">your</span>
+      <span class="wb-word">it</span>
+      <span class="wb-word">Their</span>
+    </div>
+
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">1.</span> I love Kyiv. I really like
+        <input class="gap-input" id="g5-1" data-answer="it" placeholder="…" autocomplete="off" style="min-width:70px">.
+      </div>
+      <div class="fb" id="fb-g5-1"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">2.</span>
+        <input class="gap-input" id="g5-2" data-answer="their" placeholder="…" autocomplete="off" style="min-width:80px">
+        names are Nick and John. <em style="color:var(--muted);font-size:.85rem">(my sons)</em>
+      </div>
+      <div class="fb" id="fb-g5-2"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">3.</span> I don't have a phone. Can I use
+        <input class="gap-input" id="g5-3" data-answer="your" placeholder="…" autocomplete="off" style="min-width:80px">
+        smartphone?
+      </div>
+      <div class="fb" id="fb-g5-3"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">4.</span>
+        <input class="gap-input" id="g5-4" data-answer="this" placeholder="…" autocomplete="off" style="min-width:80px">
+        is Paul, my best friend. <em style="color:var(--muted);font-size:.85rem">(here, one)</em>
+      </div>
+      <div class="fb" id="fb-g5-4"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">5.</span>
+        <input class="gap-input" id="g5-5" data-answer="her" placeholder="…" autocomplete="off" style="min-width:70px">
+        dresses are always so pretty. <em style="color:var(--muted);font-size:.85rem">(my girlfriend)</em>
+      </div>
+      <div class="fb" id="fb-g5-5"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">6.</span> Don't touch
+        <input class="gap-input" id="g5-6" data-answer="my" placeholder="…" autocomplete="off" style="min-width:70px">
+        credit card! <em style="color:var(--muted);font-size:.85rem">(mine)</em>
+      </div>
+      <div class="fb" id="fb-g5-6"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkGap(['g5-1','g5-2','g5-3','g5-4','g5-5','g5-6'], 'sc-5', 'sec-5')">✓ Check</button>
+      <button class="btn-reset" onclick="resetGap(['g5-1','g5-2','g5-3','g5-4','g5-5','g5-6'], 'sc-5')">↺ Reset</button>
+      <span id="sc-5"></span>
+    </div>
+  </div>
+
+  <!-- SEND TO TEACHER -->
+  <div class="send-section">
+    <button class="btn-send" onclick="sendToTeacher()">📧 Send to Teacher</button>
+    <div class="send-label">Sends your scores to dariia.mlnk@gmail.com</div>
+  </div>
+
+</div>
+
+<script>
+var checkedSections = {};
+var totalSections = 6;
+
+function markVideoSec(){
+  checkedSections['sec-0'] = { score: 1, total: 1 };
+  var chk = document.getElementById('check-0');
+  if(chk) chk.style.display = 'inline-block';
+  var sc = document.getElementById('sc-0');
+  if(sc){ sc.textContent = '✓'; sc.className = 'score-badge badge-green'; }
+  updateProgress();
+}
+
+function updateProgress(){
+  var done = Object.keys(checkedSections).length;
+  var pct = Math.round(done / totalSections * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = done + ' / ' + totalSections + ' sections complete';
+}
+
+function setScore(elId, s, t){
+  var el = document.getElementById(elId); if(!el) return;
+  var pct = t > 0 ? s / t : 0;
+  var cls = pct >= 0.8 ? 'badge-green' : pct >= 0.5 ? 'badge-amber' : 'badge-red';
+  el.textContent = s + '/' + t;
+  el.className = 'score-badge ' + cls;
+}
+
+function normalise(str){
+  return (str || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function markDone(secId, s, t){
+  checkedSections[secId] = { score: s, total: t };
+  var num = secId.replace('sec-', '');
+  var chk = document.getElementById('check-' + num);
+  if(chk) chk.style.display = 'inline-block';
+  updateProgress();
+}
+
+function checkGap(ids, scoreId, secId){
+  var s = 0, t = ids.length;
+  ids.forEach(function(id){
+    var inp = document.getElementById(id);
+    var fb = document.getElementById('fb-' + id);
+    inp.classList.remove('correct-input', 'wrong-input');
+    if(fb) fb.className = 'fb';
+    if(!inp.value.trim()) return;
+    var ok = normalise(inp.value) === normalise(inp.dataset.answer);
+    inp.classList.add(ok ? 'correct-input' : 'wrong-input');
+    if(fb){
+      fb.textContent = ok ? '✓ Correct!' : '✗ Answer: ' + inp.dataset.answer;
+      fb.className = 'fb show ' + (ok ? 'ok' : 'err');
+    }
+    if(ok) s++;
+  });
+  setScore(scoreId, s, t);
+  markDone(secId, s, t);
+}
+
+function resetGap(ids, scoreId){
+  ids.forEach(function(id){
+    var inp = document.getElementById(id);
+    inp.value = '';
+    inp.classList.remove('correct-input', 'wrong-input');
+    var fb = document.getElementById('fb-' + id);
+    if(fb) fb.className = 'fb';
+  });
+  var sc = document.getElementById(scoreId);
+  if(sc){ sc.textContent = ''; sc.className = ''; }
+}
+
+function sendToTeacher(){
+  function getScore(secId){
+    var d = checkedSections[secId];
+    return d ? d.score + '/' + d.total : '(not checked)';
+  }
+  var wv1 = document.getElementById('wv1') ? document.getElementById('wv1').value.trim() : '';
+  var wv2 = document.getElementById('wv2') ? document.getElementById('wv2').value.trim() : '';
+  var wv3 = document.getElementById('wv3') ? document.getElementById('wv3').value.trim() : '';
+  var lines = [
+    'Homework — Numbers & Objects (Starters Week 2)',
+    '',
+    'WATCH & ANSWER:',
+    'Objects in the bag: ' + (wv1 || '(not answered)'),
+    'Number of objects:  ' + (wv2 || '(not answered)'),
+    '',
+    'SCORES:',
+    'Ex 1 Vocabulary:            ' + getScore('sec-1'),
+    'Ex 2 Singular & Plural:     ' + getScore('sec-2'),
+    'Ex 3 This/That/These/Those: ' + getScore('sec-3'),
+    'Ex 4 Possessive Pronouns:   ' + getScore('sec-4'),
+    'Ex 5 Mixed Review:          ' + getScore('sec-5')
+  ];
+  window.location.href = 'mailto:dariia.mlnk@gmail.com'
+    + '?subject=' + encodeURIComponent('HW — Numbers & Objects (Starters Week 2)')
+    + '&body=' + encodeURIComponent(lines.join('\n'));
+}
+</script>
+</body>
+</html>
