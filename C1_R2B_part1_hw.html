@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework — Agree to Disagree</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#F0FAF9; --surface:#FFFFFF; --surface-2:#E5F7F5; --border:#B2DDD8;
+  --ink:#061615; --ink-mid:#235450; --ink-muted:#6BA39E;
+  --primary:#0A7065; --primary-lt:#D9F2EF; --primary-dk:#085549;
+  --success:#15803D; --success-lt:#DCFCE7;
+  --fh:'Outfit',sans-serif; --fb:'DM Sans',sans-serif; --r:12px;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#061210; --surface:#0C1E1C; --surface-2:#122A27; --border:#1D3B37;
+  --ink:#C8EBE6; --ink-mid:#72B5AE; --ink-muted:#3D6E69;
+  --primary:#2DD4B8; --primary-lt:#082018; --primary-dk:#25B09A;
+  --success:#22C991; --success-lt:#051510;
+}}
+:root[data-theme="dark"]{
+  --bg:#061210; --surface:#0C1E1C; --surface-2:#122A27; --border:#1D3B37;
+  --ink:#C8EBE6; --ink-mid:#72B5AE; --ink-muted:#3D6E69;
+  --primary:#2DD4B8; --primary-lt:#082018; --primary-dk:#25B09A;
+  --success:#22C991; --success-lt:#051510;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:15.5px;line-height:1.65;padding:36px 16px 64px;}
+h1,h2,h3{font-family:var(--fh);text-wrap:balance;}
+
+.page-header{max-width:720px;margin:0 auto 32px;background:var(--primary);border-radius:16px;padding:28px 32px 24px;color:#fff;position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;right:-40px;bottom:-40px;width:180px;height:180px;background:rgba(255,255,255,.06);border-radius:50%;}
+.header-eyebrow{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.72;margin-bottom:6px;}
+.header-title{font-size:1.75rem;font-weight:900;margin-bottom:4px;}
+.header-meta{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;}
+.meta-chip{font-family:var(--fh);font-size:12px;font-weight:600;background:rgba(255,255,255,.15);border-radius:20px;padding:4px 12px;}
+.name-line{margin-top:14px;display:flex;align-items:center;gap:10px;}
+.name-line label{font-family:var(--fh);font-size:12px;font-weight:600;opacity:.8;white-space:nowrap;}
+.name-input{flex:1;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:6px;padding:5px 10px;color:#fff;font-family:var(--fb);font-size:14px;}
+.name-input::placeholder{color:rgba(255,255,255,.5);}
+.name-input:focus{outline:none;border-color:rgba(255,255,255,.7);}
+
+.section{max-width:720px;margin:0 auto 24px;background:var(--surface);border-radius:var(--r);border:1.5px solid var(--border);overflow:hidden;}
+.section-head{background:var(--surface-2);border-bottom:1.5px solid var(--border);padding:14px 22px 12px;display:flex;align-items:baseline;gap:12px;}
+.section-num{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);flex-shrink:0;}
+.section-title{font-family:var(--fh);font-size:1.05rem;font-weight:800;color:var(--ink);}
+.section-body{padding:20px 22px;}
+.instr{font-size:14px;color:var(--ink-mid);margin-bottom:18px;line-height:1.55;}
+.instr strong{color:var(--ink);}
+
+/* Reading text box */
+.reading-box{background:var(--surface-2);border:1.5px solid var(--border);border-radius:10px;padding:18px 20px;font-size:15px;line-height:1.75;margin-bottom:18px;}
+.reading-box p{margin-bottom:10px;}
+.reading-box p:last-child{margin-bottom:0;}
+.gap-num{font-family:var(--fh);font-size:11.5px;font-weight:800;color:var(--primary);vertical-align:super;}
+.gap-input{background:none;border:none;border-bottom:2px solid var(--primary);padding:1px 4px;font-family:var(--fb);font-size:15px;color:var(--ink);min-width:90px;outline:none;display:inline;}
+.gap-input:focus{background:var(--primary-lt);}
+
+/* Prompt panel below text */
+.prompt-table{width:100%;border-collapse:collapse;margin-top:16px;}
+.prompt-table th{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--primary);text-align:left;padding:6px 10px;border-bottom:2px solid var(--border);background:var(--surface-2);}
+.prompt-table td{padding:9px 10px;border-bottom:1px solid var(--border);font-size:14px;vertical-align:top;}
+.prompt-table tr:last-child td{border-bottom:none;}
+.pnum{font-family:var(--fh);font-weight:800;color:var(--primary);font-size:12px;}
+.pbracket{font-style:italic;color:var(--ink-mid);}
+.ptrans-input{width:100%;border:none;border-bottom:1.5px solid var(--border);padding:3px 2px;font-family:var(--fb);font-size:14px;color:var(--ink);background:none;outline:none;}
+.ptrans-input:focus{border-color:var(--primary);}
+
+/* Multiple choice */
+.mc-text-box{background:var(--surface-2);border:1.5px solid var(--border);border-radius:10px;padding:18px 20px;font-size:15px;line-height:1.85;margin-bottom:18px;}
+.mc-text-box p{margin-bottom:10px;}
+.mc-text-box p:last-child{margin-bottom:0;}
+.mc-select{border:1.5px solid var(--border);border-radius:6px;padding:3px 8px;font-family:var(--fh);font-size:12.5px;font-weight:700;color:var(--ink);background:var(--surface-2);cursor:pointer;vertical-align:middle;margin:0 2px;}
+.mc-select:focus{outline:none;border-color:var(--primary);}
+
+.options-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 16px;margin-top:16px;}
+.opt-row{display:flex;align-items:baseline;gap:6px;font-size:13.5px;padding:5px 0;border-bottom:1px dotted var(--border);}
+.opt-num{font-family:var(--fh);font-weight:700;color:var(--primary);min-width:16px;font-size:12px;}
+.opt-item{color:var(--ink-mid);}
+.opt-item span{font-family:var(--fh);font-size:10.5px;font-weight:700;color:var(--ink-muted);margin-right:3px;}
+
+/* Answer key */
+.answer-key{background:var(--success-lt);border:1.5px solid var(--success);border-radius:8px;padding:12px 16px;margin-top:14px;display:none;}
+.answer-key.visible{display:block;}
+.key-title{font-family:var(--fh);font-size:11px;font-weight:700;color:var(--success);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
+.answer-key ol{padding-left:18px;}
+.answer-key li{color:var(--ink);font-size:14px;margin-bottom:4px;}
+.answer-key li em{color:var(--ink-mid);font-style:italic;}
+
+/* Reflection */
+.reflect-box{border:1.5px solid var(--border);border-radius:8px;padding:14px 16px;margin-top:10px;}
+.reflect-title{font-family:var(--fh);font-size:11px;font-weight:700;color:var(--ink-muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;}
+.reflect-q{font-size:14px;color:var(--ink-mid);margin-bottom:8px;line-height:1.5;}
+.reflect-box textarea{width:100%;border:none;background:none;font-family:var(--fb);font-size:14.5px;color:var(--ink);resize:vertical;min-height:72px;outline:none;line-height:1.7;}
+
+.key-toggle{max-width:720px;margin:0 auto 10px;display:flex;justify-content:flex-end;}
+.key-btn{font-family:var(--fh);font-size:12px;font-weight:700;color:var(--ink-muted);background:none;border:1.5px solid var(--border);border-radius:20px;padding:5px 14px;cursor:pointer;transition:all .15s;}
+.key-btn:hover{color:var(--primary);border-color:var(--primary);}
+.page-footer{max-width:720px;margin:28px auto 0;text-align:center;font-size:12px;color:var(--ink-muted);font-family:var(--fh);}
+
+@media print{
+  body{background:white;color:#000;padding:20px;}
+  .page-header{background:#0A7065 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .key-toggle,.key-btn{display:none;}
+  .section{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="header-eyebrow">Homework — Lesson 2</div>
+  <h1 class="header-title">Agree to Disagree</h1>
+  <div class="header-meta">
+    <span class="meta-chip">B1–B2</span>
+    <span class="meta-chip">Probability &amp; Agreement Language</span>
+    <span class="meta-chip">~20 minutes</span>
+  </div>
+  <div class="name-line">
+    <label>Name</label>
+    <input class="name-input" type="text" placeholder="Your name">
+    <label style="margin-left:12px;">Date</label>
+    <input class="name-input" type="text" placeholder="Date" style="max-width:130px;">
+  </div>
+</div>
+
+<!-- EXERCISE 3 -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">Exercise 3</span>
+    <span class="section-title">Complete the text using the prompts in brackets</span>
+  </div>
+  <div class="section-body">
+    <p class="instr">Use the words in brackets to write the correct form. You may need to add extra words.</p>
+
+    <div class="reading-box">
+      <p style="font-family:var(--fh);font-weight:700;font-size:15px;margin-bottom:6px;">The future of university</p>
+      <p style="font-style:italic;font-size:14px;color:var(--ink-mid);margin-bottom:14px;">Like businesses, universities must constantly innovate to remain relevant and attractive. Professor Marian Forges gives her predictions for the future of the university.</p>
+
+      <p>The university of the future <span class="gap-num">1</span> <input class="gap-input" type="text" size="22" placeholder="…"> (likely / offer) learners the chance to study whenever they want, wherever they want. While some universities already offer learners complete choice over how they learn, <span class="gap-num">2</span> <input class="gap-input" type="text" size="30" placeholder="…"> (it / likely / all universities / soon offer) the chance to learn online, face-to-face or both in the future.</p>
+
+      <p>Such flexibility will mean that a greater number of students <span class="gap-num">3</span> <input class="gap-input" type="text" size="22" placeholder="…"> (certain / be) in part-time or full-time employment while studying. As well as academic studies, I <span class="gap-num">4</span> <input class="gap-input" type="text" size="36" placeholder="…"> (certain / professional studies / also / play) a significant role.</p>
+
+      <p>The workplace is fast-moving and employees are keen to remain competitive. By the end of the next decade, <span class="gap-num">5</span> <input class="gap-input" type="text" size="30" placeholder="…"> (universities / certain / put) into place a much wider range of professional courses and qualifications to help employees upskill. <span class="gap-num">6</span> <input class="gap-input" type="text" size="28" placeholder="…"> (businesses / likely / forge) greater ties with universities in order to help create a more innovative economy.</p>
+    </div>
+
+    <div class="answer-key" id="key3">
+      <div class="key-title">Answer Key</div>
+      <ol>
+        <li><em>is likely to offer</em></li>
+        <li><em>it is likely that all universities will soon offer</em></li>
+        <li><em>are certain to be</em></li>
+        <li><em>am certain that professional studies will also play</em></li>
+        <li><em>universities will certainly put / are certain to put</em></li>
+        <li><em>businesses are likely to forge</em></li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- EXERCISE 4 -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">Exercise 4</span>
+    <span class="section-title">Choose the correct option — a, b or c</span>
+  </div>
+  <div class="section-body">
+    <p class="instr">Select the best option (a, b or c) to complete each gap in the text.</p>
+
+    <div class="mc-text-box">
+      <p>Not everyone likes change. So, if you're going to implement some kind of change in your organisation, expect to <select class="mc-select" id="g1"><option value="">¹___</option><option value="a">a bring about</option><option value="b">b take up</option><option value="c">c come up</option></select> against resistance and try to limit this as much as possible. First, make it clear why the change is necessary and how it'll benefit everyone. This simple task can get people on <select class="mc-select" id="g2"><option value="">²___</option><option value="a">a board</option><option value="b">b call</option><option value="c">c hand</option></select> with the changes and reduce the <select class="mc-select" id="g3"><option value="">³___</option><option value="a">a pushback</option><option value="b">b fight</option><option value="c">c struggle</option></select> you'll receive.</p>
+      <p>Invite employees to give their views on the changes and listen to the changes they take <select class="mc-select" id="g4"><option value="">⁴___</option><option value="a">a problem</option><option value="b">b argument</option><option value="c">c issue</option></select> with. Ask for alternative suggestions and be <select class="mc-select" id="g5"><option value="">⁵___</option><option value="a">a free</option><option value="b">b open</option><option value="c">c accessible</option></select> to their ideas. If staff feel involved, they'll be more likely to <select class="mc-select" id="g6"><option value="">⁶___</option><option value="a">a move</option><option value="b">b go</option><option value="c">c get</option></select> along with the changes.</p>
+      <p>Many of us are <select class="mc-select" id="g7"><option value="">⁷___</option><option value="a">a unhelpful</option><option value="b">b hostile</option><option value="c">c loath</option></select> to change because we worry we won't be able to change with it. Training is therefore vital to ensure that all staff are ready and <select class="mc-select" id="g8"><option value="">⁸___</option><option value="a">a enthusiastic</option><option value="b">b active</option><option value="c">c willing</option></select> to deal with change. Finally, once changes are in place, monitor their effectiveness and deal with issues swiftly.</p>
+    </div>
+
+    <p style="font-size:13px;color:var(--ink-muted);font-family:var(--fh);font-weight:600;margin-bottom:8px;">Options at a glance:</p>
+    <div class="options-grid">
+      <div class="opt-row"><span class="opt-num">1</span><span class="opt-item"><span>a</span>bring about &nbsp;<span>b</span>take up &nbsp;<span>c</span>come up</span></div>
+      <div class="opt-row"><span class="opt-num">2</span><span class="opt-item"><span>a</span>board &nbsp;<span>b</span>call &nbsp;<span>c</span>hand</span></div>
+      <div class="opt-row"><span class="opt-num">3</span><span class="opt-item"><span>a</span>pushback &nbsp;<span>b</span>fight &nbsp;<span>c</span>struggle</span></div>
+      <div class="opt-row"><span class="opt-num">4</span><span class="opt-item"><span>a</span>problem &nbsp;<span>b</span>argument &nbsp;<span>c</span>issue</span></div>
+      <div class="opt-row"><span class="opt-num">5</span><span class="opt-item"><span>a</span>free &nbsp;<span>b</span>open &nbsp;<span>c</span>accessible</span></div>
+      <div class="opt-row"><span class="opt-num">6</span><span class="opt-item"><span>a</span>move &nbsp;<span>b</span>go &nbsp;<span>c</span>get</span></div>
+      <div class="opt-row"><span class="opt-num">7</span><span class="opt-item"><span>a</span>unhelpful &nbsp;<span>b</span>hostile &nbsp;<span>c</span>loath</span></div>
+      <div class="opt-row"><span class="opt-num">8</span><span class="opt-item"><span>a</span>enthusiastic &nbsp;<span>b</span>active &nbsp;<span>c</span>willing</span></div>
+    </div>
+
+    <div class="answer-key" id="key4">
+      <div class="key-title">Answer Key</div>
+      <ol>
+        <li><em>c — come up</em> (come up against resistance)</li>
+        <li><em>a — board</em> (get on board with)</li>
+        <li><em>a — pushback</em> (reduce the pushback)</li>
+        <li><em>c — issue</em> (take issue with)</li>
+        <li><em>b — open</em> (be open to ideas)</li>
+        <li><em>b — go</em> (go along with)</li>
+        <li><em>c — loath</em> (loath to change)</li>
+        <li><em>c — willing</em> (ready and willing)</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- REFLECTION -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-num">Reflection</span>
+    <span class="section-title">Think it over</span>
+  </div>
+  <div class="section-body">
+    <p class="instr">Choose one question and write 3–5 sentences.</p>
+    <div class="reflect-box">
+      <div class="reflect-title">Option A</div>
+      <div class="reflect-q">Think about a change at work or school that you had to adapt to. How did people react? Use some of the vocabulary from Exercise 4 (e.g. <em>pushback, loath to change, go along with</em>).</div>
+      <textarea placeholder="At first there was a lot of pushback because…"></textarea>
+    </div>
+    <div class="reflect-box" style="margin-top:10px;">
+      <div class="reflect-title">Option B</div>
+      <div class="reflect-q">Look at the sentences you completed in Exercise 3. Do you agree with Professor Forges's predictions? Write your own view using probability expressions.</div>
+      <textarea placeholder="I think it's highly likely that… / I'm not certain that… because…"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="key-toggle">
+  <button class="key-btn" onclick="document.querySelectorAll('.answer-key').forEach(k=>k.classList.toggle('visible'))">Show / hide answer keys</button>
+</div>
+
+<div class="page-footer">Homework · Lesson 2 · Agree to Disagree · B1–B2</div>
+
+</body>
+</html>
