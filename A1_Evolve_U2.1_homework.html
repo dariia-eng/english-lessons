@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework — A Family Party</title>
+<style>
+:root {
+  --primary: #2563EB;
+  --primary-light: #EFF6FF;
+  --green: #16A34A;
+  --green-pale: #DCFCE7;
+  --red: #DC2626;
+  --red-pale: #FEE2E2;
+  --amber: #D97706;
+  --amber-pale: #FEF3C7;
+  --text: #1F2937;
+  --muted: #6B7280;
+  --border: #E5E7EB;
+  --bg: #F0F7FF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+
+.hw-header {
+  background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 60%, #3B82F6 100%);
+  color: #fff; padding: 26px 24px 18px; text-align: center;
+}
+.hw-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
+.hw-sub { font-size: .88rem; opacity: .85; margin-bottom: 18px; }
+.progress-wrap { background: rgba(255,255,255,.25); border-radius: 20px; height: 10px; max-width: 420px; margin: 0 auto; }
+.progress-bar { background: #fff; border-radius: 20px; height: 10px; width: 0%; transition: width .4s; }
+.progress-label { font-size: .8rem; opacity: .8; margin-top: 7px; }
+
+.container { max-width: 780px; margin: 0 auto; padding: 28px 16px 16px; }
+
+.sec-card {
+  background: #fff; border-radius: 14px; padding: 22px;
+  margin-bottom: 22px; box-shadow: 0 1px 5px rgba(0,0,0,.08);
+}
+.sec-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+.sec-icon { font-size: 1.35rem; }
+.sec-title { font-size: 1.05rem; font-weight: 800; color: var(--primary); }
+.sec-checked { display: none; background: var(--green-pale); color: var(--green); font-size: .78rem; font-weight: 700; border-radius: 12px; padding: 2px 10px; }
+.sec-desc { color: var(--muted); font-size: .9rem; margin-bottom: 14px; line-height: 1.55; }
+
+/* Word bank */
+.word-bank {
+  background: var(--primary-light); border: 2px solid #BFDBFE;
+  border-radius: 10px; padding: 11px 16px; margin-bottom: 18px;
+  font-size: .88rem; line-height: 1.8;
+}
+.word-bank strong { color: var(--primary); display: block; margin-bottom: 4px; font-size: .82rem; text-transform: uppercase; letter-spacing: .5px; }
+.wb-word {
+  display: inline-block; background: #fff; border: 2px solid #BFDBFE;
+  border-radius: 6px; padding: 2px 10px; margin: 3px 4px 3px 0;
+  font-weight: 600; color: var(--primary); font-size: .88rem;
+}
+
+/* Grammar box */
+.gram-box {
+  background: #F0F7FF; border: 2px solid #BFDBFE;
+  border-radius: 10px; padding: 12px 16px; margin-bottom: 18px;
+  font-size: .88rem; line-height: 1.8;
+}
+.gram-box strong { color: var(--primary); }
+.gram-box table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+.gram-box td { padding: 3px 10px; font-size: .88rem; }
+.gram-box td:first-child { font-weight: 700; color: var(--primary); width: 140px; }
+
+/* Gap-fill */
+.ex-item { margin-bottom: 16px; }
+.ex-q { font-size: .95rem; line-height: 2.2; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+.ex-num { font-weight: 700; color: var(--primary); margin-right: 4px; white-space: nowrap; }
+.gap-input {
+  border: none; border-bottom: 2px solid var(--primary);
+  background: transparent; font-size: .95rem; font-family: inherit;
+  color: var(--text); outline: none; padding: 1px 6px;
+  min-width: 130px; text-align: center; transition: border-color .15s;
+}
+.gap-input:focus { border-color: #1D4ED8; }
+.gap-input.correct-input { border-color: var(--green); color: var(--green); background: var(--green-pale); border-radius: 4px; border-style: solid; }
+.gap-input.wrong-input { border-color: var(--red); color: var(--red); background: var(--red-pale); border-radius: 4px; border-style: solid; }
+
+/* Inline gap (shorter, for is/are) */
+.gap-sm { min-width: 60px; }
+
+.fb { font-size: .83rem; margin-top: 3px; padding: 3px 8px; border-radius: 6px; display: none; }
+.fb.show { display: block; }
+.fb.ok { background: var(--green-pale); color: var(--green); }
+.fb.err { background: var(--red-pale); color: var(--red); }
+
+/* Paragraph gap-fill (is/are text) */
+.passage { font-size: .95rem; line-height: 2.8; background: #F8FAFC; border-radius: 10px; padding: 16px 20px; margin-bottom: 14px; }
+.gap-inline {
+  border: none; border-bottom: 2px solid var(--primary);
+  background: transparent; font-size: .92rem; font-family: inherit;
+  color: var(--text); outline: none; padding: 0 4px;
+  min-width: 55px; text-align: center; transition: border-color .15s;
+}
+.gap-inline:focus { border-color: #1D4ED8; }
+.gap-inline.correct-input { border-color: var(--green); color: var(--green); background: var(--green-pale); border-radius: 4px; border-style: solid; }
+.gap-inline.wrong-input { border-color: var(--red); color: var(--red); background: var(--red-pale); border-radius: 4px; border-style: solid; }
+
+/* Number grid */
+.num-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 12px; margin-bottom: 4px; }
+
+/* Write box */
+.write-row { margin-bottom: 16px; }
+.write-label { font-size: .92rem; font-weight: 600; margin-bottom: 6px; color: var(--text); display: block; }
+.write-box {
+  width: 100%; border: 2px solid var(--border); border-radius: 8px;
+  padding: 10px 12px; font-size: .92rem; font-family: inherit;
+  outline: none; color: var(--text); resize: vertical; min-height: 50px;
+}
+.write-box:focus { border-color: var(--primary); }
+.teacher-note { font-size: .8rem; color: var(--muted); font-style: italic; margin-top: 4px; }
+
+/* Example row */
+.ex-example { font-size: .9rem; color: var(--muted); font-style: italic; margin-bottom: 14px; padding: 8px 12px; background: var(--primary-light); border-radius: 8px; }
+
+/* Score + buttons */
+.score-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: .85rem; font-weight: 700; margin-left: 8px; }
+.badge-green { background: var(--green-pale); color: var(--green); }
+.badge-amber { background: var(--amber-pale); color: var(--amber); }
+.badge-red { background: var(--red-pale); color: var(--red); }
+
+.btn-row { display: flex; align-items: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.btn-check {
+  background: var(--primary); color: #fff; border: none;
+  border-radius: 8px; padding: 9px 22px; font-size: .9rem;
+  font-weight: 700; cursor: pointer; font-family: inherit; transition: opacity .15s;
+}
+.btn-check:hover { opacity: .88; }
+.btn-reset {
+  background: #F3F4F6; color: var(--muted); border: none;
+  border-radius: 8px; padding: 9px 16px; font-size: .88rem;
+  cursor: pointer; font-family: inherit;
+}
+
+.send-section { text-align: center; padding: 24px 0 48px; }
+.btn-send {
+  background: linear-gradient(135deg, #1D4ED8, #3B82F6);
+  color: #fff; border: none; border-radius: 12px;
+  padding: 14px 36px; font-size: 1rem; font-weight: 800;
+  cursor: pointer; font-family: inherit;
+  box-shadow: 0 4px 14px rgba(37,99,235,.3);
+}
+.btn-send:hover { opacity: .88; }
+.send-label { font-size: .85rem; color: var(--muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<div class="hw-header">
+  <div class="hw-title">👨‍👩‍👧‍👦 Homework — A Family Party</div>
+  <div class="hw-sub">Starters · Unit 2 &nbsp;·&nbsp; Fill in all the gaps, then send to your teacher!</div>
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+  <div class="progress-label" id="progress-label">0 / 5 sections complete</div>
+</div>
+
+<div class="container">
+
+  <!-- ===== SECTION 0: VIDEO ===== -->
+  <div class="sec-card">
+    <div class="sec-title-row">
+      <span class="sec-icon">🎬</span>
+      <span class="sec-title">Watch &amp; Answer</span>
+      <span class="sec-checked" id="check-0">✓ Done</span>
+    </div>
+    <p class="sec-desc">Watch Camille and Calvin talk about family. Then answer the questions.</p>
+
+    <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;margin-bottom:18px;background:#000">
+      <iframe
+        src="https://www.youtube.com/embed/rKGCGIbC5r0"
+        style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:10px"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="write-row">
+      <label class="write-label" for="wv1">1. 👥 Who are the two people in the video?</label>
+      <textarea class="write-box" id="wv1" rows="1" placeholder="Their names are …" style="min-height:40px"></textarea>
+      <div class="teacher-note">✏️ Teacher checks</div>
+    </div>
+
+    <div class="write-row">
+      <label class="write-label" for="wv2">2. 👶 How many children do they have?</label>
+      <textarea class="write-box" id="wv2" rows="1" placeholder="They have …" style="min-height:40px"></textarea>
+      <div class="teacher-note">✏️ Teacher checks</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="markVideoSec()">✓ Mark as Done</button>
+      <span id="sc-0"></span>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 1: FAMILY VOCABULARY ===== -->
+  <div class="sec-card">
+    <div class="sec-title-row">
+      <span class="sec-icon">👨‍👩‍👧‍👦</span>
+      <span class="sec-title">Exercise 1 — Family Words</span>
+      <span class="sec-checked" id="check-1">✓ Done</span>
+    </div>
+    <p class="sec-desc">You are Bill. Look at the family tree. Write the correct family word from the word bank.</p>
+
+    <!-- Family Tree SVG -->
+    <svg viewBox="0 -10 610 292" xmlns="http://www.w3.org/2000/svg"
+         style="width:100%;max-width:610px;display:block;margin:0 auto 20px;font-family:'Segoe UI',sans-serif;font-size:12px">
+
+      <!-- === CONNECTING LINES (behind boxes) === -->
+      <!-- Helen+John → branches -->
+      <line x1="280" y1="34" x2="280" y2="55" stroke="#6B7280" stroke-width="1.5"/>
+      <line x1="135" y1="55" x2="515" y2="55" stroke="#6B7280" stroke-width="1.5"/>
+      <line x1="135" y1="55" x2="135" y2="85" stroke="#6B7280" stroke-width="1.5"/>
+      <line x1="515" y1="55" x2="515" y2="85" stroke="#6B7280" stroke-width="1.5"/>
+
+      <!-- Margaret+Paul → children -->
+      <line x1="135" y1="111" x2="135" y2="148" stroke="#6B7280" stroke-width="1.5"/>
+      <line x1="90" y1="148" x2="325" y2="148" stroke="#6B7280" stroke-width="1.5"/>
+      <line x1="90" y1="148" x2="90" y2="168" stroke="#6B7280" stroke-width="1.5"/>
+      <line x1="221" y1="148" x2="221" y2="168" stroke="#6B7280" stroke-width="1.5"/>
+      <line x1="325" y1="148" x2="325" y2="168" stroke="#6B7280" stroke-width="1.5"/>
+
+      <!-- Linda+BILL → Tommy, Annie -->
+      <line x1="90" y1="194" x2="90" y2="228" stroke="#6B7280" stroke-width="1.5"/>
+      <line x1="50" y1="228" x2="130" y2="228" stroke="#6B7280" stroke-width="1.5"/>
+      <line x1="50" y1="228" x2="50" y2="248" stroke="#6B7280" stroke-width="1.5"/>
+      <line x1="130" y1="228" x2="130" y2="248" stroke="#6B7280" stroke-width="1.5"/>
+
+      <!-- === LEVEL 1: Helen + John === -->
+      <text x="235" y="6" text-anchor="middle" font-size="13">👵</text>
+      <rect x="195" y="8" width="80" height="26" rx="4" fill="#D1D5DB" stroke="#9CA3AF" stroke-width="1"/>
+      <text x="235" y="25" text-anchor="middle" fill="#1F2937">Helen</text>
+      <line x1="275" y1="18" x2="286" y2="18" stroke="#4B5563" stroke-width="1.5"/>
+      <line x1="275" y1="22" x2="286" y2="22" stroke="#4B5563" stroke-width="1.5"/>
+      <text x="326" y="6" text-anchor="middle" font-size="13">👴</text>
+      <rect x="286" y="8" width="80" height="26" rx="4" fill="#D1D5DB" stroke="#9CA3AF" stroke-width="1"/>
+      <text x="326" y="25" text-anchor="middle" fill="#1F2937">John</text>
+
+      <!-- === LEVEL 2 LEFT: Margaret + Paul === -->
+      <text x="94" y="83" text-anchor="middle" font-size="13">👩</text>
+      <rect x="55" y="85" width="78" height="26" rx="4" fill="#D1D5DB" stroke="#9CA3AF" stroke-width="1"/>
+      <text x="94" y="102" text-anchor="middle" fill="#1F2937">Margaret</text>
+      <line x1="133" y1="96" x2="137" y2="96" stroke="#4B5563" stroke-width="1.5"/>
+      <line x1="133" y1="100" x2="137" y2="100" stroke="#4B5563" stroke-width="1.5"/>
+      <text x="176" y="83" text-anchor="middle" font-size="13">👨</text>
+      <rect x="137" y="85" width="78" height="26" rx="4" fill="#D1D5DB" stroke="#9CA3AF" stroke-width="1"/>
+      <text x="176" y="102" text-anchor="middle" fill="#1F2937">Paul</text>
+
+      <!-- === LEVEL 2 RIGHT: Peter + Anna === -->
+      <text x="474" y="83" text-anchor="middle" font-size="13">👨</text>
+      <rect x="435" y="85" width="78" height="26" rx="4" fill="#D1D5DB" stroke="#9CA3AF" stroke-width="1"/>
+      <text x="474" y="102" text-anchor="middle" fill="#1F2937">Peter</text>
+      <line x1="513" y1="96" x2="517" y2="96" stroke="#4B5563" stroke-width="1.5"/>
+      <line x1="513" y1="100" x2="517" y2="100" stroke="#4B5563" stroke-width="1.5"/>
+      <text x="556" y="83" text-anchor="middle" font-size="13">👩</text>
+      <rect x="517" y="85" width="78" height="26" rx="4" fill="#D1D5DB" stroke="#9CA3AF" stroke-width="1"/>
+      <text x="556" y="102" text-anchor="middle" fill="#1F2937">Anna</text>
+
+      <!-- === LEVEL 3: Linda + BILL, Barry, Barbara === -->
+      <text x="46" y="166" text-anchor="middle" font-size="13">👩</text>
+      <rect x="10" y="168" width="72" height="26" rx="4" fill="#D1D5DB" stroke="#9CA3AF" stroke-width="1"/>
+      <text x="46" y="185" text-anchor="middle" fill="#1F2937">Linda</text>
+      <line x1="82" y1="179" x2="98" y2="179" stroke="#4B5563" stroke-width="1.5"/>
+      <line x1="82" y1="183" x2="98" y2="183" stroke="#4B5563" stroke-width="1.5"/>
+      <text x="134" y="166" text-anchor="middle" font-size="13">👨</text>
+      <rect x="98" y="168" width="72" height="26" rx="4" fill="#374151" stroke="#1F2937" stroke-width="1.5"/>
+      <text x="134" y="185" text-anchor="middle" fill="#fff" font-weight="bold">BILL</text>
+
+      <text x="221" y="166" text-anchor="middle" font-size="13">👨</text>
+      <rect x="185" y="168" width="72" height="26" rx="4" fill="#D1D5DB" stroke="#9CA3AF" stroke-width="1"/>
+      <text x="221" y="185" text-anchor="middle" fill="#1F2937">Barry</text>
+
+      <text x="325" y="166" text-anchor="middle" font-size="13">👩</text>
+      <rect x="285" y="168" width="80" height="26" rx="4" fill="#D1D5DB" stroke="#9CA3AF" stroke-width="1"/>
+      <text x="325" y="185" text-anchor="middle" fill="#1F2937">Barbara</text>
+
+      <!-- === LEVEL 4: Tommy, Annie === -->
+      <text x="50" y="246" text-anchor="middle" font-size="13">👦</text>
+      <rect x="12" y="248" width="76" height="26" rx="4" fill="#D1D5DB" stroke="#9CA3AF" stroke-width="1"/>
+      <text x="50" y="265" text-anchor="middle" fill="#1F2937">Tommy</text>
+
+      <text x="130" y="246" text-anchor="middle" font-size="13">👧</text>
+      <rect x="94" y="248" width="72" height="26" rx="4" fill="#D1D5DB" stroke="#9CA3AF" stroke-width="1"/>
+      <text x="130" y="265" text-anchor="middle" fill="#1F2937">Annie</text>
+    </svg>
+
+    <div class="word-bank">
+      <strong>Word bank</strong>
+      <span class="wb-word">uncle</span>
+      <span class="wb-word">wife</span>
+      <span class="wb-word">son</span>
+      <span class="wb-word">children</span>
+      <span class="wb-word">grandmother</span>
+      <span class="wb-word">aunt</span>
+      <span class="wb-word">grandfather</span>
+      <span class="wb-word">brother</span>
+      <span class="wb-word">mother</span>
+      <span class="wb-word">sister</span>
+      <span class="wb-word">daughter</span>
+    </div>
+
+    <div class="ex-example">📌 Example: Paul is my <strong>father</strong>.</div>
+
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">1.</span> Helen is my
+        <input class="gap-input" id="f1" data-answer="grandmother" placeholder="…" autocomplete="off">.
+      </div>
+      <div class="fb" id="fb-f1"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">2.</span> Barry is my
+        <input class="gap-input" id="f2" data-answer="brother" placeholder="…" autocomplete="off">.
+      </div>
+      <div class="fb" id="fb-f2"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">3.</span> Tommy and Annie are my
+        <input class="gap-input" id="f3" data-answer="children" placeholder="…" autocomplete="off">.
+      </div>
+      <div class="fb" id="fb-f3"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">4.</span> Barbara is my
+        <input class="gap-input" id="f4" data-answer="sister" placeholder="…" autocomplete="off">.
+      </div>
+      <div class="fb" id="fb-f4"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">5.</span> Linda is my
+        <input class="gap-input" id="f5" data-answer="wife" placeholder="…" autocomplete="off">.
+      </div>
+      <div class="fb" id="fb-f5"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">6.</span> Tommy is my
+        <input class="gap-input" id="f6" data-answer="son" placeholder="…" autocomplete="off">.
+      </div>
+      <div class="fb" id="fb-f6"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">7.</span> Annie is my
+        <input class="gap-input" id="f7" data-answer="daughter" placeholder="…" autocomplete="off">.
+      </div>
+      <div class="fb" id="fb-f7"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">8.</span> Anna is my
+        <input class="gap-input" id="f8" data-answer="aunt" placeholder="…" autocomplete="off">.
+      </div>
+      <div class="fb" id="fb-f8"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">9.</span> John is my
+        <input class="gap-input" id="f9" data-answer="grandfather" placeholder="…" autocomplete="off">.
+      </div>
+      <div class="fb" id="fb-f9"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">10.</span> Margaret is my
+        <input class="gap-input" id="f10" data-answer="mother" placeholder="…" autocomplete="off">.
+      </div>
+      <div class="fb" id="fb-f10"></div>
+    </div>
+    <div class="ex-item">
+      <div class="ex-q">
+        <span class="ex-num">11.</span> Peter is my
+        <input class="gap-input" id="f11" data-answer="uncle" placeholder="…" autocomplete="off">.
+      </div>
+      <div class="fb" id="fb-f11"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkGap(['f1','f2','f3','f4','f5','f6','f7','f8','f9','f10','f11'],'sc-1','sec-1')">✓ Check</button>
+      <button class="btn-reset" onclick="resetGap(['f1','f2','f3','f4','f5','f6','f7','f8','f9','f10','f11'],'sc-1')">↺ Reset</button>
+      <span id="sc-1"></span>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2: NUMBERS ===== -->
+  <div class="sec-card">
+    <div class="sec-title-row">
+      <span class="sec-icon">🔢</span>
+      <span class="sec-title">Exercise 2 — Numbers</span>
+      <span class="sec-checked" id="check-2">✓ Done</span>
+    </div>
+    <p class="sec-desc">Write the number word from the word bank.</p>
+
+    <div class="word-bank">
+      <strong>Word bank</strong>
+      <span class="wb-word">one hundred</span>
+      <span class="wb-word">forty-seven</span>
+      <span class="wb-word">sixty-five</span>
+      <span class="wb-word">thirteen</span>
+      <span class="wb-word">eighty-two</span>
+      <span class="wb-word">nineteen</span>
+      <span class="wb-word">thirty-nine</span>
+      <span class="wb-word">seventy</span>
+      <span class="wb-word">twenty-four</span>
+      <span class="wb-word">fifty-five</span>
+    </div>
+
+    <div class="num-grid">
+      <div class="ex-item">
+        <div class="ex-q"><span class="ex-num">1.</span> 13 =
+          <input class="gap-input" id="n1" data-answer="thirteen" placeholder="…" autocomplete="off">
+        </div>
+        <div class="fb" id="fb-n1"></div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-q"><span class="ex-num">2.</span> 47 =
+          <input class="gap-input" id="n2" data-answer="forty-seven" placeholder="…" autocomplete="off">
+        </div>
+        <div class="fb" id="fb-n2"></div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-q"><span class="ex-num">3.</span> 19 =
+          <input class="gap-input" id="n3" data-answer="nineteen" placeholder="…" autocomplete="off">
+        </div>
+        <div class="fb" id="fb-n3"></div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-q"><span class="ex-num">4.</span> 82 =
+          <input class="gap-input" id="n4" data-answer="eighty-two" placeholder="…" autocomplete="off">
+        </div>
+        <div class="fb" id="fb-n4"></div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-q"><span class="ex-num">5.</span> 65 =
+          <input class="gap-input" id="n5" data-answer="sixty-five" placeholder="…" autocomplete="off">
+        </div>
+        <div class="fb" id="fb-n5"></div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-q"><span class="ex-num">6.</span> 100 =
+          <input class="gap-input" id="n6" data-answer="one hundred" placeholder="…" autocomplete="off">
+        </div>
+        <div class="fb" id="fb-n6"></div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-q"><span class="ex-num">7.</span> 70 =
+          <input class="gap-input" id="n7" data-answer="seventy" placeholder="…" autocomplete="off">
+        </div>
+        <div class="fb" id="fb-n7"></div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-q"><span class="ex-num">8.</span> 24 =
+          <input class="gap-input" id="n8" data-answer="twenty-four" placeholder="…" autocomplete="off">
+        </div>
+        <div class="fb" id="fb-n8"></div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-q"><span class="ex-num">9.</span> 55 =
+          <input class="gap-input" id="n9" data-answer="fifty-five" placeholder="…" autocomplete="off">
+        </div>
+        <div class="fb" id="fb-n9"></div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-q"><span class="ex-num">10.</span> 39 =
+          <input class="gap-input" id="n10" data-answer="thirty-nine" placeholder="…" autocomplete="off">
+        </div>
+        <div class="fb" id="fb-n10"></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkGap(['n1','n2','n3','n4','n5','n6','n7','n8','n9','n10'],'sc-2','sec-2')">✓ Check</button>
+      <button class="btn-reset" onclick="resetGap(['n1','n2','n3','n4','n5','n6','n7','n8','n9','n10'],'sc-2')">↺ Reset</button>
+      <span id="sc-2"></span>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 3: IS / ARE ===== -->
+  <div class="sec-card">
+    <div class="sec-title-row">
+      <span class="sec-icon">📝</span>
+      <span class="sec-title">Exercise 3 — <em>is</em> or <em>are</em>?</span>
+      <span class="sec-checked" id="check-3">✓ Done</span>
+    </div>
+    <p class="sec-desc">Complete the text. Write <strong>is</strong> or <strong>are</strong> in each gap.</p>
+
+    <div class="gram-box">
+      <strong>I / you / we / they →</strong> <em>are</em> &nbsp;&nbsp;&nbsp; <strong>he / she / it →</strong> <em>is</em>
+    </div>
+
+    <div class="passage">
+      Hello. My name
+      <sup>1</sup><input class="gap-inline" id="ia1" data-answer="is" placeholder="…" autocomplete="off">
+      Tamara. My family and I
+      <sup>2</sup><input class="gap-inline" id="ia2" data-answer="are" placeholder="…" autocomplete="off">
+      Colombian. We
+      <sup>3</sup><input class="gap-inline" id="ia3" data-answer="are" placeholder="…" autocomplete="off">
+      from Bogotá. My grandparents
+      <sup>4</sup><input class="gap-inline" id="ia4" data-answer="are" placeholder="…" autocomplete="off">
+      from Medellín. My father
+      <sup>5</sup><input class="gap-inline" id="ia5" data-answer="is" placeholder="…" autocomplete="off">
+      a teacher, and my mother
+      <sup>6</sup><input class="gap-inline" id="ia6" data-answer="is" placeholder="…" autocomplete="off">
+      an artist. My brothers
+      <sup>7</sup><input class="gap-inline" id="ia7" data-answer="are" placeholder="…" autocomplete="off">
+      19 and 14. My sister
+      <sup>8</sup><input class="gap-inline" id="ia8" data-answer="is" placeholder="…" autocomplete="off">
+      21. My sister and I
+      <sup>9</sup><input class="gap-inline" id="ia9" data-answer="are" placeholder="…" autocomplete="off">
+      college students.
+    </div>
+
+    <div id="ia-fbs"></div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkGap(['ia1','ia2','ia3','ia4','ia5','ia6','ia7','ia8','ia9'],'sc-3','sec-3')">✓ Check</button>
+      <button class="btn-reset" onclick="resetGap(['ia1','ia2','ia3','ia4','ia5','ia6','ia7','ia8','ia9'],'sc-3')">↺ Reset</button>
+      <span id="sc-3"></span>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 4: QUESTIONS ===== -->
+  <div class="sec-card">
+    <div class="sec-title-row">
+      <span class="sec-icon">❓</span>
+      <span class="sec-title">Exercise 4 — Yes/No Questions</span>
+      <span class="sec-checked" id="check-4">✓ Done</span>
+    </div>
+    <p class="sec-desc">Write a question and answer about Tamara. Use the words in brackets.</p>
+
+    <div class="ex-example">
+      📌 Example: <strong>(your name / Rosaria)</strong><br>
+      <em>Is your name Rosaria?</em><br>
+      <em>No, it isn't. It's Tamara.</em>
+    </div>
+
+    <div class="write-row">
+      <label class="write-label" for="q1">1. (you and your family / Colombian)</label>
+      <textarea class="write-box" id="q1" rows="2" placeholder="Are …?&#10;Yes, …"></textarea>
+      <div class="teacher-note">✏️ Teacher checks</div>
+    </div>
+    <div class="write-row">
+      <label class="write-label" for="q2">2. (you / from Medellín)</label>
+      <textarea class="write-box" id="q2" rows="2" placeholder="Are …?&#10;No, …"></textarea>
+      <div class="teacher-note">✏️ Teacher checks</div>
+    </div>
+    <div class="write-row">
+      <label class="write-label" for="q3">3. (your father / an artist)</label>
+      <textarea class="write-box" id="q3" rows="2" placeholder="Is …?&#10;No, …"></textarea>
+      <div class="teacher-note">✏️ Teacher checks</div>
+    </div>
+    <div class="write-row">
+      <label class="write-label" for="q4">4. (your sister / 21)</label>
+      <textarea class="write-box" id="q4" rows="2" placeholder="Is …?&#10;Yes, …"></textarea>
+      <div class="teacher-note">✏️ Teacher checks</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="markWriteSec()">✓ Mark as Done</button>
+      <span id="sc-4"></span>
+    </div>
+  </div>
+
+  <div class="send-section">
+    <button class="btn-send" onclick="sendToTeacher()">📧 Send to Teacher</button>
+    <div class="send-label">Sends your answers to dariia.mlnk@gmail.com</div>
+  </div>
+
+</div>
+
+<script>
+var checkedSections = {};
+var totalSections = 5;
+
+function markVideoSec(){
+  checkedSections['sec-0'] = { score: 1, total: 1 };
+  var chk = document.getElementById('check-0');
+  if(chk) chk.style.display = 'inline-block';
+  var sc = document.getElementById('sc-0');
+  if(sc){ sc.textContent = '✓'; sc.className = 'score-badge badge-green'; }
+  updateProgress();
+}
+
+function updateProgress(){
+  var done = Object.keys(checkedSections).length;
+  var pct = Math.round(done / totalSections * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = done + ' / ' + totalSections + ' sections complete';
+}
+
+function setScore(elId, s, t){
+  var el = document.getElementById(elId); if(!el) return;
+  var pct = t > 0 ? s / t : 0;
+  var cls = pct >= 0.8 ? 'badge-green' : pct >= 0.5 ? 'badge-amber' : 'badge-red';
+  el.textContent = s + '/' + t;
+  el.className = 'score-badge ' + cls;
+}
+
+function normalise(str){
+  return (str || '').trim().toLowerCase().replace(/\s+/g,' ').replace(/['']/g,"'");
+}
+
+function markDone(secId, s, t){
+  checkedSections[secId] = { score: s, total: t };
+  var num = secId.replace('sec-', '');
+  var chk = document.getElementById('check-' + num);
+  if(chk) chk.style.display = 'inline-block';
+  updateProgress();
+}
+
+function checkGap(ids, scoreId, secId){
+  var s = 0, t = ids.length;
+  ids.forEach(function(id){
+    var inp = document.getElementById(id);
+    var fb = document.getElementById('fb-' + id);
+    inp.classList.remove('correct-input', 'wrong-input');
+    if(fb) fb.className = 'fb';
+    if(!inp.value.trim()) return;
+    var ok = normalise(inp.value) === normalise(inp.dataset.answer);
+    inp.classList.add(ok ? 'correct-input' : 'wrong-input');
+    if(fb){
+      fb.textContent = ok ? '✓ Correct!' : '✗ Answer: ' + inp.dataset.answer;
+      fb.className = 'fb show ' + (ok ? 'ok' : 'err');
+    }
+    if(ok) s++;
+  });
+  setScore(scoreId, s, t);
+  markDone(secId, s, t);
+}
+
+function resetGap(ids, scoreId){
+  ids.forEach(function(id){
+    var inp = document.getElementById(id);
+    inp.value = '';
+    inp.classList.remove('correct-input', 'wrong-input');
+    var fb = document.getElementById('fb-' + id);
+    if(fb) fb.className = 'fb';
+  });
+  var sc = document.getElementById(scoreId);
+  if(sc){ sc.textContent = ''; sc.className = ''; }
+}
+
+function markWriteSec(){
+  checkedSections['sec-4'] = { score: 1, total: 1 };
+  var chk = document.getElementById('check-4');
+  if(chk) chk.style.display = 'inline-block';
+  var sc = document.getElementById('sc-4');
+  if(sc){ sc.textContent = '✓'; sc.className = 'score-badge badge-green'; }
+  updateProgress();
+}
+
+function sendToTeacher(){
+  function getScore(secId){
+    var d = checkedSections[secId];
+    return d ? d.score + '/' + d.total : '(not checked)';
+  }
+  function getVal(id){ var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+  var lines = [
+    'Homework — A Family Party (Starters Unit 2)',
+    '',
+    'WATCH & ANSWER:',
+    '1. People in video: ' + (getVal('wv1') || '(not answered)'),
+    '2. Children:        ' + (getVal('wv2') || '(not answered)'),
+    '',
+    'SCORES:',
+    'Ex 1 Family Words:   ' + getScore('sec-1'),
+    'Ex 2 Numbers:        ' + getScore('sec-2'),
+    'Ex 3 is / are:       ' + getScore('sec-3'),
+    '',
+    'EXERCISE 4 — Questions (teacher checks):',
+    '1. ' + (getVal('q1') || '(not answered)'),
+    '2. ' + (getVal('q2') || '(not answered)'),
+    '3. ' + (getVal('q3') || '(not answered)'),
+    '4. ' + (getVal('q4') || '(not answered)')
+  ];
+  window.location.href = 'mailto:dariia.mlnk@gmail.com'
+    + '?subject=' + encodeURIComponent('HW — A Family Party (Starters Unit 2)')
+    + '&body=' + encodeURIComponent(lines.join('\n'));
+}
+</script>
+</body>
+</html>
