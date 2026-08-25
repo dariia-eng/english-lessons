@@ -1,0 +1,799 @@
+<title>Agree to Disagree — 65 min</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F0FAF9;--surface:#FFFFFF;--surface-2:#E5F7F5;--border:#B2DDD8;
+  --ink:#061615;--ink-mid:#235450;--ink-muted:#6BA39E;
+  --primary:#0A7065;--primary-lt:#D9F2EF;--primary-dk:#085549;
+  --c-warmup:#D97706;--c-warmup-lt:#FEF3C7;
+  --c-vocab:#0891B2;--c-vocab-lt:#ECFEFF;
+  --c-reading:#2348C8;--c-reading-lt:#EEF2FF;
+  --c-language:#7C3AED;--c-language-lt:#F5F3FF;
+  --c-roleplay:#0A7065;--c-roleplay-lt:#D9F2EF;
+  --c-debate:#B91C1C;--c-debate-lt:#FFF1F1;
+  --c-wrapup:#374151;--c-wrapup-lt:#F9FAFB;
+  --success:#15803D;--success-lt:#DCFCE7;
+  --error:#B91C1C;--error-lt:#FEF2F2;
+  --r:14px;--r-sm:8px;
+  --shadow:0 1px 12px rgba(10,112,101,.08);
+  --shadow-md:0 4px 24px rgba(10,112,101,.13);
+  --fh:'Outfit',sans-serif;--fb:'DM Sans',sans-serif;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#061210;--surface:#0C1E1C;--surface-2:#122A27;--border:#1D3B37;
+  --ink:#C8EBE6;--ink-mid:#72B5AE;--ink-muted:#3D6E69;
+  --primary:#2DD4B8;--primary-lt:#082018;--primary-dk:#25B09A;
+  --c-warmup:#F59E0B;--c-warmup-lt:#1A1205;
+  --c-vocab:#22D3EE;--c-vocab-lt:#061518;
+  --c-reading:#5B80FF;--c-reading-lt:#0E1528;
+  --c-language:#9F67FF;--c-language-lt:#160D26;
+  --c-roleplay:#2DD4B8;--c-roleplay-lt:#082018;
+  --c-debate:#F87171;--c-debate-lt:#1F0808;
+  --c-wrapup:#9CA3AF;--c-wrapup-lt:#0D1117;
+  --success:#22C991;--success-lt:#051510;
+  --error:#F87171;--error-lt:#1F0808;
+  --shadow:0 1px 12px rgba(0,0,0,.4);--shadow-md:0 4px 24px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --bg:#061210;--surface:#0C1E1C;--surface-2:#122A27;--border:#1D3B37;
+  --ink:#C8EBE6;--ink-mid:#72B5AE;--ink-muted:#3D6E69;
+  --primary:#2DD4B8;--primary-lt:#082018;--primary-dk:#25B09A;
+  --c-warmup:#F59E0B;--c-warmup-lt:#1A1205;
+  --c-vocab:#22D3EE;--c-vocab-lt:#061518;
+  --c-reading:#5B80FF;--c-reading-lt:#0E1528;
+  --c-language:#9F67FF;--c-language-lt:#160D26;
+  --c-roleplay:#2DD4B8;--c-roleplay-lt:#082018;
+  --c-debate:#F87171;--c-debate-lt:#1F0808;
+  --c-wrapup:#9CA3AF;--c-wrapup-lt:#0D1117;
+  --success:#22C991;--success-lt:#051510;
+  --error:#F87171;--error-lt:#1F0808;
+  --shadow:0 1px 12px rgba(0,0,0,.4);--shadow-md:0 4px 24px rgba(0,0,0,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.65;padding-top:72px;}
+h1,h2,h3,h4{font-family:var(--fh);text-wrap:balance;line-height:1.2;}
+button{font-family:var(--fb);cursor:pointer;border:none;outline:none;}
+
+/* NAV */
+.stage-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:var(--shadow);}
+.nav-inner{max-width:920px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;}
+.nav-pills{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:0;}
+.pill{font-family:var(--fh);font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:20px;background:var(--surface-2);color:var(--ink-mid);border:1.5px solid var(--border);transition:all .2s;white-space:nowrap;text-decoration:none;}
+.pill:hover{border-color:var(--primary);color:var(--primary);}
+.pill[data-s="s1"].active{background:var(--c-warmup);border-color:var(--c-warmup);color:#fff;}
+.pill[data-s="s2"].active{background:var(--c-vocab);border-color:var(--c-vocab);color:#fff;}
+.pill[data-s="s3"].active{background:var(--c-reading);border-color:var(--c-reading);color:#fff;}
+.pill[data-s="s4"].active{background:var(--c-language);border-color:var(--c-language);color:#fff;}
+.pill[data-s="s5"].active{background:var(--c-roleplay);border-color:var(--c-roleplay);color:#fff;}
+.pill[data-s="s6"].active{background:var(--c-debate);border-color:var(--c-debate);color:#fff;}
+.pill[data-s="s7"].active{background:var(--c-wrapup);border-color:var(--c-wrapup);color:#fff;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dk) 100%);color:#fff;text-align:center;padding:48px 20px 44px;}
+.hero-eyebrow{font-family:var(--fh);font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;opacity:.75;margin-bottom:12px;}
+.hero-title{font-size:clamp(2.2rem,6vw,3.4rem);font-weight:900;margin-bottom:10px;}
+.hero-sub{font-size:1.05rem;opacity:.8;}
+
+/* MAIN */
+main{max-width:920px;margin:0 auto;padding:32px 16px 80px;}
+
+/* STAGE */
+.stage{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:28px;border-top:4px solid var(--stc,var(--primary));overflow:hidden;}
+.stage[data-type="warmup"]{--stc:var(--c-warmup);--stc-lt:var(--c-warmup-lt);}
+.stage[data-type="vocab"]{--stc:var(--c-vocab);--stc-lt:var(--c-vocab-lt);}
+.stage[data-type="reading"]{--stc:var(--c-reading);--stc-lt:var(--c-reading-lt);}
+.stage[data-type="language"]{--stc:var(--c-language);--stc-lt:var(--c-language-lt);}
+.stage[data-type="roleplay"]{--stc:var(--c-roleplay);--stc-lt:var(--c-roleplay-lt);}
+.stage[data-type="debate"]{--stc:var(--c-debate);--stc-lt:var(--c-debate-lt);}
+.stage[data-type="wrapup"]{--stc:var(--c-wrapup);--stc-lt:var(--c-wrapup-lt);}
+.stage-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 16px;gap:12px;flex-wrap:wrap;background:var(--stc-lt,var(--surface-2));}
+.stage-label{font-family:var(--fh);font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--stc,var(--primary));margin-bottom:2px;}
+.stage-title{font-size:1.35rem;font-weight:800;color:var(--ink);}
+.stage-duration{font-size:12px;font-family:var(--fh);font-weight:600;color:var(--ink-muted);margin-top:2px;}
+.stage-body{padding:22px;}
+
+/* INSTRUCTION */
+.instruction{background:var(--stc-lt,var(--surface-2));border-left:3px solid var(--stc,var(--primary));border-radius:0 var(--r-sm) var(--r-sm) 0;padding:12px 16px;margin-bottom:20px;font-size:.93rem;color:var(--ink-mid);}
+.instruction strong{color:var(--ink);}
+
+/* SPEAKING CARD */
+.speaking-card{background:var(--stc-lt,var(--surface-2));border:1.5px solid var(--stc,var(--primary));border-radius:var(--r);padding:18px 20px;margin-top:18px;}
+.speaking-card h4{font-family:var(--fh);font-size:.9rem;font-weight:700;color:var(--stc,var(--primary));margin-bottom:8px;}
+.speaking-card p{font-size:.96rem;color:var(--ink);}
+
+/* VOTE */
+.proposals{display:flex;flex-direction:column;gap:12px;}
+.proposal-card{border:1.5px solid var(--border);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;transition:border-color .2s,background .2s;}
+.proposal-card.voted-yes{border-color:var(--success);background:var(--success-lt);}
+.proposal-card.voted-no{border-color:var(--error);background:var(--error-lt);}
+.proposal-text{flex:1;font-size:.97rem;font-weight:500;color:var(--ink);}
+.vote-btns{display:flex;gap:8px;flex-shrink:0;}
+.vote-btn{font-family:var(--fh);font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;cursor:pointer;border:1.5px solid var(--border);background:var(--surface-2);color:var(--ink-mid);transition:all .15s;}
+.vote-btn.yes-active{background:var(--success);border-color:var(--success);color:#fff;}
+.vote-btn.no-active{background:var(--error);border-color:var(--error);color:#fff;}
+
+/* VOCAB */
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:22px;}
+.vocab-col{background:var(--surface-2);border-radius:var(--r-sm);padding:14px 16px;border:1px solid var(--border);}
+.vocab-col-title{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+.vocab-col.agree .vocab-col-title{color:var(--success);}
+.vocab-col.partial .vocab-col-title{color:var(--c-vocab);}
+.vocab-col.disagree .vocab-col-title{color:var(--error);}
+.vocab-col ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.vocab-col li{font-size:.87rem;color:var(--ink);padding:5px 10px;background:var(--surface);border-radius:6px;border:1px solid var(--border);font-style:italic;}
+
+/* SORT */
+.sort-grid{display:flex;flex-direction:column;gap:10px;}
+.sort-card{border:1.5px solid var(--border);border-radius:var(--r-sm);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.sort-phrase{flex:1;font-size:.95rem;font-style:italic;color:var(--ink);}
+.sort-btns{display:flex;gap:6px;flex-shrink:0;}
+.sort-btn{font-family:var(--fh);font-size:11px;font-weight:700;padding:5px 11px;border-radius:14px;cursor:pointer;border:1.5px solid var(--border);background:var(--surface-2);color:var(--ink-mid);transition:all .15s;}
+.sort-btn.agree-sel{background:var(--success);border-color:var(--success);color:#fff;}
+.sort-btn.partial-sel{background:var(--c-vocab);border-color:var(--c-vocab);color:#fff;}
+.sort-btn.disagree-sel{background:var(--error);border-color:var(--error);color:#fff;}
+.sort-result{font-family:var(--fh);font-size:12px;font-weight:700;padding:3px 9px;border-radius:10px;display:none;}
+.sort-result.ok{background:var(--success-lt);color:var(--success);}
+.sort-result.err{background:var(--error-lt);color:var(--error);}
+.check-btn{font-family:var(--fh);font-size:13px;font-weight:700;padding:10px 24px;border-radius:24px;cursor:pointer;border:none;background:var(--primary);color:#fff;margin-top:14px;transition:opacity .2s;}
+.check-btn:hover{opacity:.88;}
+.check-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* READING */
+.reading-block{background:var(--surface-2);border-radius:var(--r-sm);padding:20px;line-height:1.78;font-size:.95rem;color:var(--ink);margin-bottom:16px;border:1px solid var(--border);}
+.reading-block p{margin-bottom:12px;}
+.reading-block p:last-child{margin-bottom:0;}
+.char-name{font-weight:700;color:var(--stc,var(--primary));}
+
+/* TFN */
+.tfn-list{display:flex;flex-direction:column;gap:10px;}
+.tfn-item{border:1.5px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;display:grid;grid-template-columns:1fr auto;align-items:start;gap:10px;}
+.tfn-stmt{font-size:.95rem;color:var(--ink);line-height:1.5;}
+.tfn-btns{display:flex;gap:6px;flex-shrink:0;}
+.tfn-btn{font-family:var(--fh);font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:12px;cursor:pointer;border:1.5px solid var(--border);background:var(--surface-2);color:var(--ink-mid);transition:all .15s;}
+.tfn-btn.sel-T{background:var(--success);border-color:var(--success);color:#fff;}
+.tfn-btn.sel-F{background:var(--error);border-color:var(--error);color:#fff;}
+.tfn-btn.sel-N{background:var(--c-vocab);border-color:var(--c-vocab);color:#fff;}
+.tfn-explain{grid-column:1/-1;font-size:.85rem;color:var(--ink-mid);border-top:1px solid var(--border);padding-top:8px;margin-top:2px;display:none;}
+.tfn-item.revealed .tfn-explain{display:block;}
+.tfn-correct{color:var(--success);font-weight:600;}
+.tfn-wrong{color:var(--error);font-weight:600;}
+
+/* GAP FILL */
+.gap-list{display:flex;flex-direction:column;gap:14px;}
+.gap-item{border:1.5px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;}
+.gap-line{font-size:.94rem;color:var(--ink-mid);margin-bottom:3px;display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;}
+.gap-line .spk{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--stc,var(--primary));flex-shrink:0;}
+.gap-blank{display:inline-block;min-width:150px;border-bottom:2px solid var(--stc,var(--primary));color:transparent;height:1.3em;vertical-align:bottom;margin:0 2px;}
+.gap-blank.revealed{color:var(--stc,var(--primary));font-weight:700;}
+.gap-hint{font-size:.8rem;color:var(--ink-muted);font-style:italic;margin:6px 0 8px;}
+.reveal-btn{font-family:var(--fh);font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:14px;cursor:pointer;background:var(--stc-lt,var(--surface-2));color:var(--stc,var(--primary));border:1.5px solid var(--stc,var(--primary));transition:all .15s;}
+.reveal-btn:hover{background:var(--stc,var(--primary));color:#fff;}
+.reveal-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* ROLE PLAY */
+.round-tabs{display:flex;gap:8px;margin-bottom:16px;}
+.round-tab{font-family:var(--fh);font-size:12px;font-weight:700;padding:7px 18px;border-radius:20px;cursor:pointer;border:1.5px solid var(--border);background:var(--surface-2);color:var(--ink-mid);transition:all .2s;}
+.round-tab.active{background:var(--c-roleplay);border-color:var(--c-roleplay);color:#fff;}
+.round-panel{display:none;}
+.round-panel.active{display:block;}
+.round-card{background:var(--stc-lt,var(--surface-2));border-radius:var(--r);padding:18px 20px;margin-bottom:14px;border:1.5px solid var(--border);}
+.round-card h4{font-family:var(--fh);font-size:1rem;font-weight:800;color:var(--stc,var(--primary));margin-bottom:12px;}
+.roles-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.role-box{background:var(--surface);border-radius:var(--r-sm);padding:10px 14px;border:1px solid var(--border);}
+.role-box .role-label{font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:3px;}
+.role-box .role-name{font-weight:700;color:var(--ink);font-size:.9rem;}
+.role-box .role-task{font-size:.82rem;color:var(--ink-mid);margin-top:3px;}
+.lang-reminder{border-top:1px solid var(--border);padding-top:10px;font-size:.83rem;color:var(--ink-mid);}
+.lang-reminder strong{color:var(--ink);display:block;margin-bottom:3px;}
+
+/* BOARD MEETING */
+.bm-roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px;}
+.bm-card{background:var(--surface-2);border-radius:var(--r-sm);padding:14px 16px;border:1.5px solid var(--border);}
+.bm-card.ceo{border-color:var(--c-warmup);background:var(--c-warmup-lt);}
+.bm-card.hr{border-color:var(--c-roleplay);background:var(--c-roleplay-lt);}
+.bm-card.fin{border-color:var(--c-reading);background:var(--c-reading-lt);}
+.bm-card.ops{border-color:var(--c-language);background:var(--c-language-lt);}
+.bm-badge{font-size:10px;font-family:var(--fh);font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;}
+.bm-title{font-family:var(--fh);font-size:.95rem;font-weight:800;color:var(--ink);margin-bottom:8px;}
+.bm-positions{font-size:.82rem;color:var(--ink-mid);list-style:none;display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}
+.bm-opener{font-size:.82rem;font-style:italic;color:var(--ink-mid);border-top:1px solid var(--border);padding-top:8px;}
+.phase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:18px;}
+.phase-box{background:var(--surface-2);border-radius:var(--r-sm);padding:14px 16px;border:1px solid var(--border);}
+.phase-box .ph-label{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;}
+.phase-box ul{list-style:none;font-size:.85rem;color:var(--ink-mid);display:flex;flex-direction:column;gap:5px;}
+
+/* WRAPUP */
+.wrapup-qs{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+.wrapup-q{background:var(--surface-2);border-radius:var(--r-sm);padding:14px 16px;border:1px solid var(--border);}
+.wrapup-q .qn{font-family:var(--fh);font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:4px;}
+.wrapup-q .qt{font-size:.97rem;color:var(--ink);font-weight:500;}
+.lang-all{background:var(--stc-lt,var(--surface-2));border-radius:var(--r);padding:16px 18px;border:1px solid var(--border);}
+.lang-all h4{font-family:var(--fh);font-size:.95rem;font-weight:800;color:var(--stc,var(--primary));margin-bottom:12px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{font-size:.83rem;font-style:italic;background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:5px 12px;color:var(--ink);}
+.chip.agree{border-color:var(--success);color:var(--success);}
+.chip.partial{border-color:var(--c-vocab);color:var(--c-vocab);}
+.chip.disagree{border-color:var(--error);color:var(--error);}
+
+/* UTILS */
+.section-label{font-family:var(--fh);font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-muted);margin:22px 0 10px;}
+.section-label:first-child{margin-top:0;}
+.divider{height:1px;background:var(--border);margin:20px 0;}
+
+@media(max-width:580px){
+  .roles-row{grid-template-columns:1fr;}
+  .bm-roles{grid-template-columns:1fr 1fr;}
+  .vocab-grid{grid-template-columns:1fr;}
+}
+</style>
+
+<!-- NAV -->
+<nav class="stage-nav">
+  <div class="nav-inner">
+    <div class="nav-pills">
+      <a class="pill" data-s="s1" href="#s1">🌅 Warm-up <small>(7')</small></a>
+      <a class="pill" data-s="s2" href="#s2">📋 Vocab <small>(10')</small></a>
+      <a class="pill" data-s="s3" href="#s3">📖 Reading <small>(8')</small></a>
+      <a class="pill" data-s="s4" href="#s4">🔍 Language <small>(8')</small></a>
+      <a class="pill" data-s="s5" href="#s5">🎭 Role Play <small>(12')</small></a>
+      <a class="pill" data-s="s6" href="#s6">🏛 Board Mtg <small>(15')</small></a>
+      <a class="pill" data-s="s7" href="#s7">✅ Wrap-up <small>(5')</small></a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-eyebrow">Unit 2B · 65 minutes · B1–B2</div>
+  <h1 class="hero-title">Agree to Disagree</h1>
+  <p class="hero-sub">Agreement &amp; Disagreement Language · 7 stages</p>
+</header>
+
+<main>
+
+<!-- ═══ S1: WARM-UP ═══ -->
+<section class="stage" id="s1" data-type="warmup">
+  <div class="stage-head">
+    <div>
+      <div class="stage-label">Stage 1 · Warm-up</div>
+      <div class="stage-title">Would You Vote Yes?</div>
+      <div class="stage-duration">7 minutes</div>
+    </div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction"><strong>Read each workplace proposal.</strong> Click YES or NO to cast your personal vote — be honest! You'll need to explain your choice to your partner.</div>
+    <div class="proposals">
+      <div class="proposal-card" id="p0">
+        <div class="proposal-text">The office should have a dedicated <strong>nap room</strong> for tired employees.</div>
+        <div class="vote-btns">
+          <button class="vote-btn" id="p0y" onclick="vote(0,'yes')">✔ Yes</button>
+          <button class="vote-btn" id="p0n" onclick="vote(0,'no')">✘ No</button>
+        </div>
+      </div>
+      <div class="proposal-card" id="p1">
+        <div class="proposal-text">Everyone should work <strong>from home on Fridays</strong>.</div>
+        <div class="vote-btns">
+          <button class="vote-btn" id="p1y" onclick="vote(1,'yes')">✔ Yes</button>
+          <button class="vote-btn" id="p1n" onclick="vote(1,'no')">✘ No</button>
+        </div>
+      </div>
+      <div class="proposal-card" id="p2">
+        <div class="proposal-text"><strong>Music</strong> should be allowed anywhere in the open-plan office.</div>
+        <div class="vote-btns">
+          <button class="vote-btn" id="p2y" onclick="vote(2,'yes')">✔ Yes</button>
+          <button class="vote-btn" id="p2n" onclick="vote(2,'no')">✘ No</button>
+        </div>
+      </div>
+      <div class="proposal-card" id="p3">
+        <div class="proposal-text">All team meetings should be <strong>limited to 20 minutes</strong>.</div>
+        <div class="vote-btns">
+          <button class="vote-btn" id="p3y" onclick="vote(3,'yes')">✔ Yes</button>
+          <button class="vote-btn" id="p3n" onclick="vote(3,'no')">✘ No</button>
+        </div>
+      </div>
+      <div class="proposal-card" id="p4">
+        <div class="proposal-text">There should be <strong>no work emails</strong> after 6pm.</div>
+        <div class="vote-btns">
+          <button class="vote-btn" id="p4y" onclick="vote(4,'yes')">✔ Yes</button>
+          <button class="vote-btn" id="p4n" onclick="vote(4,'no')">✘ No</button>
+        </div>
+      </div>
+      <div class="proposal-card" id="p5">
+        <div class="proposal-text">All employees should know each other's <strong>salaries</strong>.</div>
+        <div class="vote-btns">
+          <button class="vote-btn" id="p5y" onclick="vote(5,'yes')">✔ Yes</button>
+          <button class="vote-btn" id="p5n" onclick="vote(5,'no')">✘ No</button>
+        </div>
+      </div>
+    </div>
+    <div id="speak1" style="display:none;">
+      <div class="speaking-card">
+        <h4>🗣 Speak to your partner</h4>
+        <p>Pick your <strong>most controversial</strong> vote — the one you feel strongest about. Explain your reasoning. Can you convince your partner to change their mind? Try to disagree politely if you see it differently.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S2: VOCAB ═══ -->
+<section class="stage" id="s2" data-type="vocab">
+  <div class="stage-head">
+    <div>
+      <div class="stage-label">Stage 2 · Vocabulary</div>
+      <div class="stage-title">Agree, Partly, or Not at All?</div>
+      <div class="stage-duration">10 minutes</div>
+    </div>
+  </div>
+  <div class="stage-body">
+    <div class="section-label">Reference — three categories of response</div>
+    <div class="vocab-grid">
+      <div class="vocab-col agree">
+        <div class="vocab-col-title">✓ Agreement</div>
+        <ul>
+          <li>Absolutely.</li>
+          <li>Exactly.</li>
+          <li>That's a good point.</li>
+          <li>You're absolutely right.</li>
+          <li>I couldn't agree more.</li>
+          <li>That makes sense.</li>
+        </ul>
+      </div>
+      <div class="vocab-col partial">
+        <div class="vocab-col-title">↔ Partial Agreement</div>
+        <ul>
+          <li>I see what you mean, but…</li>
+          <li>That's true, but…</li>
+          <li>I agree up to a point, but…</li>
+        </ul>
+      </div>
+      <div class="vocab-col disagree">
+        <div class="vocab-col-title">✗ Disagreement</div>
+        <ul>
+          <li>I'm afraid I disagree.</li>
+          <li>I don't think that's right.</li>
+          <li>I see it differently.</li>
+          <li>That's not really true.</li>
+          <li>I'm not sure I agree.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="section-label">Sort these nine phrases — click the right category for each</div>
+    <div class="instruction">Use the reference above to help. Click <strong>✓ Agree</strong>, <strong>↔ Partial</strong>, or <strong>✗ Disagree</strong> for each one, then press <em>Check Answers</em>.</div>
+    <div class="sort-grid" id="sortGrid"></div>
+    <button class="check-btn" id="sortCheckBtn" onclick="checkSort()" disabled>Check Answers</button>
+  </div>
+</section>
+
+<!-- ═══ S3: READING ═══ -->
+<section class="stage" id="s3" data-type="reading">
+  <div class="stage-head">
+    <div>
+      <div class="stage-label">Stage 3 · Reading</div>
+      <div class="stage-title">The Office of the Future</div>
+      <div class="stage-duration">8 minutes — read then answer</div>
+    </div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction"><strong>Read once, then answer the T / F / N questions below.</strong> Click your answer to check it — T = True, F = False, N = Not Given (the text doesn't say).</div>
+    <div class="reading-block">
+      <p>At a company strategy meeting, two managers — <span class="char-name">Anya</span> and <span class="char-name">Jitesh</span> — are discussing three new workplace proposals: working from home three days a week, closing the office canteen to cut costs, and introducing a four-day working week.</p>
+      <p><span class="char-name">Anya</span> is enthusiastic about remote working. "I couldn't agree more with the WFH proposal," she says. "People are far more productive when they choose where they work." <span class="char-name">Jitesh</span> sees it differently. "I agree up to a point, but I'm afraid I disagree that everyone benefits equally. Junior staff, in particular, need to be in the office — they learn so much just from watching their colleagues."</p>
+      <p>On the canteen closure, the two find surprising common ground. "That's a good point," <span class="char-name">Jitesh</span> argues. "The canteen is where people actually talk to each other." <span class="char-name">Anya</span> nods. "Absolutely. I don't think closing it is the right decision at all — it would damage team culture."</p>
+      <p>The four-day week divides them most sharply. <span class="char-name">Anya</span> argues it will attract better talent. <span class="char-name">Jitesh</span> is sceptical. "I see what you mean, but I'm not sure I agree. In client-facing roles, a four-day week could damage important relationships." In the end, they agree to disagree — and present both positions to the board.</p>
+    </div>
+    <div class="section-label">True · False · Not Given</div>
+    <div class="tfn-list" id="tfnList"></div>
+  </div>
+</section>
+
+<!-- ═══ S4: LANGUAGE FOCUS ═══ -->
+<section class="stage" id="s4" data-type="language">
+  <div class="stage-head">
+    <div>
+      <div class="stage-label">Stage 4 · Language Focus</div>
+      <div class="stage-title">Patterns in Action</div>
+      <div class="stage-duration">8 minutes</div>
+    </div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction">Three key patterns from the reading — study how each one works, then practise in the gap-fill below.</div>
+    <div class="vocab-grid" style="margin-bottom:22px;">
+      <div class="vocab-col agree">
+        <div class="vocab-col-title">Strong Agreement</div>
+        <ul>
+          <li>"I couldn't agree <em>more</em> with…"</li>
+          <li>"Absolutely. You're right that…"</li>
+        </ul>
+        <p style="font-size:.8rem;color:var(--ink-mid);margin-top:8px;font-style:italic;">Stress: <em>couldn't</em> · <em>absolutely</em></p>
+      </div>
+      <div class="vocab-col partial">
+        <div class="vocab-col-title">Partial Agreement</div>
+        <ul>
+          <li>"I agree up to a <em>point</em>, but…"</li>
+          <li>"I see what you <em>mean</em>, but…"</li>
+        </ul>
+        <p style="font-size:.8rem;color:var(--ink-mid);margin-top:8px;font-style:italic;">Voice rises on <em>but</em> — signals more coming</p>
+      </div>
+      <div class="vocab-col disagree">
+        <div class="vocab-col-title">Polite Disagreement</div>
+        <ul>
+          <li>"I'm <em>afraid</em> I disagree."</li>
+          <li>"I'm not <em>sure</em> I agree."</li>
+        </ul>
+        <p style="font-size:.8rem;color:var(--ink-mid);margin-top:8px;font-style:italic;"><em>Afraid</em> / <em>sure</em> soften the challenge</p>
+      </div>
+    </div>
+    <div class="section-label">Gap-fill — reveal the answer, then read the exchange aloud</div>
+    <div class="instruction">Click <strong>Reveal</strong> to see the missing phrase. Then practise the whole exchange aloud with a partner, paying attention to stress and tone.</div>
+    <div class="gap-list" id="gapList"></div>
+  </div>
+</section>
+
+<!-- ═══ S5: ROLE PLAY ═══ -->
+<section class="stage" id="s5" data-type="roleplay">
+  <div class="stage-head">
+    <div>
+      <div class="stage-label">Stage 5 · Role Play</div>
+      <div class="stage-title">Three Rounds, One Proposal Each</div>
+      <div class="stage-duration">12 minutes · 4 min per round</div>
+    </div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction">Three rounds, <strong>4 minutes each</strong>. Use the round tabs above to switch between rounds. Aim to use at least <em>two different phrases</em> from Stage 2 per round.</div>
+    <div class="round-tabs">
+      <button class="round-tab active" onclick="showRound(1)">Round 1</button>
+      <button class="round-tab" onclick="showRound(2)">Round 2</button>
+      <button class="round-tab" onclick="showRound(3)">Round 3</button>
+    </div>
+
+    <div class="round-panel active" id="rp1">
+      <div class="round-card">
+        <h4>📋 Proposal: Work From Home 3 Days a Week</h4>
+        <div class="roles-row">
+          <div class="role-box">
+            <div class="role-label">Person A — In Favour ✔</div>
+            <div class="role-name">WFH boosts productivity</div>
+            <div class="role-task">Argue that remote work improves focus, saves commute time, and gives people autonomy. Use your own examples.</div>
+          </div>
+          <div class="role-box">
+            <div class="role-label">Person B — Against ✘</div>
+            <div class="role-name">Office presence matters</div>
+            <div class="role-task">Argue that working in the same space builds team culture, especially for junior staff who learn by watching colleagues.</div>
+          </div>
+        </div>
+        <div class="lang-reminder">
+          <strong>Try to use:</strong>
+          "I couldn't agree more…" · "I see what you mean, but…" · "I'm afraid I disagree."
+        </div>
+      </div>
+      <div class="speaking-card"><h4>💬 Report back</h4><p>Did you reach any agreement? What was the strongest argument you heard — even if you disagreed with it?</p></div>
+    </div>
+
+    <div class="round-panel" id="rp2">
+      <div class="round-card">
+        <h4>📋 Proposal: Close the Office Canteen</h4>
+        <div class="roles-row">
+          <div class="role-box">
+            <div class="role-label">Person A — Against ✘</div>
+            <div class="role-name">Canteen = culture</div>
+            <div class="role-task">The canteen is where people actually connect and collaborate informally. Closing it would damage team culture and morale.</div>
+          </div>
+          <div class="role-box">
+            <div class="role-label">Person B — In Favour ✔</div>
+            <div class="role-name">Cut the costs</div>
+            <div class="role-task">The canteen costs the company a fortune. People can bring their own lunch or go out — it's not the company's job to feed them.</div>
+          </div>
+        </div>
+        <div class="lang-reminder">
+          <strong>Try to use:</strong>
+          "Absolutely — you're right that…" · "I agree up to a point, but…" · "I don't think that's right."
+        </div>
+      </div>
+      <div class="speaking-card"><h4>💬 Report back</h4><p>Would you change your Stage 1 vote after hearing the arguments? Tell the class what changed your mind — or what didn't.</p></div>
+    </div>
+
+    <div class="round-panel" id="rp3">
+      <div class="round-card">
+        <h4>📋 Proposal: Introduce a Four-Day Working Week</h4>
+        <div class="roles-row">
+          <div class="role-box" style="grid-column:1/-1;">
+            <div class="role-label">Both partners — free choice</div>
+            <div class="role-name">Choose your own position</div>
+            <div class="role-task">Agree, partially agree, or disagree — you decide. The goal this round: use ALL THREE categories of language (Agreement + Partial + Disagreement) naturally in the conversation.</div>
+          </div>
+        </div>
+        <div class="lang-reminder">
+          <strong>Challenge:</strong> Use at least one phrase from each category before time is up.
+        </div>
+      </div>
+      <div class="speaking-card"><h4>💬 Report back</h4><p>Which phrases felt most natural? Which ones were hardest to use? Any you'd like to practise more?</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S6: BOARD MEETING ═══ -->
+<section class="stage" id="s6" data-type="debate">
+  <div class="stage-head">
+    <div>
+      <div class="stage-label">Stage 6 · Extended Task</div>
+      <div class="stage-title">The Board Meeting</div>
+      <div class="stage-duration">15 minutes</div>
+    </div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction">Work in groups of four. Take a role card below. The CEO opens the meeting — each director presents their view on all three proposals, the group debates, then the CEO announces a decision.</div>
+    <div class="section-label">Role cards — assign one per person</div>
+    <div class="bm-roles">
+      <div class="bm-card ceo">
+        <div class="bm-badge">Role 1</div>
+        <div class="bm-title">🏢 CEO</div>
+        <ul class="bm-positions">
+          <li>You chair the meeting</li>
+          <li>You listen before deciding</li>
+          <li>You announce the final verdict on each proposal</li>
+        </ul>
+        <div class="bm-opener">"Let's get started. I'd like to hear all views before we decide. HR, would you like to begin?"</div>
+      </div>
+      <div class="bm-card hr">
+        <div class="bm-badge">Role 2</div>
+        <div class="bm-title">👥 HR Director</div>
+        <ul class="bm-positions">
+          <li>WFH: strongly in favour</li>
+          <li>Canteen: against closure</li>
+          <li>Four-day week: in favour</li>
+        </ul>
+        <div class="bm-opener">"I couldn't agree more with the WFH proposal — our wellbeing data clearly shows staff are happier working flexibly."</div>
+      </div>
+      <div class="bm-card fin">
+        <div class="bm-badge">Role 3</div>
+        <div class="bm-title">💰 Finance Director</div>
+        <ul class="bm-positions">
+          <li>WFH: neutral (saves office costs)</li>
+          <li>Canteen: in favour of closure</li>
+          <li>Four-day week: against (productivity risk)</li>
+        </ul>
+        <div class="bm-opener">"I see what you mean about culture, but I'm afraid I disagree — the canteen costs us €180k a year we simply can't justify."</div>
+      </div>
+      <div class="bm-card ops">
+        <div class="bm-badge">Role 4</div>
+        <div class="bm-title">⚙️ Operations Director</div>
+        <ul class="bm-positions">
+          <li>WFH: against (coordination issues)</li>
+          <li>Canteen: against closure</li>
+          <li>Four-day week: in favour (efficiency)</li>
+        </ul>
+        <div class="bm-opener">"I agree up to a point on WFH, but I'm not sure I agree it works across the board — client-facing teams need to be reachable five days a week."</div>
+      </div>
+    </div>
+    <div class="section-label">Meeting structure</div>
+    <div class="phase-grid">
+      <div class="phase-box">
+        <div class="ph-label" style="color:var(--c-warmup);">Minutes 1–5</div>
+        <ul>
+          <li>Each director: 60-second opening statement on all three proposals</li>
+          <li>CEO listens, notes where people agree/disagree</li>
+        </ul>
+      </div>
+      <div class="phase-box">
+        <div class="ph-label" style="color:var(--c-reading);">Minutes 5–13</div>
+        <ul>
+          <li>Open debate — challenge, agree, partially agree</li>
+          <li>Use as many agreement phrases as possible</li>
+          <li>CEO can ask questions: "Does anyone see it differently?"</li>
+        </ul>
+      </div>
+      <div class="phase-box">
+        <div class="ph-label" style="color:var(--c-language);">Minutes 13–15</div>
+        <ul>
+          <li>CEO announces a decision on each proposal</li>
+          <li>"We've decided to…" / "We won't be proceeding with…"</li>
+          <li>Directors may briefly respond</li>
+        </ul>
+      </div>
+    </div>
+    <div class="speaking-card">
+      <h4>🏆 Useful phrases for the CEO during debate</h4>
+      <p>"That's a good point — Finance, do you agree?" · "I see what both of you mean." · "Can I just check — is anyone in agreement on this?" · "After hearing all views, we've decided to…" · "I'm afraid we won't be proceeding with…"</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S7: WRAP-UP ═══ -->
+<section class="stage" id="s7" data-type="wrapup">
+  <div class="stage-head">
+    <div>
+      <div class="stage-label">Stage 7 · Wrap-up</div>
+      <div class="stage-title">What Did We Agree On?</div>
+      <div class="stage-duration">5 minutes</div>
+    </div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction">Quick reflection with your partner — answer these three questions, then share one answer with the class.</div>
+    <div class="wrapup-qs">
+      <div class="wrapup-q">
+        <div class="qn">Question 1</div>
+        <div class="qt">What's one thing you and your partner genuinely <strong>agreed</strong> on today? What made it easy to agree?</div>
+      </div>
+      <div class="wrapup-q">
+        <div class="qn">Question 2</div>
+        <div class="qt">What's one thing you couldn't agree on? What was the <strong>strongest argument</strong> from the other side — even if you still disagreed?</div>
+      </div>
+      <div class="wrapup-q">
+        <div class="qn">Question 3</div>
+        <div class="qt">Choose one phrase from today that you <strong>most want to use</strong> in real life. Say it out loud now — in a sentence that's true for you.</div>
+      </div>
+    </div>
+    <div class="lang-all">
+      <h4>All the phrases from today</h4>
+      <div class="chips">
+        <span class="chip agree">Absolutely.</span>
+        <span class="chip agree">Exactly.</span>
+        <span class="chip agree">That's a good point.</span>
+        <span class="chip agree">You're absolutely right.</span>
+        <span class="chip agree">I couldn't agree more.</span>
+        <span class="chip agree">That makes sense.</span>
+        <span class="chip partial">I see what you mean, but…</span>
+        <span class="chip partial">That's true, but…</span>
+        <span class="chip partial">I agree up to a point, but…</span>
+        <span class="chip disagree">I'm afraid I disagree.</span>
+        <span class="chip disagree">I don't think that's right.</span>
+        <span class="chip disagree">I see it differently.</span>
+        <span class="chip disagree">That's not really true.</span>
+        <span class="chip disagree">I'm not sure I agree.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+// ═══ WARM-UP VOTE ═══
+const voted = [false,false,false,false,false,false];
+function vote(i, choice){
+  voted[i] = true;
+  const card = document.getElementById('p'+i);
+  card.classList.remove('voted-yes','voted-no');
+  card.classList.add(choice==='yes'?'voted-yes':'voted-no');
+  ['y','n'].forEach(s=>{
+    const b = document.getElementById('p'+i+s);
+    b.classList.remove('yes-active','no-active');
+  });
+  document.getElementById('p'+i+(choice==='yes'?'y':'n')).classList.add(choice==='yes'?'yes-active':'no-active');
+  if(voted.every(Boolean)) document.getElementById('speak1').style.display='block';
+}
+
+// ═══ VOCAB SORT ═══
+const sortData = [
+  {phrase:"That makes sense.",cat:"agree"},
+  {phrase:"You're absolutely right.",cat:"agree"},
+  {phrase:"I couldn't agree more.",cat:"agree"},
+  {phrase:"I see what you mean, but…",cat:"partial"},
+  {phrase:"I agree up to a point, but…",cat:"partial"},
+  {phrase:"That's true, but…",cat:"partial"},
+  {phrase:"That's not really true.",cat:"disagree"},
+  {phrase:"I'm not sure I agree.",cat:"disagree"},
+  {phrase:"I see it differently.",cat:"disagree"}
+];
+const shuffled = [...sortData].sort(()=>Math.random()-.5);
+const sortChoices = {};
+const sortGrid = document.getElementById('sortGrid');
+const sortCheckBtn = document.getElementById('sortCheckBtn');
+
+shuffled.forEach((item,i)=>{
+  const div = document.createElement('div');
+  div.className='sort-card'; div.id='sc'+i;
+  div.innerHTML=`
+    <div class="sort-phrase">"${item.phrase}"</div>
+    <div class="sort-btns">
+      <button class="sort-btn" onclick="pickSort(${i},'agree',this)">✓ Agree</button>
+      <button class="sort-btn" onclick="pickSort(${i},'partial',this)">↔ Partial</button>
+      <button class="sort-btn" onclick="pickSort(${i},'disagree',this)">✗ Disagree</button>
+    </div>
+    <div class="sort-result" id="sr${i}"></div>
+  `;
+  sortGrid.appendChild(div);
+});
+
+function pickSort(i,choice,btn){
+  sortChoices[i]=choice;
+  document.getElementById('sc'+i).querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('agree-sel','partial-sel','disagree-sel'));
+  btn.classList.add(choice+'-sel');
+  if(Object.keys(sortChoices).length===shuffled.length) sortCheckBtn.disabled=false;
+}
+function checkSort(){
+  shuffled.forEach((item,i)=>{
+    const ok=sortChoices[i]===item.cat;
+    const label=item.cat==='agree'?'✓ Agreement':item.cat==='partial'?'↔ Partial':'✗ Disagreement';
+    const res=document.getElementById('sr'+i);
+    res.textContent=ok?'✓ '+label:'✗ → '+label;
+    res.className='sort-result '+(ok?'ok':'err');
+    res.style.display='inline-block';
+  });
+  sortCheckBtn.disabled=true; sortCheckBtn.textContent='Checked ✓';
+}
+
+// ═══ T/F/N ═══
+const tfnData = [
+  {s:"Anya is against the proposal to work from home.",a:"F",ex:'She says "I couldn\'t agree more with the WFH proposal."'},
+  {s:"Jitesh thinks remote working benefits all employees equally.",a:"F",ex:"He argues that junior staff 'need to be in the office — they learn so much just from watching their colleagues.'"},
+  {s:"Both managers oppose closing the office canteen.",a:"T",ex:"Jitesh calls it 'where people actually talk to each other'; Anya says she doesn't think closing it 'is the right decision at all.'"},
+  {s:"Anya believes a four-day week will help the company attract new employees.",a:"T",ex:'"Anya argues it will attract better talent."'},
+  {s:"By the end of the meeting, both managers agree on all three proposals.",a:"F",ex:'"In the end, they agree to disagree — and present both positions to the board."'}
+];
+
+const tfnList = document.getElementById('tfnList');
+tfnData.forEach((item,i)=>{
+  const div=document.createElement('div');
+  div.className='tfn-item'; div.id='tfni'+i;
+  div.innerHTML=`
+    <div class="tfn-stmt">${i+1}. ${item.s}</div>
+    <div class="tfn-btns">
+      <button class="tfn-btn" onclick="checkTfn(${i},'T')">T</button>
+      <button class="tfn-btn" onclick="checkTfn(${i},'F')">F</button>
+      <button class="tfn-btn" onclick="checkTfn(${i},'N')">N</button>
+    </div>
+    <div class="tfn-explain" id="tfnex${i}"></div>
+  `;
+  tfnList.appendChild(div);
+});
+
+function checkTfn(i,chosen){
+  const item=tfnData[i];
+  const el=document.getElementById('tfni'+i);
+  el.classList.add('revealed');
+  el.querySelectorAll('.tfn-btn').forEach(b=>{
+    b.classList.remove('sel-T','sel-F','sel-N');
+    if(b.textContent===chosen) b.classList.add('sel-'+chosen);
+  });
+  const ok=chosen===item.a;
+  document.getElementById('tfnex'+i).innerHTML=
+    `<span class="${ok?'tfn-correct':'tfn-wrong'}">${ok?'✓ Correct':'✗ Answer: '+item.a}</span> — ${item.ex}`;
+}
+
+// ═══ GAP FILL ═══
+const gapData = [
+  {a:"Remote work is more productive than office work.",b:"[GAP] — I've been far more focused since I started working from home.",blank:"I couldn't agree more",hint:"strong agreement"},
+  {a:"We should cancel all standing team meetings.",b:"[GAP] you have a point, but some face-to-face time really is valuable.",blank:"I see what you mean,",hint:"partial agreement"},
+  {a:"Junior staff don't need to be in the office at all.",b:"[GAP]. New employees learn so much just from watching senior colleagues.",blank:"I'm afraid I disagree",hint:"polite disagreement"},
+  {a:"A four-day week would attract better talent.",b:"[GAP] — it's already working well in many companies.",blank:"Absolutely",hint:"strong agreement"},
+  {a:"AI will replace most office jobs within ten years.",b:"[GAP] a point, but I think AI is more likely to change jobs than remove them.",blank:"I agree up to",hint:"partial agreement"}
+];
+
+const gapList = document.getElementById('gapList');
+gapData.forEach((item,i)=>{
+  const bParts = item.b.split('[GAP]');
+  const div=document.createElement('div');
+  div.className='gap-item';
+  div.innerHTML=`
+    <div class="gap-line"><span class="spk">A:</span><span>${item.a}</span></div>
+    <div class="gap-line"><span class="spk">B:</span><span>${bParts[0]}<span class="gap-blank" id="gb${i}">${item.blank}</span>${bParts[1]}</span></div>
+    <div class="gap-hint">Hint: ${item.hint}</div>
+    <button class="reveal-btn" id="rb${i}" onclick="revealGap(${i})">Reveal answer</button>
+  `;
+  gapList.appendChild(div);
+});
+function revealGap(i){
+  document.getElementById('gb'+i).classList.add('revealed');
+  const b=document.getElementById('rb'+i);
+  b.textContent='✓ Revealed'; b.disabled=true;
+}
+
+// ═══ ROLE PLAY ROUND SWITCHER ═══
+function showRound(n){
+  document.querySelectorAll('.round-panel').forEach((p,i)=>p.classList.toggle('active',i+1===n));
+  document.querySelectorAll('.round-tab').forEach((t,i)=>t.classList.toggle('active',i+1===n));
+}
+
+// ═══ SCROLL SPY ═══
+const allPills=document.querySelectorAll('.pill');
+const allStages=document.querySelectorAll('.stage');
+const spy=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) allPills.forEach(p=>p.classList.toggle('active',p.dataset.s===e.target.id));
+  });
+},{rootMargin:'-30% 0px -55% 0px'});
+allStages.forEach(s=>spy.observe(s));
+</script>
