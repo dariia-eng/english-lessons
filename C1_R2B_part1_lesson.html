@@ -1,0 +1,607 @@
+<title>Likely or Not — 65 min</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F1F4FB;
+  --surface: #FFFFFF;
+  --surface-2: #F5F7FF;
+  --border: #D2D8EF;
+  --ink: #0F1527;
+  --ink-mid: #404875;
+  --ink-muted: #8490B8;
+  --primary: #2348C8;
+  --primary-lt: #EAF0FF;
+  --primary-dk: #1730A0;
+  --c-warmup: #D97706;
+  --c-warmup-lt: #FEF3C7;
+  --c-lang: #2348C8;
+  --c-lang-lt: #EAF0FF;
+  --c-practice: #7C3AED;
+  --c-practice-lt: #F5F3FF;
+  --c-speaking: #0F7B55;
+  --c-speaking-lt: #ECFDF5;
+  --c-task: #B91C1C;
+  --c-task-lt: #FEF2F2;
+  --c-wrapup: #374151;
+  --c-wrapup-lt: #F9FAFB;
+  --success: #15803D;
+  --success-lt: #DCFCE7;
+  --error: #B91C1C;
+  --error-lt: #FEF2F2;
+  --r: 14px; --r-sm: 8px;
+  --shadow: 0 1px 12px rgba(35,72,200,.07);
+  --shadow-md: 0 4px 24px rgba(35,72,200,.1);
+  --fh: 'Outfit', sans-serif;
+  --fb: 'DM Sans', sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0C0F1E; --surface:#141829; --surface-2:#1C2038; --border:#252D50;
+  --ink:#DDE3FF; --ink-mid:#8890C0; --ink-muted:#50588A;
+  --primary:#5B80FF; --primary-lt:#161E45; --primary-dk:#4060E0;
+  --c-warmup:#F59E0B; --c-warmup-lt:#1F1608;
+  --c-lang:#5B80FF; --c-lang-lt:#161E45;
+  --c-practice:#9F67FF; --c-practice-lt:#1A1030;
+  --c-speaking:#22C991; --c-speaking-lt:#071A12;
+  --c-task:#F87171; --c-task-lt:#1F0808;
+  --c-wrapup:#9CA3AF; --c-wrapup-lt:#111318;
+  --success:#22C991; --success-lt:#071A12;
+  --error:#F87171; --error-lt:#1F0808;
+  --shadow:0 1px 12px rgba(0,0,0,.35); --shadow-md:0 4px 24px rgba(0,0,0,.45);
+}}
+:root[data-theme="dark"]{
+  --bg:#0C0F1E; --surface:#141829; --surface-2:#1C2038; --border:#252D50;
+  --ink:#DDE3FF; --ink-mid:#8890C0; --ink-muted:#50588A;
+  --primary:#5B80FF; --primary-lt:#161E45; --primary-dk:#4060E0;
+  --c-warmup:#F59E0B; --c-warmup-lt:#1F1608;
+  --c-lang:#5B80FF; --c-lang-lt:#161E45;
+  --c-practice:#9F67FF; --c-practice-lt:#1A1030;
+  --c-speaking:#22C991; --c-speaking-lt:#071A12;
+  --c-task:#F87171; --c-task-lt:#1F0808;
+  --c-wrapup:#9CA3AF; --c-wrapup-lt:#111318;
+  --success:#22C991; --success-lt:#071A12;
+  --error:#F87171; --error-lt:#1F0808;
+  --shadow:0 1px 12px rgba(0,0,0,.35); --shadow-md:0 4px 24px rgba(0,0,0,.45);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.6;padding-bottom:80px;}
+/* ─── Header ─── */
+.header{background:var(--primary);color:#fff;padding:36px 24px 56px;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;right:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.05);}
+.header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:40px;background:var(--bg);border-radius:60% 60% 0 0;}
+.h-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:4px 14px;font-family:var(--fh);font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px;}
+.header h1{font-family:var(--fh);font-size:clamp(30px,7vw,52px);font-weight:900;line-height:1.08;margin-bottom:12px;text-wrap:balance;}
+.header h1 em{font-style:normal;opacity:.5;}
+.h-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px;}
+.h-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:13px;font-weight:500;}
+/* ─── Sticky nav ─── */
+.stage-nav{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:var(--shadow);}
+.stage-nav-inner{max-width:800px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:12px;}
+.stage-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;padding:10px 0;scrollbar-width:none;flex:1;}
+.stage-pills::-webkit-scrollbar{display:none;}
+.s-pill{background:none;border:none;border-radius:6px;padding:5px 10px;font-family:var(--fh);font-size:12px;font-weight:600;color:var(--ink-muted);cursor:pointer;white-space:nowrap;transition:all .15s;}
+.s-pill:hover{background:var(--surface-2);color:var(--ink-mid);}
+.s-pill.active{background:var(--primary-lt);color:var(--primary);font-weight:700;}
+/* ─── Container ─── */
+.main{max-width:800px;margin:0 auto;padding:32px 20px 0;}
+/* ─── Stage cards ─── */
+.stage{border-radius:var(--r);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:28px;overflow:hidden;scroll-margin-top:60px;}
+.stage-top{display:flex;align-items:flex-start;justify-content:space-between;padding:20px 24px 0;gap:12px;}
+.stage-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.type-badge{border-radius:20px;padding:4px 11px;font-family:var(--fh);font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;}
+.dur-badge{font-family:var(--fh);font-size:12px;font-weight:700;color:var(--ink-muted);background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:3px 10px;}
+.stage-body{padding:16px 24px 24px;}
+.stage-title{font-family:var(--fh);font-size:20px;font-weight:800;color:var(--ink);margin-bottom:6px;margin-top:14px;}
+.stage-instr{font-size:14.5px;color:var(--ink-mid);line-height:1.5;margin-bottom:18px;}
+/* ─── Stage type colours ─── */
+.stage.warmup .stage-top{border-top:4px solid var(--c-warmup);}
+.stage.language .stage-top{border-top:4px solid var(--c-lang);}
+.stage.practice .stage-top{border-top:4px solid var(--c-practice);}
+.stage.speaking .stage-top{border-top:4px solid var(--c-speaking);}
+.stage.task .stage-top{border-top:4px solid var(--c-task);}
+.stage.wrapup .stage-top{border-top:4px solid var(--c-wrapup);}
+.badge-warmup{background:var(--c-warmup-lt);color:var(--c-warmup);}
+.badge-language{background:var(--c-lang-lt);color:var(--c-lang);}
+.badge-practice{background:var(--c-practice-lt);color:var(--c-practice);}
+.badge-speaking{background:var(--c-speaking-lt);color:var(--c-speaking);}
+.badge-task{background:var(--c-task-lt);color:var(--c-task);}
+.badge-wrapup{background:var(--c-wrapup-lt);color:var(--c-wrapup);}
+/* ─── Discussion Qs ─── */
+.dqs{display:flex;flex-direction:column;gap:10px;}
+.dq{display:flex;align-items:flex-start;gap:12px;background:var(--surface-2);border-radius:var(--r-sm);border:1px solid var(--border);padding:14px 16px;}
+.dq-num{width:28px;height:28px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:13px;font-weight:800;flex-shrink:0;}
+.dq-text{font-size:15px;color:var(--ink);line-height:1.45;}
+/* ─── Reading ─── */
+.reading-text{background:var(--surface-2);border-left:4px solid var(--c-lang);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:18px 20px;font-size:15px;line-height:1.7;color:var(--ink);margin-bottom:20px;}
+.reading-text p{margin-bottom:10px;}
+.reading-text p:last-child{margin-bottom:0;}
+.tfn-title{font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px;}
+.tfn-list{display:flex;flex-direction:column;gap:9px;}
+.tfn-row{display:flex;align-items:flex-start;gap:10px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;transition:border-color .15s;}
+.tfn-text{flex:1;font-size:15px;color:var(--ink);line-height:1.4;}
+.tfn-btns{display:flex;gap:5px;flex-shrink:0;}
+.tfn-btn{border:1.5px solid var(--border);background:var(--surface);border-radius:5px;padding:4px 9px;font-family:var(--fh);font-size:12px;font-weight:700;cursor:pointer;transition:all .14s;color:var(--ink-muted);}
+.tfn-btn:hover:not(:disabled){border-color:var(--ink-mid);color:var(--ink);}
+.tfn-btn:disabled{cursor:default;}
+.tfn-row.correct{border-color:var(--success);background:var(--success-lt);}
+.tfn-row.wrong{border-color:var(--error);background:var(--error-lt);}
+.tfn-reveal{font-size:13px;color:var(--ink-mid);margin-top:5px;display:none;font-style:italic;}
+.tfn-reveal.show{display:block;}
+/* ─── Language box ─── */
+.lang-box{border:1.5px solid var(--border);border-radius:var(--r-sm);overflow:hidden;margin-bottom:16px;}
+.lang-head{background:var(--primary-lt);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
+.lang-head h4{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--primary);}
+.lang-toggle{color:var(--primary);font-size:16px;transition:transform .2s;}
+.lang-toggle.open{transform:rotate(180deg);}
+.lang-content{padding:16px;display:none;}
+.lang-content.open{display:block;}
+.scale-bar{height:8px;background:linear-gradient(to right,#dc2626,#d97706,#15803d);border-radius:4px;margin:10px 0 6px;}
+.scale-lbs{display:flex;justify-content:space-between;font-family:var(--fh);font-size:11px;font-weight:700;color:var(--ink-muted);margin-bottom:14px;}
+.pat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:500px){.pat-grid{grid-template-columns:1fr;}}
+.pat{background:var(--surface-2);border-radius:var(--r-sm);padding:14px;border:1px solid var(--border);}
+.pat-lbl{font-family:var(--fh);font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--primary);margin-bottom:6px;}
+.pat-h{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--ink);margin-bottom:8px;}
+.pat-ex{font-size:13px;color:var(--ink-mid);font-style:italic;line-height:1.5;margin-bottom:4px;}
+.pat-ex b{color:var(--primary);font-style:normal;}
+/* ─── Sentence builder ─── */
+.builder{background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:18px;margin-bottom:12px;}
+.sb-progress{font-family:var(--fh);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-muted);margin-bottom:12px;display:flex;justify-content:space-between;}
+.ans-zone{min-height:46px;background:var(--surface);border:2px dashed var(--border);border-radius:var(--r-sm);padding:8px 10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:12px;transition:border-color .2s;}
+.ans-zone.live{border-style:solid;border-color:var(--primary);}
+.ans-ph{font-size:13px;color:var(--ink-muted);font-style:italic;}
+.word-bank{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.chip{background:var(--primary-lt);border:1.5px solid #c3d3ff;color:var(--primary);border-radius:6px;padding:6px 11px;font-family:var(--fh);font-size:13px;font-weight:600;cursor:pointer;transition:all .13s;user-select:none;}
+.chip:hover{filter:brightness(.93);transform:translateY(-1px);}
+.chip.placed{background:var(--primary);color:#fff;border-color:var(--primary);}
+.chip.placed:hover{background:var(--primary-dk);}
+.sb-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.btn{border:none;border-radius:var(--r-sm);padding:9px 18px;font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer;transition:all .14s;}
+.btn-p{background:var(--primary);color:#fff;}
+.btn-p:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-p:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+.btn-g{background:transparent;color:var(--ink-muted);border:1.5px solid var(--border);}
+.btn-g:hover:not(:disabled){border-color:var(--ink-mid);color:var(--ink);}
+.sb-res{border-radius:var(--r-sm);padding:10px 14px;font-size:14px;line-height:1.5;display:none;margin-top:10px;}
+.sb-res.show{display:block;}
+.sb-res.ok{background:var(--success-lt);color:var(--success);border:1.5px solid var(--success);}
+.sb-res.bad{background:var(--error-lt);color:var(--error);border:1.5px solid var(--error);}
+/* ─── Speaking cards ─── */
+.speak-surface{background:var(--c-speaking-lt);border:1.5px solid rgba(15,123,85,.2);border-radius:var(--r);}
+.prompt-deck{background:var(--surface);border-radius:var(--r-sm);border:1px solid var(--border);box-shadow:var(--shadow-md);padding:24px;margin-bottom:16px;min-height:120px;}
+.p-tag{font-family:var(--fh);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--c-speaking);margin-bottom:8px;}
+.p-text{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--ink);line-height:1.45;margin-bottom:14px;}
+.p-starters{display:flex;flex-wrap:wrap;gap:6px;}
+.starter{background:var(--primary-lt);border:1.5px solid #c3d3ff;color:var(--primary);border-radius:6px;padding:5px 10px;font-size:13px;font-weight:500;font-style:italic;}
+.speak-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:0 4px 4px;}
+.btn-np{background:var(--surface);color:var(--ink-mid);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 16px;font-family:var(--fh);font-size:14px;font-weight:700;cursor:pointer;transition:all .14s;}
+.btn-np:hover{border-color:var(--ink-mid);color:var(--ink);}
+/* ─── Sentence starters (stage 5) ─── */
+.starter-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.sc{background:var(--c-practice-lt);border-left:4px solid var(--c-practice);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:12px 16px;}
+.sc-text{font-size:15px;font-style:italic;color:var(--ink);font-weight:500;}
+.sc-note{font-size:12px;color:var(--ink-muted);margin-top:4px;}
+/* ─── Task card ─── */
+.task-scenario{background:var(--c-task-lt);border:1.5px solid rgba(185,28,28,.2);border-radius:var(--r-sm);padding:18px 20px;margin-bottom:16px;}
+.task-scenario h4{font-family:var(--fh);font-size:14px;font-weight:800;color:var(--c-task);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;}
+.task-scenario p{font-size:15px;color:var(--ink);line-height:1.55;}
+.task-areas{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+@media(max-width:480px){.task-areas{grid-template-columns:1fr;}}
+.task-area{background:var(--surface-2);border-radius:var(--r-sm);padding:12px 14px;border:1px solid var(--border);}
+.ta-icon{font-size:18px;margin-bottom:4px;}
+.ta-label{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--ink);}
+.ta-hint{font-size:12px;color:var(--ink-muted);margin-top:2px;font-style:italic;}
+/* ─── Wrap-up ─── */
+.keyph-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.keyph{background:var(--primary-lt);border:1.5px solid #c3d3ff;color:var(--primary);border-radius:6px;padding:6px 12px;font-size:14px;font-weight:600;font-style:italic;}
+.exit-q{background:var(--surface-2);border-left:4px solid var(--c-wrapup);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:14px 18px;font-size:16px;font-weight:600;color:var(--ink);line-height:1.45;}
+/* ─── Collapsible lang support ─── */
+.lang-support{margin-top:14px;}
+.ls-head{display:flex;align-items:center;justify-content:space-between;background:var(--primary-lt);border-radius:var(--r-sm);padding:10px 14px;cursor:pointer;user-select:none;}
+.ls-head span{font-family:var(--fh);font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.06em;}
+.ls-body{display:none;padding:12px 0 0;}
+.ls-body.open{display:block;}
+</style>
+
+<!-- HEADER -->
+<header class="header">
+  <div style="max-width:800px;margin:0 auto;position:relative;">
+    <div class="h-badge">📘 Lesson 1 · 65 minutes</div>
+    <h1>Likely <em>or</em> Not?</h1>
+    <p style="font-family:'Outfit',sans-serif;font-size:15px;opacity:.7;margin-bottom:14px;">Probability language — speculating about jobs and the future of work.</p>
+    <div class="h-pills">
+      <span class="h-pill">🎯 Probability structures</span>
+      <span class="h-pill">🗣️ Pair &amp; group discussion</span>
+      <span class="h-pill">🏢 Future of work</span>
+    </div>
+  </div>
+</header>
+
+<!-- STICKY STAGE NAV -->
+<div class="stage-nav">
+  <div class="stage-nav-inner">
+    <div class="stage-pills" id="stage-pills">
+      <button class="s-pill active" onclick="goTo('s1')" data-s="s1">1 · Warm-up <em>8'</em></button>
+      <button class="s-pill" onclick="goTo('s2')" data-s="s2">2 · Reading <em>8'</em></button>
+      <button class="s-pill" onclick="goTo('s3')" data-s="s3">3 · Language <em>7'</em></button>
+      <button class="s-pill" onclick="goTo('s4')" data-s="s4">4 · Practice <em>8'</em></button>
+      <button class="s-pill" onclick="goTo('s5')" data-s="s5">5 · Starters <em>8'</em></button>
+      <button class="s-pill" onclick="goTo('s6')" data-s="s6">6 · Discussion <em>12'</em></button>
+      <button class="s-pill" onclick="goTo('s7')" data-s="s7">7 · Task <em>9'</em></button>
+      <button class="s-pill" onclick="goTo('s8')" data-s="s8">8 · Wrap-up <em>3'</em></button>
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ══ STAGE 1 · WARM-UP ══ -->
+<section class="stage warmup" id="s1">
+  <div class="stage-top">
+    <div class="stage-meta">
+      <span class="type-badge badge-warmup">🌅 Warm-up</span>
+      <span class="dur-badge">8 minutes</span>
+    </div>
+  </div>
+  <div class="stage-body">
+    <h2 class="stage-title">Let's talk about work</h2>
+    <p class="stage-instr">In pairs, discuss all three questions. Try to keep talking — don't stop after one sentence!</p>
+    <div class="dqs">
+      <div class="dq"><div class="dq-num">1</div><div class="dq-text">Think back to when you were eight years old. What job did you want to do? What did you actually end up doing — or want to do now?</div></div>
+      <div class="dq"><div class="dq-num">2</div><div class="dq-text">What's the strangest or most impressive-sounding job title you've ever heard or seen? What do you think the person actually does?</div></div>
+      <div class="dq"><div class="dq-num">3</div><div class="dq-text">Do job titles matter to you personally? Would you prefer a grander title with the same pay, or a plain title with a better salary?</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STAGE 2 · READING ══ -->
+<section class="stage language" id="s2">
+  <div class="stage-top">
+    <div class="stage-meta">
+      <span class="type-badge badge-language">📄 Reading</span>
+      <span class="dur-badge">8 minutes</span>
+    </div>
+  </div>
+  <div class="stage-body">
+    <h2 class="stage-title">The Job Title Revolution</h2>
+    <p class="stage-instr">Read the text quickly (2 min), then answer the T/F/N questions below. Discuss your answers with a partner.</p>
+    <div class="reading-text">
+      <p>Over the past decade, something unusual has been happening in offices around the world. The humble 'cleaner' has become a 'Sanitation Engineer'. The 'receptionist' is now a 'Director of First Impressions'. And if you work in sales, there's a reasonable chance your business card reads 'Customer Success Evangelist'.</p>
+      <p>Companies argue that elevated job titles improve morale and attract better candidates. Employees, they claim, are likely to feel more invested in their work when their role sounds impressive. Cynics, however, suggest a different motivation: it's far cheaper to give someone a grander title than a pay rise.</p>
+      <p>There is some evidence that titles matter. Studies suggest people are certain to describe their work differently depending on how it's labelled — a hospital cleaner who sees their role as 'keeping patients safe from infection' reports higher satisfaction than one who simply 'mops floors'. Whether this justifies renaming everyone or not, one thing is highly unlikely: this trend is not going away anytime soon.</p>
+    </div>
+    <div class="tfn-title">True (T), False (F), or Not Given (N)?</div>
+    <div class="tfn-list" id="tfn1"></div>
+    <div style="margin-top:16px;background:var(--surface-2);border-radius:var(--r-sm);border-left:3px solid var(--c-lang);padding:12px 16px;">
+      <span style="font-family:var(--fh);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--c-lang);">Mini-discussion</span>
+      <p style="margin-top:6px;font-size:15px;color:var(--ink);">Do you think giving employees more impressive titles is a genuine benefit — or just a trick? Have you ever experienced this yourself?</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STAGE 3 · LANGUAGE FOCUS ══ -->
+<section class="stage language" id="s3">
+  <div class="stage-top">
+    <div class="stage-meta">
+      <span class="type-badge badge-language">📖 Language Focus</span>
+      <span class="dur-badge">7 minutes</span>
+    </div>
+  </div>
+  <div class="stage-body">
+    <h2 class="stage-title">Expressing Probability</h2>
+    <p class="stage-instr">Study the two patterns below. Then check your understanding with the examples — click each one to reveal which pattern it uses.</p>
+    <div class="lang-box">
+      <div class="lang-head" onclick="toggleLang('lb1')">
+        <h4>Probability patterns — click to expand / collapse</h4>
+        <span class="lang-toggle open" id="lb1-t">▼</span>
+      </div>
+      <div class="lang-content open" id="lb1">
+        <div class="scale-bar"></div>
+        <div class="scale-lbs"><span>Impossible</span><span>Unlikely</span><span>Likely</span><span>Certain</span></div>
+        <div class="pat-grid">
+          <div class="pat">
+            <div class="pat-lbl">Pattern 1 — emphasise probability</div>
+            <div class="pat-h">Start with <em>"It"</em></div>
+            <div class="pat-ex"><b>It's highly likely</b> that our jobs will change.</div>
+            <div class="pat-ex"><b>It was unlikely</b> that she knew about it.</div>
+            <div class="pat-ex"><b>It's certain</b> that salaries will rise.</div>
+          </div>
+          <div class="pat">
+            <div class="pat-lbl">Pattern 2 — emphasise subject</div>
+            <div class="pat-h">Subject <em>+</em> probability <em>+</em> infinitive</div>
+            <div class="pat-ex"><b>Our jobs</b> are highly likely <b>to change</b>.</div>
+            <div class="pat-ex"><b>She</b> was unlikely <b>to have known</b> about it.</div>
+            <div class="pat-ex"><b>Salaries</b> are certain <b>to rise</b>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="font-family:var(--fh);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin-bottom:10px;">Which pattern is this? Click to find out.</p>
+    <div id="pattern-check" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
+</section>
+
+<!-- ══ STAGE 4 · PRACTICE ══ -->
+<section class="stage practice" id="s4">
+  <div class="stage-top">
+    <div class="stage-meta">
+      <span class="type-badge badge-practice">✏️ Practice</span>
+      <span class="dur-badge">8 minutes</span>
+    </div>
+  </div>
+  <div class="stage-body">
+    <h2 class="stage-title">Sentence Builder</h2>
+    <p class="stage-instr">Click the words in the right order to build each sentence. Then read your completed sentences aloud to your partner — do you agree with them?</p>
+    <div class="builder" id="builder-wrap">
+      <div class="sb-progress">
+        <span id="sb-lbl">Sentence 1 of 4</span>
+        <span id="sb-score" style="color:var(--primary);">0 correct</span>
+      </div>
+      <div class="ans-zone" id="sb-ans"></div>
+      <div class="word-bank" id="sb-bank"></div>
+      <div class="sb-btns">
+        <button class="btn btn-p" id="sb-check" onclick="checkSB()" disabled>Check</button>
+        <button class="btn btn-g" onclick="resetSB()">Reset</button>
+        <button class="btn btn-g" id="sb-next" onclick="nextSB()" style="display:none;">Next →</button>
+      </div>
+      <div class="sb-res" id="sb-res"></div>
+    </div>
+    <div style="background:var(--c-practice-lt);border-radius:var(--r-sm);border-left:4px solid var(--c-practice);padding:12px 16px;margin-top:4px;">
+      <span style="font-family:var(--fh);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--c-practice);">👥 Partner activity</span>
+      <p style="margin-top:6px;font-size:14px;color:var(--ink);">When you've finished all four sentences, take turns reading them aloud. Do you agree or disagree with the statements? Give a reason each time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STAGE 5 · SPEAKING ROUND 1 ══ -->
+<section class="stage speaking" id="s5">
+  <div class="stage-top">
+    <div class="stage-meta">
+      <span class="type-badge badge-speaking">🗣️ Speaking</span>
+      <span class="dur-badge">8 minutes</span>
+    </div>
+  </div>
+  <div class="stage-body">
+    <h2 class="stage-title">Say Something True</h2>
+    <p class="stage-instr">Complete each sentence starter so that it's true for <em>you</em>. Write a note if it helps. Then share with a partner — ask one follow-up question after each one.</p>
+    <div class="starter-cards">
+      <div class="sc"><div class="sc-text">"I'm highly unlikely to … in my career."</div><div class="sc-note">Think about a job, a task, or a decision.</div></div>
+      <div class="sc"><div class="sc-text">"It's certain that within ten years, my job / field will …"</div><div class="sc-note">Use what you know about your industry or area of study.</div></div>
+      <div class="sc"><div class="sc-text">"Most people in my workplace or class are likely to … by the end of this year."</div><div class="sc-note">Think about plans, challenges, or changes.</div></div>
+      <div class="sc"><div class="sc-text">"It's highly unlikely that … — and honestly, I think that's a good / bad thing."</div><div class="sc-note">This could be about work, technology, or society.</div></div>
+    </div>
+    <div style="background:var(--surface-2);border-radius:var(--r-sm);padding:12px 16px;border:1px solid var(--border);">
+      <span style="font-family:var(--fh);font-size:12px;font-weight:700;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em;">Follow-up questions</span>
+      <p style="margin-top:6px;font-size:13.5px;color:var(--ink-mid);">"Why is that?" · "Has that always been the case?" · "Do you think that's a good thing?" · "What would you change if you could?"</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STAGE 6 · DISCUSSION ══ -->
+<section class="stage speaking" id="s6">
+  <div class="stage-top">
+    <div class="stage-meta">
+      <span class="type-badge badge-speaking">🗣️ Discussion</span>
+      <span class="dur-badge">12 minutes</span>
+    </div>
+  </div>
+  <div class="stage-body">
+    <h2 class="stage-title">The Future of Work</h2>
+    <p class="stage-instr">Discuss the prompts with a partner or small group. Use <strong>at least two probability expressions</strong> each time you speak. Click "Next prompt" to move on — or stay on one if the conversation is going well!</p>
+    <div class="speak-surface" style="padding:20px;">
+      <div class="prompt-deck">
+        <div class="p-tag" id="p6-tag">Prompt 1 of 4</div>
+        <div class="p-text" id="p6-text"></div>
+        <div class="p-starters" id="p6-starters"></div>
+      </div>
+      <div style="margin-top:12px;"><button class="btn-np" onclick="nextPrompt(6)">Next prompt →</button></div>
+      </div>
+      <div class="lang-support">
+        <div class="ls-head" onclick="toggleLS('ls6')">
+          <span>📌 Language support — probability expressions</span>
+          <span id="ls6-t" style="color:var(--primary);font-size:14px;">▼</span>
+        </div>
+        <div class="ls-body" id="ls6">
+          <div class="p-starters" style="gap:7px;">
+            <span class="starter">It's certain that…</span>
+            <span class="starter">It's highly likely that…</span>
+            <span class="starter">… is sure to…</span>
+            <span class="starter">… is unlikely to…</span>
+            <span class="starter">It's highly unlikely that…</span>
+            <span class="starter">There's a good chance that…</span>
+            <span class="starter">I'd say it's probable that…</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STAGE 7 · EXTENDED TASK ══ -->
+<section class="stage task" id="s7">
+  <div class="stage-top">
+    <div class="stage-meta">
+      <span class="type-badge badge-task">🏆 Group Task</span>
+      <span class="dur-badge">9 minutes</span>
+    </div>
+  </div>
+  <div class="stage-body">
+    <h2 class="stage-title">Company Crystal Ball</h2>
+    <p class="stage-instr">Read the scenario. In groups of 3–4, make predictions for each area. Note your two most interesting predictions — you'll share them with the class.</p>
+    <div class="task-scenario">
+      <h4>📋 Scenario</h4>
+      <p>Your company has just announced it will introduce an AI system that handles <strong>60% of all routine tasks</strong> across every department — from scheduling and data entry to writing basic reports. The change takes effect in three months. As a team, predict what's likely, unlikely, and certain to happen.</p>
+    </div>
+    <div class="task-areas">
+      <div class="task-area"><div class="ta-icon">👥</div><div class="ta-label">Staff numbers</div><div class="ta-hint">What's likely to happen to headcount?</div></div>
+      <div class="task-area"><div class="ta-icon">⏰</div><div class="ta-label">Working hours</div><div class="ta-hint">Shorter days — or more pressure?</div></div>
+      <div class="task-area"><div class="ta-icon">🧠</div><div class="ta-label">Types of tasks</div><div class="ta-hint">What will people actually be doing?</div></div>
+      <div class="task-area"><div class="ta-icon">😊</div><div class="ta-label">Employee morale</div><div class="ta-hint">Certain to improve — or likely to fall?</div></div>
+      <div class="task-area"><div class="ta-icon">🤝</div><div class="ta-label">Customer satisfaction</div><div class="ta-hint">Better service — or something lost?</div></div>
+      <div class="task-area"><div class="ta-icon">💰</div><div class="ta-label">Salaries &amp; benefits</div><div class="ta-hint">Are pay rises likely? Or the opposite?</div></div>
+    </div>
+    <div style="background:var(--surface-2);border-radius:var(--r-sm);padding:12px 16px;border:1px solid var(--border);">
+      <span style="font-family:var(--fh);font-size:12px;font-weight:700;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em;">Report back</span>
+      <p style="margin-top:6px;font-size:14.5px;color:var(--ink);">"We think it's <strong>certain / likely / unlikely</strong> that… because…" — Share your two most surprising predictions with the class.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STAGE 8 · WRAP-UP ══ -->
+<section class="stage wrapup" id="s8">
+  <div class="stage-top">
+    <div class="stage-meta">
+      <span class="type-badge badge-wrapup">✅ Wrap-up</span>
+      <span class="dur-badge">3 minutes</span>
+    </div>
+  </div>
+  <div class="stage-body">
+    <h2 class="stage-title">Key phrases to take away</h2>
+    <p class="stage-instr">Review the expressions below. Then answer the exit question with a partner before you leave.</p>
+    <div class="keyph-grid">
+      <span class="keyph">It's highly likely that…</span>
+      <span class="keyph">It's highly unlikely that…</span>
+      <span class="keyph">… is certain to…</span>
+      <span class="keyph">… is unlikely to…</span>
+      <span class="keyph">It's probable that…</span>
+      <span class="keyph">… is bound to…</span>
+      <span class="keyph">There's a good chance that…</span>
+      <span class="keyph">It's far from certain that…</span>
+    </div>
+    <div class="exit-q">🚪 <strong>Exit question:</strong> Name one thing from today's class that is <em>likely</em> to be useful to you — and one thing you are <em>certain</em> to practise before next lesson.</div>
+  </div>
+</section>
+
+</div><!-- /main -->
+
+<script>
+// ── Stage nav scroll spy ──
+function goTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});}
+const allStages=document.querySelectorAll('.stage[id]');
+const allPills=document.querySelectorAll('.s-pill');
+const spy=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) allPills.forEach(p=>p.classList.toggle('active',p.dataset.s===e.target.id));
+  });
+},{rootMargin:'-30% 0px -55% 0px'});
+allStages.forEach(s=>spy.observe(s));
+
+// ── Lang box toggle ──
+function toggleLang(id){
+  const b=document.getElementById(id),t=document.getElementById(id+'-t');
+  b.classList.toggle('open');t.classList.toggle('open');
+}
+function toggleLS(id){
+  const b=document.getElementById(id),t=document.getElementById(id+'-t');
+  b.classList.toggle('open');t.textContent=b.classList.contains('open')?'▲':'▼';
+}
+
+// ── T/F/N Stage 2 ──
+const tfn1Data=[
+  {s:'Only cleaning staff have received glamorous new job titles.',a:'F',ex:'The text gives examples from sales, reception, and other roles.'},
+  {s:'Companies say impressive titles can help attract job candidates.',a:'T',ex:'"Companies argue that elevated job titles… attract better candidates."'},
+  {s:'Employees with new titles usually receive a higher salary.',a:'F',ex:'"It\'s far cheaper to give someone a grander title than a pay rise."'},
+  {s:'Research shows how a job is described can affect how people feel about it.',a:'T',ex:'The hospital cleaner study shows this clearly.'},
+  {s:'The article says companies will stop using this trend within five years.',a:'N',ex:'The article says it\'s "highly unlikely" to go away — but gives no time frame.'}
+];
+document.getElementById('tfn1').innerHTML=tfn1Data.map((item,i)=>`
+  <div class="tfn-row" id="tfn1-${i}">
+    <div style="flex:1;">
+      <div class="tfn-text">${item.s}</div>
+      <div class="tfn-reveal" id="tfn1-ex-${i}">${item.ex}</div>
+    </div>
+    <div class="tfn-btns">
+      <button class="tfn-btn" onclick="doTFN('tfn1',${i},'T','${item.a}')">T</button>
+      <button class="tfn-btn" onclick="doTFN('tfn1',${i},'F','${item.a}')">F</button>
+      <button class="tfn-btn" onclick="doTFN('tfn1',${i},'N','${item.a}')">N</button>
+    </div>
+  </div>
+`).join('');
+
+function doTFN(prefix,i,choice,correct){
+  const row=document.getElementById(prefix+'-'+i);
+  const ex=document.getElementById(prefix+'-ex-'+i);
+  row.classList.add(choice===correct?'correct':'wrong');
+  ex.className='tfn-reveal show';
+  row.querySelectorAll('.tfn-btn').forEach(b=>b.disabled=true);
+}
+
+// ── Pattern check (Stage 3) ──
+const pcs=[
+  {s:'Our jobs are highly likely to change in the future.',p:'Pattern 2',hint:'Subject (Our jobs) + are highly likely + to-infinitive'},
+  {s:"It's certain that she'll be promoted next year.",p:'Pattern 1',hint:'Starts with "It" — emphasises the probability'},
+  {s:'The company is unlikely to relocate.',p:'Pattern 2',hint:'Subject (The company) + is unlikely + to-infinitive'},
+  {s:"It's highly likely that salaries will increase.",p:'Pattern 1',hint:'Starts with "It" — the clause follows "that"'}
+];
+document.getElementById('pattern-check').innerHTML=pcs.map((item,i)=>`
+  <div style="background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;" id="pc-${i}">
+    <div style="font-size:15px;color:var(--ink);margin-bottom:8px;font-style:italic;">"${item.s}"</div>
+    <button class="btn btn-p" style="font-size:13px;padding:7px 14px;" onclick="revealPC(${i},'${item.p.replace(/'/g,"\\'")}','${item.hint.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">Reveal pattern</button>
+    <div id="pc-ans-${i}" style="display:none;margin-top:8px;"></div>
+  </div>
+`).join('');
+function revealPC(i,p,hint){
+  document.getElementById('pc-ans-'+i).style.display='block';
+  document.getElementById('pc-ans-'+i).innerHTML=`<span style="background:var(--primary-lt);color:var(--primary);font-family:var(--fh);font-weight:800;border-radius:4px;padding:3px 8px;font-size:13px;">${p}</span> <span style="font-size:13px;color:var(--ink-muted);margin-left:6px;">${hint}</span>`;
+  document.querySelector(`button[onclick="revealPC(${i},'${p.replace(/'/g,"\\'")}','${hint.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')"]`).style.display='none';
+}
+
+// ── Sentence builder (Stage 4) ──
+const sbs=[
+  {w:["You're","likely","to","be","promoted","next","week."],a:"You're likely to be promoted next week."},
+  {w:["It's","unlikely","that","they've","received","the","documents","yet."],a:"It's unlikely that they've received the documents yet."},
+  {w:["Maisy","is","certain","to","have","known","about","this."],a:"Maisy is certain to have known about this."},
+  {w:["We","can","be","certain","that","robots","will","be","doing","our","jobs."],a:"We can be certain that robots will be doing our jobs."}
+];
+let sbI=0,sbBk=[],sbAn=[],sbOk=0;
+function shuf(a){return[...a].sort(()=>Math.random()-.5);}
+function initSB(){
+  sbBk=shuf(sbs[sbI].w);sbAn=[];
+  document.getElementById('sb-lbl').textContent=`Sentence ${sbI+1} of ${sbs.length}`;
+  document.getElementById('sb-res').className='sb-res';
+  document.getElementById('sb-next').style.display='none';
+  renderSB();
+}
+function renderSB(){
+  const bk=document.getElementById('sb-bank'),an=document.getElementById('sb-ans');
+  bk.innerHTML=sbBk.map((w,i)=>`<button class="chip" onclick="mv2ans(${i})">${w}</button>`).join('');
+  if(sbAn.length===0){an.innerHTML='<span class="ans-ph">Click words to build your sentence…</span>';an.classList.remove('live');}
+  else{an.innerHTML=sbAn.map((w,i)=>`<button class="chip placed" onclick="mv2bk(${i})">${w}</button>`).join('');an.classList.add('live');}
+  document.getElementById('sb-check').disabled=sbBk.length>0;
+}
+function mv2ans(i){sbAn.push(sbBk.splice(i,1)[0]);renderSB();}
+function mv2bk(i){sbBk.push(sbAn.splice(i,1)[0]);renderSB();}
+function resetSB(){sbBk=shuf(sbs[sbI].w);sbAn=[];document.getElementById('sb-res').className='sb-res';document.getElementById('sb-next').style.display='none';renderSB();}
+function checkSB(){
+  const ok=sbAn.join(' ')===sbs[sbI].a;
+  if(ok)sbOk++;
+  document.getElementById('sb-score').textContent=`${sbOk} correct`;
+  const r=document.getElementById('sb-res');
+  r.className='sb-res show '+(ok?'ok':'bad');
+  r.innerHTML=ok?'<strong>✓ Correct!</strong> Read it aloud to your partner.':`<strong>✗ Not quite.</strong> Correct: <em>${sbs[sbI].a}</em>`;
+  document.getElementById('sb-check').disabled=true;
+  if(sbI<sbs.length-1)document.getElementById('sb-next').style.display='inline-block';
+}
+function nextSB(){sbI++;initSB();}
+initSB();
+
+// ── Speaking prompts (Stage 6) ──
+const p6=[
+  {t:"Is artificial intelligence certain to replace jobs in your sector — or is it more likely to change what those jobs involve? Give concrete examples.",s:["It's certain that…","…is highly unlikely to survive because…","I'd say it's probable that…"]},
+  {t:"Remote work is likely to remain common. But what's certain to be lost when people don't share an office? And what's likely to improve?",s:["What's certain to disappear is…","It's unlikely that… will ever fully replace…","On the other hand, it's highly likely that…"]},
+  {t:"Think of a job that's almost certain not to exist in 20 years. Now think of one that's highly likely to appear. Explain both choices to your partner.",s:["I'm pretty sure that … will no longer exist because…","…is certain to emerge when…","It's highly unlikely that … will survive because…"]},
+  {t:"Your company announces everyone moves to a 4-day week at the same salary. What's likely to be the reaction? What are the certain benefits? What's unlikely to work?",s:["Most staff are certain to…","There's a real chance that…","What's highly unlikely is…"]}
+];
+let p6I=0;
+function renderP6(){
+  const p=p6[p6I];
+  document.getElementById('p6-tag').textContent=`Prompt ${p6I+1} of ${p6.length}`;
+  document.getElementById('p6-text').textContent=p.t;
+  document.getElementById('p6-starters').innerHTML=p.s.map(s=>`<span class="starter">${s}</span>`).join('');
+}
+function nextPrompt(n){
+  if(n===6){p6I=(p6I+1)%p6.length;renderP6();}
+}
+
+renderP6();
+</script>
