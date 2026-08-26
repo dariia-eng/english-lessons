@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food for Thought — Homework · B1</title>
+<style>
+:root{
+  --pri:#c2610a; --acc:#f59e0b; --bg:#fffbf0;
+  --border:#fde68a; --dark:#78350f; --text:#1c1917;
+  --card:#ffffff; --ok:#15803d; --err:#b91c1c;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.hero{background:linear-gradient(135deg,var(--pri),var(--acc));color:#fff;padding:36px 20px 28px;text-align:center;}
+.hero-emoji{font-size:2.8rem;margin-bottom:8px;}
+.hero h1{font-size:1.65rem;font-weight:800;margin-bottom:5px;}
+.hero p{font-size:.92rem;opacity:.88;max-width:460px;margin:0 auto 14px;}
+.name-row{display:flex;gap:10px;align-items:center;max-width:320px;margin:0 auto;}
+.name-row input{flex:1;padding:9px 14px;border-radius:22px;border:2px solid rgba(255,255,255,.45);background:rgba(255,255,255,.18);color:#fff;font-size:.93rem;}
+.name-row input::placeholder{color:rgba(255,255,255,.68);}
+.wrap{max-width:740px;margin:0 auto;padding:24px 16px 40px;display:flex;flex-direction:column;gap:24px;}
+.card{background:var(--card);border-radius:16px;box-shadow:0 2px 14px rgba(0,0,0,.09);overflow:hidden;}
+.card-head{background:linear-gradient(90deg,var(--pri),var(--acc));color:#fff;padding:14px 20px;font-weight:700;font-size:.98rem;display:flex;align-items:center;gap:8px;}
+.card-body{padding:20px;}
+.card-footer{background:#fdf8f0;padding:9px 20px;font-size:.8rem;color:#92400e;display:flex;align-items:center;justify-content:space-between;}
+/* word bank */
+.word-bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;padding:12px;background:var(--bg);border-radius:10px;border:1.5px solid var(--border);}
+.wb{background:#fff;border:2px solid var(--border);color:var(--dark);padding:5px 14px;border-radius:20px;font-size:.85rem;font-weight:600;}
+/* gap fill */
+.gap-list{display:flex;flex-direction:column;gap:12px;}
+.gap-item{display:flex;gap:10px;align-items:flex-start;font-size:.94rem;line-height:1.65;}
+.gap-num{background:var(--pri);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;margin-top:3px;}
+.gap-inp{border:2px solid #e5e7eb;border-radius:8px;padding:5px 10px;font-size:.88rem;background:#fff;transition:.15s;min-width:150px;}
+.gap-inp:focus{outline:none;border-color:var(--acc);}
+.gap-inp.correct{border-color:var(--ok);background:#f0fdf4;color:var(--ok);}
+.gap-inp.wrong{border-color:var(--err);background:#fef2f2;color:var(--err);}
+/* MC buttons */
+.mc-item{margin-bottom:16px;}
+.mc-q{font-size:.94rem;line-height:1.55;margin-bottom:8px;}
+.mc-opts{display:flex;flex-wrap:wrap;gap:8px;}
+.mc-opt{border:2px solid #e5e7eb;background:#fff;border-radius:22px;padding:7px 18px;font-size:.86rem;cursor:pointer;transition:.14s;}
+.mc-opt:hover{border-color:var(--acc);}
+.mc-opt.selected{border-color:var(--pri);background:var(--bg);font-weight:600;}
+.mc-opt.correct{border-color:var(--ok);background:#dcfce7;color:var(--ok);font-weight:700;}
+.mc-opt.wrong{border-color:var(--err);background:#fee2e2;color:var(--err);}
+.mc-opt.reveal{border-color:var(--ok);background:#dcfce7;color:var(--ok);font-weight:700;}
+.mc-fb{font-size:.81rem;margin-top:5px;min-height:16px;}
+.mc-fb.ok{color:var(--ok);}
+.mc-fb.err{color:var(--err);}
+/* writing */
+.write-area{width:100%;padding:12px;border:2px solid #e5e7eb;border-radius:10px;font-size:.93rem;font-family:inherit;resize:vertical;min-height:120px;transition:.15s;}
+.write-area:focus{outline:none;border-color:var(--acc);}
+.word-ctr{font-size:.8rem;color:#888;margin-top:5px;}
+.phrase-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.pc{padding:4px 12px;border-radius:14px;font-size:.78rem;font-weight:600;background:#f3f4f6;color:#6b7280;transition:.2s;}
+.pc.found{background:#dcfce7;color:var(--ok);border:1.5px solid #86efac;}
+/* buttons */
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center;}
+.btn{padding:9px 20px;border:none;border-radius:22px;font-size:.88rem;font-weight:700;cursor:pointer;transition:.14s;}
+.btn-pri{background:var(--pri);color:#fff;}
+.btn-pri:hover{background:var(--dark);}
+.btn-out{background:#fff;border:2px solid var(--pri);color:var(--pri);}
+.score-pill{display:none;background:var(--pri);color:#fff;padding:5px 14px;border-radius:14px;font-weight:700;font-size:.85rem;}
+.score-pill.show{display:inline-block;}
+/* send */
+.send-card{background:linear-gradient(135deg,var(--dark),var(--pri));color:#fff;border-radius:16px;padding:24px 20px;text-align:center;}
+.send-card h3{font-size:1.05rem;margin-bottom:5px;}
+.send-card p{font-size:.87rem;opacity:.83;margin-bottom:14px;}
+.btn-send{background:#fff;color:var(--pri);border:none;border-radius:24px;padding:11px 28px;font-size:.93rem;font-weight:800;cursor:pointer;}
+.btn-send:hover{background:var(--bg);}
+.finish{text-align:center;padding:28px 16px;}
+.finish-icon{font-size:2.4rem;margin-bottom:10px;}
+.finish h2{color:var(--pri);font-size:1.1rem;margin-bottom:5px;}
+.finish p{font-size:.88rem;color:#666;}
+/* photo strip */
+.photo-strip{display:grid;grid-template-columns:repeat(5,1fr);height:140px;overflow:hidden;}
+.photo-slot{position:relative;overflow:hidden;background:#e5e7eb;}
+.photo-slot-fb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.2rem;background:#fde68a;}
+.photo-slot img{width:100%;height:100%;object-fit:cover;display:none;transition:.3s;}
+.photo-slot img:hover{transform:scale(1.07);}
+@media(max-width:480px){.photo-strip{grid-template-columns:repeat(3,1fr);height:100px;}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-emoji">🍽️</div>
+  <h1>Food for Thought — Homework</h1>
+  <p>B1 · Vocabulary &amp; Writing Practice</p>
+  <div class="name-row">
+    <input type="text" id="sname" placeholder="Your name…">
+  </div>
+</div>
+
+<div class="photo-strip">
+  <div class="photo-slot"><div class="photo-slot-fb" id="fb-ps1">🍕</div><img id="ps-img1" alt="comfort food"></div>
+  <div class="photo-slot"><div class="photo-slot-fb" id="fb-ps2">🍜</div><img id="ps-img2" alt="eat out"></div>
+  <div class="photo-slot"><div class="photo-slot-fb" id="fb-ps3">🥗</div><img id="ps-img3" alt="salad"></div>
+  <div class="photo-slot"><div class="photo-slot-fb" id="fb-ps4">🧁</div><img id="ps-img4" alt="sweet food"></div>
+  <div class="photo-slot"><div class="photo-slot-fb" id="fb-ps5">🍳</div><img id="ps-img5" alt="breakfast"></div>
+</div>
+
+<div class="wrap">
+
+<!-- EX 1: TRUE / FALSE -->
+<div class="card">
+  <div class="card-head">✅ Exercise 1 — True or False?</div>
+  <div class="card-body">
+    <p style="margin-bottom:14px;font-size:.9rem;color:#666;">Read each statement. Is it <strong>True</strong> or <strong>False</strong>?</p>
+
+    <div class="mc-item" id="tf1">
+      <div class="mc-q">1. If you "eat out", you cook and eat at home.</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="ptf(this,1,'wrong','False')">True</button>
+        <button class="mc-opt" onclick="ptf(this,1,'correct','False')">False</button>
+      </div>
+      <div class="mc-fb" id="tffb1"></div>
+    </div>
+
+    <div class="mc-item" id="tf2">
+      <div class="mc-q">2. "Comfort food" is food you eat when you feel upset or tired.</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="ptf(this,2,'correct','True')">True</button>
+        <button class="mc-opt" onclick="ptf(this,2,'wrong','True')">False</button>
+      </div>
+      <div class="mc-fb" id="tffb2"></div>
+    </div>
+
+    <div class="mc-item" id="tf3">
+      <div class="mc-q">3. A "foodie" is someone who dislikes trying new restaurants or unusual dishes.</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="ptf(this,3,'wrong','False')">True</button>
+        <button class="mc-opt" onclick="ptf(this,3,'correct','False')">False</button>
+      </div>
+      <div class="mc-fb" id="tffb3"></div>
+    </div>
+
+    <div class="mc-item" id="tf4">
+      <div class="mc-q">4. If you "whip something up", it takes a very long time to cook.</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="ptf(this,4,'wrong','False')">True</button>
+        <button class="mc-opt" onclick="ptf(this,4,'correct','False')">False</button>
+      </div>
+      <div class="mc-fb" id="tffb4"></div>
+    </div>
+
+    <div class="mc-item" id="tf5">
+      <div class="mc-q">5. "Leftovers" are food that was not eaten and is saved for later.</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="ptf(this,5,'correct','True')">True</button>
+        <button class="mc-opt" onclick="ptf(this,5,'wrong','True')">False</button>
+      </div>
+      <div class="mc-fb" id="tffb5"></div>
+    </div>
+
+    <div class="mc-item" id="tf6">
+      <div class="mc-q">6. If you "grab a bite", you sit down for a long, relaxed meal.</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="ptf(this,6,'wrong','False')">True</button>
+        <button class="mc-opt" onclick="ptf(this,6,'correct','False')">False</button>
+      </div>
+      <div class="mc-fb" id="tffb6"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-pri" onclick="checkEx1()">✓ Check</button>
+      <button class="btn btn-out" onclick="resetEx1()">↺ Reset</button>
+      <span class="score-pill" id="sc1"></span>
+    </div>
+  </div>
+  <div class="card-footer">🍴 Vocabulary check <span style="background:#fde68a;color:var(--dark);padding:3px 10px;border-radius:12px;font-weight:700;">6 questions</span></div>
+</div>
+
+<!-- EX 2: MC -->
+<div class="card">
+  <div class="card-head">🔤 Exercise 2 — Choose the correct phrase</div>
+  <div class="card-body">
+    <p style="margin-bottom:14px;font-size:.9rem;color:#666;">Read each situation and choose the best phrase.</p>
+
+    <div class="mc-item" id="m1">
+      <div class="mc-q">1. You didn't eat breakfast or lunch today. What did you do?</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pmc(this,1,'correct','skipped both meals')">skipped both meals</button>
+        <button class="mc-opt" onclick="pmc(this,1,'wrong','skipped both meals')">ate out</button>
+        <button class="mc-opt" onclick="pmc(this,1,'wrong','skipped both meals')">whipped up a meal</button>
+      </div>
+      <div class="mc-fb" id="mfb1"></div>
+    </div>
+
+    <div class="mc-item" id="m2">
+      <div class="mc-q">2. You cooked too much rice. The rest is in the fridge for tomorrow. What do you call it?</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pmc(this,2,'wrong','leftovers')">a guilty pleasure</button>
+        <button class="mc-opt" onclick="pmc(this,2,'wrong','leftovers')">comfort food</button>
+        <button class="mc-opt" onclick="pmc(this,2,'correct','leftovers')">leftovers</button>
+      </div>
+      <div class="mc-fb" id="mfb2"></div>
+    </div>
+
+    <div class="mc-item" id="m3">
+      <div class="mc-q">3. Maria loves going to new restaurants and always orders something unusual. She's …</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pmc(this,3,'wrong','a foodie')">a sweet tooth</button>
+        <button class="mc-opt" onclick="pmc(this,3,'correct','a foodie')">a foodie</button>
+        <button class="mc-opt" onclick="pmc(this,3,'wrong','a foodie')">a leftover</button>
+      </div>
+      <div class="mc-fb" id="mfb3"></div>
+    </div>
+
+    <div class="mc-item" id="m4">
+      <div class="mc-q">4. You had a terrible day and you ate a whole tub of ice cream. This was your …</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pmc(this,4,'wrong','comfort food')">grab a bite</button>
+        <button class="mc-opt" onclick="pmc(this,4,'wrong','comfort food')">home-cooked meal</button>
+        <button class="mc-opt" onclick="pmc(this,4,'correct','comfort food')">comfort food</button>
+      </div>
+      <div class="mc-fb" id="mfb4"></div>
+    </div>
+
+    <div class="mc-item" id="m5">
+      <div class="mc-q">5. You only had 20 minutes for lunch — you quickly ate a sandwich near the office. You …</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pmc(this,5,'correct','grabbed a bite')">grabbed a bite</button>
+        <button class="mc-opt" onclick="pmc(this,5,'wrong','grabbed a bite')">whipped up something</button>
+        <button class="mc-opt" onclick="pmc(this,5,'wrong','grabbed a bite')">ate out</button>
+      </div>
+      <div class="mc-fb" id="mfb5"></div>
+    </div>
+
+    <div class="mc-item" id="m6">
+      <div class="mc-q">6. Ana loves cakes, biscuits, and anything sweet. She has …</div>
+      <div class="mc-opts">
+        <button class="mc-opt" onclick="pmc(this,6,'wrong','a sweet tooth')">leftovers</button>
+        <button class="mc-opt" onclick="pmc(this,6,'wrong','a sweet tooth')">a guilty pleasure</button>
+        <button class="mc-opt" onclick="pmc(this,6,'correct','a sweet tooth')">a sweet tooth</button>
+      </div>
+      <div class="mc-fb" id="mfb6"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-pri" onclick="checkEx2()">✓ Check</button>
+      <button class="btn btn-out" onclick="resetEx2()">↺ Reset</button>
+      <span class="score-pill" id="sc2"></span>
+    </div>
+  </div>
+  <div class="card-footer">🍕 Vocabulary in context <span style="background:#fde68a;color:var(--dark);padding:3px 10px;border-radius:12px;font-weight:700;">6 questions</span></div>
+</div>
+
+<!-- EX 3: GAP FILL -->
+<div class="card">
+  <div class="card-head">📝 Exercise 3 — Fill in the gaps</div>
+  <div class="card-body">
+    <p style="margin-bottom:10px;font-size:.9rem;color:#666;">Complete each sentence with the correct phrase from the box.</p>
+    <div class="word-bank">
+      <span class="wb">whip up</span>
+      <span class="wb">eat out</span>
+      <span class="wb">comfort food</span>
+      <span class="wb">grab a bite</span>
+      <span class="wb">leftovers</span>
+      <span class="wb">sweet tooth</span>
+    </div>
+    <div class="gap-list">
+
+      <div class="gap-item"><span class="gap-num">1</span><div>
+        After the gym I was starving, so I decided to
+        <input class="gap-inp" id="fg1" placeholder="…">
+        at the café downstairs.
+      </div></div>
+
+      <div class="gap-item"><span class="gap-num">2</span><div>
+        She always orders dessert — she definitely has a
+        <input class="gap-inp" id="fg2" placeholder="…">.
+      </div></div>
+
+      <div class="gap-item"><span class="gap-num">3</span><div>
+        We had too much pasta last night, so we're having the
+        <input class="gap-inp" id="fg3" placeholder="…">
+        for lunch today.
+      </div></div>
+
+      <div class="gap-item"><span class="gap-num">4</span><div>
+        It only takes me ten minutes to
+        <input class="gap-inp" id="fg4" placeholder="…">
+        a simple omelette in the morning.
+      </div></div>
+
+      <div class="gap-item"><span class="gap-num">5</span><div>
+        My mum's chicken soup is the ultimate
+        <input class="gap-inp" id="fg5" placeholder="…">
+        — I always feel better after a bowl.
+      </div></div>
+
+      <div class="gap-item"><span class="gap-num">6</span><div>
+        We decided to
+        <input class="gap-inp" id="fg6" placeholder="…">
+        for dinner — there's a great new Italian place nearby.
+      </div></div>
+
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-pri" onclick="checkEx3()">✓ Check</button>
+      <button class="btn btn-out" onclick="resetEx3()">↺ Reset</button>
+      <span class="score-pill" id="sc3"></span>
+    </div>
+  </div>
+  <div class="card-footer">🍴 Vocabulary <span style="background:#fde68a;color:var(--dark);padding:3px 10px;border-radius:12px;font-weight:700;">6 gaps</span></div>
+</div>
+
+<!-- EX 4: WRITING -->
+<div class="card">
+  <div class="card-head">✍️ Exercise 4 — My food day</div>
+  <div class="card-body">
+    <p style="margin-bottom:10px;font-size:.9rem;color:#666;">Describe your typical food day — from breakfast to a late-night snack. Try to use <strong>at least 5 phrases</strong> from the lesson.</p>
+    <textarea class="write-area" id="warea" placeholder="Write your answer here…" oninput="spotPhrases()"></textarea>
+    <div class="word-ctr" id="wctr">Words: 0</div>
+    <div style="margin-top:10px;font-size:.8rem;color:#777;margin-bottom:5px;">Phrases found:</div>
+    <div class="phrase-chips" id="pchips"></div>
+  </div>
+  <div class="card-footer">🗣️ Free writing <span style="background:#fde68a;color:var(--dark);padding:3px 10px;border-radius:12px;font-weight:700;">Min. 50 words</span></div>
+</div>
+
+
+<!-- Send -->
+<div class="send-card">
+  <h3>📬 Send to Teacher</h3>
+  <p>All done? Click below to send your answers by email.</p>
+  <button class="btn-send" onclick="sendHW()">📨 Send to Teacher</button>
+  <div id="send-msg" style="margin-top:11px;font-size:.85em;opacity:.75;display:none;"></div>
+</div>
+
+<div class="finish">
+  <div class="finish-icon">🍴</div>
+  <h2>Bon appétit!</h2>
+  <p>You've practised all today's vocabulary — great work!<br>See you in the next lesson.</p>
+</div>
+
+</div>
+
+<script>
+// ── EX 1: TRUE / FALSE ──
+const tfData={
+  1:{correct:'False', exp:'If you eat out, you go to a restaurant — you don\'t cook at home.'},
+  2:{correct:'True',  exp:'Comfort food makes you feel better emotionally.'},
+  3:{correct:'False', exp:'A foodie loves food and enjoys trying new restaurants.'},
+  4:{correct:'False', exp:'To whip something up means to cook it quickly and easily.'},
+  5:{correct:'True',  exp:'Leftovers = food saved after a meal, eaten later.'},
+  6:{correct:'False', exp:'To grab a bite means to eat something quickly — not a long meal.'}
+};
+function ptf(btn,n,result,correct){
+  btn.closest('.mc-opts').querySelectorAll('.mc-opt').forEach(b=>b.classList.remove('selected','correct','wrong','reveal'));
+  btn.classList.add('selected');btn.dataset.result=result;btn.dataset.correct=correct;
+}
+function checkEx1(){
+  let score=0;
+  for(let i=1;i<=6;i++){
+    const item=document.getElementById('tf'+i);
+    const sel=item.querySelector('.mc-opt.selected');
+    const fb=document.getElementById('tffb'+i);
+    if(!sel){fb.className='mc-fb err';fb.innerHTML='Please choose True or False.';continue;}
+    if(sel.dataset.result==='correct'){
+      sel.classList.remove('selected');sel.classList.add('correct');
+      fb.className='mc-fb ok';fb.innerHTML='✓ Correct! '+tfData[i].exp;score++;
+    }else{
+      sel.classList.remove('selected');sel.classList.add('wrong');
+      item.querySelectorAll('.mc-opt').forEach(b=>{if(b.dataset.result==='correct')b.classList.add('reveal');});
+      fb.className='mc-fb err';fb.innerHTML='✗ '+tfData[i].exp;
+    }
+  }
+  const sc=document.getElementById('sc1');sc.textContent=score+' / 6';sc.classList.add('show');
+}
+function resetEx1(){
+  for(let i=1;i<=6;i++){
+    document.getElementById('tf'+i).querySelectorAll('.mc-opt').forEach(b=>b.classList.remove('selected','correct','wrong','reveal'));
+    const fb=document.getElementById('tffb'+i);fb.className='mc-fb';fb.innerHTML='';
+  }
+  document.getElementById('sc1').classList.remove('show');
+}
+
+// ── EX 2: MC ──
+const mcAns2={1:'skipped both meals',2:'leftovers',3:'a foodie',4:'comfort food',5:'grabbed a bite',6:'a sweet tooth'};
+function pmc(btn,n,result,correct){
+  btn.closest('.mc-opts').querySelectorAll('.mc-opt').forEach(b=>b.classList.remove('selected','correct','wrong','reveal'));
+  btn.classList.add('selected');btn.dataset.result=result;btn.dataset.correct=correct;
+}
+function checkEx2(){
+  let score=0;
+  for(let i=1;i<=6;i++){
+    const item=document.getElementById('m'+i);
+    const sel=item.querySelector('.mc-opt.selected');
+    const fb=document.getElementById('mfb'+i);
+    if(!sel){fb.className='mc-fb err';fb.innerHTML='Please choose an answer.';continue;}
+    if(sel.dataset.result==='correct'){
+      sel.classList.remove('selected');sel.classList.add('correct');
+      fb.className='mc-fb ok';fb.innerHTML='✓ Correct!';score++;
+    } else {
+      sel.classList.remove('selected');sel.classList.add('wrong');
+      item.querySelectorAll('.mc-opt').forEach(b=>{if(b.dataset.result==='correct')b.classList.add('reveal');});
+      fb.className='mc-fb err';fb.innerHTML='✗ The answer is <strong>'+mcAns2[i]+'</strong>.';
+    }
+  }
+  const sc=document.getElementById('sc2');sc.textContent=score+' / 6';sc.classList.add('show');
+}
+function resetEx2(){
+  for(let i=1;i<=6;i++){
+    document.getElementById('m'+i).querySelectorAll('.mc-opt').forEach(b=>b.classList.remove('selected','correct','wrong','reveal'));
+    const fb=document.getElementById('mfb'+i);fb.className='mc-fb';fb.innerHTML='';
+  }
+  document.getElementById('sc2').classList.remove('show');
+}
+
+// ── EX 3: GAP FILL ──
+const gapAns3={
+  fg1:['grab a bite','grabbed a bite'],
+  fg2:['sweet tooth','a sweet tooth'],
+  fg3:['leftovers','the leftovers'],
+  fg4:['whip up'],
+  fg5:['comfort food'],
+  fg6:['eat out']
+};
+const gapCorrect3={fg1:'grab a bite',fg2:'sweet tooth',fg3:'leftovers',fg4:'whip up',fg5:'comfort food',fg6:'eat out'};
+function checkEx3(){
+  let score=0;
+  for(let id in gapAns3){
+    const inp=document.getElementById(id);
+    const val=inp.value.toLowerCase().trim().replace(/^(a|an|the)\s/,'');
+    inp.classList.remove('correct','wrong');
+    if(!val){inp.classList.add('wrong');continue;}
+    const match=gapAns3[id].some(a=>val===a.replace(/^(a|an|the)\s/,''));
+    if(match){inp.classList.add('correct');score++;}
+    else{inp.classList.add('wrong');}
+  }
+  const sc=document.getElementById('sc3');sc.textContent=score+' / 6';sc.classList.add('show');
+}
+function resetEx3(){
+  for(let id in gapAns3){const inp=document.getElementById(id);inp.value='';inp.classList.remove('correct','wrong');}
+  document.getElementById('sc3').classList.remove('show');
+}
+
+// ── EX 4: PHRASE SPOTTER ──
+const foodPhrases=['grab a bite','skip a meal','whip up','eat out','home-cooked meal','sweet tooth','guilty pleasure','comfort food','leftovers','foodie'];
+function spotPhrases(){
+  const text=document.getElementById('warea').value;
+  const words=text.trim().split(/\s+/).filter(w=>w.length>0);
+  document.getElementById('wctr').textContent='Words: '+words.length;
+  const lower=text.toLowerCase();
+  const container=document.getElementById('pchips');
+  container.innerHTML='';
+  foodPhrases.forEach(p=>{
+    const ch=document.createElement('span');
+    ch.className='pc'+(lower.includes(p)?' found':'');
+    ch.textContent=p;
+    container.appendChild(ch);
+  });
+}
+
+// ── SEND ──
+function sendHW(){
+  const name=document.getElementById('sname').value.trim()||'Student';
+
+  // Scores
+  let s1=0,s2=0,s3=0;
+  for(let i=1;i<=6;i++){
+    const sel=document.querySelector('#tf'+i+' .mc-opt.correct')||document.querySelector('#tf'+i+' .mc-opt.selected');
+    if(sel&&(sel.classList.contains('correct')||sel.dataset.result==='correct'))s1++;
+  }
+  for(let i=1;i<=6;i++){
+    const sel=document.querySelector('#m'+i+' .mc-opt.correct')||document.querySelector('#m'+i+' .mc-opt.selected');
+    if(sel&&(sel.classList.contains('correct')||sel.dataset.result==='correct'))s2++;
+  }
+  for(let id in gapAns3){
+    const val=(document.getElementById(id).value||'').toLowerCase().trim().replace(/^(a|an|the)\s/,'');
+    if(val&&gapAns3[id].some(a=>val===a.replace(/^(a|an|the)\s/,'')))s3++;
+  }
+  const total=s1+s2+s3, maxT=18;
+  function bar(s,m){const w=m>0?Math.round(s/m*10):0;return '['+('█'.repeat(w))+('.'.repeat(10-w))+'] '+s+'/'+m;}
+  const summary=
+    'SCORE SUMMARY\n'+'='.repeat(40)+'\n'+
+    'Exercise 1 — True/False: '+bar(s1,6)+'\n'+
+    'Exercise 2 — MC phrases: '+bar(s2,6)+'\n'+
+    'Exercise 3 — Gap fill:   '+bar(s3,6)+'\n'+
+    '-'.repeat(40)+'\n'+
+    'TOTAL:                   '+bar(total,maxT)+'\n'+
+    '='.repeat(40)+'\n\n';
+
+  let e1='';
+  for(let i=1;i<=6;i++){
+    const item=document.getElementById('tf'+i);
+    const btn=item.querySelector('.mc-opt.correct')||item.querySelector('.mc-opt.selected')||item.querySelector('.mc-opt.wrong');
+    e1+=i+'. → '+(btn?btn.textContent.trim():'(no answer)')+' (correct: '+tfData[i].correct+')\n';
+  }
+
+  const q2labels=['skipped both meals','leftovers','a foodie','comfort food','grabbed a bite','a sweet tooth'];
+  let e2='';
+  for(let i=1;i<=6;i++){
+    const item=document.getElementById('m'+i);
+    const btn=item.querySelector('.mc-opt.correct')||item.querySelector('.mc-opt.selected')||item.querySelector('.mc-opt.wrong');
+    e2+=i+'. → '+(btn?btn.textContent.trim():'(no answer)')+' (correct: '+q2labels[i-1]+')\n';
+  }
+
+  let e3='';
+  for(let id in gapAns3){
+    const v=document.getElementById(id).value.trim()||'(blank)';
+    const n=parseInt(id.replace('fg',''));
+    e3+=n+'. → '+v+' (correct: '+gapCorrect3[id]+')\n';
+  }
+
+  const writing=document.getElementById('warea').value.trim()||'(no answer)';
+  const lower=writing.toLowerCase();
+  const found=foodPhrases.filter(p=>lower.includes(p));
+  const e4='--- Student writing ---\n'+writing+'\n\nPhrases used ('+found.length+'/10): '+found.join(', ');
+
+  const body=
+    'HOMEWORK: Food for Thought (B1)\nStudent: '+name+'\n'+'='.repeat(40)+'\n\n'+
+    summary+
+    'EXERCISE 1 — True or False\n'+'-'.repeat(30)+'\n'+e1+'\n'+
+    'EXERCISE 2 — Choose the correct phrase\n'+'-'.repeat(30)+'\n'+e2+'\n'+
+    'EXERCISE 3 — Fill in the gaps\n'+'-'.repeat(30)+'\n'+e3+'\n'+
+    'EXERCISE 4 — My food day\n'+'-'.repeat(30)+'\n'+e4;
+
+  window.location.href='mailto:dariia.mlnk@gmail.com?subject='+encodeURIComponent('B1 Homework: Food for Thought — '+name)+'&body='+encodeURIComponent(body);
+  const msg=document.getElementById('send-msg');msg.style.display='block';msg.textContent='Your email app should open now!';
+}
+
+// ── PHOTO STRIP IMAGES ──
+async function loadStripImages(){
+  const shots=[
+    {id:'ps-img1',fb:'fb-ps1',title:'Comfort_food'},
+    {id:'ps-img2',fb:'fb-ps2',title:'Restaurant'},
+    {id:'ps-img3',fb:'fb-ps3',title:'Salad'},
+    {id:'ps-img4',fb:'fb-ps4',title:'Cupcake'},
+    {id:'ps-img5',fb:'fb-ps5',title:'Full_breakfast'}
+  ];
+  const titles=shots.map(s=>encodeURIComponent(s.title)).join('|');
+  const url='https://en.wikipedia.org/w/api.php?action=query&titles='+titles+'&prop=pageimages&pithumbsize=500&format=json&origin=*&pilicense=any';
+  try{
+    const r=await fetch(url);
+    const d=await r.json();
+    for(const page of Object.values(d.query.pages)){
+      const shot=shots.find(s=>page.title===s.title||page.title===decodeURIComponent(s.title));
+      if(shot&&page.thumbnail){
+        const img=document.getElementById(shot.id);
+        const fb=document.getElementById(shot.fb);
+        if(img){img.src=page.thumbnail.source;img.style.display='block';if(fb)fb.style.display='none';}
+      }
+    }
+  }catch(e){console.log('Strip images unavailable:',e);}
+}
+loadStripImages();
+</script>
+</body>
+</html>
