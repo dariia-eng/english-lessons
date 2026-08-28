@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>End of Summer — B2 Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+:root{
+  --accent:#C2642A;--accent-mid:#E0956A;--accent-lit:#FDF0E8;
+  --surface-1:#FAFAF8;--surface-2:#F2F1EE;--surface-3:#E6E4DF;
+  --text-1:#1A1A18;--text-2:#5A5A52;--border:#D8D6D0;
+  --radius:14px;
+  --green:#2E7D32;--green-lit:#E8F5E9;
+  --red:#C62828;--red-lit:#FFEBEE;
+  --font:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --surface-1:#1C1B18;--surface-2:#252420;--surface-3:#302F29;
+    --text-1:#F0EEE8;--text-2:#A8A69E;--border:#3A3830;
+    --accent-lit:#2A1808;--green-lit:#0A1F0A;--red-lit:#1F0A0A;
+  }
+}
+[data-theme="dark"]{
+  --surface-1:#1C1B18;--surface-2:#252420;--surface-3:#302F29;
+  --text-1:#F0EEE8;--text-2:#A8A69E;--border:#3A3830;
+  --accent-lit:#2A1808;--green-lit:#0A1F0A;--red-lit:#1F0A0A;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--surface-1);color:var(--text-1);min-height:100vh;padding-bottom:48px}
+
+.hw-header{
+  background:linear-gradient(135deg,#7B3A1A 0%,#C2642A 45%,#E8922A 100%);
+  color:#fff;padding:24px 20px 18px;text-align:center;
+}
+.hw-header h1{font-size:1.35rem;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+.hw-header .sub{font-size:.87rem;opacity:.9;font-weight:500}
+
+.wrap{max-width:680px;margin:0 auto;padding:0 18px}
+
+.name-box{
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px 18px;
+  display:flex;align-items:center;gap:14px;margin-top:20px;
+}
+.name-box label{font:700 .9rem var(--font);color:var(--text-1);white-space:nowrap}
+.name-input{
+  flex:1;border:1.5px solid var(--border);border-radius:9px;
+  padding:9px 13px;font:.93rem var(--font);color:var(--text-1);
+  background:var(--surface-1);outline:none;transition:border-color .15s;
+}
+.name-input:focus{border-color:var(--accent)}
+.name-input::placeholder{color:var(--text-2)}
+
+.prog-box{
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px 18px;margin-top:12px;
+}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.prog-top span{font:600 .84rem var(--font);color:var(--text-2)}
+.prog-top .pct{font:700 .84rem var(--font);color:var(--accent)}
+.prog-track{height:10px;background:var(--surface-3);border-radius:5px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#7B3A1A,var(--accent-mid));border-radius:5px;transition:width .4s ease;width:0%}
+
+.ex-card{
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px 20px;margin-top:16px;
+}
+.ex-num{
+  display:inline-block;background:var(--accent);color:#fff;
+  font:700 .72rem var(--font);padding:3px 10px;border-radius:20px;
+  letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;
+}
+.ex-title{font:700 1rem var(--font);color:var(--text-1);margin-bottom:4px}
+.ex-sub{font:.86rem var(--font);color:var(--text-2);margin-bottom:14px;line-height:1.5}
+
+.word-bank{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.wb-chip{
+  background:var(--accent-lit);border:1px solid var(--accent-mid);
+  border-radius:20px;padding:4px 12px;font:.84rem var(--font);
+  color:var(--accent);font-weight:600;
+}
+
+.gap-row{
+  font:.91rem var(--font);color:var(--text-1);line-height:1.7;
+  padding:9px 12px;background:var(--surface-1);border-radius:9px;
+  border:1px solid var(--border);margin-bottom:6px;
+  display:flex;align-items:center;flex-wrap:wrap;gap:4px;
+}
+.gap-num{font:700 .82rem var(--font);color:var(--accent);margin-right:2px;flex-shrink:0}
+.gap-sel{
+  border:1.5px solid var(--border);border-radius:7px;padding:4px 8px;
+  font:.88rem var(--font);color:var(--text-1);background:var(--surface-2);
+  outline:none;cursor:pointer;transition:all .15s;
+}
+.gap-sel:focus{border-color:var(--accent)}
+.gap-sel.correct{border-color:var(--green)!important;background:var(--green-lit)!important;color:var(--green)!important}
+.gap-sel.wrong{border-color:var(--red)!important;background:var(--red-lit)!important;color:var(--red)!important}
+
+.gram-row{
+  font:.91rem var(--font);color:var(--text-1);line-height:1.7;
+  padding:9px 12px;background:var(--surface-1);border-radius:9px;
+  border:1px solid var(--border);margin-bottom:6px;
+}
+.gram-inp{
+  border:1.5px solid var(--border);border-radius:7px;padding:5px 10px;
+  font:.88rem var(--font);color:var(--text-1);background:var(--surface-2);
+  outline:none;width:165px;margin:0 4px;transition:all .15s;
+}
+.gram-inp:focus{border-color:var(--accent)}
+.gram-inp.correct{border-color:var(--green)!important;background:var(--green-lit)!important;color:var(--green)!important}
+.gram-inp.wrong{border-color:var(--red)!important;background:var(--red-lit)!important;color:var(--red)!important}
+
+.write-block{margin-bottom:12px}
+.write-label{font:600 .9rem var(--font);color:var(--text-1);display:block;margin-bottom:6px;line-height:1.5}
+.write-area{
+  width:100%;border:1.5px solid var(--border);border-radius:10px;
+  padding:11px 13px;font:.92rem var(--font);color:var(--text-1);
+  background:var(--surface-1);resize:vertical;min-height:80px;
+  outline:none;transition:border-color .15s;display:block;
+}
+.write-area:focus{border-color:var(--accent)}
+.wc{font:.8rem var(--font);color:var(--text-2);margin-top:4px}
+.wc span{font-weight:700}
+.wc span.ok{color:var(--green)}
+
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{border:none;border-radius:9px;padding:9px 18px;font:700 .87rem var(--font);cursor:pointer;transition:all .14s}
+.btn-check{background:var(--accent);color:#fff}
+.btn-check:hover{opacity:.88}
+.btn-reset{background:var(--surface-1);border:1.5px solid var(--border);color:var(--text-2)}
+.btn-reset:hover{border-color:var(--accent);color:var(--accent)}
+
+.ex-fb{font:.87rem var(--font);font-weight:600;margin-top:10px;min-height:18px}
+
+.send-card{
+  background:linear-gradient(135deg,var(--accent-lit),var(--surface-2));
+  border:1.5px solid var(--accent-mid);border-radius:var(--radius);
+  padding:18px 20px;margin-top:16px;
+}
+.send-card h3{font:700 .95rem var(--font);color:var(--accent);margin-bottom:6px}
+.send-card p{font:.87rem var(--font);color:var(--text-2);margin-bottom:14px;line-height:1.55}
+.btn-send{
+  background:var(--accent);color:#fff;border:none;border-radius:10px;
+  padding:12px 28px;font:700 .95rem var(--font);cursor:pointer;
+  display:block;width:100%;transition:opacity .14s;
+}
+.btn-send:hover{opacity:.88}
+</style>
+</head>
+<body>
+
+<header class="hw-header">
+  <h1>🌅 End of Summer — Reflection</h1>
+  <div class="sub">B2 Homework · Vocabulary &amp; Grammar</div>
+</header>
+
+<div class="wrap">
+
+  <div class="name-box">
+    <label for="sname">Your name:</label>
+    <input class="name-input" id="sname" type="text" placeholder="Write your full name here…">
+  </div>
+
+  <div class="prog-box">
+    <div class="prog-top">
+      <span>Progress</span>
+      <span class="pct" id="prog-pct">0 / 3 exercises checked</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+
+  <!-- ══════════ EXERCISE 1 ══════════ -->
+  <div class="ex-card">
+    <span class="ex-num">Exercise 1</span>
+    <div class="ex-title">Vocabulary — Fill in the gaps</div>
+    <div class="ex-sub">Choose the correct word or phrase to complete each sentence. Use each word once.</div>
+
+    <div class="word-bank">
+      <span class="wb-chip">epiphany</span>
+      <span class="wb-chip">wistful</span>
+      <span class="wb-chip">take stock of</span>
+      <span class="wb-chip">fleeting</span>
+      <span class="wb-chip">watershed moment</span>
+      <span class="wb-chip">bittersweet</span>
+      <span class="wb-chip">dwell on</span>
+      <span class="wb-chip">reminisce</span>
+    </div>
+
+    <div class="gap-row">
+      <span class="gap-num">1.</span>
+      Leaving our holiday apartment for the last time had a
+      <select class="gap-sel" id="g1">
+        <option value="">— choose —</option>
+        <option>bittersweet</option>
+        <option>fleeting</option>
+        <option>wistful</option>
+        <option>watershed moment</option>
+        <option>epiphany</option>
+      </select>
+      feeling — happy we'd gone, but sad it was over.
+    </div>
+
+    <div class="gap-row">
+      <span class="gap-num">2.</span>
+      Those late August evenings felt so
+      <select class="gap-sel" id="g2">
+        <option value="">— choose —</option>
+        <option>wistful</option>
+        <option>fleeting</option>
+        <option>bittersweet</option>
+        <option>epiphany</option>
+        <option>reminisce</option>
+      </select>
+      — before I knew it, they were gone.
+    </div>
+
+    <div class="gap-row">
+      <span class="gap-num">3.</span>
+      I feel
+      <select class="gap-sel" id="g3">
+        <option value="">— choose —</option>
+        <option>bittersweet</option>
+        <option>fleeting</option>
+        <option>wistful</option>
+        <option>epiphany</option>
+        <option>watershed</option>
+      </select>
+      when I look at old holiday photos — I miss how things used to be.
+    </div>
+
+    <div class="gap-row">
+      <span class="gap-num">4.</span>
+      My grandmother and I love to
+      <select class="gap-sel" id="g4">
+        <option value="">— choose —</option>
+        <option>dwell on</option>
+        <option>take stock of</option>
+        <option>reminisce</option>
+        <option>reflect on</option>
+        <option>look back on</option>
+      </select>
+      about the summers we spent at the lake.
+    </div>
+
+    <div class="gap-row">
+      <span class="gap-num">5.</span>
+      I had a real
+      <select class="gap-sel" id="g5">
+        <option value="">— choose —</option>
+        <option>watershed moment</option>
+        <option>epiphany</option>
+        <option>fleeting</option>
+        <option>wistful</option>
+        <option>reminisce</option>
+      </select>
+      this summer — I realised I had been making myself unhappy by comparing myself to others.
+    </div>
+
+    <div class="gap-row">
+      <span class="gap-num">6.</span>
+      I know I shouldn't
+      <select class="gap-sel" id="g6">
+        <option value="">— choose —</option>
+        <option>take stock of</option>
+        <option>reminisce</option>
+        <option>dwell on</option>
+        <option>reflect on</option>
+        <option>look back on</option>
+      </select>
+      my mistakes, but sometimes it's hard not to.
+    </div>
+
+    <div class="gap-row">
+      <span class="gap-num">7.</span>
+      Now that summer is over, it's a good time to
+      <select class="gap-sel" id="g7">
+        <option value="">— choose —</option>
+        <option>dwell on</option>
+        <option>reminisce</option>
+        <option>take stock of</option>
+        <option>reflect on</option>
+        <option>look back on</option>
+      </select>
+      what I have achieved this year.
+    </div>
+
+    <div class="gap-row">
+      <span class="gap-num">8.</span>
+      Moving abroad at 22 was a
+      <select class="gap-sel" id="g8">
+        <option value="">— choose —</option>
+        <option>epiphany</option>
+        <option>fleeting</option>
+        <option>bittersweet</option>
+        <option>watershed moment</option>
+        <option>wistful</option>
+      </select>
+      in my life — everything changed after that.
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkEx1()">✓ Check</button>
+      <button class="btn btn-reset" onclick="resetEx1()">↺ Reset</button>
+    </div>
+    <div class="ex-fb" id="fb1"></div>
+  </div>
+
+  <!-- ══════════ EXERCISE 2 ══════════ -->
+  <div class="ex-card">
+    <span class="ex-num">Exercise 2</span>
+    <div class="ex-title">Grammar — Wish &amp; Should Have</div>
+    <div class="ex-sub">Write the verb in the correct form to complete each sentence.</div>
+
+    <div class="gram-row">
+      <span class="gap-num">1.</span>
+      I wish I
+      <input class="gram-inp" id="gr1" type="text" placeholder="(not / work)…">
+      so much during July — I barely saw my friends.
+    </div>
+
+    <div class="gram-row">
+      <span class="gap-num">2.</span>
+      Looking back, I should have
+      <input class="gram-inp" id="gr2" type="text" placeholder="(appreciate)…">
+      those fleeting moments more.
+    </div>
+
+    <div class="gram-row">
+      <span class="gap-num">3.</span>
+      I wish I
+      <input class="gram-inp" id="gr3" type="text" placeholder="(spend)…">
+      more time with my family this summer.
+    </div>
+
+    <div class="gram-row">
+      <span class="gap-num">4.</span>
+      I should have
+      <input class="gram-inp" id="gr4" type="text" placeholder="(travel)…">
+      somewhere different — I always go to the same place.
+    </div>
+
+    <div class="gram-row">
+      <span class="gap-num">5.</span>
+      I wish last summer
+      <input class="gram-inp" id="gr5" type="text" placeholder="(be)…">
+      a watershed moment — but nothing really changed.
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkEx2()">✓ Check</button>
+      <button class="btn btn-reset" onclick="resetEx2()">↺ Reset</button>
+    </div>
+    <div class="ex-fb" id="fb2"></div>
+  </div>
+
+  <!-- ══════════ EXERCISE 3 ══════════ -->
+  <div class="ex-card">
+    <span class="ex-num">Exercise 3</span>
+    <div class="ex-title">Free Writing — Summer Reflection</div>
+    <div class="ex-sub">Write 2–3 sentences for each prompt. Try to use at least 4 vocabulary words from the lesson across your answers.</div>
+
+    <div class="write-block">
+      <label class="write-label">🌅 Write about a <strong>bittersweet or fleeting</strong> moment from this summer.</label>
+      <textarea class="write-area" id="w1" oninput="wc('w1','wc1')" placeholder="Write here…"></textarea>
+      <div class="wc">Words: <span id="wc1">0</span></div>
+    </div>
+
+    <div class="write-block">
+      <label class="write-label">😔 Write about something you <strong>wish had been different</strong>. Use <em>I wish I had…</em> or <em>I should have…</em></label>
+      <textarea class="write-area" id="w2" oninput="wc('w2','wc2')" placeholder="Write here…"></textarea>
+      <div class="wc">Words: <span id="wc2">0</span></div>
+    </div>
+
+    <div class="write-block">
+      <label class="write-label">🍂 <strong>Take stock of</strong> your summer in 2–3 sentences. What did you learn or realise?</label>
+      <textarea class="write-area" id="w3" oninput="wc('w3','wc3')" placeholder="Write here…"></textarea>
+      <div class="wc">Words: <span id="wc3">0</span></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkEx3()">✓ Check</button>
+      <button class="btn btn-reset" onclick="resetEx3()">↺ Reset</button>
+    </div>
+    <div class="ex-fb" id="fb3"></div>
+  </div>
+
+  <!-- ══════════ SEND ══════════ -->
+  <div class="send-card">
+    <h3>📨 Send to Teacher</h3>
+    <p>When you are happy with your answers, click the button below. It will open your email app with all your work ready to send.</p>
+    <button class="btn-send" onclick="sendToTeacher()">Send homework to teacher →</button>
+  </div>
+
+</div>
+
+<script>
+const checked = [false, false, false];
+function updateProgress() {
+  const done = checked.filter(Boolean).length;
+  document.getElementById('prog-pct').textContent = done + ' / 3 exercises checked';
+  document.getElementById('prog-fill').style.width = (done / 3 * 100) + '%';
+}
+
+// ── EXERCISE 1 ──
+const E1 = ['bittersweet','fleeting','wistful','reminisce','epiphany','dwell on','take stock of','watershed moment'];
+function checkEx1() {
+  let ok = 0;
+  for (let i = 1; i <= 8; i++) {
+    const sel = document.getElementById('g' + i);
+    const correct = sel.value === E1[i - 1];
+    sel.classList.remove('correct','wrong');
+    sel.classList.add(correct ? 'correct' : 'wrong');
+    if (correct) ok++;
+  }
+  const fb = document.getElementById('fb1');
+  fb.style.color = ok === 8 ? 'var(--green)' : 'var(--red)';
+  fb.textContent = ok === 8 ? 'Perfect — all 8 correct! ✓' : ok + ' / 8 correct. Review the ones in red.';
+  checked[0] = true; updateProgress();
+}
+function resetEx1() {
+  for (let i = 1; i <= 8; i++) {
+    const sel = document.getElementById('g' + i);
+    sel.value = ''; sel.classList.remove('correct','wrong');
+  }
+  document.getElementById('fb1').textContent = '';
+}
+
+// ── EXERCISE 2 ──
+const E2 = [
+  ["hadn't worked","had not worked"],
+  ['appreciated'],
+  ['had spent'],
+  ['travelled','traveled'],
+  ['had been']
+];
+function normGram(s) { return s.trim().toLowerCase().replace(/\s+/g,' ').replace(/'/g,"'"); }
+function checkEx2() {
+  let ok = 0;
+  for (let i = 1; i <= 5; i++) {
+    const inp = document.getElementById('gr' + i);
+    const val = normGram(inp.value);
+    const correct = E2[i-1].map(normGram).includes(val);
+    inp.classList.remove('correct','wrong');
+    inp.classList.add(correct ? 'correct' : 'wrong');
+    if (correct) ok++;
+  }
+  const fb = document.getElementById('fb2');
+  fb.style.color = ok === 5 ? 'var(--green)' : 'var(--red)';
+  fb.textContent = ok === 5 ? 'Excellent — all 5 correct! ✓' : ok + ' / 5 correct. Check your verb forms.';
+  checked[1] = true; updateProgress();
+}
+function resetEx2() {
+  for (let i = 1; i <= 5; i++) {
+    const inp = document.getElementById('gr' + i);
+    inp.value = ''; inp.classList.remove('correct','wrong');
+  }
+  document.getElementById('fb2').textContent = '';
+}
+
+// ── EXERCISE 3 ──
+function wc(aId, wcId) {
+  const t = document.getElementById(aId).value.trim();
+  const n = t ? t.split(/\s+/).length : 0;
+  const el = document.getElementById(wcId);
+  el.textContent = n;
+  el.className = n >= 8 ? 'ok' : '';
+}
+function checkEx3() {
+  const ids = ['w1','w2','w3'];
+  let allOk = true;
+  ids.forEach(function(id) {
+    const n = (document.getElementById(id).value.trim().match(/\S+/g) || []).length;
+    if (n < 8) allOk = false;
+  });
+  const fb = document.getElementById('fb3');
+  fb.style.color = allOk ? 'var(--green)' : 'var(--red)';
+  fb.textContent = allOk ? 'Well done! Ready to send to your teacher. ✓' : 'Try to write at least 8 words for each prompt.';
+  checked[2] = true; updateProgress();
+}
+function resetEx3() {
+  ['w1','w2','w3'].forEach(function(id) { document.getElementById(id).value = ''; });
+  ['wc1','wc2','wc3'].forEach(function(id) {
+    const el = document.getElementById(id); el.textContent = '0'; el.className = '';
+  });
+  document.getElementById('fb3').textContent = '';
+}
+
+// ── SEND ──
+function sendToTeacher() {
+  const name = document.getElementById('sname').value.trim() || '(name not filled in)';
+  const g = [];
+  for (let i = 1; i <= 8; i++) g.push(document.getElementById('g' + i).value || '—');
+  const gr = [];
+  for (let i = 1; i <= 5; i++) gr.push(document.getElementById('gr' + i).value.trim() || '—');
+  const w = ['w1','w2','w3'].map(function(id) { return document.getElementById(id).value.trim() || '—'; });
+  const subject = encodeURIComponent('Homework: End of Summer B2 — ' + name);
+  const body = encodeURIComponent(
+    'Student: ' + name + '\n\n' +
+    'EXERCISE 1 — Vocabulary Gap Fill\n' +
+    '1. ' + g[0] + '\n2. ' + g[1] + '\n3. ' + g[2] + '\n4. ' + g[3] + '\n' +
+    '5. ' + g[4] + '\n6. ' + g[5] + '\n7. ' + g[6] + '\n8. ' + g[7] + '\n\n' +
+    'EXERCISE 2 — Grammar (wish / should have)\n' +
+    '1. I wish I ' + gr[0] + ' so much during July.\n' +
+    '2. I should have ' + gr[1] + ' those fleeting moments more.\n' +
+    '3. I wish I ' + gr[2] + ' more time with my family.\n' +
+    '4. I should have ' + gr[3] + ' somewhere different.\n' +
+    '5. I wish last summer ' + gr[4] + ' a watershed moment.\n\n' +
+    'EXERCISE 3 — Free Writing\n' +
+    'Prompt 1 (bittersweet / fleeting):\n' + w[0] + '\n\n' +
+    'Prompt 2 (wish / should have):\n' + w[1] + '\n\n' +
+    'Prompt 3 (take stock of):\n' + w[2]
+  );
+  window.location.href = 'mailto:dariia.mlnk@gmail.com?subject=' + subject + '&body=' + body;
+}
+</script>
+</body>
+</html>
