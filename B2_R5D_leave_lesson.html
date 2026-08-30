@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 5D – English in Action</title>
+<style>
+:root{--primary:#C0392B;--teal:#16A085;--amber:#D97706;--bg:#F7F8FC;--card:#fff;--text:#2c3e50;--light:#7f8c8d;--border:#e0e6f0;--ok:#27AE60;--bad:#E74C3C;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:white;padding:36px 24px 28px;text-align:center;}
+.badge{display:inline-block;background:var(--primary);padding:4px 16px;border-radius:20px;font-size:.8em;font-weight:700;letter-spacing:1px;margin-bottom:10px;}
+.header h1{font-size:2.1em;font-weight:800;margin-bottom:5px;}
+.header .sub{opacity:.8;font-size:.98em;}
+.header .meta{display:flex;justify-content:center;gap:18px;margin-top:12px;font-size:.82em;opacity:.7;}
+
+/* NAME STRIP */
+.name-strip{background:#16213e;padding:14px 24px;display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;}
+.name-strip label{color:white;font-size:.88em;opacity:.8;}
+.name-inp{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 14px;color:white;font-size:.9em;outline:none;width:220px;}
+.name-inp::placeholder{opacity:.5;}
+.name-inp:focus{border-color:var(--teal);}
+
+/* STAGE TRAIL */
+.trail{background:#16213e;padding:14px 20px;display:flex;align-items:center;justify-content:center;gap:0;overflow-x:auto;}
+.trail-step{display:flex;align-items:center;gap:0;}
+.t-dot{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:.75em;color:rgba(255,255,255,.5);font-weight:700;flex-shrink:0;transition:all .4s;}
+.t-dot.done{background:var(--teal);border-color:var(--teal);color:white;}
+.t-dot.active{background:var(--primary);border-color:var(--primary);color:white;box-shadow:0 0 12px rgba(192,57,43,.6);}
+.t-line{width:28px;height:2px;background:rgba(255,255,255,.15);flex-shrink:0;}
+.t-lbl{color:rgba(255,255,255,.45);font-size:.65em;text-align:center;margin-top:4px;white-space:nowrap;}
+.t-lbl.active{color:white;}
+.t-lbl.done{color:var(--teal);}
+.trail-col{display:flex;flex-direction:column;align-items:center;}
+
+/* PROGRESS BAR */
+.prog-wrap{background:#0f3460;padding:8px 24px;display:flex;align-items:center;gap:12px;}
+.prog-bar{flex:1;height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),#1abc9c);width:0;transition:width .5s;}
+.prog-text{color:rgba(255,255,255,.7);font-size:.8em;min-width:85px;text-align:right;}
+
+/* STAGE SECTION */
+.stage{padding:28px 20px;max-width:900px;margin:0 auto;}
+.stage-hd{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.stage-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9em;flex-shrink:0;color:white;}
+.sn-red{background:var(--primary);}
+.sn-teal{background:var(--teal);}
+.sn-amb{background:var(--amber);}
+.stage-ttl{font-size:1.2em;font-weight:700;}
+.stage-time{margin-left:auto;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:3px 12px;font-size:.78em;color:var(--light);}
+.divider{height:4px;background:linear-gradient(90deg,var(--primary),var(--teal),var(--amber));}
+
+/* CARD */
+.card{background:var(--card);border-radius:12px;padding:22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1px solid var(--border);}
+.card-ttl{font-size:1em;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.ex{padding:2px 10px;border-radius:12px;font-size:.78em;color:white;}
+.ex-r{background:var(--primary);}
+.ex-t{background:var(--teal);}
+.ex-a{background:var(--amber);}
+.hint{font-size:.85em;color:var(--light);font-style:italic;margin-bottom:14px;}
+
+/* CONFLICT PERSONALITY QUIZ */
+.quiz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:14px 0;}
+.quiz-opt{background:#f0f4ff;border:2px solid #d0d9f0;border-radius:10px;padding:16px;cursor:pointer;text-align:center;transition:all .25s;user-select:none;}
+.quiz-opt:hover{border-color:var(--teal);background:#e8f5f2;transform:translateY(-2px);}
+.quiz-opt.picked{border-color:var(--teal);background:#d4f0ea;}
+.quiz-opt .emoji{font-size:2em;margin-bottom:6px;}
+.quiz-opt .ql{font-size:.88em;font-weight:600;}
+.quiz-result{display:none;background:linear-gradient(135deg,#1a1a2e,#0f3460);color:white;border-radius:10px;padding:18px;margin-top:14px;font-size:.92em;line-height:1.6;}
+.quiz-result .rh{font-size:1.1em;font-weight:700;color:#f0c040;margin-bottom:6px;}
+
+/* LEAD-IN CARDS */
+.lead-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;}
+.lead-card{background:linear-gradient(135deg,#1a1a2e,#0f3460);color:white;border-radius:10px;padding:18px;font-size:.93em;line-height:1.55;}
+.lead-card .qn{font-size:1.8em;font-weight:800;opacity:.22;margin-bottom:5px;}
+
+/* PREDICT CARD */
+.predict-card{background:#fff8e1;border:2px solid var(--amber);border-radius:10px;padding:16px;margin-bottom:16px;}
+.predict-card h4{color:var(--amber);font-size:.9em;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.predict-inp{width:100%;border:1.5px solid #e0d0a0;border-radius:7px;padding:8px 12px;font-size:.9em;font-family:inherit;outline:none;resize:vertical;min-height:52px;background:#fffef5;}
+.predict-inp:focus{border-color:var(--amber);}
+
+/* FLASHCARDS */
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:16px;}
+.fc{height:80px;perspective:600px;cursor:pointer;}
+.fc-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s;border-radius:8px;}
+.fc.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:10px;text-align:center;font-size:.82em;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+.fc-front{background:linear-gradient(135deg,#1a1a2e,#16213e);color:white;font-weight:600;border:2px solid rgba(255,255,255,.15);}
+.fc-back{background:#d4f0ea;border:2px solid var(--teal);color:#0d6e5a;font-weight:600;transform:rotateY(180deg);}
+
+/* SENTENCE BANK */
+.bank{background:#f0f4ff;border-radius:10px;padding:14px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:7px;}
+.sent-btn{background:white;border:2px solid #d0d9f0;border-radius:8px;padding:6px 11px;cursor:grab;font-size:.85em;transition:all .2s;text-align:left;}
+.sent-btn:active{cursor:grabbing;}
+.sent-btn:hover{border-color:var(--teal);background:#e8f5f2;}
+.sent-btn.selected{border-color:var(--teal);background:#d4f0ea;font-weight:600;}
+.sent-btn.used{opacity:.4;cursor:default;background:#eee;border-color:#ccc;}
+
+/* GAP ROW */
+.gap-row{display:flex;align-items:flex-start;gap:10px;padding:10px;background:#f8f9fc;border-radius:8px;border:2px solid var(--border);margin-bottom:8px;transition:border-color .2s;}
+.gap-n{font-weight:700;color:var(--primary);min-width:22px;padding-top:2px;}
+.gap-ctx{flex:1;font-size:.86em;color:var(--light);}
+.gap-slot{min-width:180px;min-height:30px;border:2px dashed #c0c9d9;border-radius:6px;padding:4px 10px;font-size:.84em;color:var(--teal);font-weight:600;cursor:pointer;display:flex;align-items:center;transition:all .2s;}
+.gap-slot:hover{border-color:var(--teal);background:#e8f5f2;}
+.gap-slot.filled{border-style:solid;border-color:var(--teal);background:#e8f5f2;}
+.gap-slot.correct{border-color:var(--ok)!important;background:#d4edda!important;color:#1a6635!important;}
+.gap-slot.wrong{border-color:var(--bad)!important;background:#fde8e8!important;color:#922b21!important;}
+
+/* ALT BUTTONS */
+.alt-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;font-size:.92em;}
+.alt-row:last-child{border-bottom:none;}
+.alt-n{font-weight:700;color:var(--primary);min-width:22px;}
+.alt-btn{background:#f0f4ff;border:2px solid #d0d9f0;border-radius:6px;padding:5px 13px;cursor:pointer;font-size:.88em;transition:all .2s;}
+.alt-btn:hover{border-color:var(--teal);background:#e8f5f2;}
+.alt-btn.selected{border-color:var(--teal);background:#d4f0ea;font-weight:600;}
+.alt-btn.correct{border-color:var(--ok);background:#d4edda;font-weight:600;}
+.alt-btn.wrong{border-color:var(--bad);background:#fde8e8;}
+
+/* MC */
+.mc-wrap{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-bottom:1px solid var(--border);}
+.mc-wrap:last-child{border-bottom:none;}
+.mc-sit{font-size:.88em;color:var(--light);margin-bottom:4px;}
+.mc-opts{display:flex;gap:8px;flex-wrap:wrap;}
+.mc-btn{background:#f0f4ff;border:2px solid #d0d9f0;border-radius:8px;padding:8px 15px;cursor:pointer;font-size:.88em;transition:all .2s;text-align:left;}
+.mc-btn:hover{border-color:var(--teal);background:#e8f5f2;}
+.mc-btn.selected{border-color:var(--teal);background:#d4f0ea;font-weight:600;}
+.mc-btn.correct{border-color:var(--ok);background:#d4edda;font-weight:600;}
+.mc-btn.wrong{border-color:var(--bad);background:#fde8e8;}
+
+/* MATCH ROW */
+.match-row{padding:10px 0;border-bottom:1px solid var(--border);}
+.match-row:last-child{border-bottom:none;}
+.match-meaning{font-size:.88em;margin-bottom:8px;}
+.match-opts{display:flex;flex-wrap:wrap;gap:6px;}
+
+/* TICK */
+.tick-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
+.tick-row:last-child{border-bottom:none;}
+.tick-box{width:22px;height:22px;border:2px solid #c0c9d9;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:.85em;}
+.tick-box.on{background:var(--teal);border-color:var(--teal);color:white;}
+.tick-box.ok{background:var(--ok);border-color:var(--ok);color:white;}
+.tick-box.bad{background:var(--bad);border-color:var(--bad);color:white;}
+
+/* AUDIO BUTTON */
+.audio-btn{background:linear-gradient(135deg,#1a1a2e,#0f3460);color:white;border:none;border-radius:10px;padding:14px 20px;cursor:pointer;font-size:.93em;font-weight:600;display:flex;align-items:center;gap:10px;width:100%;margin-bottom:14px;transition:opacity .2s;}
+.audio-btn:hover{opacity:.85;}
+.audio-note{opacity:.6;font-weight:400;font-size:.85em;}
+.audioscript{background:#f8f9fc;border:1px solid var(--border);border-left:4px solid var(--teal);border-radius:8px;padding:16px;font-size:.88em;line-height:1.8;display:none;}
+.audioscript.open{display:block;animation:fadeIn .3s ease;}
+.albl{font-size:.72em;text-transform:uppercase;letter-spacing:1px;opacity:.5;margin-bottom:12px;}
+.sp{font-weight:700;color:var(--teal);}
+.sp.b{color:var(--amber);}
+hr.cs{border:none;border-top:1px dashed #d0d9f0;margin:12px 0;}
+
+/* PHRASES BOX */
+.phrases-box{background:linear-gradient(135deg,#1a1a2e,#16213e);color:white;border-radius:10px;padding:20px;margin:14px 0;}
+.phrases-box h4{font-size:1em;color:#f0c040;margin-bottom:14px;letter-spacing:.5px;}
+.ph-cat{margin-bottom:12px;}
+.ph-cat-ttl{font-size:.73em;text-transform:uppercase;letter-spacing:1px;opacity:.6;margin-bottom:4px;}
+.ph-list{list-style:none;}
+.ph-list li{padding:2px 0;font-size:.88em;display:flex;align-items:flex-start;gap:7px;}
+.ph-list li::before{content:'•';color:var(--teal);flex-shrink:0;}
+
+/* FILL INPUT */
+.fill-input{border:2px solid #d0d9f0;border-radius:6px;padding:5px 10px;font-size:.88em;outline:none;transition:border-color .2s;font-family:inherit;}
+.fill-input:focus{border-color:var(--teal);}
+.fill-input.correct{border-color:var(--ok);background:#d4edda;}
+.fill-input.wrong{border-color:var(--bad);background:#fde8e8;}
+.fill-row6{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.fill-row6:last-child{border-bottom:none;}
+.fill-lbl{font-weight:700;color:var(--primary);font-size:.8em;min-width:140px;}
+.fill-pre{font-size:.88em;}
+
+/* M/W */
+.mw-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.mw-row:last-child{border-bottom:none;}
+.mw-lbl{font-weight:700;color:var(--teal);min-width:20px;font-size:.83em;}
+.mw-txt{flex:1;font-size:.88em;font-style:italic;}
+.mw-btns{display:flex;gap:6px;}
+.mw-btn{background:#f0f4ff;border:2px solid #d0d9f0;border-radius:6px;padding:4px 13px;cursor:pointer;font-size:.86em;font-weight:700;transition:all .2s;}
+.mw-btn:hover{border-color:var(--teal);background:#e8f5f2;}
+.mw-btn.selected{border-color:var(--teal);background:#d4f0ea;}
+.mw-btn.correct{border-color:var(--ok);background:#d4edda;}
+.mw-btn.wrong{border-color:var(--bad);background:#fde8e8;}
+
+/* UP2 */
+.up2-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.15);flex-wrap:wrap;}
+.up2-row:last-child{border-bottom:none;}
+.up2-n{font-weight:700;color:#f0c040;min-width:20px;}
+.up2-pre{font-size:.83em;opacity:.7;}
+.up2-inp{border:2px solid rgba(255,255,255,.3);border-radius:6px;padding:5px 10px;font-size:.83em;background:rgba(255,255,255,.1);color:white;outline:none;min-width:200px;font-family:inherit;}
+.up2-inp::placeholder{opacity:.45;}
+.up2-inp.correct{border-color:#27AE60;background:rgba(39,174,96,.2);}
+.up2-inp.wrong{border-color:#E74C3C;background:rgba(231,76,60,.2);}
+
+/* PHRASE CHIPS (speaking) */
+.chip-bank{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;padding:14px;background:#f0f4ff;border-radius:10px;}
+.chip{background:white;border:2px solid #d0d9f0;border-radius:20px;padding:5px 14px;cursor:pointer;font-size:.82em;transition:all .2s;user-select:none;}
+.chip:hover{border-color:var(--teal);background:#e8f5f2;transform:translateY(-1px);}
+.chip.used-chip{opacity:.4;cursor:default;}
+.chip-drop{min-height:42px;border:2px dashed #c0c9d9;border-radius:8px;padding:6px 12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px;transition:border-color .2s;}
+.chip-drop:hover{border-color:var(--teal);}
+.chip-drop .placed-chip{background:#d4f0ea;border:1.5px solid var(--teal);border-radius:16px;padding:4px 12px;font-size:.82em;cursor:pointer;}
+.chip-drop .placed-chip:hover{background:#fde8e8;border-color:var(--bad);}
+
+/* CONV BUILDER */
+.conv-builder{border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.conv-line{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);}
+.conv-line:last-child{border-bottom:none;}
+.conv-sp{font-weight:700;min-width:50px;font-size:.78em;text-transform:uppercase;letter-spacing:.5px;padding-top:3px;}
+.conv-sp.a{color:var(--primary);}
+.conv-sp.b{color:var(--teal);}
+.conv-body{flex:1;font-size:.92em;}
+.conv-hint{font-style:italic;color:var(--light);font-size:.8em;margin-top:3px;}
+
+/* FEEDBACK MESSAGES */
+.feedback-msg{display:none;margin-top:10px;padding:10px 16px;border-radius:8px;font-weight:600;font-size:.88em;animation:fadeIn .3s ease;}
+.fb-perfect{background:#d4edda;color:#1a6635;border:1px solid #a8d5b5;}
+.fb-good{background:#fff3cd;color:#856404;border:1px solid #ffe082;}
+.fb-try{background:#fde8e8;color:#7b1e1e;border:1px solid #f5aaaa;}
+
+/* CHECK + SCORE */
+.check-btn{border:none;border-radius:8px;padding:10px 24px;cursor:pointer;font-size:.88em;font-weight:700;margin-top:12px;transition:all .2s;color:white;}
+.check-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15);}
+.cb-r{background:var(--primary);}
+.cb-t{background:var(--teal);}
+.cb-a{background:var(--amber);}
+.score{display:none;margin-top:10px;padding:6px 14px;border-radius:8px;font-weight:600;font-size:.88em;}
+
+/* STAGE COMPLETE BANNER */
+.stage-done{display:none;background:linear-gradient(135deg,var(--teal),#1abc9c);color:white;border-radius:10px;padding:16px 20px;margin-top:16px;text-align:center;font-weight:700;font-size:1em;animation:fadeIn .4s ease;}
+
+/* SUMMARY */
+.summary{display:none;max-width:900px;margin:30px auto;padding:0 20px;}
+.summary-card{background:linear-gradient(135deg,#1a1a2e,#16213e);color:white;border-radius:16px;padding:30px;text-align:center;}
+.summary-card h2{font-size:1.8em;margin-bottom:6px;}
+.summary-card .sub-name{opacity:.7;font-size:.9em;margin-bottom:20px;}
+.score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:20px 0;}
+.sc-tile{background:rgba(255,255,255,.1);border-radius:10px;padding:14px;text-align:center;}
+.sc-tile .sc-num{font-size:1.8em;font-weight:800;color:#f0c040;}
+.sc-tile .sc-lbl{font-size:.75em;opacity:.7;margin-top:4px;}
+.summary-msg{font-size:1em;opacity:.85;line-height:1.7;margin-top:16px;}
+.restart-btn{background:var(--primary);color:white;border:none;border-radius:10px;padding:12px 30px;cursor:pointer;font-size:.95em;font-weight:700;margin-top:20px;transition:opacity .2s;}
+.restart-btn:hover{opacity:.85;}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes bounce{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+@keyframes confFall{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(90px) rotate(360deg);opacity:0;}}
+@keyframes wavePulse{0%,100%{height:4px;}50%{height:18px;}}
+@keyframes srsPopIn{0%{transform:scale(.7);opacity:0;}100%{transform:scale(1);opacity:1;}}
+.anim-bounce{animation:bounce .35s ease;}
+.anim-shake{animation:shake .35s ease;}
+
+/* CHAT BUBBLES */
+.chat-wrap{display:flex;flex-direction:column;gap:10px;padding:12px 4px;}
+.chat-msg{display:flex;gap:10px;align-items:flex-end;max-width:88%;}
+.chat-msg.right{flex-direction:row-reverse;align-self:flex-end;}
+.chat-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72em;font-weight:800;color:white;flex-shrink:0;letter-spacing:-.5px;}
+.av-a{background:var(--primary);}
+.av-b{background:var(--teal);}
+.chat-inner{display:flex;flex-direction:column;}
+.chat-name{font-size:.67em;color:var(--light);margin-bottom:3px;font-weight:600;padding:0 4px;}
+.chat-msg.right .chat-name{text-align:right;}
+.chat-bubble{border-radius:14px 14px 14px 4px;padding:9px 13px;font-size:.88em;line-height:1.55;background:#f0f4ff;color:var(--text);}
+.chat-msg.right .chat-bubble{background:#d4f0ea;border-radius:14px 14px 4px 14px;color:#0d6e5a;}
+.chat-sep{text-align:center;font-size:.72em;color:var(--light);margin:6px 0;border-top:1px dashed var(--border);padding-top:8px;}
+
+/* WAVEFORM */
+.wave{display:flex;align-items:center;gap:2px;margin-left:auto;padding:0 4px;}
+.wave-bar{width:3px;background:rgba(255,255,255,.55);border-radius:2px;animation:wavePulse 1s ease-in-out infinite;}
+.wave-bar:nth-child(1){height:6px;animation-delay:0s;}
+.wave-bar:nth-child(2){height:10px;animation-delay:.12s;}
+.wave-bar:nth-child(3){height:16px;animation-delay:.24s;}
+.wave-bar:nth-child(4){height:10px;animation-delay:.36s;}
+.wave-bar:nth-child(5){height:6px;animation-delay:.48s;}
+.wave-bar.paused{animation-play-state:paused;height:6px!important;}
+
+/* SRS FLASHCARDS */
+.fc{height:110px;perspective:700px;cursor:pointer;}
+.fc-back{flex-direction:column;gap:6px;}
+.fc-back-txt{font-size:.78em;font-weight:600;text-align:center;line-height:1.4;}
+.srs-btns{display:flex;gap:6px;margin-top:4px;}
+.srs-btn{border:none;border-radius:12px;padding:3px 9px;font-size:.7em;font-weight:700;cursor:pointer;transition:all .15s;animation:srsPopIn .2s ease;}
+.srs-know{background:#27AE60;color:white;}
+.srs-know:hover{background:#1e8449;}
+.srs-again{background:#E74C3C;color:white;}
+.srs-again:hover{background:#c0392b;}
+.srs-progress{background:#f0f4ff;border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:14px;font-size:.84em;}
+.srs-bar-wrap{flex:1;height:8px;background:#dde3ef;border-radius:4px;overflow:hidden;}
+.srs-bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),#1abc9c);width:0;transition:width .4s;}
+.srs-stat{color:var(--light);font-size:.8em;white-space:nowrap;}
+
+/* "WOULD YOU SAY THIS?" */
+.wyst-card{background:#fff8e1;border:2px solid var(--amber);border-radius:12px;padding:18px;margin-bottom:16px;}
+.wyst-card h4{color:var(--amber);font-size:.92em;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:7px;}
+.wyst-card .sub{font-size:.83em;color:var(--light);margin-bottom:14px;}
+.wyst-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #ffe89a;flex-wrap:wrap;}
+.wyst-row:last-child{border-bottom:none;}
+.wyst-phrase{flex:1;font-size:.88em;font-style:italic;}
+.wyst-btns{display:flex;gap:5px;flex-shrink:0;}
+.wyst-btn{border:2px solid #ddd;border-radius:16px;padding:3px 10px;font-size:.75em;cursor:pointer;background:white;transition:all .2s;}
+.wyst-btn:hover{border-color:var(--amber);background:#fff3cd;}
+.wyst-btn.picked-yes{background:#d4edda;border-color:var(--ok);color:#1a6635;}
+.wyst-btn.picked-maybe{background:#fff3cd;border-color:var(--amber);color:#856404;}
+.wyst-btn.picked-no{background:#fde8e8;border-color:var(--bad);color:#7b1e1e;}
+
+/* COLOUR-CODED CHIPS */
+.chip.chip-opener{background:#fde8e8;border-color:#f5aaaa;color:#7b1e1e;}
+.chip.chip-problem{background:#fff3cd;border-color:#ffe082;color:#856404;}
+.chip.chip-solution{background:#d4f0ea;border-color:var(--teal);color:#0d6e5a;}
+.chip.chip-apology{background:#e8d4f0;border-color:#c39bd3;color:#6c3483;}
+.chip-legend{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;font-size:.76em;}
+.chip-leg-item{display:flex;align-items:center;gap:4px;}
+.chip-leg-dot{width:10px;height:10px;border-radius:50%;}
+
+/* EX4 SCENARIO CARDS */
+.sc4-card{background:#f8f9fc;border:2px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;}
+.sc4-chars{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.sc4-char{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5em;background:white;border:2px solid var(--border);flex-shrink:0;}
+.sc4-arrow{font-size:.9em;color:var(--light);}
+.sc4-sit{font-size:.88em;color:var(--text);margin-bottom:10px;}
+.sc4-opts{display:flex;gap:8px;flex-wrap:wrap;}
+.sc4-btn{background:white;border:2px solid #d0d9f0;border-radius:8px;padding:9px 14px;cursor:pointer;font-size:.86em;transition:all .2s;text-align:left;flex:1;min-width:200px;}
+.sc4-btn:hover{border-color:var(--teal);background:#e8f5f2;}
+.sc4-btn.selected{border-color:var(--teal);background:#d4f0ea;}
+.sc4-btn.correct{border-color:var(--ok);background:#d4edda;}
+.sc4-btn.wrong{border-color:var(--bad);background:#fde8e8;}
+
+/* SIT CARDS */
+.sit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px;margin-top:14px;}
+.sit-card{background:linear-gradient(135deg,#1a1a2e,#16213e);color:white;border-radius:10px;padding:16px;font-size:.87em;}
+.sit-card .ico{font-size:1.4em;margin-bottom:6px;}
+.sit-card .stitle{font-weight:700;margin-bottom:4px;}
+.sit-card p{opacity:.8;}
+
+/* QREF */
+.qref{background:#f0f4ff;border-radius:8px;padding:14px;margin-top:16px;}
+.qref-ttl{font-weight:700;font-size:.85em;margin-bottom:10px;}
+.qref-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:.83em;}
+.qref-col p.hd{font-weight:700;margin-bottom:4px;}
+.qref-col p.it{color:var(--light);line-height:1.7;}
+
+/* FOOTER */
+.footer{background:linear-gradient(135deg,#1a1a2e,#16213e);color:white;text-align:center;padding:26px 20px;margin-top:40px;}
+.footer p{opacity:.7;font-size:.88em;margin-top:4px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="badge">ROADMAP B2 · UNIT 5D</div>
+  <h1>English in Action</h1>
+  <p class="sub">Goal: Deal with and resolve conflicts &nbsp;·&nbsp; Vocabulary: phrases with <em>leave</em></p>
+  <div class="meta"><span>⏱ 60–70 min</span><span>📚 B2</span><span>🎧 Listening included</span></div>
+</div>
+
+<div class="name-strip">
+  <label for="sname">👤 Your name:</label>
+  <input class="name-inp" id="sname" placeholder="Type your name here…" oninput="updateName()">
+</div>
+
+<!-- STAGE TRAIL -->
+<div class="trail">
+  <div class="trail-step">
+    <div class="trail-col"><div class="t-dot active" id="td1">1</div><div class="t-lbl active" id="tl1">Lead-in</div></div>
+    <div class="t-line"></div>
+  </div>
+  <div class="trail-step">
+    <div class="trail-col"><div class="t-dot" id="td2">2</div><div class="t-lbl" id="tl2">Vocabulary</div></div>
+    <div class="t-line"></div>
+  </div>
+  <div class="trail-step">
+    <div class="trail-col"><div class="t-dot" id="td3">3</div><div class="t-lbl" id="tl3">Listening 1</div></div>
+    <div class="t-line"></div>
+  </div>
+  <div class="trail-step">
+    <div class="trail-col"><div class="t-dot" id="td4">4</div><div class="t-lbl" id="tl4">Stress</div></div>
+    <div class="t-line"></div>
+  </div>
+  <div class="trail-step">
+    <div class="trail-col"><div class="t-dot" id="td5">5</div><div class="t-lbl" id="tl5">Listening 2</div></div>
+    <div class="t-line"></div>
+  </div>
+  <div class="trail-col"><div class="t-dot" id="td6">6</div><div class="t-lbl" id="tl6">Speaking</div></div>
+</div>
+
+<div class="prog-wrap">
+  <span style="color:rgba(255,255,255,.7);font-size:.8em">Score</span>
+  <div class="prog-bar"><div class="prog-fill" id="pFill"></div></div>
+  <div class="prog-text" id="pText">0 / 0</div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══ STAGE 1 — LEAD-IN ═══ -->
+<div class="stage" id="stage1">
+  <div class="stage-hd">
+    <div class="stage-num sn-red">1</div>
+    <div class="stage-ttl">Lead-in — What kind of conflict handler are you?</div>
+    <div class="stage-time">⏱ 5 min</div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Quick poll</span> When someone upsets you, what do you usually do first?</div>
+    <div class="quiz-grid" id="quizQ1">
+      <div class="quiz-opt" onclick="pickQuiz(this,'quizQ1','avoider')">
+        <div class="emoji">🚶</div><div class="ql">Walk away and say nothing — deal with it later</div>
+      </div>
+      <div class="quiz-opt" onclick="pickQuiz(this,'quizQ1','confronter')">
+        <div class="emoji">🗣️</div><div class="ql">Say exactly how I feel — right there and then</div>
+      </div>
+      <div class="quiz-opt" onclick="pickQuiz(this,'quizQ1','mediator')">
+        <div class="emoji">🤝</div><div class="ql">Try to understand their side before responding</div>
+      </div>
+      <div class="quiz-opt" onclick="pickQuiz(this,'quizQ1','thinker')">
+        <div class="emoji">💭</div><div class="ql">Think it over carefully before saying anything</div>
+      </div>
+    </div>
+    <div class="quiz-result" id="qResult">
+      <div class="rh" id="qResultTitle"></div>
+      <div id="qResultText"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Ex 1a</span> Discuss with a partner</div>
+    <div class="lead-grid">
+      <div class="lead-card"><div class="qn">01</div>Think of a recent disagreement. What was it about? How did it start?</div>
+      <div class="lead-card"><div class="qn">02</div>Who do you find it hardest to disagree with — family, friends, colleagues or strangers?</div>
+      <div class="lead-card"><div class="qn">03</div>Do you stay calm or get annoyed when someone is rude to you?</div>
+      <div class="lead-card"><div class="qn">04</div>Do you know anyone who is great at resolving conflicts? What do they do?</div>
+    </div>
+  </div>
+
+  <button class="check-btn cb-r" onclick="completeStage(1,2)">Next: Vocabulary →</button>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══ STAGE 2 — VOCABULARY ═══ -->
+<div class="stage" id="stage2" style="display:none">
+  <div class="stage-hd">
+    <div class="stage-num sn-teal">2</div>
+    <div class="stage-ttl">Vocabulary — Phrases with <em>leave</em></div>
+    <div class="stage-time">⏱ 15 min</div>
+  </div>
+
+  <!-- Flashcards -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-t">Warm up</span> Flip the cards — do you know these phrases?</div>
+    <p class="hint">Click each card to see its meaning. Test yourself before the exercises.</p>
+    <div class="fc-grid" id="fcGrid"></div>
+  </div>
+
+  <!-- Ex 2a -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-t">Ex 2a</span> Complete conversations 1–8 with sentences a–h</div>
+    <p class="hint">Drag a sentence into a gap — or click a sentence then click a gap. Click a filled gap to remove it.</p>
+    <div class="bank" id="bank2a"></div>
+    <div id="gaps2a"></div>
+    <button class="check-btn cb-t" onclick="checkEx2a()">Check Ex 2a</button>
+    <span class="score" id="sc2a"></span>
+    <div class="feedback-msg" id="fb2a"></div>
+  </div>
+
+  <!-- Ex 2b -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-t">Ex 2b</span> Match the bold phrases to their meanings</div>
+    <p class="hint">Click the correct phrase for each meaning below.</p>
+    <div id="ex2b"></div>
+    <button class="check-btn cb-t" onclick="checkEx2b()">Check Ex 2b</button>
+    <span class="score" id="sc2b"></span>
+    <div class="feedback-msg" id="fb2b"></div>
+  </div>
+
+  <button class="check-btn cb-t" onclick="completeStage(2,3)">Next: Listening 1 →</button>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══ STAGE 3 — LISTENING 1 ═══ -->
+<div class="stage" id="stage3" style="display:none">
+  <div class="stage-hd">
+    <div class="stage-num sn-red">3</div>
+    <div class="stage-ttl">Listening 1 — Dealing with problems</div>
+    <div class="stage-time">⏱ 15 min</div>
+  </div>
+
+  <!-- Predict -->
+  <div class="predict-card">
+    <h4>🔮 Before you listen — predict!</h4>
+    <p style="font-size:.88em;margin-bottom:10px">You're going to hear five short conversations about everyday problems. What kinds of problems do you think they involve? Write your predictions:</p>
+    <textarea class="predict-inp" placeholder="e.g. someone left a window open, a broken appliance…"></textarea>
+  </div>
+
+  <!-- Audioscript 5.9 -->
+  <div class="card">
+    <button class="audio-btn" id="abtn59" onclick="toggleScript('sc59','abtn59')">
+      <span style="font-size:1.5em">🎧</span>
+      <span>Track 5.9 — Five conversations: dealing with conflicts <span class="audio-note">(click to reveal audioscript)</span></span>
+      <div class="wave" id="wave59"><div class="wave-bar paused"></div><div class="wave-bar paused"></div><div class="wave-bar paused"></div><div class="wave-bar paused"></div><div class="wave-bar paused"></div></div>
+    </button>
+    <div id="sc59" class="audioscript">
+      <p class="albl">📱 Audioscript 5.9 — read like a chat</p>
+      <div class="chat-wrap">
+        <div class="chat-sep">Conversation 1 🚪 Front door</div>
+        <div class="chat-msg"><div class="chat-avatar av-a">A</div><div class="chat-inner"><div class="chat-name">Alex</div><div class="chat-bubble">The front door was unlocked when I got home last night. Did you forget to lock it?</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">B</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Blake</div><div class="chat-bubble"><strong>I have to own up — it was me!</strong> I was in such a rush I forgot completely.</div></div></div>
+        <div class="chat-msg"><div class="chat-avatar av-a">A</div><div class="chat-inner"><div class="chat-name">Alex</div><div class="chat-bubble">OK, but please <strong>try not to do it again.</strong> It really isn't safe.</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">B</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Blake</div><div class="chat-bubble">Of course. I'm really sorry.</div></div></div>
+
+        <div class="chat-sep">Conversation 2 🍳 Oven</div>
+        <div class="chat-msg"><div class="chat-avatar av-a">A</div><div class="chat-inner"><div class="chat-name">Alex</div><div class="chat-bubble">Did you leave the oven on? I got up this morning and it was still on.</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">B</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Blake</div><div class="chat-bubble">Oh no! <strong>I should have been more careful.</strong> I was in a hurry.</div></div></div>
+        <div class="chat-msg"><div class="chat-avatar av-a">A</div><div class="chat-inner"><div class="chat-name">Alex</div><div class="chat-bubble">Well, <strong>it's no big deal</strong> this time — nothing was damaged. But please check next time.</div></div></div>
+
+        <div class="chat-sep">Conversation 3 🌡️ Central heating</div>
+        <div class="chat-msg"><div class="chat-avatar av-a">A</div><div class="chat-inner"><div class="chat-name">Alex</div><div class="chat-bubble">The heating was on all night! Do you know who left it on?</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">B</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Blake</div><div class="chat-bubble"><strong>It's got nothing to do with me!</strong> I always turn mine off before bed.</div></div></div>
+        <div class="chat-msg"><div class="chat-avatar av-a">A</div><div class="chat-inner"><div class="chat-name">Alex</div><div class="chat-bubble"><strong>Well, who did then?</strong></div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">B</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Blake</div><div class="chat-bubble">I really don't know. <strong>I'm only asking</strong> so we can work out what happened.</div></div></div>
+
+        <div class="chat-sep">Conversation 4 🥚 Eggs</div>
+        <div class="chat-msg"><div class="chat-avatar av-a">A</div><div class="chat-inner"><div class="chat-name">Alex</div><div class="chat-bubble">Someone has used all the eggs! I needed them for dinner tonight.</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">B</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Blake</div><div class="chat-bubble">Sorry, that was me. I used them for a frittata this morning. I didn't realise there were so few left.</div></div></div>
+        <div class="chat-msg"><div class="chat-avatar av-a">A</div><div class="chat-inner"><div class="chat-name">Alex</div><div class="chat-bubble">Could you grab some more from the shop?</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">B</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Blake</div><div class="chat-bubble">Of course. I'll go right now.</div></div></div>
+
+        <div class="chat-sep">Conversation 5 🚲 Bike</div>
+        <div class="chat-msg"><div class="chat-avatar av-a">A</div><div class="chat-inner"><div class="chat-name">Alex</div><div class="chat-bubble">Where's your bike? I thought it might have been stolen!</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">B</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Blake</div><div class="chat-bubble">No, no — it's still at the shops. I left it there and caught the bus home.</div></div></div>
+        <div class="chat-msg"><div class="chat-avatar av-a">A</div><div class="chat-inner"><div class="chat-name">Alex</div><div class="chat-bubble">Oh, what a relief! You should have told me.</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">B</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Blake</div><div class="chat-bubble">Sorry for worrying you — I'll pick it up this evening.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 3a -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Ex 3a</span> Listen again — choose the correct alternative</div>
+    <div id="ex3a"></div>
+    <button class="check-btn cb-r" onclick="checkEx3a()">Check Ex 3a</button>
+    <span class="score" id="sc3a"></span>
+    <div class="feedback-msg" id="fb3a"></div>
+  </div>
+
+  <!-- Would you say this? -->
+  <div class="wyst-card">
+    <h4>💬 Before you tick — "Would YOU say this?"</h4>
+    <p class="sub">Rate each Useful Phrase 1 <em>before</em> checking. Would you use it in real life? Be honest! Then see which ones were actually in the audio.</p>
+    <div id="wystRows"></div>
+  </div>
+
+  <!-- Ex 3b -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Ex 3b</span> Now tick the Useful Phrases 1 you actually heard</div>
+    <div class="phrases-box">
+      <h4>⭐ Useful Phrases 1</h4>
+      <div class="ph-cat">
+        <div class="ph-cat-ttl">Accepting responsibility and apologising</div>
+        <ul class="ph-list">
+          <li>I'm so sorry, did I (tread on your toe)?</li>
+          <li>I have to own up. It was me!</li>
+          <li>I should have been more careful.</li>
+          <li>It's entirely my fault.</li>
+          <li>It was my fault. I apologise.</li>
+          <li>I'll sort it out, I promise.</li>
+        </ul>
+      </div>
+      <div class="ph-cat">
+        <div class="ph-cat-ttl">Responding to an apology</div>
+        <ul class="ph-list">
+          <li>It's no big deal.</li>
+          <li>Don't worry. It's nothing.</li>
+          <li>Try not to do it again.</li>
+        </ul>
+      </div>
+      <div class="ph-cat">
+        <div class="ph-cat-ttl">Denying responsibility</div>
+        <ul class="ph-list">
+          <li>It's got nothing to do with me!</li>
+          <li>It wasn't my fault.</li>
+          <li>I had nothing to do with it.</li>
+          <li>Don't blame me.</li>
+        </ul>
+      </div>
+      <div class="ph-cat">
+        <div class="ph-cat-ttl">Responding to denial</div>
+        <ul class="ph-list">
+          <li>Well, who did then?</li>
+          <li>I'm only asking.</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:.88em;margin-bottom:10px">Tick every phrase you heard:</p>
+    <div id="ex3b"></div>
+    <button class="check-btn cb-r" onclick="checkEx3b()" style="margin-top:12px">Check Ex 3b</button>
+    <span class="score" id="sc3b"></span>
+    <div class="feedback-msg" id="fb3b"></div>
+  </div>
+
+  <!-- Ex 4 -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Ex 4</span> Choose the correct response to each statement (a or b)</div>
+    <div id="ex4"></div>
+    <button class="check-btn cb-r" onclick="checkEx4()">Check Ex 4</button>
+    <span class="score" id="sc4"></span>
+    <div class="feedback-msg" id="fb4"></div>
+  </div>
+
+  <button class="check-btn cb-r" onclick="completeStage(3,4)">Next: Pronunciation →</button>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══ STAGE 4 — STRESS & MEANING ═══ -->
+<div class="stage" id="stage4" style="display:none">
+  <div class="stage-hd">
+    <div class="stage-num sn-amb">4</div>
+    <div class="stage-ttl">Pronunciation — Stress and meaning</div>
+    <div class="stage-time">⏱ 5 min</div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-a">Ex 5a</span> Track 5.10 — what does each sentence mean?</div>
+    <p class="hint">The <strong>CAPITALISED</strong> word is stressed. Choose the meaning the speaker intends.</p>
+    <div id="ex5a"></div>
+    <button class="check-btn cb-a" onclick="checkEx5a()">Check Ex 5a</button>
+    <span class="score" id="sc5a"></span>
+    <div class="feedback-msg" id="fb5a"></div>
+  </div>
+
+  <button class="check-btn cb-a" onclick="completeStage(4,5)">Next: Listening 2 →</button>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══ STAGE 5 — LISTENING 2 ═══ -->
+<div class="stage" id="stage5" style="display:none">
+  <div class="stage-hd">
+    <div class="stage-num sn-red">5</div>
+    <div class="stage-ttl">Listening 2 — Resolving conflicts</div>
+    <div class="stage-time">⏱ 15 min</div>
+  </div>
+
+  <!-- Predict -->
+  <div class="predict-card">
+    <h4>🔮 Before you listen — predict!</h4>
+    <p style="font-size:.88em;margin-bottom:10px">You'll hear two conversations where people try to <em>resolve</em> a conflict. What strategies do you think they use?</p>
+    <textarea class="predict-inp" placeholder="e.g. they compromise, one person apologises, they take turns explaining their side…"></textarea>
+  </div>
+
+  <!-- Audioscript 5.11 -->
+  <div class="card">
+    <button class="audio-btn" id="abtn511" onclick="toggleScript('sc511','abtn511')">
+      <span style="font-size:1.5em">🎧</span>
+      <span>Track 5.11 — Two conversations: resolving conflicts <span class="audio-note">(click to reveal audioscript)</span></span>
+      <div class="wave" id="wave511"><div class="wave-bar paused"></div><div class="wave-bar paused"></div><div class="wave-bar paused"></div><div class="wave-bar paused"></div><div class="wave-bar paused"></div></div>
+    </button>
+    <div id="sc511" class="audioscript">
+      <p class="albl">📱 Audioscript 5.11 — read like a chat</p>
+      <div class="chat-wrap">
+        <div class="chat-sep">Conversation 1 🎾 The tennis court</div>
+        <div class="chat-msg"><div class="chat-avatar av-a">L</div><div class="chat-inner"><div class="chat-name">Luke</div><div class="chat-bubble">Sam, can I have a word?</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">S</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Sam</div><div class="chat-bubble">Of course. What's up?</div></div></div>
+        <div class="chat-msg"><div class="chat-avatar av-a">L</div><div class="chat-inner"><div class="chat-name">Luke</div><div class="chat-bubble">It's about the tennis. I had to stop playing because someone had booked the court.</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">S</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Sam</div><div class="chat-bubble">That was me — I booked it last week! <strong>I don't think that's fair</strong> — you just started playing without checking.</div></div></div>
+        <div class="chat-msg"><div class="chat-avatar av-a">L</div><div class="chat-inner"><div class="chat-name">Luke</div><div class="chat-bubble">I'm sorry. The receptionist said the court was free, so I assumed it was available.</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">S</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Sam</div><div class="chat-bubble">It's really frustrating when my booking gets ignored.</div></div></div>
+        <div class="chat-msg"><div class="chat-avatar av-a">L</div><div class="chat-inner"><div class="chat-name">Luke</div><div class="chat-bubble"><strong>From your point of view,</strong> you need a guaranteed slot. <strong>And from mine,</strong> I like Tuesday afternoons.</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">S</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Sam</div><div class="chat-bubble">What do you suggest?</div></div></div>
+        <div class="chat-msg"><div class="chat-avatar av-a">L</div><div class="chat-inner"><div class="chat-name">Luke</div><div class="chat-bubble">Why don't you try to book the court between four and five?</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">S</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Sam</div><div class="chat-bubble"><strong>I guess that sounds reasonable.</strong> I'll try that.</div></div></div>
+
+        <div class="chat-sep">Conversation 2 📱 The dinner table</div>
+        <div class="chat-msg"><div class="chat-avatar av-a">C</div><div class="chat-inner"><div class="chat-name">Carl</div><div class="chat-bubble">You're on your phone again all through dinner.</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">D</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Dana</div><div class="chat-bubble">Sorry — I've got an important deadline tomorrow.</div></div></div>
+        <div class="chat-msg"><div class="chat-avatar av-a">C</div><div class="chat-inner"><div class="chat-name">Carl</div><div class="chat-bubble">I understand, but it's just not great. We're supposed to be having dinner together.</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">D</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Dana</div><div class="chat-bubble"><strong>Let's put this to one side and think of a solution.</strong></div></div></div>
+        <div class="chat-msg"><div class="chat-avatar av-a">C</div><div class="chat-inner"><div class="chat-name">Carl</div><div class="chat-bubble">OK. What do you suggest?</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">D</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Dana</div><div class="chat-bubble">No devices at dinner — but you have time to work afterwards. <strong>It makes sense because</strong> you'd only need about an hour to catch up.</div></div></div>
+        <div class="chat-msg"><div class="chat-avatar av-a">C</div><div class="chat-inner"><div class="chat-name">Carl</div><div class="chat-bubble">That works. But I think we need a time limit on how long you work after dinner.</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">D</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Dana</div><div class="chat-bubble"><strong>You're right. Any suggestions?</strong></div></div></div>
+        <div class="chat-msg"><div class="chat-avatar av-a">C</div><div class="chat-inner"><div class="chat-name">Carl</div><div class="chat-bubble">Forty-five minutes?</div></div></div>
+        <div class="chat-msg right"><div class="chat-avatar av-b">D</div><div class="chat-inner"><div class="chat-name" style="text-align:right">Dana</div><div class="chat-bubble">Perfect. Deal.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 6 -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Ex 6</span> Complete the sentences about each conversation</div>
+    <div id="ex6"></div>
+  </div>
+
+  <!-- Ex 7 -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Ex 7</span> Did the <strong>Man (M)</strong> or <strong>Woman (W)</strong> say each phrase?</div>
+    <div id="ex7"></div>
+    <button class="check-btn cb-r" onclick="checkEx7()">Check Ex 7</button>
+    <span class="score" id="sc7"></span>
+    <div class="feedback-msg" id="fb7"></div>
+  </div>
+
+  <!-- Ex 8 -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Ex 8</span> Complete Useful Phrases 2 with phrases from Ex 7</div>
+    <div class="phrases-box">
+      <h4>⭐ Useful Phrases 2 — Resolving conflicts</h4>
+      <div id="ex8rows"></div>
+    </div>
+    <button class="check-btn cb-r" onclick="checkEx8()" style="margin-top:12px">Check Ex 8</button>
+    <span class="score" id="sc8"></span>
+    <div class="feedback-msg" id="fb8"></div>
+  </div>
+
+  <button class="check-btn cb-r" onclick="completeStage(5,6)">Next: Speaking →</button>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══ STAGE 6 — SPEAKING ═══ -->
+<div class="stage" id="stage6" style="display:none">
+  <div class="stage-hd">
+    <div class="stage-num sn-amb">6</div>
+    <div class="stage-ttl">Speaking — Role play</div>
+    <div class="stage-time">⏱ 10 min</div>
+  </div>
+
+  <!-- Phrase builder -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-a">Phrase builder</span> Build a response using the chips below</div>
+    <p class="hint">Warm-up for Ex 9a: you and your flatmate disagree about buying a TV vs a sofa. Use the chips below to build a response — then try the full role play. Click a chip in the drop zone to remove it.</p>
+    <div class="chip-bank" id="chipBank"></div>
+    <div class="chip-drop" id="chipDrop"><span style="color:#aaa;font-size:.82em;font-style:italic">Your response will appear here…</span></div>
+    <button class="check-btn cb-a" onclick="clearChips()" style="margin-top:8px">Clear</button>
+  </div>
+
+  <!-- Ex 9a -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-a">Ex 9a</span> Role play — TV vs sofa</div>
+    <p class="hint" style="margin-bottom:14px"><strong>Situation:</strong> You and your flatmate need to decide: buy a new TV or a new sofa? Follow the conversation — use Useful Phrases 2 at each prompt.</p>
+    <div class="conv-builder">
+      <div class="conv-line"><div class="conv-sp a">You</div><div class="conv-body">A new TV is much more exciting than a new sofa.</div></div>
+      <div class="conv-line"><div class="conv-sp b">Flatmate</div><div class="conv-body">But the old sofa is falling apart — we need a new one urgently.</div></div>
+      <div class="conv-line"><div class="conv-sp a">You</div><div class="conv-body"><em>[stop the argument]</em><div class="conv-hint">💬 Use: <em>"Let's try and find a solution, shall we?"</em> or <em>"Let's put this to one side and think of a solution."</em></div></div></div>
+      <div class="conv-line"><div class="conv-sp b">Flatmate</div><div class="conv-body">OK. Good idea.</div></div>
+      <div class="conv-line"><div class="conv-sp a">You</div><div class="conv-body"><em>[summarise the conflict]</em><div class="conv-hint">💬 Use: <em>"You're annoyed/upset because … and I'm angry/frustrated because …"</em> or <em>"From your point of view … and from mine …"</em></div></div></div>
+      <div class="conv-line"><div class="conv-sp b">Flatmate</div><div class="conv-body">Yes, exactly. So what do we do?</div></div>
+      <div class="conv-line"><div class="conv-sp a">You</div><div class="conv-body"><em>[make a suggestion and explain why it works]</em><div class="conv-hint">💬 Use: <em>"What about if we …?"</em> + <em>"It makes sense because …"</em></div></div></div>
+      <div class="conv-line"><div class="conv-sp b">Flatmate</div><div class="conv-body">I don't think that's going to work.</div></div>
+      <div class="conv-line"><div class="conv-sp a">You</div><div class="conv-body"><em>[deal with the objection]</em><div class="conv-hint">💬 Use: <em>"I understand that. Unfortunately, …"</em> or <em>"You're right. Any suggestions?"</em></div></div></div>
+      <div class="conv-line"><div class="conv-sp b">Flatmate</div><div class="conv-body">I guess that sounds reasonable.</div></div>
+      <div class="conv-line"><div class="conv-sp a">You</div><div class="conv-body"><em>[respond positively]</em><div class="conv-hint">💬 Use: <em>"That's OK with me."</em> or <em>"I guess that sounds reasonable."</em></div></div></div>
+    </div>
+    <div class="qref">
+      <p class="qref-ttl">📋 All Useful Phrases</p>
+      <div class="qref-grid">
+        <div class="qref-col"><p class="hd" style="color:var(--primary)">Accepting / Apologising</p><p class="it">I have to own up. It was me!<br>I should have been more careful.<br>It's entirely my fault.<br>I'll sort it out, I promise.</p></div>
+        <div class="qref-col"><p class="hd" style="color:var(--amber)">Responding to apology / denial</p><p class="it">It's no big deal.<br>Try not to do it again.<br>Well, who did then?<br>I'm only asking.</p></div>
+        <div class="qref-col"><p class="hd" style="color:var(--bad)">Denying</p><p class="it">It's got nothing to do with me!<br>It wasn't my fault.<br>I had nothing to do with it.<br>Don't blame me.</p></div>
+        <div class="qref-col"><p class="hd" style="color:var(--teal)">Resolving (UP2)</p><p class="it">Let's put this to one side…<br>From your point of view… and from mine…<br>It makes sense because…<br>I guess that sounds reasonable.<br>I don't think that's fair.<br>You're right. Any suggestions?</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 9b -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-a">Ex 9b</span> Now choose your own situation</div>
+    <p class="hint">Take turns as A (upset) and B (resolving). Use all four categories of Useful Phrases.</p>
+    <div class="sit-grid">
+      <div class="sit-card"><div class="ico">🚗</div><p class="stitle">Situation 1</p><p>Your colleague keeps parking in your space even after you've asked them not to.</p></div>
+      <div class="sit-card"><div class="ico">🎵</div><p class="stitle">Situation 2</p><p>Your neighbour plays loud music late at night. You have work early the next morning.</p></div>
+      <div class="sit-card"><div class="ico">💻</div><p class="stitle">Situation 3</p><p>Someone borrowed your laptop without asking and the screen now has a scratch.</p></div>
+      <div class="sit-card"><div class="ico">📦</div><p class="stitle">Situation 4</p><p>A colleague left all the project work to you while they were on holiday, without warning.</p></div>
+    </div>
+  </div>
+
+  <!-- Self-reflection -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-a">Reflect</span> What did you learn today?</div>
+    <p style="font-size:.88em;margin-bottom:10px">Which Useful Phrases will you remember to use in a real conflict? Write at least two:</p>
+    <textarea class="predict-inp" placeholder="e.g. 'I guess that sounds reasonable' — I like this because it sounds calm and mature…" style="min-height:70px;background:#fffef5;border-color:#e0d0a0;"></textarea>
+    <p style="font-size:.88em;margin-top:10px;margin-bottom:10px">Go back to the quiz in Stage 1. Would you answer differently now?</p>
+  </div>
+
+  <button class="check-btn cb-a" onclick="showSummary()">🏁 See my lesson summary</button>
+</div>
+
+<!-- ═══ SUMMARY ═══ -->
+<div class="summary" id="summarySection">
+  <div class="summary-card">
+    <h2>🎉 Lesson complete!</h2>
+    <div class="sub-name" id="summaryName">Great work today!</div>
+    <div class="score-grid" id="scoreGrid"></div>
+    <div class="summary-msg" id="summaryMsg"></div>
+    <button class="restart-btn" onclick="location.reload()">↺ Start again</button>
+  </div>
+</div>
+
+<div class="footer">
+  <p style="opacity:.9;font-size:1em;font-weight:600">Unit 5D · English in Action · Roadmap B2</p>
+  <p>Vocabulary: phrases with <em>leave</em> · Listening: dealing with and resolving conflicts</p>
+</div>
+
+<script>
+/* ── DATA ── */
+const FLASHCARDS = [
+  {front:'leave it to me',back:'do a task so someone else doesn\'t have to worry'},
+  {front:'leave something on',back:'not turn off a device or appliance'},
+  {front:'leave a mark',back:'cause a visible sign or damage'},
+  {front:'leave a message',back:'write or record a communication for someone'},
+  {front:'leave lying around',back:'put something down carelessly'},
+  {front:'leave in a mess',back:'make a place untidy or dirty'},
+  {front:'leave at home',back:'go somewhere without something you need'},
+  {front:'leave alone',back:'not disturb someone who needs peace'},
+];
+
+const SENTS=[
+  {k:'a',t:'I left a message.'},
+  {k:'b',t:"You shouldn't leave it lying around."},
+  {k:'c',t:'I left them at home.'},
+  {k:'d',t:"You've left the kitchen in a mess."},
+  {k:'e',t:"It's best to leave him alone."},
+  {k:'f',t:'Leave it to me!'},
+  {k:'g',t:'Has it left a mark?'},
+  {k:'h',t:'I might have left it on.'},
+];
+const GAPS=[
+  {n:1,ctx:'A: It was boiling last night. Did you turn the heater off before you went to bed?\nB: I\'m not sure —',ans:'h'},
+  {n:2,ctx:"A: I think you've spilt some juice on my new white sofa.\nB: Oh no!",ans:'g'},
+  {n:3,ctx:'A: Mum, Vicente is being really mean to me.\nB: He\'s a bit stressed at the moment.',ans:'e'},
+  {n:4,ctx:"A: I've baked a cake!\nB: I can see.",ans:'d'},
+  {n:5,ctx:"A: Jakub is refusing to help tidy up.\nB: I'll talk to him, don't worry.",ans:'f'},
+  {n:6,ctx:"A: Have you forgotten your swimming trunks again?\nB: Whoops!",ans:'c'},
+  {n:7,ctx:"A: Have you seen my wallet?\nB: It's here on the table.",ans:'b'},
+  {n:8,ctx:"A: Where have you been? I was so worried!\nB: I called but you didn't answer so",ans:'a'},
+];
+
+const EX2B=[
+  {m:"I'll do it — don't worry",a:'Leave it to me!'},
+  {m:'not turned off',a:'left on'},
+  {m:'made a small area of something dirty or a different colour',a:'left a mark'},
+  {m:'recorded a voicemail for someone',a:'left a message'},
+  {m:'not put away',a:'leave lying around'},
+  {m:'not cleaned / tidied up',a:'left in a mess'},
+  {m:'not brought with you when you left the house',a:'left at home'},
+  {m:'not talk to someone',a:'leave alone'},
+];
+const PH2B=['Leave it to me!','left on','left a mark','left a message','leave lying around','left in a mess','left at home','leave alone'];
+
+const EX3A=[
+  {n:1,pre:'The front door was left',opts:['unlocked','open'],ans:'unlocked'},
+  {n:2,pre:"The oven wasn't turned",opts:['off','on'],ans:'off'},
+  {n:3,pre:'The central heating was',opts:['on','off'],ans:'on'},
+  {n:4,pre:'Someone',opts:['used all the','bought too many'],ans:'used all the'},
+  {n:5,pre:'The bike',opts:['is still at the shops','has been stolen'],ans:'is still at the shops'},
+];
+
+const EX3B=[
+  {t:"I'm so sorry, did I (tread on your toe)?",heard:false},
+  {t:"I have to own up. It was me!",heard:true},
+  {t:"I should have been more careful.",heard:true},
+  {t:"It's entirely my fault.",heard:false},
+  {t:"It was my fault. I apologise.",heard:false},
+  {t:"I'll sort it out, I promise.",heard:false},
+  {t:"It's no big deal.",heard:true},
+  {t:"Don't worry. It's nothing.",heard:false},
+  {t:"Try not to do it again.",heard:true},
+  {t:"It's got nothing to do with me!",heard:true},
+  {t:"It wasn't my fault.",heard:false},
+  {t:"I had nothing to do with it.",heard:false},
+  {t:"Don't blame me.",heard:false},
+  {t:"Well, who did then?",heard:true},
+  {t:"I'm only asking.",heard:true},
+];
+
+const EX4=[
+  {sit:'A: Did you eat my last piece of chocolate?',a:"It's got nothing to do with me.",b:"I'm only asking.",ans:'a'},
+  {sit:"A: I'm really sorry. I should have been more careful.",a:"I'll sort it out. I promise.",b:"Try not to do it again.",ans:'b'},
+  {sit:"A: I had nothing to do with it.",a:"Well, who did then?",b:"Don't worry. It's nothing.",ans:'a'},
+  {sit:"A: It was entirely my fault.",a:"Don't blame me.",b:"It's no big deal.",ans:'b'},
+];
+
+const EX5A=[
+  {sent:"It wasn't <strong>MY</strong> fault.",a:'It was her fault.',b:"You're wrong.",ans:'a'},
+  {sent:"I had <strong>NOTHING</strong> to do with it.",a:'I have no idea what happened.',b:"It wasn't me — it was somebody else.",ans:'b'},
+  {sent:"Don't <strong>BLAME</strong> me.",a:'You should blame somebody else.',b:'You should thank me.',ans:'a'},
+];
+
+const EX6=[
+  {lbl:'Conv. 1a',pre:'The woman wants the man to',ans:'stop playing leave court',ph:'e.g. stop playing / leave the court'},
+  {lbl:'Conv. 1b',pre:'She feels she should be able to play because',ans:'booked the court last week',ph:'e.g. she booked it last week'},
+  {lbl:'Conv. 1c',pre:'The man feels he should play because',ans:'receptionist said court was free',ph:'e.g. receptionist said it was free'},
+  {lbl:'Conv. 1d',pre:'His solution is that they',ans:'book between four and five',ph:'e.g. book between four and five'},
+  {lbl:'Conv. 2a',pre:'The man is unhappy because the woman',ans:'checks phone at dinner always on phone',ph:'e.g. is always on her phone at dinner'},
+  {lbl:'Conv. 2b',pre:'She says she has to because',ans:'important deadline meeting tomorrow',ph:'e.g. she has an important deadline'},
+  {lbl:'Conv. 2c',pre:'The woman suggests a new rule:',ans:'no devices phones at dinner',ph:'e.g. no phones / devices at dinner'},
+  {lbl:'Conv. 2d',pre:'The man says they need a time limit on',ans:'how long she works after dinner',ph:'e.g. how long to work after dinner'},
+];
+
+const EX7_DATA=[
+  {conv:1,items:[
+    {lbl:'a',txt:'From your point of view … and from mine …',ans:'M'},
+    {lbl:'b',txt:"I don't think that's fair.",ans:'W'},
+    {lbl:'c',txt:'I guess that sounds reasonable.',ans:'W'},
+  ]},
+  {conv:2,items:[
+    {lbl:'a',txt:"Let's put this to one side and think of a solution.",ans:'W'},
+    {lbl:'b',txt:'It makes sense because …',ans:'W'},
+    {lbl:'c',txt:"You're right. Any suggestions?",ans:'W'},
+  ]},
+];
+
+const EX8_PROMPTS=["Let's put this ___ and think of a solution","From your ___ … and from mine …","It ___ because …","I guess that sounds ___","I don't think that's ___","You're right. Any ___?"];
+const EX8_ANS=["Let's put this to one side and think of a solution","From your point of view … and from mine …","It makes sense because …","I guess that sounds reasonable","I don't think that's fair","You're right. Any suggestions?"];
+const EX8_CATS=[
+  {cat:'Stopping the argument',given:"Let's try and find a solution, shall we?",blank:0},
+  {cat:'Summarising the conflict',given:"You're annoyed/upset because … and I'm angry/frustrated because …",blank:1},
+  {cat:'Making a suggestion',given:'What about if we …? / Why don\'t we see if we can …?',blank:null},
+  {cat:'Explaining why the suggestion works',given:'If we do that, then (we\'ll all have time to do our work).',blank:2},
+  {cat:'Responding positively',given:"That's OK with me.",blank:3},
+  {cat:'Responding negatively',given:"I don't think that's going to work.",blank:4},
+  {cat:'Dealing with objections',given:'I understand that. Unfortunately, …',blank:5},
+];
+
+const CHIPS=[
+  {t:"Can we talk about this?",cat:'opener'},
+  {t:"I feel we need to discuss…",cat:'opener'},
+  {t:"I have to own up. It was me!",cat:'apology'},
+  {t:"I should have been more careful.",cat:'apology'},
+  {t:"It's got nothing to do with me!",cat:'problem'},
+  {t:"I don't think that's fair.",cat:'problem'},
+  {t:"Let's put this to one side and think of a solution.",cat:'solution'},
+  {t:"From your point of view … and from mine …",cat:'solution'},
+  {t:"It makes sense because…",cat:'solution'},
+  {t:"I guess that sounds reasonable.",cat:'solution'},
+  {t:"You're right. Any suggestions?",cat:'solution'},
+  {t:"It's no big deal.",cat:'solution'},
+];
+
+/* ── QUIZ RESULTS ── */
+const QUIZ_RESULTS={
+  avoider:{title:'The Avoider 🚶',text:'You tend to keep the peace by stepping back. That can be helpful short-term, but today\'s phrases will help you address issues calmly and constructively when you\'re ready!'},
+  confronter:{title:'The Confronter 🗣️',text:'You\'re direct and don\'t hold back! That\'s great for honesty. Today you\'ll learn phrases to express your feelings while keeping the conversation productive.'},
+  mediator:{title:'The Mediator 🤝',text:'You\'re naturally empathetic — a real strength in conflict! Today you\'ll pick up formal phrases to structure those mediating conversations even more effectively.'},
+  thinker:{title:'The Thinker 💭',text:'You\'re careful and considered. Today\'s Useful Phrases will give you a ready-made toolkit so you always know what to say, even under pressure.'},
+};
+
+/* ── STATE ── */
+let sel2a=null,placed2a={};
+let scores={};
+let studentName='student';
+
+function updateName(){
+  studentName=document.getElementById('sname').value.trim()||'student';
+}
+
+/* ── PROGRESS ── */
+function updateProgress(){
+  const ok=document.querySelectorAll('.correct,.tick-box.ok,.up2-inp.correct,.fill-input.correct,.gap-slot.correct').length;
+  const bad=document.querySelectorAll('.wrong,.tick-box.bad,.up2-inp.wrong,.fill-input.wrong,.gap-slot.wrong').length;
+  const total=ok+bad;
+  const pct=total?Math.round(ok/total*100):0;
+  document.getElementById('pFill').style.width=pct+'%';
+  document.getElementById('pText').textContent=ok+'/'+total;
+}
+
+/* ── STAGE TRAIL ── */
+function completeStage(done,next){
+  ['active','done'].forEach(c=>{
+    const el=document.getElementById('td'+done);
+    if(el){el.classList.remove(c);}
+  });
+  const dot=document.getElementById('td'+done);
+  if(dot){dot.classList.add('done');dot.textContent='✓';}
+  const lbl=document.getElementById('tl'+done);
+  if(lbl){lbl.classList.remove('active');lbl.classList.add('done');}
+  if(next&&next<=6){
+    const ndot=document.getElementById('td'+next);
+    const nlbl=document.getElementById('tl'+next);
+    if(ndot){ndot.classList.add('active');}
+    if(nlbl){nlbl.classList.add('active');}
+    const ns=document.getElementById('stage'+next);
+    if(ns){
+      ns.style.display='block';
+      ns.style.animation='fadeIn .5s ease';
+      setTimeout(()=>ns.scrollIntoView({behavior:'smooth',block:'start'}),100);
+    }
+  }
+}
+
+/* ── QUIZ ── */
+function pickQuiz(el,gid,type){
+  document.querySelectorAll('#'+gid+' .quiz-opt').forEach(o=>o.classList.remove('picked'));
+  el.classList.add('picked');
+  const r=QUIZ_RESULTS[type];
+  const res=document.getElementById('qResult');
+  document.getElementById('qResultTitle').textContent=r.title;
+  document.getElementById('qResultText').textContent=r.text;
+  res.style.display='block';
+  res.style.animation='fadeIn .4s ease';
+}
+
+/* ── AUDIO TOGGLE + WAVEFORM ── */
+function toggleScript(id,btnId){
+  const sc=document.getElementById(id);
+  sc.classList.toggle('open');
+  if(btnId){
+    const bars=document.querySelectorAll('#'+btnId+' .wave-bar');
+    const isOpen=sc.classList.contains('open');
+    bars.forEach(b=>b.classList.toggle('paused',!isOpen));
+  }
+}
+
+/* ── CONFETTI ── */
+function fireConfetti(anchorEl){
+  const colors=['#f0c040','#16A085','#C0392B','#3498db','#9b59b6','#e67e22'];
+  const wrap=document.createElement('div');
+  wrap.style.cssText='position:relative;overflow:visible;pointer-events:none;height:0;';
+  anchorEl.parentNode.insertBefore(wrap,anchorEl.nextSibling);
+  for(let i=0;i<36;i++){
+    const d=document.createElement('div');
+    const size=6+Math.random()*6;
+    d.style.cssText=`position:absolute;width:${size}px;height:${size}px;border-radius:${Math.random()>.5?'50%':'2px'};
+    background:${colors[i%colors.length]};left:${10+Math.random()*80}%;top:0;
+    animation:confFall ${.6+Math.random()*.8}s ease ${Math.random()*.3}s forwards;`;
+    wrap.appendChild(d);
+  }
+  setTimeout(()=>wrap.remove(),1800);
+}
+
+/* ── "WOULD YOU SAY THIS?" ── */
+function initWyst(){
+  const phrases=EX3B.map(x=>x.t);
+  const cont=document.getElementById('wystRows');
+  phrases.forEach((ph,i)=>{
+    const row=document.createElement('div');row.className='wyst-row';
+    row.innerHTML=`<div class="wyst-phrase">"${ph}"</div>
+    <div class="wyst-btns">
+      <button class="wyst-btn" onclick="pickWyst(this,${i},'yes')">😊 Yes</button>
+      <button class="wyst-btn" onclick="pickWyst(this,${i},'maybe')">🤔 Maybe</button>
+      <button class="wyst-btn" onclick="pickWyst(this,${i},'no')">😬 No</button>
+    </div>`;
+    cont.appendChild(row);
+  });
+}
+function pickWyst(btn,i,val){
+  btn.closest('.wyst-btns').querySelectorAll('.wyst-btn').forEach(b=>{
+    b.classList.remove('picked-yes','picked-maybe','picked-no');
+  });
+  btn.classList.add('picked-'+val);
+}
+
+/* ── FLASHCARDS (SRS) ── */
+let srsKnown=new Set(),srsReview=new Set();
+function initFlashcards(){
+  // progress bar
+  const prog=document.createElement('div');prog.className='srs-progress';prog.id='srsProgress';
+  prog.innerHTML=`<span>🃏 Vocab check:</span><div class="srs-bar-wrap"><div class="srs-bar-fill" id="srsBarFill"></div></div><span class="srs-stat" id="srsStat">0 / ${FLASHCARDS.length} known</span>`;
+  document.getElementById('fcGrid').before(prog);
+  // cards
+  const grid=document.getElementById('fcGrid');
+  FLASHCARDS.forEach((fc,i)=>{
+    const wrap=document.createElement('div');
+    wrap.className='fc';wrap.id='fc-'+i;
+    wrap.innerHTML=`<div class="fc-inner">
+      <div class="fc-front"><span>${fc.front}</span></div>
+      <div class="fc-back">
+        <div class="fc-back-txt">${fc.back}</div>
+        <div class="srs-btns">
+          <button class="srs-btn srs-know" onclick="event.stopPropagation();srsGot(${i})">✓ Got it</button>
+          <button class="srs-btn srs-again" onclick="event.stopPropagation();srsAgain(${i})">🔄 Again</button>
+        </div>
+      </div>
+    </div>`;
+    wrap.onclick=()=>wrap.classList.toggle('flipped');
+    grid.appendChild(wrap);
+  });
+}
+function srsGot(i){
+  srsKnown.add(i);srsReview.delete(i);
+  const fc=document.getElementById('fc-'+i);
+  fc.style.opacity='.45';fc.style.transform='scale(.95)';
+  srsUpdateBar();
+}
+function srsAgain(i){
+  srsReview.add(i);srsKnown.delete(i);
+  const fc=document.getElementById('fc-'+i);
+  fc.classList.remove('flipped');fc.style.opacity='1';fc.style.transform='';
+  fc.style.border='2.5px solid var(--bad)';
+  srsUpdateBar();
+}
+function srsUpdateBar(){
+  const k=srsKnown.size,t=FLASHCARDS.length;
+  document.getElementById('srsBarFill').style.width=(k/t*100)+'%';
+  document.getElementById('srsStat').textContent=k+' / '+t+' known';
+  if(k===t){document.getElementById('srsProgress').style.background='#d4edda';}
+}
+
+/* ── EX 2a (drag-and-drop + click fallback) ── */
+let dragging2a=null; // key being dragged
+function initEx2a(){
+  const bank=document.getElementById('bank2a');
+  SENTS.forEach(s=>{
+    const btn=document.createElement('button');
+    btn.id='sb-'+s.k;btn.className='sent-btn';
+    btn.textContent=s.k.toUpperCase()+'. '+s.t;
+    btn.draggable=true;
+    // drag events
+    btn.addEventListener('dragstart',e=>{
+      if(btn.classList.contains('used'))return;
+      dragging2a=s.k;sel2a=s.k;
+      e.dataTransfer.effectAllowed='move';
+      btn.classList.add('selected');
+    });
+    btn.addEventListener('dragend',()=>{
+      btn.classList.remove('selected');
+    });
+    // click fallback
+    btn.onclick=()=>selectSent(s.k);
+    bank.appendChild(btn);
+  });
+  const cont=document.getElementById('gaps2a');
+  GAPS.forEach(g=>{
+    const row=document.createElement('div');row.className='gap-row';row.id='grow-'+g.n;
+    const num=document.createElement('div');num.className='gap-n';num.textContent=g.n+'.';
+    const ctx=document.createElement('div');ctx.className='gap-ctx';ctx.innerHTML=g.ctx.replace(/\n/g,'<br>');
+    const slot=document.createElement('div');slot.className='gap-slot';slot.id='slot-'+g.n;
+    slot.textContent='— drop or click —';
+    // drag-over styling
+    slot.addEventListener('dragover',e=>{
+      e.preventDefault();e.dataTransfer.dropEffect='move';
+      slot.style.borderColor='var(--teal)';slot.style.background='#e8f5f2';
+    });
+    slot.addEventListener('dragleave',()=>{
+      if(!slot.classList.contains('filled')){slot.style.borderColor='';slot.style.background='';}
+    });
+    slot.addEventListener('drop',e=>{
+      e.preventDefault();slot.style.borderColor='';slot.style.background='';
+      if(dragging2a)fillSlot(g.n,dragging2a);
+      dragging2a=null;
+    });
+    // click fallback
+    slot.onclick=()=>fillSlot(g.n,sel2a);
+    row.appendChild(num);row.appendChild(ctx);row.appendChild(slot);cont.appendChild(row);
+  });
+}
+function selectSent(k){
+  if(sel2a){const p=document.getElementById('sb-'+sel2a);if(p&&!p.classList.contains('used'))p.classList.remove('selected');}
+  if(sel2a===k){sel2a=null;return;}
+  sel2a=k;
+  const btn=document.getElementById('sb-'+k);
+  if(btn&&!btn.classList.contains('used'))btn.classList.add('selected');
+}
+function fillSlot(n,k){
+  const slot=document.getElementById('slot-'+n);const cur=placed2a[n];
+  if(!k){
+    // clicking a filled slot with nothing selected clears it
+    if(cur){placed2a[n]=null;slot.textContent='— drop or click —';slot.classList.remove('filled');const old=document.getElementById('sb-'+cur);if(old)old.classList.remove('used');}
+    return;
+  }
+  // if this key is already placed elsewhere, clear that slot
+  Object.keys(placed2a).forEach(pn=>{
+    if(placed2a[pn]===k){placed2a[pn]=null;const s=document.getElementById('slot-'+pn);if(s){s.textContent='— drop or click —';s.classList.remove('filled');}}
+  });
+  // free previous occupant of this slot
+  if(cur){const old=document.getElementById('sb-'+cur);if(old)old.classList.remove('used');}
+  placed2a[n]=k;
+  const s=SENTS.find(x=>x.k===k);
+  slot.textContent=k.toUpperCase()+'. '+s.t;slot.classList.add('filled');
+  const btn=document.getElementById('sb-'+k);
+  if(btn){btn.classList.remove('selected');btn.classList.add('used');}
+  sel2a=null;
+}
+function checkEx2a(){
+  let ok=0;
+  GAPS.forEach(g=>{
+    const slot=document.getElementById('slot-'+g.n);
+    const row=document.getElementById('grow-'+g.n);
+    if(placed2a[g.n]===g.ans){slot.classList.add('correct');ok++;}
+    else{
+      slot.classList.add('wrong');
+      const correct=SENTS.find(x=>x.k===g.ans);
+      const note=document.createElement('div');
+      note.style.cssText='font-size:.78em;color:var(--ok);margin-top:6px;padding:4px 8px;background:#d4edda;border-radius:5px;';
+      note.textContent='✓ Correct: '+g.ans.toUpperCase()+'. '+correct.t;
+      row.appendChild(note);
+    }
+  });
+  scores.ex2a={ok,total:GAPS.length};
+  showScore('sc2a',ok,GAPS.length,'fb2a');updateProgress();
+  animateCard('sc2a',ok===GAPS.length);
+}
+
+/* ── EX 2b ── */
+function initEx2b(){
+  const cont=document.getElementById('ex2b');
+  EX2B.forEach((item,i)=>{
+    const row=document.createElement('div');row.className='match-row';
+    const m=document.createElement('p');m.className='match-meaning';m.innerHTML='<strong>'+(i+1)+'.</strong> '+item.m;
+    const opts=document.createElement('div');opts.className='match-opts';opts.id='mb-'+i;
+    PH2B.forEach(ph=>{
+      const btn=document.createElement('button');btn.className='alt-btn';btn.textContent=ph;btn.dataset.val=ph;
+      btn.onclick=()=>selectGrp(btn,'mb-'+i);opts.appendChild(btn);
+    });
+    row.appendChild(m);row.appendChild(opts);cont.appendChild(row);
+  });
+}
+function checkEx2b(){
+  let ok=0;
+  EX2B.forEach((item,i)=>{
+    const grp=document.getElementById('mb-'+i);const sel=grp.querySelector('.selected');if(!sel)return;
+    if(sel.dataset.val===item.a){sel.classList.replace('selected','correct');ok++;}
+    else{sel.classList.replace('selected','wrong');grp.querySelectorAll('.alt-btn').forEach(b=>{if(b.dataset.val===item.a)b.classList.add('correct');});}
+    grp.querySelectorAll('.alt-btn').forEach(b=>b.onclick=null);
+  });
+  scores.ex2b={ok,total:EX2B.length};
+  showScore('sc2b',ok,EX2B.length,'fb2b');updateProgress();
+}
+
+/* ── EX 3a ── */
+function initEx3a(){
+  const cont=document.getElementById('ex3a');
+  EX3A.forEach((item,i)=>{
+    const row=document.createElement('div');row.className='alt-row';
+    const n=document.createElement('span');n.className='alt-n';n.textContent=item.n+'.';
+    const pre=document.createElement('span');pre.textContent=item.pre+' ';
+    const grp=document.createElement('span');grp.id='a3a-'+i;
+    item.opts.forEach(opt=>{
+      const btn=document.createElement('button');btn.className='alt-btn';btn.textContent=opt;btn.dataset.val=opt;
+      btn.onclick=()=>{document.querySelectorAll('#a3a-'+i+' .alt-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');};
+      grp.appendChild(btn);
+    });
+    row.appendChild(n);row.appendChild(pre);row.appendChild(grp);cont.appendChild(row);
+  });
+}
+function checkEx3a(){
+  let ok=0;
+  EX3A.forEach((item,i)=>{
+    const grp=document.getElementById('a3a-'+i);const sel=grp.querySelector('.selected');if(!sel)return;
+    if(sel.dataset.val===item.ans){sel.classList.replace('selected','correct');ok++;}
+    else{sel.classList.replace('selected','wrong');grp.querySelectorAll('.alt-btn').forEach(b=>{if(b.dataset.val===item.ans)b.classList.add('correct');});}
+    grp.querySelectorAll('.alt-btn').forEach(b=>b.onclick=null);
+  });
+  scores.ex3a={ok,total:EX3A.length};
+  showScore('sc3a',ok,EX3A.length,'fb3a');updateProgress();
+}
+
+/* ── EX 3b ── */
+function initEx3b(){
+  const cont=document.getElementById('ex3b');
+  EX3B.forEach((p,i)=>{
+    const row=document.createElement('div');row.className='tick-row';row.onclick=()=>toggleTick(i);
+    const box=document.createElement('div');box.className='tick-box';box.id='tb-'+i;
+    const lbl=document.createElement('span');lbl.textContent=p.t;
+    row.appendChild(box);row.appendChild(lbl);cont.appendChild(row);
+  });
+}
+function toggleTick(i){
+  const box=document.getElementById('tb-'+i);
+  if(box.classList.contains('on')){box.classList.remove('on');box.textContent='';}
+  else{box.classList.add('on');box.textContent='✓';}
+}
+function checkEx3b(){
+  let ok=0;
+  EX3B.forEach((p,i)=>{
+    const box=document.getElementById('tb-'+i);const checked=box.classList.contains('on');
+    box.classList.remove('on');box.parentElement.onclick=null;
+    if(checked===p.heard){box.classList.add('ok');box.textContent=p.heard?'✓':'–';ok++;}
+    else{box.classList.add('bad');box.textContent=p.heard?'✓':'✗';}
+  });
+  scores.ex3b={ok,total:EX3B.length};
+  showScore('sc3b',ok,EX3B.length,'fb3b');updateProgress();
+}
+
+/* ── EX 4 ── */
+const EX4_EMOJI=[['🍫','😇'],['😬','🙏'],['🤔','😤'],['😊','😬']];
+function initEx4(){
+  const cont=document.getElementById('ex4');
+  EX4.forEach((item,i)=>{
+    const wrap=document.createElement('div');wrap.className='sc4-card';
+    const chars=document.createElement('div');chars.className='sc4-chars';
+    chars.innerHTML=`<div class="sc4-char">${EX4_EMOJI[i][0]}</div><div class="sc4-arrow">💬</div><div class="sc4-char">${EX4_EMOJI[i][1]}</div><div style="flex:1;font-weight:700;font-size:.78em;color:var(--light);margin-left:4px">${i+1}.</div>`;
+    const sit=document.createElement('p');sit.className='sc4-sit';sit.style.cssText='font-style:italic;font-size:.92em;margin:6px 0 8px;color:var(--text)';sit.textContent=item.sit;
+    const opts=document.createElement('div');opts.className='sc4-opts';opts.id='e4-'+i;
+    [['a',item.a],['b',item.b]].forEach(([k,t])=>{
+      const btn=document.createElement('button');btn.className='sc4-btn';
+      btn.innerHTML=`<span style="font-weight:700;color:var(--primary)">${k})</span> ${t}`;btn.dataset.val=k;
+      btn.onclick=()=>{opts.querySelectorAll('.sc4-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');};
+      opts.appendChild(btn);
+    });
+    wrap.appendChild(chars);wrap.appendChild(sit);wrap.appendChild(opts);cont.appendChild(wrap);
+  });
+}
+function checkEx4(){
+  let ok=0;
+  EX4.forEach((item,i)=>{
+    const grp=document.getElementById('e4-'+i);const sel=grp.querySelector('.selected');if(!sel)return;
+    if(sel.dataset.val===item.ans){sel.classList.replace('selected','correct');ok++;}
+    else{sel.classList.replace('selected','wrong');grp.querySelectorAll('.sc4-btn').forEach(b=>{if(b.dataset.val===item.ans)b.classList.add('correct');});}
+    grp.querySelectorAll('.sc4-btn').forEach(b=>b.onclick=null);
+  });
+  scores.ex4={ok,total:EX4.length};
+  showScore('sc4',ok,EX4.length,'fb4');updateProgress();
+}
+
+/* ── EX 5a ── */
+function initEx5a(){
+  const cont=document.getElementById('ex5a');
+  EX5A.forEach((item,i)=>{
+    const wrap=document.createElement('div');wrap.style.cssText='padding:14px 0;border-bottom:1px solid var(--border)';
+    const sent=document.createElement('p');sent.style.cssText='font-weight:600;font-style:italic;margin-bottom:10px';sent.innerHTML=(i+1)+'. '+item.sent;
+    const grp=document.createElement('div');grp.id='e5a-'+i;grp.style.cssText='display:flex;flex-direction:column;gap:7px';
+    [['a',item.a],['b',item.b]].forEach(([k,t])=>{
+      const btn=document.createElement('button');btn.className='alt-btn';btn.style.cssText='text-align:left;padding:8px 14px';
+      btn.innerHTML='<strong>'+k+')</strong> '+t;btn.dataset.val=k;
+      btn.onclick=()=>{grp.querySelectorAll('.alt-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');};
+      grp.appendChild(btn);
+    });
+    wrap.appendChild(sent);wrap.appendChild(grp);cont.appendChild(wrap);
+  });
+}
+function checkEx5a(){
+  let ok=0;
+  EX5A.forEach((item,i)=>{
+    const grp=document.getElementById('e5a-'+i);const sel=grp.querySelector('.selected');if(!sel)return;
+    if(sel.dataset.val===item.ans){sel.classList.replace('selected','correct');ok++;}
+    else{sel.classList.replace('selected','wrong');grp.querySelectorAll('.alt-btn').forEach(b=>{if(b.dataset.val===item.ans)b.classList.add('correct');});}
+    grp.querySelectorAll('.alt-btn').forEach(b=>b.onclick=null);
+  });
+  scores.ex5a={ok,total:EX5A.length};
+  showScore('sc5a',ok,EX5A.length,'fb5a');updateProgress();
+}
+
+/* ── EX 6 ── */
+function initEx6(){
+  const cont=document.getElementById('ex6');
+  EX6.forEach((item,i)=>{
+    const row=document.createElement('div');row.className='fill-row6';
+    const lbl=document.createElement('span');lbl.className='fill-lbl';lbl.textContent=item.lbl+':';
+    const pre=document.createElement('span');pre.className='fill-pre';pre.textContent=item.pre+' ';
+    const inp=document.createElement('input');inp.type='text';inp.className='fill-input';inp.id='e6-'+i;
+    inp.placeholder='your notes…';inp.style.minWidth='200px';
+    row.appendChild(lbl);row.appendChild(pre);row.appendChild(inp);cont.appendChild(row);
+  });
+}
+function checkEx6(){
+  let ok=0;
+  EX6.forEach((item,i)=>{
+    const inp=document.getElementById('e6-'+i);
+    const val=inp.value.trim().toLowerCase().replace(/[^a-z0-9\s]/g,'');
+    if(!val){inp.classList.add('wrong');return;}
+    // Accept any answer that contains at least one key word from the answer string
+    const ansWords=item.ans.toLowerCase().replace(/[^a-z0-9\s]/g,'').split(' ').filter(w=>w.length>3);
+    const matched=ansWords.length?ansWords.filter(w=>val.includes(w)).length>=Math.max(1,Math.ceil(ansWords.length*.4)):false;
+    if(matched){inp.classList.add('correct');ok++;}
+    else{inp.classList.add('wrong');inp.placeholder=item.ph;}
+    inp.readOnly=true;
+  });
+  scores.ex6={ok,total:EX6.length};
+  showScore('sc6',ok,EX6.length,'fb6');updateProgress();
+}
+
+/* ── EX 7 ── */
+function initEx7(){
+  const cont=document.getElementById('ex7');let idx=0;
+  EX7_DATA.forEach(conv=>{
+    const hdr=document.createElement('p');hdr.style.cssText='font-weight:700;color:var(--primary);font-size:.88em;margin:14px 0 6px';hdr.textContent='Conversation '+conv.conv;cont.appendChild(hdr);
+    conv.items.forEach(item=>{
+      const row=document.createElement('div');row.className='mw-row';
+      const lbl=document.createElement('span');lbl.className='mw-lbl';lbl.textContent=item.lbl;
+      const txt=document.createElement('span');txt.className='mw-txt';txt.textContent='"'+item.txt+'"';
+      const btns=document.createElement('span');btns.className='mw-btns';btns.id='e7-'+idx;
+      ['M','W'].forEach(opt=>{
+        const btn=document.createElement('button');btn.className='mw-btn';btn.textContent=opt;btn.dataset.val=opt;btn.dataset.ans=item.ans;
+        btn.onclick=()=>{btns.querySelectorAll('.mw-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');};
+        btns.appendChild(btn);
+      });
+      row.appendChild(lbl);row.appendChild(txt);row.appendChild(btns);cont.appendChild(row);idx++;
+    });
+  });
+}
+function checkEx7(){
+  let ok=0,total=0,idx=0;
+  EX7_DATA.forEach(conv=>{
+    conv.items.forEach(item=>{
+      total++;
+      const grp=document.getElementById('e7-'+idx);const sel=grp.querySelector('.selected');
+      if(sel){
+        if(sel.dataset.val===item.ans){sel.classList.replace('selected','correct');ok++;}
+        else{sel.classList.replace('selected','wrong');grp.querySelectorAll('.mw-btn').forEach(b=>{if(b.dataset.val===item.ans)b.classList.add('correct');});}
+      }
+      grp.querySelectorAll('.mw-btn').forEach(b=>b.onclick=null);idx++;
+    });
+  });
+  scores.ex7={ok,total};
+  showScore('sc7',ok,total,'fb7');updateProgress();
+}
+
+/* ── EX 8 ── */
+function initEx8(){
+  const cont=document.getElementById('ex8rows');
+  let blankIdx=0;
+  EX8_CATS.forEach(cat=>{
+    const row=document.createElement('div');row.className='up2-row';row.style.flexDirection='column';row.style.alignItems='flex-start';row.style.gap='6px';
+    const catLbl=document.createElement('div');
+    catLbl.style.cssText='font-size:.78em;text-transform:uppercase;letter-spacing:1px;opacity:.55;font-weight:700;';
+    catLbl.textContent=cat.cat;
+    const given=document.createElement('div');
+    given.style.cssText='font-size:.85em;font-style:italic;opacity:.8;';
+    given.textContent='"'+cat.given+'"';
+    row.appendChild(catLbl);row.appendChild(given);
+    if(cat.blank!==null){
+      const blkRow=document.createElement('div');blkRow.style.cssText='display:flex;align-items:center;gap:6px;width:100%;';
+      const blkLbl=document.createElement('span');blkLbl.style.cssText='font-size:.75em;color:#f0c040;font-weight:700;white-space:nowrap;';
+      blkLbl.textContent='+ ';
+      const inp=document.createElement('input');inp.type='text';inp.className='up2-inp';inp.id='e8-'+cat.blank;inp.style.flex='1';
+      inp.placeholder='type the full phrase…';
+      blkRow.appendChild(blkLbl);blkRow.appendChild(inp);row.appendChild(blkRow);
+    }
+    cont.appendChild(row);
+  });
+}
+function checkEx8(){
+  let ok=0;
+  EX8_ANS.forEach((ans,i)=>{
+    const inp=document.getElementById('e8-'+i);
+    const val=inp.value.trim().toLowerCase().replace(/[^a-z0-9\s']/g,'');
+    const a=ans.toLowerCase().replace(/[^a-z0-9\s']/g,'');
+    const words=a.split(' ').filter(w=>w.length>3);
+    const matched=words.filter(w=>val.includes(w)).length>=Math.ceil(words.length*.6);
+    if(matched){inp.classList.add('correct');ok++;}
+    else{inp.classList.add('wrong');inp.value=ans;}
+    inp.readOnly=true;
+  });
+  scores.ex8={ok,total:EX8_ANS.length};
+  showScore('sc8',ok,EX8_ANS.length,'fb8');updateProgress();
+}
+
+/* ── PHRASE CHIPS ── */
+function initChips(){
+  // legend
+  const bank=document.getElementById('chipBank');
+  const legend=document.createElement('div');legend.className='chip-legend';
+  const cats=[{k:'opener',c:'#f5aaaa',l:'🔴 Opener'},{k:'problem',c:'#ffe082',l:'🟡 Problem'},{k:'apology',c:'#c39bd3',l:'🟣 Apology'},{k:'solution',c:'#a8dbc9',l:'🟢 Solution'}];
+  cats.forEach(ct=>{
+    const item=document.createElement('span');item.className='chip-leg-item';
+    item.innerHTML=`<span class="chip-leg-dot" style="background:${ct.c}"></span>${ct.l}`;
+    legend.appendChild(item);
+  });
+  bank.parentElement.insertBefore(legend,bank);
+  // chips
+  const drop=document.getElementById('chipDrop');
+  drop.innerHTML='<span style="color:#aaa;font-size:.82em;font-style:italic" id="dropHint">Your response will appear here…</span>';
+  CHIPS.forEach((c,i)=>{
+    const chip=document.createElement('span');chip.className='chip chip-'+c.cat;chip.id='chip-'+i;chip.textContent=c.t;
+    chip.onclick=()=>placeChip(i,c.t);bank.appendChild(chip);
+  });
+}
+function placeChip(i,text){
+  const chip=document.getElementById('chip-'+i);if(chip.classList.contains('used-chip'))return;
+  chip.classList.add('used-chip');
+  const drop=document.getElementById('chipDrop');
+  const hint=document.getElementById('dropHint');if(hint)hint.remove();
+  const placed=document.createElement('span');placed.className='placed-chip';placed.textContent=text;
+  placed.onclick=()=>{placed.remove();chip.classList.remove('used-chip');if(!drop.querySelector('.placed-chip')){const h=document.createElement('span');h.id='dropHint';h.style.cssText='color:#aaa;font-size:.82em;font-style:italic';h.textContent='Your response will appear here…';drop.appendChild(h);}};
+  drop.appendChild(placed);
+}
+function clearChips(){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('used-chip'));
+  const drop=document.getElementById('chipDrop');
+  drop.innerHTML='<span style="color:#aaa;font-size:.82em;font-style:italic" id="dropHint">Your response will appear here…</span>';
+}
+
+/* ── SUMMARY ── */
+function showSummary(){
+  completeStage(6,null);
+  const sec=document.getElementById('summarySection');sec.style.display='block';
+  const name=document.getElementById('sname').value.trim()||'student';
+  document.getElementById('summaryName').textContent='Well done, '+name+'!';
+  const grid=document.getElementById('scoreGrid');grid.innerHTML='';
+  const exNames={ex2a:'Ex 2a',ex2b:'Ex 2b',ex3a:'Ex 3a',ex3b:'Ex 3b',ex4:'Ex 4',ex5a:'Ex 5a',ex7:'Ex 7',ex8:'Ex 8'};
+  let totalOk=0,totalAll=0;
+  Object.keys(exNames).forEach(k=>{
+    if(scores[k]){
+      totalOk+=scores[k].ok;totalAll+=scores[k].total;
+      const tile=document.createElement('div');tile.className='sc-tile';
+      tile.innerHTML='<div class="sc-num">'+scores[k].ok+'/'+scores[k].total+'</div><div class="sc-lbl">'+exNames[k]+'</div>';
+      grid.appendChild(tile);
+    }
+  });
+  const pct=totalAll?Math.round(totalOk/totalAll*100):0;
+  let msg='';
+  if(pct>=90)msg='🌟 Outstanding! You clearly have a strong grasp of conflict language. Keep using these phrases in real conversations!';
+  else if(pct>=70)msg='💪 Great work! You\'re well on your way to handling conflicts confidently in English. Review the phrases you found tricky.';
+  else msg='📚 Good effort! Conflict language takes practice. Read through the Useful Phrases again and try the role plays once more.';
+  document.getElementById('summaryMsg').textContent=msg;
+  sec.scrollIntoView({behavior:'smooth'});
+}
+
+/* ── HELPERS ── */
+function selectGrp(btn,gid){
+  document.querySelectorAll('#'+gid+' .alt-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');
+}
+function showScore(scId,ok,total,fbId){
+  const el=document.getElementById(scId);el.style.display='inline-block';
+  el.textContent=ok+' / '+total+' correct';
+  const pct=ok/total;
+  el.style.background=pct===1?'#d4edda':pct>=.6?'#fff3cd':'#fde8e8';
+  el.style.border='1px solid '+(pct===1?'#27AE60':pct>=.6?'#D97706':'#E74C3C');
+  el.style.color=pct===1?'#1a6635':pct>=.6?'#856404':'#7b1e1e';
+  if(pct===1)fireConfetti(el);
+  if(fbId){
+    const fb=document.getElementById(fbId);
+    fb.style.display='block';
+    if(pct===1){fb.className='feedback-msg fb-perfect';fb.textContent='🎉 Perfect score! Excellent work!';}
+    else if(pct>=.6){fb.className='feedback-msg fb-good';fb.textContent='💪 Good effort! Check the highlighted answers to see what to review.';}
+    else{fb.className='feedback-msg fb-try';fb.textContent='📚 Keep going! Read the audioscript again and try to spot the correct answers.';}
+  }
+}
+function animateCard(scId,perfect){
+  const el=document.getElementById(scId);
+  el.classList.add(perfect?'anim-bounce':'anim-shake');
+  setTimeout(()=>el.classList.remove('anim-bounce','anim-shake'),400);
+}
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  initFlashcards();
+  initEx2a();initEx2b();
+  initEx3a();initWyst();initEx3b();initEx4();
+  initEx5a();
+  initEx6();initEx7();initEx8();
+  initChips();
+});
+</script>
+</body>
+</html>
