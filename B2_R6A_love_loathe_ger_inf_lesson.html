@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 6A – Love it or loathe it?</title>
+<style>
+:root{--primary:#C0392B;--teal:#16A085;--amber:#D97706;--bg:#F7F8FC;--card:#fff;--text:#2c3e50;--light:#7f8c8d;--border:#e0e6f0;--ok:#27AE60;--bad:#E74C3C;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:white;padding:36px 24px 28px;text-align:center;}
+.badge{display:inline-block;background:var(--primary);padding:4px 16px;border-radius:20px;font-size:.8em;font-weight:700;letter-spacing:1px;margin-bottom:10px;}
+.header h1{font-size:2.1em;font-weight:800;margin-bottom:5px;}
+.header .sub{opacity:.8;font-size:.98em;}
+.header .meta{display:flex;justify-content:center;gap:18px;margin-top:12px;font-size:.82em;opacity:.7;flex-wrap:wrap;}
+.name-strip{background:#16213e;padding:14px 24px;display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;}
+.name-strip label{color:white;font-size:.88em;opacity:.8;}
+.name-inp{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 14px;color:white;font-size:.9em;outline:none;width:220px;}
+.name-inp::placeholder{opacity:.5;}
+.name-inp:focus{border-color:var(--teal);}
+.trail{background:#16213e;padding:14px 20px;display:flex;align-items:center;justify-content:center;gap:0;overflow-x:auto;}
+.trail-col{display:flex;flex-direction:column;align-items:center;}
+.t-dot{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:.7em;color:rgba(255,255,255,.5);font-weight:700;flex-shrink:0;transition:all .4s;}
+.t-dot.done{background:var(--teal);border-color:var(--teal);color:white;}
+.t-dot.active{background:var(--primary);border-color:var(--primary);color:white;box-shadow:0 0 12px rgba(192,57,43,.6);}
+.t-line{width:18px;height:2px;background:rgba(255,255,255,.15);flex-shrink:0;}
+.t-lbl{color:rgba(255,255,255,.45);font-size:.58em;text-align:center;margin-top:4px;white-space:nowrap;}
+.t-lbl.active{color:white;}
+.t-lbl.done{color:var(--teal);}
+.prog-wrap{background:#0f3460;padding:8px 24px;display:flex;align-items:center;gap:12px;}
+.prog-bar{flex:1;height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),#1abc9c);width:0;transition:width .5s;}
+.prog-text{color:rgba(255,255,255,.7);font-size:.8em;min-width:85px;text-align:right;}
+.divider{height:4px;background:linear-gradient(90deg,var(--primary),var(--teal),var(--amber));}
+.stage{padding:28px 20px;max-width:900px;margin:0 auto;}
+.stage-hd{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.stage-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9em;flex-shrink:0;color:white;}
+.sn-red{background:var(--primary);}
+.sn-teal{background:var(--teal);}
+.sn-amb{background:var(--amber);}
+.stage-ttl{font-size:1.2em;font-weight:700;}
+.stage-time{margin-left:auto;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:3px 12px;font-size:.78em;color:var(--light);}
+.card{background:var(--card);border-radius:12px;padding:22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1px solid var(--border);}
+.card-ttl{font-size:1em;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.ex{padding:2px 10px;border-radius:12px;font-size:.78em;color:white;}
+.ex-r{background:var(--primary);}
+.ex-t{background:var(--teal);}
+.ex-a{background:var(--amber);}
+.hint{font-size:.85em;color:var(--light);font-style:italic;margin-bottom:14px;}
+/* AUDIO */
+.audio-btn{background:linear-gradient(135deg,#1a1a2e,#0f3460);color:white;border:none;border-radius:10px;padding:14px 20px;cursor:pointer;font-size:.93em;font-weight:600;display:flex;align-items:center;gap:10px;width:100%;margin-bottom:14px;transition:opacity .2s;}
+.audio-btn:hover{opacity:.85;}
+.audio-note{opacity:.6;font-weight:400;font-size:.85em;}
+.audioscript{background:#f8f9fc;border:1px solid var(--border);border-left:4px solid var(--teal);border-radius:8px;padding:16px;font-size:.88em;line-height:1.8;display:none;}
+.audioscript.open{display:block;animation:fadeIn .3s ease;}
+.albl{font-size:.72em;text-transform:uppercase;letter-spacing:1px;opacity:.5;margin-bottom:12px;}
+hr.cs{border:none;border-top:1px dashed #d0d9f0;margin:12px 0;}
+/* CHAT */
+.chat-wrap{display:flex;flex-direction:column;gap:10px;padding:12px 4px;}
+.chat-msg{display:flex;gap:10px;align-items:flex-end;max-width:88%;}
+.chat-msg.right{flex-direction:row-reverse;align-self:flex-end;}
+.chat-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72em;font-weight:800;color:white;flex-shrink:0;}
+.av-a{background:var(--primary);}
+.av-b{background:var(--teal);}
+.chat-inner{display:flex;flex-direction:column;}
+.chat-name{font-size:.67em;color:var(--light);margin-bottom:3px;font-weight:600;padding:0 4px;}
+.chat-msg.right .chat-name{text-align:right;}
+.chat-bubble{border-radius:14px 14px 14px 4px;padding:9px 13px;font-size:.88em;line-height:1.55;background:#f0f4ff;color:var(--text);}
+.chat-msg.right .chat-bubble{background:#d4f0ea;border-radius:14px 14px 4px 14px;color:#0d6e5a;}
+.chat-sep{text-align:center;font-size:.72em;color:var(--light);margin:6px 0;border-top:1px dashed var(--border);padding-top:8px;}
+/* WAVE */
+.wave{display:flex;align-items:center;gap:2px;margin-left:auto;padding:0 4px;}
+.wave-bar{width:3px;background:rgba(255,255,255,.55);border-radius:2px;animation:wavePulse 1s ease-in-out infinite;}
+.wave-bar:nth-child(1){height:6px;animation-delay:0s;}
+.wave-bar:nth-child(2){height:10px;animation-delay:.12s;}
+.wave-bar:nth-child(3){height:16px;animation-delay:.24s;}
+.wave-bar:nth-child(4){height:10px;animation-delay:.36s;}
+.wave-bar:nth-child(5){height:6px;animation-delay:.48s;}
+/* SRS */
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin-bottom:16px;}
+.fc{height:110px;perspective:700px;cursor:pointer;}
+.fc-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s;border-radius:8px;}
+.fc.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{position:absolute;inset:0;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:10px;text-align:center;font-size:.82em;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+.fc-front{background:linear-gradient(135deg,#1a1a2e,#16213e);color:white;font-weight:600;border:2px solid rgba(255,255,255,.15);}
+.fc-back{background:#d4f0ea;border:2px solid var(--teal);color:#0d6e5a;font-weight:600;transform:rotateY(180deg);flex-direction:column;gap:4px;}
+.fc-back-txt{font-size:.76em;font-weight:600;text-align:center;line-height:1.4;}
+.srs-btns{display:flex;gap:5px;margin-top:5px;}
+.srs-btn{border:none;border-radius:10px;padding:3px 8px;font-size:.68em;font-weight:700;cursor:pointer;}
+.srs-know{background:#27AE60;color:white;}
+.srs-again{background:#E74C3C;color:white;}
+.srs-progress{background:#f0f4ff;border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:14px;font-size:.84em;}
+.srs-bar-wrap{flex:1;height:8px;background:#dde3ef;border-radius:4px;overflow:hidden;}
+.srs-bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),#1abc9c);width:0;transition:width .4s;}
+.srs-stat{color:var(--light);font-size:.8em;white-space:nowrap;}
+/* FILL INPUT */
+.fill-input{border:2px solid #d0d9f0;border-radius:6px;padding:5px 10px;font-size:.88em;outline:none;transition:border-color .2s;font-family:inherit;}
+.fill-input:focus{border-color:var(--teal);}
+.fill-input.correct{border-color:var(--ok);background:#d4edda;}
+.fill-input.wrong{border-color:var(--bad);background:#fde8e8;}
+/* LL GRID */
+.ll-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+.ll-item{background:#f8f9fc;border:2px solid var(--border);border-radius:10px;padding:12px;}
+.ll-num{font-weight:700;color:var(--primary);font-size:.78em;margin-bottom:4px;}
+.ll-topic{font-size:.88em;margin-bottom:8px;}
+.ll-btns{display:flex;gap:8px;}
+.ll-btn{flex:1;border:2px solid #d0d9f0;border-radius:8px;padding:6px;cursor:pointer;font-size:.82em;font-weight:600;transition:all .2s;background:white;text-align:center;}
+.ll-btn.love-sel{background:#fce4ec;border-color:#e91e63;color:#c2185b;}
+.ll-btn.loathe-sel{background:#e8eaf6;border-color:#5c6bc0;color:#3949ab;}
+.ll-btn.correct{border-color:var(--ok)!important;background:#d4edda!important;color:#1a6635!important;}
+.ll-btn.wrong{border-color:var(--bad)!important;background:#fde8e8!important;color:#922b21!important;}
+/* MATCH SELECT */
+.match-select{border:2px solid #d0d9f0;border-radius:8px;padding:5px 8px;font-size:.84em;outline:none;font-family:inherit;background:white;cursor:pointer;}
+.match-select:focus{border-color:var(--teal);}
+.match-select.correct{border-color:var(--ok);background:#d4edda;}
+.match-select.wrong{border-color:var(--bad);background:#fde8e8;}
+/* ALT BTNS */
+.alt-btn{background:#f0f4ff;border:2px solid #d0d9f0;border-radius:6px;padding:5px 12px;cursor:pointer;font-size:.88em;transition:all .2s;}
+.alt-btn:hover{border-color:var(--teal);background:#e8f5f2;}
+.alt-btn.selected{border-color:var(--teal);background:#d4f0ea;font-weight:600;}
+.alt-btn.correct{border-color:var(--ok)!important;background:#d4edda!important;font-weight:600;}
+.alt-btn.wrong{border-color:var(--bad)!important;background:#fde8e8!important;}
+/* GRAMMAR BOX */
+.gram-box{background:#fff8e1;border:2px solid var(--amber);border-radius:12px;padding:18px;margin:14px 0;}
+.gram-box h4{color:var(--amber);font-size:.95em;font-weight:700;margin-bottom:12px;}
+.gram-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.gram-sec{background:white;border-radius:8px;padding:12px;border:1px solid #edd;}
+.gram-sec h5{font-size:.82em;font-weight:700;color:var(--text);margin-bottom:6px;border-bottom:1px solid #f0e0c0;padding-bottom:5px;}
+.gram-rule{font-size:.8em;padding:2px 0;color:var(--text);}
+.gram-tag{display:inline-block;background:var(--amber);color:white;border-radius:3px;padding:1px 5px;font-size:.75em;font-weight:700;margin-right:4px;}
+/* PHRASES BOX */
+.phrases-box{background:linear-gradient(135deg,#1a1a2e,#16213e);color:white;border-radius:10px;padding:20px;margin:14px 0;}
+.phrases-box h4{font-size:1em;color:#f0c040;margin-bottom:14px;}
+.ph-cat{margin-bottom:12px;}
+.ph-cat-ttl{font-size:.73em;text-transform:uppercase;letter-spacing:1px;opacity:.6;margin-bottom:4px;}
+.ph-list{list-style:none;}
+.ph-list li{padding:2px 0;font-size:.88em;display:flex;align-items:flex-start;gap:7px;}
+.ph-list li::before{content:'•';color:var(--teal);flex-shrink:0;}
+/* PREDICT / TEXTAREA */
+.predict-card{background:#fff8e1;border:2px solid var(--amber);border-radius:10px;padding:16px;margin-bottom:16px;}
+.predict-card h4{color:var(--amber);font-size:.9em;font-weight:700;margin-bottom:8px;}
+.predict-inp{width:100%;border:1.5px solid #e0d0a0;border-radius:7px;padding:8px 12px;font-size:.9em;font-family:inherit;outline:none;resize:vertical;min-height:52px;background:#fffef5;}
+.predict-inp:focus{border-color:var(--amber);}
+/* WYST */
+.wyst-card{background:#fff8e1;border:2px solid var(--amber);border-radius:12px;padding:18px;margin-bottom:16px;}
+.wyst-card h4{color:var(--amber);font-size:.9em;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.wyst-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
+.wyst-opt{background:white;border:2px solid #e0d0a0;border-radius:8px;padding:10px 13px;cursor:pointer;font-size:.86em;transition:all .2s;}
+.wyst-opt:hover{border-color:var(--amber);background:#fffbee;}
+.wyst-opt.yes{border-color:var(--ok);background:#d4edda;}
+.wyst-opt.no{border-color:#aaa;background:#f0f0f0;opacity:.65;}
+/* FEEDBACK + CHECK */
+.feedback-msg{display:none;margin-top:10px;padding:10px 16px;border-radius:8px;font-weight:600;font-size:.88em;animation:fadeIn .3s ease;}
+.fb-perfect{background:#d4edda;color:#1a6635;border:1px solid #a8d5b5;}
+.fb-good{background:#fff3cd;color:#856404;border:1px solid #ffe082;}
+.fb-try{background:#fde8e8;color:#7b1e1e;border:1px solid #f5aaaa;}
+.check-btn{border:none;border-radius:8px;padding:10px 24px;cursor:pointer;font-size:.88em;font-weight:700;margin-top:12px;transition:all .2s;color:white;}
+.check-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15);}
+.cb-r{background:var(--primary);}
+.cb-t{background:var(--teal);}
+.cb-a{background:var(--amber);}
+.score{display:none;margin-top:10px;padding:6px 14px;border-radius:8px;font-weight:600;font-size:.88em;}
+/* NEXT */
+.next-btn{background:linear-gradient(135deg,var(--primary),#e74c3c);color:white;border:none;border-radius:10px;padding:14px 32px;cursor:pointer;font-size:1em;font-weight:700;margin-top:20px;display:block;width:fit-content;margin-left:auto;transition:all .2s;box-shadow:0 4px 16px rgba(192,57,43,.3);}
+.next-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(192,57,43,.4);}
+/* CHIPS */
+.chip-bank{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;padding:14px;background:#f0f4ff;border-radius:10px;}
+.chip{background:white;border:2px solid #d0d9f0;border-radius:20px;padding:5px 14px;cursor:pointer;font-size:.82em;transition:all .2s;user-select:none;}
+.chip:hover{border-color:var(--teal);background:#e8f5f2;}
+.chip.used{opacity:.4;cursor:default;pointer-events:none;}
+.chip-drop{min-height:50px;border:2px dashed #c0c9d9;border-radius:8px;padding:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start;margin-bottom:10px;}
+.placed{background:#d4f0ea;border:1.5px solid var(--teal);border-radius:16px;padding:4px 12px;font-size:.82em;cursor:pointer;}
+.placed:hover{background:#fde8e8;border-color:var(--bad);}
+/* READING */
+.reading-box{background:#f8f9fc;border:1px solid var(--border);border-radius:10px;padding:18px;font-size:.9em;line-height:1.8;margin-bottom:14px;}
+.reading-box h4{font-size:1em;font-weight:700;color:var(--primary);margin-bottom:8px;}
+/* AGREE/DISAGREE */
+.ad-item{background:#f8f9fc;border:2px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;}
+.ad-topic{font-size:.9em;font-weight:600;margin-bottom:8px;}
+.ad-btns{display:flex;gap:8px;}
+.ad-btn{flex:1;border:2px solid #d0d9f0;border-radius:8px;padding:7px;cursor:pointer;font-size:.82em;font-weight:600;background:white;text-align:center;transition:all .2s;}
+.ad-btn:hover{transform:translateY(-1px);}
+.ad-btn.agree-sel{background:#e8f5f2;border-color:var(--teal);color:#0d6e5a;}
+.ad-btn.disagree-sel{background:#fff8e1;border-color:var(--amber);color:#b45309;}
+.ad-btn.correct{border-color:var(--ok)!important;background:#d4edda!important;color:#1a6635!important;}
+.ad-btn.wrong{border-color:var(--bad)!important;background:#fde8e8!important;color:#922b21!important;}
+/* DISCUSSION CARDS */
+.disc-deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:16px;}
+.disc-card{min-height:130px;perspective:600px;cursor:pointer;}
+.disc-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s;border-radius:12px;}
+.disc-card.flipped .disc-inner{transform:rotateY(180deg);}
+.disc-front,.disc-back{position:absolute;inset:0;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:16px;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+.disc-front{background:linear-gradient(135deg,#1a1a2e,#16213e);color:white;font-weight:700;font-size:.9em;border:2px solid rgba(255,255,255,.12);}
+.disc-back{background:#d4f0ea;border:2px solid var(--teal);color:#0d6e5a;font-size:.84em;line-height:1.5;transform:rotateY(180deg);flex-direction:column;gap:6px;}
+.disc-flip-hint{font-size:.68em;opacity:.5;margin-top:8px;font-weight:400;}
+.qcard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px;}
+.qcard{background:white;border:2px solid var(--border);border-radius:10px;padding:14px;font-size:.88em;line-height:1.5;border-left:4px solid var(--teal);}
+.qcard .qnum{font-size:.72em;text-transform:uppercase;letter-spacing:.5px;color:var(--teal);font-weight:700;margin-bottom:4px;}
+/* FIND-SOMEONE-WHO */
+.fsw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+.fsw-item{background:white;border:2px solid var(--border);border-radius:10px;padding:14px;}
+.fsw-prompt{font-size:.88em;margin-bottom:8px;}
+.fsw-name-inp{width:100%;border:1.5px solid #d0d9f0;border-radius:6px;padding:5px 10px;font-size:.85em;font-family:inherit;outline:none;}
+.fsw-name-inp:focus{border-color:var(--teal);}
+/* SUMMARY */
+.summary{display:none;max-width:900px;margin:30px auto;padding:0 20px;}
+.summary-card{background:linear-gradient(135deg,#1a1a2e,#16213e);color:white;border-radius:16px;padding:30px;text-align:center;}
+.summary-card h2{font-size:1.8em;margin-bottom:6px;}
+.sub-name{opacity:.7;font-size:.9em;margin-bottom:20px;}
+.score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:20px 0;}
+.sc-tile{background:rgba(255,255,255,.1);border-radius:10px;padding:14px;text-align:center;}
+.sc-tile .sc-num{font-size:1.8em;font-weight:800;color:#f0c040;}
+.sc-tile .sc-lbl{font-size:.75em;opacity:.7;margin-top:4px;}
+.summary-msg{font-size:1em;opacity:.85;line-height:1.7;margin-top:16px;}
+.restart-btn{background:var(--primary);color:white;border:none;border-radius:10px;padding:12px 30px;cursor:pointer;font-size:.95em;font-weight:700;margin-top:20px;transition:opacity .2s;}
+.restart-btn:hover{opacity:.85;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes wavePulse{0%,100%{height:4px;}50%{height:18px;}}
+@keyframes confFall{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(80px) rotate(360deg);opacity:0;}}
+@media(max-width:600px){.header h1{font-size:1.5em;}.gram-cols{grid-template-columns:1fr;}.ll-grid{grid-template-columns:1fr;}.wyst-grid{grid-template-columns:1fr;}.disc-deck{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Love it or loathe it? ❤️💔</h1>
+  <div class="sub">Vocabulary · Listening · Grammar · Speaking</div>
+</div>
+
+<div class="name-strip">
+  <label for="sname">Student name:</label>
+  <input class="name-inp" id="sname" type="text" placeholder="Type your name…">
+</div>
+
+<div class="trail">
+  <div class="trail-col"><div class="t-dot active" id="td0">1</div><div class="t-lbl active" id="tl0">Warm-up</div></div>
+  <div class="t-line"></div>
+  <div class="trail-col"><div class="t-dot" id="td1">2</div><div class="t-lbl" id="tl1">Listening</div></div>
+  <div class="t-line"></div>
+  <div class="trail-col"><div class="t-dot" id="td2">3</div><div class="t-lbl" id="tl2">Vocab</div></div>
+  <div class="t-line"></div>
+  <div class="trail-col"><div class="t-dot" id="td3">4</div><div class="t-lbl" id="tl3">Discuss</div></div>
+  <div class="t-line"></div>
+  <div class="trail-col"><div class="t-dot" id="td4">5</div><div class="t-lbl" id="tl4">Reading</div></div>
+  <div class="t-line"></div>
+  <div class="trail-col"><div class="t-dot" id="td5">6</div><div class="t-lbl" id="tl5">Grammar</div></div>
+  <div class="t-line"></div>
+  <div class="trail-col"><div class="t-dot" id="td6">7</div><div class="t-lbl" id="tl6">Verb Forms</div></div>
+  <div class="t-line"></div>
+  <div class="trail-col"><div class="t-dot" id="td7">8</div><div class="t-lbl" id="tl7">Practice</div></div>
+  <div class="t-line"></div>
+  <div class="trail-col"><div class="t-dot" id="td8">9</div><div class="t-lbl" id="tl8">Speaking</div></div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+  <div class="prog-text" id="progText">Stage 0 / 9</div>
+</div>
+<div class="divider"></div>
+
+<!-- ====== STAGE 1: WARM-UP ====== -->
+<div class="stage" id="stage0">
+  <div class="stage-hd">
+    <div class="stage-num sn-red">1</div>
+    <div class="stage-ttl">Warm-up: Love it or loathe it?</div>
+    <div class="stage-time">⏱ 5 min</div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Ex 1</span> Discuss with a partner</div>
+    <p class="hint">Think about things you feel strongly about — love or loathe.</p>
+    <div style="background:#f0f4ff;border-left:4px solid var(--teal);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:10px;font-size:.9em;">💬 What three things in life do you really <strong>love</strong>? Share with your partner.</div>
+    <div style="background:#f0f4ff;border-left:4px solid var(--primary);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:10px;font-size:.9em;">💬 What three things do you really <strong>loathe</strong>? Why?</div>
+    <div style="background:#f0f4ff;border-left:4px solid var(--amber);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:16px;font-size:.9em;">💬 Has your opinion of something ever completely changed — something you used to love that you now loathe, or vice versa?</div>
+
+    <div class="wyst-card">
+      <h4>🔮 Before you listen — predict!</h4>
+      <p style="font-size:.85em;margin-bottom:10px;">You're going to hear 8 short conversations. What topics might people discuss? Click the ones you think will appear:</p>
+      <div class="wyst-grid" id="wystGrid"></div>
+      <p style="font-size:.8em;color:var(--light);margin-top:10px;font-style:italic;">Compare your predictions with your partner — then find out after you listen!</p>
+    </div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,#1a1a2e,#16213e);color:white;">
+    <div class="card-ttl" style="color:#f0c040;">🎯 Today's Learning Goals</div>
+    <div style="font-size:.88em;line-height:2;opacity:.92;">
+      ✅ Talk about strong feelings using <strong>8 common idioms</strong><br>
+      ✅ Listen for attitude: does the speaker love it or loathe it?<br>
+      ✅ Use <strong>verb + -ing</strong> and <strong>infinitive with to</strong> correctly<br>
+      ✅ Understand meaning changes: <em>remember / try / stop</em><br>
+      ✅ Share opinions and agree / disagree politely
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="nextStage(0)">Start listening →</button>
+</div>
+
+<!-- ====== STAGE 2: LISTENING — Ex 2a + 2b ====== -->
+<div class="stage" id="stage1" style="display:none;">
+  <div class="stage-hd">
+    <div class="stage-num sn-red">2</div>
+    <div class="stage-ttl">Listening: Track 6.1</div>
+    <div class="stage-time">⏱ 10 min</div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Ex 2a</span> Listen to 8 conversations. What's the topic? Do they love ❤️ or loathe 💔 it?</div>
+    <p class="hint">For each conversation, select whether the speaker(s) love it or loathe it.</p>
+    <button class="audio-btn" onclick="toggleScript('as61')">
+      <span style="font-size:1.3em;">▶</span>
+      <span>Track 6.1 <span class="audio-note">— 8 short conversations</span></span>
+      <div class="wave"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>
+    </button>
+    <div class="audioscript" id="as61"><div class="albl">Audioscript · Track 6.1</div><div class="chat-wrap" id="as61chat"></div></div>
+    <div class="ll-grid" id="llGrid"></div>
+    <button class="check-btn cb-r" onclick="checkEx2a()">Check answers</button>
+    <div class="score" id="sc2a"></div>
+    <div class="feedback-msg" id="fb2a"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Ex 2b</span> Listen again. Complete the idiom in each sentence.</div>
+    <p class="hint">You hear part of the sentence — type the missing idiom in the box.</p>
+    <div id="ex2bRows"></div>
+    <button class="check-btn cb-r" onclick="checkEx2b()">Check answers</button>
+    <div class="score" id="sc2b"></div>
+    <div class="feedback-msg" id="fb2b"></div>
+  </div>
+
+  <button class="next-btn" onclick="nextStage(1)">Next: Vocabulary →</button>
+</div>
+
+<!-- ====== STAGE 3: VOCABULARY — Ex 2c + flashcards + Ex 3 ====== -->
+<div class="stage" id="stage2" style="display:none;">
+  <div class="stage-hd">
+    <div class="stage-num sn-teal">3</div>
+    <div class="stage-ttl">Vocabulary: Idioms</div>
+    <div class="stage-time">⏱ 10 min</div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Ex 2c</span> Match each idiom (1–8) with its meaning (a–h).</div>
+    <p class="hint">Use the dropdown next to each idiom to select the correct meaning.</p>
+    <div id="ex2cRows"></div>
+    <button class="check-btn cb-r" onclick="checkEx2c()">Check answers</button>
+    <div class="score" id="sc2c"></div>
+    <div class="feedback-msg" id="fb2c"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-t">Flashcards</span> Click each card to see the meaning. Mark what you know.</div>
+    <div style="background:#e8f5f2;border:1px solid var(--teal);border-radius:8px;padding:10px 14px;font-size:.82em;color:#0d6e5a;margin-bottom:12px;">
+      💡 <strong>Vocabulary tip:</strong> Idioms have a fixed group meaning — different from the individual words. Some allow small changes: <em>he's driving me / it drives me up the wall</em>. Learn them as chunks!
+    </div>
+    <div class="srs-progress">
+      <div class="srs-bar-wrap"><div class="srs-bar-fill" id="srsBar"></div></div>
+      <div class="srs-stat" id="srsStat">0 / 8 known</div>
+    </div>
+    <div class="fc-grid" id="fcGrid"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-t">Ex 3</span> Make the sentences true for <em>you</em>.</div>
+    <p class="hint">The <u>underlined</u> idiom stays. Change only the rest of the sentence to make it true for you.</p>
+    <div id="ex3Rows"></div>
+    <div style="background:#e8f5f2;border:1px solid var(--teal);border-radius:8px;padding:10px 14px;font-size:.82em;color:#0d6e5a;margin-top:12px;">
+      💬 <strong>Speaking extension:</strong> Share your sentences with a partner. Do you agree? Try: <em>"Me too!"</em> or <em>"Really? I don't agree — for me…"</em>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="nextStage(2)">Next: Discussion →</button>
+</div>
+
+<!-- ====== STAGE 4: DISCUSSION CARDS ====== -->
+<div class="stage" id="stage3" style="display:none;">
+  <div class="stage-hd">
+    <div class="stage-num sn-amb">4</div>
+    <div class="stage-ttl">Discussion: Love it or loathe it?</div>
+    <div class="stage-time">⏱ 8 min</div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl">🃏 Discussion cards — flip to reveal a follow-up prompt</div>
+    <p class="hint">Click a card to flip it and see a speaking prompt. Discuss with your partner — try to use an idiom from the lesson!</p>
+    <div class="disc-deck" id="discDeck"></div>
+    <div style="background:#f0f4ff;border-left:4px solid var(--primary);border-radius:0 8px 8px 0;padding:10px 14px;font-size:.82em;margin-top:4px;">
+      🗣️ <strong>Language to use:</strong> <em>It drives me up the wall… / I'm over the moon about… / It takes my breath away… / It's out of this world… / It's such a pain…</em>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl">❓ Discussion questions</div>
+    <p class="hint">Work through these with your partner. Give reasons and ask follow-up questions.</p>
+    <div class="qcard-grid" id="qcardGrid"></div>
+  </div>
+
+  <button class="next-btn" onclick="nextStage(3)">Next: Reading →</button>
+</div>
+
+<!-- ====== STAGE 5: READING — Ex 4 + Ex 5 ====== -->
+<div class="stage" id="stage4" style="display:none;">
+  <div class="stage-hd">
+    <div class="stage-num sn-amb">5</div>
+    <div class="stage-ttl">Reading: Ten Minutes to Happiness</div>
+    <div class="stage-time">⏱ 10 min</div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-a">Ex 4</span> Read the text. What does the author recommend?</div>
+    <div class="predict-card">
+      <h4>🤔 Before you read — predict!</h4>
+      <p style="font-size:.85em;margin-bottom:6px;">What could you do in just <strong>ten minutes</strong> to feel happier? Write your ideas first:</p>
+      <textarea class="predict-inp" placeholder="My ideas…"></textarea>
+    </div>
+    <div class="reading-box">
+      <h4>📖 Ten Minutes to Happiness</h4>
+      <p>Clinical psychologist <strong>Sandi Mann</strong> suggests that spending just ten minutes a day focusing on the positives in your life can significantly improve your wellbeing. She recommends keeping a "happiness diary" — a daily record of small moments of joy that we usually take for granted.</p><br>
+      <p>Mann's research shows most people overlook everyday pleasures: sunlight on your face, coffee in the morning, a kind word from a stranger. By training yourself to notice these moments, you can gradually rewire your brain to experience more happiness.</p><br>
+      <p>Her six daily questions are designed to make you reflect on simple pleasures, moments of beauty, acts of kindness and things to be grateful for. The key is that they prompt you to use language precisely — describing experience through specific verbs and structures.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-a">Ex 5</span> Match each answer (a–i) to the correct question (1–6).</div>
+    <p class="hint">Some questions have more than one answer. Notice the <strong>bold verb forms</strong> — you'll work with these in the Grammar stage.</p>
+    <div id="ex5Qs" style="background:#f0f4ff;border-radius:8px;padding:12px;margin-bottom:14px;font-size:.86em;"></div>
+    <div id="ex5Rows"></div>
+    <button class="check-btn cb-a" onclick="checkEx5()">Check answers</button>
+    <div class="score" id="sc5"></div>
+    <div class="feedback-msg" id="fb5"></div>
+  </div>
+
+  <button class="next-btn" onclick="nextStage(4)">Next: Grammar →</button>
+</div>
+
+<!-- ====== STAGE 6: GRAMMAR BOX + Ex 6 ====== -->
+<div class="stage" id="stage5" style="display:none;">
+  <div class="stage-hd">
+    <div class="stage-num sn-teal">6</div>
+    <div class="stage-ttl">Grammar: Verb + -ing and infinitive with to</div>
+    <div class="stage-time">⏱ 8 min</div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-t">Grammar box</span> Study the rules, then match the bold phrases from Ex 5.</div>
+    <div class="gram-box">
+      <h4>📐 Verb + -ing and infinitive with <em>to</em></h4>
+      <div class="gram-cols">
+        <div class="gram-sec">
+          <h5>Use <em>-ing</em> after…</h5>
+          <div class="gram-rule"><span class="gram-tag">1</span>Certain verbs: <em>enjoy, consider, imagine, keep, quit, suggest, regret</em></div>
+          <div class="gram-rule"><span class="gram-tag">2</span>Prepositions &amp; phrasal verbs: <em>for, about, without, look forward to…</em></div>
+          <div class="gram-rule"><span class="gram-tag">3</span>Certain phrases: <em>no point, waste time, can't help, no use, be worth</em></div>
+          <div class="gram-rule"><span class="gram-tag">4</span>As the <strong>subject</strong> of a sentence</div>
+        </div>
+        <div class="gram-sec">
+          <h5>Use infinitive with <em>to</em> after…</h5>
+          <div class="gram-rule"><span class="gram-tag">5</span>Certain verbs: <em>afford, appear, choose, learn, manage, promise, forget</em></div>
+          <div class="gram-rule"><span class="gram-tag">6</span><em>It</em> + adjective: <em>It's nice to…, It's hard to…</em></div>
+          <div class="gram-rule"><span class="gram-tag">7</span>To express <strong>purpose</strong>: <em>I went there to see…</em></div>
+        </div>
+      </div>
+      <div style="background:white;border-radius:6px;padding:10px;margin-top:10px;font-size:.82em;border:1px solid #edd;">
+        ⚠️ <strong>Same meaning (both OK):</strong> begin, start, continue, hate<br>
+        ⚠️ <strong>Meaning changes:</strong> <em>remember, try, stop</em> — see next stage!
+      </div>
+    </div>
+
+    <div class="card-ttl" style="margin-top:16px;"><span class="ex ex-t">Ex 6</span> Match each bold phrase from Ex 5 to a grammar use (1–7).</div>
+    <p class="hint">Select the rule number that explains why each form is used.</p>
+    <div id="ex6Rows"></div>
+    <button class="check-btn cb-t" onclick="checkEx6()">Check answers</button>
+    <div class="score" id="sc6"></div>
+    <div class="feedback-msg" id="fb6"></div>
+  </div>
+
+  <button class="next-btn" onclick="nextStage(5)">Next: Verb forms →</button>
+</div>
+
+<!-- ====== STAGE 7: EX 7a — same verb, different meaning ====== -->
+<div class="stage" id="stage6" style="display:none;">
+  <div class="stage-hd">
+    <div class="stage-num sn-teal">7</div>
+    <div class="stage-ttl">Verb forms: Same verb, different meaning</div>
+    <div class="stage-time">⏱ 8 min</div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-t">Ex 7a</span> Track 6.2 — Listen to the sentences. How does the verb form change the meaning?</div>
+    <p class="hint">Listen to three pairs. Notice how <em>-ing</em> vs <em>to-infinitive</em> creates a completely different meaning.</p>
+    <button class="audio-btn" onclick="toggleScript('as62')">
+      <span style="font-size:1.3em;">▶</span>
+      <span>Track 6.2 <span class="audio-note">— Listen and compare</span></span>
+      <div class="wave"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>
+    </button>
+    <div class="audioscript" id="as62">
+      <div class="albl">Audioscript · Track 6.2</div>
+      <div style="font-size:.88em;line-height:2.1;">
+        <strong>1a</strong> Did you re<u>mem</u>ber <em>to lock</em> the <u>door</u>?<br>
+        <strong>1b</strong> Do you re<u>mem</u>ber <em>lock</em>ing the <u>door</u>?
+        <hr class="cs">
+        <strong>2a</strong> I <u>tried</u> <em>to eat</em> less <u>su</u>gar.<br>
+        <strong>2b</strong> I <u>tried</u> <em>eat</em>ing less <u>su</u>gar.
+        <hr class="cs">
+        <strong>3a</strong> I <u>stopped</u> <em>talk</em>ing to her.<br>
+        <strong>3b</strong> I <u>stopped</u> <em>to talk</em> to her.
+      </div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <div class="card-ttl"><span class="ex ex-t">Ex 7b</span> Explain the difference in meaning for each pair.</div>
+      <p class="hint">Read the meanings shown, then write the difference in your own words.</p>
+      <div id="ex7bRows"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl">🧠 Quick check — what's the difference?</div>
+    <p style="font-size:.88em;margin-bottom:10px;">Without looking, can you complete these sentences with the right form?</p>
+    <div style="font-size:.88em;line-height:2.2;">
+      <div>1. I stopped <input type="text" class="fill-input" style="width:90px;" placeholder="-ing/to…"> her because she was busy. <span style="font-size:.75em;color:var(--light);">(= I paused to do it)</span></div>
+      <div>2. I stopped <input type="text" class="fill-input" style="width:90px;" placeholder="-ing/to…"> her. <span style="font-size:.75em;color:var(--light);">(= I no longer do it)</span></div>
+      <div>3. Do you remember <input type="text" class="fill-input" style="width:90px;" placeholder="-ing/to…"> your keys? <span style="font-size:.75em;color:var(--light);">(= Do you have a memory?)</span></div>
+      <div>4. Remember <input type="text" class="fill-input" style="width:90px;" placeholder="-ing/to…"> your keys! <span style="font-size:.75em;color:var(--light);">(= Don't forget!)</span></div>
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="nextStage(6)">Next: Practice →</button>
+</div>
+
+<!-- ====== STAGE 8: EX 8 — verb form practice ====== -->
+<div class="stage" id="stage7" style="display:none;">
+  <div class="stage-hd">
+    <div class="stage-num sn-teal">8</div>
+    <div class="stage-ttl">Practice: Choosing the right form</div>
+    <div class="stage-time">⏱ 8 min</div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-t">Ex 8a</span> Choose the correct verb form. Think about the rule!</div>
+    <p class="hint">Click the correct option for each sentence. The grammar rule is shown as a hint.</p>
+    <div id="ex8aRows"></div>
+    <button class="check-btn cb-t" onclick="checkEx8a()">Check answers</button>
+    <div class="score" id="sc8a"></div>
+    <div class="feedback-msg" id="fb8a"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-t">Ex 8b</span> It's personal — answer these questions about your own life.</div>
+    <p class="hint">Use the correct verb form in your answer. Try to use an idiom from Ex 2!</p>
+    <div id="ex8bRows"></div>
+    <div style="background:#e8f5f2;border:1px solid var(--teal);border-radius:8px;padding:10px 14px;font-size:.82em;color:#0d6e5a;margin-top:10px;">
+      💬 <strong>Speaking:</strong> Share one answer with a partner. Do they have a similar experience?
+    </div>
+  </div>
+
+  <button class="next-btn" onclick="nextStage(7)">Next: Speaking →</button>
+</div>
+
+<!-- ====== STAGE 9: SPEAKING — discussion + oral practice ====== -->
+<div class="stage" id="stage8" style="display:none;">
+  <div class="stage-hd">
+    <div class="stage-num sn-red">9</div>
+    <div class="stage-ttl">Speaking: Share your loves and loathes</div>
+    <div class="stage-time">⏱ 10 min</div>
+  </div>
+
+  <!-- Ex 9a: Track 6.3 -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Ex 9a</span> Track 6.3 — Listen. What three things do they discuss?</div>
+    <p class="hint">Listen and decide whether the two speakers agree or disagree about each topic.</p>
+    <button class="audio-btn" onclick="toggleScript('as63')">
+      <span style="font-size:1.3em;">▶</span>
+      <span>Track 6.3 <span class="audio-note">— Two people talking</span></span>
+      <div class="wave"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>
+    </button>
+    <div class="audioscript" id="as63">
+      <div class="albl">Audioscript · Track 6.3</div>
+      <div class="chat-wrap" id="as63chat"></div>
+    </div>
+    <div style="margin-top:14px;">
+      <p style="font-size:.9em;font-weight:600;margin-bottom:10px;">Do the two speakers agree or disagree about each topic?</p>
+      <div id="adGrid"></div>
+      <button class="check-btn cb-r" onclick="checkEx9a()">Check answers</button>
+      <div class="score" id="sc9a"></div>
+      <div class="feedback-msg" id="fb9a"></div>
+    </div>
+  </div>
+
+  <!-- Ex 9b: Personal list -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Ex 9b</span> Make your own list — then discuss it!</div>
+    <p style="font-size:.88em;margin-bottom:12px;">Write three things you love and three you loathe. Then find a partner and compare — do you agree or disagree?</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;">
+      <div>
+        <div style="font-weight:700;color:#c2185b;margin-bottom:8px;font-size:.9em;">❤️ 3 things I LOVE</div>
+        <textarea class="predict-inp" placeholder="1.&#10;2.&#10;3." style="min-height:90px;border-color:#e91e63;"></textarea>
+      </div>
+      <div>
+        <div style="font-weight:700;color:#3949ab;margin-bottom:8px;font-size:.9em;">💔 3 things I LOATHE</div>
+        <textarea class="predict-inp" placeholder="1.&#10;2.&#10;3." style="min-height:90px;border-color:#5c6bc0;"></textarea>
+      </div>
+    </div>
+    <div style="background:#f0f4ff;border-left:4px solid var(--teal);border-radius:0 8px 8px 0;padding:10px 14px;font-size:.85em;margin-top:12px;">
+      💬 <strong>Useful expressions:</strong> <em>"I'm not a big fan of…"  /  "It drives me up the wall!"  /  "I'm absolutely over the moon about…"  /  "We'll have to agree to disagree."</em>
+    </div>
+  </div>
+
+  <!-- Find someone who -->
+  <div class="card">
+    <div class="card-ttl">🔍 Find someone who… (class mingle)</div>
+    <p class="hint">Walk around the class. Ask classmates the question. When you find a match, write their name!</p>
+    <div class="fsw-grid" id="fswGrid"></div>
+  </div>
+
+  <!-- Useful phrases chip-builder -->
+  <div class="card">
+    <div class="card-ttl"><span class="ex ex-r">Oral practice</span> Build your conversation with useful phrases.</div>
+    <div style="background:#e8f5f2;border-left:4px solid var(--teal);border-radius:0 8px 8px 0;padding:10px 14px;font-size:.86em;margin-bottom:12px;">
+      <strong>Task:</strong> Take turns introducing a topic (<em>"What do you think about…?"</em>). The other person responds. Try to use at least three different phrases from the bank below!
+    </div>
+    <div class="phrases-box">
+      <h4>💬 Useful Phrases</h4>
+      <div class="ph-cat">
+        <div class="ph-cat-ttl">Asking for opinions</div>
+        <ul class="ph-list"><li>What do you think about …?</li><li>How do you feel about …?</li></ul>
+      </div>
+      <div class="ph-cat">
+        <div class="ph-cat-ttl">Expressing dislike</div>
+        <ul class="ph-list"><li>I'm not a big fan, really.</li><li>I can't stand it!</li><li>It drives me up the wall!</li><li>It's such a pain.</li></ul>
+      </div>
+      <div class="ph-cat">
+        <div class="ph-cat-ttl">Expressing love / enthusiasm</div>
+        <ul class="ph-list"><li>I'm absolutely over the moon about it.</li><li>It takes my breath away!</li><li>It's out of this world!</li></ul>
+      </div>
+      <div class="ph-cat">
+        <div class="ph-cat-ttl">Agreeing / Disagreeing</div>
+        <ul class="ph-list"><li>I totally agree!</li><li>We'll have to agree to disagree.</li></ul>
+      </div>
+    </div>
+    <p style="font-size:.88em;margin-bottom:10px;font-weight:600;">Click phrases to add them to your conversation:</p>
+    <div class="chip-bank" id="chipBank"></div>
+    <div class="chip-drop" id="chipDrop"><span style="font-size:.8em;color:var(--light);">Your phrases appear here — click to remove</span></div>
+    <button class="check-btn cb-r" onclick="clearChips()">Clear</button>
+  </div>
+
+  <button class="next-btn" onclick="nextStage(8)">Finish &amp; see summary →</button>
+</div>
+
+<!-- ====== SUMMARY ====== -->
+<div class="summary" id="summaryPanel">
+  <div class="summary-card">
+    <h2>🎉 Lesson Complete!</h2>
+    <div class="sub-name" id="summName">Great work today!</div>
+    <div class="score-grid" id="summGrid"></div>
+    <div class="summary-msg" id="summMsg"></div>
+    <button class="restart-btn" onclick="location.reload()">↩ Restart lesson</button>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+
+const IDIOMS=[
+  {front:'judge a book by its cover',  back:'form an opinion based only on how something looks',          ex:'Just goes to show, doesn\'t it? You can\'t <strong>judge a book by its cover</strong>.'},
+  {front:'drive sb up the wall',       back:'make someone very angry or frustrated',                       ex:'I can\'t. It\'s <strong>driving me up the wall</strong>.'},
+  {front:'be such a pain',             back:'be very annoying or troublesome',                             ex:'Awful. It\'s <strong>such a pain</strong>. Anyhow, I found a space eventually.'},
+  {front:'cost an arm and a leg',      back:'be very expensive',                                           ex:'Are you joking? They <strong>cost an arm and a leg</strong>!'},
+  {front:"take sb's breath away",      back:'be extremely beautiful or surprising',                        ex:'Wow! It <strong>takes your breath away</strong>, doesn\'t it?'},
+  {front:'be over the moon',           back:'be extremely happy about something',                          ex:'Are you serious? I\'m <strong>over the moon</strong>.'},
+  {front:'be a piece of cake',         back:'be very easy to do',                                          ex:'Nah! It\'s <strong>a piece of cake</strong>. I love giving speeches.'},
+  {front:'be out of this world',       back:'be excellent or extraordinary',                               ex:'It\'s <strong>out of this world</strong>. The best cheesecake I\'ve ever tasted.'},
+];
+
+const CONVS=[
+  {topic:'a date',                           love:false,
+   lines:[{r:false,msg:"So how was your date, then?"},
+          {r:true, msg:"He didn't stop talking about himself the whole evening."},
+          {r:false,msg:"I hate it when people do that."},
+          {r:true, msg:"Me, too. First, he told me about his job, then his car, then his motorbike, then his plans for the future…"},
+          {r:false,msg:"Self-obsessed. I bet he didn't ask you a single question."},
+          {r:true, msg:"Not a single one! And he looked so kind and clever."},
+          {r:false,msg:"Just goes to show, doesn't it? You can't <strong>judge a book by its cover</strong>."},
+          {r:true, msg:"Very true."}]},
+  {topic:'techno music from next door',      love:false,
+   lines:[{r:false,msg:"Can you hear that?"},
+          {r:true, msg:"What?"},
+          {r:false,msg:"That music. It's coming from next door, I think."},
+          {r:true, msg:"Oh, yeah. Sounds like techno. Just ignore it."},
+          {r:false,msg:"I can't. It's <strong>driving me up the wall</strong>."},
+          {r:true, msg:"Why don't you ask him to turn it down?"},
+          {r:false,msg:"I can't do that, either. We don't talk to each other any more."}]},
+  {topic:'parking near the hospital',        love:false,
+   lines:[{r:false,msg:"…so after I left work on Friday I went to visit Audrey in hospital."},
+          {r:true, msg:"Audrey?"},
+          {r:false,msg:"My neighbour. She's just had an operation. I tried to park but it was impossible. Couldn't find a space."},
+          {r:true, msg:"Parking is terrible round there."},
+          {r:false,msg:"Awful. It's <strong>such a pain</strong>. Anyhow, I found a space eventually and went to see her. She was looking so much better."},
+          {r:true, msg:"Oh, that's good to hear."}]},
+  {topic:'new high-definition TVs',          love:true,
+   lines:[{r:false,msg:"Hey, you seen those new TVs?"},
+          {r:true, msg:"What, the fancy high-definition ones?"},
+          {r:false,msg:"Super high-definition, eight-k screen with built-in surround-sound audio."},
+          {r:true, msg:"Sounds amazing."},
+          {r:false,msg:"Yeah."},
+          {r:true, msg:"You thinking of getting one?"},
+          {r:false,msg:"Are you joking? They <strong>cost an arm and a leg</strong>. No, I thought you might want to buy one."},
+          {r:true, msg:"Me? No way! They're too expensive."}]},
+  {topic:'shooting stars in the night sky',  love:true,
+   lines:[{r:false,msg:"Extraordinary, isn't it."},
+          {r:true, msg:"Beautiful… See that?"},
+          {r:false,msg:"What?"},
+          {r:true, msg:"It was a shooting star… There's another one."},
+          {r:false,msg:"Wow! It <strong>takes your breath away</strong>, doesn't it?"},
+          {r:true, msg:"Totally."}]},
+  {topic:'a neighbour who is moving away',   love:true,
+   lines:[{r:false,msg:"I see he's got a 'for sale' board up."},
+          {r:true, msg:"Who?"},
+          {r:false,msg:"Your neighbour. Mr Jenkins."},
+          {r:true, msg:"What, old Mr Nosey Parker! I didn't know he was moving!"},
+          {r:false,msg:"Yeah, the sign says 'for sale'. Are you sad he's going?"},
+          {r:true, msg:"Are you serious? I'm <strong>over the moon</strong>."},
+          {r:false,msg:"So you're not going to miss him."},
+          {r:true, msg:"Not for a second. He's always poking his nose into my business. Hopefully somebody nice will move in."}]},
+  {topic:'giving speeches',                  love:true,
+   lines:[{r:false,msg:"So, are you ready?"},
+          {r:true, msg:"Yep, all set."},
+          {r:false,msg:"Have you learnt your speech?"},
+          {r:true, msg:"Yep, got it word perfect."},
+          {r:false,msg:"You're not at all nervous, are you?"},
+          {r:true, msg:"Why should I be?"},
+          {r:false,msg:"Well, you're about to give a speech in front of several hundred people. That would make most people nervous."},
+          {r:true, msg:"Nah! It's <strong>a piece of cake</strong>. I love giving speeches. I can listen to the sound of my own voice!"}]},
+  {topic:'a dessert (cheesecake)',           love:true,
+   lines:[{r:false,msg:"Oh, this is good. This is really good."},
+          {r:true, msg:"The cheesecake?"},
+          {r:false,msg:"You have to try it. It's amazing."},
+          {r:true, msg:"Oh, yes, that's really good!"},
+          {r:false,msg:"Isn't it!"},
+          {r:true, msg:"It's <strong>out of this world</strong>. The best cheesecake I've ever tasted. Mmmm. Just one more bite."},
+          {r:false,msg:"Hey! It's also my cheesecake, so if you want more, get your own!"},
+          {r:true, msg:"Oh! That's so mean."}]},
+];
+
+const PROMPTS=[
+  "Just goes to show, doesn't it? You can't ___.",
+  "I can't. It's ___.",
+  "Awful. It's ___.",
+  "Are you joking? They ___.",
+  "Wow! It ___, doesn't it?",
+  "Are you serious? I'm ___.",
+  "Nah! It's ___. I love giving speeches.",
+  "It's ___. The best cheesecake I've ever tasted.",
+];
+const ANS2B=["judge a book by its cover","driving me up the wall","such a pain","cost an arm and a leg","takes your breath away","over the moon","a piece of cake","out of this world"];
+
+const MEANINGS=[
+  {l:'a',d:'easy to do'},
+  {l:'b',d:'making me angry'},
+  {l:'c',d:'very annoying'},
+  {l:'d',d:'is extremely beautiful'},
+  {l:'e',d:'excellent'},
+  {l:'f',d:'very happy'},
+  {l:'g',d:'form an opinion based on appearance alone'},
+  {l:'h',d:'are very expensive'},
+];
+const ANS2C=['g','b','c','h','d','f','a','e'];
+
+const EX3=[
+  {pre:"I'd rather walk than take a taxi because taxis ",bold:"cost an arm and a leg",post:'.'},
+  {pre:"The view from the clifftop ",bold:"takes your breath away",post:". It's spectacular!"},
+  {pre:"I was ",bold:"over the moon",post:" when I passed my driving test."},
+  {pre:"People who talk loudly on the phone on the train ",bold:"drive me up the wall",post:'.'},
+  {pre:"The food at my favourite restaurant is ",bold:"out of this world",post:'.'},
+  {pre:"Parallel parking has always been ",bold:"a piece of cake",post:" for me."},
+];
+
+// Discussion card data [front topic, back prompt]
+const DISC_CARDS=[
+  {front:'Noisy neighbours 🎵',         back:'Have you ever had a noisy neighbour? What did you do? Use: "It drives me up the wall…"'},
+  {front:'Bad first impressions 😬',    back:'Tell your partner about a time you judged someone wrong at first. Use: "You can\'t judge a book by its cover…"'},
+  {front:'A stunning view 🌅',           back:'Describe the most beautiful thing you\'ve ever seen. Use: "It takes your breath away…"'},
+  {front:'Expensive things 💸',          back:'What\'s the most expensive thing you\'ve ever bought? Was it worth it? Use: "It cost an arm and a leg…"'},
+  {front:'Something you\'re great at 🎯',back:'What\'s something most people find difficult that you find easy? Use: "For me, it\'s a piece of cake…"'},
+  {front:'Amazing food 🍰',              back:'Describe the best meal you\'ve ever had. Use: "It was out of this world…"'},
+];
+
+// Discussion question cards
+const QCARDS=[
+  {q:'Think of something you loathed as a child but love now (or vice versa). What changed?'},
+  {q:'Is there anything you love that most people loathe? How do you feel when people disagree with you?'},
+  {q:'Sandi Mann says we overlook everyday pleasures. What everyday pleasure do you appreciate most?'},
+  {q:'Would you rather have a neighbour who plays loud music or one who is always nosy? Why?'},
+  {q:'When is it a problem to always see the best in people — to never judge a book by its cover?'},
+  {q:'Can you think of a time when something "out of this world" happened to you?'},
+];
+
+// Find-someone-who prompts
+const FSW=[
+  {prompt:'Find someone who loves giving presentations or public speeches.'},
+  {prompt:'Find someone who loathes waiting — for buses, people, or anything!'},
+  {prompt:'Find someone who thinks expensive gadgets are worth the cost.'},
+  {prompt:'Find someone who has had a bad first impression that turned out to be wrong.'},
+  {prompt:'Find someone who finds parallel parking a piece of cake.'},
+  {prompt:'Find someone who loves a food most people dislike.'},
+];
+
+const EX5_QS=[
+  "1. What did you see, hear or do today that gave you simple pleasure?",
+  "2. What are you secretly pleased about — even if you maybe shouldn't be?",
+  "3. What lucky or unexpectedly kind thing happened to you?",
+  "4. What difficult moment did you handle calmly and well?",
+  "5. When did someone help you today?",
+  "6. What are you grateful for today?",
+];
+const EX5=[
+  {l:'a',text:'I felt grateful <strong>for being</strong> able to spend time doing something I love.',         q:6},
+  {l:'b',text:'I managed to sit through a long meeting <strong>without getting</strong> frustrated.',          q:4},
+  {l:'c',text:'I <strong>enjoy singing</strong> along to the radio when I\'m doing the washing-up.',          q:1},
+  {l:'d',text:'<strong>It\'s nice to wear</strong> comfortable clothes at home after a long day.',            q:1},
+  {l:'e',text:'I <strong>can\'t help liking</strong> the smell of chips, even though I\'m trying to eat healthily!', q:2},
+  {l:'f',text:'I went outside <strong>just to breathe in</strong> the fresh air.',                            q:1},
+  {l:'g',text:'<strong>Being helped</strong> by a colleague when I was stuck on a problem made my day.',      q:5},
+  {l:'h',text:'I <strong>enjoy watching</strong> the clouds change shape through the window.',                q:1},
+  {l:'i',text:'I couldn\'t <strong>afford to buy</strong> lunch, so a friend paid — it was such a kind gesture!', q:3},
+];
+
+const EX6=[
+  {phrase:'for being',           use:2},
+  {phrase:'without getting',     use:2},
+  {phrase:'enjoy singing',       use:1},
+  {phrase:"It's nice to wear",   use:6},
+  {phrase:"can't help liking",   use:3},
+  {phrase:'just to breathe in',  use:7},
+  {phrase:'Being helped',        use:4},
+  {phrase:'enjoy watching',      use:1},
+  {phrase:'afford to buy',       use:5},
+];
+
+const EX7B=[
+  {verb:'remember',
+   a:{sent:"Did you re<u>mem</u>ber <em>to lock</em> the door?",  meaning:"= Did you think of doing it (before you left)?"},
+   b:{sent:"Do you re<u>mem</u>ber <em>locking</em> the door?",   meaning:"= Do you have a memory of doing it?"}},
+  {verb:'try',
+   a:{sent:"I tried <em>to eat</em> less sugar.",                  meaning:"= I attempted it but it was difficult"},
+   b:{sent:"I tried <em>eating</em> less sugar.",                   meaning:"= I did it as an experiment to see what happened"}},
+  {verb:'stop',
+   a:{sent:"I stopped <em>talking</em> to her.",                    meaning:"= I no longer talk to her (I used to)"},
+   b:{sent:"I stopped <em>to talk</em> to her.",                    meaning:"= I paused what I was doing in order to talk to her"}},
+];
+
+const EX8A=[
+  {lbl:'1a',pre:'',               opts:['Watching','To watch'],          ans:'Watching',      post:' the sun rise gave me pleasure.',          hint:'Rule 4'},
+  {lbl:'1b',pre:'I got pleasure from ',opts:['drinking','to drink'],     ans:'drinking',      post:' a cup of coffee.',                        hint:'Rule 2'},
+  {lbl:'2a',pre:'She stopped ',   opts:['to hold','holding'],            ans:'to hold',       post:' the door open.',                          hint:'stop + to = purpose'},
+  {lbl:'2b',pre:'He always enjoys ',opts:['talking','to talk'],          ans:'talking',       post:' to me.',                                  hint:'Rule 1'},
+  {lbl:'3a',pre:'I was waiting ', opts:['to cross','crossing'],          ans:'to cross',      post:' the road.',                               hint:'Rule 7'},
+  {lbl:'3b',pre:"It's hard ",     opts:['to remember','remembering'],    ans:'to remember',   post:" everyone's names.",                       hint:'Rule 6'},
+  {lbl:'4a',pre:'She thought about ',opts:['eating','to eat'],           ans:'eating',        post:' some chocolate cake.',                    hint:'Rule 2'},
+  {lbl:'4b',pre:"I didn't waste time ",opts:['worrying','to worry'],     ans:'worrying',      post:' about work.',                             hint:'Rule 3'},
+  {lbl:'5a',pre:'He promised ',   opts:['to help','helping'],            ans:'to help',       post:' me.',                                     hint:'Rule 5'},
+  {lbl:'5b',pre:'She managed ',   opts:['to speak','speaking'],          ans:'to speak',      post:' to her dad.',                             hint:'Rule 5'},
+  {lbl:'6a',pre:'',               opts:['Calling','To call'],            ans:'Calling',       post:' my dad is how I expressed kindness.',      hint:'Rule 4'},
+  {lbl:'6b',pre:'I said thanks for ',opts:['explaining','to explain'],   ans:'explaining',    post:' that to me.',                             hint:'Rule 2'},
+];
+
+const EX8B=[
+  "What do you enjoy doing at the weekend?",
+  "What's something you can't help doing, even if you know you shouldn't?",
+  "What did you manage to do this week that you're proud of?",
+  "What's something you find it hard to remember to do?",
+  "Why are you studying English? (use 'to…')",
+];
+
+const AD_TOPICS=[
+  {topic:'People eating with their mouth open',agree:true},
+  {topic:"Sandy beaches on a hot summer's day", agree:false},
+  {topic:'Waiting for buses',agree:false},
+];
+const adPicks={};
+
+const AS63=[
+  {r:false,msg:"Do you want to go first?"},
+  {r:true, msg:"No, you go first."},
+  {r:false,msg:"All right. What do you think about people eating with their mouth open?"},
+  {r:true, msg:"Oh, I loathe that."},
+  {r:false,msg:"Me too. It drives me up the wall if I'm in a restaurant and I have to watch someone doing that."},
+  {r:true, msg:"Absolutely. I keep wanting to say, 'Where are your manners?' like my mum used to say to me."},
+  {r:false,msg:"Yeah! OK, your go."},
+  {r:true, msg:"All right. What do you think about sandy beaches on a hot summer's day?"},
+  {r:false,msg:"Oh, I'm not a big fan, really."},
+  {r:true, msg:"No?"},
+  {r:false,msg:"No. All that sand getting in your clothes and your towel. It's a bit of a pain."},
+  {r:true, msg:"Oh, I love it. Warm sand under your feet, the cool sea. It's heavenly."},
+  {r:false,msg:"Well, I guess we'll just have to agree to disagree on that one."},
+  {r:true, msg:"Yeah, but come on! What's not to like about a day at the beach?"},
+  {r:false,msg:"I like swimming in the sea and I like the beach — just not sandy beaches. Give me a nice pebbly beach any day."},
+  {r:true, msg:"All right. As you say, we have to agree to disagree. Your go."},
+  {r:false,msg:"What do you think about waiting for buses?"},
+  {r:true, msg:"Well… I don't love it but I don't loathe it, either."},
+  {r:false,msg:"No? I can't stand it. It drives me up the wall — just standing around, wasting time, waiting for a bus to appear…"},
+];
+
+const WYST_TOPICS=["a bad date","loud music","parking","expensive gadgets","a beautiful view","a neighbour","public speaking","dessert","the weather","exercise","social media","cooking"];
+
+const CHIPS_DATA=["What do you think about …?","How do you feel about …?","I'm not a big fan, really.","I can't stand it!","It drives me up the wall!","It's such a pain.","I'm absolutely over the moon about it.","It takes my breath away!","It's out of this world!","I totally agree!","We'll have to agree to disagree."];
+
+// ===== STATE =====
+let curStage=0;
+const TOTAL_STAGES=9;
+const scores={ex2a:{ok:0,tot:8},ex2b:{ok:0,tot:8},ex2c:{ok:0,tot:8},ex5:{ok:0,tot:9},ex6:{ok:0,tot:9},ex8a:{ok:0,tot:12},ex9a:{ok:0,tot:3}};
+let srsKnown=new Set();
+const llPicks={};
+const e8aPicks={};
+
+// ===== INIT =====
+window.addEventListener('load',()=>{
+  buildWYST();
+  buildAs61();
+  buildLLGrid();
+  buildEx2b();
+  buildEx2c();
+  buildFlashcards();
+  buildEx3();
+  buildDiscCards();
+  buildQCards();
+  buildFSW();
+  buildEx5();
+  buildEx6();
+  buildEx7b();
+  buildEx8a();
+  buildEx8b();
+  buildAs63();
+  buildADGrid();
+  buildChips();
+});
+
+// ===== WYST =====
+function buildWYST(){
+  const g=document.getElementById('wystGrid');
+  WYST_TOPICS.forEach(t=>{
+    const opt=document.createElement('div');opt.className='wyst-opt';opt.textContent=t;
+    opt.onclick=()=>opt.classList.toggle('yes');
+    g.appendChild(opt);
+  });
+}
+
+// ===== FLASHCARDS =====
+function buildFlashcards(){
+  const g=document.getElementById('fcGrid');
+  IDIOMS.forEach((id,i)=>{
+    const fc=document.createElement('div');fc.className='fc';fc.id='fc'+i;
+    fc.innerHTML=`<div class="fc-inner">
+      <div class="fc-front" style="font-size:.78em;padding:8px;">${id.front}</div>
+      <div class="fc-back">
+        <div class="fc-back-txt">${id.back}</div>
+        <div class="srs-btns">
+          <button class="srs-btn srs-know" onclick="srsGot(${i},event)">Got it ✓</button>
+          <button class="srs-btn srs-again" onclick="srsAgain(${i},event)">Again 🔄</button>
+        </div>
+      </div>
+    </div>`;
+    fc.addEventListener('click',()=>fc.classList.toggle('flipped'));
+    g.appendChild(fc);
+  });
+}
+function srsGot(i,e){e.stopPropagation();srsKnown.add(i);updateSRS();}
+function srsAgain(i,e){e.stopPropagation();srsKnown.delete(i);document.getElementById('fc'+i).classList.remove('flipped');updateSRS();}
+function updateSRS(){
+  const p=srsKnown.size/IDIOMS.length*100;
+  document.getElementById('srsBar').style.width=p+'%';
+  document.getElementById('srsStat').textContent=srsKnown.size+' / '+IDIOMS.length+' known';
+}
+
+// ===== AUDIOSCRIPT 6.1 =====
+function buildAs61(){
+  const wrap=document.getElementById('as61chat');
+  CONVS.forEach((conv,i)=>{
+    const sep=document.createElement('div');sep.className='chat-sep';
+    sep.textContent='Conversation '+(i+1)+' — '+conv.topic;wrap.appendChild(sep);
+    conv.lines.forEach(line=>{
+      const m=document.createElement('div');m.className='chat-msg'+(line.r?' right':'');
+      m.innerHTML=`<div class="chat-avatar ${line.r?'av-b':'av-a'}">${line.r?'B':'A'}</div>
+        <div class="chat-inner"><div class="chat-bubble">${line.msg}</div></div>`;
+      wrap.appendChild(m);
+    });
+  });
+}
+
+// ===== EX 2A =====
+function buildLLGrid(){
+  const g=document.getElementById('llGrid');
+  CONVS.forEach((c,i)=>{
+    const item=document.createElement('div');item.className='ll-item';
+    item.innerHTML=`<div class="ll-num">Conversation ${i+1}</div>
+      <div class="ll-topic">${c.topic}</div>
+      <div class="ll-btns">
+        <button class="ll-btn" id="llL${i}" onclick="pickLL(${i},'love')">❤️ Love</button>
+        <button class="ll-btn" id="llD${i}" onclick="pickLL(${i},'loathe')">💔 Loathe</button>
+      </div>`;
+    g.appendChild(item);
+  });
+}
+function pickLL(i,v){
+  llPicks[i]=v;
+  document.getElementById('llL'+i).className='ll-btn'+(v==='love'?' love-sel':'');
+  document.getElementById('llD'+i).className='ll-btn'+(v==='loathe'?' loathe-sel':'');
+}
+function checkEx2a(){
+  let ok=0;
+  CONVS.forEach((c,i)=>{
+    const lBtn=document.getElementById('llL'+i);
+    const dBtn=document.getElementById('llD'+i);
+    lBtn.classList.remove('love-sel','loathe-sel','correct','wrong');
+    dBtn.classList.remove('love-sel','loathe-sel','correct','wrong');
+    const corrBtn=c.love?lBtn:dBtn;corrBtn.classList.add('correct');
+    const picked=llPicks[i];
+    if(picked&&((picked==='love'&&c.love)||(picked==='loathe'&&!c.love))){ok++;}
+    else if(picked){(c.love?dBtn:lBtn).classList.add('wrong');}
+    lBtn.onclick=null;dBtn.onclick=null;
+  });
+  scores.ex2a={ok,tot:8};showScore('sc2a',ok,8,'fb2a');
+}
+
+// ===== EX 2B =====
+function buildEx2b(){
+  const c=document.getElementById('ex2bRows');
+  PROMPTS.forEach((p,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='padding:9px 0;border-bottom:1px solid var(--border);';
+    const display=p.replace('___','<span style="color:var(--light);font-style:italic;">___</span>');
+    row.innerHTML=`<div style="font-size:.88em;margin-bottom:5px;"><strong style="color:var(--primary);">${i+1}.</strong> "${display}"</div>
+      <input type="text" class="fill-input" id="e2b${i}" style="width:100%;" placeholder="Complete the idiom…">`;
+    c.appendChild(row);
+  });
+}
+function checkEx2b(){
+  let ok=0;
+  ANS2B.forEach((ans,i)=>{
+    const inp=document.getElementById('e2b'+i);
+    const val=inp.value.trim().toLowerCase().replace(/[^a-z\s]/g,'');
+    const tgt=ans.toLowerCase().replace(/[^a-z\s]/g,'');
+    const words=tgt.split(' ').filter(w=>w.length>2);
+    const hit=words.length&&words.filter(w=>val.includes(w)).length>=Math.ceil(words.length*.6);
+    if(hit){inp.classList.add('correct');ok++;}
+    else{inp.classList.add('wrong');inp.value='';inp.placeholder='Answer: '+ans;}
+    inp.readOnly=true;
+  });
+  scores.ex2b={ok,tot:8};showScore('sc2b',ok,8,'fb2b');
+}
+
+// ===== EX 2C =====
+function buildEx2c(){
+  const c=document.getElementById('ex2cRows');
+  IDIOMS.forEach((id,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;';
+    const sel=document.createElement('select');sel.className='match-select';sel.id='e2c'+i;
+    sel.innerHTML='<option value="">— choose meaning —</option>'+
+      MEANINGS.map(m=>`<option value="${m.l}">${m.l}) ${m.d}</option>`).join('');
+    row.innerHTML=`<span style="font-weight:700;color:var(--primary);min-width:22px;">${i+1}.</span>
+      <span style="font-style:italic;font-size:.88em;flex:1;min-width:150px;">${id.front}</span>`;
+    row.appendChild(sel);c.appendChild(row);
+  });
+}
+function checkEx2c(){
+  let ok=0;
+  ANS2C.forEach((ans,i)=>{
+    const sel=document.getElementById('e2c'+i);
+    sel.classList.remove('correct','wrong');
+    if(sel.value===ans){sel.classList.add('correct');ok++;}
+    else{sel.classList.add('wrong');}
+    sel.disabled=true;
+  });
+  scores.ex2c={ok,tot:8};showScore('sc2c',ok,8,'fb2c');
+}
+
+// ===== EX 3 =====
+function buildEx3(){
+  const c=document.getElementById('ex3Rows');
+  EX3.forEach((s,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='padding:9px 0;border-bottom:1px solid var(--border);font-size:.9em;';
+    row.innerHTML=`<div style="margin-bottom:4px;">${s.pre}<u style="color:var(--primary);font-weight:600;">${s.bold}</u>${s.post}</div>
+      <input type="text" class="fill-input" style="width:100%;" placeholder="Make it true for you…">`;
+    c.appendChild(row);
+  });
+}
+
+// ===== DISCUSSION CARDS =====
+function buildDiscCards(){
+  const deck=document.getElementById('discDeck');
+  DISC_CARDS.forEach((card,i)=>{
+    const dc=document.createElement('div');dc.className='disc-card';
+    dc.innerHTML=`<div class="disc-inner">
+      <div class="disc-front">
+        <div>
+          <div>${card.front}</div>
+          <div class="disc-flip-hint">click to flip 👆</div>
+        </div>
+      </div>
+      <div class="disc-back">
+        <div>${card.back}</div>
+      </div>
+    </div>`;
+    dc.addEventListener('click',()=>dc.classList.toggle('flipped'));
+    deck.appendChild(dc);
+  });
+}
+
+// ===== QUESTION CARDS =====
+function buildQCards(){
+  const grid=document.getElementById('qcardGrid');
+  QCARDS.forEach((item,i)=>{
+    const qc=document.createElement('div');qc.className='qcard';
+    qc.innerHTML=`<div class="qnum">Question ${i+1}</div><div>${item.q}</div>`;
+    grid.appendChild(qc);
+  });
+}
+
+// ===== FIND SOMEONE WHO =====
+function buildFSW(){
+  const grid=document.getElementById('fswGrid');
+  FSW.forEach(item=>{
+    const div=document.createElement('div');div.className='fsw-item';
+    div.innerHTML=`<div class="fsw-prompt">${item.prompt}</div>
+      <input class="fsw-name-inp" type="text" placeholder="Name…">`;
+    grid.appendChild(div);
+  });
+}
+
+// ===== EX 5 =====
+function buildEx5(){
+  const qBox=document.getElementById('ex5Qs');
+  qBox.innerHTML='<strong style="display:block;margin-bottom:8px;font-size:.88em;">Sandi Mann\'s six daily happiness questions:</strong>'+
+    EX5_QS.map(q=>`<div style="padding:3px 0;font-size:.86em;">${q}</div>`).join('');
+  const c=document.getElementById('ex5Rows');
+  EX5.forEach(item=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;';
+    const sel=document.createElement('select');sel.className='match-select';sel.id='e5'+item.l;
+    sel.innerHTML='<option value="">— Q —</option>'+[1,2,3,4,5,6].map(n=>`<option value="${n}">${n}</option>`).join('');
+    row.innerHTML=`<span style="font-weight:700;color:var(--amber);min-width:22px;">${item.l})</span>
+      <span style="font-size:.87em;flex:1;">${item.text}</span>`;
+    row.appendChild(sel);c.appendChild(row);
+  });
+}
+function checkEx5(){
+  let ok=0;
+  EX5.forEach(item=>{
+    const sel=document.getElementById('e5'+item.l);
+    sel.classList.remove('correct','wrong');
+    if(parseInt(sel.value)===item.q){sel.classList.add('correct');ok++;}
+    else{sel.classList.add('wrong');}
+    sel.disabled=true;
+  });
+  scores.ex5={ok,tot:9};showScore('sc5',ok,9,'fb5');
+}
+
+// ===== EX 6 =====
+function buildEx6(){
+  const c=document.getElementById('ex6Rows');
+  EX6.forEach((item,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;';
+    const sel=document.createElement('select');sel.className='match-select';sel.id='e6r'+i;
+    sel.innerHTML='<option value="">— use —</option>'+[1,2,3,4,5,6,7].map(n=>`<option value="${n}">${n}</option>`).join('');
+    row.innerHTML=`<span style="font-style:italic;font-size:.88em;flex:1;color:var(--teal);font-weight:600;">"${item.phrase}"</span>`;
+    row.appendChild(sel);c.appendChild(row);
+  });
+}
+function checkEx6(){
+  let ok=0;
+  EX6.forEach((item,i)=>{
+    const sel=document.getElementById('e6r'+i);
+    sel.classList.remove('correct','wrong');
+    if(parseInt(sel.value)===item.use){sel.classList.add('correct');ok++;}
+    else{sel.classList.add('wrong');}
+    sel.disabled=true;
+  });
+  scores.ex6={ok,tot:9};showScore('sc6',ok,9,'fb6');
+}
+
+// ===== EX 7B =====
+function buildEx7b(){
+  const c=document.getElementById('ex7bRows');
+  EX7B.forEach(pair=>{
+    const row=document.createElement('div');
+    row.style.cssText='padding:10px 0;border-bottom:1px solid var(--border);';
+    row.innerHTML=`<div style="font-size:.82em;font-weight:700;color:var(--teal);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">${pair.verb}</div>
+      <div style="font-size:.88em;margin-bottom:4px;"><strong>a</strong>  <em>${pair.a.sent}</em><br><span style="color:var(--light);font-size:.9em;padding-left:14px;">${pair.a.meaning}</span></div>
+      <div style="font-size:.88em;"><strong>b</strong>  <em>${pair.b.sent}</em><br><span style="color:var(--light);font-size:.9em;padding-left:14px;">${pair.b.meaning}</span></div>
+      <div style="margin-top:8px;"><textarea class="predict-inp" style="min-height:45px;border:1.5px solid var(--border);" placeholder="In your own words: what is the difference between a and b?"></textarea></div>`;
+    c.appendChild(row);
+  });
+}
+
+// ===== EX 8A =====
+function buildEx8a(){
+  const c=document.getElementById('ex8aRows');
+  EX8A.forEach((item,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='padding:10px 0;border-bottom:1px solid var(--border);';
+    row.innerHTML=`<div style="font-size:.78em;color:var(--light);font-weight:700;margin-bottom:6px;">${item.lbl} <span style="font-weight:400;">(${item.hint})</span></div>`;
+    const sentDiv=document.createElement('div');
+    sentDiv.style.cssText='display:flex;align-items:center;gap:5px;flex-wrap:wrap;font-size:.9em;';
+    if(item.pre)sentDiv.appendChild(mkSpan(item.pre));
+    item.opts.forEach(opt=>{
+      const btn=document.createElement('button');btn.className='alt-btn';btn.textContent=opt;
+      btn.onclick=()=>pickE8a(i,opt,row.querySelectorAll('.alt-btn'));
+      sentDiv.appendChild(btn);
+    });
+    if(item.post)sentDiv.appendChild(mkSpan(item.post));
+    row.appendChild(sentDiv);c.appendChild(row);
+  });
+}
+function mkSpan(t){const s=document.createElement('span');s.textContent=t;return s;}
+function pickE8a(i,val,btns){
+  e8aPicks[i]=val;
+  btns.forEach(b=>{b.classList.remove('selected');if(b.textContent===val)b.classList.add('selected');});
+}
+function checkEx8a(){
+  let ok=0;
+  EX8A.forEach((item,i)=>{
+    const row=document.getElementById('ex8aRows').children[i];
+    const btns=row.querySelectorAll('.alt-btn');
+    const picked=e8aPicks[i];
+    btns.forEach(b=>{
+      b.classList.remove('selected','correct','wrong');
+      if(b.textContent===item.ans){b.classList.add('correct');}
+      else if(picked&&b.textContent===picked){b.classList.add('wrong');}
+      b.onclick=null;
+    });
+    if(picked===item.ans)ok++;
+  });
+  scores.ex8a={ok,tot:12};showScore('sc8a',ok,12,'fb8a');
+}
+
+// ===== EX 8B =====
+function buildEx8b(){
+  const c=document.getElementById('ex8bRows');
+  EX8B.forEach((q,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='padding:9px 0;border-bottom:1px solid var(--border);';
+    row.innerHTML=`<div style="font-size:.88em;margin-bottom:5px;color:var(--text);">${i+1}. ${q}</div>
+      <textarea class="predict-inp" style="min-height:45px;border:1.5px solid var(--border);" placeholder="Your answer…"></textarea>`;
+    c.appendChild(row);
+  });
+}
+
+// ===== AUDIOSCRIPT 6.3 =====
+function buildAs63(){
+  const wrap=document.getElementById('as63chat');
+  AS63.forEach(line=>{
+    const m=document.createElement('div');m.className='chat-msg'+(line.r?' right':'');
+    m.innerHTML=`<div class="chat-avatar ${line.r?'av-b':'av-a'}">${line.r?'B':'A'}</div>
+      <div class="chat-inner"><div class="chat-bubble">${line.msg}</div></div>`;
+    wrap.appendChild(m);
+  });
+}
+
+// ===== EX 9A AGREE/DISAGREE =====
+function buildADGrid(){
+  const g=document.getElementById('adGrid');
+  AD_TOPICS.forEach((t,i)=>{
+    const item=document.createElement('div');item.className='ad-item';
+    item.innerHTML=`<div class="ad-topic">${i+1}. ${t.topic}</div>
+      <div class="ad-btns">
+        <button class="ad-btn" id="adA${i}" onclick="pickAD(${i},'agree')">✅ Agree</button>
+        <button class="ad-btn" id="adD${i}" onclick="pickAD(${i},'disagree')">❌ Disagree</button>
+      </div>`;
+    g.appendChild(item);
+  });
+}
+function pickAD(i,v){
+  adPicks[i]=v;
+  document.getElementById('adA'+i).className='ad-btn'+(v==='agree'?' agree-sel':'');
+  document.getElementById('adD'+i).className='ad-btn'+(v==='disagree'?' disagree-sel':'');
+}
+function checkEx9a(){
+  let ok=0;
+  AD_TOPICS.forEach((t,i)=>{
+    const aBtn=document.getElementById('adA'+i);
+    const dBtn=document.getElementById('adD'+i);
+    aBtn.classList.remove('agree-sel','disagree-sel','correct','wrong');
+    dBtn.classList.remove('agree-sel','disagree-sel','correct','wrong');
+    const corrBtn=t.agree?aBtn:dBtn;corrBtn.classList.add('correct');
+    const picked=adPicks[i];
+    if(picked&&((picked==='agree'&&t.agree)||(picked==='disagree'&&!t.agree))){ok++;}
+    else if(picked){(t.agree?dBtn:aBtn).classList.add('wrong');}
+    aBtn.onclick=null;dBtn.onclick=null;
+  });
+  scores.ex9a={ok,tot:3};showScore('sc9a',ok,3,'fb9a');
+}
+
+// ===== CHIPS =====
+function buildChips(){
+  const bank=document.getElementById('chipBank');
+  const drop=document.getElementById('chipDrop');
+  CHIPS_DATA.forEach(text=>{
+    const chip=document.createElement('div');chip.className='chip';chip.textContent=text;
+    chip.onclick=()=>{
+      if(chip.classList.contains('used'))return;
+      chip.classList.add('used');
+      const placed=document.createElement('div');placed.className='placed';placed.textContent=text;
+      placed.onclick=()=>{placed.remove();chip.classList.remove('used');};
+      const ph=drop.querySelector('span');if(ph)ph.remove();
+      drop.appendChild(placed);
+    };
+    bank.appendChild(chip);
+  });
+}
+function clearChips(){
+  document.querySelectorAll('#chipBank .chip').forEach(c=>c.classList.remove('used'));
+  document.getElementById('chipDrop').innerHTML='<span style="font-size:.8em;color:var(--light);">Your phrases appear here — click to remove</span>';
+}
+
+// ===== AUDIO TOGGLE =====
+function toggleScript(id){document.getElementById(id).classList.toggle('open');}
+
+// ===== SCORE/FEEDBACK =====
+function showScore(scId,ok,tot,fbId){
+  const pct=Math.round(ok/tot*100);
+  const sc=document.getElementById(scId);
+  sc.style.cssText=`display:block;margin-top:10px;padding:6px 14px;border-radius:8px;font-weight:600;font-size:.88em;background:${pct>=80?'#d4edda':pct>=60?'#fff3cd':'#fde8e8'};color:${pct>=80?'#1a6635':pct>=60?'#856404':'#7b1e1e'};`;
+  sc.textContent=ok+' / '+tot+' correct ('+pct+'%)';
+  const fb=document.getElementById(fbId);
+  fb.className='feedback-msg '+(pct===100?'fb-perfect':pct>=60?'fb-good':'fb-try');
+  fb.textContent=pct===100?'🎉 Perfect! Excellent work!':pct>=80?'✅ Great job — almost there!':pct>=60?'👍 Good attempt. Review the highlighted answers.':'💪 Keep practising! Check the correct answers above.';
+  fb.style.display='block';
+  if(pct===100)confetti();
+}
+
+// ===== CONFETTI =====
+function confetti(){
+  ['#C0392B','#16A085','#D97706','#f0c040','#8e44ad'].forEach((col,j)=>{
+    for(let i=0;i<5;i++){
+      const el=document.createElement('div');
+      el.style.cssText=`position:fixed;top:${5+Math.random()*25}%;left:${j*20+Math.random()*18}%;width:8px;height:8px;border-radius:2px;background:${col};animation:confFall .9s ease forwards;z-index:9999;pointer-events:none;`;
+      document.body.appendChild(el);setTimeout(()=>el.remove(),950);
+    }
+  });
+}
+
+// ===== STAGE NAV =====
+function nextStage(from){
+  document.getElementById('stage'+from).style.display='none';
+  document.getElementById('td'+from).className='t-dot done';
+  document.getElementById('tl'+from).className='t-lbl done';
+  curStage=from+1;
+  const pct=Math.round(curStage/TOTAL_STAGES*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progText').textContent='Stage '+curStage+' / '+TOTAL_STAGES;
+  if(curStage>=TOTAL_STAGES){showSummary();return;}
+  document.getElementById('stage'+curStage).style.display='block';
+  document.getElementById('td'+curStage).className='t-dot active';
+  document.getElementById('tl'+curStage).className='t-lbl active';
+  document.getElementById('stage'+curStage).scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ===== SUMMARY =====
+function showSummary(){
+  const panel=document.getElementById('summaryPanel');panel.style.display='block';
+  const name=document.getElementById('sname').value||'Student';
+  document.getElementById('summName').textContent='Well done, '+name+'!';
+  const rows=[
+    {lbl:'Ex 2a — Love/Loathe',s:scores.ex2a},
+    {lbl:'Ex 2b — Idioms',s:scores.ex2b},
+    {lbl:'Ex 2c — Meanings',s:scores.ex2c},
+    {lbl:'Ex 5 — Reading',s:scores.ex5},
+    {lbl:'Ex 6 — Grammar',s:scores.ex6},
+    {lbl:'Ex 8a — Verb forms',s:scores.ex8a},
+    {lbl:'Ex 9a — Agree/Disagree',s:scores.ex9a},
+  ];
+  let tOk=0,tTot=0;
+  rows.forEach(r=>{tOk+=r.s.ok;tTot+=r.s.tot;});
+  const pct=Math.round(tOk/tTot*100);
+  const grid=document.getElementById('summGrid');grid.innerHTML='';
+  const big=document.createElement('div');big.className='sc-tile';big.style.background='rgba(255,255,255,.2)';
+  big.innerHTML=`<div class="sc-num" style="font-size:2.4em;">${pct}%</div><div class="sc-lbl">Overall</div>`;
+  grid.appendChild(big);
+  rows.forEach(r=>{
+    const t=document.createElement('div');t.className='sc-tile';
+    t.innerHTML=`<div class="sc-num">${r.s.ok}/${r.s.tot}</div><div class="sc-lbl">${r.lbl}</div>`;
+    grid.appendChild(t);
+  });
+  document.getElementById('summMsg').textContent=
+    pct>=90?'Outstanding! You have a strong command of idioms and verb + -ing / infinitive. Brilliant work!':
+    pct>=70?'Great work! You have a solid grasp of the lesson. Review any exercises you found tricky.':
+    'Good effort! Idioms and verb forms take practice. Review the grammar box and try again!';
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+  if(pct>=90)confetti();
+}
+</script>
+</body>
+</html>
