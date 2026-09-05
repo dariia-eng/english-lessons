@@ -1,0 +1,509 @@
+<title>Life Without — Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@400;500;600;700&display=swap">
+
+<style>
+:root {
+  --purple:       #6B3FA0;
+  --purple-light: #F3EEFF;
+  --purple-mid:   rgba(107,63,160,.15);
+  --amber:        #B8710C;
+  --green:        #1A7A4A;
+  --green-light:  #EAFBF1;
+  --red:          #C0392B;
+  --red-light:    #FDF0EE;
+  --bg:           #FAFAF8;
+  --surface:      #FFFFFF;
+  --border:       rgba(0,0,0,.10);
+  --shadow:       0 1px 4px rgba(0,0,0,.08);
+  --text:         #1A1A1A;
+  --text-muted:   #6B6B6B;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111117; --surface: #1C1C24; --border: rgba(255,255,255,.10);
+    --shadow: 0 1px 6px rgba(0,0,0,.4); --text: #F0F0F0; --text-muted: #9A9A9A;
+    --purple-light: rgba(107,63,160,.18); --green-light: rgba(26,122,74,.15);
+    --red-light: rgba(192,57,43,.13);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111117; --surface: #1C1C24; --border: rgba(255,255,255,.10);
+  --shadow: 0 1px 6px rgba(0,0,0,.4); --text: #F0F0F0; --text-muted: #9A9A9A;
+  --purple-light: rgba(107,63,160,.18); --green-light: rgba(26,122,74,.15);
+  --red-light: rgba(192,57,43,.13);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; }
+
+/* HEADER */
+.hw-header { background: var(--purple); color: #fff; padding: 28px 24px 24px; text-align: center; position: relative; }
+.hw-header .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .75; margin-bottom: 6px; }
+.hw-header h1 { font-family: 'Fraunces', Georgia, serif; font-size: clamp(22px,5vw,32px); font-weight: 700; line-height: 1.2; text-wrap: balance; margin-bottom: 4px; }
+.hw-header .subtitle { font-size: 13px; opacity: .8; }
+.theme-btn { position: absolute; top: 14px; right: 16px; background: rgba(255,255,255,.15); border: none; color: #fff; font-size: 12px; font-family: inherit; padding: 4px 10px; border-radius: 20px; cursor: pointer; }
+.theme-btn:hover { background: rgba(255,255,255,.25); }
+
+/* NAME BAR */
+.name-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; box-shadow: var(--shadow); }
+.name-bar label { font-size: 13px; font-weight: 600; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
+.name-input { flex: 1; max-width: 320px; font-family: inherit; font-size: 14px; font-weight: 600; border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 12px; background: var(--bg); color: var(--text); transition: border-color .15s; }
+.name-input:focus { outline: none; border-color: var(--purple); }
+.name-input::placeholder { font-weight: 400; color: var(--text-muted); }
+
+/* PROGRESS */
+.progress-wrap { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 14px; }
+.progress-track { flex: 1; height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--purple); border-radius: 99px; width: 0%; transition: width .4s ease; }
+.progress-label { font-size: 12px; font-weight: 700; color: var(--purple); white-space: nowrap; min-width: 60px; text-align: right; }
+
+/* MAIN */
+.main { max-width: 740px; margin: 0 auto; padding: 28px 20px 60px; display: flex; flex-direction: column; gap: 28px; }
+
+/* EXERCISE CARD */
+.ex-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px 22px 18px; box-shadow: var(--shadow); }
+.ex-hd { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.ex-num { background: var(--purple); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .06em; border-radius: 8px; padding: 3px 9px; flex-shrink: 0; margin-top: 2px; }
+.ex-title { font-family: 'Fraunces', Georgia, serif; font-size: 17px; font-weight: 600; line-height: 1.3; }
+.score-badge { display: none; background: var(--purple-light); color: var(--purple); font-size: 12px; font-weight: 700; border-radius: 20px; padding: 3px 10px; margin-left: auto; flex-shrink: 0; }
+.score-badge.show { display: inline-block; }
+.score-badge.full { background: var(--green-light); color: var(--green); }
+.ex-instr { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
+
+/* MULTIPLE CHOICE */
+.mc-block { margin-bottom: 16px; }
+.mc-sent { font-size: 14px; margin-bottom: 10px; line-height: 1.6; }
+.mc-num { font-weight: 700; color: var(--purple); margin-right: 4px; }
+.mc-opts { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+.mc-opt { border: 1.5px solid var(--border); border-radius: 20px; padding: 5px 14px; font-size: 13px; font-weight: 600; cursor: pointer; background: var(--bg); color: var(--text); font-family: inherit; transition: background .12s, border-color .12s; }
+.mc-opt:hover { border-color: var(--purple); background: var(--purple-light); }
+.mc-opt.selected { background: var(--purple-light); border-color: var(--purple); color: var(--purple); }
+.mc-opt.correct  { background: var(--green-light); border-color: var(--green); color: var(--green); }
+.mc-opt.wrong    { background: var(--red-light); border-color: var(--red); color: var(--red); }
+.mc-fb { font-size: 12px; margin-top: 4px; min-height: 16px; }
+.mc-fb.ok { color: var(--green); }
+.mc-fb.no { color: var(--red); }
+
+/* MATCHING */
+.match-area { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin-bottom: 8px; }
+.match-col-hd { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+.match-item { border: 1.5px solid var(--border); border-radius: 10px; padding: 9px 12px; font-size: 13px; cursor: pointer; background: var(--bg); transition: border-color .12s, background .12s; line-height: 1.4; user-select: none; }
+.match-item:hover { border-color: var(--purple); background: var(--purple-light); }
+.match-item.selected { border-color: var(--purple); background: var(--purple-light); }
+.match-item.correct  { border-color: var(--green); background: var(--green-light); color: var(--green); cursor: default; }
+.match-item.wrong    { border-color: var(--red); background: var(--red-light); color: var(--red); }
+.match-item.used     { opacity: .45; cursor: default; }
+.match-hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+/* GAP-FILL */
+.gf-sent { font-size: 14px; line-height: 2; margin-bottom: 12px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px; }
+.gf-num { font-weight: 700; color: var(--purple); margin-right: 4px; font-size: 13px; flex-shrink: 0; }
+.gf-input { font-family: inherit; font-size: 14px; font-weight: 600; border: none; border-bottom: 2px solid var(--purple); padding: 1px 6px; background: transparent; color: var(--text); min-width: 130px; outline: none; transition: border-color .15s; }
+.gf-input:focus { border-bottom-color: var(--amber); }
+.gf-input.correct { border-bottom-color: var(--green); color: var(--green); }
+.gf-input.wrong   { border-bottom-color: var(--red);   color: var(--red); }
+
+/* BUTTONS */
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
+.check-btn { background: var(--purple); color: #fff; border: none; border-radius: 10px; padding: 9px 20px; font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer; transition: opacity .15s; }
+.check-btn:hover { opacity: .87; }
+.reset-btn { background: none; border: 1.5px solid var(--border); color: var(--text-muted); border-radius: 10px; padding: 8px 16px; font-size: 13px; font-family: inherit; cursor: pointer; }
+.reset-btn:hover { border-color: var(--text-muted); }
+
+/* SEND CARD */
+.send-card { background: var(--purple); border-radius: 16px; padding: 24px 22px; text-align: center; color: #fff; }
+.send-card h2 { font-family: 'Fraunces', Georgia, serif; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.send-card p { font-size: 13px; opacity: .85; margin-bottom: 18px; }
+.send-btn { background: #fff; color: var(--purple); border: none; border-radius: 12px; padding: 12px 28px; font-size: 14px; font-weight: 800; font-family: inherit; cursor: pointer; transition: opacity .15s; }
+.send-btn:hover { opacity: .9; }
+.send-status { font-size: 13px; margin-top: 10px; min-height: 18px; }
+.send-status.ok { color: #b6ffda; }
+.send-status.no { color: #ffc0b3; }
+</style>
+
+<!-- HEADER -->
+<div class="hw-header">
+  <div class="eyebrow">Second Conditional · Homework</div>
+  <h1>Life Without…</h1>
+  <div class="subtitle">Complete all three exercises, then send to your teacher.</div>
+  <button class="theme-btn" onclick="toggleTheme()">🌙 Dark</button>
+</div>
+
+<!-- NAME -->
+<div class="name-bar">
+  <label for="sname">Your name</label>
+  <input type="text" id="sname" class="name-input" placeholder="Type your name here…" autocomplete="given-name">
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+  <div class="progress-label" id="plabel">0 / 3</div>
+</div>
+
+<div class="main">
+
+  <!-- ══ EX 1 — CHOOSE THE CORRECT FORM ══ -->
+  <div class="ex-card" id="card-ex1">
+    <div class="ex-hd">
+      <div class="ex-num">EX 1</div>
+      <div class="ex-title">Choose the correct form</div>
+      <span class="score-badge" id="score-ex1"></span>
+    </div>
+    <p class="ex-instr">Click the correct option for each sentence.</p>
+
+    <div class="mc-block">
+      <div class="mc-sent"><span class="mc-num">1.</span> If I _____ more free time, I would learn to cook properly.</div>
+      <div class="mc-opts" id="mc1">
+        <button class="mc-opt" onclick="pickMc('mc1','will have','had')">will have</button>
+        <button class="mc-opt" onclick="pickMc('mc1','had','had')">had</button>
+        <button class="mc-opt" onclick="pickMc('mc1','have','had')">have</button>
+      </div>
+      <div class="mc-fb" id="mc1-fb"></div>
+    </div>
+
+    <div class="mc-block">
+      <div class="mc-sent"><span class="mc-num">2.</span> What would you do if you _____ the internet for a month?</div>
+      <div class="mc-opts" id="mc2">
+        <button class="mc-opt" onclick="pickMc('mc2','lose','lost')">lose</button>
+        <button class="mc-opt" onclick="pickMc('mc2','lost','lost')">lost</button>
+        <button class="mc-opt" onclick="pickMc('mc2','will lose','lost')">will lose</button>
+      </div>
+      <div class="mc-fb" id="mc2-fb"></div>
+    </div>
+
+    <div class="mc-block">
+      <div class="mc-sent"><span class="mc-num">3.</span> She would be happier if she _____ less time on her phone.</div>
+      <div class="mc-opts" id="mc3">
+        <button class="mc-opt" onclick="pickMc('mc3','spends','spent')">spends</button>
+        <button class="mc-opt" onclick="pickMc('mc3','would spend','spent')">would spend</button>
+        <button class="mc-opt" onclick="pickMc('mc3','spent','spent')">spent</button>
+      </div>
+      <div class="mc-fb" id="mc3-fb"></div>
+    </div>
+
+    <div class="mc-block">
+      <div class="mc-sent"><span class="mc-num">4.</span> If I _____ you, I would try living without a smartphone for a week.</div>
+      <div class="mc-opts" id="mc4">
+        <button class="mc-opt" onclick="pickMc('mc4','was','were')">was</button>
+        <button class="mc-opt" onclick="pickMc('mc4','were','were')">were</button>
+        <button class="mc-opt" onclick="pickMc('mc4','am','were')">am</button>
+      </div>
+      <div class="mc-fb" id="mc4-fb"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="check-btn" onclick="checkEx1()">Check answers</button>
+      <button class="reset-btn" onclick="resetEx1()">Reset</button>
+    </div>
+  </div>
+
+  <!-- ══ EX 2 — MATCH THE HALVES ══ -->
+  <div class="ex-card" id="card-ex2">
+    <div class="ex-hd">
+      <div class="ex-num">EX 2</div>
+      <div class="ex-title">Match the halves</div>
+      <span class="score-badge" id="score-ex2"></span>
+    </div>
+    <p class="ex-instr">Click an if-clause on the left, then the matching main clause on the right.</p>
+
+    <div class="match-area">
+      <div>
+        <div class="match-col-hd">If-clause</div>
+        <div id="if1" class="match-item" onclick="pickMatch('if',1)">If I didn't have a smartphone,</div>
+        <div id="if2" class="match-item" onclick="pickMatch('if',2)">If the power went out for a week,</div>
+        <div id="if3" class="match-item" onclick="pickMatch('if',3)">If people spent less time online,</div>
+        <div id="if4" class="match-item" onclick="pickMatch('if',4)">If I were you,</div>
+        <div id="if5" class="match-item" onclick="pickMatch('if',5)">If she had more money,</div>
+      </div>
+      <div>
+        <div class="match-col-hd">Main clause</div>
+        <div id="mc-b" class="match-item" onclick="pickMatch('mc',2)">we would have to find other ways to stay warm.</div>
+        <div id="mc-d" class="match-item" onclick="pickMatch('mc',4)">I would delete my social media accounts.</div>
+        <div id="mc-a" class="match-item" onclick="pickMatch('mc',1)">I would read more and sleep better.</div>
+        <div id="mc-e" class="match-item" onclick="pickMatch('mc',5)">she would buy a robot vacuum.</div>
+        <div id="mc-c" class="match-item" onclick="pickMatch('mc',3)">they would probably feel less anxious.</div>
+      </div>
+    </div>
+    <p class="match-hint">💡 Click a left item first, then a right item to connect them.</p>
+
+    <div class="btn-row">
+      <button class="check-btn" onclick="checkEx2()">Check matches</button>
+      <button class="reset-btn" onclick="resetEx2()">Reset</button>
+    </div>
+  </div>
+
+  <!-- ══ EX 3 — GAP-FILL ══ -->
+  <div class="ex-card" id="card-ex3">
+    <div class="ex-hd">
+      <div class="ex-num">EX 3</div>
+      <div class="ex-title">Complete the second conditional</div>
+      <span class="score-badge" id="score-ex3"></span>
+    </div>
+    <p class="ex-instr">Fill in the gaps using the correct form of the verb in brackets. <strong>If-clause → past simple · Main clause → would + base form.</strong></p>
+
+    <div class="gf-sent">
+      <span class="gf-num">1.</span>
+      If she
+      <input class="gf-input" id="g1" data-ans="didn't have,did not have" placeholder="(not have)" autocomplete="off">
+      a washing machine, she
+      <input class="gf-input" id="g2" data-ans="would spend,she would spend,she'd spend" placeholder="(spend)" autocomplete="off">
+      hours at the launderette every week.
+    </div>
+
+    <div class="gf-sent">
+      <span class="gf-num">2.</span>
+      I
+      <input class="gf-input" id="g3" data-ans="would travel,i would travel,i'd travel" placeholder="(travel)" autocomplete="off">
+      a lot more if I
+      <input class="gf-input" id="g4" data-ans="didn't have,did not have" placeholder="(not have)" autocomplete="off">
+      so many responsibilities.
+    </div>
+
+    <div class="gf-sent">
+      <span class="gf-num">3.</span>
+      What
+      <input class="gf-input" id="g5" data-ans="would you do" placeholder="(you / do)" autocomplete="off" style="min-width:110px;">
+      if you
+      <input class="gf-input" id="g6" data-ans="lost" placeholder="(lose)" autocomplete="off">
+      your phone for a whole month?
+    </div>
+
+    <div class="gf-sent">
+      <span class="gf-num">4.</span>
+      If there
+      <input class="gf-input" id="g7" data-ans="were,was" placeholder="(be)" autocomplete="off">
+      no internet, students
+      <input class="gf-input" id="g8" data-ans="would have to,would have to go,would need to" placeholder="(have to / use)" autocomplete="off" style="min-width:145px;">
+      libraries for all their research.
+    </div>
+
+    <div class="gf-sent">
+      <span class="gf-num">5.</span>
+      He
+      <input class="gf-input" id="g9" data-ans="would feel,he would feel,he'd feel" placeholder="(feel)" autocomplete="off">
+      much better if he
+      <input class="gf-input" id="g10" data-ans="spent,didn't spend,used" placeholder="(spend less)" autocomplete="off">
+      less time on social media.
+    </div>
+
+    <div class="btn-row">
+      <button class="check-btn" onclick="checkEx3()">Check answers</button>
+      <button class="reset-btn" onclick="resetEx3()">Reset</button>
+    </div>
+  </div>
+
+  <!-- ══ SEND ══ -->
+  <div class="send-card">
+    <h2>✉️ Send to your teacher</h2>
+    <p>Your answers will open in your email app, ready to send to Dariia.</p>
+    <button class="send-btn" onclick="sendToTeacher()">Send to Teacher</button>
+    <div class="send-status" id="send-status"></div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+/* THEME */
+function toggleTheme() {
+  const r = document.documentElement;
+  const btn = document.querySelector('.theme-btn');
+  const dark = r.getAttribute('data-theme') === 'dark';
+  r.setAttribute('data-theme', dark ? 'light' : 'dark');
+  btn.textContent = dark ? '🌙 Dark' : '☀️ Light';
+}
+
+/* PROGRESS */
+const done = { ex1: false, ex2: false, ex3: false };
+function updateProgress() {
+  const n = Object.values(done).filter(Boolean).length;
+  document.getElementById('pfill').style.width = (n / 3 * 100) + '%';
+  document.getElementById('plabel').textContent = n + ' / 3';
+}
+
+/* ── EX 1: MULTIPLE CHOICE ── */
+const mcSel = {};
+function pickMc(group, chosen, correct) {
+  mcSel[group] = { chosen, correct };
+  document.querySelectorAll('#' + group + ' .mc-opt').forEach(b => b.classList.remove('selected','correct','wrong'));
+  event.target.classList.add('selected');
+  document.getElementById(group + '-fb').className = 'mc-fb';
+  document.getElementById(group + '-fb').textContent = '';
+}
+function checkEx1() {
+  let correct = 0;
+  ['mc1','mc2','mc3','mc4'].forEach((g, i) => {
+    const s = mcSel[g];
+    if (!s) return;
+    const ok = s.chosen === s.correct;
+    if (ok) correct++;
+    document.querySelectorAll('#' + g + ' .mc-opt').forEach(b => {
+      b.classList.remove('selected','correct','wrong');
+      if (b.textContent.trim() === s.chosen) b.classList.add(ok ? 'correct' : 'wrong');
+      if (!ok && b.textContent.trim() === s.correct) b.classList.add('correct');
+    });
+    const fb = document.getElementById(g + '-fb');
+    fb.className = 'mc-fb ' + (ok ? 'ok' : 'no');
+    fb.textContent = ok ? '✅ Correct!' : '❌ Correct answer: ' + s.correct;
+  });
+  const b = document.getElementById('score-ex1');
+  b.textContent = correct + '/4';
+  b.className = 'score-badge show' + (correct === 4 ? ' full' : '');
+  done.ex1 = correct === 4;
+  updateProgress();
+}
+function resetEx1() {
+  ['mc1','mc2','mc3','mc4'].forEach(g => {
+    delete mcSel[g];
+    document.querySelectorAll('#' + g + ' .mc-opt').forEach(b => b.classList.remove('selected','correct','wrong'));
+    document.getElementById(g + '-fb').textContent = '';
+    document.getElementById(g + '-fb').className = 'mc-fb';
+  });
+  document.getElementById('score-ex1').className = 'score-badge';
+  done.ex1 = false; updateProgress();
+}
+
+/* ── EX 2: MATCHING ── */
+/* Correct: if1→1, if2→2, if3→3, if4→4, if5→5 */
+const mcIdMap = { 'mc-a':1, 'mc-b':2, 'mc-c':3, 'mc-d':4, 'mc-e':5 };
+let selIf = null, selMc = null;
+const conns = {};
+function pickMatch(side, num) {
+  if (side === 'if') {
+    const el = document.getElementById('if' + num);
+    if (el.classList.contains('correct') || el.classList.contains('used')) return;
+    if (selIf === num) { el.classList.remove('selected'); selIf = null; return; }
+    if (selIf !== null) document.getElementById('if' + selIf).classList.remove('selected');
+    selIf = num; el.classList.add('selected');
+  } else {
+    const mcEl = Object.keys(mcIdMap).find(k => mcIdMap[k] === num);
+    const el = document.getElementById(mcEl);
+    if (el.classList.contains('correct') || el.classList.contains('used')) return;
+    if (selMc === num) { el.classList.remove('selected'); selMc = null; return; }
+    if (selMc !== null) {
+      const prev = Object.keys(mcIdMap).find(k => mcIdMap[k] === selMc);
+      document.getElementById(prev).classList.remove('selected');
+    }
+    selMc = num; el.classList.add('selected');
+  }
+  if (selIf !== null && selMc !== null) {
+    conns[selIf] = selMc;
+    document.getElementById('if' + selIf).classList.remove('selected');
+    const mcEl = Object.keys(mcIdMap).find(k => mcIdMap[k] === selMc);
+    document.getElementById(mcEl).classList.remove('selected');
+    document.getElementById('if' + selIf).classList.add('used');
+    document.getElementById(mcEl).classList.add('used');
+    selIf = null; selMc = null;
+  }
+}
+function checkEx2() {
+  let correct = 0;
+  for (let i = 1; i <= 5; i++) {
+    const ifEl = document.getElementById('if' + i);
+    const paired = conns[i];
+    if (paired === undefined) continue;
+    const mcEl = Object.keys(mcIdMap).find(k => mcIdMap[k] === paired);
+    const ok = paired === i;
+    ifEl.classList.remove('used'); document.getElementById(mcEl).classList.remove('used');
+    ifEl.classList.add(ok ? 'correct' : 'wrong');
+    document.getElementById(mcEl).classList.add(ok ? 'correct' : 'wrong');
+    if (ok) correct++;
+  }
+  const b = document.getElementById('score-ex2');
+  b.textContent = correct + '/5';
+  b.className = 'score-badge show' + (correct === 5 ? ' full' : '');
+  done.ex2 = correct === 5;
+  updateProgress();
+}
+function resetEx2() {
+  selIf = null; selMc = null;
+  for (let k in conns) delete conns[k];
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('if' + i);
+    el.className = 'match-item';
+    el.onclick = () => pickMatch('if', i);
+  }
+  Object.keys(mcIdMap).forEach(id => {
+    const el = document.getElementById(id);
+    const n = mcIdMap[id];
+    el.className = 'match-item';
+    el.onclick = () => pickMatch('mc', n);
+  });
+  document.getElementById('score-ex2').className = 'score-badge';
+  done.ex2 = false; updateProgress();
+}
+
+/* ── EX 3: GAP-FILL ── */
+function norm(s) { return s.trim().toLowerCase().replace(/['']/g,"'"); }
+function checkEx3() {
+  const inputs = document.querySelectorAll('#card-ex3 .gf-input');
+  let correct = 0;
+  inputs.forEach(inp => {
+    const ans = norm(inp.value);
+    const accepted = inp.dataset.ans.split(',').map(a => a.trim().toLowerCase());
+    const ok = accepted.includes(ans);
+    inp.classList.remove('correct','wrong');
+    inp.classList.add(ok ? 'correct' : 'wrong');
+    if (ok) correct++;
+  });
+  const b = document.getElementById('score-ex3');
+  b.textContent = correct + '/' + inputs.length;
+  b.className = 'score-badge show' + (correct === inputs.length ? ' full' : '');
+  done.ex3 = correct === inputs.length;
+  updateProgress();
+}
+function resetEx3() {
+  document.querySelectorAll('#card-ex3 .gf-input').forEach(i => { i.value = ''; i.classList.remove('correct','wrong'); });
+  document.getElementById('score-ex3').className = 'score-badge';
+  done.ex3 = false; updateProgress();
+}
+
+/* ── SEND ── */
+function sendToTeacher() {
+  const name = document.getElementById('sname').value.trim();
+  if (!name) {
+    document.getElementById('send-status').textContent = '⚠️ Please enter your name first.';
+    document.getElementById('send-status').className = 'send-status no';
+    document.getElementById('sname').focus();
+    return;
+  }
+  const mcAns = ['mc1','mc2','mc3','mc4'].map((g,i) => {
+    const s = mcSel[g]; return `  Q${i+1}: ${s ? s.chosen : '(not answered)'}`;
+  }).join('\n');
+  const matchAns = [1,2,3,4,5].map(i => {
+    const paired = conns[i];
+    if (paired === undefined) return `  Pair ${i}: (not matched)`;
+    const mcEl = Object.keys(mcIdMap).find(k => mcIdMap[k] === paired);
+    return `  Pair ${i}: "${(document.getElementById('if'+i)||{}).textContent.trim()}" → "${(document.getElementById(mcEl)||{}).textContent.trim()}"`;
+  }).join('\n');
+  const gfAns = ['g1','g2','g3','g4','g5','g6','g7','g8','g9','g10'].map(id => {
+    const el = document.getElementById(id);
+    return el ? `  ${id}: "${el.value}" [${el.classList.contains('correct') ? '✓' : el.classList.contains('wrong') ? '✗' : '—'}]` : '';
+  }).join('\n');
+  const completed = Object.values(done).filter(Boolean).length;
+  const subject = encodeURIComponent(`Homework: Life Without — ${name}`);
+  const body = encodeURIComponent(
+`Hi Dariia,
+
+Please find my homework for the "Life Without…" lesson.
+
+Student: ${name}
+Exercises completed: ${completed}/3
+
+─── EX 1: Choose the correct form ───
+${mcAns}
+
+─── EX 2: Match the halves ───
+${matchAns}
+
+─── EX 3: Gap-fill ───
+${gfAns}
+
+Best,
+${name}`);
+  window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${subject}&body=${body}`;
+  document.getElementById('send-status').textContent = '✉️ Your email app should open — press Send there!';
+  document.getElementById('send-status').className = 'send-status ok';
+}
+</script>
