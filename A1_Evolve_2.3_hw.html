@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework — When Is Your Birthday?</title>
+<style>
+:root {
+  --primary:#2563EB; --pl:#EFF6FF;
+  --green:#16A34A; --gp:#DCFCE7;
+  --red:#DC2626; --rp:#FEE2E2;
+  --amber:#D97706; --ap:#FEF3C7;
+  --text:#1F2937; --muted:#6B7280; --border:#E5E7EB; --bg:#F0F7FF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text)}
+
+.hw-header{background:linear-gradient(135deg,#1D4ED8 0%,#2563EB 60%,#3B82F6 100%);
+  color:#fff;padding:26px 24px 18px;text-align:center}
+.hw-title{font-size:1.4rem;font-weight:800;margin-bottom:4px}
+.hw-sub{font-size:.88rem;opacity:.85;margin-bottom:18px}
+.progress-wrap{background:rgba(255,255,255,.25);border-radius:20px;height:10px;max-width:420px;margin:0 auto}
+.progress-bar{background:#fff;border-radius:20px;height:10px;width:0%;transition:width .4s}
+.progress-label{font-size:.8rem;opacity:.8;margin-top:7px}
+
+.container{max-width:820px;margin:0 auto;padding:28px 16px 16px}
+.sec-card{background:#fff;border-radius:14px;padding:22px;margin-bottom:22px;
+  box-shadow:0 1px 5px rgba(0,0,0,.08)}
+.sec-title-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.sec-icon{font-size:1.35rem}
+.sec-title{font-size:1.05rem;font-weight:800;color:var(--primary)}
+.sec-checked{display:none;background:var(--gp);color:var(--green);font-size:.78rem;
+  font-weight:700;border-radius:12px;padding:2px 10px}
+.sec-desc{color:var(--muted);font-size:.9rem;margin-bottom:14px;line-height:1.55}
+
+/* Word bank */
+.word-bank{background:var(--pl);border:2px solid #BFDBFE;border-radius:10px;
+  padding:11px 16px;margin-bottom:18px;font-size:.88rem;line-height:1.8}
+.word-bank strong{color:var(--primary);display:block;margin-bottom:4px;font-size:.82rem;
+  text-transform:uppercase;letter-spacing:.5px}
+.wb-word{display:inline-block;background:#fff;border:2px solid #BFDBFE;border-radius:6px;
+  padding:2px 10px;margin:3px 4px 3px 0;font-weight:600;color:var(--primary);font-size:.88rem}
+
+/* Sentence reference box */
+.ref-box{background:#F8FAFC;border:2px solid var(--border);border-radius:10px;
+  padding:12px 16px;margin-bottom:18px;font-size:.88rem;line-height:1.9}
+.ref-row{display:flex;gap:8px}
+.ref-letter{font-weight:800;color:var(--primary);min-width:18px}
+.ref-strike{text-decoration:line-through;color:var(--muted)}
+
+/* Conversation layout */
+.convo{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.convo-line{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.convo-speaker{font-weight:800;color:var(--text);min-width:70px;font-size:.92rem}
+.convo-given{font-style:italic;color:var(--muted);font-size:.92rem}
+.convo-input-wrap{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+/* Inline gap */
+.gap-inline{border:none;border-bottom:2px solid var(--primary);background:transparent;
+  font-size:.93rem;font-family:inherit;color:var(--text);outline:none;padding:1px 4px;
+  min-width:70px;text-align:center;transition:border-color .15s}
+.gap-inline:focus{border-color:#1D4ED8}
+.gap-inline.correct-input{border-color:var(--green);color:var(--green);background:var(--gp);
+  border-radius:4px;border-style:solid}
+.gap-inline.wrong-input{border-color:var(--red);color:var(--red);background:var(--rp);
+  border-radius:4px;border-style:solid}
+.gap-letter{width:38px;min-width:38px;text-align:center;font-size:.95rem;font-weight:700;
+  border:none;border-bottom:2px solid var(--primary);background:transparent;
+  font-family:inherit;color:var(--text);outline:none;padding:1px 4px;transition:border-color .15s}
+.gap-letter:focus{border-color:#1D4ED8}
+.gap-letter.correct-input{border-color:var(--green);color:var(--green);background:var(--gp);
+  border-radius:4px;border-style:solid}
+.gap-letter.wrong-input{border-color:var(--red);color:var(--red);background:var(--rp);
+  border-radius:4px;border-style:solid}
+
+.fb{font-size:.78rem;margin-top:3px;padding:2px 6px;border-radius:6px;display:none}
+.fb.show{display:block}
+.fb.ok{background:var(--gp);color:var(--green)}
+.fb.err{background:var(--rp);color:var(--red)}
+
+/* Numbers table */
+.num-table{width:100%;border-collapse:collapse;margin-bottom:18px;font-size:.9rem}
+.num-table th{background:var(--pl);color:var(--primary);font-size:.78rem;text-transform:uppercase;
+  letter-spacing:.5px;padding:8px 10px;text-align:left;border-bottom:2px solid #BFDBFE}
+.num-table td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.num-table tr:last-child td{border-bottom:none}
+.num-given{font-style:italic;color:var(--muted)}
+.num-input{border:none;border-bottom:2px solid var(--primary);background:transparent;
+  font-size:.9rem;font-family:inherit;color:var(--text);outline:none;padding:1px 6px;
+  width:100%;text-align:center;transition:border-color .15s}
+.num-input:focus{border-color:#1D4ED8}
+.num-input.correct-input{border-color:var(--green);color:var(--green);background:var(--gp);
+  border-radius:4px;border-style:solid}
+.num-input.wrong-input{border-color:var(--red);color:var(--red);background:var(--rp);
+  border-radius:4px;border-style:solid}
+
+.ex-example{font-size:.9rem;color:var(--muted);font-style:italic;margin-bottom:14px;
+  padding:8px 12px;background:var(--pl);border-radius:8px}
+
+.score-badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.85rem;
+  font-weight:700;margin-left:8px}
+.badge-green{background:var(--gp);color:var(--green)}
+.badge-amber{background:var(--ap);color:var(--amber)}
+.badge-red{background:var(--rp);color:var(--red)}
+
+.write-row{margin-bottom:14px}
+.write-label{font-size:.92rem;font-weight:600;margin-bottom:6px;color:var(--text);display:block}
+.write-box{width:100%;border:2px solid var(--border);border-radius:8px;padding:10px 12px;
+  font-size:.92rem;font-family:inherit;outline:none;color:var(--text);resize:vertical;min-height:42px}
+.write-box:focus{border-color:var(--primary)}
+.teacher-note{font-size:.8rem;color:var(--muted);font-style:italic;margin-top:4px}
+
+/* Dialogue write layout */
+.dialogue-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+@media(max-width:500px){.dialogue-grid{grid-template-columns:1fr}}
+.dialogue-cell .write-label{font-size:.88rem;color:var(--primary)}
+
+.btn-row{display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn-check{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:9px 22px;
+  font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.btn-check:hover{opacity:.88}
+.btn-reset{background:#F3F4F6;color:var(--muted);border:none;border-radius:8px;padding:9px 16px;
+  font-size:.88rem;cursor:pointer;font-family:inherit}
+
+.send-section{text-align:center;padding:24px 0 48px}
+.btn-send{background:linear-gradient(135deg,#1D4ED8,#3B82F6);color:#fff;border:none;
+  border-radius:12px;padding:14px 36px;font-size:1rem;font-weight:800;cursor:pointer;
+  font-family:inherit;box-shadow:0 4px 14px rgba(37,99,235,.3)}
+.btn-send:hover{opacity:.88}
+.send-label{font-size:.85rem;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="hw-header">
+  <div class="hw-title">🎂 Homework — When Is Your Birthday?</div>
+  <div class="hw-sub">Starters · Unit 2.3 &nbsp;·&nbsp; Fill in the gaps, then send to your teacher!</div>
+  <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+  <div class="progress-label" id="progress-label">0 / 4 sections complete</div>
+</div>
+
+<div class="container">
+
+<!-- ===== SECTION 1: EX 3A — GAP-FILL CONVERSATION ===== -->
+<div class="sec-card">
+  <div class="sec-title-row">
+    <span class="sec-icon">💬</span>
+    <span class="sec-title">Exercise 3A — Complete the conversation</span>
+    <span class="sec-checked" id="check-1">✓ Done</span>
+  </div>
+  <p class="sec-desc">Use the words in the box to complete the conversation.</p>
+
+  <div class="word-bank">
+    <strong>Word bank</strong>
+    <span class="wb-word">mean</span>
+    <span class="wb-word">old</span>
+    <span class="wb-word">sorry</span>
+    <span class="wb-word">when</span>
+    <span class="wb-word">years</span>
+  </div>
+
+  <div class="convo">
+    <div class="convo-line">
+      <span class="convo-speaker">Paul</span>
+      <span>This is my niece, Olivia.</span>
+    </div>
+    <div class="convo-line">
+      <span class="convo-speaker">Gabriela</span>
+      <span class="convo-input-wrap">
+        Hi, Olivia! How
+        <input class="gap-inline" id="c1" data-answer="old" placeholder="…" autocomplete="off" style="min-width:60px">
+        are you?
+      </span>
+    </div>
+    <div class="fb" id="fb-c1"></div>
+    <div class="convo-line">
+      <span class="convo-speaker">Olivia</span>
+      <span class="convo-input-wrap">
+        I'm 10. Sorry, I
+        <input class="gap-inline" id="c2" data-answer="mean" placeholder="…" autocomplete="off" style="min-width:60px">
+        nine. I'm nine years and eleven months old.
+      </span>
+    </div>
+    <div class="fb" id="fb-c2"></div>
+    <div class="convo-line">
+      <span class="convo-speaker">Gabriela</span>
+      <span class="convo-input-wrap">
+        You're a tall girl!
+        <input class="gap-inline" id="c3" data-answer="when" placeholder="…" autocomplete="off" style="min-width:60px">
+        is your birthday?
+      </span>
+    </div>
+    <div class="fb" id="fb-c3"></div>
+    <div class="convo-line">
+      <span class="convo-speaker">Olivia</span>
+      <span>It's June 31.</span>
+    </div>
+    <div class="convo-line">
+      <span class="convo-speaker">Gabriela</span>
+      <span>June 31?</span>
+    </div>
+    <div class="convo-line">
+      <span class="convo-speaker">Olivia</span>
+      <span class="convo-input-wrap">
+        No,
+        <input class="gap-inline" id="c4" data-answer="sorry" placeholder="…" autocomplete="off" style="min-width:70px">
+        , July 31.
+      </span>
+    </div>
+    <div class="fb" id="fb-c4"></div>
+    <div class="convo-line">
+      <span class="convo-speaker">Gabriela</span>
+      <span class="convo-input-wrap">
+        Oh. So you're 9
+        <input class="gap-inline" id="c5" data-answer="years" placeholder="…" autocomplete="off" style="min-width:60px">
+        old, and your birthday is July 31.
+      </span>
+    </div>
+    <div class="fb" id="fb-c5"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-check" onclick="checkGap(['c1','c2','c3','c4','c5'],'sc-1','sec-1')">✓ Check</button>
+    <button class="btn-reset" onclick="resetGap(['c1','c2','c3','c4','c5'],'sc-1')">↺ Reset</button>
+    <span id="sc-1"></span>
+  </div>
+</div>
+
+<!-- ===== SECTION 2: EX 1A — MATCH SENTENCES ===== -->
+<div class="sec-card">
+  <div class="sec-title-row">
+    <span class="sec-icon">🔤</span>
+    <span class="sec-title">Exercise 1A — Match the sentences</span>
+    <span class="sec-checked" id="check-2">✓ Done</span>
+  </div>
+  <p class="sec-desc">Read the sentences (a–h). Write the correct letter in each gap to complete the conversation.</p>
+
+  <div class="ref-box">
+    <div class="ref-row"><span class="ref-letter">a</span><span>Happy birthday, Diego!</span></div>
+    <div class="ref-row"><span class="ref-letter">b</span><span>Oh, right! You're seven this month? Happy birthday from me!</span></div>
+    <div class="ref-row"><span class="ref-letter">c</span><span>Oh, wow! When is your birthday, Sophia?</span></div>
+    <div class="ref-row"><span class="ref-letter">d</span><span>Thanks. Oh, Anna. This is my daughter, Sophia.</span></div>
+    <div class="ref-row"><span class="ref-letter">e</span><span>I'm six, and my brother is three years old.</span></div>
+    <div class="ref-row"><span class="ref-letter ref-strike">f</span><span class="ref-strike">Today is my birthday.</span></div>
+    <div class="ref-row"><span class="ref-letter">g</span><span>Hello, Sophia. My name is Anna. How old are you?</span></div>
+    <div class="ref-row"><span class="ref-letter">h</span><span>It's on December 5.</span></div>
+  </div>
+
+  <div class="convo">
+    <div class="convo-line">
+      <span class="convo-speaker">Diego</span>
+      <span class="convo-given">Today is my birthday. &nbsp;<em>(f — given)</em></span>
+    </div>
+    <div class="convo-line" style="align-items:center">
+      <span class="convo-speaker">Anna</span>
+      <input class="gap-letter" id="m1" data-answer="a" placeholder="?" autocomplete="off">
+    </div>
+    <div class="fb" id="fb-m1"></div>
+    <div class="convo-line" style="align-items:center">
+      <span class="convo-speaker">Diego</span>
+      <input class="gap-letter" id="m2" data-answer="d" placeholder="?" autocomplete="off">
+    </div>
+    <div class="fb" id="fb-m2"></div>
+    <div class="convo-line" style="align-items:center">
+      <span class="convo-speaker">Anna</span>
+      <input class="gap-letter" id="m3" data-answer="g" placeholder="?" autocomplete="off">
+    </div>
+    <div class="fb" id="fb-m3"></div>
+    <div class="convo-line" style="align-items:center">
+      <span class="convo-speaker">Sophia</span>
+      <input class="gap-letter" id="m4" data-answer="e" placeholder="?" autocomplete="off">
+    </div>
+    <div class="fb" id="fb-m4"></div>
+    <div class="convo-line" style="align-items:center">
+      <span class="convo-speaker">Anna</span>
+      <input class="gap-letter" id="m5" data-answer="c" placeholder="?" autocomplete="off">
+    </div>
+    <div class="fb" id="fb-m5"></div>
+    <div class="convo-line" style="align-items:center">
+      <span class="convo-speaker">Sophia</span>
+      <input class="gap-letter" id="m6" data-answer="h" placeholder="?" autocomplete="off">
+    </div>
+    <div class="fb" id="fb-m6"></div>
+    <div class="convo-line" style="align-items:center">
+      <span class="convo-speaker">Anna</span>
+      <input class="gap-letter" id="m7" data-answer="b" placeholder="?" autocomplete="off">
+    </div>
+    <div class="fb" id="fb-m7"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-check" onclick="checkGap(['m1','m2','m3','m4','m5','m6','m7'],'sc-2','sec-2')">✓ Check</button>
+    <button class="btn-reset" onclick="resetGap(['m1','m2','m3','m4','m5','m6','m7'],'sc-2')">↺ Reset</button>
+    <span id="sc-2"></span>
+  </div>
+</div>
+
+<!-- ===== SECTION 3: EX 1B — NUMBERS ===== -->
+<div class="sec-card">
+  <div class="sec-title-row">
+    <span class="sec-icon">🔢</span>
+    <span class="sec-title">Exercise 1B — Numbers and ordinals</span>
+    <span class="sec-checked" id="check-3">✓ Done</span>
+  </div>
+  <p class="sec-desc">Look at the underlined numbers. Write the words.</p>
+
+  <table class="num-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Age → write the number</th>
+        <th>Birthday → write the ordinal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>He's <u>4</u>. &nbsp;<span class="num-given">four</span></td>
+        <td>His birthday is February <u>4</u>. &nbsp;<span class="num-given">fourth</span></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>She's <u>30</u>. &nbsp;<input class="num-input" id="n2a" data-answer="thirty" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n2a"></div></td>
+        <td>Her birthday is April <u>30</u>. &nbsp;<input class="num-input" id="n2b" data-answer="thirtieth" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n2b"></div></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>He's <u>1</u>. &nbsp;<input class="num-input" id="n3a" data-answer="one" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n3a"></div></td>
+        <td>His birthday is January <u>1</u>. &nbsp;<input class="num-input" id="n3b" data-answer="first" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n3b"></div></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>She's <u>22</u>. &nbsp;<input class="num-input" id="n4a" data-answer="twenty-two" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n4a"></div></td>
+        <td>Her birthday is March <u>22</u>. &nbsp;<input class="num-input" id="n4b" data-answer="twenty-second" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n4b"></div></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>I'm <u>31</u>. &nbsp;<input class="num-input" id="n5a" data-answer="thirty-one" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n5a"></div></td>
+        <td>My birthday is July <u>31</u>. &nbsp;<input class="num-input" id="n5b" data-answer="thirty-first" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n5b"></div></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>She's <u>3</u>. &nbsp;<input class="num-input" id="n6a" data-answer="three" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n6a"></div></td>
+        <td>Her birthday is June <u>3</u>. &nbsp;<input class="num-input" id="n6b" data-answer="third" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n6b"></div></td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>He's <u>27</u>. &nbsp;<input class="num-input" id="n7a" data-answer="twenty-seven" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n7a"></div></td>
+        <td>His birthday is May <u>27</u>. &nbsp;<input class="num-input" id="n7b" data-answer="twenty-seventh" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n7b"></div></td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>She's <u>18</u>. &nbsp;<input class="num-input" id="n8a" data-answer="eighteen" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n8a"></div></td>
+        <td>Her birthday is August <u>18</u>. &nbsp;<input class="num-input" id="n8b" data-answer="eighteenth" placeholder="…" autocomplete="off">
+          <div class="fb" id="fb-n8b"></div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="btn-row">
+    <button class="btn-check" onclick="checkGap(['n2a','n2b','n3a','n3b','n4a','n4b','n5a','n5b','n6a','n6b','n7a','n7b','n8a','n8b'],'sc-3','sec-3')">✓ Check</button>
+    <button class="btn-reset" onclick="resetGap(['n2a','n2b','n3a','n3b','n4a','n4b','n5a','n5b','n6a','n6b','n7a','n7b','n8a','n8b'],'sc-3')">↺ Reset</button>
+    <span id="sc-3"></span>
+  </div>
+</div>
+
+<!-- ===== SECTION 4: EX 3B — WRITE CONVERSATION ===== -->
+<div class="sec-card">
+  <div class="sec-title-row">
+    <span class="sec-icon">✍️</span>
+    <span class="sec-title">Exercise 3B — Your conversation</span>
+    <span class="sec-checked" id="check-4">✓ Done</span>
+  </div>
+  <p class="sec-desc">Write a conversation between you and Gabriela about the ages of people in your family.</p>
+
+  <div class="ex-example">📌 Gabriela starts: <em>My brother is 18 years old.</em></div>
+
+  <div class="dialogue-grid">
+    <div>
+      <div class="write-row">
+        <label class="write-label" for="w1">Gabriela:</label>
+        <textarea class="write-box" id="w1" rows="1" style="min-height:42px" placeholder="My brother is 18 years old."></textarea>
+      </div>
+      <div class="write-row">
+        <label class="write-label" for="w2">You:</label>
+        <textarea class="write-box" id="w2" rows="1" style="min-height:42px" placeholder="…"></textarea>
+      </div>
+      <div class="write-row">
+        <label class="write-label" for="w3">Gabriela:</label>
+        <textarea class="write-box" id="w3" rows="1" style="min-height:42px" placeholder="…"></textarea>
+      </div>
+      <div class="write-row">
+        <label class="write-label" for="w4">You:</label>
+        <textarea class="write-box" id="w4" rows="1" style="min-height:42px" placeholder="…"></textarea>
+      </div>
+    </div>
+    <div>
+      <div class="write-row">
+        <label class="write-label" for="w5">Gabriela:</label>
+        <textarea class="write-box" id="w5" rows="1" style="min-height:42px" placeholder="…"></textarea>
+      </div>
+      <div class="write-row">
+        <label class="write-label" for="w6">You:</label>
+        <textarea class="write-box" id="w6" rows="1" style="min-height:42px" placeholder="…"></textarea>
+      </div>
+      <div class="write-row">
+        <label class="write-label" for="w7">Gabriela:</label>
+        <textarea class="write-box" id="w7" rows="1" style="min-height:42px" placeholder="…"></textarea>
+      </div>
+      <div class="write-row">
+        <label class="write-label" for="w8">You:</label>
+        <textarea class="write-box" id="w8" rows="1" style="min-height:42px" placeholder="…"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="teacher-note" style="margin-top:-8px">✏️ Teacher checks your conversation</div>
+
+  <div class="btn-row">
+    <button class="btn-check" onclick="markWrite('sec-4','check-4','sc-4')">✓ Mark as Done</button>
+    <span id="sc-4"></span>
+  </div>
+</div>
+
+<div class="send-section">
+  <button class="btn-send" onclick="sendToTeacher()">📧 Send to Teacher</button>
+  <div class="send-label">Sends your answers to dariia.mlnk@gmail.com</div>
+</div>
+
+</div>
+
+<script>
+var checkedSections = {};
+var totalSections = 4;
+
+function updateProgress(){
+  var done = Object.keys(checkedSections).length;
+  var pct = Math.round(done / totalSections * 100);
+  document.getElementById("progress-bar").style.width = pct + "%";
+  document.getElementById("progress-label").textContent = done + " / " + totalSections + " sections complete";
+}
+
+function setScore(elId,s,t){
+  var el=document.getElementById(elId); if(!el) return;
+  var pct=t>0?s/t:0;
+  var cls=pct>=0.8?"badge-green":pct>=0.5?"badge-amber":"badge-red";
+  el.textContent=s+"/"+t; el.className="score-badge "+cls;
+}
+
+function normalise(str){
+  return (str||"").trim().toLowerCase().replace(/[\u2018\u2019]/g,"'").replace(/\s+/g," ");
+}
+
+function markDone(secId,s,t){
+  checkedSections[secId]={score:s,total:t};
+  var num=secId.replace("sec-","");
+  var chk=document.getElementById("check-"+num);
+  if(chk) chk.style.display="inline-block";
+  updateProgress();
+}
+
+function checkGap(ids,scoreId,secId){
+  var t=ids.length, s=0;
+  ids.forEach(function(id){
+    var inp=document.getElementById(id);
+    var fb=document.getElementById("fb-"+id);
+    inp.classList.remove("correct-input","wrong-input");
+    if(fb) fb.className="fb";
+    if(!inp.value.trim()) return;
+    var ok=normalise(inp.value)===normalise(inp.dataset.answer);
+    inp.classList.add(ok?"correct-input":"wrong-input");
+    if(fb){fb.textContent=ok?"✓ Correct!":"✗ Answer: "+inp.dataset.answer;fb.className="fb show "+(ok?"ok":"err");}
+    if(ok) s++;
+  });
+  setScore(scoreId,s,t);
+  markDone(secId,s,t);
+}
+
+function resetGap(ids,scoreId){
+  ids.forEach(function(id){
+    var inp=document.getElementById(id);
+    inp.value="";inp.classList.remove("correct-input","wrong-input");
+    var fb=document.getElementById("fb-"+id);if(fb) fb.className="fb";
+  });
+  var sc=document.getElementById(scoreId);if(sc){sc.textContent="";sc.className="";}
+}
+
+function markWrite(secId,checkId,scoreId){
+  checkedSections[secId]={score:1,total:1};
+  var chk=document.getElementById(checkId);if(chk) chk.style.display="inline-block";
+  var sc=document.getElementById(scoreId);if(sc){sc.textContent="✓";sc.className="score-badge badge-green";}
+  updateProgress();
+}
+
+function sendToTeacher(){
+  function getScore(s){var d=checkedSections[s];return d?d.score+"/"+d.total:"(not checked)";}
+  function getVal(id){var el=document.getElementById(id);return el?el.value.trim():"";}
+  var lines=[
+    "Homework — When Is Your Birthday? (Starters Unit 2.3)","",
+    "SCORES:",
+    "Ex 3A Conversation:  "+getScore("sec-1"),
+    "Ex 1A Match:         "+getScore("sec-2"),
+    "Ex 1B Numbers:       "+getScore("sec-3"),
+    "",
+    "EXERCISE 3A — Complete the conversation:",
+    "Gap 1 (old):   "+(getVal("c1")||"(blank)"),
+    "Gap 2 (mean):  "+(getVal("c2")||"(blank)"),
+    "Gap 3 (when):  "+(getVal("c3")||"(blank)"),
+    "Gap 4 (sorry): "+(getVal("c4")||"(blank)"),
+    "Gap 5 (years): "+(getVal("c5")||"(blank)"),
+    "",
+    "EXERCISE 1A — Match sentences (correct: a, d, g, e, c, h, b):",
+    "Anna 1:   "+(getVal("m1")||"(blank)"),
+    "Diego 2:  "+(getVal("m2")||"(blank)"),
+    "Anna 2:   "+(getVal("m3")||"(blank)"),
+    "Sophia 1: "+(getVal("m4")||"(blank)"),
+    "Anna 3:   "+(getVal("m5")||"(blank)"),
+    "Sophia 2: "+(getVal("m6")||"(blank)"),
+    "Anna 4:   "+(getVal("m7")||"(blank)"),
+    "",
+    "EXERCISE 1B — Numbers:",
+    "2. Age: "+(getVal("n2a")||"(blank)")+"  |  Ordinal: "+(getVal("n2b")||"(blank)"),
+    "3. Age: "+(getVal("n3a")||"(blank)")+"  |  Ordinal: "+(getVal("n3b")||"(blank)"),
+    "4. Age: "+(getVal("n4a")||"(blank)")+"  |  Ordinal: "+(getVal("n4b")||"(blank)"),
+    "5. Age: "+(getVal("n5a")||"(blank)")+"  |  Ordinal: "+(getVal("n5b")||"(blank)"),
+    "6. Age: "+(getVal("n6a")||"(blank)")+"  |  Ordinal: "+(getVal("n6b")||"(blank)"),
+    "7. Age: "+(getVal("n7a")||"(blank)")+"  |  Ordinal: "+(getVal("n7b")||"(blank)"),
+    "8. Age: "+(getVal("n8a")||"(blank)")+"  |  Ordinal: "+(getVal("n8b")||"(blank)"),
+    "",
+    "EXERCISE 3B — Your Conversation:",
+    "Gabriela: "+(getVal("w1")||"(blank)"),"You: "+(getVal("w2")||"(blank)"),
+    "Gabriela: "+(getVal("w3")||"(blank)"),"You: "+(getVal("w4")||"(blank)"),
+    "Gabriela: "+(getVal("w5")||"(blank)"),"You: "+(getVal("w6")||"(blank)"),
+    "Gabriela: "+(getVal("w7")||"(blank)"),"You: "+(getVal("w8")||"(blank)")
+  ];
+  window.location.href="mailto:dariia.mlnk@gmail.com"
+    +"?subject="+encodeURIComponent("HW — When Is Your Birthday? (Starters Unit 2.3)")
+    +"&body="+encodeURIComponent(lines.join("\n"));
+}
+</script>
+</body>
+</html>
