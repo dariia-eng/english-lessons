@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Local Issues — Part 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FDF8F2;--surface:#FFFFFF;--surface-2:#FEF3E2;--border:#F0D9B8;
+  --ink:#1C0F00;--ink-mid:#7A4A1A;--ink-muted:#B8855A;
+  --primary:#B45309;--primary-lt:#FEF3C7;--primary-dk:#92400E;
+  --c-warmup:#D97706;--c-warmup-lt:#FEF3C7;
+  --c-vocab:#0891B2;--c-vocab-lt:#ECFEFF;
+  --c-reading:#2348C8;--c-reading-lt:#EEF2FF;
+  --c-language:#7C3AED;--c-language-lt:#F5F3FF;
+  --c-listening:#0A7065;--c-listening-lt:#D9F2EF;
+  --c-wrapup:#374151;--c-wrapup-lt:#F9FAFB;
+  --success:#15803D;--success-lt:#DCFCE7;
+  --error:#B91C1C;--error-lt:#FEF2F2;
+  --r:14px;--r-sm:8px;
+  --shadow:0 1px 12px rgba(180,83,9,.08);
+  --shadow-md:0 4px 24px rgba(180,83,9,.14);
+  --fh:'Outfit',sans-serif;--fb:'DM Sans',sans-serif;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#120B00;--surface:#1C1105;--surface-2:#271A08;--border:#3D2800;
+  --ink:#F5E6D0;--ink-mid:#C8975A;--ink-muted:#7A5530;
+  --primary:#F59E0B;--primary-lt:#1A1205;--primary-dk:#D97706;
+  --c-warmup:#FBB53A;--c-warmup-lt:#1A1205;
+  --c-vocab:#22D3EE;--c-vocab-lt:#061518;
+  --c-reading:#5B80FF;--c-reading-lt:#0E1528;
+  --c-language:#A78BFA;--c-language-lt:#160D26;
+  --c-listening:#2DD4B8;--c-listening-lt:#082018;
+  --c-wrapup:#9CA3AF;--c-wrapup-lt:#0D1117;
+  --success:#22C991;--success-lt:#051510;
+  --error:#F87171;--error-lt:#1F0808;
+  --shadow:0 1px 12px rgba(0,0,0,.4);--shadow-md:0 4px 24px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --bg:#120B00;--surface:#1C1105;--surface-2:#271A08;--border:#3D2800;
+  --ink:#F5E6D0;--ink-mid:#C8975A;--ink-muted:#7A5530;
+  --primary:#F59E0B;--primary-lt:#1A1205;--primary-dk:#D97706;
+  --c-warmup:#FBB53A;--c-warmup-lt:#1A1205;
+  --c-vocab:#22D3EE;--c-vocab-lt:#061518;
+  --c-reading:#5B80FF;--c-reading-lt:#0E1528;
+  --c-language:#A78BFA;--c-language-lt:#160D26;
+  --c-listening:#2DD4B8;--c-listening-lt:#082018;
+  --c-wrapup:#9CA3AF;--c-wrapup-lt:#0D1117;
+  --success:#22C991;--success-lt:#051510;
+  --error:#F87171;--error-lt:#1F0808;
+  --shadow:0 1px 12px rgba(0,0,0,.4);--shadow-md:0 4px 24px rgba(0,0,0,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.65;padding-top:60px;}
+h1,h2,h3,h4{font-family:var(--fh);text-wrap:balance;line-height:1.2;}
+button{font-family:var(--fb);cursor:pointer;border:none;outline:none;}
+
+/* NAV */
+.stage-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:var(--shadow);}
+.nav-inner{max-width:920px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;}
+.nav-pills{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:0;}
+.pill{font-family:var(--fh);font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:20px;background:var(--surface-2);color:var(--ink-mid);border:1.5px solid var(--border);transition:all .2s;white-space:nowrap;text-decoration:none;}
+.pill:hover{border-color:var(--primary);color:var(--primary);}
+.pill[data-s="s1"].active{background:var(--c-warmup);border-color:var(--c-warmup);color:#fff;}
+.pill[data-s="s2"].active{background:var(--c-vocab);border-color:var(--c-vocab);color:#fff;}
+.pill[data-s="s3"].active{background:var(--c-reading);border-color:var(--c-reading);color:#fff;}
+.pill[data-s="s4"].active{background:var(--c-language);border-color:var(--c-language);color:#fff;}
+.pill[data-s="s5"].active{background:var(--c-listening);border-color:var(--c-listening);color:#fff;}
+.pill[data-s="s6"].active{background:var(--c-language);border-color:var(--c-language);color:#fff;}
+.pill[data-s="s7"].active{background:var(--c-wrapup);border-color:var(--c-wrapup);color:#fff;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dk) 100%);color:#fff;text-align:center;padding:48px 20px 44px;}
+.hero-eyebrow{font-family:var(--fh);font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;opacity:.75;margin-bottom:12px;}
+.hero-title{font-size:clamp(2.2rem,6vw,3.4rem);font-weight:900;margin-bottom:10px;}
+.hero-sub{font-size:1.05rem;opacity:.8;}
+
+/* MAIN */
+main{max-width:920px;margin:0 auto;padding:32px 16px 80px;}
+
+/* STAGE */
+.stage{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:28px;border-top:4px solid var(--stc,var(--primary));overflow:hidden;}
+.stage[data-type="warmup"]{--stc:var(--c-warmup);--stc-lt:var(--c-warmup-lt);}
+.stage[data-type="vocab"]{--stc:var(--c-vocab);--stc-lt:var(--c-vocab-lt);}
+.stage[data-type="reading"]{--stc:var(--c-reading);--stc-lt:var(--c-reading-lt);}
+.stage[data-type="language"]{--stc:var(--c-language);--stc-lt:var(--c-language-lt);}
+.stage[data-type="listening"]{--stc:var(--c-listening);--stc-lt:var(--c-listening-lt);}
+.stage[data-type="wrapup"]{--stc:var(--c-wrapup);--stc-lt:var(--c-wrapup-lt);}
+.stage-head{padding:18px 22px 16px;background:var(--stc-lt,var(--surface-2));}
+.stage-label{font-family:var(--fh);font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--stc,var(--primary));margin-bottom:2px;}
+.stage-title{font-size:1.35rem;font-weight:800;color:var(--ink);}
+.stage-body{padding:22px;}
+
+/* INSTRUCTION */
+.instruction{background:var(--stc-lt,var(--surface-2));border-left:3px solid var(--stc,var(--primary));border-radius:0 var(--r-sm) var(--r-sm) 0;padding:12px 16px;margin-bottom:20px;font-size:.93rem;color:var(--ink-mid);}
+.instruction strong{color:var(--ink);}
+
+/* SPEAKING CARD */
+.speaking-card{background:var(--stc-lt,var(--surface-2));border:1.5px solid var(--stc,var(--primary));border-radius:var(--r);padding:18px 20px;margin-top:18px;}
+.speaking-card h4{font-family:var(--fh);font-size:.9rem;font-weight:700;color:var(--stc,var(--primary));margin-bottom:8px;}
+.speaking-card p,.speaking-card ul{font-size:.96rem;color:var(--ink);}
+.speaking-card ul{padding-left:18px;display:flex;flex-direction:column;gap:4px;}
+
+/* VOTE */
+.proposals{display:flex;flex-direction:column;gap:12px;}
+.proposal-card{border:1.5px solid var(--border);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;transition:border-color .2s,background .2s;}
+.proposal-card.voted-yes{border-color:var(--success);background:var(--success-lt);}
+.proposal-card.voted-no{border-color:var(--error);background:var(--error-lt);}
+.proposal-text{flex:1;font-size:.97rem;font-weight:500;color:var(--ink);}
+.vote-btns{display:flex;gap:8px;flex-shrink:0;}
+.vote-btn{font-family:var(--fh);font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;cursor:pointer;border:1.5px solid var(--border);background:var(--surface-2);color:var(--ink-mid);transition:all .15s;}
+.vote-btn.yes-active{background:var(--success);border-color:var(--success);color:#fff;}
+.vote-btn.no-active{background:var(--error);border-color:var(--error);color:#fff;}
+
+/* WORD IN CONTEXT */
+.wic-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:22px;}
+.wic-item{background:var(--surface-2);border-radius:var(--r-sm);padding:12px 16px;border-left:3px solid var(--error);display:flex;flex-direction:column;gap:4px;}
+.wic-sentence{font-size:.93rem;color:var(--ink);line-height:1.6;}
+.wic-sentence .kw{background:var(--error-lt);color:var(--error);font-weight:700;padding:1px 5px;border-radius:4px;}
+.wic-label{font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);}
+
+/* MATCH */
+.match-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:10px 8px;align-items:center;margin-bottom:16px;}
+.match-left{font-size:.95rem;font-weight:600;color:var(--error);font-style:italic;}
+.match-arrow{color:var(--ink-muted);font-size:1.1rem;text-align:center;}
+.match-right{width:100%;}
+.match-right select{width:100%;font-family:var(--fb);font-size:.9rem;padding:7px 10px;border-radius:var(--r-sm);border:1.5px solid var(--border);background:var(--surface);color:var(--ink);cursor:pointer;}
+.match-right select.correct{border-color:var(--success);background:var(--success-lt);}
+.match-right select.wrong{border-color:var(--error);background:var(--error-lt);}
+
+/* CHECK */
+.check-btn{font-family:var(--fh);font-size:13px;font-weight:700;padding:10px 24px;border-radius:24px;cursor:pointer;border:none;background:var(--primary);color:#fff;margin-top:14px;transition:opacity .2s;}
+.check-btn:hover{opacity:.88;}
+.score-badge{display:inline-block;font-family:var(--fh);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-left:10px;vertical-align:middle;}
+.score-badge.perfect{background:var(--success-lt);color:var(--success);}
+.score-badge.partial{background:#FEF3C7;color:#B45309;}
+
+/* READING */
+.reading-block{background:var(--surface-2);border-radius:var(--r-sm);padding:20px;line-height:1.78;font-size:.95rem;color:var(--ink);margin-bottom:16px;border:1px solid var(--border);}
+.reading-block p{margin-bottom:12px;}
+.reading-block p:last-child{margin-bottom:0;}
+.reading-heading{font-family:var(--fh);font-weight:800;font-size:1.05rem;color:var(--stc,var(--primary));margin-bottom:10px;}
+.hl{background:var(--primary-lt);padding:1px 3px;border-radius:3px;font-weight:600;color:var(--primary-dk);}
+
+/* SORT (T/F/NG) */
+.sort-result{font-family:var(--fh);font-size:12px;font-weight:700;padding:3px 9px;border-radius:10px;display:none;flex-shrink:0;}
+.sort-result.ok{display:inline-block;background:var(--success-lt);color:var(--success);}
+.sort-result.err{display:inline-block;background:var(--error-lt);color:var(--error);}
+
+/* COMP ITEMS */
+.comp-list{display:flex;flex-direction:column;gap:12px;}
+.comp-item{background:var(--surface-2);border-radius:var(--r-sm);padding:14px 16px;border:1px solid var(--border);}
+.comp-q{font-size:.95rem;font-weight:600;color:var(--ink);margin-bottom:8px;}
+.comp-textarea{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:8px 12px;font-family:var(--fb);font-size:.9rem;background:var(--surface);color:var(--ink);resize:vertical;min-height:54px;}
+
+/* CONNOTATION */
+.conn-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.conn-card{border:1.5px solid var(--border);border-radius:var(--r-sm);padding:12px 16px;}
+.conn-word{font-size:.9rem;font-weight:600;padding:4px 10px;border-radius:12px;cursor:pointer;border:1.5px solid var(--border);background:var(--surface-2);color:var(--ink-mid);transition:all .15s;font-family:var(--fh);}
+.conn-word.pos-sel{background:var(--success);border-color:var(--success);color:#fff;}
+.conn-word.neg-sel{background:var(--error);border-color:var(--error);color:#fff;}
+.conn-result{font-family:var(--fh);font-size:12px;font-weight:700;padding:3px 8px;border-radius:10px;display:none;}
+.conn-result.ok{display:inline-block;background:var(--success-lt);color:var(--success);}
+.conn-result.err{display:inline-block;background:var(--error-lt);color:var(--error);}
+
+/* CLEFT GAP FILL */
+.gap-item{border:1.5px solid var(--border);border-radius:var(--r-sm);padding:16px 18px;margin-bottom:12px;}
+.gap-orig{font-size:.86rem;color:var(--ink-muted);font-style:italic;margin-bottom:10px;padding:6px 10px;background:var(--surface-2);border-radius:var(--r-sm);}
+.gap-line{font-size:.97rem;color:var(--ink);display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 0;line-height:2.1;}
+.gap-input{background:none;border:none;border-bottom:2px solid var(--stc,var(--primary));padding:2px 4px;font-family:var(--fb);font-size:.95rem;color:var(--ink);outline:none;text-align:center;}
+.gap-input.ok{border-color:var(--success);color:var(--success);}
+.gap-input.err{border-color:var(--error);color:var(--error);}
+.hint{font-size:.8rem;color:var(--ink-muted);font-style:italic;margin-top:6px;}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.chip{font-size:.83rem;background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:5px 12px;color:var(--ink);}
+.chip.pos{border-color:var(--success);color:var(--success);}
+.chip.neg{border-color:var(--error);color:var(--error);}
+
+/* UTILS */
+.section-label{font-family:var(--fh);font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-muted);margin:22px 0 10px;}
+.section-label:first-child{margin-top:0;}
+.divider{height:1px;background:var(--border);margin:20px 0;}
+.pair-note{font-size:.82rem;color:var(--ink-muted);font-style:italic;margin-top:4px;}
+.preview-box{background:var(--stc-lt,var(--surface-2));border-radius:var(--r);padding:16px 18px;border:1.5px solid var(--stc,var(--primary));margin-top:16px;}
+.preview-box h4{font-family:var(--fh);font-size:.95rem;font-weight:800;color:var(--stc,var(--primary));margin-bottom:8px;}
+.preview-box p{font-size:.9rem;color:var(--ink-mid);}
+.wrapup-qs{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+.wrapup-q{background:var(--surface-2);border-radius:var(--r-sm);padding:14px 16px;border:1px solid var(--border);}
+.wrapup-q .qn{font-family:var(--fh);font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:4px;}
+.wrapup-q .qt{font-size:.97rem;color:var(--ink);font-weight:500;}
+
+/* TF BTNS */
+.tf-btn{font-family:var(--fh);font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;cursor:pointer;border:none;color:#fff;transition:opacity .2s;}
+.tf-btn:hover{opacity:.85;}
+.tf-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+@media(max-width:580px){
+  .match-grid{grid-template-columns:1fr;gap:4px;}
+  .match-arrow{display:none;}
+  .conn-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="stage-nav">
+  <div class="nav-inner">
+    <div class="nav-pills">
+      <a class="pill" data-s="s1" href="#s1">🏙 Warm-up</a>
+      <a class="pill" data-s="s2" href="#s2">📝 Vocab 1</a>
+      <a class="pill" data-s="s3" href="#s3">📰 Reading</a>
+      <a class="pill" data-s="s4" href="#s4">🎨 Vocab 2</a>
+      <a class="pill" data-s="s5" href="#s5">🎙 Listening</a>
+      <a class="pill" data-s="s6" href="#s6">🔤 Language</a>
+      <a class="pill" data-s="s7" href="#s7">✅ Wrap-up</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-eyebrow">Unit 2C · Lesson 1 of 2 · C1</div>
+  <h1 class="hero-title">Local Issues</h1>
+  <p class="hero-sub">Vocabulary: Connotation · Listening · Cleft Sentences — Introduction</p>
+</header>
+
+<main>
+
+<!-- ═══ S1: WARM-UP ═══ -->
+<section class="stage" id="s1" data-type="warmup">
+  <div class="stage-head">
+    <div class="stage-label">Stage 1 · Warm-up</div>
+    <div class="stage-title">Your Local Area</div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction"><strong>Look at the local issues below.</strong> Vote on which two are the biggest problems in a city you know. Then compare with your partner and explain your choices.</div>
+    <div class="proposals">
+      <div class="proposal-card" id="p0">
+        <div class="proposal-text">🚲 <strong>Lack of safe cycling lanes</strong> — cyclists and drivers sharing narrow roads.</div>
+        <div class="vote-btns">
+          <button class="vote-btn" id="p0y" onclick="vote(0,'yes')">🔴 Big problem</button>
+          <button class="vote-btn" id="p0n" onclick="vote(0,'no')">⚪ Not a problem</button>
+        </div>
+      </div>
+      <div class="proposal-card" id="p1">
+        <div class="proposal-text">🗑 <strong>Insufficient recycling facilities</strong> — bins are too few and poorly placed.</div>
+        <div class="vote-btns">
+          <button class="vote-btn" id="p1y" onclick="vote(1,'yes')">🔴 Big problem</button>
+          <button class="vote-btn" id="p1n" onclick="vote(1,'no')">⚪ Not a problem</button>
+        </div>
+      </div>
+      <div class="proposal-card" id="p2">
+        <div class="proposal-text">🚌 <strong>Unreliable public transport</strong> — buses and trains frequently late or cancelled.</div>
+        <div class="vote-btns">
+          <button class="vote-btn" id="p2y" onclick="vote(2,'yes')">🔴 Big problem</button>
+          <button class="vote-btn" id="p2n" onclick="vote(2,'no')">⚪ Not a problem</button>
+        </div>
+      </div>
+      <div class="proposal-card" id="p3">
+        <div class="proposal-text">🏚 <strong>Neglected public spaces</strong> — parks, squares, and streets in poor condition.</div>
+        <div class="vote-btns">
+          <button class="vote-btn" id="p3y" onclick="vote(3,'yes')">🔴 Big problem</button>
+          <button class="vote-btn" id="p3n" onclick="vote(3,'no')">⚪ Not a problem</button>
+        </div>
+      </div>
+      <div class="proposal-card" id="p4">
+        <div class="proposal-text">💰 <strong>Rising cost of housing</strong> — many residents struggling to afford rent or mortgages.</div>
+        <div class="vote-btns">
+          <button class="vote-btn" id="p4y" onclick="vote(4,'yes')">🔴 Big problem</button>
+          <button class="vote-btn" id="p4n" onclick="vote(4,'no')">⚪ Not a problem</button>
+        </div>
+      </div>
+    </div>
+    <div class="speaking-card" style="margin-top:18px;">
+      <h4>💬 Discuss with your partner</h4>
+      <ul>
+        <li>Which two issues did you choose? Do you agree?</li>
+        <li>What are the main local issues where you live right now?</li>
+        <li>Have local authorities done enough to address them?</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S2: VOCAB 1 — CONNOTATION ═══ -->
+<section class="stage" id="s2" data-type="vocab">
+  <div class="stage-head">
+    <div class="stage-label">Stage 2 · Vocabulary</div>
+    <div class="stage-title">Exercise 2 — Letter to a Local Newspaper</div>
+  </div>
+  <div class="stage-body">
+
+    <!-- 2a -->
+    <div class="instruction"><strong>2a &nbsp;Read the letter to a local newspaper and answer the questions.</strong></div>
+
+    <div class="reading-block" style="margin-bottom:16px;">
+      <p>Why oh why doesn't the council improve our public transport system?! It's one of the biggest <strong>¹problems</strong> facing our local area at the moment, yet it's paid scant attention by those who can do something about it. The buses are <strong>²archaic</strong>, and they never run on time – the whole system is <strong>³chaotic</strong>. And don't get me started on local trains. They're non-existent! It makes life really <strong>⁴difficult</strong> for people like me, who don't own a car. It's high time the council stopped being so <strong>⁵penny-pinching</strong> and actually spent some money on the system. It's the 21st Century!</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px;">
+      <div class="comp-item">
+        <div class="comp-q">1 &nbsp;Which of the issues in the photos is the writer complaining about?</div>
+        <textarea class="comp-textarea" placeholder="Your answer…"></textarea>
+      </div>
+      <div class="comp-item">
+        <div class="comp-q">2 &nbsp;How would you describe the tone of the letter?</div>
+        <textarea class="comp-textarea" placeholder="Your answer…"></textarea>
+      </div>
+    </div>
+
+    <!-- 2b -->
+    <div class="instruction"><strong>2b &nbsp;Match the words in bold in the letter with more positive words a–e.</strong></div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px 20px;margin-bottom:18px;font-size:.95rem;color:var(--ink);">
+      <span><strong>a</strong> vintage</span>
+      <span><strong>b</strong> relaxed</span>
+      <span><strong>c</strong> economical</span>
+      <span><strong>d</strong> challenging</span>
+      <span><strong>e</strong> issues</span>
+    </div>
+    <div class="match-grid" id="matchGrid">
+      <div class="match-left">¹ problems</div>
+      <div class="match-arrow">→</div>
+      <div class="match-right"><select id="m1" onchange="resetMatchStyle('m1')">
+        <option value="">— choose —</option>
+        <option value="vintage">a vintage</option>
+        <option value="relaxed">b relaxed</option>
+        <option value="economical">c economical</option>
+        <option value="challenging">d challenging</option>
+        <option value="issues">e issues</option>
+      </select></div>
+
+      <div class="match-left">² archaic</div>
+      <div class="match-arrow">→</div>
+      <div class="match-right"><select id="m2" onchange="resetMatchStyle('m2')">
+        <option value="">— choose —</option>
+        <option value="vintage">a vintage</option>
+        <option value="relaxed">b relaxed</option>
+        <option value="economical">c economical</option>
+        <option value="challenging">d challenging</option>
+        <option value="issues">e issues</option>
+      </select></div>
+
+      <div class="match-left">³ chaotic</div>
+      <div class="match-arrow">→</div>
+      <div class="match-right"><select id="m3" onchange="resetMatchStyle('m3')">
+        <option value="">— choose —</option>
+        <option value="vintage">a vintage</option>
+        <option value="relaxed">b relaxed</option>
+        <option value="economical">c economical</option>
+        <option value="challenging">d challenging</option>
+        <option value="issues">e issues</option>
+      </select></div>
+
+      <div class="match-left">⁴ difficult</div>
+      <div class="match-arrow">→</div>
+      <div class="match-right"><select id="m4" onchange="resetMatchStyle('m4')">
+        <option value="">— choose —</option>
+        <option value="vintage">a vintage</option>
+        <option value="relaxed">b relaxed</option>
+        <option value="economical">c economical</option>
+        <option value="challenging">d challenging</option>
+        <option value="issues">e issues</option>
+      </select></div>
+
+      <div class="match-left">⁵ penny-pinching</div>
+      <div class="match-arrow">→</div>
+      <div class="match-right"><select id="m5" onchange="resetMatchStyle('m5')">
+        <option value="">— choose —</option>
+        <option value="vintage">a vintage</option>
+        <option value="relaxed">b relaxed</option>
+        <option value="economical">c economical</option>
+        <option value="challenging">d challenging</option>
+        <option value="issues">e issues</option>
+      </select></div>
+    </div>
+    <button class="check-btn" onclick="checkMatch()">✓ Check Answers <span id="matchScore" class="score-badge" style="display:none;"></span></button>
+
+  </div>
+</section>
+
+<!-- ═══ S3: READING ═══ -->
+<section class="stage" id="s3" data-type="reading">
+  <div class="stage-head">
+    <div class="stage-label">Stage 3 · Reading</div>
+    <div class="stage-title">A Letter to the Editor</div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction"><strong>Read the full letter.</strong> Pay attention to the <span class="hl">highlighted words</span> — they carry strong negative connotations. Think about how the writer could express the same ideas more neutrally.</div>
+
+    <div class="reading-block">
+      <div class="reading-heading">Dear Editor,</div>
+      <p>I am writing to express my deep frustration with the state of public transport in our city. The <span class="hl">problems</span> are now so severe that commuters are left with no real choice but to use their cars, causing even greater congestion.</p>
+      <p>The bus network is <span class="hl">archaic</span> — many routes were designed decades ago and have never been updated to reflect how the city has grown. Timetables are <span class="hl">chaotic</span>, with buses arriving unpredictably and sometimes not at all. Standing room only seems to be the norm, not the exception.</p>
+      <p>Most infuriating of all is the attitude of the local council. Their <span class="hl">penny-pinching</span> approach to public services means that investment in new buses and better infrastructure has been postponed year after year. Meanwhile, they ask residents to make <span class="hl">difficult</span> sacrifices — higher fares, fewer routes, longer waits.</p>
+      <p>I urge the council to stop treating public transport as an inconvenient expense and start seeing it as a civic responsibility.</p>
+      <p style="text-align:right;font-weight:600;margin-top:6px;">— A frustrated resident</p>
+    </div>
+
+    <div class="section-label">Comprehension — True, False or Not Given?</div>
+    <div class="comp-list">
+      <div class="comp-item">
+        <div class="comp-q">1. The writer argues that poor transport is making the city's traffic worse.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button class="tf-btn" style="background:var(--success);" onclick="tfCheck(this,'T','T')">T</button>
+          <button class="tf-btn" style="background:var(--error);" onclick="tfCheck(this,'F','T')">F</button>
+          <button class="tf-btn" style="background:var(--c-vocab);" onclick="tfCheck(this,'NG','T')">NG</button>
+          <span class="sort-result" id="tf1r"></span>
+        </div>
+      </div>
+      <div class="comp-item">
+        <div class="comp-q">2. The council has recently invested in new buses.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button class="tf-btn" style="background:var(--success);" onclick="tfCheck(this,'T','F')">T</button>
+          <button class="tf-btn" style="background:var(--error);" onclick="tfCheck(this,'F','F')">F</button>
+          <button class="tf-btn" style="background:var(--c-vocab);" onclick="tfCheck(this,'NG','F')">NG</button>
+          <span class="sort-result" id="tf2r"></span>
+        </div>
+      </div>
+      <div class="comp-item">
+        <div class="comp-q">3. The letter writer takes the bus to work every day.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button class="tf-btn" style="background:var(--success);" onclick="tfCheck(this,'T','NG')">T</button>
+          <button class="tf-btn" style="background:var(--error);" onclick="tfCheck(this,'F','NG')">F</button>
+          <button class="tf-btn" style="background:var(--c-vocab);" onclick="tfCheck(this,'NG','NG')">NG</button>
+          <span class="sort-result" id="tf3r"></span>
+        </div>
+      </div>
+      <div class="comp-item">
+        <div class="comp-q">4. The writer wants the council to treat public transport as a duty to residents.</div>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button class="tf-btn" style="background:var(--success);" onclick="tfCheck(this,'T','T')">T</button>
+          <button class="tf-btn" style="background:var(--error);" onclick="tfCheck(this,'F','T')">F</button>
+          <button class="tf-btn" style="background:var(--c-vocab);" onclick="tfCheck(this,'NG','T')">NG</button>
+          <span class="sort-result" id="tf4r"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaking-card" style="margin-top:16px;">
+      <h4>💬 Discuss</h4>
+      <ul>
+        <li>How would the tone change if the writer used <em>vintage, relaxed, economical, challenging, issues</em>?</li>
+        <li>Who is more persuasive — someone who uses emotive language, or someone who stays neutral?</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S4: VOCAB 2 — CONNOTATION PAIRS ═══ -->
+<section class="stage" id="s4" data-type="language">
+  <div class="stage-head">
+    <div class="stage-label">Stage 4 · Vocabulary</div>
+    <div class="stage-title">Connotation Pairs</div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction"><strong>Exercise 3 — Each pair has one positive (P) and one negative (N) word.</strong> Click P or N under each word, then check your answers.</div>
+
+    <div class="conn-grid" id="connGrid">
+      <div class="conn-card">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:.9rem;min-width:82px;">employs</span>
+            <button class="conn-word" id="c1a_P" onclick="connPick('c1','a','P')">P</button>
+            <button class="conn-word" id="c1a_N" onclick="connPick('c1','a','N')">N</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:.9rem;min-width:82px;">exploits</span>
+            <button class="conn-word" id="c1b_P" onclick="connPick('c1','b','P')">P</button>
+            <button class="conn-word" id="c1b_N" onclick="connPick('c1','b','N')">N</button>
+          </div>
+          <div class="conn-result" id="c1r"></div>
+        </div>
+      </div>
+      <div class="conn-card">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:.9rem;min-width:82px;">lively</span>
+            <button class="conn-word" id="c2a_P" onclick="connPick('c2','a','P')">P</button>
+            <button class="conn-word" id="c2a_N" onclick="connPick('c2','a','N')">N</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:.9rem;min-width:82px;">rowdy</span>
+            <button class="conn-word" id="c2b_P" onclick="connPick('c2','b','P')">P</button>
+            <button class="conn-word" id="c2b_N" onclick="connPick('c2','b','N')">N</button>
+          </div>
+          <div class="conn-result" id="c2r"></div>
+        </div>
+      </div>
+      <div class="conn-card">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:.9rem;min-width:82px;">charming</span>
+            <button class="conn-word" id="c3a_P" onclick="connPick('c3','a','P')">P</button>
+            <button class="conn-word" id="c3a_N" onclick="connPick('c3','a','N')">N</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:.9rem;min-width:82px;">run-down</span>
+            <button class="conn-word" id="c3b_P" onclick="connPick('c3','b','P')">P</button>
+            <button class="conn-word" id="c3b_N" onclick="connPick('c3','b','N')">N</button>
+          </div>
+          <div class="conn-result" id="c3r"></div>
+        </div>
+      </div>
+      <div class="conn-card">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:.9rem;min-width:82px;">group</span>
+            <button class="conn-word" id="c4a_P" onclick="connPick('c4','a','P')">P</button>
+            <button class="conn-word" id="c4a_N" onclick="connPick('c4','a','N')">N</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:.9rem;min-width:82px;">mob</span>
+            <button class="conn-word" id="c4b_P" onclick="connPick('c4','b','P')">P</button>
+            <button class="conn-word" id="c4b_N" onclick="connPick('c4','b','N')">N</button>
+          </div>
+          <div class="conn-result" id="c4r"></div>
+        </div>
+      </div>
+      <div class="conn-card">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:.9rem;min-width:82px;">affordable</span>
+            <button class="conn-word" id="c5a_P" onclick="connPick('c5','a','P')">P</button>
+            <button class="conn-word" id="c5a_N" onclick="connPick('c5','a','N')">N</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:.9rem;min-width:82px;">cheap</span>
+            <button class="conn-word" id="c5b_P" onclick="connPick('c5','b','P')">P</button>
+            <button class="conn-word" id="c5b_N" onclick="connPick('c5','b','N')">N</button>
+          </div>
+          <div class="conn-result" id="c5r"></div>
+        </div>
+      </div>
+      <div class="conn-card">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:.9rem;min-width:82px;">firm</span>
+            <button class="conn-word" id="c6a_P" onclick="connPick('c6','a','P')">P</button>
+            <button class="conn-word" id="c6a_N" onclick="connPick('c6','a','N')">N</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:.9rem;min-width:82px;">harsh</span>
+            <button class="conn-word" id="c6b_P" onclick="connPick('c6','b','P')">P</button>
+            <button class="conn-word" id="c6b_N" onclick="connPick('c6','b','N')">N</button>
+          </div>
+          <div class="conn-result" id="c6r"></div>
+        </div>
+      </div>
+    </div>
+    <button class="check-btn" onclick="checkConn()">✓ Check Answers <span id="connScore" class="score-badge" style="display:none;"></span></button>
+
+    <div class="divider"></div>
+    <div class="section-label">Exercise 4 — Choose the right word for each context</div>
+    <div class="instruction">Working with your partner, decide which word you'd use (positive or negative) in each of these situations.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="comp-item">
+        <div class="comp-q">A friend is describing old-fashioned clothes she actually loves.</div>
+        <div class="pair-note">👉 <em>vintage</em> or <em>archaic</em>? Why?</div>
+      </div>
+      <div class="comp-item">
+        <div class="comp-q">A councillor defending cuts to public services at a town meeting.</div>
+        <div class="pair-note">👉 <em>economical</em> or <em>penny-pinching</em>?</div>
+      </div>
+      <div class="comp-item">
+        <div class="comp-q">A journalist writing a critical article about a neighbourhood.</div>
+        <div class="pair-note">👉 <em>charming</em> or <em>run-down</em>? <em>affordable</em> or <em>cheap</em>?</div>
+      </div>
+      <div class="comp-item">
+        <div class="comp-q">A teacher who corrects students rigorously, with high expectations.</div>
+        <div class="pair-note">👉 <em>firm</em> or <em>harsh</em>? How does the answer depend on who's speaking?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S5: LISTENING ═══ -->
+<section class="stage" id="s5" data-type="listening">
+  <div class="stage-head">
+    <div class="stage-label">Stage 5 · Listening</div>
+    <div class="stage-title">The Councillor's Interview</div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction"><strong>Audio 2.8</strong> — A radio journalist interviews Elaine Miller, a local councillor. Before listening, predict her answers. Then listen and take notes.</div>
+
+    <div class="section-label">Pre-Listening — Predict</div>
+    <div class="speaking-card">
+      <h4>🤔 What do you think Councillor Miller will say?</h4>
+      <ul>
+        <li>Will she admit the problems with public transport?</li>
+        <li>Will she blame lack of funding or something else?</li>
+        <li>How will she justify cuts to services?</li>
+      </ul>
+    </div>
+
+    <div class="section-label" style="margin-top:18px;">Exercise 6 — Comprehension Questions</div>
+    <div class="comp-list">
+      <div class="comp-item">
+        <div class="comp-q">1. What does Elaine Miller say about the public transport system?</div>
+        <textarea class="comp-textarea" placeholder="Your notes…"></textarea>
+      </div>
+      <div class="comp-item">
+        <div class="comp-q">2. What does she say about young people and their needs?</div>
+        <textarea class="comp-textarea" placeholder="Your notes…"></textarea>
+      </div>
+      <div class="comp-item">
+        <div class="comp-q">3. What changes are being made to refuse collection?</div>
+        <textarea class="comp-textarea" placeholder="Your notes…"></textarea>
+      </div>
+      <div class="comp-item">
+        <div class="comp-q">4. What other cuts does she mention?</div>
+        <textarea class="comp-textarea" placeholder="Your notes…"></textarea>
+      </div>
+      <div class="comp-item">
+        <div class="comp-q">5. How does she justify the cuts?</div>
+        <textarea class="comp-textarea" placeholder="Your notes…"></textarea>
+      </div>
+    </div>
+
+    <div class="speaking-card" style="margin-top:16px;">
+      <h4>💬 Post-Listening Discussion</h4>
+      <ul>
+        <li>Did the councillor use positive or negative language — or a mix?</li>
+        <li>Was her justification convincing? Why / why not?</li>
+        <li>What would you do differently in her position?</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S6: LANGUAGE FOCUS — CLEFT INTRO ═══ -->
+<section class="stage" id="s6" data-type="language">
+  <div class="stage-head">
+    <div class="stage-label">Stage 6 · Language Focus</div>
+    <div class="stage-title">Cleft Sentences — First Look</div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction"><strong>Audio 2.9</strong> — Listen to extracts from the interview. Complete the cleft sentence rewrites. Each rewrites the original sentence to emphasise one piece of information more strongly.</div>
+
+    <div class="section-label">Exercise 7a — Complete the cleft sentences</div>
+
+    <!-- 1 -->
+    <div class="gap-item">
+      <div class="gap-orig">Original: <em>We looked at ways to improve the transport network.</em></div>
+      <div class="gap-line">
+        <input class="gap-input" id="g1a" placeholder="____" style="width:8ch;">
+        <span>&nbsp;we&nbsp;</span>
+        <input class="gap-input" id="g1b" placeholder="____" style="width:12ch;">
+        <span>&nbsp;to look at were ways to improve the transport network.</span>
+      </div>
+      <div class="hint">💡 Start with the question word that introduces known info. What verb fills the second gap?</div>
+    </div>
+
+    <!-- 2 -->
+    <div class="gap-item">
+      <div class="gap-orig">Original: <em>I'm saying that we have to invest in infrastructure.</em></div>
+      <div class="gap-line">
+        <input class="gap-input" id="g2a" placeholder="____" style="width:8ch;">
+        <span>&nbsp;I'm saying&nbsp;</span>
+        <input class="gap-input" id="g2b" placeholder="____" style="width:9ch;">
+        <span>&nbsp;we have to invest in infrastructure.</span>
+      </div>
+      <div class="hint">💡 First gap: the question word. Second gap: verb + conjunction.</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="gap-item">
+      <div class="gap-orig">Original: <em>My colleague made that statement.</em></div>
+      <div class="gap-line">
+        <input class="gap-input" id="g3a" placeholder="____" style="width:4ch;">
+        <span>&nbsp;was my colleague&nbsp;</span>
+        <input class="gap-input" id="g3b" placeholder="____" style="width:9ch;">
+        <span>&nbsp;made that statement.</span>
+      </div>
+      <div class="hint">💡 First gap: a pronoun. Second gap: a relative pronoun (two options).</div>
+    </div>
+
+    <!-- 4 -->
+    <div class="gap-item">
+      <div class="gap-orig">Original: <em>I can't stand having to make cuts.</em></div>
+      <div class="gap-line">
+        <input class="gap-input" id="g4a" placeholder="____" style="width:8ch;">
+        <span>&nbsp;I can't stand&nbsp;</span>
+        <input class="gap-input" id="g4b" placeholder="____" style="width:5ch;">
+        <span>&nbsp;having to make cuts.</span>
+      </div>
+      <div class="hint">💡 First gap: the question word. Second gap: a linking verb.</div>
+    </div>
+
+    <button class="check-btn" onclick="checkCleft()">✓ Check Answers <span id="cleftScore" class="score-badge" style="display:none;"></span></button>
+
+    <div class="speaking-card" style="margin-top:16px;">
+      <h4>🔍 Notice</h4>
+      <p>Sentences 1, 2 and 4 begin with <strong>What</strong> — the known information comes first, and the new, emphasised point follows after <em>is/was/were</em>. Sentence 3 begins with <strong>It</strong> — this highlights a specific person or thing. Both patterns will be practised in full in Lesson 2.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S7: WRAP-UP ═══ -->
+<section class="stage" id="s7" data-type="wrapup">
+  <div class="stage-head">
+    <div class="stage-label">Stage 7 · Wrap-up</div>
+    <div class="stage-title">Reflect &amp; Preview</div>
+  </div>
+  <div class="stage-body">
+    <div class="section-label">Quick Recall</div>
+    <div class="wrapup-qs">
+      <div class="wrapup-q">
+        <div class="qn">Connotation</div>
+        <div class="qt">Give one positive/negative pair from today and use both words in a sentence about your city.</div>
+      </div>
+      <div class="wrapup-q">
+        <div class="qn">Language</div>
+        <div class="qt">Complete this cleft sentence: "What the council needs to do is ___."</div>
+      </div>
+      <div class="wrapup-q">
+        <div class="qn">Opinion</div>
+        <div class="qt">What is the one local issue you feel most strongly about? Would you write a letter to the editor about it?</div>
+      </div>
+    </div>
+
+    <div class="preview-box">
+      <h4>👉 Coming up in Lesson 2</h4>
+      <p>We'll study the full grammar of <strong>it-clefts</strong> and <strong>what-clefts</strong>, practise rewriting sentences for emphasis, and prepare for a city council role-play where you'll argue for or against local proposals.</p>
+    </div>
+
+    <div style="margin-top:20px;">
+      <div class="section-label">Vocabulary to Remember</div>
+      <div class="chips">
+        <span class="chip neg">archaic</span><span class="chip pos">vintage</span>
+        <span class="chip neg">chaotic</span><span class="chip pos">relaxed</span>
+        <span class="chip neg">penny-pinching</span><span class="chip pos">economical</span>
+        <span class="chip neg">difficult</span><span class="chip pos">challenging</span>
+        <span class="chip neg">problems</span><span class="chip pos">issues</span>
+        <span class="chip neg">exploits</span><span class="chip pos">employs</span>
+        <span class="chip neg">rowdy</span><span class="chip pos">lively</span>
+        <span class="chip neg">run-down</span><span class="chip pos">charming</span>
+        <span class="chip neg">mob</span><span class="chip pos">group</span>
+        <span class="chip neg">cheap</span><span class="chip pos">affordable</span>
+        <span class="chip neg">harsh</span><span class="chip pos">firm</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+// ── SCROLL SPY ─────────────────────────────────────────
+const pills=document.querySelectorAll('.pill[data-s]');
+const sections=document.querySelectorAll('.stage');
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){
+    const id=e.target.id;
+    pills.forEach(p=>p.classList.toggle('active',p.dataset.s===id));
+  }});
+},{threshold:.3});
+sections.forEach(s=>io.observe(s));
+
+// ── VOTE ──────────────────────────────────────────────
+function vote(i,v){
+  const card=document.getElementById('p'+i);
+  const y=document.getElementById('p'+i+'y');
+  const n=document.getElementById('p'+i+'n');
+  card.classList.remove('voted-yes','voted-no');
+  y.classList.remove('yes-active');n.classList.remove('no-active');
+  if(v==='yes'){card.classList.add('voted-yes');y.classList.add('yes-active');}
+  else{card.classList.add('voted-no');n.classList.add('no-active');}
+}
+
+// ── TF CHECK ──────────────────────────────────────────
+function tfCheck(btn,choice,correct){
+  const itemEl=btn.closest('.comp-item');
+  itemEl.querySelectorAll('.tf-btn').forEach(b=>b.disabled=true);
+  const idx=parseInt(itemEl.querySelector('.comp-q').textContent.split('.')[0])-1;
+  const res=document.getElementById('tf'+(idx+1)+'r');
+  res.className='sort-result '+(choice===correct?'ok':'err');
+  res.textContent=choice===correct?'✓ Correct':'✗ '+correct;
+}
+
+// ── MATCH CHECK ───────────────────────────────────────
+const matchAns={m1:'issues',m2:'vintage',m3:'relaxed',m4:'challenging',m5:'economical'};
+function resetMatchStyle(id){document.getElementById(id).classList.remove('correct','wrong');}
+function checkMatch(){
+  let sc=0;
+  Object.keys(matchAns).forEach(id=>{
+    const sel=document.getElementById(id);
+    if(sel.value===matchAns[id]){sel.classList.add('correct');sc++;}
+    else if(sel.value){sel.classList.add('wrong');}
+  });
+  const badge=document.getElementById('matchScore');
+  badge.style.display='inline-block';
+  badge.textContent=sc+'/5';
+  badge.className='score-badge '+(sc===5?'perfect':'partial');
+}
+
+// ── CONNOTATION PAIRS ─────────────────────────────────
+// a = first word, b = second word; pos = positive
+// employs=P, exploits=N | lively=P, rowdy=N | charming=P, run-down=N
+// group=P, mob=N | affordable=P, cheap=N | firm=P, harsh=N
+const connAns={c1:{a:'P',b:'N'},c2:{a:'P',b:'N'},c3:{a:'P',b:'N'},c4:{a:'P',b:'N'},c5:{a:'P',b:'N'},c6:{a:'P',b:'N'}};
+const connSel={};
+function connPick(pair,side,val){
+  // clear both sides for this pair
+  ['a','b'].forEach(s=>{
+    ['P','N'].forEach(v=>{
+      const el=document.getElementById(pair+s+'_'+v);
+      if(el)el.classList.remove('pos-sel','neg-sel');
+    });
+  });
+  // set selection
+  if(!connSel[pair])connSel[pair]={};
+  connSel[pair][side]=val;
+  // re-apply all current selections
+  Object.entries(connSel[pair]).forEach(([s,v])=>{
+    const el=document.getElementById(pair+s+'_'+v);
+    if(el)el.classList.add(v==='P'?'pos-sel':'neg-sel');
+  });
+}
+function checkConn(){
+  let sc=0,tot=0;
+  Object.entries(connAns).forEach(([pair,sides])=>{
+    let ok=true;
+    Object.entries(sides).forEach(([side,correct])=>{
+      tot++;
+      const got=(connSel[pair]||{})[side];
+      if(got===correct)sc++; else ok=false;
+    });
+    const res=document.getElementById(pair+'r');
+    res.className='conn-result '+(ok?'ok':'err');
+    res.textContent=ok?'✓':'✗';
+  });
+  const badge=document.getElementById('connScore');
+  badge.style.display='inline-block';
+  badge.textContent=sc+'/'+tot;
+  badge.className='score-badge '+(sc===tot?'perfect':'partial');
+}
+
+// ── CLEFT CHECK ───────────────────────────────────────
+// 1a: What  1b: wanted/needed/came
+// 2a: What  2b: is that
+// 3a: It    3b: who / that
+// 4a: What  4b: is
+const cleftAns=[
+  {a:['what'],           b:['wanted','needed','came','were trying','tried']},
+  {a:['what'],           b:['is that','is']},
+  {a:['it'],             b:['who','that']},
+  {a:['what'],           b:['is']}
+];
+function checkCleft(){
+  let sc=0,tot=8;
+  cleftAns.forEach((item,i)=>{
+    const ia=document.getElementById('g'+(i+1)+'a');
+    const ib=document.getElementById('g'+(i+1)+'b');
+    const va=ia.value.trim().toLowerCase();
+    const vb=ib.value.trim().toLowerCase();
+    const okA=item.a.some(k=>va===k||va.includes(k));
+    const okB=item.b.some(k=>vb===k||vb.includes(k));
+    ia.classList.remove('ok','err');ia.classList.add(okA?'ok':'err');
+    ib.classList.remove('ok','err');ib.classList.add(okB?'ok':'err');
+    if(okA)sc++;if(okB)sc++;
+  });
+  const badge=document.getElementById('cleftScore');
+  badge.style.display='inline-block';
+  badge.textContent=sc+'/'+tot;
+  badge.className='score-badge '+(sc===tot?'perfect':'partial');
+}
+</script>
+</body>
+</html>
