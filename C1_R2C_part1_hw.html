@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vocabulary: Connotation 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFBF5;--surface:#FFFFFF;--surface2:#FEF9F0;
+  --accent:#B45309;--accent-lt:#FEF3C7;--accent-dk:#92400E;--accent-border:#FCD34D;
+  --ink:#1C1917;--ink-mid:#57534E;--ink-muted:#A8A29E;
+  --border:#E7E5E4;--border-md:#D6D3D1;
+  --ok:#15803D;--ok-lt:#DCFCE7;--ok-border:#86EFAC;
+  --err:#B91C1C;--err-lt:#FEE2E2;--err-border:#FCA5A5;
+  --r:12px;--r-sm:8px;
+  --shadow:0 2px 16px rgba(0,0,0,.07);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1A1208;--surface:#231709;--surface2:#2A1E0D;
+  --accent:#F59E0B;--accent-lt:#2A1E0D;--accent-dk:#D97706;--accent-border:#92400E;
+  --ink:#FAF5EF;--ink-mid:#D6CFC8;--ink-muted:#A8968A;
+  --border:#3D3228;--border-md:#4A3C2E;
+  --ok:#4ADE80;--ok-lt:#052E16;--ok-border:#166534;
+  --err:#F87171;--err-lt:#450A0A;--err-border:#7F1D1D;
+}}
+:root[data-theme="dark"]{
+  --bg:#1A1208;--surface:#231709;--surface2:#2A1E0D;
+  --accent:#F59E0B;--accent-lt:#2A1E0D;--accent-dk:#D97706;--accent-border:#92400E;
+  --ink:#FAF5EF;--ink-mid:#D6CFC8;--ink-muted:#A8968A;
+  --border:#3D3228;--border-md:#4A3C2E;
+  --ok:#4ADE80;--ok-lt:#052E16;--ok-border:#166534;
+  --err:#F87171;--err-lt:#450A0A;--err-border:#7F1D1D;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'DM Sans',system-ui,sans-serif;
+  font-size:1rem;line-height:1.7;
+  padding:0 0 72px;
+}
+
+/* ── Header ── */
+.hw-header{
+  background:var(--accent);color:#fff;
+  padding:28px 24px 24px;
+  text-align:center;
+}
+.hw-badge{
+  display:inline-block;font-family:'Outfit',sans-serif;
+  font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  background:rgba(255,255,255,.22);border-radius:20px;padding:3px 13px;margin-bottom:10px;
+}
+.hw-header h1{
+  font-family:'Outfit',sans-serif;font-size:clamp(1.4rem,3vw,2rem);
+  font-weight:800;margin-bottom:4px;
+}
+.hw-meta{
+  font-size:.78rem;opacity:.75;letter-spacing:.04em;
+}
+
+/* ── Wrapper ── */
+.wrap{max-width:760px;margin:0 auto;padding:0 16px;}
+
+/* ── Section ── */
+.section{
+  background:var(--surface);border-radius:var(--r);
+  border:1px solid var(--border);box-shadow:var(--shadow);
+  margin:24px 0;overflow:hidden;
+}
+.section-head{
+  background:var(--surface2);border-bottom:1px solid var(--border);
+  padding:16px 22px;
+  display:flex;align-items:baseline;gap:10px;
+}
+.ex-tag{
+  font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-lt);
+  border-radius:20px;padding:3px 11px;flex-shrink:0;
+}
+.section-title{
+  font-family:'Outfit',sans-serif;font-size:1rem;font-weight:600;color:var(--ink);
+}
+.section-body{padding:20px 22px;}
+.instruction{
+  font-size:.9rem;color:var(--ink-mid);margin-bottom:18px;
+  font-style:italic;border-left:3px solid var(--accent-border);
+  padding-left:12px;
+}
+
+/* ── Ex 1 items ── */
+.ex1-item{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:10px 0;border-bottom:1px solid var(--border);
+}
+.ex1-item:last-child{border-bottom:none;}
+.item-num{
+  font-family:'Outfit',sans-serif;font-weight:700;font-size:.88rem;
+  color:var(--accent);min-width:20px;margin-top:2px;flex-shrink:0;
+}
+.sent-wrap{font-size:.96rem;color:var(--ink);line-height:1.8;flex:1;}
+.opts{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;margin:0 2px;}
+.opt-btn{
+  font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;
+  padding:2px 10px;border-radius:20px;cursor:pointer;
+  border:1.5px solid var(--border-md);background:var(--surface2);
+  color:var(--ink-mid);transition:all .15s;
+}
+.opt-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.opt-btn.selected{background:var(--accent-lt);border-color:var(--accent);color:var(--accent);font-weight:600;}
+.opt-btn.correct{background:var(--ok-lt);border-color:var(--ok-border);color:var(--ok);font-weight:600;}
+.opt-btn.wrong{background:var(--err-lt);border-color:var(--err-border);color:var(--err);}
+.opt-btn:disabled{cursor:default;}
+.opt-sep{color:var(--ink-muted);font-size:.82rem;}
+.ex1-fb{
+  display:inline;margin-left:6px;font-size:.82rem;font-weight:600;
+}
+.ex1-fb.ok{color:var(--ok);}
+.ex1-fb.bad{color:var(--err);}
+
+/* ── Ex 2 gaps ── */
+.word-box{
+  background:var(--surface2);border:1px solid var(--accent-border);
+  border-radius:var(--r-sm);padding:10px 16px;margin-bottom:16px;
+  font-size:.88rem;color:var(--ink-mid);
+  display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;
+}
+.word-box-label{
+  font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--accent);
+  margin-right:4px;
+}
+.word-box-word{font-weight:500;color:var(--ink);}
+
+.comment-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:14px 18px;margin-bottom:12px;
+}
+.comment-card:last-of-type{margin-bottom:0;}
+.commenter{
+  font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:700;
+  color:var(--accent);letter-spacing:.05em;margin-bottom:6px;
+}
+.comment-card p{font-size:.95rem;color:var(--ink);line-height:1.9;}
+
+.gap-wrap{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;}
+.gap-num{
+  font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;
+  color:var(--accent-dk);background:var(--accent-lt);
+  border-radius:10px;padding:1px 6px;line-height:1.4;
+}
+input.gap{
+  font-family:'DM Sans',sans-serif;font-size:.9rem;
+  width:130px;padding:2px 8px;border-radius:6px;
+  border:1.5px solid var(--border-md);background:var(--surface);
+  color:var(--ink);outline:none;transition:border-color .15s;
+}
+input.gap:focus{border-color:var(--accent);}
+input.gap.ok{border-color:var(--ok);background:var(--ok-lt);color:var(--ok);}
+input.gap.bad{border-color:var(--err);background:var(--err-lt);color:var(--err);}
+input.gap:disabled{cursor:default;}
+
+/* ── Check buttons & score ── */
+.check-row{
+  display:flex;align-items:center;gap:12px;
+  margin-top:18px;padding-top:14px;
+  border-top:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.check-btn{
+  font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;
+  padding:9px 26px;border-radius:24px;cursor:pointer;border:none;
+  background:var(--accent);color:#fff;transition:background .15s;
+}
+.check-btn:hover{background:var(--accent-dk);}
+.check-btn:disabled{opacity:.5;cursor:default;}
+.score-badge{
+  font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;
+  padding:6px 16px;border-radius:20px;display:none;
+  border:2px solid;
+}
+.score-badge.show{display:inline-flex;align-items:center;gap:6px;}
+.score-badge.good{background:var(--ok-lt);border-color:var(--ok-border);color:var(--ok);}
+.score-badge.partial{background:var(--accent-lt);border-color:var(--accent-border);color:var(--accent-dk);}
+.score-badge.low{background:var(--err-lt);border-color:var(--err-border);color:var(--err);}
+
+/* ── Send to teacher ── */
+.send-section{
+  background:var(--surface);border-radius:var(--r);
+  border:1px solid var(--border);box-shadow:var(--shadow);
+  margin:24px 0;padding:22px;
+}
+.send-title{
+  font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;
+  letter-spacing:.05em;color:var(--ink);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.send-title::before{content:'📤';font-size:1rem;}
+.send-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+@media(max-width:500px){.send-grid{grid-template-columns:1fr;}}
+.send-field label{font-size:.78rem;font-weight:600;color:var(--ink-mid);display:block;margin-bottom:4px;}
+.send-field input{
+  width:100%;padding:8px 12px;border-radius:var(--r-sm);
+  border:1.5px solid var(--border-md);background:var(--surface2);
+  font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ink);outline:none;
+  transition:border-color .15s;
+}
+.send-field input:focus{border-color:var(--accent);}
+.send-btn{
+  font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;
+  padding:9px 24px;border-radius:24px;cursor:pointer;border:none;
+  background:var(--accent);color:#fff;transition:background .15s;
+}
+.send-btn:hover{background:var(--accent-dk);}
+.send-note{font-size:.78rem;color:var(--ink-muted);margin-top:8px;}
+
+@media(max-width:600px){
+  .section-body{padding:16px;}
+  .section-head{padding:12px 16px;}
+  .sent-wrap{font-size:.9rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="hw-header">
+  <div class="hw-badge">Homework</div>
+  <h1>Vocabulary: Connotation 2</h1>
+  <div class="hw-meta">Unit 2C · Local Issues · C1</div>
+</div>
+
+<div class="wrap">
+
+  <!-- ══ EXERCISE 1 ══ -->
+  <div class="section" id="sec1">
+    <div class="section-head">
+      <span class="ex-tag">Exercise 1</span>
+      <span class="section-title">Choose the correct alternative in each sentence.</span>
+    </div>
+    <div class="section-body">
+      <p class="instruction">Click the word that best fits the meaning and connotation of each sentence.</p>
+      <div id="ex1-list"></div>
+      <div class="check-row">
+        <button class="check-btn" id="check1" onclick="checkEx1()">Check Answers</button>
+        <span class="score-badge" id="score1"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ EXERCISE 2 ══ -->
+  <div class="section" id="sec2">
+    <div class="section-head">
+      <span class="ex-tag">Exercise 2</span>
+      <span class="section-title">Complete the online comments with the words in the box.</span>
+    </div>
+    <div class="section-body">
+      <p class="instruction">Use each word once. The number in brackets shows which gap to fill.</p>
+      <div class="word-box" id="word-box"></div>
+      <div id="ex2-comments"></div>
+      <div class="check-row">
+        <button class="check-btn" id="check2" onclick="checkEx2()">Check Answers</button>
+        <span class="score-badge" id="score2"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SEND TO TEACHER ══ -->
+  <div class="send-section">
+    <div class="send-title">Send to Your Teacher</div>
+    <div class="send-grid">
+      <div class="send-field">
+        <label>Your name</label>
+        <input type="text" id="student-name" placeholder="First and last name">
+      </div>
+      <div class="send-field">
+        <label>Your email</label>
+        <input type="email" id="student-email" placeholder="student@email.com">
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendHW()">Submit Homework</button>
+    <p class="send-note" id="send-note"></p>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+/* ═══════════════════════════════
+   EXERCISE 1 DATA
+═══════════════════════════════ */
+const ex1Data = [
+  {
+    before: 'The streets became',
+    opts: ['chaotic','hectic'],
+    ans: 'chaotic',
+    after: 'after the power cut — no traffic lights, no order at all.'
+  },
+  {
+    before: 'The renovated old quarter is really',
+    opts: ['charming','quaint'],
+    ans: 'charming',
+    after: ', with beautiful architecture and cosy independent cafés.'
+  },
+  {
+    before: 'A',
+    opts: ['mob','crowd'],
+    ans: 'mob',
+    after: 'of hooligans caused serious damage outside the stadium after the match.'
+  },
+  {
+    before: 'Large developers sometimes try to',
+    opts: ['exploit','use'],
+    ans: 'exploit',
+    after: 'planning loopholes to build without proper permission.'
+  },
+  {
+    before: 'The atmosphere at the late-night market became quite',
+    opts: ['rowdy','lively'],
+    ans: 'rowdy',
+    after: ', with several noise complaints received from nearby residents.'
+  },
+  {
+    before: 'The',
+    opts: ['vintage','antique'],
+    ans: 'vintage',
+    after: 'tram has been lovingly restored and is now the town\'s most popular visitor attraction.'
+  },
+  {
+    before: 'The council remained',
+    opts: ['firm','stubborn'],
+    ans: 'firm',
+    after: 'in its decision to protect the green belt from residential development.'
+  },
+  {
+    before: 'Repairing only the worst potholes rather than resurfacing the road was the most',
+    opts: ['economical','penny-pinching'],
+    ans: 'economical',
+    after: 'approach the council could take given the budget constraints.'
+  }
+];
+
+/* Build Exercise 1 */
+function buildEx1() {
+  const list = document.getElementById('ex1-list');
+  ex1Data.forEach((item, i) => {
+    const n = i + 1;
+    const optsHtml = item.opts.map(w =>
+      `<button class="opt-btn" data-n="${n}" data-word="${w}" onclick="selectOpt(this,${n})">${w}</button>`
+    ).join('<span class="opt-sep"> / </span>');
+    list.innerHTML += `
+      <div class="ex1-item" id="ex1item-${n}">
+        <span class="item-num">${n}</span>
+        <div class="sent-wrap">
+          ${item.before} <span class="opts">${optsHtml}</span> ${item.after}
+          <span class="ex1-fb" id="ex1fb-${n}" hidden></span>
+        </div>
+      </div>`;
+  });
+}
+
+let ex1Selections = {};
+let ex1Score = 0, ex2Score = 0, ex2StudentAnswers = {};
+function selectOpt(btn, n) {
+  // Only allow if not yet checked
+  const siblings = document.querySelectorAll(`.opt-btn[data-n="${n}"]`);
+  siblings.forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  ex1Selections[n] = btn.dataset.word;
+}
+
+function checkEx1() {
+  let correct = 0, attempted = 0;
+  ex1Data.forEach((item, i) => {
+    const n = i + 1;
+    const fb = document.getElementById(`ex1fb-${n}`);
+    const btns = document.querySelectorAll(`.opt-btn[data-n="${n}"]`);
+    const chosen = ex1Selections[n];
+    btns.forEach(b => b.disabled = true);
+
+    if (!chosen) {
+      // Reveal correct answer without penalising
+      btns.forEach(b => {
+        if (b.dataset.word === item.ans) b.classList.add('correct');
+      });
+      fb.textContent = `✗  Answer: ${item.ans}`;
+      fb.className = 'ex1-fb bad';
+      fb.hidden = false;
+    } else {
+      attempted++;
+      if (chosen === item.ans) {
+        correct++;
+        btns.forEach(b => {
+          if (b.dataset.word === item.ans) b.classList.add('correct');
+        });
+        fb.textContent = '✓';
+        fb.className = 'ex1-fb ok';
+      } else {
+        btns.forEach(b => {
+          if (b.dataset.word === chosen) b.classList.add('wrong');
+          if (b.dataset.word === item.ans) b.classList.add('correct');
+        });
+        fb.textContent = `✗  Correct: ${item.ans}`;
+        fb.className = 'ex1-fb bad';
+      }
+      fb.hidden = false;
+    }
+  });
+
+  const total = ex1Data.length;
+  ex1Score = correct;
+  const badge = document.getElementById('score1');
+  badge.textContent = `${correct} / ${total}`;
+  badge.className = 'score-badge show ' + (correct === total ? 'good' : correct >= total * 0.6 ? 'partial' : 'low');
+  document.getElementById('check1').disabled = true;
+}
+
+/* ═══════════════════════════════
+   EXERCISE 2 DATA
+═══════════════════════════════ */
+const wordBox = ['affordable','challenge','economical','group','harsh','lively','mobs','penny-pinching','problem','rowdy','run-down'];
+
+const ex2Ans = {
+  1:'run-down', 2:'affordable', 3:'penny-pinching',
+  4:'challenge', 5:'group',
+  6:'lively', 7:'mobs', 8:'rowdy',
+  9:'harsh', 10:'problem', 11:'economical'
+};
+
+const comments = [
+  {
+    name:'LocalResident_23',
+    text:'The high street has really become <GAP n=1> recently — half the shops have closed and the pavements are cracked. On the positive side, the flats above the shops are still quite <GAP n=2> for young renters. But the landlords are so <GAP n=3> that they won\'t even fix the heating!'
+  },
+  {
+    name:'CommunityFirst',
+    text:'Getting any improvements done here is a real <GAP n=4>. The local residents\' <GAP n=5> has been pushing for a safe pedestrian crossing near the school for over two years — with very little result.'
+  },
+  {
+    name:'MarketGoer_88',
+    text:'Five years ago, the Saturday market was <GAP n=6> and welcoming — great food, live music, friendly traders. Now <GAP n=7> of day-trippers swarm in every weekend and the whole atmosphere turns <GAP n=8> by lunchtime. The council really needs to act.'
+  },
+  {
+    name:'PracticalPete',
+    text:'I think some people are being far too <GAP n=9> about the council\'s budget decisions. Yes, it\'s not ideal, but the real <GAP n=10> is that we simply don\'t have enough funding. An <GAP n=11> solution is better than no solution at all.'
+  }
+];
+
+function buildEx2() {
+  // Word box
+  const wb = document.getElementById('word-box');
+  wb.innerHTML = '<span class="word-box-label">Words</span>' +
+    wordBox.map(w => `<span class="word-box-word">${w}</span>`).join('  ·  ');
+
+  // Comments
+  const container = document.getElementById('ex2-comments');
+  comments.forEach(c => {
+    const text = c.text.replace(/<GAP n=(\d+)>/g, (_, n) =>
+      `<span class="gap-wrap"><span class="gap-num">${n}</span><input class="gap" id="gap${n}" data-n="${n}" type="text" autocomplete="off" spellcheck="false" aria-label="gap ${n}"></span>`
+    );
+    container.innerHTML += `
+      <div class="comment-card">
+        <div class="commenter">${c.name}</div>
+        <p>${text}</p>
+      </div>`;
+  });
+}
+
+function checkEx2() {
+  let correct = 0;
+  const total = Object.keys(ex2Ans).length;
+  Object.keys(ex2Ans).forEach(n => {
+    const inp = document.getElementById(`gap${n}`);
+    if (inp) ex2StudentAnswers[n] = inp.value.trim();
+  });
+  Object.entries(ex2Ans).forEach(([n, ans]) => {
+    const inp = document.getElementById(`gap${n}`);
+    if (!inp) return;
+    const val = inp.value.trim().toLowerCase();
+    inp.disabled = true;
+    if (val === ans.toLowerCase()) {
+      inp.classList.add('ok');
+      correct++;
+    } else {
+      inp.classList.add('bad');
+      inp.value = ans;
+    }
+  });
+  ex2Score = correct;
+  const badge = document.getElementById('score2');
+  badge.textContent = `${correct} / ${total}`;
+  badge.className = 'score-badge show ' + (correct === total ? 'good' : correct >= Math.round(total * 0.6) ? 'partial' : 'low');
+  document.getElementById('check2').disabled = true;
+}
+
+/* ═══════════════════════════════
+   SEND TO TEACHER
+═══════════════════════════════ */
+function sendHW() {
+  const name = document.getElementById('student-name').value.trim();
+  const email = document.getElementById('student-email').value.trim();
+  const note = document.getElementById('send-note');
+  if (!name) {
+    note.textContent = 'Please enter your name before submitting.';
+    note.style.color = 'var(--err)';
+    return;
+  }
+
+  const totalPossible = ex1Data.length + Object.keys(ex2Ans).length;
+  let lines = `Student: ${name}`;
+  if (email) lines += `\nEmail: ${email}`;
+  lines += `\nTotal score: ${ex1Score + ex2Score} / ${totalPossible}\n\n`;
+
+  lines += 'EXERCISE 1 — Choose the correct alternative\n';
+  ex1Data.forEach((item, i) => {
+    const n = i + 1;
+    const chosen = ex1Selections[n] || '(no answer)';
+    const ok = chosen === item.ans;
+    lines += `  ${n}. ${chosen}  ${ok ? '✓' : '✗  (correct: ' + item.ans + ')'}\n`;
+  });
+  lines += `  Score: ${ex1Score} / ${ex1Data.length}\n\n`;
+
+  lines += 'EXERCISE 2 — Complete the comments\n';
+  Object.entries(ex2Ans).forEach(([n, correct]) => {
+    const student = ex2StudentAnswers[n] !== undefined ? (ex2StudentAnswers[n] || '(blank)') : '(not checked)';
+    const ok = student.toLowerCase() === correct.toLowerCase();
+    lines += `  ${n}. "${student}"  ${ok ? '✓' : '✗  (correct: ' + correct + ')'}\n`;
+  });
+  lines += `  Score: ${ex2Score} / ${Object.keys(ex2Ans).length}`;
+
+  const subj = encodeURIComponent(`HW: Vocabulary Connotation 2 — ${name}`);
+  const bod = encodeURIComponent(lines);
+  window.open(`mailto:dariia.mlnk@gmail.com?subject=${subj}&body=${bod}`);
+  note.textContent = '✓  Your email client is opening — press Send to submit your homework.';
+  note.style.color = 'var(--ok)';
+}
+
+/* Init */
+buildEx1();
+buildEx2();
+</script>
+</body>
+</html>
