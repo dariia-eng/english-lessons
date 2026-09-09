@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flying Cars Homework</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap">
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --page-bg:  #eef2ff;
+      --card-bg:  #ffffff;
+      --card-2:   #f5f7ff;
+      --border:   rgba(37,99,235,.13);
+      --hd:       #0f172a;
+      --body:     #334155;
+      --muted:    #64748b;
+      --accent:   #2563eb;
+      --accent-h: #1d4ed8;
+      --violet:   #7c3aed;
+      --green:    #059669;
+      --red:      #dc2626;
+      --amber:    #d97706;
+      --tag:      rgba(37,99,235,.08);
+      --sh:       0 1px 3px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.05);
+      --sh-h:     0 4px 16px rgba(37,99,235,.18),0 8px 32px rgba(0,0,0,.07);
+      --r:        14px;
+      --r-sm:     9px;
+      --pill:     999px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --page-bg:  #080e1c;
+        --card-bg:  #111827;
+        --card-2:   #1a2235;
+        --border:   rgba(96,165,250,.14);
+        --hd:       #f1f5f9;
+        --body:     #cbd5e1;
+        --muted:    #94a3b8;
+        --accent:   #60a5fa;
+        --accent-h: #93c5fd;
+        --violet:   #a78bfa;
+        --green:    #34d399;
+        --red:      #f87171;
+        --amber:    #fbbf24;
+        --tag:      rgba(96,165,250,.1);
+        --sh:       0 1px 3px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.2);
+        --sh-h:     0 4px 16px rgba(96,165,250,.15),0 8px 32px rgba(0,0,0,.3);
+      }
+    }
+    :root[data-theme="dark"] {
+      --page-bg:  #080e1c;
+      --card-bg:  #111827;
+      --card-2:   #1a2235;
+      --border:   rgba(96,165,250,.14);
+      --hd:       #f1f5f9;
+      --body:     #cbd5e1;
+      --muted:    #94a3b8;
+      --accent:   #60a5fa;
+      --accent-h: #93c5fd;
+      --violet:   #a78bfa;
+      --green:    #34d399;
+      --red:      #f87171;
+      --amber:    #fbbf24;
+      --tag:      rgba(96,165,250,.1);
+      --sh:       0 1px 3px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.2);
+      --sh-h:     0 4px 16px rgba(96,165,250,.15),0 8px 32px rgba(0,0,0,.3);
+    }
+
+    /* ── BASE ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--page-bg);
+      color: var(--body);
+      min-height: 100vh;
+      line-height: 1.65;
+      font-size: 16px;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      color: var(--hd);
+      text-wrap: balance;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────── */
+    .site-header {
+      background: linear-gradient(135deg, #0f2d6b 0%, #2563eb 45%, #7c3aed 100%);
+      padding: 44px 20px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .site-header::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 80% 20%, rgba(167,139,250,.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-inner {
+      max-width: 760px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+      position: relative; z-index: 1;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+      color: rgba(255,255,255,.95);
+      font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: var(--pill); margin-bottom: 14px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .site-header h1 {
+      color: #fff;
+      font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+      font-weight: 700; line-height: 1.2; margin-bottom: 6px;
+    }
+    .site-header .sub {
+      color: rgba(255,255,255,.75); font-size: .9rem; margin-bottom: 18px;
+    }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.9);
+      font-size: 12px; padding: 4px 12px; border-radius: var(--pill);
+      font-family: 'Space Grotesk', sans-serif; font-weight: 500;
+    }
+    .theme-btn {
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3);
+      color: #fff; border-radius: var(--pill);
+      padding: 8px 18px; cursor: pointer; font-size: 13px;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+      transition: background .2s; white-space: nowrap; flex-shrink: 0;
+    }
+    .theme-btn:hover { background: rgba(255,255,255,.25); }
+
+    /* ── STICKY NAME + PROGRESS ─────────────────────────── */
+    .name-bar {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .name-bar label {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+      font-size: .84rem; color: var(--muted); white-space: nowrap;
+    }
+    .name-bar input {
+      flex: 1; max-width: 260px;
+      padding: 7px 12px; border: 1.5px solid var(--border); border-radius: var(--r-sm);
+      background: var(--card-bg); color: var(--hd);
+      font-family: 'Inter', sans-serif; font-size: .88rem;
+      transition: border-color .15s;
+    }
+    .name-bar input:focus { outline: none; border-color: var(--accent); }
+    .name-bar input::placeholder { color: var(--muted); }
+
+    /* progress */
+    .prog-wrap {
+      flex: 1; display: flex; align-items: center; gap: 10px;
+    }
+    .prog-track {
+      flex: 1; height: 6px; background: var(--border);
+      border-radius: 99px; overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%; width: 0%; border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), var(--violet));
+      transition: width .4s ease;
+    }
+    .prog-label {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      font-size: .8rem; color: var(--muted); white-space: nowrap;
+    }
+
+    /* ── PAGE ───────────────────────────────────────────── */
+    .page { max-width: 760px; margin: 0 auto; padding: 0 20px 80px; }
+
+    /* ── EXERCISE CARDS ─────────────────────────────────── */
+    .ex-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 24px;
+      box-shadow: var(--sh);
+      margin-top: 28px;
+    }
+    .ex-hd {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
+    }
+    .ex-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13px;
+      color: #fff; flex-shrink: 0;
+    }
+    .ex-num.b { background: var(--accent); }
+    .ex-num.v { background: var(--violet); }
+    .ex-num.g { background: var(--green); }
+    .ex-title { font-size: 1.1rem; font-weight: 700; }
+    .ex-points {
+      margin-left: auto;
+      font-family: 'Space Grotesk', sans-serif; font-size: .8rem;
+      font-weight: 600; color: var(--muted);
+    }
+    .ex-instr {
+      font-size: .875rem; color: var(--muted); margin-bottom: 20px;
+      padding: 10px 14px; background: var(--tag);
+      border-radius: var(--r-sm); line-height: 1.6;
+    }
+    .ex-instr em { color: var(--body); font-style: normal; font-weight: 500; }
+    hr.ex-div { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+    /* ── EX 1: MATCHING (dropdown) ──────────────────────── */
+    .match-row {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;
+    }
+    .match-term {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      color: var(--accent); font-size: .95rem;
+      min-width: 130px;
+    }
+    .match-arrow { color: var(--muted); font-size: .9rem; flex-shrink: 0; }
+    .match-sel {
+      flex: 1; min-width: 200px;
+      padding: 9px 12px; border: 1.5px solid var(--border); border-radius: var(--r-sm);
+      background: var(--card-bg); color: var(--body);
+      font-family: 'Inter', sans-serif; font-size: .875rem;
+      cursor: pointer; transition: border-color .15s;
+      appearance: auto;
+    }
+    .match-sel:focus { outline: none; border-color: var(--accent); }
+    .match-fb {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px; border-radius: 50%;
+      font-size: 13px; font-weight: 700; flex-shrink: 0; opacity: 0;
+      transition: opacity .2s;
+    }
+    .match-fb.show { opacity: 1; }
+    .match-fb.ok  { background: rgba(5,150,105,.12); color: var(--green); }
+    .match-fb.no  { background: rgba(220,38,38,.1);  color: var(--red); }
+    .match-sel.correct { border-color: var(--green)!important; background: rgba(5,150,105,.07)!important; }
+    .match-sel.wrong   { border-color: var(--red)!important;   background: rgba(220,38,38,.07)!important; }
+    .match-correct-ans {
+      font-size: .8rem; color: var(--green); display: none; margin-top: 3px;
+      font-weight: 600;
+    }
+
+    /* ── EX 2: GAP-FILL ─────────────────────────────────── */
+    .word-bank {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .bank-word {
+      background: var(--tag); border: 1px solid var(--border);
+      border-radius: var(--pill); padding: 5px 14px;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+      font-size: .85rem; color: var(--accent);
+    }
+    .gap-sentence { margin-bottom: 14px; line-height: 1.8; font-size: .92rem; }
+    .gap-sentence .gap-num {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      color: var(--muted); margin-right: 6px; font-size: .85rem;
+    }
+    .gap-input {
+      display: inline-block;
+      border: none; border-bottom: 2px solid var(--accent);
+      background: transparent; color: var(--hd);
+      font-family: 'Inter', sans-serif; font-size: .9rem;
+      padding: 2px 6px; width: 140px; text-align: center;
+      transition: border-color .15s;
+    }
+    .gap-input:focus { outline: none; border-color: var(--violet); }
+    .gap-input.correct { border-color: var(--green)!important; color: var(--green)!important; }
+    .gap-input.wrong   { border-color: var(--red)!important;   color: var(--red)!important; }
+    .gap-ans { font-size: .78rem; color: var(--green); font-weight: 600; display: none; margin-left: 4px; }
+
+    /* ── EX 3: MULTIPLE CHOICE ──────────────────────────── */
+    .mc-q { margin-bottom: 20px; }
+    .mc-q label {
+      display: block; font-size: .9rem; font-weight: 600;
+      color: var(--hd); margin-bottom: 9px; line-height: 1.5;
+    }
+    .mc-q label span { color: var(--muted); font-weight: 400; font-size: .85rem; }
+    .choices { display: flex; flex-direction: column; gap: 7px; }
+    .choice-btn {
+      text-align: left; padding: 10px 16px;
+      background: var(--card-bg); border: 1.5px solid var(--border);
+      border-radius: var(--r-sm); cursor: pointer; font-size: .875rem;
+      color: var(--body); font-family: 'Inter', sans-serif;
+      transition: border-color .15s, background .15s;
+    }
+    .choice-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--tag); }
+    .choice-btn.correct { border-color: var(--green)!important; background: rgba(5,150,105,.09)!important; color: var(--green)!important; font-weight: 600; }
+    .choice-btn.wrong   { border-color: var(--red)!important;   background: rgba(220,38,38,.08)!important;  color: var(--red)!important; }
+
+    /* ── BUTTONS ────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 22px; border-radius: var(--pill);
+      border: none; cursor: pointer; font-size: 13.5px; font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: background .15s, transform .1s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-h); }
+    .btn-ghost {
+      background: transparent; color: var(--accent);
+      border: 1.5px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--accent); background: var(--tag); }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+
+    /* score badge */
+    .score-badge {
+      display: none; align-items: center; gap: 6px;
+      padding: 5px 14px; border-radius: var(--pill);
+      background: rgba(5,150,105,.12); color: var(--green);
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: .84rem;
+      margin-top: 14px;
+    }
+    .score-badge.show { display: inline-flex; }
+    .score-badge.partial { background: rgba(217,119,6,.12); color: var(--amber); }
+
+    /* ── SEND CARD ──────────────────────────────────────── */
+    .send-card {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 40%, #7c3aed 100%);
+      border-radius: var(--r); padding: 28px; margin-top: 28px;
+    }
+    .send-card h3 { color: #fff; font-size: 1.05rem; margin-bottom: 8px; }
+    .send-card p  { color: rgba(255,255,255,.75); font-size: .88rem; margin-bottom: 18px; }
+    .send-btn {
+      background: rgba(255,255,255,.18); border: 1.5px solid rgba(255,255,255,.4);
+      color: #fff; padding: 11px 24px; border-radius: var(--pill);
+      cursor: pointer; font-size: 14px; font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif; transition: background .2s;
+    }
+    .send-btn:hover { background: rgba(255,255,255,.28); }
+
+    /* ── GRAMMAR REMINDER ───────────────────────────────── */
+    .grammar-reminder {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--tag); border: 1.5px solid var(--border);
+      border-radius: var(--r-sm); padding: 10px 16px; margin-bottom: 18px;
+      font-size: .86rem; flex-wrap: wrap;
+    }
+    .gr-label { font-weight: 700; color: var(--accent); white-space: nowrap; }
+    .sc-hint { font-size: .78rem; color: var(--muted); font-style: italic; margin: 0 2px; }
+    .sc-input { width: 170px; }
+
+    /* ── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 560px) {
+      .header-inner { flex-direction: column; }
+      .match-row { flex-direction: column; align-items: flex-start; }
+      .name-bar { flex-direction: column; align-items: flex-start; }
+      .prog-wrap { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div>
+      <div class="eyebrow">📚 B1 · R6B · Homework</div>
+      <h1>Flying Cars — Future or Fiction?</h1>
+      <p class="sub">Vocabulary, reading comprehension &amp; gap-fill</p>
+      <div class="chips">
+        <span class="chip">🎯 B1</span>
+        <span class="chip">⏱ 20–25 min</span>
+        <span class="chip">📝 3 exercises</span>
+      </div>
+    </div>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
+  </div>
+</header>
+
+<!-- ═══ STICKY NAME + PROGRESS ═══════════════════════════ -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="pfill"></div></div>
+    <span class="prog-label" id="plabel">0 / 3</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ═══ EXERCISE 1: VOCABULARY MATCH ══════════════════ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <div class="ex-num b">1</div>
+      <div class="ex-title">Match the vocabulary</div>
+      <span class="ex-points">5 points</span>
+    </div>
+    <div class="ex-instr">
+      Match each word from the lesson to its correct definition. Choose from the dropdown menu.
+    </div>
+
+    <!-- word: commute → d2 -->
+    <div class="match-row" id="mr-commute">
+      <span class="match-term">commute</span>
+      <span class="match-arrow">→</span>
+      <select class="match-sel" id="sel-commute">
+        <option value="">— choose a definition —</option>
+        <option value="d1">a first working model built to test if something works</option>
+        <option value="d2">to travel regularly between home and work</option>
+        <option value="d3">the basic systems a society needs to function</option>
+        <option value="d4">to change something completely in form or character</option>
+        <option value="d5">official rules set by an authority that control an activity</option>
+      </select>
+      <span class="match-fb" id="fb-commute"></span>
+    </div>
+    <div class="match-correct-ans" id="ca-commute">✓ to travel regularly between home and work</div>
+
+    <!-- word: infrastructure → d3 -->
+    <div class="match-row" id="mr-infrastructure">
+      <span class="match-term">infrastructure</span>
+      <span class="match-arrow">→</span>
+      <select class="match-sel" id="sel-infrastructure">
+        <option value="">— choose a definition —</option>
+        <option value="d1">a first working model built to test if something works</option>
+        <option value="d2">to travel regularly between home and work</option>
+        <option value="d3">the basic systems a society needs to function</option>
+        <option value="d4">to change something completely in form or character</option>
+        <option value="d5">official rules set by an authority that control an activity</option>
+      </select>
+      <span class="match-fb" id="fb-infrastructure"></span>
+    </div>
+    <div class="match-correct-ans" id="ca-infrastructure">✓ the basic systems a society needs to function</div>
+
+    <!-- word: prototype → d1 -->
+    <div class="match-row" id="mr-prototype">
+      <span class="match-term">prototype</span>
+      <span class="match-arrow">→</span>
+      <select class="match-sel" id="sel-prototype">
+        <option value="">— choose a definition —</option>
+        <option value="d1">a first working model built to test if something works</option>
+        <option value="d2">to travel regularly between home and work</option>
+        <option value="d3">the basic systems a society needs to function</option>
+        <option value="d4">to change something completely in form or character</option>
+        <option value="d5">official rules set by an authority that control an activity</option>
+      </select>
+      <span class="match-fb" id="fb-prototype"></span>
+    </div>
+    <div class="match-correct-ans" id="ca-prototype">✓ a first working model built to test if something works</div>
+
+    <!-- word: regulations → d5 -->
+    <div class="match-row" id="mr-regulations">
+      <span class="match-term">regulations</span>
+      <span class="match-arrow">→</span>
+      <select class="match-sel" id="sel-regulations">
+        <option value="">— choose a definition —</option>
+        <option value="d1">a first working model built to test if something works</option>
+        <option value="d2">to travel regularly between home and work</option>
+        <option value="d3">the basic systems a society needs to function</option>
+        <option value="d4">to change something completely in form or character</option>
+        <option value="d5">official rules set by an authority that control an activity</option>
+      </select>
+      <span class="match-fb" id="fb-regulations"></span>
+    </div>
+    <div class="match-correct-ans" id="ca-regulations">✓ official rules set by an authority that control an activity</div>
+
+    <!-- word: transform → d4 -->
+    <div class="match-row" id="mr-transform">
+      <span class="match-term">transform</span>
+      <span class="match-arrow">→</span>
+      <select class="match-sel" id="sel-transform">
+        <option value="">— choose a definition —</option>
+        <option value="d1">a first working model built to test if something works</option>
+        <option value="d2">to travel regularly between home and work</option>
+        <option value="d3">the basic systems a society needs to function</option>
+        <option value="d4">to change something completely in form or character</option>
+        <option value="d5">official rules set by an authority that control an activity</option>
+      </select>
+      <span class="match-fb" id="fb-transform"></span>
+    </div>
+    <div class="match-correct-ans" id="ca-transform">✓ to change something completely in form or character</div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkMatch()">✓ Check</button>
+      <button class="btn btn-ghost"   onclick="resetMatch()">↺ Reset</button>
+    </div>
+    <div class="score-badge" id="score1"></div>
+  </div>
+
+  <!-- ═══ EXERCISE 2: GAP-FILL ═══════════════════════════ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <div class="ex-num v">2</div>
+      <div class="ex-title">Complete the sentences</div>
+      <span class="ex-points">5 points</span>
+    </div>
+    <div class="ex-instr">
+      Fill in each gap with the correct word from the box below. Each word is used <em>once</em>.
+    </div>
+
+    <div class="word-bank">
+      <span class="bank-word">prototype</span>
+      <span class="bank-word">transform</span>
+      <span class="bank-word">commute</span>
+      <span class="bank-word">regulations</span>
+      <span class="bank-word">infrastructure</span>
+    </div>
+
+    <div class="gap-sentence">
+      <span class="gap-num">1.</span>
+      Many people
+      <input class="gap-input" id="g1" data-ans="commute" placeholder="……………">
+      by train, spending more than an hour travelling to work every day.
+      <span class="gap-ans" id="ga1">commute</span>
+    </div>
+
+    <div class="gap-sentence">
+      <span class="gap-num">2.</span>
+      Before cities can support flying cars, they will need completely new
+      <input class="gap-input" id="g2" data-ans="infrastructure" placeholder="……………">
+      — including special landing zones and air traffic control systems.
+      <span class="gap-ans" id="ga2">infrastructure</span>
+    </div>
+
+    <div class="gap-sentence">
+      <span class="gap-num">3.</span>
+      The KleinVision AirCar started life as a
+      <input class="gap-input" id="g3" data-ans="prototype" placeholder="……………">
+      — a test vehicle built to see if a flying car was technically possible.
+      <span class="gap-ans" id="ga3">prototype</span>
+    </div>
+
+    <div class="gap-sentence">
+      <span class="gap-num">4.</span>
+      In many countries, the safety
+      <input class="gap-input" id="g4" data-ans="regulations" placeholder="……………">
+      for flying cars do not exist yet, so companies are not allowed to sell them to the public.
+      <span class="gap-ans" id="ga4">regulations</span>
+    </div>
+
+    <div class="gap-sentence">
+      <span class="gap-num">5.</span>
+      Experts believe that flying cars could completely
+      <input class="gap-input" id="g5" data-ans="transform" placeholder="……………">
+      the way we travel between cities — making roads almost unnecessary.
+      <span class="gap-ans" id="ga5">transform</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkGaps()">✓ Check</button>
+      <button class="btn btn-ghost"   onclick="resetGaps()">↺ Reset</button>
+    </div>
+    <div class="score-badge" id="score2"></div>
+  </div>
+
+  <!-- ═══ EXERCISE 3: SECOND CONDITIONAL ═════════════════ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <div class="ex-num g">3</div>
+      <div class="ex-title">Second conditional</div>
+      <span class="ex-points">5 points</span>
+    </div>
+    <div class="ex-instr">
+      Complete each sentence using the <strong>second conditional</strong>. Write the correct form of the verb in brackets.
+    </div>
+
+    <div class="grammar-reminder">
+      <span class="gr-label">Remember:</span>
+      <span><em>If</em> + past simple &nbsp;·&nbsp; <em>would / could</em> + infinitive</span>
+    </div>
+
+    <div class="gap-sentence">
+      <span class="gap-num">1.</span>
+      If flying cars
+      <input class="gap-input sc-input" id="sc1" data-ans="were,was" placeholder="……………">
+      <span class="sc-hint">(be)</span>
+      affordable, more people would buy them.
+      <span class="gap-ans" id="sca1">were</span>
+    </div>
+
+    <div class="gap-sentence">
+      <span class="gap-num">2.</span>
+      If the AirCar
+      <input class="gap-input sc-input" id="sc2" data-ans="didn't need,did not need" placeholder="……………">
+      <span class="sc-hint">(not need)</span>
+      a runway, it could land anywhere.
+      <span class="gap-ans" id="sca2">didn't need</span>
+    </div>
+
+    <div class="gap-sentence">
+      <span class="gap-num">3.</span>
+      I
+      <input class="gap-input sc-input" id="sc3" data-ans="wouldn't commute,would not commute" placeholder="……………">
+      <span class="sc-hint">(not commute)</span>
+      by train if I had a flying car.
+      <span class="gap-ans" id="sca3">wouldn't commute</span>
+    </div>
+
+    <div class="gap-sentence">
+      <span class="gap-num">4.</span>
+      If there
+      <input class="gap-input sc-input" id="sc4" data-ans="were,was" placeholder="……………">
+      <span class="sc-hint">(be)</span>
+      clearer safety regulations, flying cars would already be on sale.
+      <span class="gap-ans" id="sca4">were</span>
+    </div>
+
+    <div class="gap-sentence">
+      <span class="gap-num">5.</span>
+      Flying cars
+      <input class="gap-input sc-input" id="sc5" data-ans="would transform,would completely transform" placeholder="……………">
+      <span class="sc-hint">(transform)</span>
+      city life if they became widely available.
+      <span class="gap-ans" id="sca5">would transform</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkSC()">✓ Check</button>
+      <button class="btn btn-ghost"   onclick="resetSC()">↺ Reset</button>
+    </div>
+    <div class="score-badge" id="score3"></div>
+  </div>
+
+  <!-- ═══ SEND TO TEACHER ═══════════════════════════════ -->
+  <div class="send-card">
+    <h3>📧 Send to your teacher</h3>
+    <p>When you've finished all three exercises, click the button below to email your answers to your teacher.</p>
+    <button class="send-btn" onclick="sendToTeacher()">Send my answers</button>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+  /* ── THEME ─────────────────────────────────────────────── */
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('themeBtn');
+  let dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  function applyTheme() {
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    themeBtn.textContent = dark ? '☀ Light' : '🌙 Dark';
+  }
+  applyTheme();
+  function toggleTheme() { dark = !dark; applyTheme(); }
+
+  /* ── PROGRESS ──────────────────────────────────────────── */
+  const done = { ex1: false, ex2: false, ex3: false };
+  function updateProgress() {
+    const n = Object.values(done).filter(Boolean).length;
+    const total = Object.keys(done).length;
+    document.getElementById('pfill').style.width = (n / total * 100) + '%';
+    document.getElementById('plabel').textContent = n + ' / ' + total;
+  }
+
+  /* ── EXERCISE 1: MATCHING ──────────────────────────────── */
+  const matchAnswers = {
+    'commute':        'd2',
+    'infrastructure': 'd3',
+    'prototype':      'd1',
+    'regulations':    'd5',
+    'transform':      'd4'
+  };
+  const matchLabels = {
+    'd1': 'a first working model built to test if something works',
+    'd2': 'to travel regularly between home and work',
+    'd3': 'the basic systems a society needs to function',
+    'd4': 'to change something completely in form or character',
+    'd5': 'official rules set by an authority that control an activity'
+  };
+
+  function checkMatch() {
+    let correct = 0;
+    Object.entries(matchAnswers).forEach(([word, ans]) => {
+      const sel = document.getElementById('sel-' + word);
+      const fb  = document.getElementById('fb-'  + word);
+      const ca  = document.getElementById('ca-'  + word);
+      sel.disabled = true;
+      fb.classList.add('show');
+      if (sel.value === ans) {
+        sel.classList.add('correct');
+        fb.classList.add('ok');
+        fb.textContent = '✓';
+        correct++;
+      } else {
+        sel.classList.add('wrong');
+        fb.classList.add('no');
+        fb.textContent = '✗';
+        ca.style.display = 'block';
+      }
+    });
+    const badge = document.getElementById('score1');
+    badge.textContent = '✓ Score: ' + correct + ' / 5';
+    badge.classList.add('show');
+    if (correct < 5) badge.classList.add('partial');
+    done.ex1 = true;
+    updateProgress();
+  }
+
+  function resetMatch() {
+    Object.keys(matchAnswers).forEach(word => {
+      const sel = document.getElementById('sel-' + word);
+      const fb  = document.getElementById('fb-'  + word);
+      const ca  = document.getElementById('ca-'  + word);
+      sel.disabled = false;
+      sel.value = '';
+      sel.className = 'match-sel';
+      fb.className = 'match-fb';
+      fb.textContent = '';
+      ca.style.display = 'none';
+    });
+    const badge = document.getElementById('score1');
+    badge.classList.remove('show','partial');
+    done.ex1 = false;
+    updateProgress();
+  }
+
+  /* ── EXERCISE 2: GAP-FILL ──────────────────────────────── */
+  function checkGaps() {
+    let correct = 0;
+    for (let i = 1; i <= 5; i++) {
+      const inp = document.getElementById('g' + i);
+      const ans = document.getElementById('ga' + i);
+      const val = inp.value.trim().toLowerCase();
+      const expected = inp.dataset.ans.split(',').map(s => s.trim().toLowerCase());
+      inp.disabled = true;
+      if (expected.includes(val)) {
+        inp.classList.add('correct');
+        correct++;
+      } else {
+        inp.classList.add('wrong');
+        ans.style.display = 'inline';
+      }
+    }
+    const badge = document.getElementById('score2');
+    badge.textContent = '✓ Score: ' + correct + ' / 5';
+    badge.classList.add('show');
+    if (correct < 5) badge.classList.add('partial');
+    done.ex2 = true;
+    updateProgress();
+  }
+
+  function resetGaps() {
+    for (let i = 1; i <= 5; i++) {
+      const inp = document.getElementById('g' + i);
+      const ans = document.getElementById('ga' + i);
+      inp.disabled = false;
+      inp.value = '';
+      inp.className = 'gap-input';
+      ans.style.display = 'none';
+    }
+    const badge = document.getElementById('score2');
+    badge.classList.remove('show','partial');
+    done.ex2 = false;
+    updateProgress();
+  }
+
+  /* ── EXERCISE 3: SECOND CONDITIONAL ────────────────────── */
+  function checkSC() {
+    let correct = 0;
+    for (let i = 1; i <= 5; i++) {
+      const inp = document.getElementById('sc' + i);
+      const ans = document.getElementById('sca' + i);
+      const val = inp.value.trim().toLowerCase();
+      const expected = inp.dataset.ans.split(',').map(s => s.trim().toLowerCase());
+      inp.disabled = true;
+      if (expected.includes(val)) {
+        inp.classList.add('correct');
+        correct++;
+      } else {
+        inp.classList.add('wrong');
+        ans.style.display = 'inline';
+      }
+    }
+    const badge = document.getElementById('score3');
+    badge.textContent = '✓ Score: ' + correct + ' / 5';
+    badge.classList.add('show');
+    if (correct < 5) badge.classList.add('partial');
+    done.ex3 = true;
+    updateProgress();
+  }
+
+  function resetSC() {
+    for (let i = 1; i <= 5; i++) {
+      const inp = document.getElementById('sc' + i);
+      const ans = document.getElementById('sca' + i);
+      inp.disabled = false;
+      inp.value = '';
+      inp.className = 'gap-input sc-input';
+      ans.style.display = 'none';
+    }
+    const badge = document.getElementById('score3');
+    badge.classList.remove('show','partial');
+    done.ex3 = false;
+    updateProgress();
+  }
+
+  /* ── SEND TO TEACHER ───────────────────────────────────── */
+  function sendToTeacher() {
+    const name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+    // Ex 1: matching
+    let ex1Lines = 'Exercise 1 — Vocabulary match:\n';
+    Object.entries(matchAnswers).forEach(([word, correctAns]) => {
+      const sel = document.getElementById('sel-' + word);
+      const chosen = sel.value ? matchLabels[sel.value] : '(not answered)';
+      const status = sel.value === correctAns ? '✓' : '✗';
+      ex1Lines += `  ${status} ${word}: ${chosen}\n`;
+    });
+
+    // Ex 2: gap-fill
+    let ex2Lines = '\nExercise 2 — Gap-fill:\n';
+    const gapSentences = [
+      'Many people _____ by train…',
+      'Before cities can support flying cars, they will need new _____…',
+      'The KleinVision AirCar started life as a _____…',
+      'In many countries, the safety _____ for flying cars do not exist…',
+      'Flying cars could completely _____ the way we travel…'
+    ];
+    for (let i = 1; i <= 5; i++) {
+      const inp = document.getElementById('g' + i);
+      const correct = inp.dataset.ans;
+      const val = inp.value.trim() || '(blank)';
+      const status = val.toLowerCase() === correct.toLowerCase() ? '✓' : '✗';
+      ex2Lines += `  ${status} Sentence ${i}: "${val}" (correct: ${correct})\n`;
+    }
+
+    // Ex 3: Second conditional
+    const scPrompts = [
+      'If flying cars _____ (be) affordable…',
+      'If the AirCar _____ (not need) a runway…',
+      'I _____ (not commute) by train if I had a flying car…',
+      'If there _____ (be) clearer safety regulations…',
+      'Flying cars _____ (transform) city life…'
+    ];
+    let ex3Lines = '\nExercise 3 — Second conditional:\n';
+    for (let i = 1; i <= 5; i++) {
+      const inp = document.getElementById('sc' + i);
+      const correct = inp.dataset.ans.split(',')[0];
+      const val = inp.value.trim() || '(blank)';
+      const expected = inp.dataset.ans.split(',').map(s => s.trim().toLowerCase());
+      const status = expected.includes(val.toLowerCase()) ? '✓' : '✗';
+      ex3Lines += `  ${status} Sentence ${i} (${scPrompts[i-1]}): "${val}" (correct: ${correct})\n`;
+    }
+
+    const fullBody = `Student: ${name}\nLesson: B1 R6B — Flying Cars: Future or Fiction?\nDate: ${new Date().toLocaleDateString('en-GB')}\n\n${ex1Lines}${ex2Lines}${ex3Lines}`;
+    const subject = encodeURIComponent('Homework — ' + name + ' — Flying Cars B1 R6B');
+    const body    = encodeURIComponent(fullBody);
+    window.location.href = 'mailto:daryaaa2028@gmail.com?subject=' + subject + '&body=' + body;
+  }
+</script>
+</body>
+</html>
