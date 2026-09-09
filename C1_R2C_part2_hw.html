@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Language Focus: Cleft Sentences</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F0FBFF;--surface:#FFFFFF;--surface2:#ECFEFF;
+  --accent:#0E7490;--accent-lt:#CFFAFE;--accent-dk:#164E63;--accent-border:#67E8F9;
+  --ink:#0C1A1F;--ink-mid:#4A5568;--ink-muted:#94A3B8;
+  --border:#E2E8F0;--border-md:#CBD5E1;
+  --ok:#15803D;--ok-lt:#DCFCE7;--ok-border:#86EFAC;
+  --err:#B91C1C;--err-lt:#FEE2E2;--err-border:#FCA5A5;
+  --speaker-a:#0E7490;--speaker-b:#6B21A8;
+  --r:12px;--r-sm:8px;
+  --shadow:0 2px 16px rgba(0,0,0,.07);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#030D10;--surface:#071318;--surface2:#0B1D24;
+  --accent:#22D3EE;--accent-lt:#0B1D24;--accent-dk:#06B6D4;--accent-border:#164E63;
+  --ink:#ECF8FF;--ink-mid:#CBD5E1;--ink-muted:#64748B;
+  --border:#1E2D35;--border-md:#2A3D48;
+  --ok:#4ADE80;--ok-lt:#052E16;--ok-border:#166534;
+  --err:#F87171;--err-lt:#450A0A;--err-border:#7F1D1D;
+  --speaker-a:#22D3EE;--speaker-b:#A78BFA;
+}}
+:root[data-theme="dark"]{
+  --bg:#030D10;--surface:#071318;--surface2:#0B1D24;
+  --accent:#22D3EE;--accent-lt:#0B1D24;--accent-dk:#06B6D4;--accent-border:#164E63;
+  --ink:#ECF8FF;--ink-mid:#CBD5E1;--ink-muted:#64748B;
+  --border:#1E2D35;--border-md:#2A3D48;
+  --ok:#4ADE80;--ok-lt:#052E16;--ok-border:#166534;
+  --err:#F87171;--err-lt:#450A0A;--err-border:#7F1D1D;
+  --speaker-a:#22D3EE;--speaker-b:#A78BFA;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'DM Sans',system-ui,sans-serif;
+  font-size:1rem;line-height:1.7;
+  padding:0 0 72px;
+}
+
+/* ── Header ── */
+.hw-header{
+  background:var(--accent);color:#fff;
+  padding:28px 24px 24px;text-align:center;
+}
+.hw-badge{
+  display:inline-block;font-family:'Outfit',sans-serif;
+  font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  background:rgba(255,255,255,.22);border-radius:20px;padding:3px 13px;margin-bottom:10px;
+}
+.hw-header h1{
+  font-family:'Outfit',sans-serif;font-size:clamp(1.4rem,3vw,2rem);
+  font-weight:800;margin-bottom:4px;
+}
+.hw-meta{font-size:.78rem;opacity:.75;letter-spacing:.04em;}
+
+/* ── Wrapper ── */
+.wrap{max-width:760px;margin:0 auto;padding:0 16px;}
+
+/* ── Section ── */
+.section{
+  background:var(--surface);border-radius:var(--r);
+  border:1px solid var(--border);box-shadow:var(--shadow);
+  margin:24px 0;overflow:hidden;
+}
+.section-head{
+  background:var(--surface2);border-bottom:1px solid var(--border);
+  padding:16px 22px;display:flex;align-items:baseline;gap:10px;
+}
+.ex-tag{
+  font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-lt);
+  border-radius:20px;padding:3px 11px;flex-shrink:0;
+}
+.section-title{font-family:'Outfit',sans-serif;font-size:1rem;font-weight:600;color:var(--ink);}
+.section-body{padding:20px 22px;}
+.instruction{
+  font-size:.9rem;color:var(--ink-mid);margin-bottom:18px;
+  font-style:italic;border-left:3px solid var(--accent-border);
+  padding-left:12px;
+}
+
+/* ── Ex 3: Match ── */
+.match-item{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;
+}
+.match-item:last-child{border-bottom:none;}
+.match-num{
+  font-family:'Outfit',sans-serif;font-weight:700;font-size:.88rem;
+  color:var(--accent);min-width:20px;margin-top:10px;flex-shrink:0;
+}
+.match-body{flex:1;display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
+.half-begin{font-size:.96rem;color:var(--ink);}
+.match-sel{
+  font-family:'DM Sans',sans-serif;font-size:.88rem;
+  padding:5px 10px;border-radius:var(--r-sm);
+  border:1.5px solid var(--border-md);background:var(--surface2);
+  color:var(--ink);cursor:pointer;outline:none;transition:border-color .15s;
+  max-width:300px;
+}
+.match-sel:focus{border-color:var(--accent);}
+.match-sel.ok{border-color:var(--ok);background:var(--ok-lt);color:var(--ok);}
+.match-sel.bad{border-color:var(--err);background:var(--err-lt);color:var(--err);}
+.match-fb{
+  font-size:.82rem;font-weight:600;margin-left:4px;
+}
+.match-fb.ok{color:var(--ok);}
+.match-fb.bad{color:var(--err);}
+
+/* ── Endings reference ── */
+.endings-box{
+  background:var(--surface2);border:1px solid var(--accent-border);
+  border-radius:var(--r-sm);padding:12px 16px;margin-bottom:16px;
+  font-size:.88rem;
+}
+.endings-box-label{
+  font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--accent);
+  margin-bottom:8px;display:block;
+}
+.ending-row{display:flex;gap:10px;padding:3px 0;}
+.ending-letter{
+  font-family:'Outfit',sans-serif;font-weight:700;color:var(--accent);
+  min-width:18px;flex-shrink:0;
+}
+.ending-text{color:var(--ink-mid);}
+
+/* ── Ex 4: Dialogues ── */
+.dialogue{
+  border:1px solid var(--border);border-radius:var(--r-sm);
+  overflow:hidden;margin-bottom:14px;
+}
+.dialogue:last-of-type{margin-bottom:0;}
+.dialogue-num{
+  font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+  background:var(--surface2);border-bottom:1px solid var(--border);
+  padding:6px 14px;color:var(--ink-muted);
+}
+.turn{display:flex;gap:10px;padding:10px 14px;align-items:flex-start;}
+.turn + .turn{border-top:1px solid var(--border);}
+.speaker{
+  font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:700;
+  min-width:22px;flex-shrink:0;margin-top:2px;
+}
+.turn-a .speaker{color:var(--speaker-a);}
+.turn-b .speaker{color:var(--speaker-b);}
+.turn p{font-size:.95rem;color:var(--ink);line-height:1.85;flex:1;}
+.prompt-tag{
+  display:inline-block;
+  font-family:'Outfit',sans-serif;font-size:.73rem;font-weight:700;
+  color:var(--accent-dk);background:var(--accent-lt);
+  border:1px solid var(--accent-border);border-radius:6px;
+  padding:1px 8px;margin:0 3px;vertical-align:middle;letter-spacing:.02em;
+}
+input.cleft{
+  font-family:'DM Sans',sans-serif;font-size:.9rem;
+  min-width:180px;max-width:280px;width:100%;
+  padding:3px 9px;border-radius:6px;
+  border:1.5px solid var(--border-md);background:var(--surface);
+  color:var(--ink);outline:none;transition:border-color .15s;
+  display:inline-block;vertical-align:middle;margin:0 3px;
+}
+input.cleft:focus{border-color:var(--accent);}
+input.cleft:disabled{cursor:default;}
+.model-row{
+  display:none;background:var(--ok-lt);border-top:1px solid var(--ok-border);
+  padding:8px 14px;font-size:.85rem;color:var(--ok);font-weight:500;
+}
+.model-row.show{display:flex;flex-direction:column;gap:4px;}
+.model-row strong{font-weight:700;}
+
+/* ── Check row ── */
+.check-row{
+  display:flex;align-items:center;gap:12px;
+  margin-top:18px;padding-top:14px;
+  border-top:1px solid var(--border);flex-wrap:wrap;
+}
+.check-btn{
+  font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;
+  padding:9px 26px;border-radius:24px;cursor:pointer;border:none;
+  background:var(--accent);color:#fff;transition:background .15s;
+}
+.check-btn:hover{background:var(--accent-dk);}
+.check-btn:disabled{opacity:.5;cursor:default;}
+.score-badge{
+  font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;
+  padding:6px 16px;border-radius:20px;display:none;
+  border:2px solid;
+}
+.score-badge.show{display:inline-flex;align-items:center;gap:6px;}
+.score-badge.good{background:var(--ok-lt);border-color:var(--ok-border);color:var(--ok);}
+.score-badge.partial{background:var(--accent-lt);border-color:var(--accent-border);color:var(--accent-dk);}
+.score-badge.low{background:var(--err-lt);border-color:var(--err-border);color:var(--err);}
+.reveal-note{font-size:.78rem;color:var(--ink-muted);font-style:italic;}
+
+/* ── Send section ── */
+.send-section{
+  background:var(--surface);border-radius:var(--r);
+  border:1px solid var(--border);box-shadow:var(--shadow);
+  margin:24px 0;padding:22px;
+}
+.send-title{
+  font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;
+  letter-spacing:.05em;color:var(--ink);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.send-title::before{content:'📤';font-size:1rem;}
+.send-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+@media(max-width:500px){.send-grid{grid-template-columns:1fr;}}
+.send-field label{font-size:.78rem;font-weight:600;color:var(--ink-mid);display:block;margin-bottom:4px;}
+.send-field input{
+  width:100%;padding:8px 12px;border-radius:var(--r-sm);
+  border:1.5px solid var(--border-md);background:var(--surface2);
+  font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ink);outline:none;
+  transition:border-color .15s;
+}
+.send-field input:focus{border-color:var(--accent);}
+.send-btn{
+  font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;
+  padding:9px 24px;border-radius:24px;cursor:pointer;border:none;
+  background:var(--accent);color:#fff;transition:background .15s;
+}
+.send-btn:hover{background:var(--accent-dk);}
+.send-note{font-size:.78rem;color:var(--ink-muted);margin-top:8px;}
+
+@media(max-width:600px){
+  .section-body{padding:14px;}
+  .section-head{padding:12px 14px;}
+  .turn p{font-size:.9rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="hw-header">
+  <div class="hw-badge">Homework</div>
+  <h1>Language Focus: Cleft Sentences</h1>
+  <div class="hw-meta">Unit 2C · Local Issues · C1</div>
+</div>
+
+<div class="wrap">
+
+  <!-- ══ EXERCISE 3 ══ -->
+  <div class="section" id="sec3">
+    <div class="section-head">
+      <span class="ex-tag">Exercise 3</span>
+      <span class="section-title">Match the sentence halves.</span>
+    </div>
+    <div class="section-body">
+      <p class="instruction">Choose the correct ending (a–f) for each cleft sentence beginning.</p>
+
+      <div class="endings-box">
+        <span class="endings-box-label">Sentence endings</span>
+        <div id="endings-list"></div>
+      </div>
+
+      <div id="ex3-list"></div>
+
+      <div class="check-row">
+        <button class="check-btn" id="check3" onclick="checkEx3()">Check Answers</button>
+        <span class="score-badge" id="score3"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ EXERCISE 4 ══ -->
+  <div class="section" id="sec4">
+    <div class="section-head">
+      <span class="ex-tag">Exercise 4</span>
+      <span class="section-title">Complete the dialogues with cleft sentences.</span>
+    </div>
+    <div class="section-body">
+      <p class="instruction">Use the words in brackets to write a cleft sentence. Then click <strong>Show Answers</strong> to compare with the model.</p>
+      <div id="ex4-list"></div>
+      <div class="check-row">
+        <button class="check-btn" id="check4" onclick="revealEx4()">Show Answers</button>
+        <span class="reveal-note">Compare your cleft sentences with the models below.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SEND TO TEACHER ══ -->
+  <div class="send-section">
+    <div class="send-title">Send to Your Teacher</div>
+    <div class="send-grid">
+      <div class="send-field">
+        <label>Your name</label>
+        <input type="text" id="student-name" placeholder="First and last name">
+      </div>
+      <div class="send-field">
+        <label>Your email</label>
+        <input type="email" id="student-email" placeholder="student@email.com">
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendHW()">Submit Homework</button>
+    <p class="send-note" id="send-note"></p>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════
+   EXERCISE 3 DATA
+═══════════════════════════════ */
+const endings = {
+  a: 'complain to the council about the noise',
+  b: 'fair pay',
+  c: 'is that we need more money',
+  d: 'makes those kinds of decisions',
+  e: 'is its chilled atmosphere',
+  f: 'that most people complain about'
+};
+
+const ex3Items = [
+  { n:1, begin:'What I love about this town',  ans:'e' },
+  { n:2, begin:'All we are asking for is',     ans:'b' },
+  { n:3, begin:"It's the CEO who",             ans:'d' },
+  { n:4, begin:'What we did was',              ans:'a' },
+  { n:5, begin:"It's the traffic",             ans:'f' },
+  { n:6, begin:"What we're saying",            ans:'c' }
+];
+
+let ex3Score = 0, ex3StudentAnswers = {}, ex4StudentInputs = {};
+
+function buildEx3() {
+  // Build endings reference list
+  const el = document.getElementById('endings-list');
+  Object.entries(endings).forEach(([letter, text]) => {
+    el.innerHTML += `<div class="ending-row"><span class="ending-letter">${letter}</span><span class="ending-text">${text}</span></div>`;
+  });
+
+  // Build sentence items
+  const list = document.getElementById('ex3-list');
+  const optionsHtml = ['— choose —', ...Object.keys(endings).sort()]
+    .map((k,i) => i===0 ? `<option value="">— choose —</option>` : `<option value="${k}">${k})  ${endings[k]}</option>`)
+    .join('');
+
+  ex3Items.forEach(item => {
+    list.innerHTML += `
+      <div class="match-item" id="match${item.n}">
+        <span class="match-num">${item.n}</span>
+        <div class="match-body">
+          <span class="half-begin">${item.begin}</span>
+          <select class="match-sel" id="sel${item.n}">${optionsHtml}</select>
+          <span class="match-fb" id="mfb${item.n}"></span>
+        </div>
+      </div>`;
+  });
+}
+
+function checkEx3() {
+  let correct = 0;
+  ex3Items.forEach(item => {
+    const sel = document.getElementById(`sel${item.n}`);
+    ex3StudentAnswers[item.n] = sel ? sel.value : '';
+  });
+  ex3Items.forEach(item => {
+    const sel = document.getElementById(`sel${item.n}`);
+    const fb = document.getElementById(`mfb${item.n}`);
+    const chosen = ex3StudentAnswers[item.n];
+    sel.disabled = true;
+    if (!chosen) {
+      sel.value = item.ans;
+      fb.textContent = `✗  Answer: ${item.ans}`;
+      fb.className = 'match-fb bad';
+    } else if (chosen === item.ans) {
+      correct++;
+      sel.classList.add('ok');
+      fb.textContent = '✓';
+      fb.className = 'match-fb ok';
+    } else {
+      sel.classList.add('bad');
+      sel.value = item.ans;
+      fb.textContent = `✗  Answer: ${item.ans}`;
+      fb.className = 'match-fb bad';
+    }
+  });
+  const total = ex3Items.length;
+  ex3Score = correct;
+  const badge = document.getElementById('score3');
+  badge.textContent = `${correct} / ${total}`;
+  badge.className = 'score-badge show ' + (correct === total ? 'good' : correct >= total * 0.6 ? 'partial' : 'low');
+  document.getElementById('check3').disabled = true;
+}
+
+/* ═══════════════════════════════
+   EXERCISE 4 DATA
+═══════════════════════════════ */
+const dialogues = [
+  {
+    n: 1,
+    turns: [
+      { sp:'A', text:'We\'ve almost raised enough money for the community garden project. We just need a little bit more.' },
+      { sp:'B', text:'Yes — <PROMPT>all / need</PROMPT> <INPUT id="c1"> another £4,400 to reach our target!', inputId:'c1' }
+    ],
+    models: [{ label:'B', model:'All we need is' }]
+  },
+  {
+    n: 2,
+    turns: [
+      { sp:'A', text:'I heard someone from your team landed a really important client account last week.' },
+      { sp:'B', text:'Yes! <PROMPT>it / Malanda</PROMPT> <INPUT id="c2"> got that account — she worked so hard on the pitch.', inputId:'c2' }
+    ],
+    models: [{ label:'B', model:'It was Malanda who' }]
+  },
+  {
+    n: 3,
+    turns: [
+      { sp:'A', text:'Do you ever miss anything about your old job as a teacher?' },
+      { sp:'B', text:'Sometimes. <PROMPT>what / particularly miss</PROMPT> <INPUT id="c3"> the long holidays!', inputId:'c3' }
+    ],
+    models: [{ label:'B', model:'What I particularly miss is' }]
+  },
+  {
+    n: 4,
+    turns: [
+      { sp:'A', text:'How on earth did you fix the server? Our whole IT team spent three days on it!' },
+      { sp:'B', text:'Honestly? <PROMPT>all / did</PROMPT> <INPUT id="c4"> switch it off and on again. It worked instantly.', inputId:'c4' }
+    ],
+    models: [{ label:'B', model:'All I did was' }]
+  },
+  {
+    n: 5,
+    turns: [
+      { sp:'A', text:'So, what are your plans for the long weekend?' },
+      { sp:'B', text:'Well, <PROMPT>what / want to do</PROMPT> <INPUT id="c5a"> go to a spa, but <PROMPT>what / actually do</PROMPT> <INPUT id="c5b"> housework, as usual!', inputIds:['c5a','c5b'] }
+    ],
+    models: [
+      { label:'B (first gap)', model:'What I want to do is' },
+      { label:'B (second gap)', model:'what I actually do is' }
+    ]
+  },
+  {
+    n: 6,
+    turns: [
+      { sp:'A', text:'<PROMPT>what / I / say</PROMPT> <INPUT id="c6a"> you don\'t need to worry about the restructuring.', inputId:'c6a' },
+      { sp:'B', text:'I know, I know — but <PROMPT>it / not / job security</PROMPT> <INPUT id="c6b"> I worry about. It\'s the culture of the company.', inputId:'c6b' }
+    ],
+    models: [
+      { label:'A', model:"What I'm saying is (that)" },
+      { label:'B', model:"It's not job security (that)" }
+    ]
+  }
+];
+
+function buildEx4() {
+  const list = document.getElementById('ex4-list');
+  dialogues.forEach(d => {
+    const turnsHtml = d.turns.map(t => {
+      const rawText = t.text
+        .replace(/<PROMPT>(.*?)<\/PROMPT>/g, '<span class="prompt-tag">($1)</span>')
+        .replace(/<INPUT id="([^"]+)">/g, (_, id) =>
+          `<input class="cleft" id="${id}" type="text" autocomplete="off" spellcheck="false" placeholder="…">`
+        );
+      return `<div class="turn turn-${t.sp.toLowerCase()}">
+        <span class="speaker">${t.sp}</span>
+        <p>${rawText}</p>
+      </div>`;
+    }).join('');
+
+    const modelsHtml = d.models.map(m =>
+      `<div><strong>${m.label}:</strong> <em>${m.model}</em> …</div>`
+    ).join('');
+
+    list.innerHTML += `
+      <div class="dialogue" id="dialogue${d.n}">
+        <div class="dialogue-num">Dialogue ${d.n}</div>
+        ${turnsHtml}
+        <div class="model-row" id="model${d.n}">${modelsHtml}</div>
+      </div>`;
+  });
+}
+
+function revealEx4() {
+  document.querySelectorAll('input.cleft').forEach(inp => {
+    ex4StudentInputs[inp.id] = inp.value.trim();
+  });
+  dialogues.forEach(d => {
+    document.getElementById(`model${d.n}`).classList.add('show');
+    const diag = document.getElementById(`dialogue${d.n}`);
+    diag.querySelectorAll('input.cleft').forEach(inp => inp.disabled = true);
+  });
+  document.getElementById('check4').disabled = true;
+}
+
+/* ═══════════════════════════════
+   SEND TO TEACHER
+═══════════════════════════════ */
+function sendHW() {
+  const name = document.getElementById('student-name').value.trim();
+  const email = document.getElementById('student-email').value.trim();
+  const note = document.getElementById('send-note');
+  if (!name) {
+    note.textContent = 'Please enter your name before submitting.';
+    note.style.color = 'var(--err)';
+    return;
+  }
+
+  let lines = `Student: ${name}`;
+  if (email) lines += `\nEmail: ${email}`;
+  lines += '\n\n';
+
+  lines += 'EXERCISE 3 — Match sentence halves\n';
+  ex3Items.forEach(item => {
+    const chosen = ex3StudentAnswers[item.n] || '(not answered)';
+    const ok = chosen === item.ans;
+    lines += `  ${item.n}. ${chosen})  ${ok ? '✓' : '✗  (correct: ' + item.ans + ')'}\n`;
+  });
+  lines += `  Score: ${ex3Score} / ${ex3Items.length}\n\n`;
+
+  const cleftLabels = {
+    c1:'Dialogue 1B — (all / need)',
+    c2:'Dialogue 2B — (it / Malanda)',
+    c3:'Dialogue 3B — (what / particularly miss)',
+    c4:'Dialogue 4B — (all / did)',
+    c5a:'Dialogue 5B — (what / want to do)',
+    c5b:'Dialogue 5B — (what / actually do)',
+    c6a:'Dialogue 6A — (what / I / say)',
+    c6b:'Dialogue 6B — (it / not / job security)'
+  };
+  lines += 'EXERCISE 4 — Cleft sentences (student answers)\n';
+  Object.entries(cleftLabels).forEach(([id, label]) => {
+    const student = ex4StudentInputs[id] !== undefined ? (ex4StudentInputs[id] || '(blank)') : '(not checked)';
+    lines += `  ${label}: "${student}"\n`;
+  });
+  lines += '\n(Exercise 4 is self-assessed against model answers in the file.)';
+
+  const subj = encodeURIComponent(`HW: Cleft Sentences — ${name}`);
+  const bod = encodeURIComponent(lines);
+  window.open(`mailto:dariia.mlnk@gmail.com?subject=${subj}&body=${bod}`);
+  note.textContent = '✓  Your email client is opening — press Send to submit your homework.';
+  note.style.color = 'var(--ok)';
+}
+
+/* Init */
+buildEx3();
+buildEx4();
+</script>
+</body>
+</html>
