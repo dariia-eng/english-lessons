@@ -1,0 +1,962 @@
+<title>Homework · We Can Work It Out</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* ── TOKENS ── */
+:root {
+  --teal:        #0d9488;
+  --teal-mid:    #14b8a6;
+  --teal-pale:   #f0fdfa;
+  --teal-border: #99f6e4;
+  --coral:       #f97066;
+  --coral-pale:  #fff1f0;
+  --text:        #1e293b;
+  --text-muted:  #64748b;
+  --bg:          #f1f5f9;
+  --card:        #ffffff;
+  --border:      #e2e8f0;
+  --correct:     #16a34a;
+  --correct-bg:  #dcfce7;
+  --correct-bd:  #86efac;
+  --wrong:       #dc2626;
+  --wrong-bg:    #fee2e2;
+  --wrong-bd:    #fca5a5;
+  --radius:      14px;
+  --shadow:      0 2px 16px rgba(13,148,136,.09);
+}
+[data-theme="dark"] {
+  --text:        #e2e8f0;
+  --text-muted:  #94a3b8;
+  --bg:          #0f172a;
+  --card:        #1e293b;
+  --border:      #334155;
+  --teal-pale:   #0f3a36;
+  --teal-border: #0d5750;
+  --coral-pale:  #3b0f0e;
+  --correct-bg:  #14532d;
+  --correct-bd:  #166534;
+  --wrong-bg:    #450a0a;
+  --wrong-bd:    #991b1b;
+}
+
+/* ── BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.hw-header {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-mid) 100%);
+  color: white;
+  padding: 2.2rem 1.5rem 1.8rem;
+  text-align: center;
+  position: relative;
+}
+.hw-eyebrow {
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  opacity: .8;
+  margin-bottom: .4rem;
+}
+.hw-header h1 {
+  font-size: 1.65rem;
+  font-weight: 700;
+  margin-bottom: .3rem;
+  letter-spacing: -.01em;
+}
+.hw-subtitle {
+  font-size: .88rem;
+  opacity: .82;
+}
+.theme-btn {
+  position: absolute;
+  top: 1rem; right: 1.1rem;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  width: 38px; height: 38px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+.theme-btn:hover { background: rgba(255,255,255,.32); }
+
+/* ── NAME BAR ── */
+.name-bar {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--card);
+  border-bottom: 1.5px solid var(--border);
+  padding: .6rem 1.4rem;
+  display: flex; align-items: center; gap: .75rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,.07);
+}
+.name-bar label {
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.name-bar input {
+  flex: 1;
+  max-width: 280px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: .38rem .8rem;
+  font-size: .9rem;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  font-family: inherit;
+  transition: border-color .2s;
+}
+.name-bar input:focus { border-color: var(--teal); }
+
+/* ── PROGRESS ── */
+.prog-wrap {
+  max-width: 780px;
+  margin: .9rem auto 0;
+  padding: 0 1.4rem;
+}
+.prog-row { display: flex; align-items: center; gap: .8rem; }
+.prog-track {
+  flex: 1;
+  height: 8px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+#pfill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--teal), var(--teal-mid));
+  border-radius: 99px;
+  transition: width .45s ease;
+}
+#plabel {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  min-width: 60px;
+  text-align: right;
+}
+
+/* ── PAGE ── */
+.page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 1.2rem 1.4rem 4rem;
+}
+
+/* ── EXERCISE CARD ── */
+.ex-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  margin-bottom: 1.6rem;
+  overflow: hidden;
+}
+.ex-hd {
+  background: var(--teal-pale);
+  border-bottom: 1px solid var(--teal-border);
+  padding: .8rem 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+.ex-num {
+  background: var(--teal);
+  color: white;
+  border-radius: 50%;
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .82rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.ex-title { font-weight: 700; font-size: .97rem; }
+.ex-body { padding: 1.2rem 1.3rem; }
+.ex-instr {
+  font-size: .86rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 1.1rem;
+  line-height: 1.55;
+}
+
+/* ── BUTTONS ── */
+.btn-row {
+  display: flex; gap: .6rem;
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+.btn {
+  padding: .45rem 1.15rem;
+  border-radius: 8px;
+  border: none;
+  font-size: .87rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity .15s, transform .1s;
+}
+.btn:hover { opacity: .85; transform: translateY(-1px); }
+.btn-check { background: var(--teal); color: white; }
+.btn-reset { background: var(--border); color: var(--text-muted); }
+
+/* ── GAP FILL ── */
+.gf-list { list-style: none; display: flex; flex-direction: column; gap: .75rem; }
+.gf-item { display: flex; align-items: baseline; gap: .4rem; flex-wrap: wrap; line-height: 1.8; }
+.gf-num { font-weight: 700; color: var(--teal); min-width: 1.5rem; font-size: .85rem; flex-shrink: 0; }
+.gf-text { flex: 1; }
+.gap-input {
+  display: inline-block;
+  border: none;
+  border-bottom: 2px solid var(--teal);
+  background: transparent;
+  padding: .1rem .25rem;
+  font-size: .93rem;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  text-align: center;
+  transition: border-color .2s, color .2s;
+}
+.gap-input:focus { border-bottom-color: var(--coral); }
+.gap-input.correct { border-bottom-color: var(--correct); color: var(--correct); font-weight: 600; }
+.gap-input.wrong   { border-bottom-color: var(--wrong);   color: var(--wrong); }
+.gap-ans {
+  display: none;
+  font-size: .82rem;
+  color: var(--correct);
+  font-weight: 700;
+  margin-left: .2rem;
+}
+.gap-ans.visible { display: inline; }
+
+/* ── MULTIPLE CHOICE ── */
+.mc-item { margin-bottom: 1.3rem; }
+.mc-item:last-child { margin-bottom: 0; }
+.mc-context {
+  font-size: .9rem;
+  line-height: 1.65;
+  padding: .55rem .85rem;
+  background: var(--bg);
+  border-radius: 8px;
+  border-left: 3px solid var(--teal);
+  margin-bottom: .55rem;
+}
+.mc-gap { font-weight: 700; color: var(--teal); letter-spacing: .05em; }
+.mc-opts { display: flex; gap: .5rem; flex-wrap: wrap; }
+.mc-btn {
+  padding: .35rem .9rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: .87rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color .18s, background .18s, color .18s;
+}
+.mc-btn:hover:not(:disabled) { border-color: var(--teal); color: var(--teal); background: var(--teal-pale); }
+.mc-btn.selected { border-color: var(--teal); background: var(--teal-pale); color: var(--teal); }
+.mc-btn.correct  { border-color: var(--correct); background: var(--correct-bg); color: var(--correct); font-weight: 600; }
+.mc-btn.wrong    { border-color: var(--wrong);   background: var(--wrong-bg);   color: var(--wrong); }
+.mc-btn:disabled { cursor: default; }
+
+/* ── CORRECTION ── */
+.corr-item {
+  margin-bottom: 1.3rem;
+  padding-bottom: 1.3rem;
+  border-bottom: 1px dashed var(--border);
+}
+.corr-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.corr-num { font-weight: 700; color: var(--teal); font-size: .84rem; margin-bottom: .3rem; }
+.corr-direct {
+  font-style: italic;
+  color: var(--text-muted);
+  font-size: .88rem;
+  margin-bottom: .35rem;
+}
+.corr-direct::before { content: '"'; }
+.corr-direct::after  { content: '"'; }
+.corr-reported {
+  font-size: .92rem;
+  line-height: 1.7;
+  margin-bottom: .55rem;
+}
+.err-word {
+  background: var(--wrong-bg);
+  color: var(--wrong);
+  border-radius: 4px;
+  padding: .05rem .25rem;
+  font-weight: 600;
+  text-decoration: underline wavy var(--wrong);
+}
+.corr-label {
+  font-size: .79rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: .3rem;
+}
+.corr-input {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: .38rem .8rem;
+  font-size: .9rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color .2s, background .2s, color .2s;
+}
+.corr-input:focus { border-color: var(--teal); }
+.corr-input.correct { border-color: var(--correct-bd); background: var(--correct-bg); color: var(--correct); font-weight: 600; }
+.corr-input.wrong   { border-color: var(--wrong-bd);   background: var(--wrong-bg);   color: var(--wrong); }
+.corr-ans {
+  display: none;
+  font-size: .82rem;
+  color: var(--correct);
+  font-weight: 700;
+  margin-top: .35rem;
+}
+.corr-ans.visible { display: block; }
+
+/* ── CONVERSATION ── */
+.conv-block {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: .9rem 1rem;
+  margin-bottom: 1rem;
+  font-size: .88rem;
+}
+.conv-block h4 {
+  font-size: .76rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: .7rem;
+}
+.conv-line {
+  display: grid;
+  grid-template-columns: 85px 1fr;
+  column-gap: .6rem;
+  row-gap: .25rem;
+  margin-bottom: .3rem;
+  align-items: start;
+  line-height: 1.55;
+}
+.conv-spkr {
+  font-weight: 700;
+  color: var(--text-muted);
+  font-size: .87rem;
+  text-align: right;
+  padding-top: .05rem;
+}
+.conv-c .conv-spkr { color: var(--teal); }
+.conv-c { border: 1.5px solid var(--teal-border); background: var(--teal-pale); }
+
+/* ── SEND CARD ── */
+.send-card {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-mid) 100%);
+  border-radius: var(--radius);
+  padding: 1.8rem 1.5rem;
+  text-align: center;
+  color: white;
+  margin-top: .5rem;
+}
+.send-card h3 { font-size: 1.15rem; margin-bottom: .4rem; }
+.send-card p  { font-size: .87rem; opacity: .85; margin-bottom: 1.1rem; }
+.btn-send {
+  background: white;
+  color: var(--teal);
+  border: none;
+  border-radius: 10px;
+  padding: .65rem 1.8rem;
+  font-size: .97rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 2px 12px rgba(0,0,0,.15);
+}
+.btn-send:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.2); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 560px) {
+  .hw-header h1  { font-size: 1.3rem; }
+  .conv-line     { grid-template-columns: 70px 1fr; }
+  .mc-opts       { flex-direction: column; }
+}
+</style>
+
+<!-- HEADER -->
+<header class="hw-header">
+  <p class="hw-eyebrow">📝 Homework</p>
+  <h1>We Can Work It Out</h1>
+  <p class="hw-subtitle">Vocabulary: Negotiating &nbsp;·&nbsp; Grammar: Reported Speech</p>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
+</header>
+
+<!-- NAME BAR -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name here…">
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="prog-wrap">
+  <div class="prog-row">
+    <div class="prog-track"><div id="pfill"></div></div>
+    <span id="plabel">0 / 4 done</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ══ EXERCISE 1 ══ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <div class="ex-num">1</div>
+      <div class="ex-title">Vocabulary — Complete the gaps</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-instr">Complete each sentence with one word or phrase. The first letter(s) are shown as a hint in the box.</p>
+      <ul class="gf-list">
+
+        <li class="gf-item">
+          <span class="gf-num">1</span>
+          <span class="gf-text">
+            Marc and I <input class="gap-input" id="e1g1" data-ans="fell out" placeholder="f… o…" size="8">
+            over something silly and now we're not speaking.
+          </span>
+          <span class="gap-ans" id="e1g1-ans"></span>
+        </li>
+
+        <li class="gf-item">
+          <span class="gf-num">2</span>
+          <span class="gf-text">
+            I always try to avoid <input class="gap-input" id="e1g2" data-ans="conflict" placeholder="c…" size="8">.
+            I prefer it when everyone agrees.
+          </span>
+          <span class="gap-ans" id="e1g2-ans"></span>
+        </li>
+
+        <li class="gf-item">
+          <span class="gf-num">3</span>
+          <span class="gf-text">
+            It's hard to <input class="gap-input" id="e1g3" data-ans="stay calm" placeholder="s… c…" size="9">
+            when someone's shouting at you.
+          </span>
+          <span class="gap-ans" id="e1g3-ans"></span>
+        </li>
+
+        <li class="gf-item">
+          <span class="gf-num">4</span>
+          <span class="gf-text">
+            I have a strong <input class="gap-input" id="e1g4" data-ans="bond" placeholder="b…" size="6">
+            with all my siblings. We've always been close.
+          </span>
+          <span class="gap-ans" id="e1g4-ans"></span>
+        </li>
+
+        <li class="gf-item">
+          <span class="gf-num">5</span>
+          <span class="gf-text">
+            There seems to be a lot of <input class="gap-input" id="e1g5" data-ans="tension" placeholder="t…" size="8">
+            in the office today. Why is everyone so stressed?
+          </span>
+          <span class="gap-ans" id="e1g5-ans"></span>
+        </li>
+
+        <li class="gf-item">
+          <span class="gf-num">6</span>
+          <span class="gf-text">
+            The first thing a good salesperson does is <input class="gap-input" id="e1g6" data-ans="build trust" placeholder="b… t…" size="11">
+            with the customer.
+          </span>
+          <span class="gap-ans" id="e1g6-ans"></span>
+        </li>
+
+        <li class="gf-item">
+          <span class="gf-num">7</span>
+          <span class="gf-text">
+            Stop <input class="gap-input" id="e1g7" data-ans="interrupting" placeholder="i…" size="12"> me and let me speak!
+          </span>
+          <span class="gap-ans" id="e1g7-ans"></span>
+        </li>
+
+        <li class="gf-item">
+          <span class="gf-num">8</span>
+          <span class="gf-text">
+            Anyone who's worked hard at something deserves <input class="gap-input" id="e1g8" data-ans="praise" placeholder="p…" size="7">.
+          </span>
+          <span class="gap-ans" id="e1g8-ans"></span>
+        </li>
+
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx1()">Check ✓</button>
+        <button class="btn btn-reset" onclick="resetEx('ex1', ['e1g1','e1g2','e1g3','e1g4','e1g5','e1g6','e1g7','e1g8'])">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ EXERCISE 2 ══ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <div class="ex-num">2</div>
+      <div class="ex-title">Vocabulary — Choose the correct option</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-instr">Choose the best word (a, b or c) to complete each gap in the <em>How to be a good salesperson</em> article.</p>
+
+      <div class="mc-item">
+        <div class="mc-context">Ask the customer questions to find out what they want. This will help to create a positive <span class="mc-gap">1 ___</span> between the two of you.</div>
+        <div class="mc-opts">
+          <button class="mc-btn" onclick="mcPick(this,'q1','a preference',false)">a &nbsp;preference</button>
+          <button class="mc-btn" onclick="mcPick(this,'q1','b link',false)">b &nbsp;link</button>
+          <button class="mc-btn" onclick="mcPick(this,'q1','c bond',true)">c &nbsp;bond</button>
+        </div>
+      </div>
+
+      <div class="mc-item">
+        <div class="mc-context">Avoid <span class="mc-gap">2 ___</span> the customer. Let them speak, listen carefully and then tell them how you can help them.</div>
+        <div class="mc-opts">
+          <button class="mc-btn" onclick="mcPick(this,'q2','a interrupting',true)">a &nbsp;interrupting</button>
+          <button class="mc-btn" onclick="mcPick(this,'q2','b preventing',false)">b &nbsp;preventing</button>
+          <button class="mc-btn" onclick="mcPick(this,'q2','c participating',false)">c &nbsp;participating</button>
+        </div>
+      </div>
+
+      <div class="mc-item">
+        <div class="mc-context">Pay attention to the customer's body language. If you notice any <span class="mc-gap">3 ___</span>, suggest speaking again on a different day.</div>
+        <div class="mc-opts">
+          <button class="mc-btn" onclick="mcPick(this,'q3','a threats',false)">a &nbsp;threats</button>
+          <button class="mc-btn" onclick="mcPick(this,'q3','b tension',true)">b &nbsp;tension</button>
+          <button class="mc-btn" onclick="mcPick(this,'q3','c pressure',false)">c &nbsp;pressure</button>
+        </div>
+      </div>
+
+      <div class="mc-item">
+        <div class="mc-context"><span class="mc-gap">4 ___</span> calm, even if the customer tells you they're not interested in your product. Leave them to think about it and follow up in a few days.</div>
+        <div class="mc-opts">
+          <button class="mc-btn" onclick="mcPick(this,'q4','a Stay',false)">a &nbsp;Stay</button>
+          <button class="mc-btn" onclick="mcPick(this,'q4','b Stand',true)">b &nbsp;Stand</button>
+          <button class="mc-btn" onclick="mcPick(this,'q4','c Have',false)">c &nbsp;Have</button>
+        </div>
+      </div>
+
+      <div class="mc-item">
+        <div class="mc-context">Avoid future conflict by being honest about any issues. This will help to <span class="mc-gap">5 ___</span> trust between you.</div>
+        <div class="mc-opts">
+          <button class="mc-btn" onclick="mcPick(this,'q5','a make',false)">a &nbsp;make</button>
+          <button class="mc-btn" onclick="mcPick(this,'q5','b build',true)">b &nbsp;build</button>
+          <button class="mc-btn" onclick="mcPick(this,'q5','c construct',false)">c &nbsp;construct</button>
+        </div>
+      </div>
+
+      <div class="mc-item">
+        <div class="mc-context">Never <span class="mc-gap">6 ___</span> the product, but be open to discussing its weaknesses if necessary.</div>
+        <div class="mc-opts">
+          <button class="mc-btn" onclick="mcPick(this,'q6','a criticise',false)">a &nbsp;criticise</button>
+          <button class="mc-btn" onclick="mcPick(this,'q6','b blame',false)">b &nbsp;blame</button>
+          <button class="mc-btn" onclick="mcPick(this,'q6','c praise',true)">c &nbsp;praise</button>
+        </div>
+      </div>
+
+      <div class="mc-item">
+        <div class="mc-context">Once the customer has received the product, talk to them to find out how they're getting on. <span class="mc-gap">7 ___</span> with them if they have any problems that need solving.</div>
+        <div class="mc-opts">
+          <button class="mc-btn" onclick="mcPick(this,'q7','a Share',false)">a &nbsp;Share</button>
+          <button class="mc-btn" onclick="mcPick(this,'q7','b Partner',false)">b &nbsp;Partner</button>
+          <button class="mc-btn" onclick="mcPick(this,'q7','c Cooperate',true)">c &nbsp;Cooperate</button>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx2()">Check ✓</button>
+        <button class="btn btn-reset" onclick="resetEx2()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ EXERCISE 3 ══ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <div class="ex-num">3</div>
+      <div class="ex-title">Grammar — Correct the reported speech</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-instr">Each reported speech sentence has <strong>one mistake</strong> (underlined in red). Write the correct word or phrase in the box.</p>
+
+      <div class="corr-item">
+        <p class="corr-num">1</p>
+        <p class="corr-direct">I've been living here for six years.</p>
+        <p class="corr-reported">She told me that she'd <span class="err-word">lived</span> there for six years.</p>
+        <p class="corr-label">✏️ Correct form:</p>
+        <input class="corr-input" id="c1" data-ans="been living,had been living,she'd been living" placeholder="type the correction…" size="20">
+        <p class="corr-ans" id="c1-ans">✓ been living &nbsp;(she'd been living there…)</p>
+      </div>
+
+      <div class="corr-item">
+        <p class="corr-num">2</p>
+        <p class="corr-direct">I'll meet you here at 6 p.m. tomorrow.</p>
+        <p class="corr-reported">He said that <span class="err-word">he'll</span> meet us there at 6 p.m. the next day.</p>
+        <p class="corr-label">✏️ Correct form:</p>
+        <input class="corr-input" id="c2" data-ans="he'd,he would,would" placeholder="type the correction…" size="10">
+        <p class="corr-ans" id="c2-ans">✓ he'd / he would</p>
+      </div>
+
+      <div class="corr-item">
+        <p class="corr-num">3</p>
+        <p class="corr-direct">Do you want to get a pizza?</p>
+        <p class="corr-reported">She asked me if I <span class="err-word">want</span> to get a pizza.</p>
+        <p class="corr-label">✏️ Correct form:</p>
+        <input class="corr-input" id="c3" data-ans="wanted" placeholder="type the correction…" size="10">
+        <p class="corr-ans" id="c3-ans">✓ wanted</p>
+      </div>
+
+      <div class="corr-item">
+        <p class="corr-num">4</p>
+        <p class="corr-direct">We can go in my car.</p>
+        <p class="corr-reported">She said we <span class="err-word">would</span> go in her car.</p>
+        <p class="corr-label">✏️ Correct form:</p>
+        <input class="corr-input" id="c4" data-ans="could" placeholder="type the correction…" size="8">
+        <p class="corr-ans" id="c4-ans">✓ could</p>
+      </div>
+
+      <div class="corr-item">
+        <p class="corr-num">5</p>
+        <p class="corr-direct">Where's the match taking place?</p>
+        <p class="corr-reported">He asked me where <span class="err-word">was the match</span> taking place.</p>
+        <p class="corr-label">✏️ Correct word order:</p>
+        <input class="corr-input" id="c5" data-ans="the match was,where the match was,where the match was taking place" placeholder="type the correction…" size="22">
+        <p class="corr-ans" id="c5-ans">✓ the match was &nbsp;(…where the match was taking place)</p>
+      </div>
+
+      <div class="corr-item">
+        <p class="corr-num">6</p>
+        <p class="corr-direct">Please be quiet.</p>
+        <p class="corr-reported">He asked us <span class="err-word">be</span> quiet.</p>
+        <p class="corr-label">✏️ Correct form:</p>
+        <input class="corr-input" id="c6" data-ans="to be,asked us to be" placeholder="type the correction…" size="10">
+        <p class="corr-ans" id="c6-ans">✓ to be &nbsp;(asked us to be quiet)</p>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx3()">Check ✓</button>
+        <button class="btn btn-reset" onclick="resetEx3()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ EXERCISE 4 ══ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <div class="ex-num">4</div>
+      <div class="ex-title">Grammar — Complete conversation C</div>
+    </div>
+    <div class="ex-body">
+      <p class="ex-instr">Read conversations A and B carefully, then complete conversation C using reported speech.</p>
+
+      <!-- Conversation A -->
+      <div class="conv-block">
+        <h4>📞 Conversation A</h4>
+        <div class="conv-line"><span class="conv-spkr">Georgina:</span><span>I'm worried about my brother Josh. He can't find a job and he's feeling depressed about it.</span></div>
+        <div class="conv-line"><span class="conv-spkr">Kate:</span><span>Don't worry. I'm sure he'll find something soon.</span></div>
+        <div class="conv-line"><span class="conv-spkr">Georgina:</span><span>Are there any jobs where you work?</span></div>
+        <div class="conv-line"><span class="conv-spkr">Kate:</span><span>I doubt it. Do you fancy meeting up sometime soon? I fancy a night out.</span></div>
+        <div class="conv-line"><span class="conv-spkr">Georgina:</span><span>Sounds good.</span></div>
+      </div>
+
+      <!-- Conversation B -->
+      <div class="conv-block">
+        <h4>📞 Conversation B</h4>
+        <div class="conv-line"><span class="conv-spkr">Georgina:</span><span>My brother Josh has moved to Manchester.</span></div>
+        <div class="conv-line"><span class="conv-spkr">Becky:</span><span>Has he? Why?</span></div>
+        <div class="conv-line"><span class="conv-spkr">Georgina:</span><span>He's got a job there. I can't remember his job title but it involves manufacturing. We're all really pleased but I miss him.</span></div>
+        <div class="conv-line"><span class="conv-spkr">Becky:</span><span>I bet.</span></div>
+        <div class="conv-line"><span class="conv-spkr">Georgina:</span><span>Anyway, what night are you and Kate free next week? I'd love to have you round for dinner.</span></div>
+      </div>
+
+      <!-- Conversation C -->
+      <div class="conv-block conv-c">
+        <h4>✍️ Conversation C — Fill in the gaps</h4>
+
+        <div class="conv-line">
+          <span class="conv-spkr">Becky:</span>
+          <span>I saw Georgina last week. She told me that her brother, Josh
+            <input class="gap-input" id="e4g1" data-ans="had moved" placeholder="1" size="9">
+            to Manchester because he
+            <input class="gap-input" id="e4g2" data-ans="had got,had gotten,had found" placeholder="2" size="9">
+            a new job there.
+          </span>
+        </div>
+
+        <div class="conv-line"><span class="conv-spkr">Kate:</span><span>Oh, good. Doing what?</span></div>
+
+        <div class="conv-line">
+          <span class="conv-spkr">Becky:</span>
+          <span>She said it
+            <input class="gap-input" id="e4g3" data-ans="involved" placeholder="3" size="9">
+            manufacturing.
+          </span>
+        </div>
+
+        <div class="conv-line">
+          <span class="conv-spkr">Kate:</span>
+          <span>I'm pleased for him. I saw her last month and she said that he
+            <input class="gap-input" id="e4g4" data-ans="had been,was" placeholder="4" size="9">
+            fed up because he couldn't find work. I told her
+            <input class="gap-input" id="e4g5" data-ans="not to,not to worry" placeholder="5" size="8">
+            worry and I was right. She asked me if I
+            <input class="gap-input" id="e4g6" data-ans="knew" placeholder="6" size="6">
+            of any jobs going where I work.
+          </span>
+        </div>
+
+        <div class="conv-line">
+          <span class="conv-spkr">Becky:</span>
+          <span>Ha! Hardly! Anyway, when I saw her, she asked me what night we
+            <input class="gap-input" id="e4g7" data-ans="were" placeholder="7" size="6">
+            free next week. She wants to invite us round for dinner. She said she
+            <input class="gap-input" id="e4g8" data-ans="missed" placeholder="8" size="7">
+            Josh so I think she wants some company.
+          </span>
+        </div>
+
+        <div class="conv-line"><span class="conv-spkr">Kate:</span><span>Sounds good to me. I'm free anytime.</span></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx4()">Check ✓</button>
+        <button class="btn btn-reset" onclick="resetEx('ex4', ['e4g1','e4g2','e4g3','e4g4','e4g5','e4g6','e4g7','e4g8'])">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SEND ══ -->
+  <div class="send-card">
+    <h3>📬 Send to Your Teacher</h3>
+    <p>Finished? Click below to email your answers directly.</p>
+    <button class="btn-send" onclick="sendToTeacher()">Send to Teacher →</button>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+/* ── PROGRESS ── */
+const done = { ex1: false, ex2: false, ex3: false, ex4: false };
+function updateProgress() {
+  const n = Object.values(done).filter(Boolean).length;
+  document.getElementById('pfill').style.width = (n / 4 * 100) + '%';
+  document.getElementById('plabel').textContent = n + ' / 4 done';
+}
+
+/* ── THEME ── */
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn  = document.getElementById('themeBtn');
+  if (html.dataset.theme === 'dark') {
+    delete html.dataset.theme;
+    btn.textContent = '🌙';
+  } else {
+    html.dataset.theme = 'dark';
+    btn.textContent = '☀️';
+  }
+}
+
+/* ── GAP HELPER ── */
+function checkGapInput(id) {
+  const inp = document.getElementById(id);
+  const ansEl = document.getElementById(id + '-ans');
+  const val = inp.value.trim().toLowerCase();
+  const accepted = inp.dataset.ans.split(',').map(a => a.trim().toLowerCase());
+  const ok = accepted.includes(val);
+  inp.classList.remove('correct', 'wrong');
+  inp.classList.add(ok ? 'correct' : 'wrong');
+  inp.readOnly = true;
+  if (ansEl) {
+    if (!ok && val) {
+      ansEl.textContent = '→ ' + inp.dataset.ans.split(',')[0];
+      ansEl.classList.add('visible');
+    } else {
+      ansEl.classList.remove('visible');
+    }
+  }
+  return ok;
+}
+
+/* ── EX 1 ── */
+function checkEx1() {
+  const ids = ['e1g1','e1g2','e1g3','e1g4','e1g5','e1g6','e1g7','e1g8'];
+  const results = ids.map(checkGapInput);
+  done.ex1 = results.every(Boolean);
+  updateProgress();
+}
+
+/* ── EX 1 / EX 4 RESET (generic) ── */
+function resetEx(exKey, ids) {
+  ids.forEach(id => {
+    const inp = document.getElementById(id);
+    const ansEl = document.getElementById(id + '-ans');
+    inp.classList.remove('correct', 'wrong');
+    inp.readOnly = false;
+    inp.value = '';
+    if (ansEl) ansEl.classList.remove('visible');
+  });
+  done[exKey] = false;
+  updateProgress();
+}
+
+/* ── EX 2 MCQ ── */
+const mcSelections = {}; // q -> { text, correct }
+function mcPick(btn, q, label, isCorrect) {
+  btn.closest('.mc-opts').querySelectorAll('.mc-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  mcSelections[q] = { label, correct: isCorrect };
+}
+function checkEx2() {
+  const allQs = ['q1','q2','q3','q4','q5','q6','q7'];
+  let allOk = true;
+  allQs.forEach(q => {
+    const btns = document.querySelectorAll(`.mc-btn[onclick*="'${q}'"]`);
+    let answered = false;
+    btns.forEach(b => {
+      const isCorrect = b.getAttribute('onclick').includes(',true)');
+      const isSelected = b.classList.contains('selected');
+      b.classList.remove('selected');
+      b.disabled = true;
+      if (isSelected) {
+        answered = true;
+        b.classList.add(isCorrect ? 'correct' : 'wrong');
+        if (!isCorrect) allOk = false;
+      }
+      // always reveal correct
+      if (isCorrect) b.classList.add('correct');
+    });
+    if (!answered) allOk = false;
+  });
+  done.ex2 = allOk;
+  updateProgress();
+}
+function resetEx2() {
+  document.querySelectorAll('.mc-btn').forEach(b => {
+    b.classList.remove('selected', 'correct', 'wrong');
+    b.disabled = false;
+  });
+  Object.keys(mcSelections).forEach(k => delete mcSelections[k]);
+  done.ex2 = false;
+  updateProgress();
+}
+
+/* ── EX 3 CORRECTIONS ── */
+function checkCorr(id) {
+  const inp = document.getElementById(id);
+  const ansEl = document.getElementById(id + '-ans');
+  const val = inp.value.trim().toLowerCase();
+  const accepted = inp.dataset.ans.split(',').map(a => a.trim().toLowerCase());
+  const ok = accepted.some(a => val === a || val.includes(a));
+  inp.classList.remove('correct', 'wrong');
+  inp.classList.add(ok ? 'correct' : 'wrong');
+  inp.readOnly = true;
+  if (ansEl) {
+    if (!ok && val) ansEl.classList.add('visible');
+    else           ansEl.classList.remove('visible');
+  }
+  return ok;
+}
+function checkEx3() {
+  const ids = ['c1','c2','c3','c4','c5','c6'];
+  const results = ids.map(checkCorr);
+  done.ex3 = results.every(Boolean);
+  updateProgress();
+}
+function resetEx3() {
+  ['c1','c2','c3','c4','c5','c6'].forEach(id => {
+    const inp = document.getElementById(id);
+    const ansEl = document.getElementById(id + '-ans');
+    inp.classList.remove('correct', 'wrong');
+    inp.readOnly = false;
+    inp.value = '';
+    if (ansEl) ansEl.classList.remove('visible');
+  });
+  done.ex3 = false;
+  updateProgress();
+}
+
+/* ── EX 4 ── */
+function checkEx4() {
+  const ids = ['e4g1','e4g2','e4g3','e4g4','e4g5','e4g6','e4g7','e4g8'];
+  const results = ids.map(checkGapInput);
+  done.ex4 = results.every(Boolean);
+  updateProgress();
+}
+
+/* ── SEND TO TEACHER ── */
+function sendToTeacher() {
+  const name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+  // Ex 1
+  const e1 = ['e1g1','e1g2','e1g3','e1g4','e1g5','e1g6','e1g7','e1g8']
+    .map((id,i) => `  ${i+1}. ${document.getElementById(id).value || '(blank)'}`)
+    .join('\n');
+
+  // Ex 2
+  const qLabels = ['q1','q2','q3','q4','q5','q6','q7'];
+  const e2 = qLabels.map((q, i) => {
+    const sel = mcSelections[q];
+    return `  ${i+1}. ${sel ? sel.label : '(not answered)'}`;
+  }).join('\n');
+
+  // Ex 3
+  const e3 = ['c1','c2','c3','c4','c5','c6']
+    .map((id,i) => `  ${i+1}. ${document.getElementById(id).value || '(blank)'}`)
+    .join('\n');
+
+  // Ex 4
+  const e4 = ['e4g1','e4g2','e4g3','e4g4','e4g5','e4g6','e4g7','e4g8']
+    .map((id,i) => `  ${i+1}. ${document.getElementById(id).value || '(blank)'}`)
+    .join('\n');
+
+  const bodyStr = [
+    `Student: ${name}`,
+    `Lesson: We Can Work It Out (Unit 6B)`,
+    ``,
+    `── Ex 1: Vocabulary Gap-Fill ──`,
+    e1,
+    ``,
+    `── Ex 2: Multiple Choice ──`,
+    e2,
+    ``,
+    `── Ex 3: Correct the Reported Speech ──`,
+    e3,
+    ``,
+    `── Ex 4: Complete Conversation C ──`,
+    e4,
+  ].join('\n');
+
+  const subject = encodeURIComponent(`Homework — ${name} — We Can Work It Out`);
+  const body    = encodeURIComponent(bodyStr);
+  window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${subject}&body=${body}`;
+}
+</script>
