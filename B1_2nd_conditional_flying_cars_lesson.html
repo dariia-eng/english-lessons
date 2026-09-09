@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flying Cars — Future or Fiction?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap">
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --page-bg:   #eef2ff;
+      --card-bg:   #ffffff;
+      --card-2:    #f5f7ff;
+      --border:    rgba(37,99,235,.13);
+      --hd:        #0f172a;
+      --body:      #334155;
+      --muted:     #64748b;
+      --accent:    #2563eb;
+      --accent-h:  #1d4ed8;
+      --violet:    #7c3aed;
+      --violet-h:  #6d28d9;
+      --green:     #059669;
+      --red:       #dc2626;
+      --amber:     #d97706;
+      --tag:       rgba(37,99,235,.08);
+      --sh:        0 1px 3px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.05);
+      --sh-h:      0 4px 16px rgba(37,99,235,.18),0 8px 32px rgba(0,0,0,.07);
+      --r:         14px;
+      --r-sm:      9px;
+      --pill:      999px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --page-bg:  #080e1c;
+        --card-bg:  #111827;
+        --card-2:   #1a2235;
+        --border:   rgba(96,165,250,.14);
+        --hd:       #f1f5f9;
+        --body:     #cbd5e1;
+        --muted:    #94a3b8;
+        --accent:   #60a5fa;
+        --accent-h: #93c5fd;
+        --violet:   #a78bfa;
+        --violet-h: #c4b5fd;
+        --green:    #34d399;
+        --red:      #f87171;
+        --amber:    #fbbf24;
+        --tag:      rgba(96,165,250,.1);
+        --sh:       0 1px 3px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.2);
+        --sh-h:     0 4px 16px rgba(96,165,250,.15),0 8px 32px rgba(0,0,0,.3);
+      }
+    }
+    :root[data-theme="dark"] {
+      --page-bg:  #080e1c;
+      --card-bg:  #111827;
+      --card-2:   #1a2235;
+      --border:   rgba(96,165,250,.14);
+      --hd:       #f1f5f9;
+      --body:     #cbd5e1;
+      --muted:    #94a3b8;
+      --accent:   #60a5fa;
+      --accent-h: #93c5fd;
+      --violet:   #a78bfa;
+      --violet-h: #c4b5fd;
+      --green:    #34d399;
+      --red:      #f87171;
+      --amber:    #fbbf24;
+      --tag:      rgba(96,165,250,.1);
+      --sh:       0 1px 3px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.2);
+      --sh-h:     0 4px 16px rgba(96,165,250,.15),0 8px 32px rgba(0,0,0,.3);
+    }
+
+    /* ── BASE ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--page-bg);
+      color: var(--body);
+      min-height: 100vh;
+      line-height: 1.65;
+      font-size: 16px;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      color: var(--hd);
+      text-wrap: balance;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────── */
+    .site-header {
+      background: linear-gradient(135deg, #0f2d6b 0%, #2563eb 45%, #7c3aed 100%);
+      padding: 44px 20px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .site-header::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 80% 20%, rgba(167,139,250,.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-inner {
+      max-width: 840px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+      position: relative; z-index: 1;
+    }
+    .lesson-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+      color: rgba(255,255,255,.95);
+      font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: var(--pill); margin-bottom: 14px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .site-header h1 {
+      color: #fff;
+      font-size: clamp(1.55rem, 4vw, 2.1rem);
+      font-weight: 700; line-height: 1.2; margin-bottom: 8px;
+    }
+    .site-header .sub {
+      color: rgba(255,255,255,.75); font-size: .93rem; margin-bottom: 18px;
+    }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.9);
+      font-size: 12px; padding: 4px 12px; border-radius: var(--pill);
+      font-family: 'Space Grotesk', sans-serif; font-weight: 500;
+    }
+    .theme-btn {
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3);
+      color: #fff; border-radius: var(--pill);
+      padding: 8px 18px; cursor: pointer; font-size: 13px;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+      transition: background .2s; white-space: nowrap; flex-shrink: 0;
+    }
+    .theme-btn:hover { background: rgba(255,255,255,.25); }
+
+    /* ── PAGE WRAP ──────────────────────────────────────── */
+    .page { max-width: 840px; margin: 0 auto; padding: 0 20px 80px; }
+
+    /* ── SECTIONS ───────────────────────────────────────── */
+    .sec { margin-top: 40px; }
+    .sec-head { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .badge {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13px;
+      flex-shrink: 0; color: #fff;
+    }
+    .badge.b  { background: var(--accent); }
+    .badge.v  { background: var(--violet); }
+    .badge.g  { background: var(--green); }
+    .badge.a  { background: var(--amber); }
+    .sec-title  { font-size: 1.15rem; font-weight: 700; }
+    .sec-sub    { font-size: .83rem; color: var(--muted); font-weight: 500; margin-top: 2px; }
+
+    /* ── CARDS ──────────────────────────────────────────── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 20px 24px;
+      box-shadow: var(--sh);
+    }
+    .card + .card { margin-top: 12px; }
+
+    /* ── STRIP LABELS ───────────────────────────────────── */
+    .strip {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Space Grotesk', sans-serif; font-size: .75rem;
+      font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 14px;
+    }
+    .strip-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* ── VOCAB GRID ─────────────────────────────────────── */
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 10px;
+    }
+    .vocab-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--r-sm); padding: 14px 16px;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .vocab-card:hover { box-shadow: var(--sh-h); transform: translateY(-2px); }
+    .v-word { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: .95rem; color: var(--accent); margin-bottom: 3px; }
+    .v-pos  { font-size: 11px; color: var(--muted); font-style: italic; margin-bottom: 7px; }
+    .v-def  { font-size: .84rem; color: var(--body); line-height: 1.5; }
+
+    /* ── DISCUSS GRID ───────────────────────────────────── */
+    .disc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .disc-card {
+      background: var(--card-2); border: 1px solid var(--border);
+      border-radius: var(--r-sm); padding: 16px;
+    }
+    .disc-n {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      font-size: 1.5rem; line-height: 1; margin-bottom: 10px;
+      color: var(--border);
+    }
+    .disc-q { font-size: .9rem; color: var(--hd); font-weight: 500; }
+
+    /* ── VIDEO ──────────────────────────────────────────── */
+    .vid-label {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: .88rem;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .vid-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
+    .vid-wrap {
+      position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+      border-radius: var(--r-sm); background: #000;
+    }
+    .vid-wrap iframe {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      border: none; border-radius: var(--r-sm);
+    }
+    .vid-fallback { margin-top: 10px; text-align: center; }
+    .yt-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--red); color: #fff;
+      padding: 8px 20px; border-radius: var(--pill);
+      text-decoration: none; font-size: 13px; font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif; transition: opacity .2s;
+    }
+    .yt-btn:hover { opacity: .85; }
+
+    /* ── TASK BANNERS ───────────────────────────────────── */
+    .task-banner {
+      background: var(--tag); border-left: 3px solid var(--accent);
+      border-radius: 0 var(--r-sm) var(--r-sm) 0;
+      padding: 11px 14px; margin-bottom: 10px; font-size: .88rem; color: var(--body);
+    }
+    .task-banner strong { color: var(--hd); }
+    .task-banner.v { border-color: var(--violet); }
+
+    /* ── INSTRUCTION ROW ────────────────────────────────── */
+    .instr {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: var(--tag); border-radius: var(--r-sm);
+      padding: 11px 14px; margin-bottom: 16px;
+      font-size: .865rem; color: var(--muted);
+    }
+    .instr em { font-style: italic; color: var(--body); }
+
+    /* ── MC QUESTIONS ───────────────────────────────────── */
+    .comp-q { margin-bottom: 18px; }
+    .comp-q label { font-size: .9rem; font-weight: 600; color: var(--hd); display: block; margin-bottom: 8px; }
+    .choices { display: flex; flex-direction: column; gap: 6px; }
+    .choice-btn {
+      text-align: left; padding: 10px 16px;
+      background: var(--card-bg); border: 1.5px solid var(--border);
+      border-radius: var(--r-sm); cursor: pointer; font-size: .87rem;
+      color: var(--body); font-family: 'Inter', sans-serif;
+      transition: border-color .15s, background .15s;
+    }
+    .choice-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--tag); }
+    .choice-btn.correct { border-color: var(--green)!important; background: rgba(5,150,105,.09)!important; color: var(--green)!important; font-weight: 600; }
+    .choice-btn.wrong   { border-color: var(--red)!important;   background: rgba(220,38,38,.08)!important;  color: var(--red)!important; }
+
+    /* ── SPEAK GRID ─────────────────────────────────────── */
+    .speak-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+    .speak-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--r-sm); padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+      transition: box-shadow .2s, transform .2s;
+    }
+    .speak-card:hover { box-shadow: var(--sh-h); transform: translateY(-2px); }
+    .s-icon { font-size: 1.3rem; margin-bottom: 9px; }
+    .s-q    { font-size: .88rem; color: var(--hd); font-weight: 500; line-height: 1.55; }
+
+    /* ── BUTTONS ────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 22px; border-radius: var(--pill);
+      border: none; cursor: pointer; font-size: 13.5px; font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: background .15s, transform .1s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-ghost {
+      background: transparent; color: var(--accent);
+      border: 1.5px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--accent); background: var(--tag); }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+
+    /* ── TEXTAREA ───────────────────────────────────────── */
+    .notes-input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--border); border-radius: var(--r-sm);
+      background: var(--card-bg); color: var(--body);
+      font-family: 'Inter', sans-serif; font-size: .88rem;
+      resize: vertical; min-height: 70px; transition: border-color .15s;
+    }
+    .notes-input:focus { outline: none; border-color: var(--accent); }
+    .notes-input::placeholder { color: var(--muted); }
+
+    /* ── GRADIENT WRAP-UP CARD ──────────────────────────── */
+    .wrap-card {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 40%, #7c3aed 100%);
+      border-radius: var(--r); padding: 28px;
+    }
+    .wrap-card h3 { color: #fff; font-size: 1.1rem; margin-bottom: 10px; }
+    .wrap-card p  { color: rgba(255,255,255,.8); font-size: .9rem; }
+    .exit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 16px 0; }
+    .exit-card {
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+      border-radius: var(--r-sm); padding: 14px;
+    }
+    .exit-card .s-q { color: rgba(255,255,255,.9); }
+
+    /* ── TEACHER FORM ───────────────────────────────────── */
+    .teach-area { margin-top: 18px; }
+    .teach-area label { font-size: .84rem; font-weight: 600; color: rgba(255,255,255,.7); display: block; margin-bottom: 5px; }
+    .teach-area input, .teach-area textarea {
+      width: 100%; padding: 10px 14px; margin-bottom: 10px;
+      border: 1.5px solid rgba(255,255,255,.25); border-radius: var(--r-sm);
+      background: rgba(255,255,255,.1); color: #fff;
+      font-family: 'Inter', sans-serif; font-size: .88rem;
+    }
+    .teach-area input::placeholder, .teach-area textarea::placeholder { color: rgba(255,255,255,.4); }
+    .teach-area input:focus, .teach-area textarea:focus { outline: none; border-color: rgba(255,255,255,.55); }
+    .teach-area textarea { resize: vertical; min-height: 70px; }
+    .send-btn {
+      background: rgba(255,255,255,.18); border: 1.5px solid rgba(255,255,255,.4);
+      color: #fff; padding: 10px 22px; border-radius: var(--pill);
+      cursor: pointer; font-size: 14px; font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif; transition: background .2s;
+    }
+    .send-btn:hover { background: rgba(255,255,255,.28); }
+
+    /* ── FOR / AGAINST CARDS ────────────────────────────── */
+    .for-card  { border-color: rgba(5,150,105,.35)!important; }
+    .anti-card { border-color: rgba(220,38,38,.3)!important; }
+
+    /* ── READING ARTICLE ────────────────────────────────── */
+    .badge.t { background: #0891b2; }
+    .article-text { font-size: .9rem; line-height: 1.8; color: var(--body); }
+    .article-text p + p { margin-top: 13px; }
+    .vocab-hl { font-weight: 700; color: var(--accent); }
+    .article-source { font-size: .76rem; color: var(--muted); margin-top: 16px; font-style: italic; border-top: 1px solid var(--border); padding-top: 10px; }
+    .tf-q { margin-bottom: 14px; }
+    .tf-label { font-size: .88rem; font-weight: 500; color: var(--hd); margin-bottom: 7px; display: block; }
+    .tf-btns { display: flex; gap: 8px; }
+    .tf-btn {
+      padding: 7px 22px; border: 1.5px solid var(--border); border-radius: var(--pill);
+      background: var(--card-bg); cursor: pointer; font-size: .84rem;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--body);
+      transition: border-color .15s, background .15s;
+    }
+    .tf-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--tag); }
+    .tf-btn.correct { border-color: var(--green)!important; background: rgba(5,150,105,.09)!important; color: var(--green)!important; }
+    .tf-btn.wrong   { border-color: var(--red)!important;   background: rgba(220,38,38,.08)!important;  color: var(--red)!important; }
+
+    /* ── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 560px) {
+      .vocab-grid, .disc-grid, .speak-grid, .exit-grid { grid-template-columns: 1fr; }
+      .header-inner { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div>
+      <div class="lesson-eyebrow">✈ B1 · R6B · Speaking</div>
+      <h1>Flying Cars — Future or Fiction?</h1>
+      <p class="sub">Speculating, debating & imagining the future of transport</p>
+      <div class="chips">
+        <span class="chip">🎯 B1</span>
+        <span class="chip">⏱ 60–75 min</span>
+        <span class="chip">💬 Speaking-led</span>
+        <span class="chip">🎥 2 Videos</span>
+      </div>
+    </div>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- ═══ 1 · WARM-UP ════════════════════════════════════ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="badge b">1</div>
+      <div>
+        <div class="sec-title">Warm-up</div>
+        <div class="sec-sub">Vocabulary preview + pair discussion · 8 min</div>
+      </div>
+    </div>
+
+    <div class="strip"><span>Key vocabulary</span><div class="strip-line"></div></div>
+    <div class="vocab-grid">
+      <div class="vocab-card">
+        <div class="v-word">commute</div>
+        <div class="v-pos">verb / noun</div>
+        <div class="v-def">To travel regularly between home and work; also the journey itself.</div>
+      </div>
+      <div class="vocab-card">
+        <div class="v-word">infrastructure</div>
+        <div class="v-pos">noun</div>
+        <div class="v-def">The basic systems a society needs to function — roads, electricity, airports.</div>
+      </div>
+      <div class="vocab-card">
+        <div class="v-word">prototype</div>
+        <div class="v-pos">noun</div>
+        <div class="v-def">A first working model of something new, built to test whether it works.</div>
+      </div>
+      <div class="vocab-card">
+        <div class="v-word">regulations</div>
+        <div class="v-pos">noun (plural)</div>
+        <div class="v-def">Official rules set by a government or authority that control an activity.</div>
+      </div>
+      <div class="vocab-card">
+        <div class="v-word">transform</div>
+        <div class="v-pos">verb</div>
+        <div class="v-def">To change something completely in form, appearance or character.</div>
+      </div>
+    </div>
+
+    <div class="strip" style="margin-top:22px;"><span>Discuss with a partner — 4 min</span><div class="strip-line"></div></div>
+    <div class="disc-grid">
+      <div class="disc-card">
+        <div class="disc-n">01</div>
+        <div class="disc-q">How do you usually get to work or school? What do you love or hate about it?</div>
+      </div>
+      <div class="disc-card">
+        <div class="disc-n">02</div>
+        <div class="disc-q">What is the biggest transport problem in your city right now?</div>
+      </div>
+      <div class="disc-card">
+        <div class="disc-n">03</div>
+        <div class="disc-q">If you could design the perfect vehicle for your daily life, what would it be like?</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 2 · VIDEO 1 ════════════════════════════════════ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="badge b">2</div>
+      <div>
+        <div class="sec-title">Watch — Video 1</div>
+        <div class="sec-sub">"Will we ever have flying cars?" — Writing Prompt · ~1 min</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="task-banner"><strong>Before you watch:</strong> Think of ONE reason flying cars are a good idea and ONE reason they're a bad idea. Tell your partner.</div>
+      <div class="task-banner"><strong>While you watch:</strong> What big question does the video ask? Do you agree it's an important question?</div>
+
+      <div class="vid-label"><div class="vid-dot"></div> Video 1 · Spencer Education</div>
+      <div class="vid-wrap">
+        <iframe src="https://www.youtube.com/embed/dUM4YFylLPg"
+          title="Writing Prompt: Will we ever have flying cars?"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="vid-fallback">
+        <a href="https://www.youtube.com/watch?v=dUM4YFylLPg" target="_blank" class="yt-btn">▶ Open on YouTube</a>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="strip"><span>After Video 1 — quick discussion · 4 min</span><div class="strip-line"></div></div>
+      <div class="speak-grid" style="margin-top:0;">
+        <div class="speak-card">
+          <div class="s-icon">🤔</div>
+          <div class="s-q">What is YOUR answer to the question? Will we ever have flying cars?</div>
+        </div>
+        <div class="speak-card">
+          <div class="s-icon">📅</div>
+          <div class="s-q">If yes — when? In 10 years? 50 years? In your lifetime?</div>
+        </div>
+        <div class="speak-card">
+          <div class="s-icon">🚧</div>
+          <div class="s-q">What is the biggest obstacle that needs to be solved first?</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ READING ═══════════════════════════════════════ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="badge t">R</div>
+      <div>
+        <div class="sec-title">Background Reading</div>
+        <div class="sec-sub">Read, then check understanding · 5 min</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="strip"><span>Flying Cars — Dream or Reality?</span><div class="strip-line"></div></div>
+      <div class="article-text">
+        <p>For over 100 years, people have been dreaming about flying cars. As early as 1917, an American inventor built a vehicle called the <span class="vocab-hl">"Autoplane"</span> — a car with wings attached to the side. It managed to jump a little off the ground, but it never truly flew.</p>
+
+        <p>Today, the dream is much closer to reality. In June 2021, a Slovak company called <span class="vocab-hl">KleinVision</span> made history when their AirCar completed the world's first inter-city flight between two airports. The pilot, Stefan Klein, flew from the city of Nitra to Bratislava Airport in just 35 minutes — a journey that takes over an hour by road. After landing, he pressed a single button, and the wings folded away in just three minutes. Then he drove the car directly out of the airport, like a normal vehicle.</p>
+
+        <p>Companies around the world are now <span class="vocab-hl">racing to develop</span> similar technology. In 2023, an American company called <span class="vocab-hl">Alef Aeronautics</span> received special government permission to test their Model A on public roads — making it one of the first flying cars to receive official approval. Meanwhile, companies such as <span class="vocab-hl">Joby Aviation</span> and <span class="vocab-hl">Lilium</span> are developing electric "air taxis" designed to carry passengers between city centres with no pilot needed.</p>
+
+        <p>However, serious <span class="vocab-hl">challenges</span> remain. Air traffic control systems would need to be completely rebuilt. <span class="vocab-hl">Safety regulations</span> for vehicles that travel both on roads and in the sky simply do not exist yet. And the cost of production means that, for now, only the very wealthy could afford one. Most experts agree: the technology is real — but the world is not quite ready yet.</p>
+      </div>
+      <div class="article-source">Based on: KleinVision press release, June 2021 · FAA Special Airworthiness Certificate, Alef Aeronautics, 2023 · BBC News, Reuters</div>
+    </div>
+
+    <div class="card" style="margin-top:12px;">
+      <div class="strip"><span>True or False?</span><div class="strip-line"></div></div>
+      <div class="instr" style="margin-bottom:14px;">
+        <span>📖</span>
+        <span>Without looking back at the text — are these sentences true or false?</span>
+      </div>
+
+      <div class="tf-q" id="tf1">
+        <span class="tf-label">1. The first "Autoplane" in 1917 successfully completed a long flight.</span>
+        <div class="tf-btns">
+          <button class="tf-btn" data-correct="false" onclick="pickTF(this,'tf1')">True</button>
+          <button class="tf-btn" data-correct="true"  onclick="pickTF(this,'tf1')">False</button>
+        </div>
+      </div>
+
+      <div class="tf-q" id="tf2">
+        <span class="tf-label">2. The KleinVision AirCar's wings can be folded away in about three minutes.</span>
+        <div class="tf-btns">
+          <button class="tf-btn" data-correct="true"  onclick="pickTF(this,'tf2')">True</button>
+          <button class="tf-btn" data-correct="false" onclick="pickTF(this,'tf2')">False</button>
+        </div>
+      </div>
+
+      <div class="tf-q" id="tf3">
+        <span class="tf-label">3. Flying cars are already affordable for most ordinary people.</span>
+        <div class="tf-btns">
+          <button class="tf-btn" data-correct="false" onclick="pickTF(this,'tf3')">True</button>
+          <button class="tf-btn" data-correct="true"  onclick="pickTF(this,'tf3')">False</button>
+        </div>
+      </div>
+
+      <div class="tf-q" id="tf4">
+        <span class="tf-label">4. Some companies are developing flying vehicles that would not need a human pilot.</span>
+        <div class="tf-btns">
+          <button class="tf-btn" data-correct="true"  onclick="pickTF(this,'tf4')">True</button>
+          <button class="tf-btn" data-correct="false" onclick="pickTF(this,'tf4')">False</button>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="resetTF()">↺ Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 3 · VIDEO 2 ════════════════════════════════════ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="badge v">3</div>
+      <div>
+        <div class="sec-title">Watch — Video 2</div>
+        <div class="sec-sub">The AirCar completes its first inter-city flight · ~2 min</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="task-banner v"><strong>Before you watch:</strong> You just predicted whether flying cars are possible. What if they already exist?</div>
+      <div class="task-banner v"><strong>First watch (gist):</strong> What happened? Where? Was this a test flight or a real journey between cities?</div>
+
+      <div class="vid-label"><div class="vid-dot"></div> Video 2 · KleinVision Official</div>
+      <div class="vid-wrap">
+        <iframe src="https://www.youtube.com/embed/a2tDOYkFCYo"
+          title="The flying car completes first ever inter-city flight — KleinVision AirCar"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen loading="lazy"></iframe>
+      </div>
+      <div class="vid-fallback">
+        <a href="https://www.youtube.com/watch?v=a2tDOYkFCYo" target="_blank" class="yt-btn">▶ Open on YouTube</a>
+      </div>
+    </div>
+
+    <!-- COMPREHENSION -->
+    <div class="card" style="margin-top:12px;">
+      <div class="strip"><span>Comprehension check — second watch</span><div class="strip-line"></div></div>
+      <div class="instr">
+        <span>👁</span>
+        <span>Watch the video again, then choose the best answer for each question.</span>
+      </div>
+
+      <div class="comp-q" id="q1">
+        <label>1. The AirCar flew between two cities in which country?</label>
+        <div class="choices">
+          <button class="choice-btn" data-correct="false" onclick="pick(this,'q1')">Czech Republic</button>
+          <button class="choice-btn" data-correct="true"  onclick="pick(this,'q1')">Slovakia</button>
+          <button class="choice-btn" data-correct="false" onclick="pick(this,'q1')">Austria</button>
+          <button class="choice-btn" data-correct="false" onclick="pick(this,'q1')">Germany</button>
+        </div>
+      </div>
+
+      <div class="comp-q" id="q2">
+        <label>2. Roughly how long did the inter-city flight take?</label>
+        <div class="choices">
+          <button class="choice-btn" data-correct="false" onclick="pick(this,'q2')">About 10 minutes</button>
+          <button class="choice-btn" data-correct="false" onclick="pick(this,'q2')">About 20 minutes</button>
+          <button class="choice-btn" data-correct="true"  onclick="pick(this,'q2')">About 35 minutes</button>
+          <button class="choice-btn" data-correct="false" onclick="pick(this,'q2')">About 1 hour</button>
+        </div>
+      </div>
+
+      <div class="comp-q" id="q3">
+        <label>3. After landing, what did the pilot do?</label>
+        <div class="choices">
+          <button class="choice-btn" data-correct="false" onclick="pick(this,'q3')">Left the AirCar at the airport</button>
+          <button class="choice-btn" data-correct="true"  onclick="pick(this,'q3')">Folded the wings and drove it on the road like a car</button>
+          <button class="choice-btn" data-correct="false" onclick="pick(this,'q3')">Disassembled it and put it in a lorry</button>
+          <button class="choice-btn" data-correct="false" onclick="pick(this,'q3')">Flew it straight back to the starting point</button>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="resetMC()">↺ Reset answers</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 4 · SPEAKING 1 — REACTION ═════════════════════ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="badge v">4</div>
+      <div>
+        <div class="sec-title">Speaking 1 — Your Reaction</div>
+        <div class="sec-sub">Respond to what you just saw · 8 min</div>
+      </div>
+    </div>
+
+    <div class="instr">
+      <span>💬</span>
+      <span>Discuss these questions with your partner. Try to give a reason for every answer.</span>
+    </div>
+    <div class="speak-grid">
+      <div class="speak-card">
+        <div class="s-icon">😮</div>
+        <div class="s-q">Were you surprised that flying cars already exist? Why or why not?</div>
+      </div>
+      <div class="speak-card">
+        <div class="s-icon">⚡</div>
+        <div class="s-q">What impressed you most about the AirCar? What do you think was the hardest part to design?</div>
+      </div>
+      <div class="speak-card">
+        <div class="s-icon">❓</div>
+        <div class="s-q">What questions do you still have after watching? What do you want to know more about?</div>
+      </div>
+      <div class="speak-card">
+        <div class="s-icon">📰</div>
+        <div class="s-q">Imagine you are a journalist. Write a 15-word headline for this news story.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 5 · SPEAKING 2 — DEBATE ════════════════════════ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="badge g">5</div>
+      <div>
+        <div class="sec-title">Speaking 2 — The Flying Car Debate</div>
+        <div class="sec-sub">Argue for and against · 12 min</div>
+      </div>
+    </div>
+
+    <div class="instr">
+      <span>🎭</span>
+      <span><strong>Roleplay:</strong> Student A argues <strong>FOR</strong> flying cars. Student B argues <strong>AGAINST</strong>. Use the argument cards below. After 5 minutes, swap roles!</span>
+    </div>
+
+    <div class="strip"><span>Arguments for ✅</span><div class="strip-line"></div></div>
+    <div class="speak-grid">
+      <div class="speak-card for-card">
+        <div class="s-icon">⏱</div>
+        <div class="s-q">"Flying cars could save commuters hours every week by avoiding road traffic completely."</div>
+      </div>
+      <div class="speak-card for-card">
+        <div class="s-icon">🌍</div>
+        <div class="s-q">"Electric flying cars could produce less pollution than millions of petrol cars stuck in gridlock."</div>
+      </div>
+      <div class="speak-card for-card">
+        <div class="s-icon">🏥</div>
+        <div class="s-q">"They could transform emergency services — an air ambulance that flies over traffic could save thousands of lives."</div>
+      </div>
+    </div>
+
+    <div class="strip" style="margin-top:16px;"><span>Arguments against ❌</span><div class="strip-line"></div></div>
+    <div class="speak-grid">
+      <div class="speak-card anti-card">
+        <div class="s-icon">😰</div>
+        <div class="s-q">"The safety risks are enormous — what happens if something goes wrong over a city of millions of people?"</div>
+      </div>
+      <div class="speak-card anti-card">
+        <div class="s-icon">💰</div>
+        <div class="s-q">"Only very wealthy people could afford them at first — this could massively increase inequality."</div>
+      </div>
+      <div class="speak-card anti-card">
+        <div class="s-icon">📋</div>
+        <div class="s-q">"The regulations and air traffic control systems needed simply don't exist yet — it could take decades to build them."</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 6 · SPEAKING 3 — WHAT IF? ══════════════════════ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="badge g">6</div>
+      <div>
+        <div class="sec-title">Speaking 3 — What If?</div>
+        <div class="sec-sub">Hypothetical scenarios · 10 min</div>
+      </div>
+    </div>
+
+    <div class="instr">
+      <span>🔮</span>
+      <span>Choose 2–3 cards. Try to use phrases like: <em>"If flying cars became mainstream, I think…"</em> or <em>"If this had been invented 30 years ago, cities would…"</em></span>
+    </div>
+    <div class="speak-grid">
+      <div class="speak-card">
+        <div class="s-icon">🏙</div>
+        <div class="s-q">If flying cars became mainstream in the next 10 years, how would your city change?</div>
+      </div>
+      <div class="speak-card">
+        <div class="s-icon">🕰</div>
+        <div class="s-q">If this technology had existed in the 1970s, how would our world look different today?</div>
+      </div>
+      <div class="speak-card">
+        <div class="s-icon">💸</div>
+        <div class="s-q">If you could afford a flying car right now, would you buy one? What would you use it for?</div>
+      </div>
+      <div class="speak-card">
+        <div class="s-icon">🌳</div>
+        <div class="s-q">If flying cars replaced most road vehicles, what would happen to motorways, petrol stations and car parks?</div>
+      </div>
+      <div class="speak-card">
+        <div class="s-icon">🏘</div>
+        <div class="s-q">If people could live anywhere and fly to work, where would you choose to live and why?</div>
+      </div>
+      <div class="speak-card">
+        <div class="s-icon">🚫</div>
+        <div class="s-q">If the government banned flying cars for safety reasons tomorrow, would you agree with that decision?</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 7 · SPEAKING 4 — DESIGN YOUR CITY ══════════════ -->
+  <section class="sec">
+    <div class="sec-head">
+      <div class="badge a">7</div>
+      <div>
+        <div class="sec-title">Speaking 4 — Design Your Future City</div>
+        <div class="sec-sub">Creative pair task + mini-presentation · 10 min</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="instr" style="margin-bottom:14px;">
+        <span>✏</span>
+        <span>With your partner, design the transport system for a city in 2050. Plan for 5 minutes, then present your ideas to another pair (or your teacher) for 2 minutes.</span>
+      </div>
+      <div class="speak-grid">
+        <div class="speak-card">
+          <div class="s-icon">✈</div>
+          <div class="s-q">What types of vehicles would people use? Are there still roads?</div>
+        </div>
+        <div class="speak-card">
+          <div class="s-icon">⚡</div>
+          <div class="s-q">How is energy produced? Is everything electric or solar?</div>
+        </div>
+        <div class="speak-card">
+          <div class="s-icon">🎟</div>
+          <div class="s-q">Is transport free for everyone, or do people still pay? How?</div>
+        </div>
+        <div class="speak-card">
+          <div class="s-icon">🏗</div>
+          <div class="s-q">What does the skyline look like? Are there car parks, traffic lights, filling stations?</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <label style="font-size:.83rem; font-weight:600; color:var(--muted); display:block; margin-bottom:7px;">City planning notes:</label>
+        <textarea class="notes-input" placeholder="Write your ideas here…" rows="3"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ WRAP-UP ═══════════════════════════════════════════ -->
+  <section class="sec">
+    <div class="wrap-card">
+      <h3>🎉 Wrap-up — Exit Ticket</h3>
+      <p style="margin-bottom:16px;">Think back over the lesson and complete each prompt below.</p>
+
+      <div class="exit-grid">
+        <div class="exit-card">
+          <div class="s-q" style="color:rgba(255,255,255,.9);">💡 Something new I learned today is…</div>
+        </div>
+        <div class="exit-card">
+          <div class="s-q" style="color:rgba(255,255,255,.9);">🗣 A word or phrase I want to remember is…</div>
+        </div>
+        <div class="exit-card">
+          <div class="s-q" style="color:rgba(255,255,255,.9);">❓ A question I still have is…</div>
+        </div>
+      </div>
+
+      <div class="teach-area">
+        <label>Your name</label>
+        <input type="text" id="stuName" placeholder="Type your name…">
+        <label>Notes for your teacher (optional)</label>
+        <textarea id="stuNotes" placeholder="Anything you found difficult? Anything you want to explore more?"></textarea>
+        <button class="send-btn" onclick="sendToTeacher()">📧 Send to Teacher</button>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<script>
+  /* ── THEME ─────────────────────────────────────────────── */
+  const root = document.documentElement;
+  const btn  = document.getElementById('themeBtn');
+  let dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  function applyTheme() {
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    btn.textContent = dark ? '☀ Light' : '🌙 Dark';
+  }
+  applyTheme();
+  function toggleTheme() { dark = !dark; applyTheme(); }
+
+  /* ── MC QUESTIONS ──────────────────────────────────────── */
+  function pick(clicked, qId) {
+    const wrap = document.getElementById(qId);
+    const btns = wrap.querySelectorAll('.choice-btn');
+    btns.forEach(b => { b.disabled = true; });
+    const correct = clicked.dataset.correct === 'true';
+    if (correct) {
+      clicked.classList.add('correct');
+    } else {
+      clicked.classList.add('wrong');
+      btns.forEach(b => { if (b.dataset.correct === 'true') b.classList.add('correct'); });
+    }
+  }
+
+  function resetMC() {
+    ['q1','q2','q3'].forEach(id => {
+      const w = document.getElementById(id);
+      if (!w) return;
+      w.querySelectorAll('.choice-btn').forEach(b => {
+        b.disabled = false;
+        b.classList.remove('correct','wrong');
+      });
+    });
+  }
+
+  /* ── TRUE / FALSE ──────────────────────────────────────── */
+  function pickTF(clicked, qId) {
+    const wrap = document.getElementById(qId);
+    const btns = wrap.querySelectorAll('.tf-btn');
+    const correct = clicked.dataset.correct === 'true';
+    btns.forEach(b => b.disabled = true);
+    if (correct) {
+      clicked.classList.add('correct');
+    } else {
+      clicked.classList.add('wrong');
+      btns.forEach(b => { if (b.dataset.correct === 'true') b.classList.add('correct'); });
+    }
+  }
+  function resetTF() {
+    ['tf1','tf2','tf3','tf4'].forEach(id => {
+      const w = document.getElementById(id);
+      if (!w) return;
+      w.querySelectorAll('.tf-btn').forEach(b => {
+        b.disabled = false;
+        b.classList.remove('correct','wrong');
+      });
+    });
+  }
+
+  /* ── SEND TO TEACHER ───────────────────────────────────── */
+  function sendToTeacher() {
+    const name  = document.getElementById('stuName').value.trim() || 'Student';
+    const notes = document.getElementById('stuNotes').value.trim();
+    const subj  = encodeURIComponent('[B1 R6B] ' + name + ' — Flying Cars lesson');
+    const body  = encodeURIComponent(
+      'Student: ' + name + '\n\n' +
+      'Lesson: B1 R6B — Flying Cars: Future or Fiction?\n' +
+      'Date: ' + new Date().toLocaleDateString('en-GB') + '\n\n' +
+      'Notes:\n' + (notes || '(none)')
+    );
+    window.location.href = 'mailto:daryaaa2028@gmail.com?subject=' + subj + '&body=' + body;
+  }
+</script>
+</body>
+</html>
