@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reported Speech — Creativity</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #F9F8F5;
+    --surface: #FFFFFF;
+    --border: #E5E2D9;
+    --text: #1C1C1E;
+    --text-muted: #6B6B6B;
+    --accent: #D9722A;
+    --accent-soft: #FEF0E5;
+    --blue: #3E5FA3;
+    --blue-soft: #EEF2FA;
+    --green: #2E7D4F;
+    --green-soft: #E8F5EE;
+    --red: #C0392B;
+    --red-soft: #FEE8E6;
+    --teal: #1A7A7A;
+    --teal-soft: #E3F4F4;
+    --purple: #6B4FA3;
+    --purple-soft: #F0ECFA;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141414; --surface: #1E1E1E; --border: #333;
+      --text: #F0EFEB; --text-muted: #9A9A9A;
+      --accent: #E8883D; --accent-soft: #3A2210;
+      --blue: #7AAAE8; --blue-soft: #1A2640;
+      --green: #5CB87A; --green-soft: #102B1A;
+      --red: #E06052; --red-soft: #3A1210;
+      --teal: #4DBFBF; --teal-soft: #0E2A2A;
+      --purple: #A882E8; --purple-soft: #1E1630;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141414; --surface: #1E1E1E; --border: #333;
+    --text: #F0EFEB; --text-muted: #9A9A9A;
+    --accent: #E8883D; --accent-soft: #3A2210;
+    --blue: #7AAAE8; --blue-soft: #1A2640;
+    --green: #5CB87A; --green-soft: #102B1A;
+    --red: #E06052; --red-soft: #3A1210;
+    --teal: #4DBFBF; --teal-soft: #0E2A2A;
+    --purple: #A882E8; --purple-soft: #1E1630;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.7; color: var(--text); background: var(--bg); padding: 0 16px; }
+  .lesson-wrap { max-width: 780px; margin: 0 auto; padding-block: 40px; }
+
+  /* HEADER */
+  .lesson-header { border-bottom: 3px solid var(--accent); padding-bottom: 24px; margin-bottom: 40px; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .lesson-header h1 { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.8rem, 4vw, 2.5rem); line-height: 1.2; text-wrap: balance; }
+  .lesson-header .meta { margin-top: 10px; color: var(--text-muted); font-size: 13px; }
+
+  /* SECTIONS */
+  .section { margin-bottom: 44px; }
+  .section-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .section-num { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .section-num.blue { background: var(--blue); }
+  .section-num.teal { background: var(--teal); }
+  .section-num.purple { background: var(--purple); }
+  .section-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; flex: 1; }
+  .time-badge { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; }
+
+  /* CARDS */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 14px; }
+  .card p { margin-bottom: 10px; }
+  .card p:last-child { margin-bottom: 0; }
+
+  /* INPUTS */
+  .fill-line { width: 100%; border: none; border-bottom: 1.5px solid var(--border); background: transparent; color: var(--text); font-family: inherit; font-size: 15px; padding: 4px 2px; margin-top: 6px; outline: none; transition: border-color .15s; }
+  .fill-line:focus { border-bottom-color: var(--accent); }
+  .fill-area { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; background: transparent; color: var(--text); font-family: inherit; font-size: 15px; padding: 10px 12px; margin-top: 8px; resize: vertical; min-height: 66px; outline: none; transition: border-color .15s; }
+  .fill-area:focus { border-color: var(--accent); }
+
+  /* AGREE/DISAGREE */
+  .statements-grid { display: grid; gap: 10px; }
+  .stmt-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: center;
+  }
+  .stmt-text { font-size: 14px; line-height: 1.5; }
+  .stmt-btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .agree-btn, .disagree-btn {
+    padding: 5px 12px;
+    border-radius: 16px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .agree-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-soft); }
+  .disagree-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-soft); }
+  .agree-btn.active { border-color: var(--green); color: var(--green); background: var(--green-soft); }
+  .disagree-btn.active { border-color: var(--red); color: var(--red); background: var(--red-soft); }
+
+  /* QUIZ */
+  .quiz-wrap { }
+  .quiz-q {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 12px;
+  }
+  .quiz-q-text { font-weight: 600; margin-bottom: 12px; font-size: 15px; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-btn {
+    text-align: left;
+    padding: 9px 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+    line-height: 1.4;
+  }
+  .quiz-btn:hover:not(.chosen) { border-color: var(--purple); background: var(--purple-soft); }
+  .quiz-btn.chosen { border-color: var(--purple); background: var(--purple-soft); color: var(--purple); font-weight: 600; }
+  .quiz-submit {
+    margin-top: 18px;
+    padding: 10px 28px;
+    border-radius: 24px;
+    border: none;
+    background: var(--purple);
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .quiz-submit:hover { opacity: .85; }
+  .quiz-submit:disabled { opacity: .4; cursor: default; }
+  .quiz-result {
+    display: none;
+    background: var(--purple-soft);
+    border: 1.5px solid var(--purple);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-top: 18px;
+  }
+  .quiz-result.show { display: block; }
+  .result-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--purple); margin-bottom: 6px; }
+  .result-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.3rem; margin-bottom: 8px; }
+  .result-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+  /* MULTIPLE CHOICE */
+  .choice-opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .choice-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font-family: inherit; font-size: 14px; cursor: pointer; transition: border-color .15s, background .15s; }
+  .choice-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
+  .choice-btn.correct { background: var(--green-soft); border-color: var(--green); color: var(--green); font-weight: 600; }
+  .choice-btn.wrong { background: var(--red-soft); border-color: var(--red); color: var(--red); }
+
+  /* ANSWER TOGGLE */
+  .show-btn { margin-top: 14px; padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: transparent; color: var(--text-muted); font-family: inherit; font-size: 13px; cursor: pointer; transition: border-color .15s; }
+  .show-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .answer-panel { display: none; background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 8px; padding: 14px 18px; margin-top: 10px; font-size: 14px; }
+  .answer-panel.open { display: block; }
+  .answer-panel ol { padding-left: 18px; }
+  .answer-panel li { margin-bottom: 4px; }
+
+  /* VIDEO */
+  .video-wrap { position: relative; padding-top: 56.25%; border-radius: 10px; overflow: hidden; margin-bottom: 18px; background: #000; }
+  .video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+
+  /* PRE-WATCH */
+  .pre-watch { background: var(--teal-soft); border: 1px solid var(--teal); border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; font-size: 14px; }
+  .pre-watch strong { color: var(--teal); }
+  .pre-watch.blue { background: var(--blue-soft); border-color: var(--blue); }
+  .pre-watch.blue strong { color: var(--blue); }
+
+  /* TASK LABEL */
+  .task-label { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; }
+  .task-label.teal { color: var(--teal); }
+
+  /* NUMBERED TASK LIST */
+  .task-list { list-style: none; counter-reset: tasks; }
+  .task-list li { counter-increment: tasks; display: grid; grid-template-columns: 26px 1fr; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border); align-items: start; }
+  .task-list li:last-child { border-bottom: none; }
+  .task-list li::before { content: counter(tasks); font-size: 12px; font-weight: 700; color: var(--accent); padding-top: 5px; }
+
+  /* QUOTE BLOCK */
+  .quote-block { border-left: 3px solid var(--teal); padding-left: 14px; margin-bottom: 10px; font-style: italic; color: var(--text-muted); }
+  .speaker-tag { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--teal); margin-bottom: 4px; }
+
+  /* GAP FILL */
+  .gapfill-list { list-style: none; counter-reset: gf; }
+  .gapfill-list li { counter-increment: gf; display: grid; grid-template-columns: 26px 1fr; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border); align-items: start; }
+  .gapfill-list li:last-child { border-bottom: none; }
+  .gapfill-list li::before { content: counter(gf); font-size: 12px; font-weight: 700; color: var(--teal); padding-top: 5px; }
+  .gap { display: inline-block; border-bottom: 1.5px solid var(--accent); min-width: 110px; padding: 0 4px; }
+  .gap input { border: none; background: transparent; color: var(--text); font-family: inherit; font-size: 15px; width: 100%; outline: none; }
+
+  /* DISCUSSION CARDS */
+  .disc-grid { display: grid; gap: 14px; }
+  .disc-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 22px; }
+  .disc-num { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .disc-q { font-weight: 600; font-size: 14px; line-height: 1.55; }
+
+  /* VIDEO PLAY CARD */
+  .video-card { background: var(--teal-soft); border: 1px solid var(--teal); border-radius: 10px; padding: 18px 22px; margin-bottom: 16px; display: flex; align-items: center; gap: 16px; }
+  .play-icon { font-size: 2rem; flex-shrink: 0; }
+  .video-card-body h3 { font-weight: 600; font-size: 15px; color: var(--teal); margin-bottom: 2px; }
+  .video-card-body p { font-size: 13px; color: var(--text-muted); }
+
+  /* GAME CARD */
+  .game-card { background: linear-gradient(135deg, var(--accent) 0%, #B85A18 100%); border-radius: 12px; padding: 26px 28px; color: #fff; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .game-icon { font-size: 2.4rem; flex-shrink: 0; }
+  .game-body { flex: 1; min-width: 200px; }
+  .game-body h3 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.2rem; margin-bottom: 4px; }
+  .game-body p { font-size: 13px; opacity: .85; margin-bottom: 12px; }
+  .game-link { display: inline-block; background: #fff; color: var(--accent); font-weight: 700; font-size: 13px; padding: 8px 20px; border-radius: 20px; text-decoration: none; }
+  .game-link:hover { opacity: .88; }
+
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
+
+  /* YOUTUBE CARD */
+  .yt-card {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--text);
+    margin-bottom: 18px;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .yt-card:hover { border-color: #FF0000; box-shadow: 0 2px 12px rgba(255,0,0,.12); }
+  .yt-thumb { position: relative; flex-shrink: 0; width: 160px; }
+  .yt-thumb img { display: block; width: 100%; height: 90px; object-fit: cover; }
+  .yt-play {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,.35);
+    color: #fff; font-size: 1.6rem;
+    transition: background .15s;
+  }
+  .yt-card:hover .yt-play { background: rgba(255,0,0,.7); }
+  .yt-meta { padding: 12px 16px 12px 0; }
+  .yt-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #FF0000; margin-bottom: 4px; }
+  .yt-title { font-weight: 600; font-size: 14px; line-height: 1.4; color: var(--text); }
+  @media (max-width: 480px) {
+    .yt-thumb { width: 110px; }
+    .yt-thumb img { height: 70px; }
+  }
+
+  @media (max-width: 540px) {
+    .stmt-card { grid-template-columns: 1fr; gap: 10px; }
+    .stmt-btns { justify-content: flex-start; }
+    .card { padding: 16px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="lesson-wrap">
+
+  <header class="lesson-header">
+    <div class="eyebrow">B2 · Reported Speech</div>
+    <h1>Creativity — Two Perspectives</h1>
+    <div class="meta">~55 min · 1-to-1</div>
+  </header>
+
+  <!-- SECTION 1: WARM-UP -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num">1</div>
+      <div class="section-title">Warm-Up</div>
+      <div class="time-badge">7 min</div>
+    </div>
+
+    <div class="card">
+      <p><strong>Can you define the word <em>"creativity"</em>?</strong></p>
+      <p style="color:var(--text-muted);font-size:14px;">Write your ideas, associations, and examples below — anything the word brings to mind.</p>
+      <textarea class="fill-area" placeholder="Creativity is… / When I think of creativity I think of… / A creative person is someone who…" rows="4"></textarea>
+    </div>
+
+    <div class="card">
+      <p style="margin-bottom:14px;"><strong>Agree or disagree?</strong> Click your response and then discuss with your teacher.</p>
+      <div class="statements-grid">
+        <div class="stmt-card">
+          <div class="stmt-text">Creativity cannot be taught — you either have it or you don't.</div>
+          <div class="stmt-btns">
+            <button class="agree-btn" onclick="toggleStmt(this,'agree')">Agree</button>
+            <button class="disagree-btn" onclick="toggleStmt(this,'disagree')">Disagree</button>
+          </div>
+        </div>
+        <div class="stmt-card">
+          <div class="stmt-text">Anyone can be creative — it's just a matter of practice and environment.</div>
+          <div class="stmt-btns">
+            <button class="agree-btn" onclick="toggleStmt(this,'agree')">Agree</button>
+            <button class="disagree-btn" onclick="toggleStmt(this,'disagree')">Disagree</button>
+          </div>
+        </div>
+        <div class="stmt-card">
+          <div class="stmt-text">Technology is making people less creative, not more.</div>
+          <div class="stmt-btns">
+            <button class="agree-btn" onclick="toggleStmt(this,'agree')">Agree</button>
+            <button class="disagree-btn" onclick="toggleStmt(this,'disagree')">Disagree</button>
+          </div>
+        </div>
+        <div class="stmt-card">
+          <div class="stmt-text">Schools and universities tend to kill creativity rather than develop it.</div>
+          <div class="stmt-btns">
+            <button class="agree-btn" onclick="toggleStmt(this,'agree')">Agree</button>
+            <button class="disagree-btn" onclick="toggleStmt(this,'disagree')">Disagree</button>
+          </div>
+        </div>
+        <div class="stmt-card">
+          <div class="stmt-text">Creative people are more successful in life than people who focus on logic and facts.</div>
+          <div class="stmt-btns">
+            <button class="agree-btn" onclick="toggleStmt(this,'agree')">Agree</button>
+            <button class="disagree-btn" onclick="toggleStmt(this,'disagree')">Disagree</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- SECTION 2: CREATIVITY QUIZ -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num purple">2</div>
+      <div class="section-title">How Creative Are You?</div>
+      <div class="time-badge">5 min</div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <p style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">Answer honestly — there are no right or wrong answers. Tap your response for each question, then click <em>See my result</em>.</p>
+    </div>
+    <div class="quiz-wrap">
+
+      <div class="quiz-q">
+        <div class="quiz-q-text">1. When you have an unexpected free afternoon, you usually…</div>
+        <div class="quiz-opts">
+          <button class="quiz-btn" data-q="1" data-pts="3" onclick="pickQuiz(this)">Start a creative project — writing, drawing, making something</button>
+          <button class="quiz-btn" data-q="1" data-pts="2" onclick="pickQuiz(this)">Explore something new you've been curious about</button>
+          <button class="quiz-btn" data-q="1" data-pts="1" onclick="pickQuiz(this)">Relax with familiar activities — films, music, scrolling</button>
+        </div>
+      </div>
+
+      <div class="quiz-q">
+        <div class="quiz-q-text">2. When you face a tricky problem, your first instinct is to…</div>
+        <div class="quiz-opts">
+          <button class="quiz-btn" data-q="2" data-pts="3" onclick="pickQuiz(this)">Brainstorm multiple solutions, even unconventional ones</button>
+          <button class="quiz-btn" data-q="2" data-pts="2" onclick="pickQuiz(this)">Ask others what they did in a similar situation</button>
+          <button class="quiz-btn" data-q="2" data-pts="1" onclick="pickQuiz(this)">Follow the most tried-and-tested method available</button>
+        </div>
+      </div>
+
+      <div class="quiz-q">
+        <div class="quiz-q-text">3. You're given a blank canvas and some paint. How do you feel?</div>
+        <div class="quiz-opts">
+          <button class="quiz-btn" data-q="3" data-pts="3" onclick="pickQuiz(this)">Excited — you love having total freedom!</button>
+          <button class="quiz-btn" data-q="3" data-pts="2" onclick="pickQuiz(this)">Curious — you'd experiment and see what happens</button>
+          <button class="quiz-btn" data-q="3" data-pts="1" onclick="pickQuiz(this)">Anxious — you'd rather have a clear brief or instructions</button>
+        </div>
+      </div>
+
+      <div class="quiz-q">
+        <div class="quiz-q-text">4. How often does your mind wander and make unexpected connections?</div>
+        <div class="quiz-opts">
+          <button class="quiz-btn" data-q="4" data-pts="3" onclick="pickQuiz(this)">Constantly — my brain is always linking unrelated things</button>
+          <button class="quiz-btn" data-q="4" data-pts="2" onclick="pickQuiz(this)">Sometimes — usually when I'm relaxed or bored</button>
+          <button class="quiz-btn" data-q="4" data-pts="1" onclick="pickQuiz(this)">Rarely — I prefer to stay focused on what's in front of me</button>
+        </div>
+      </div>
+
+      <div class="quiz-q">
+        <div class="quiz-q-text">5. How do you feel about making mistakes?</div>
+        <div class="quiz-opts">
+          <button class="quiz-btn" data-q="5" data-pts="3" onclick="pickQuiz(this)">They're part of the process — every mistake teaches me something</button>
+          <button class="quiz-btn" data-q="5" data-pts="2" onclick="pickQuiz(this)">A little frustrating, but I move on fairly quickly</button>
+          <button class="quiz-btn" data-q="5" data-pts="1" onclick="pickQuiz(this)">I try hard to avoid them — I prefer to get things right first time</button>
+        </div>
+      </div>
+
+      <div class="quiz-q">
+        <div class="quiz-q-text">6. When learning something new, you prefer…</div>
+        <div class="quiz-opts">
+          <button class="quiz-btn" data-q="6" data-pts="3" onclick="pickQuiz(this)">Figuring it out yourself through trial and error</button>
+          <button class="quiz-btn" data-q="6" data-pts="2" onclick="pickQuiz(this)">A mix of some guidance and personal exploration</button>
+          <button class="quiz-btn" data-q="6" data-pts="1" onclick="pickQuiz(this)">Clear step-by-step instructions I can follow precisely</button>
+        </div>
+      </div>
+
+      <button class="quiz-submit" id="quizBtn" onclick="showResult()" disabled>See my result</button>
+
+      <div class="quiz-result" id="quizResult">
+        <div class="result-label">Your creativity type</div>
+        <div class="result-title" id="resultTitle"></div>
+        <div class="result-desc" id="resultDesc"></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- SECTION 3: VIDEO 1 -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num blue">3</div>
+      <div class="section-title">Watch: A Bigger Definition of Creativity</div>
+      <div class="time-badge">10 min</div>
+    </div>
+
+    <div class="pre-watch blue">
+      <strong>Before you watch:</strong> What do you think the speaker means by "a bigger definition of creativity"? What kinds of creativity are often overlooked?
+    </div>
+
+    <a class="yt-card" href="https://www.youtube.com/watch?v=MTCOExd0hDk" target="_blank" rel="noopener">
+      <div class="yt-thumb">
+        <img src="https://img.youtube.com/vi/MTCOExd0hDk/mqdefault.jpg" alt="Video thumbnail">
+        <div class="yt-play">▶</div>
+      </div>
+      <div class="yt-meta">
+        <div class="yt-label">▶ Watch on YouTube</div>
+        <div class="yt-title">We Need a Bigger Definition of Creativity</div>
+      </div>
+    </a>
+
+    <div class="card">
+      <div class="task-label">After watching — report the ideas</div>
+      <p style="margin-bottom:14px;color:var(--text-muted);font-size:14px;">Using <em>said, argued, explained, claimed</em> — report the speaker's main ideas to your teacher.</p>
+      <ul class="task-list">
+        <li>
+          <div>
+            <div>What was the speaker's central argument about creativity?</div>
+            <input class="fill-line" type="text" placeholder="The speaker argued that…">
+          </div>
+        </li>
+        <li>
+          <div>
+            <div>What did the speaker say about how we currently define creativity?</div>
+            <input class="fill-line" type="text" placeholder="She / He said that…">
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- SECTION 4: VIDEO 2 — TYPEWRITER ARTIST -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num teal">4</div>
+      <div class="section-title">Watch: The Typewriter Artist</div>
+      <div class="time-badge">15 min</div>
+    </div>
+
+    <div class="pre-watch">
+      <strong>Before you watch:</strong> How do you think someone could make detailed drawings using only a typewriter? What challenges might they face?
+    </div>
+
+    <a class="yt-card" href="https://www.youtube.com/watch?v=_bqi2qY918M" target="_blank" rel="noopener">
+      <div class="yt-thumb">
+        <img src="https://img.youtube.com/vi/_bqi2qY918M/mqdefault.jpg" alt="Video thumbnail">
+        <div class="yt-play">▶</div>
+      </div>
+      <div class="yt-meta">
+        <div class="yt-label">▶ Watch on YouTube</div>
+        <div class="yt-title">James Cook — Typewriter Artist</div>
+      </div>
+    </a>
+
+    <div class="card">
+      <div class="task-label teal">Gap Fill — complete with what you hear</div>
+      <ul class="gapfill-list">
+        <li>
+          <div>Each drawing is made from hundreds if not thousands of letters, numbers,
+            <span class="gap"><input type="text" placeholder="…"></span>
+            marks, all puzzle pieced together.</div>
+        </li>
+        <li>
+          <div>I'll feed a paper through the machine probably
+            <span class="gap"><input type="text" placeholder="…"></span>
+            to
+            <span class="gap" style="min-width:55px;"><input type="text" placeholder="…"></span>
+            times, collaging and overlaying lots and lots of information.</div>
+        </li>
+        <li>
+          <div>To recreate skin tones, I'll use the
+            <span class="gap"><input type="text" placeholder="…"></span>
+            symbol because it has quite a large surface area.</div>
+        </li>
+        <li>
+          <div>Something that's A4 sized could take a
+            <span class="gap"><input type="text" placeholder="…"></span>.
+            There's a picture of the London skyline that took
+            <span class="gap"><input type="text" placeholder="…"></span>
+            months.</div>
+        </li>
+        <li>
+          <div>I've got about
+            <span class="gap" style="min-width:55px;"><input type="text" placeholder="…"></span>
+            typewriters and counting.</div>
+        </li>
+        <li>
+          <div>I've become a collector by
+            <span class="gap"><input type="text" placeholder="…"></span>.</div>
+        </li>
+        <li>
+          <div>They see it as a way of giving these machines a
+            <span class="gap"><input type="text" placeholder="…"></span>
+            life.</div>
+        </li>
+      </ul>
+      <button class="show-btn" onclick="toggleAnswer('gf-ans')">Show Answers</button>
+      <div class="answer-panel" id="gf-ans">
+        <ol>
+          <li>punctuation</li>
+          <li>eight / nine</li>
+          <li>@ (the @ symbol)</li>
+          <li>week / two</li>
+          <li>63</li>
+          <li>accident</li>
+          <li>second</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="task-label teal">Report what James said</div>
+      <p style="margin-bottom:16px;color:var(--text-muted);font-size:14px;">Change each quote to reported speech — make all necessary changes.</p>
+
+      <div style="margin-bottom:18px;">
+        <div class="speaker-tag">James Cook said:</div>
+        <div class="quote-block">"Each drawing is made from hundreds if not thousands of letters."</div>
+        <input class="fill-line" type="text" placeholder="He explained that…">
+      </div>
+      <div style="margin-bottom:18px;">
+        <div class="speaker-tag">James Cook said:</div>
+        <div class="quote-block">"I've got about 63 typewriters and counting."</div>
+        <input class="fill-line" type="text" placeholder="He told the interviewer that…">
+      </div>
+      <div style="margin-bottom:18px;">
+        <div class="speaker-tag">James Cook said:</div>
+        <div class="quote-block">"They all have their own different personalities to them."</div>
+        <input class="fill-line" type="text" placeholder="He said that…">
+      </div>
+      <div>
+        <div class="speaker-tag">James Cook said:</div>
+        <div class="quote-block">"There's some technology that will never die."</div>
+        <input class="fill-line" type="text" placeholder="He claimed that…">
+      </div>
+
+      <button class="show-btn" onclick="toggleAnswer('jc-ans')">Show Answers</button>
+      <div class="answer-panel" id="jc-ans">
+        <ol>
+          <li>He explained that each drawing was made from hundreds if not thousands of letters.</li>
+          <li>He told the interviewer that he had got about 63 typewriters and counting.</li>
+          <li>He said that they all had their own different personalities to them.</li>
+          <li>He claimed that there was some technology that would never die.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- SECTION 5: REPORTED QUESTIONS -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num">5</div>
+      <div class="section-title">Reported Questions</div>
+      <div class="time-badge">10 min</div>
+    </div>
+    <div class="card">
+      <p>These questions were asked in the video interview. Rewrite them in reported speech — watch word order and tense.</p>
+    </div>
+
+    <div class="card">
+      <ul class="task-list">
+        <li>
+          <div>
+            <div><em>"How long does all this typing and tapping take?"</em> — The reporter asked James…</div>
+            <input class="fill-line" type="text" placeholder="The reporter asked James how long…">
+          </div>
+        </li>
+        <li>
+          <div>
+            <div><em>"How many key strokes is that?"</em> — She asked him…</div>
+            <input class="fill-line" type="text" placeholder="She asked him how many…">
+          </div>
+        </li>
+        <li>
+          <div>
+            <div><em>"Is it fair to say you really love typewriters?"</em> — The interviewer asked him…</div>
+            <input class="fill-line" type="text" placeholder="The interviewer asked him whether / if…">
+          </div>
+        </li>
+        <li>
+          <div>
+            <div><em>"Do you think creativity can be taught?"</em> — She asked the speaker…</div>
+            <input class="fill-line" type="text" placeholder="She asked the speaker whether / if…">
+          </div>
+        </li>
+      </ul>
+      <button class="show-btn" onclick="toggleAnswer('rq-ans')">Show Answers</button>
+      <div class="answer-panel" id="rq-ans">
+        <ol>
+          <li>The reporter asked James how long all that typing and tapping took.</li>
+          <li>She asked him how many key strokes that was.</li>
+          <li>The interviewer asked him whether / if it was fair to say he really loved typewriters.</li>
+          <li>She asked the speaker whether / if they thought creativity could be taught.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="task-label">Quick Check</div>
+
+      <div style="margin-bottom:18px;">
+        <p>"Are you working on a new project?" — She asked him ___</p>
+        <div class="choice-opts">
+          <button class="choice-btn" data-correct="false" onclick="selectChoice(this)">a) if he is working on a new project.</button>
+          <button class="choice-btn" data-correct="true" onclick="selectChoice(this)">b) if he was working on a new project.</button>
+          <button class="choice-btn" data-correct="false" onclick="selectChoice(this)">c) whether was he working on a new project.</button>
+        </div>
+      </div>
+      <div>
+        <p>"Where did you find your first typewriter?" — He asked her ___</p>
+        <div class="choice-opts">
+          <button class="choice-btn" data-correct="false" onclick="selectChoice(this)">a) where did she find her first typewriter.</button>
+          <button class="choice-btn" data-correct="false" onclick="selectChoice(this)">b) where she found her first typewriter.</button>
+          <button class="choice-btn" data-correct="true" onclick="selectChoice(this)">c) where she had found her first typewriter.</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- SECTION 6: DISCUSSION -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num">6</div>
+      <div class="section-title">Let's Talk</div>
+      <div class="time-badge">8 min</div>
+    </div>
+    <div class="disc-grid">
+      <div class="disc-item">
+        <div class="disc-num">Q1</div>
+        <div class="disc-q">What do you think are the most important factors that contribute to a person's creativity? Is it talent, education, environment, or something else?</div>
+      </div>
+      <div class="disc-item">
+        <div class="disc-num">Q2</div>
+        <div class="disc-q">In your opinion, can creativity be taught or nurtured? If so, how?</div>
+      </div>
+      <div class="disc-item">
+        <div class="disc-num">Q3</div>
+        <div class="disc-q">How do you think technology has impacted creativity in various fields, such as art, music, writing, and design?</div>
+      </div>
+      <div class="disc-item">
+        <div class="disc-num">Q4</div>
+        <div class="disc-q">What role does creativity play in problem-solving and innovation? Can you provide an example from your own experience or something you've observed?</div>
+      </div>
+      <div class="disc-item">
+        <div class="disc-num">Q5</div>
+        <div class="disc-q">Do you believe certain cultures or nations are better suited to nurturing creativity compared to others? If yes, what are the reasons for this difference?</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- SECTION 7: ESCAPE ROOM -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num">7</div>
+      <div class="section-title">Escape Room Challenge</div>
+      <div class="time-badge">optional</div>
+    </div>
+    <div class="game-card">
+      <div class="game-icon">🔐</div>
+      <div class="game-body">
+        <h3>Reported Speech Escape Room</h3>
+        <p>Can you unlock all the clues? Use everything you know to escape in time!</p>
+        <a class="game-link" href="https://view.genially.com/6423674bd7c5d800187c67bd" target="_blank" rel="noopener">Open Escape Room ↗</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  /* AGREE/DISAGREE */
+  function toggleStmt(btn, type) {
+    const card = btn.closest('.stmt-card');
+    card.querySelectorAll('.agree-btn, .disagree-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  /* MULTIPLE CHOICE */
+  function selectChoice(btn) {
+    const group = btn.closest('.choice-opts');
+    group.querySelectorAll('.choice-btn').forEach(b => { b.disabled = true; });
+    btn.classList.add(btn.dataset.correct === 'true' ? 'correct' : 'wrong');
+    if (btn.dataset.correct !== 'true') {
+      group.querySelectorAll('.choice-btn').forEach(b => {
+        if (b.dataset.correct === 'true') b.classList.add('correct');
+      });
+    }
+  }
+
+  /* ANSWER TOGGLE */
+  function toggleAnswer(id) {
+    const panel = document.getElementById(id);
+    const btn = panel.previousElementSibling;
+    const isOpen = panel.classList.toggle('open');
+    btn.textContent = isOpen
+      ? btn.textContent.replace('Show', 'Hide')
+      : btn.textContent.replace('Hide', 'Show');
+  }
+
+  /* QUIZ */
+  const quizAnswers = {};
+  function pickQuiz(btn) {
+    const q = btn.dataset.q;
+    const wrap = btn.closest('.quiz-q');
+    wrap.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('chosen'));
+    btn.classList.add('chosen');
+    quizAnswers[q] = parseInt(btn.dataset.pts);
+    // enable submit if all 6 answered
+    if (Object.keys(quizAnswers).length === 6) {
+      document.getElementById('quizBtn').disabled = false;
+    }
+  }
+
+  function showResult() {
+    const total = Object.values(quizAnswers).reduce((a, b) => a + b, 0);
+    const result = document.getElementById('quizResult');
+    const title = document.getElementById('resultTitle');
+    const desc = document.getElementById('resultDesc');
+
+    if (total <= 10) {
+      title.textContent = 'The Structured Thinker';
+      desc.textContent = 'You value precision, order, and reliability. Your creativity tends to show itself in logical problem-solving and careful planning rather than open-ended expression — but that\'s a genuine form of creativity too. Structure and creativity are not opposites.';
+    } else if (total <= 14) {
+      title.textContent = 'The Adaptable Creator';
+      desc.textContent = 'You\'re creative when inspired and practical when needed — a powerful combination. You\'re open to new ideas but also know when to follow a proven path. With a little more space to experiment, your creative potential could really flourish.';
+    } else {
+      title.textContent = 'The Visionary';
+      desc.textContent = 'Creativity flows naturally for you. You see connections others miss, enjoy the freedom of an open brief, and treat mistakes as stepping stones. You thrive in environments that give you space to explore and experiment.';
+    }
+
+    result.classList.add('show');
+    document.getElementById('quizBtn').disabled = true;
+    document.getElementById('quizBtn').textContent = '✓ Result revealed';
+  }
+</script>
+</body>
+</html>
