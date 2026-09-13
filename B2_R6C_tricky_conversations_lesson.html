@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tricky Conversations</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #F6F8FB;
+    --surface: #FFFFFF;
+    --border: #DDE3EE;
+    --text: #1A1D2E;
+    --text-muted: #6A7080;
+    --accent: #2A5EA8;
+    --accent-soft: #EBF0FA;
+    --green: #2E7D4F;
+    --green-soft: #E8F5EE;
+    --red: #C0392B;
+    --red-soft: #FEE8E6;
+    --teal: #1A7A7A;
+    --teal-soft: #E3F4F4;
+    --amber: #B45309;
+    --amber-soft: #FEF3C7;
+    --purple: #6B4FA3;
+    --purple-soft: #F0ECFA;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12141C; --surface: #1C1F2B; --border: #2C3047;
+      --text: #EEF0F8; --text-muted: #8A90A8;
+      --accent: #7AAAE8; --accent-soft: #1A2640;
+      --green: #5CB87A; --green-soft: #102B1A;
+      --red: #E06052; --red-soft: #3A1210;
+      --teal: #4DBFBF; --teal-soft: #0E2A2A;
+      --amber: #FBBF24; --amber-soft: #2D1F05;
+      --purple: #A882E8; --purple-soft: #1E1630;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12141C; --surface: #1C1F2B; --border: #2C3047;
+    --text: #EEF0F8; --text-muted: #8A90A8;
+    --accent: #7AAAE8; --accent-soft: #1A2640;
+    --green: #5CB87A; --green-soft: #102B1A;
+    --red: #E06052; --red-soft: #3A1210;
+    --teal: #4DBFBF; --teal-soft: #0E2A2A;
+    --amber: #FBBF24; --amber-soft: #2D1F05;
+    --purple: #A882E8; --purple-soft: #1E1630;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.7; color: var(--text); background: var(--bg); padding: 0 16px; }
+  .lesson-wrap { max-width: 780px; margin: 0 auto; padding-block: 40px; }
+
+  /* HEADER */
+  .lesson-header { padding-bottom: 28px; margin-bottom: 44px; position: relative; }
+  .lesson-header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 64px; height: 4px; background: var(--accent); border-radius: 2px; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  .lesson-header h1 { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.9rem, 4.5vw, 2.7rem); line-height: 1.15; text-wrap: balance; margin-bottom: 12px; }
+  .goal-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .goal-pill { font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 20px; background: var(--accent-soft); color: var(--accent); }
+  .goal-pill.teal { background: var(--teal-soft); color: var(--teal); }
+  .goal-pill.amber { background: var(--amber-soft); color: var(--amber); }
+
+  /* SECTIONS */
+  .section { margin-bottom: 48px; }
+  .section-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .section-num { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .section-num.teal { background: var(--teal); }
+  .section-num.green { background: var(--green); }
+  .section-num.amber { background: var(--amber); }
+  .section-num.purple { background: var(--purple); }
+  .section-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; flex: 1; }
+  .time-badge { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; }
+
+  /* CARDS */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 14px; }
+  .card p { margin-bottom: 10px; }
+  .card p:last-child { margin-bottom: 0; }
+
+  /* INFO BOX */
+  .info-box { background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 18px; font-size: 14px; color: var(--text); }
+  .info-box.teal { background: var(--teal-soft); border-color: var(--teal); }
+  .info-box.amber { background: var(--amber-soft); border-color: var(--amber); }
+
+  /* INPUTS */
+  .fill-line { width: 100%; border: none; border-bottom: 1.5px solid var(--border); background: transparent; color: var(--text); font-family: inherit; font-size: 15px; padding: 4px 2px; margin-top: 6px; outline: none; transition: border-color .15s; }
+  .fill-line:focus { border-bottom-color: var(--accent); }
+  .fill-area { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; background: transparent; color: var(--text); font-family: inherit; font-size: 15px; padding: 10px 12px; margin-top: 8px; resize: vertical; min-height: 80px; outline: none; transition: border-color .15s; }
+  .fill-area:focus { border-color: var(--accent); }
+  label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+
+  /* SCENARIO CARDS (warm-up) */
+  .scenario-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 18px; }
+  .scenario-card { background: var(--surface); border: 2px solid var(--border); border-radius: 12px; padding: 18px 16px; cursor: pointer; transition: border-color .18s, box-shadow .18s, transform .12s; text-align: center; user-select: none; }
+  .scenario-card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(42,94,168,.10); transform: translateY(-2px); }
+  .scenario-card.selected { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 2px 14px rgba(42,94,168,.15); }
+  .scenario-icon { font-size: 2rem; margin-bottom: 10px; }
+  .scenario-card p { font-size: 13.5px; line-height: 1.5; color: var(--text); }
+  .scenario-card.selected p { color: var(--accent); font-weight: 500; }
+
+  /* AGREE / DISAGREE BUTTONS */
+  .stmt-list { display: flex; flex-direction: column; gap: 10px; }
+  .stmt-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 18px; display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; }
+  .stmt-card p { font-size: 14px; font-style: italic; }
+  .stmt-btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .agree-btn, .disagree-btn { font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; transition: all .15s; white-space: nowrap; }
+  .agree-btn:hover { border-color: var(--green); color: var(--green); }
+  .disagree-btn:hover { border-color: var(--red); color: var(--red); }
+  .agree-btn.active { border-color: var(--green); color: var(--green); background: var(--green-soft); }
+  .disagree-btn.active { border-color: var(--red); color: var(--red); background: var(--red-soft); }
+
+  /* VERB PATTERN SORT */
+  .verb-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .verb-chip { font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; transition: all .15s; }
+  .verb-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .verb-chip.selected { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .verb-chip.placed { opacity: .45; cursor: default; pointer-events: none; }
+
+  .pattern-zones { display: flex; flex-direction: column; gap: 12px; }
+  .pattern-zone { background: var(--surface); border: 1.5px dashed var(--border); border-radius: 10px; padding: 14px 18px; transition: border-color .15s, background .15s; }
+  .pattern-zone:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .pattern-zone.has-verbs { border-style: solid; border-color: var(--accent); background: var(--accent-soft); }
+  .zone-label { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .zone-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; font-style: italic; }
+  .zone-example { font-size: 12.5px; color: var(--text-muted); margin-bottom: 10px; }
+  .zone-verbs { display: flex; flex-wrap: wrap; gap: 6px; min-height: 28px; }
+  .placed-chip { font-size: 13px; font-weight: 600; padding: 3px 12px; border-radius: 14px; background: var(--accent); color: #fff; cursor: pointer; transition: opacity .12s; }
+  .placed-chip:hover { opacity: .75; }
+
+  /* MULTIPLE CHOICE */
+  .choice-opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .choice-btn { font-size: 13.5px; padding: 7px 16px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; transition: all .15s; }
+  .choice-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .choice-btn.correct { border-color: var(--green) !important; background: var(--green-soft) !important; color: var(--green) !important; }
+  .choice-btn.wrong { border-color: var(--red) !important; background: var(--red-soft) !important; color: var(--red) !important; }
+  .choice-btn:disabled { cursor: default; }
+
+  /* READING MATCH */
+  .match-grid { display: grid; gap: 12px; }
+  .match-item { background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .match-num { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .match-text { font-size: 14px; line-height: 1.6; margin-bottom: 12px; }
+  .match-select { width: 100%; border: 1.5px solid var(--border); border-radius: 7px; background: var(--surface); color: var(--text); font-family: inherit; font-size: 14px; padding: 7px 10px; outline: none; cursor: pointer; transition: border-color .15s; }
+  .match-select:focus { border-color: var(--accent); }
+  .match-select.correct { border-color: var(--green); background: var(--green-soft); color: var(--green); }
+  .match-select.wrong { border-color: var(--red); background: var(--red-soft); color: var(--red); }
+  .match-select.correct option, .match-select.wrong option { background: var(--surface); color: var(--text); }
+
+  /* LANGUAGE FOCUS BOX */
+  .lang-box { background: var(--surface); border: 2px solid var(--accent); border-radius: 12px; padding: 22px 26px; margin-bottom: 18px; }
+  .lang-box h3 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; margin-bottom: 16px; color: var(--accent); }
+  .pattern-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; margin-bottom: 12px; align-items: start; }
+  .pattern-key { font-size: 13.5px; font-weight: 600; color: var(--text); }
+  .pattern-eg { font-size: 13px; color: var(--text-muted); font-style: italic; }
+  .pattern-fill { font-size: 13.5px; }
+  .mini-gap { display: inline-block; border-bottom: 1.5px solid var(--accent); min-width: 90px; }
+  .mini-gap input { border: none; background: transparent; color: var(--text); font-family: inherit; font-size: 13.5px; outline: none; width: 90px; }
+
+  /* TRANSFORM EXERCISE */
+  .transform-list { display: flex; flex-direction: column; gap: 14px; }
+  .transform-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+  .transform-prompt { font-size: 14px; margin-bottom: 4px; }
+  .transform-prompt em { color: var(--accent); font-style: normal; font-weight: 600; }
+  .transform-verb { font-size: 12px; font-weight: 600; letter-spacing: .07em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; }
+
+  /* ANSWER BUTTON */
+  .answer-btn { font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 7px; border: 1.5px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; transition: all .15s; margin-top: 10px; }
+  .answer-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .answer-panel { display: none; margin-top: 10px; padding: 10px 14px; background: var(--teal-soft); border-radius: 7px; font-size: 14px; color: var(--teal); font-weight: 500; }
+  .answer-panel.open { display: block; }
+
+  /* SOCIAL MEDIA POSTS */
+  .post { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; }
+  .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .post-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .post-meta { font-size: 12px; color: var(--text-muted); }
+  .post-name { font-weight: 600; font-size: 13.5px; color: var(--text); }
+  .post-tag { font-size: 12px; font-weight: 600; color: var(--accent); }
+  .post-body { font-size: 14px; line-height: 1.65; }
+
+  /* SPEAKING SCENARIO */
+  .scenario-box { background: var(--accent-soft); border-radius: 12px; padding: 22px 24px; margin-bottom: 18px; }
+  .scenario-box h4 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.05rem; margin-bottom: 10px; color: var(--accent); }
+  .scenario-box p { font-size: 14px; line-height: 1.65; }
+  .dialogue-line { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .dlg-speaker { font-weight: 700; font-size: 13px; min-width: 40px; color: var(--accent); }
+  .dlg-text { font-size: 14px; font-style: italic; color: var(--text); }
+
+  /* CHECK BUTTON */
+  .check-btn { font-size: 13.5px; font-weight: 600; padding: 9px 22px; border-radius: 8px; border: none; background: var(--accent); color: #fff; cursor: pointer; transition: opacity .15s, transform .1s; margin-top: 14px; }
+  .check-btn:hover { opacity: .87; }
+  .check-btn:active { transform: scale(.97); }
+  .check-btn:disabled { opacity: .45; cursor: default; }
+
+  /* SORT CHECK RESULT */
+  .sort-result { font-size: 13.5px; margin-top: 12px; padding: 10px 14px; border-radius: 8px; display: none; }
+  .sort-result.show { display: block; }
+  .sort-result.pass { background: var(--green-soft); color: var(--green); }
+  .sort-result.fail { background: var(--red-soft); color: var(--red); }
+
+  /* DISCUSSION CARDS */
+  .disc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+  .disc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 18px; display: flex; flex-direction: column; gap: 12px; }
+  .disc-q { font-size: 14px; line-height: 1.6; }
+  .disc-prompt { font-size: 12px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted); }
+
+  /* VERB TABLE */
+  .verb-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 18px; }
+  .verb-table th { background: var(--accent); color: #fff; font-size: 12px; letter-spacing: .07em; text-transform: uppercase; padding: 10px 14px; text-align: left; }
+  .verb-table th:first-child { border-radius: 8px 0 0 0; }
+  .verb-table th:last-child { border-radius: 0 8px 0 0; }
+  .verb-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+  .verb-table tr:last-child td { border-bottom: none; }
+  .verb-table tr:nth-child(even) td { background: var(--bg); }
+  .verb-table .v { font-weight: 600; color: var(--accent); }
+  .verb-table .eg { font-style: italic; color: var(--text-muted); font-size: 13px; }
+
+  /* HASHTAG */
+  .hashtag { color: var(--accent); font-weight: 500; }
+
+  /* CONVERSATION ALTERNATIVES (2a) */
+  .conv-num { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .alt-pair { display: inline-flex; align-items: center; gap: 2px; white-space: nowrap; }
+  .alt-btn { font-size: 14px; font-weight: 600; padding: 2px 8px; border-radius: 5px; border: 1.5px solid transparent; background: var(--accent-soft); color: var(--accent); cursor: pointer; font-family: inherit; transition: all .13s; line-height: 1.5; }
+  .alt-btn:hover:not(:disabled) { border-color: var(--accent); }
+  .alt-btn.correct { background: var(--green-soft) !important; color: var(--green) !important; border-color: var(--green) !important; }
+  .alt-btn.wrong { background: var(--red-soft) !important; color: var(--red) !important; border-color: var(--red) !important; text-decoration: line-through; }
+  .alt-btn:disabled { cursor: default; }
+
+  @media (max-width: 520px) {
+    .pattern-row { grid-template-columns: 1fr; }
+    .stmt-card { grid-template-columns: 1fr; }
+    .stmt-btns { justify-content: flex-start; }
+    .disc-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="lesson-wrap">
+
+  <!-- HEADER -->
+  <header class="lesson-header">
+    <div class="eyebrow">Unit 6C · B2</div>
+    <h1>Tricky Conversations</h1>
+    <div class="goal-pills">
+      <span class="goal-pill">Goal: paraphrase what someone said</span>
+      <span class="goal-pill teal">Language: verb patterns after reporting verbs</span>
+      <span class="goal-pill amber">Vocabulary: reporting verbs</span>
+    </div>
+  </header>
+
+  <!-- SECTION 1: WARM-UP -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num">1</div>
+      <div class="section-title">Warm-Up</div>
+      <div class="time-badge">5 min</div>
+    </div>
+
+    <p style="margin-bottom:16px;">Look at the three situations below. Which conversation would you find the most <em>tricky</em> or difficult? Click to choose.</p>
+
+    <div class="scenario-grid">
+      <div class="scenario-card" onclick="pickScenario(this)">
+        <div class="scenario-icon">💸</div>
+        <p>You remind a friend that he/she owes you money.</p>
+      </div>
+      <div class="scenario-card" onclick="pickScenario(this)">
+        <div class="scenario-icon">😤</div>
+        <p>You tell a friend that you are angry with him/her.</p>
+      </div>
+      <div class="scenario-card" onclick="pickScenario(this)">
+        <div class="scenario-icon">😬</div>
+        <p>You apologise to a friend for telling a lie (or vice versa).</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>Think about a tricky conversation you or someone you know has had. What happened?</label>
+      <textarea class="fill-area" placeholder="Write your ideas here…"></textarea>
+    </div>
+  </section>
+
+  <!-- SECTION 2: VOCABULARY — REPORTING VERBS -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num teal">2</div>
+      <div class="section-title">Vocabulary: Reporting Verbs</div>
+      <div class="time-badge">10 min</div>
+    </div>
+
+    <div class="info-box">
+      We use <strong>reporting verbs</strong> to paraphrase what someone said without quoting them word for word. They are more precise than <em>say</em> or <em>tell</em>.
+    </div>
+
+    <p style="margin-bottom:14px;"><strong>2a.</strong> Listen to six short conversations. Read the summaries and choose the correct alternatives by clicking on them.</p>
+
+    <!-- Conv 1 -->
+    <div class="card">
+      <div class="conv-num">Conversation 1</div>
+      <p style="margin-bottom:12px;">Someone ate the apple cake. She <span class="alt-pair" data-group="c1a"><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">accused</button> / <button class="alt-btn" data-correct="false" onclick="pickAlt(this)">convinced</button></span> Stephen. Stephen <span class="alt-pair" data-group="c1b"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">agreed</button> / <button class="alt-btn" data-correct="true" onclick="pickAlt(this)">apologised</button></span>.</p>
+    </div>
+
+    <!-- Conv 2 -->
+    <div class="card">
+      <div class="conv-num">Conversation 2</div>
+      <p style="margin-bottom:12px;">She was leaving. He <span class="alt-pair"><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">reminded</button> / <button class="alt-btn" data-correct="false" onclick="pickAlt(this)">advised</button></span> her to call. She <span class="alt-pair"><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">agreed</button> / <button class="alt-btn" data-correct="false" onclick="pickAlt(this)">refused</button></span>.</p>
+    </div>
+
+    <!-- Conv 3 -->
+    <div class="card">
+      <div class="conv-num">Conversation 3</div>
+      <p style="margin-bottom:12px;">They were late. She <span class="alt-pair"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">threatened</button> / <button class="alt-btn" data-correct="true" onclick="pickAlt(this)">blamed</button></span> him. He <span class="alt-pair"><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">admitted</button> / <button class="alt-btn" data-correct="false" onclick="pickAlt(this)">denied</button></span> it.</p>
+    </div>
+
+    <!-- Conv 4 -->
+    <div class="card">
+      <div class="conv-num">Conversation 4</div>
+      <p style="margin-bottom:12px;">She asked him to marry her. He <span class="alt-pair"><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">refused</button> / <button class="alt-btn" data-correct="false" onclick="pickAlt(this)">insisted</button></span> but she <span class="alt-pair"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">threatened</button> / <button class="alt-btn" data-correct="true" onclick="pickAlt(this)">convinced</button></span> him.</p>
+    </div>
+
+    <!-- Conv 5 -->
+    <div class="card">
+      <div class="conv-num">Conversation 5</div>
+      <p style="margin-bottom:12px;">She was changing the wheel. He <span class="alt-pair"><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">advised</button> / <button class="alt-btn" data-correct="false" onclick="pickAlt(this)">convinced</button></span> her how to do it. She <span class="alt-pair"><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">threatened</button> / <button class="alt-btn" data-correct="false" onclick="pickAlt(this)">reminded</button></span> him.</p>
+    </div>
+
+    <!-- Conv 6 -->
+    <div class="card">
+      <div class="conv-num">Conversation 6</div>
+      <p style="margin-bottom:12px;">She didn't want to come out. He <span class="alt-pair"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">refused</button> / <button class="alt-btn" data-correct="true" onclick="pickAlt(this)">insisted</button></span>. Somebody hit her brother. She <span class="alt-pair"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">admitted</button> / <button class="alt-btn" data-correct="true" onclick="pickAlt(this)">denied</button></span> it.</p>
+    </div>
+
+    <p style="margin-bottom:14px;margin-top:24px;"><strong>2b.</strong> Look at your answers to Exercise 2a again. Decide which group (1–3) each verb belongs to and write them in the table. Then check your answers.</p>
+
+    <div class="info-box" style="margin-bottom:16px;font-size:13.5px;">
+      <strong>Verbs to sort:</strong> accuse · admit · advise · agree · apologise · blame · convince · deny · insist · refuse · remind · threaten
+    </div>
+
+    <table class="verb-table">
+      <thead>
+        <tr>
+          <th>Pattern</th>
+          <th>Your verbs</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-size:13.5px;">1 — can take <em>it</em> as object<br><span style="font-size:12px;color:var(--text-muted);font-style:italic;">e.g. He admitted <u>it</u>.</span></td>
+          <td><input class="fill-line" id="tb1" placeholder="write verbs here…" style="margin-top:0;" /></td>
+          <td><button class="answer-btn" onclick="toggleAnswer('tbans1')" style="margin-top:0;">Show</button><div class="answer-panel" id="tbans1" style="margin-top:6px;"><strong>admit, deny</strong></div></td>
+        </tr>
+        <tr>
+          <td style="font-size:13.5px;">2 — can take a pronoun as object<br><span style="font-size:12px;color:var(--text-muted);font-style:italic;">e.g. She accused <u>me</u>.</span></td>
+          <td><input class="fill-line" id="tb2" placeholder="write verbs here…" style="margin-top:0;" /></td>
+          <td><button class="answer-btn" onclick="toggleAnswer('tbans2')" style="margin-top:0;">Show</button><div class="answer-panel" id="tbans2" style="margin-top:6px;"><strong>accuse, threaten, blame, convince, remind, advise</strong></div></td>
+        </tr>
+        <tr>
+          <td style="font-size:13.5px;">3 — doesn't need an object<br><span style="font-size:12px;color:var(--text-muted);font-style:italic;">e.g. He agreed.</span></td>
+          <td><input class="fill-line" id="tb3" placeholder="write verbs here…" style="margin-top:0;" /></td>
+          <td><button class="answer-btn" onclick="toggleAnswer('tbans3')" style="margin-top:0;">Show</button><div class="answer-panel" id="tbans3" style="margin-top:6px;"><strong>agree, refuse, insist, apologise</strong></div></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="margin-bottom:14px;"><strong>2c.</strong> Choose the correct verb from the box to summarise each sentence. Use the right form.</p>
+
+    <div style="background:var(--accent-soft);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13.5px;">
+      <strong>accuse · admit · advise · agree · apologise · blame · convince · deny · insist · refuse · remind · threaten</strong>
+    </div>
+
+    <div class="transform-list">
+      <div class="transform-item">
+        <div class="transform-prompt">1. "He said he didn't take the money."</div>
+        <input class="fill-line" placeholder="He _______ taking the money." />
+        <button class="answer-btn" onclick="toggleAnswer('ans2c1')">Show answer</button>
+        <div class="answer-panel" id="ans2c1">He <strong>denied</strong> taking the money.</div>
+      </div>
+      <div class="transform-item">
+        <div class="transform-prompt">2. "She changed my mind about it."</div>
+        <input class="fill-line" placeholder="She _______ me to change my mind." />
+        <button class="answer-btn" onclick="toggleAnswer('ans2c2')">Show answer</button>
+        <div class="answer-panel" id="ans2c2">She <strong>convinced</strong> me to change my mind.</div>
+      </div>
+      <div class="transform-item">
+        <div class="transform-prompt">3. "He said he wouldn't do it."</div>
+        <input class="fill-line" placeholder="He _______ to do it." />
+        <button class="answer-btn" onclick="toggleAnswer('ans2c3')">Show answer</button>
+        <div class="answer-panel" id="ans2c3">He <strong>refused</strong> to do it.</div>
+      </div>
+      <div class="transform-item">
+        <div class="transform-prompt">4. "He said it happened because of the weather."</div>
+        <input class="fill-line" placeholder="He _______ the weather for it." />
+        <button class="answer-btn" onclick="toggleAnswer('ans2c4')">Show answer</button>
+        <div class="answer-panel" id="ans2c4">He <strong>blamed</strong> the weather for it.</div>
+      </div>
+      <div class="transform-item">
+        <div class="transform-prompt">5. "He said he would find me if I didn't pay him."</div>
+        <input class="fill-line" placeholder="He _______ to find me if I didn't pay." />
+        <button class="answer-btn" onclick="toggleAnswer('ans2c5')">Show answer</button>
+        <div class="answer-panel" id="ans2c5">He <strong>threatened</strong> to find me if I didn't pay.</div>
+      </div>
+      <div class="transform-item">
+        <div class="transform-prompt">6. "She mentioned it again and told me not to forget."</div>
+        <input class="fill-line" placeholder="She _______ me not to forget." />
+        <button class="answer-btn" onclick="toggleAnswer('ans2c6')">Show answer</button>
+        <div class="answer-panel" id="ans2c6">She <strong>reminded</strong> me not to forget.</div>
+      </div>
+      <div class="transform-item">
+        <div class="transform-prompt">7. "He said he was sorry."</div>
+        <input class="fill-line" placeholder="He _______." />
+        <button class="answer-btn" onclick="toggleAnswer('ans2c7')">Show answer</button>
+        <div class="answer-panel" id="ans2c7">He <strong>apologised</strong>.</div>
+      </div>
+      <div class="transform-item">
+        <div class="transform-prompt">8. "She told me I did it and that I was responsible."</div>
+        <input class="fill-line" placeholder="She _______ me of doing it." />
+        <button class="answer-btn" onclick="toggleAnswer('ans2c8')">Show answer</button>
+        <div class="answer-panel" id="ans2c8">She <strong>accused</strong> me of doing it.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: READING -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num green">3</div>
+      <div class="section-title">Reading: Social Media Stories</div>
+      <div class="time-badge">10 min</div>
+    </div>
+
+    <p style="margin-bottom:16px;"><strong>5.</strong> Read these social media comments (1–6). Match each one to the correct summary (a–f) using the dropdown.</p>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:18px;">
+      <p style="font-weight:600;margin-bottom:10px;font-size:13.5px;">Summaries:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:13.5px;">
+        <span><strong>a.</strong> She wanted to eat some fast food.</span>
+        <span><strong>b.</strong> His date wasn't impressed with him.</span>
+        <span><strong>c.</strong> She had dinner with two people instead of one.</span>
+        <span><strong>d.</strong> She wasn't impressed with the job candidate.</span>
+        <span><strong>e.</strong> He damaged his friend's property.</span>
+        <span><strong>f.</strong> She got the wrong address.</span>
+      </div>
+    </div>
+
+    <div class="match-grid">
+      <!-- Post 1 -->
+      <div class="post">
+        <div class="post-header">
+          <div class="post-avatar" style="background:#6B4FA3;">K</div>
+          <div>
+            <div class="post-name">Kate_travels</div>
+            <div class="post-meta">2 hours ago</div>
+          </div>
+        </div>
+        <p class="post-body">Visited a friend at his new house and his <strong>convinced</strong> his new flatmate to let me in. Turned on the TV and made coffee. My friend came home — I didn't recognise him. I had the wrong house!</p>
+        <p class="post-tag">#embarrassingmoments</p>
+        <div style="margin-top:12px;">
+          <label>This matches summary:</label>
+          <select class="match-select" onchange="checkMatch(this,'f')">
+            <option value="">— choose —</option>
+            <option value="a">a</option><option value="b">b</option><option value="c">c</option>
+            <option value="d">d</option><option value="e">e</option><option value="f">f</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Post 2 -->
+      <div class="post">
+        <div class="post-header">
+          <div class="post-avatar" style="background:#2A5EA8;">J</div>
+          <div>
+            <div class="post-name">JoshM_official</div>
+            <div class="post-meta">5 hours ago</div>
+          </div>
+        </div>
+        <p class="post-body">Needed to pick up my parents from the airport. My friend <strong>agreed</strong> to lend me her car. Dented the door and scratched the paintwork on the first journey. Arghh!!</p>
+        <p class="post-tag">#worstdayever</p>
+        <div style="margin-top:12px;">
+          <label>This matches summary:</label>
+          <select class="match-select" onchange="checkMatch(this,'e')">
+            <option value="">— choose —</option>
+            <option value="a">a</option><option value="b">b</option><option value="c">c</option>
+            <option value="d">d</option><option value="e">e</option><option value="f">f</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Post 3 -->
+      <div class="post">
+        <div class="post-header">
+          <div class="post-avatar" style="background:#1A7A7A;">S</div>
+          <div>
+            <div class="post-name">SusieCooks</div>
+            <div class="post-meta">Yesterday</div>
+          </div>
+        </div>
+        <p class="post-body">I placed an order at a drive-through burger place. Man in the car behind <strong>advised</strong> me to drive on a bit further. I'd been talking to the rubbish bin!</p>
+        <p class="post-tag">#embarrassingmoments</p>
+        <div style="margin-top:12px;">
+          <label>This matches summary:</label>
+          <select class="match-select" onchange="checkMatch(this,'a')">
+            <option value="">— choose —</option>
+            <option value="a">a</option><option value="b">b</option><option value="c">c</option>
+            <option value="d">d</option><option value="e">e</option><option value="f">f</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Post 4 -->
+      <div class="post">
+        <div class="post-header">
+          <div class="post-avatar" style="background:#B45309;">R</div>
+          <div>
+            <div class="post-name">Rebecca_HR</div>
+            <div class="post-meta">2 days ago</div>
+          </div>
+        </div>
+        <p class="post-body">Interviewed a guy for a job. Impressive CV but he clearly had no idea what he was talking about. He <strong>denied</strong> lying on his CV but <strong>admitted</strong> exaggerating. We agreed to end the interview early. He got up, shook my hand and walked into a cupboard.</p>
+        <p class="post-tag">#worstinterviewever</p>
+        <div style="margin-top:12px;">
+          <label>This matches summary:</label>
+          <select class="match-select" onchange="checkMatch(this,'d')">
+            <option value="">— choose —</option>
+            <option value="a">a</option><option value="b">b</option><option value="c">c</option>
+            <option value="d">d</option><option value="e">e</option><option value="f">f</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Post 5 -->
+      <div class="post">
+        <div class="post-header">
+          <div class="post-avatar" style="background:#C0392B;">M</div>
+          <div>
+            <div class="post-name">MumOfThree</div>
+            <div class="post-meta">3 days ago</div>
+          </div>
+        </div>
+        <p class="post-body">My mum arranged a blind date for me then <strong>insisted</strong> on coming along "to see if he was suitable". Romantic dinner, just the three of us!</p>
+        <p class="post-tag">#blinddatedisaster</p>
+        <div style="margin-top:12px;">
+          <label>This matches summary:</label>
+          <select class="match-select" onchange="checkMatch(this,'c')">
+            <option value="">— choose —</option>
+            <option value="a">a</option><option value="b">b</option><option value="c">c</option>
+            <option value="d">d</option><option value="e">e</option><option value="f">f</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Post 6 -->
+      <div class="post">
+        <div class="post-header">
+          <div class="post-avatar" style="background:#2E7D4F;">T</div>
+          <div>
+            <div class="post-name">TomBCN</div>
+            <div class="post-meta">Last week</div>
+          </div>
+        </div>
+        <p class="post-body">Went on a date. She talked nonstop about her ex and how much she hated him. When my eyes glazed over she <strong>accused</strong> me of not listening. Apparently, I was "just like her ex"!</p>
+        <p class="post-tag">#worstfirstdinnerdate</p>
+        <div style="margin-top:12px;">
+          <label>This matches summary:</label>
+          <select class="match-select" onchange="checkMatch(this,'b')">
+            <option value="">— choose —</option>
+            <option value="a">a</option><option value="b">b</option><option value="c">c</option>
+            <option value="d">d</option><option value="e">e</option><option value="f">f</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:20px;margin-bottom:10px;"><strong>6.</strong> Which situations in Exercise 5 are the most awkward? Do you think anyone behaved unreasonably? Why?</p>
+    <textarea class="fill-area" placeholder="Write your thoughts here…"></textarea>
+  </section>
+
+  <!-- SECTION 4: LANGUAGE FOCUS -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num amber">4</div>
+      <div class="section-title">Language Focus: Verb Patterns</div>
+      <div class="time-badge">10 min</div>
+    </div>
+
+    <div class="info-box amber">
+      Remember: some verbs have <strong>more than one pattern</strong>. The pattern you use changes the meaning of the sentence.
+    </div>
+
+    <div class="lang-box">
+      <h3>Verb Patterns after Reporting Verbs</h3>
+
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">Pattern 1 — verb + infinitive with <em>to</em></div>
+          <div style="font-size:14px;">e.g. <strong class="v">threaten</strong>, <strong class="v">refuse</strong>, <strong class="v">agree</strong></div>
+          <div style="font-size:13px;font-style:italic;color:var(--text-muted);margin-top:3px;">She threatened <u>to call</u> the police. / He refused <u>to leave</u>.</div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">Pattern 2 — verb + person + infinitive with <em>to</em></div>
+          <div style="font-size:14px;">e.g. <strong class="v">remind</strong>, <strong class="v">convince</strong>, <strong class="v">advise</strong></div>
+          <div style="font-size:13px;font-style:italic;color:var(--text-muted);margin-top:3px;">He reminded <u>me not to say</u> anything. / She advised <u>him to leave</u>.</div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">Pattern 3 — verb + <em>-ing</em> form</div>
+          <div style="font-size:14px;">e.g. <strong class="v">deny</strong>, <strong class="v">admit</strong></div>
+          <div style="font-size:13px;font-style:italic;color:var(--text-muted);margin-top:3px;">He denied <u>lying</u> on his CV. / She admitted <u>taking</u> it.</div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">Pattern 4 — verb + preposition + <em>-ing</em></div>
+          <div style="font-size:14px;">e.g. <strong class="v">apologise for</strong>, <strong class="v">insist on</strong></div>
+          <div style="font-size:13px;font-style:italic;color:var(--text-muted);margin-top:3px;">I apologised <u>for spoiling</u> the evening. / He insisted <u>on paying</u>.</div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">Pattern 5 — verb + person + preposition + <em>-ing</em></div>
+          <div style="font-size:14px;">e.g. <strong class="v">blame for</strong>, <strong class="v">accuse of</strong></div>
+          <div style="font-size:13px;font-style:italic;color:var(--text-muted);margin-top:3px;">She blamed <u>me for ordering</u> the wrong food. / He accused <u>her of lying</u>.</div>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-bottom:14px;"><strong>7.</strong> Choose the correct pattern for each verb. Which pattern (1–5) does it follow?</p>
+
+    <div class="transform-list">
+      <div class="transform-item">
+        <div class="transform-prompt">Which pattern does <em class="v">threaten</em> follow?</div>
+        <div class="choice-opts">
+          <button class="choice-btn" data-correct="true" onclick="selectChoice(this)">Pattern 1 — verb + to + infinitive</button>
+          <button class="choice-btn" data-correct="false" onclick="selectChoice(this)">Pattern 3 — verb + -ing</button>
+          <button class="choice-btn" data-correct="false" onclick="selectChoice(this)">Pattern 4 — verb + prep + -ing</button>
+        </div>
+      </div>
+      <div class="transform-item">
+        <div class="transform-prompt">Which pattern does <em class="v">apologise</em> follow?</div>
+        <div class="choice-opts">
+          <button class="choice-btn" data-correct="false" onclick="selectChoice(this)">Pattern 2 — verb + person + to-inf</button>
+          <button class="choice-btn" data-correct="true" onclick="selectChoice(this)">Pattern 4 — verb + for + -ing</button>
+          <button class="choice-btn" data-correct="false" onclick="selectChoice(this)">Pattern 1 — verb + to + infinitive</button>
+        </div>
+      </div>
+      <div class="transform-item">
+        <div class="transform-prompt">Which pattern does <em class="v">accuse</em> follow?</div>
+        <div class="choice-opts">
+          <button class="choice-btn" data-correct="false" onclick="selectChoice(this)">Pattern 3 — verb + -ing</button>
+          <button class="choice-btn" data-correct="false" onclick="selectChoice(this)">Pattern 1 — verb + to + infinitive</button>
+          <button class="choice-btn" data-correct="true" onclick="selectChoice(this)">Pattern 5 — verb + person + of + -ing</button>
+        </div>
+      </div>
+      <div class="transform-item">
+        <div class="transform-prompt">Which pattern does <em class="v">convince</em> follow?</div>
+        <div class="choice-opts">
+          <button class="choice-btn" data-correct="false" onclick="selectChoice(this)">Pattern 4 — verb + for + -ing</button>
+          <button class="choice-btn" data-correct="true" onclick="selectChoice(this)">Pattern 2 — verb + person + to-infinitive</button>
+          <button class="choice-btn" data-correct="false" onclick="selectChoice(this)">Pattern 3 — verb + -ing</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: TRANSFORM SENTENCES -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num purple">5</div>
+      <div class="section-title">Practice: Report the Sentences</div>
+      <div class="time-badge">10 min</div>
+    </div>
+
+    <p style="margin-bottom:16px;"><strong>8a.</strong> Rewrite each sentence as reported speech using the verb in brackets. Follow the correct verb pattern.</p>
+
+    <div class="transform-list">
+      <div class="transform-item">
+        <div class="transform-verb">he / admit</div>
+        <div class="transform-prompt">"I got a few things wrong in my report."</div>
+        <input class="fill-line" placeholder="He admitted …" />
+        <button class="answer-btn" onclick="toggleAnswer('ans8a1')">Show answer</button>
+        <div class="answer-panel" id="ans8a1">He <strong>admitted getting</strong> a few things wrong in his report.</div>
+      </div>
+
+      <div class="transform-item">
+        <div class="transform-verb">he / insist</div>
+        <div class="transform-prompt">"I'm going to pay you back. Here's the money."</div>
+        <input class="fill-line" placeholder="He insisted …" />
+        <button class="answer-btn" onclick="toggleAnswer('ans8a2')">Show answer</button>
+        <div class="answer-panel" id="ans8a2">He <strong>insisted on paying</strong> me back.</div>
+      </div>
+
+      <div class="transform-item">
+        <div class="transform-verb">she / agree</div>
+        <div class="transform-prompt">"OK, we can change the date of the meeting."</div>
+        <input class="fill-line" placeholder="She agreed …" />
+        <button class="answer-btn" onclick="toggleAnswer('ans8a3')">Show answer</button>
+        <div class="answer-panel" id="ans8a3">She <strong>agreed to change</strong> the date of the meeting.</div>
+      </div>
+
+      <div class="transform-item">
+        <div class="transform-verb">he / blame</div>
+        <div class="transform-prompt">"It's your fault that we lost the match."</div>
+        <input class="fill-line" placeholder="He blamed …" />
+        <button class="answer-btn" onclick="toggleAnswer('ans8a4')">Show answer</button>
+        <div class="answer-panel" id="ans8a4">He <strong>blamed me for losing</strong> the match.</div>
+      </div>
+
+      <div class="transform-item">
+        <div class="transform-verb">she / accuse</div>
+        <div class="transform-prompt">"You played really badly."</div>
+        <input class="fill-line" placeholder="She accused …" />
+        <button class="answer-btn" onclick="toggleAnswer('ans8a5')">Show answer</button>
+        <div class="answer-panel" id="ans8a5">She <strong>accused me of playing</strong> really badly.</div>
+      </div>
+
+      <div class="transform-item">
+        <div class="transform-verb">she / convince</div>
+        <div class="transform-prompt">"You really must try this new shampoo. It's great."</div>
+        <input class="fill-line" placeholder="She convinced …" />
+        <button class="answer-btn" onclick="toggleAnswer('ans8a6')">Show answer</button>
+        <div class="answer-panel" id="ans8a6">She <strong>convinced me to try</strong> this new shampoo.</div>
+      </div>
+
+      <div class="transform-item">
+        <div class="transform-verb">he / deny</div>
+        <div class="transform-prompt">"It wasn't me who broke it!"</div>
+        <input class="fill-line" placeholder="He denied …" />
+        <button class="answer-btn" onclick="toggleAnswer('ans8a7')">Show answer</button>
+        <div class="answer-panel" id="ans8a7">He <strong>denied breaking</strong> it.</div>
+      </div>
+
+      <div class="transform-item">
+        <div class="transform-verb">she / apologise</div>
+        <div class="transform-prompt">"I'm sorry for getting angry."</div>
+        <input class="fill-line" placeholder="She apologised …" />
+        <button class="answer-btn" onclick="toggleAnswer('ans8a8')">Show answer</button>
+        <div class="answer-panel" id="ans8a8">She <strong>apologised for getting</strong> angry.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: QUOTES — AGREE/DISAGREE -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num">6</div>
+      <div class="section-title">Quotes: What Do You Think?</div>
+      <div class="time-badge">8 min</div>
+    </div>
+
+    <p style="margin-bottom:16px;"><strong>3.</strong> Read the quotes. Do you agree or disagree? Click your answer, then be ready to explain why.</p>
+
+    <div class="stmt-list">
+      <div class="stmt-card">
+        <p>"We should always <strong>insist</strong> on the best, particularly from ourselves."</p>
+        <div class="stmt-btns">
+          <button class="agree-btn" onclick="toggleStmt(this,'agree')">Agree</button>
+          <button class="disagree-btn" onclick="toggleStmt(this,'disagree')">Disagree</button>
+        </div>
+      </div>
+      <div class="stmt-card">
+        <p>"Don't <strong>accuse</strong> people of being stupid just because they don't think the same way as you."</p>
+        <div class="stmt-btns">
+          <button class="agree-btn" onclick="toggleStmt(this,'agree')">Agree</button>
+          <button class="disagree-btn" onclick="toggleStmt(this,'disagree')">Disagree</button>
+        </div>
+      </div>
+      <div class="stmt-card">
+        <p>"When you make a mistake, you should <strong>admit</strong> it and <strong>apologise</strong>."</p>
+        <div class="stmt-btns">
+          <button class="agree-btn" onclick="toggleStmt(this,'agree')">Agree</button>
+          <button class="disagree-btn" onclick="toggleStmt(this,'disagree')">Disagree</button>
+        </div>
+      </div>
+      <div class="stmt-card">
+        <p>"You'll never <strong>convince</strong> someone you are right by <strong>threatening</strong> them."</p>
+        <div class="stmt-btns">
+          <button class="agree-btn" onclick="toggleStmt(this,'agree')">Agree</button>
+          <button class="disagree-btn" onclick="toggleStmt(this,'disagree')">Disagree</button>
+        </div>
+      </div>
+      <div class="stmt-card">
+        <p>"A good manager never <strong>blames</strong> others when things go wrong."</p>
+        <div class="stmt-btns">
+          <button class="agree-btn" onclick="toggleStmt(this,'agree')">Agree</button>
+          <button class="disagree-btn" onclick="toggleStmt(this,'disagree')">Disagree</button>
+        </div>
+      </div>
+      <div class="stmt-card">
+        <p>"If you <strong>refuse</strong> to listen to others, they will never listen to you."</p>
+        <div class="stmt-btns">
+          <button class="agree-btn" onclick="toggleStmt(this,'agree')">Agree</button>
+          <button class="disagree-btn" onclick="toggleStmt(this,'disagree')">Disagree</button>
+        </div>
+      </div>
+      <div class="stmt-card">
+        <p>"Most people would rather <strong>deny</strong> the truth than accept it."</p>
+        <div class="stmt-btns">
+          <button class="agree-btn" onclick="toggleStmt(this,'agree')">Agree</button>
+          <button class="disagree-btn" onclick="toggleStmt(this,'disagree')">Disagree</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <label>Which quote do you feel most strongly about? Write your thoughts below.</label>
+      <textarea class="fill-area" placeholder="I strongly agree/disagree with quote number … because …"></textarea>
+    </div>
+  </section>
+
+  <!-- SECTION 7: SPEAKING -->
+  <section class="section">
+    <div class="section-head">
+      <div class="section-num teal">7</div>
+      <div class="section-title">Speaking: The Alex &amp; Bo Situation</div>
+      <div class="time-badge">10 min</div>
+    </div>
+
+    <div class="scenario-box">
+      <h4>The Situation</h4>
+      <p>Alex invited Bo to dinner. Alex spent a long time preparing and making things nice. Bo forgot about the arrangement and didn't turn up. The next day Bo sent a short text saying <em>Sorry lol!</em> Alex generally feels that Bo is not being a good friend at the moment. Bo never asks questions or shares personal information. Alex has decided to call Bo.</p>
+    </div>
+
+    <p style="margin-bottom:14px;"><strong>Step 1 — Read the opening lines of the conversation.</strong></p>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:20px;">
+      <div class="dialogue-line">
+        <span class="dlg-speaker">Alex:</span>
+        <span class="dlg-text">Why didn't you come for dinner last night?</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="dlg-speaker">Bo:</span>
+        <span class="dlg-text">Sorry, Alex. I was watching the game and I completely forgot.</span>
+      </div>
+    </div>
+
+    <p style="margin-bottom:12px;"><strong>Step 2 — Write the rest of the phone conversation.</strong> Think about what Alex might say and how Bo might respond. Use some of these verbs:</p>
+
+    <div style="background:var(--accent-soft);border-radius:8px;padding:10px 16px;font-size:13.5px;margin-bottom:14px;">
+      <strong>accuse · admit · advise · agree · apologise · blame · deny · insist · remind · threaten</strong>
+    </div>
+
+    <textarea class="fill-area" style="min-height:140px;" placeholder="Alex: …&#10;Bo: …&#10;Alex: …&#10;Bo: …"></textarea>
+
+    <div class="card" style="margin-top:16px;background:var(--teal-soft);border-color:var(--teal);">
+      <p style="font-size:14px;color:var(--teal);"><strong>Step 3 — Report the conversation.</strong> Tell your teacher what was said in the conversation. Use reporting verbs.</p>
+      <p style="font-size:13px;color:var(--teal);margin-top:6px;font-style:italic;">Example: <em>Alex accused Bo of not caring about their friendship. Bo apologised for forgetting and admitted that he had been distracted. Alex reminded him that it wasn't the first time…</em></p>
+      <textarea class="fill-area" style="min-height:100px;" placeholder="Write your reported version here…"></textarea>
+    </div>
+  </section>
+
+</div><!-- .lesson-wrap -->
+
+<script>
+  /* INLINE ALTERNATIVES (2a) */
+  function pickAlt(btn) {
+    const pair = btn.closest('.alt-pair');
+    pair.querySelectorAll('.alt-btn').forEach(b => { b.disabled = true; });
+    btn.classList.add(btn.dataset.correct === 'true' ? 'correct' : 'wrong');
+    if (btn.dataset.correct !== 'true') {
+      pair.querySelectorAll('.alt-btn').forEach(b => {
+        if (b.dataset.correct === 'true') b.classList.add('correct');
+      });
+    }
+  }
+
+  /* SCENARIO PICK */
+  function pickScenario(el) {
+    el.closest('.scenario-grid').querySelectorAll('.scenario-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  /* AGREE / DISAGREE */
+  function toggleStmt(btn, type) {
+    const card = btn.closest('.stmt-card');
+    card.querySelectorAll('.agree-btn, .disagree-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  /* MULTIPLE CHOICE */
+  function selectChoice(btn) {
+    const group = btn.closest('.choice-opts');
+    group.querySelectorAll('.choice-btn').forEach(b => { b.disabled = true; });
+    btn.classList.add(btn.dataset.correct === 'true' ? 'correct' : 'wrong');
+    if (btn.dataset.correct !== 'true') {
+      group.querySelectorAll('.choice-btn').forEach(b => {
+        if (b.dataset.correct === 'true') b.classList.add('correct');
+      });
+    }
+  }
+
+  /* ANSWER REVEAL */
+  function toggleAnswer(id) {
+    const panel = document.getElementById(id);
+    const btn = panel.previousElementSibling;
+    const isOpen = panel.classList.toggle('open');
+    btn.textContent = isOpen ? btn.textContent.replace('Show', 'Hide') : btn.textContent.replace('Hide', 'Show');
+  }
+
+  /* READING MATCH */
+  function checkMatch(sel, correct) {
+    sel.classList.remove('correct','wrong');
+    if (!sel.value) return;
+    if (sel.value === correct) {
+      sel.classList.add('correct');
+    } else {
+      sel.classList.add('wrong');
+    }
+  }
+</script>
+</body>
+</html>
