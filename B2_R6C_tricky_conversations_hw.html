@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tricky Conversations — Homework</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #F6F8FB;
+    --surface: #FFFFFF;
+    --border: #DDE3EE;
+    --text: #1A1D2E;
+    --text-muted: #6A7080;
+    --accent: #2A5EA8;
+    --accent-soft: #EBF0FA;
+    --green: #2E7D4F;
+    --green-soft: #E8F5EE;
+    --red: #C0392B;
+    --red-soft: #FEE8E6;
+    --teal: #1A7A7A;
+    --teal-soft: #E3F4F4;
+    --amber: #B45309;
+    --amber-soft: #FEF3C7;
+    --progress-h: 52px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12141C; --surface: #1C1F2B; --border: #2C3047;
+      --text: #EEF0F8; --text-muted: #8A90A8;
+      --accent: #7AAAE8; --accent-soft: #1A2640;
+      --green: #5CB87A; --green-soft: #102B1A;
+      --red: #E06052; --red-soft: #3A1210;
+      --teal: #4DBFBF; --teal-soft: #0E2A2A;
+      --amber: #FBBF24; --amber-soft: #2D1F05;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12141C; --surface: #1C1F2B; --border: #2C3047;
+    --text: #EEF0F8; --text-muted: #8A90A8;
+    --accent: #7AAAE8; --accent-soft: #1A2640;
+    --green: #5CB87A; --green-soft: #102B1A;
+    --red: #E06052; --red-soft: #3A1210;
+    --teal: #4DBFBF; --teal-soft: #0E2A2A;
+    --amber: #FBBF24; --amber-soft: #2D1F05;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.7; color: var(--text); background: var(--bg); padding: 0 16px; }
+  .wrap { max-width: 780px; margin: 0 auto; padding-block: 40px; }
+
+  /* ── STICKY PROGRESS BAR ── */
+  .progress-strip {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 8px rgba(0,0,0,.06);
+  }
+  .progress-label { font-size: 11.5px; font-weight: 600; letter-spacing: .05em; color: var(--text-muted); white-space: nowrap; }
+  .progress-track { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; min-width: 60px; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 4px; width: 0%; transition: width .4s cubic-bezier(.4,0,.2,1); }
+  .progress-fill.done { background: var(--green); }
+  .progress-count { font-size: 12px; font-weight: 700; color: var(--accent); white-space: nowrap; font-variant-numeric: tabular-nums; min-width: 46px; text-align: right; }
+
+  /* HEADER */
+  .hw-header { padding-bottom: 24px; margin-bottom: 40px; position: relative; }
+  .hw-header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 64px; height: 4px; background: var(--accent); border-radius: 2px; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .hw-header h1 { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.7rem, 4vw, 2.4rem); line-height: 1.15; margin-bottom: 6px; }
+  .hw-header p { font-size: 13.5px; color: var(--text-muted); }
+
+  /* STUDENT NAME */
+  .name-row { display: flex; align-items: center; gap: 10px; margin-top: 18px; }
+  .name-row label { font-size: 13px; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+  .name-input { border: 1.5px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-family: inherit; font-size: 14px; padding: 7px 12px; outline: none; flex: 1; max-width: 280px; transition: border-color .15s; }
+  .name-input:focus { border-color: var(--accent); }
+
+  /* SECTIONS */
+  .section { margin-bottom: 48px; }
+  .section-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .sec-num { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .sec-num.teal { background: var(--teal); }
+  .sec-num.amber { background: var(--amber); }
+  .sec-num.green { background: var(--green); }
+  .section-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.2rem; }
+  .section-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; }
+
+  /* CARDS */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 22px; margin-bottom: 10px; font-size: 14.5px; line-height: 1.75; }
+
+  /* INLINE ALTERNATIVES */
+  .alt-pair { display: inline-flex; align-items: center; gap: 1px; white-space: nowrap; }
+  .alt-btn { font-size: 14px; font-weight: 600; font-style: italic; padding: 2px 8px; border-radius: 5px; border: 1.5px solid transparent; background: var(--accent-soft); color: var(--accent); cursor: pointer; font-family: inherit; transition: all .13s; line-height: 1.5; }
+  .alt-btn:hover:not(:disabled) { border-color: var(--accent); }
+  .alt-btn.correct { background: var(--green-soft) !important; color: var(--green) !important; border-color: var(--green) !important; }
+  .alt-btn.wrong { background: var(--red-soft) !important; color: var(--red) !important; border-color: var(--red) !important; text-decoration: line-through; }
+  .alt-btn:disabled { cursor: default; }
+  .sep { color: var(--text-muted); font-size: 13px; padding: 0 1px; }
+
+  /* GAP FILL */
+  .gap-num { display: inline-block; font-size: 11px; font-weight: 700; color: var(--accent); vertical-align: super; margin-right: 1px; }
+  .gap-input { display: inline-block; border: none; border-bottom: 1.5px solid var(--border); background: transparent; color: var(--text); font-family: inherit; font-size: 14px; width: 100px; padding: 1px 3px; outline: none; transition: border-color .15s; vertical-align: baseline; }
+  .gap-input:focus { border-bottom-color: var(--accent); }
+  .gap-input.correct { border-bottom-color: var(--green); color: var(--green); font-weight: 600; }
+  .gap-input.wrong { border-bottom-color: var(--red); color: var(--red); }
+
+  /* WORD BOX */
+  .word-box { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 14px; background: var(--accent-soft); border-radius: 8px; margin-bottom: 12px; }
+  .word-tag { font-size: 13.5px; font-weight: 600; color: var(--accent); padding: 2px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 5px; }
+
+  /* DIALOGUE */
+  .dialogue { display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px; }
+  .dlg-line { display: flex; gap: 8px; align-items: baseline; }
+  .dlg-sp { font-weight: 700; font-size: 13px; min-width: 22px; color: var(--accent); flex-shrink: 0; }
+  .dlg-text { font-size: 14px; }
+
+  /* CHECK ROW */
+  .check-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+  .check-btn { font-size: 13px; font-weight: 600; padding: 8px 20px; border-radius: 8px; border: none; background: var(--accent); color: #fff; cursor: pointer; transition: opacity .15s; }
+  .check-btn:hover { opacity: .85; }
+  .reset-btn { font-size: 13px; font-weight: 500; padding: 8px 16px; border-radius: 8px; border: 1.5px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; transition: all .15s; }
+  .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .score-badge { font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 20px; background: var(--teal-soft); color: var(--teal); display: none; }
+  .score-badge.show { display: inline-block; }
+
+  /* ANSWER REVEAL */
+  .answer-btn { font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 7px; border: 1.5px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; transition: all .15s; margin-top: 10px; }
+  .answer-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .answer-panel { display: none; margin-top: 10px; padding: 10px 14px; background: var(--teal-soft); border-radius: 7px; font-size: 13.5px; color: var(--teal); font-weight: 500; line-height: 1.7; }
+  .answer-panel.open { display: block; }
+
+  /* SENTENCE BUILDER */
+  .prompt-row { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; }
+  .prompt-label { font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .prompt-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .prompt-chip { font-size: 13px; padding: 3px 10px; border-radius: 5px; background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+  .fill-line { width: 100%; border: none; border-bottom: 1.5px solid var(--border); background: transparent; color: var(--text); font-family: inherit; font-size: 14px; padding: 4px 2px; outline: none; transition: border-color .15s; margin-top: 4px; }
+  .fill-line:focus { border-bottom-color: var(--accent); }
+
+  /* MINI CONVERSATIONS */
+  .conv-list { display: flex; flex-direction: column; gap: 12px; }
+  .mini-conv { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .mini-conv-num { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); margin-bottom: 8px; }
+  .conv-line { display: flex; gap: 8px; font-size: 14px; margin-bottom: 3px; align-items: baseline; }
+  .conv-sp { font-weight: 700; min-width: 20px; color: var(--accent); }
+  .conv-gap { display: inline-block; border-bottom: 1.5px dashed var(--border); min-width: 180px; font-size: 13.5px; color: var(--text-muted); font-style: italic; }
+
+  /* MATCH SELECT */
+  .match-select { border: 1.5px solid var(--border); border-radius: 7px; background: var(--surface); color: var(--text); font-family: inherit; font-size: 13.5px; padding: 5px 10px; outline: none; cursor: pointer; transition: border-color .15s; margin-top: 8px; width: 100%; }
+  .match-select:focus { border-color: var(--accent); }
+  .match-select.correct { border-color: var(--green); background: var(--green-soft); color: var(--green); }
+  .match-select.wrong { border-color: var(--red); background: var(--red-soft); color: var(--red); }
+  .match-select.correct option, .match-select.wrong option { background: var(--surface); color: var(--text); }
+
+  /* SEND TO TEACHER */
+  .send-section { margin-top: 56px; padding-top: 32px; border-top: 2px solid var(--border); }
+  .send-header { font-family: 'Playfair Display', Georgia, serif; font-size: 1.15rem; margin-bottom: 6px; }
+  .send-sub { font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px; }
+  .send-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .send-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 600; padding: 11px 24px;
+    border-radius: 10px; border: none;
+    background: var(--accent); color: #fff;
+    cursor: pointer; transition: opacity .15s; text-decoration: none;
+  }
+  .send-btn:hover { opacity: .85; }
+  .send-btn svg { flex-shrink: 0; }
+  .send-note { font-size: 12px; color: var(--text-muted); margin-top: 12px; }
+
+  @media (max-width: 520px) {
+    .gap-input { width: 80px; }
+    .send-controls { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- STICKY PROGRESS BAR -->
+<div class="progress-strip" id="progressStrip">
+  <span class="progress-label">Progress</span>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <span class="progress-count" id="progressCount">0 / 34</span>
+</div>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="hw-header">
+    <div class="eyebrow">Unit 6C · Homework</div>
+    <h1>Tricky Conversations</h1>
+    <p>Reporting verbs &amp; verb patterns · Complete all four exercises</p>
+    <div class="name-row">
+      <label for="studentName">Your name:</label>
+      <input class="name-input" id="studentName" type="text" placeholder="e.g. Maria García">
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════
+       SECTION 1 — VOCABULARY: CHOOSE ALTERNATIVES
+       ══════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-head">
+      <div class="sec-num">1</div>
+      <div class="section-title">Vocabulary: Reporting Verbs</div>
+    </div>
+    <p class="section-sub"><strong>Choose the correct alternative</strong> in each sentence by clicking on it.</p>
+
+    <div id="ex1-items">
+      <div class="card">
+        1. I'd forgotten about my dentist's appointment. Thanks for
+        <span class="alt-pair" data-ex="1"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">remembering</button><span class="sep">/</span><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">reminding</button></span> me.
+      </div>
+      <div class="card">
+        2. My maths teacher
+        <span class="alt-pair" data-ex="1"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">accused</button><span class="sep">/</span><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">threatened</button></span>
+        to tell my parents if I didn't behave.
+      </div>
+      <div class="card">
+        3. My youngest daughter
+        <span class="alt-pair" data-ex="1"><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">denied</button><span class="sep">/</span><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">admitted</button></span>
+        drawing on the wall, but I knew it was her.
+      </div>
+      <div class="card">
+        4. I wanted to turn round and go home but Mike
+        <span class="alt-pair" data-ex="1"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">agreed</button><span class="sep">/</span><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">insisted</button></span>
+        we keep going.
+      </div>
+      <div class="card">
+        5. My son
+        <span class="alt-pair" data-ex="1"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">agrees</button><span class="sep">/</span><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">refuses</button></span>
+        to keep his room tidy despite constant nagging!
+      </div>
+      <div class="card">
+        6. I wasn't sure about joining a gym but Sara
+        <span class="alt-pair" data-ex="1"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">advised</button><span class="sep">/</span><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">convinced</button></span>
+        me it was a good idea.
+      </div>
+      <div class="card">
+        7. Beatriz
+        <span class="alt-pair" data-ex="1"><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">apologised</button><span class="sep">/</span><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">admitted</button></span>
+        for dropping food on her friend's sofa.
+      </div>
+      <div class="card">
+        8. My brother always
+        <span class="alt-pair" data-ex="1"><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">blames</button><span class="sep">/</span><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">denies</button></span>
+        me for his broken bike but it wasn't me!
+      </div>
+    </div>
+
+    <div class="check-row">
+      <button class="check-btn" onclick="checkEx('ex1-items','ex1Score',8)">Check Exercise 1</button>
+      <span class="score-badge" id="ex1Score"></span>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       SECTION 2 — GAP FILL CONVERSATIONS
+       ══════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-head">
+      <div class="sec-num teal">2</div>
+      <div class="section-title">Complete the Conversations</div>
+    </div>
+    <p class="section-sub">Use the correct form of the words in each box to fill the gaps. Then press <strong>Check answers</strong>.</p>
+
+    <!-- Conversation 1 -->
+    <div style="margin-bottom:22px;">
+      <div class="word-box">
+        <span class="word-tag">accuse</span>
+        <span class="word-tag">convince</span>
+        <span class="word-tag">deny</span>
+        <span class="word-tag">insist</span>
+      </div>
+      <div class="card">
+        <div class="dialogue">
+          <div class="dlg-line"><span class="dlg-sp">A:</span><span class="dlg-text">Jamie has just <span class="gap-num">1</span><input class="gap-input" id="g1" data-answer="accused" placeholder="________"> me of trying to steal his idea and present it as my own but I'd honestly thought of it myself.</span></div>
+          <div class="dlg-line"><span class="dlg-sp">B:</span><span class="dlg-text">Did you <span class="gap-num">2</span><input class="gap-input" id="g2" data-answer="deny" placeholder="________"> stealing it?</span></div>
+          <div class="dlg-line"><span class="dlg-sp">A:</span><span class="dlg-text">Of course I did, because he's wrong – but he doesn't believe me.</span></div>
+          <div class="dlg-line"><span class="dlg-sp">B:</span><span class="dlg-text">Did you <span class="gap-num">3</span><input class="gap-input" id="g3" data-answer="insist" placeholder="________"> that you were telling the truth?</span></div>
+          <div class="dlg-line"><span class="dlg-sp">A:</span><span class="dlg-text">I did, but nothing I said could <span class="gap-num">4</span><input class="gap-input" id="g4" data-answer="convince" placeholder="________"> him.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversation 2 -->
+    <div style="margin-bottom:22px;">
+      <div class="word-box">
+        <span class="word-tag">advise</span>
+        <span class="word-tag">blame</span>
+        <span class="word-tag">refuse</span>
+        <span class="word-tag">threaten</span>
+      </div>
+      <div class="card">
+        <div class="dialogue">
+          <div class="dlg-line"><span class="dlg-sp">A:</span><span class="dlg-text">My boss just asked me to work overtime at the weekend. I <span class="gap-num">5</span><input class="gap-input" id="g5" data-answer="refused" placeholder="________">.</span></div>
+          <div class="dlg-line"><span class="dlg-sp">B:</span><span class="dlg-text">What did he say?</span></div>
+          <div class="dlg-line"><span class="dlg-sp">A:</span><span class="dlg-text">He <span class="gap-num">6</span><input class="gap-input" id="g6" data-answer="threatened" placeholder="________"> to sack me if I didn't do it but I <span class="gap-num">7</span><input class="gap-input" id="g7" data-answer="advised" placeholder="________"> him not to do that as I'd complain to his manager if he tried it.</span></div>
+          <div class="dlg-line"><span class="dlg-sp">B:</span><span class="dlg-text">What did he say to that?</span></div>
+          <div class="dlg-line"><span class="dlg-sp">A:</span><span class="dlg-text">He <span class="gap-num">8</span><input class="gap-input" id="g8" data-answer="blamed" placeholder="________"> me for the poor sales in our department.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversation 3 -->
+    <div style="margin-bottom:16px;">
+      <div class="word-box">
+        <span class="word-tag">admit</span>
+        <span class="word-tag">agree</span>
+        <span class="word-tag">apologise</span>
+        <span class="word-tag">remind</span>
+      </div>
+      <div class="card">
+        <div class="dialogue">
+          <div class="dlg-line"><span class="dlg-sp">A:</span><span class="dlg-text">I finally talked to Alison yesterday after our argument. I <span class="gap-num">9</span><input class="gap-input" id="g9" data-answer="reminded" placeholder="________"> her that it's Dad's birthday next week. She <span class="gap-num">10</span><input class="gap-input" id="g10" data-answer="agreed" placeholder="________"> to come to his party.</span></div>
+          <div class="dlg-line"><span class="dlg-sp">B:</span><span class="dlg-text">Oh, that's good. Did you <span class="gap-num">11</span><input class="gap-input" id="g11" data-answer="apologise" placeholder="________"> for what you said?</span></div>
+          <div class="dlg-line"><span class="dlg-sp">A:</span><span class="dlg-text">Yeah, I said I was sorry for not trying to understand her side of things. She <span class="gap-num">12</span><input class="gap-input" id="g12" data-answer="admitted" placeholder="________"> that she'd been wrong, too.</span></div>
+          <div class="dlg-line"><span class="dlg-sp">B:</span><span class="dlg-text">Sounds like you can be friends again then. Or cousins!</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="check-row">
+      <button class="check-btn" onclick="checkGaps()">Check Exercise 2</button>
+      <button class="reset-btn" onclick="resetGaps()">Reset</button>
+      <span class="score-badge" id="gapScore"></span>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       SECTION 3 — LANGUAGE FOCUS: VERB PATTERNS
+       ══════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-head">
+      <div class="sec-num amber">3</div>
+      <div class="section-title">Language Focus: Verb Patterns</div>
+    </div>
+    <p class="section-sub"><strong>Choose the correct alternative</strong> — pay attention to the verb pattern.</p>
+
+    <div id="ex3-items">
+      <div class="card">
+        1. I denied
+        <span class="alt-pair" data-ex="3"><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">breaking</button><span class="sep">/</span><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">to break</button></span>
+        the toaster even though it was me who did it.
+      </div>
+      <div class="card">
+        2. My landlord has finally agreed
+        <span class="alt-pair" data-ex="3"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">letting</button><span class="sep">/</span><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">to let</button></span>
+        me have a cat.
+      </div>
+      <div class="card">
+        3. My neighbour wrongly accused me of
+        <span class="alt-pair" data-ex="3"><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">playing</button><span class="sep">/</span><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">to play</button></span>
+        loud music.
+      </div>
+      <div class="card">
+        4. My lawyer advised me
+        <span class="alt-pair" data-ex="3"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">paying</button><span class="sep">/</span><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">to pay</button></span>
+        the parking fine without argument.
+      </div>
+      <div class="card">
+        5. Dad refuses
+        <span class="alt-pair" data-ex="3"><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">to increase</button><span class="sep">/</span><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">us to increase</button></span>
+        our pocket money, even though we beg!
+      </div>
+      <div class="card">
+        6. I always insist
+        <span class="alt-pair" data-ex="3"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">to take</button><span class="sep">/</span><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">on taking</button></span>
+        my shoes off before entering someone's home.
+      </div>
+      <div class="card">
+        7. Our teacher has just reminded
+        <span class="alt-pair" data-ex="3"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">to get</button><span class="sep">/</span><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">us to get</button></span>
+        our assignment in.
+      </div>
+      <div class="card">
+        8. I've just convinced my boss
+        <span class="alt-pair" data-ex="3"><button class="alt-btn" data-correct="false" onclick="pickAlt(this)">about giving</button><span class="sep">/</span><button class="alt-btn" data-correct="true" onclick="pickAlt(this)">to give</button></span>
+        me a pay rise!
+      </div>
+    </div>
+
+    <div class="check-row">
+      <button class="check-btn" onclick="checkEx('ex3-items','ex3Score',8)">Check Exercise 3</button>
+      <span class="score-badge" id="ex3Score"></span>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       SECTION 4 — SENTENCE BUILDING + MATCHING
+       ══════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-head">
+      <div class="sec-num green">4</div>
+      <div class="section-title">Make Sentences &amp; Match</div>
+    </div>
+
+    <p class="section-sub"><strong>Step 1:</strong> Use the prompts (a–f) to write a complete sentence. Pay attention to the verb pattern.</p>
+
+    <div class="prompt-row">
+      <div class="prompt-label">a</div>
+      <div class="prompt-chips"><span class="prompt-chip">David's</span><span class="prompt-chip">threatened</span><span class="prompt-chip">cancel</span><span class="prompt-chip">the party</span></div>
+      <input class="fill-line" id="pa" placeholder="Write the sentence…">
+      <button class="answer-btn" onclick="toggleAnswer('ansa')" style="margin-top:8px;">Show answer</button>
+      <div class="answer-panel" id="ansa">David threatened <strong>to cancel</strong> the party.</div>
+    </div>
+
+    <div class="prompt-row">
+      <div class="prompt-label">b</div>
+      <div class="prompt-chips"><span class="prompt-chip">I</span><span class="prompt-chip">admit</span><span class="prompt-chip">have</span><span class="prompt-chip">one or two</span></div>
+      <input class="fill-line" id="pb" placeholder="Write the sentence…">
+      <button class="answer-btn" onclick="toggleAnswer('ansb')" style="margin-top:8px;">Show answer</button>
+      <div class="answer-panel" id="ansb">I admit <strong>having</strong> one or two.</div>
+    </div>
+
+    <div class="prompt-row">
+      <div class="prompt-label">c</div>
+      <div class="prompt-chips"><span class="prompt-chip">I've</span><span class="prompt-chip">agreed</span><span class="prompt-chip">help</span><span class="prompt-chip">a friend move house</span></div>
+      <input class="fill-line" id="pc" placeholder="Write the sentence…">
+      <button class="answer-btn" onclick="toggleAnswer('ansc')" style="margin-top:8px;">Show answer</button>
+      <div class="answer-panel" id="ansc">I've agreed <strong>to help</strong> a friend move house.</div>
+    </div>
+
+    <div class="prompt-row">
+      <div class="prompt-label">d</div>
+      <div class="prompt-chips"><span class="prompt-chip">Norah</span><span class="prompt-chip">insisted</span><span class="prompt-chip">pay</span><span class="prompt-chip">it</span></div>
+      <input class="fill-line" id="pd" placeholder="Write the sentence…">
+      <button class="answer-btn" onclick="toggleAnswer('ansd')" style="margin-top:8px;">Show answer</button>
+      <div class="answer-panel" id="ansd">Norah insisted <strong>on paying</strong> it.</div>
+    </div>
+
+    <div class="prompt-row">
+      <div class="prompt-label">e</div>
+      <div class="prompt-chips"><span class="prompt-chip">Remind</span><span class="prompt-chip">me</span><span class="prompt-chip">never</span><span class="prompt-chip">ask</span><span class="prompt-chip">you for advice</span></div>
+      <input class="fill-line" id="pe" placeholder="Write the sentence…">
+      <button class="answer-btn" onclick="toggleAnswer('anse')" style="margin-top:8px;">Show answer</button>
+      <div class="answer-panel" id="anse">Remind me <strong>never to ask</strong> you for advice.</div>
+    </div>
+
+    <div class="prompt-row">
+      <div class="prompt-label">f</div>
+      <div class="prompt-chips"><span class="prompt-chip">She</span><span class="prompt-chip">accused</span><span class="prompt-chip">me</span><span class="prompt-chip">borrow</span><span class="prompt-chip">her clothes</span></div>
+      <input class="fill-line" id="pf" placeholder="Write the sentence…">
+      <button class="answer-btn" onclick="toggleAnswer('ansf')" style="margin-top:8px;">Show answer</button>
+      <div class="answer-panel" id="ansf">She accused me <strong>of borrowing</strong> her clothes.</div>
+    </div>
+
+    <p class="section-sub" style="margin-top:28px;"><strong>Step 2:</strong> Which sentence (a–f) completes each mini-conversation? Choose from the dropdown.</p>
+
+    <div class="conv-list" id="ex4-items">
+
+      <div class="mini-conv">
+        <div class="mini-conv-num">Conversation 1</div>
+        <div class="conv-line"><span class="conv-sp">A:</span> Shall we get the bill?</div>
+        <div class="conv-line"><span class="conv-sp">B:</span> <span class="conv-gap">___</span> before she left.</div>
+        <div class="conv-line"><span class="conv-sp">A:</span> That was kind of her. I'll get it next time.</div>
+        <select class="match-select" data-correct="d" onchange="checkConvMatch(this)">
+          <option value="">— choose sentence (a–f) —</option>
+          <option value="a">a</option><option value="b">b</option><option value="c">c</option>
+          <option value="d">d</option><option value="e">e</option><option value="f">f</option>
+        </select>
+      </div>
+
+      <div class="mini-conv">
+        <div class="mini-conv-num">Conversation 2</div>
+        <div class="conv-line"><span class="conv-sp">A:</span> Why are you and Dani fighting?</div>
+        <div class="conv-line"><span class="conv-sp">B:</span> <span class="conv-gap">___</span> when I didn't.</div>
+        <div class="conv-line"><span class="conv-sp">A:</span> Oh, that was me – I should have told her. Sorry!</div>
+        <select class="match-select" data-correct="f" onchange="checkConvMatch(this)">
+          <option value="">— choose sentence (a–f) —</option>
+          <option value="a">a</option><option value="b">b</option><option value="c">c</option>
+          <option value="d">d</option><option value="e">e</option><option value="f">f</option>
+        </select>
+      </div>
+
+      <div class="mini-conv">
+        <div class="mini-conv-num">Conversation 3</div>
+        <div class="conv-line"><span class="conv-sp">A:</span> Do you want to go see a film tomorrow?</div>
+        <div class="conv-line"><span class="conv-sp">B:</span> No, sorry. <span class="conv-gap">___</span>.</div>
+        <div class="conv-line"><span class="conv-sp">A:</span> Maybe the next day then?</div>
+        <select class="match-select" data-correct="c" onchange="checkConvMatch(this)">
+          <option value="">— choose sentence (a–f) —</option>
+          <option value="a">a</option><option value="b">b</option><option value="c">c</option>
+          <option value="d">d</option><option value="e">e</option><option value="f">f</option>
+        </select>
+      </div>
+
+      <div class="mini-conv">
+        <div class="mini-conv-num">Conversation 4</div>
+        <div class="conv-line"><span class="conv-sp">A:</span> Have you eaten all the biscuits?</div>
+        <div class="conv-line"><span class="conv-sp">B:</span> No! <span class="conv-gap">___</span> but that's all!</div>
+        <div class="conv-line"><span class="conv-sp">A:</span> There must be some left in the drawer then.</div>
+        <select class="match-select" data-correct="b" onchange="checkConvMatch(this)">
+          <option value="">— choose sentence (a–f) —</option>
+          <option value="a">a</option><option value="b">b</option><option value="c">c</option>
+          <option value="d">d</option><option value="e">e</option><option value="f">f</option>
+        </select>
+      </div>
+
+      <div class="mini-conv">
+        <div class="mini-conv-num">Conversation 5</div>
+        <div class="conv-line"><span class="conv-sp">A:</span> Did you do what I suggested?</div>
+        <div class="conv-line"><span class="conv-sp">B:</span> Yes. <span class="conv-gap">___</span> again!</div>
+        <div class="conv-line"><span class="conv-sp">A:</span> Oh, didn't it work? What happened?</div>
+        <select class="match-select" data-correct="e" onchange="checkConvMatch(this)">
+          <option value="">— choose sentence (a–f) —</option>
+          <option value="a">a</option><option value="b">b</option><option value="c">c</option>
+          <option value="d">d</option><option value="e">e</option><option value="f">f</option>
+        </select>
+      </div>
+
+      <div class="mini-conv">
+        <div class="mini-conv-num">Conversation 6</div>
+        <div class="conv-line"><span class="conv-sp">A:</span> Why are you doing housework on a Friday night?</div>
+        <div class="conv-line"><span class="conv-sp">B:</span> Because <span class="conv-gap">___</span> if I don't!</div>
+        <div class="conv-line"><span class="conv-sp">A:</span> Well, you do leave your clothes all over the house!</div>
+        <select class="match-select" data-correct="a" onchange="checkConvMatch(this)">
+          <option value="">— choose sentence (a–f) —</option>
+          <option value="a">a</option><option value="b">b</option><option value="c">c</option>
+          <option value="d">d</option><option value="e">e</option><option value="f">f</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="check-row" style="margin-top:14px;">
+      <button class="check-btn" onclick="checkEx4Match()">Check Exercise 4</button>
+      <span class="score-badge" id="ex4Score"></span>
+    </div>
+  </section>
+
+  <!-- SEND TO TEACHER -->
+  <div class="send-section">
+    <div class="send-header">Send to Teacher</div>
+    <p class="send-sub">When you've finished, click the button below to email your results to your teacher.</p>
+    <div class="send-controls">
+      <button class="send-btn" onclick="sendToTeacher()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Send to Teacher
+      </button>
+    </div>
+    <p class="send-note">This will open your email app with your scores and answers pre-filled.</p>
+  </div>
+
+</div><!-- .wrap -->
+
+<script>
+  /* ═══════════════════════════════════════
+     PROGRESS BAR
+  ═══════════════════════════════════════ */
+  const TOTAL = 34; // 8 ex1 + 12 ex2 + 8 ex3 + 6 ex4
+
+  function countCorrect() {
+    let n = 0;
+    // alt-pairs (ex1 + ex3): a pair is correct if [data-correct="true"] has class 'correct'
+    document.querySelectorAll('.alt-pair').forEach(pair => {
+      const good = pair.querySelector('[data-correct="true"]');
+      if (good && good.classList.contains('correct')) n++;
+    });
+    // gap inputs
+    document.querySelectorAll('.gap-input.correct').forEach(() => n++);
+    // match selects
+    document.querySelectorAll('.match-select.correct').forEach(() => n++);
+    return n;
+  }
+
+  function updateProgress() {
+    const n = countCorrect();
+    const pct = Math.round((n / TOTAL) * 100);
+    const fill = document.getElementById('progressFill');
+    const count = document.getElementById('progressCount');
+    fill.style.width = pct + '%';
+    fill.classList.toggle('done', pct === 100);
+    count.textContent = n + ' / ' + TOTAL;
+  }
+
+  /* ═══════════════════════════════════════
+     INLINE ALTERNATIVES
+  ═══════════════════════════════════════ */
+  function pickAlt(btn) {
+    const pair = btn.closest('.alt-pair');
+    pair.querySelectorAll('.alt-btn').forEach(b => { b.disabled = true; });
+    btn.classList.add(btn.dataset.correct === 'true' ? 'correct' : 'wrong');
+    if (btn.dataset.correct !== 'true') {
+      pair.querySelectorAll('.alt-btn').forEach(b => {
+        if (b.dataset.correct === 'true') b.classList.add('correct');
+      });
+    }
+    updateProgress();
+  }
+
+  /* ═══════════════════════════════════════
+     CHECK EXERCISE (alt-pair sections)
+  ═══════════════════════════════════════ */
+  function checkEx(containerId, badgeId, total) {
+    const container = document.getElementById(containerId);
+    let correct = 0, answered = 0;
+    container.querySelectorAll('.alt-pair').forEach(pair => {
+      const good = pair.querySelector('[data-correct="true"]');
+      if (good && good.disabled) {
+        answered++;
+        if (good.classList.contains('correct')) correct++;
+      }
+    });
+    const badge = document.getElementById(badgeId);
+    if (answered === 0) {
+      badge.textContent = 'Answer some questions first!';
+    } else {
+      badge.textContent = correct + ' / ' + total + ' correct';
+    }
+    badge.classList.add('show');
+  }
+
+  /* ═══════════════════════════════════════
+     GAP FILL
+  ═══════════════════════════════════════ */
+  function normalise(s) { return s.trim().toLowerCase(); }
+
+  function checkGaps() {
+    let correct = 0;
+    document.querySelectorAll('.gap-input').forEach(inp => {
+      const expected = normalise(inp.dataset.answer);
+      const given = normalise(inp.value);
+      inp.classList.remove('correct', 'wrong');
+      if (!given) return;
+      if (given === expected) { inp.classList.add('correct'); correct++; }
+      else { inp.classList.add('wrong'); }
+    });
+    const badge = document.getElementById('gapScore');
+    badge.textContent = correct + ' / 12 correct';
+    badge.classList.add('show');
+    updateProgress();
+  }
+
+  function resetGaps() {
+    document.querySelectorAll('.gap-input').forEach(inp => {
+      inp.value = '';
+      inp.classList.remove('correct', 'wrong');
+    });
+    document.getElementById('gapScore').classList.remove('show');
+    updateProgress();
+  }
+
+  /* ═══════════════════════════════════════
+     ANSWER REVEAL
+  ═══════════════════════════════════════ */
+  function toggleAnswer(id) {
+    const panel = document.getElementById(id);
+    const btn = panel.previousElementSibling;
+    const isOpen = panel.classList.toggle('open');
+    btn.textContent = isOpen ? 'Hide answer' : 'Show answer';
+  }
+
+  /* ═══════════════════════════════════════
+     CONV MATCHING
+  ═══════════════════════════════════════ */
+  function checkConvMatch(sel) {
+    sel.classList.remove('correct', 'wrong');
+    if (!sel.value) return;
+    sel.classList.add(sel.value === sel.dataset.correct ? 'correct' : 'wrong');
+    updateProgress();
+  }
+
+  function checkEx4Match() {
+    const selects = document.querySelectorAll('#ex4-items .match-select');
+    let correct = 0, answered = 0;
+    selects.forEach(sel => {
+      sel.classList.remove('correct', 'wrong');
+      if (!sel.value) return;
+      answered++;
+      if (sel.value === sel.dataset.correct) { sel.classList.add('correct'); correct++; }
+      else { sel.classList.add('wrong'); }
+    });
+    const badge = document.getElementById('ex4Score');
+    if (answered === 0) {
+      badge.textContent = 'Choose some answers first!';
+    } else {
+      badge.textContent = correct + ' / 6 correct';
+    }
+    badge.classList.add('show');
+    updateProgress();
+  }
+
+  /* ═══════════════════════════════════════
+     SEND TO TEACHER
+  ═══════════════════════════════════════ */
+  function getEx1Score() {
+    let correct = 0, total = 0;
+    document.querySelectorAll('#ex1-items .alt-pair').forEach(pair => {
+      const good = pair.querySelector('[data-correct="true"]');
+      if (good && good.disabled) {
+        total++;
+        if (good.classList.contains('correct')) correct++;
+      }
+    });
+    return { correct, total, max: 8 };
+  }
+
+  function getEx2Score() {
+    let correct = 0, total = 0;
+    const answers = [];
+    document.querySelectorAll('.gap-input').forEach((inp, i) => {
+      const val = inp.value.trim();
+      if (val) { total++; answers.push((i+1) + '. ' + val + (inp.classList.contains('correct') ? ' ✓' : ' ✗ (correct: ' + inp.dataset.answer + ')')); }
+      else { answers.push((i+1) + '. (blank)'); }
+      if (inp.classList.contains('correct')) correct++;
+    });
+    return { correct, total, max: 12, answers };
+  }
+
+  function getEx3Score() {
+    let correct = 0, total = 0;
+    document.querySelectorAll('#ex3-items .alt-pair').forEach(pair => {
+      const good = pair.querySelector('[data-correct="true"]');
+      if (good && good.disabled) {
+        total++;
+        if (good.classList.contains('correct')) correct++;
+      }
+    });
+    return { correct, total, max: 8 };
+  }
+
+  function getEx4Score() {
+    let correct = 0, total = 0;
+    document.querySelectorAll('#ex4-items .match-select').forEach((sel, i) => {
+      if (sel.value) {
+        total++;
+        if (sel.value === sel.dataset.correct) correct++;
+      }
+    });
+    return { correct, total, max: 6 };
+  }
+
+  function getSentences() {
+    const ids = ['pa','pb','pc','pd','pe','pf'];
+    const labels = ['a','b','c','d','e','f'];
+    return ids.map((id, i) => {
+      const val = document.getElementById(id).value.trim();
+      return labels[i] + '. ' + (val || '(not answered)');
+    }).join('\n');
+  }
+
+  function sendToTeacher() {
+    const name = document.getElementById('studentName').value.trim() || 'Student';
+    const ex1 = getEx1Score();
+    const ex2 = getEx2Score();
+    const ex3 = getEx3Score();
+    const ex4 = getEx4Score();
+    const overall = ex1.correct + ex2.correct + ex3.correct + ex4.correct;
+
+    const lines = [
+      'HOMEWORK: Tricky Conversations (Unit 6C)',
+      'Student: ' + name,
+      '',
+      '─────────────────────────────',
+      'EXERCISE 1 – Reporting Verbs (Choose Alternatives)',
+      'Score: ' + ex1.correct + ' / ' + ex1.max + (ex1.total < ex1.max ? '  (' + (ex1.max - ex1.total) + ' unanswered)' : ''),
+      '',
+      'EXERCISE 2 – Complete the Conversations (Gap Fill)',
+      'Score: ' + ex2.correct + ' / ' + ex2.max,
+      'Answers:',
+      ex2.answers.join('\n'),
+      '',
+      'EXERCISE 3 – Verb Patterns (Choose Alternatives)',
+      'Score: ' + ex3.correct + ' / ' + ex3.max + (ex3.total < ex3.max ? '  (' + (ex3.max - ex3.total) + ' unanswered)' : ''),
+      '',
+      'EXERCISE 4 – Make Sentences & Match',
+      'Matching score: ' + ex4.correct + ' / ' + ex4.max,
+      'Written sentences:',
+      getSentences(),
+      '',
+      '─────────────────────────────',
+      'OVERALL (multiple-choice + gap-fill): ' + overall + ' / 34',
+    ];
+
+    const subject = 'HW: Tricky Conversations — ' + name;
+    const body = lines.join('\n');
+    window.location.href = 'mailto:dariia.mlnk@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  }
+</script>
+</body>
+</html>
