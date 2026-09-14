@@ -1,0 +1,673 @@
+<title>Party Time Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f8fc; --surface: #fff; --border: #e2e6ef; --text: #18192e;
+  --muted: #6b7280; --accent: #2A5EA8; --accent-light: #dbeafe;
+  --red-hero: #b71c1c;
+  --green: #16a34a; --green-bg: #dcfce7;
+  --red: #dc2626; --red-bg: #fee2e2;
+  --yellow: #d97706; --yellow-bg: #fef3c7;
+  --shadow: 0 2px 14px rgba(0,0,0,.07); --r: 12px;
+}
+@media (prefers-color-scheme:dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#0d0f1a; --surface:#161929; --border:#252b42; --text:#e6e9f4;
+    --muted:#8891a8; --accent:#5b8ee0; --accent-light:#1a2f5c;
+    --green-bg:#052e16; --red-bg:#450a0a; --yellow-bg:#451a03;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#0d0f1a; --surface:#161929; --border:#252b42; --text:#e6e9f4;
+  --muted:#8891a8; --accent:#5b8ee0; --accent-light:#1a2f5c;
+  --green-bg:#052e16; --red-bg:#450a0a; --yellow-bg:#451a03;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--text); font-size:15px; line-height:1.65; }
+
+/* ── Hero ── */
+.hero { background:linear-gradient(135deg, var(--red-hero) 0%, #7f0000 100%); color:#fff; padding:36px 28px 30px; position:relative; overflow:hidden; }
+.hero::after { content:'10B'; position:absolute; right:24px; bottom:0; font-family:'Playfair Display',serif; font-size:110px; font-weight:900; color:rgba(255,255,255,.08); line-height:1; pointer-events:none; }
+.eyebrow { font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; opacity:.65; margin-bottom:6px; }
+.hero h1 { font-family:'Playfair Display',serif; font-size:clamp(28px,5vw,44px); font-weight:900; line-height:1.1; margin-bottom:4px; }
+.hero .sub { font-size:14px; opacity:.8; margin-bottom:18px; }
+.theme-btn { position:absolute; top:18px; right:18px; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3); color:#fff; border-radius:7px; padding:5px 11px; font-size:12px; font-family:'Inter',sans-serif; cursor:pointer; }
+.theme-btn:hover { background:rgba(255,255,255,.25); }
+
+/* ── Name + progress strip ── */
+.name-bar { position:sticky; top:0; z-index:100; background:var(--surface); border-bottom:1px solid var(--border); padding:10px 22px; display:flex; align-items:center; gap:14px; box-shadow:0 1px 8px rgba(0,0,0,.06); flex-wrap:wrap; }
+.name-bar label { font-size:12px; font-weight:700; color:var(--muted); white-space:nowrap; }
+.name-input { border:1px solid var(--border); background:var(--bg); color:var(--text); border-radius:7px; padding:5px 12px; font-family:'Inter',sans-serif; font-size:14px; outline:none; flex:1; min-width:140px; max-width:240px; transition:border-color .2s; }
+.name-input:focus { border-color:var(--accent); }
+.prog-wrap { display:flex; align-items:center; gap:8px; flex:2; min-width:180px; }
+.prog-track { flex:1; height:7px; background:var(--border); border-radius:4px; overflow:hidden; }
+.prog-fill { height:100%; background:var(--accent); border-radius:4px; width:0%; transition:width .4s cubic-bezier(.4,0,.2,1); }
+.prog-fill.done { background:var(--green); }
+.prog-label { font-size:12px; font-weight:700; color:var(--accent); white-space:nowrap; }
+
+/* ── Main ── */
+.main { max-width:840px; margin:0 auto; padding:32px 18px 64px; }
+
+/* ── Exercise card ── */
+.ex-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:24px 26px; margin-bottom:20px; box-shadow:var(--shadow); }
+.ex-hd { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+.ex-num { display:inline-flex; align-items:center; justify-content:center; background:var(--accent); color:#fff; border-radius:50%; width:26px; height:26px; font-size:12px; font-weight:700; flex-shrink:0; }
+.ex-hd h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--accent); }
+.ex-instr { font-size:14px; color:var(--muted); margin-bottom:18px; line-height:1.55; }
+.ex-instr strong { color:var(--text); }
+
+/* ── Ex 1: Anagrams ── */
+.anagram-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px; }
+.anagram-item { display:flex; align-items:center; gap:8px; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:8px 12px; }
+.anagram-num { font-size:12px; font-weight:700; color:var(--muted); min-width:18px; }
+.scrambled { font-size:13px; color:var(--muted); font-style:italic; margin-right:2px; white-space:nowrap; }
+.ana-inp { border:none; border-bottom:2px solid var(--accent); background:transparent; color:var(--text); font-family:'Inter',sans-serif; font-size:14px; font-weight:600; padding:2px 5px; flex:1; min-width:0; width:0; outline:none; transition:border-color .2s; }
+.ana-inp:focus { border-color:var(--yellow); }
+.ana-inp.correct { border-color:var(--green); background:var(--green-bg); color:var(--green); border-radius:4px; }
+.ana-inp.wrong { border-color:var(--red); background:var(--red-bg); color:var(--red); border-radius:4px; }
+
+/* ── Ex 2: Match ── */
+.match-table { width:100%; border-collapse:collapse; }
+.match-table td { padding:8px 10px; font-size:14px; vertical-align:middle; }
+.match-table td:first-child { width:60%; padding-right:16px; }
+.match-select { border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:7px; padding:5px 10px; font-family:'Inter',sans-serif; font-size:14px; outline:none; cursor:pointer; transition:border-color .2s; width:100%; }
+.match-select:focus { border-color:var(--accent); }
+.match-select.correct { border-color:var(--green); background:var(--green-bg); color:var(--green); font-weight:600; }
+.match-select.wrong { border-color:var(--red); background:var(--red-bg); color:var(--red); }
+
+/* ── Ex 3: Word order ── */
+.word-order-list { display:flex; flex-direction:column; gap:14px; }
+.wo-item { display:flex; flex-direction:column; gap:6px; }
+.wo-prompt { font-size:13px; color:var(--muted); font-style:italic; word-break:break-word; }
+.wo-input { border:1px solid var(--border); background:var(--bg); color:var(--text); border-radius:8px; padding:9px 13px; font-family:'Inter',sans-serif; font-size:14px; outline:none; width:100%; transition:border-color .2s; }
+.wo-input:focus { border-color:var(--accent); }
+.wo-input.correct { border-color:var(--green); background:var(--green-bg); color:var(--green); font-weight:600; }
+.wo-input.wrong { border-color:var(--red); background:var(--red-bg); }
+.wo-answer { display:none; font-size:13px; color:var(--green); font-weight:600; margin-top:2px; }
+.wo-answer.vis { display:block; }
+
+/* ── Ex 4: Correction ── */
+.correct-list { display:flex; flex-direction:column; gap:14px; }
+.corr-item { display:flex; flex-direction:column; gap:6px; }
+.corr-wrong { font-size:14px; color:var(--red); text-decoration:line-through; }
+.corr-input { border:1px solid var(--border); background:var(--bg); color:var(--text); border-radius:8px; padding:9px 13px; font-family:'Inter',sans-serif; font-size:14px; outline:none; width:100%; transition:border-color .2s; }
+.corr-input:focus { border-color:var(--accent); }
+.corr-input.correct { border-color:var(--green); background:var(--green-bg); color:var(--green); font-weight:600; }
+.corr-input.wrong { border-color:var(--red); background:var(--red-bg); }
+.corr-answer { display:none; font-size:13px; color:var(--green); font-weight:600; margin-top:2px; padding:6px 10px; background:var(--green-bg); border-radius:6px; }
+.corr-answer.vis { display:block; }
+
+/* ── Ex 5: Gap fill ── */
+.sent-list { list-style:none; display:flex; flex-direction:column; gap:11px; }
+.sent-list li { display:flex; align-items:center; gap:7px; flex-wrap:wrap; font-size:15px; }
+.snum { font-weight:700; color:var(--accent); min-width:20px; font-size:13px; }
+.gap { border:none; border-bottom:2px solid var(--accent); background:transparent; color:var(--text); font-family:'Inter',sans-serif; font-size:15px; padding:2px 6px; min-width:170px; outline:none; transition:border-color .2s; }
+.gap:focus { border-color:var(--yellow); }
+.gap.correct { border-color:var(--green); background:var(--green-bg); color:var(--green); border-radius:4px; }
+.gap.wrong { border-color:var(--red); background:var(--red-bg); color:var(--red); border-radius:4px; }
+.hint { font-size:13px; color:var(--muted); font-style:italic; }
+
+/* ── Buttons ── */
+.btn-row { display:flex; align-items:center; gap:10px; margin-top:18px; flex-wrap:wrap; }
+.check-btn { background:var(--accent); color:#fff; border:none; border-radius:8px; padding:9px 22px; font-size:13px; font-weight:700; font-family:'Inter',sans-serif; cursor:pointer; transition:background .15s,transform .1s; }
+.check-btn:hover { background:#1e4d8c; transform:translateY(-1px); }
+.reset-btn { background:transparent; color:var(--muted); border:1px solid var(--border); border-radius:8px; padding:9px 18px; font-size:13px; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; transition:border-color .15s,color .15s; }
+.reset-btn:hover { border-color:var(--accent); color:var(--accent); }
+.score-badge { display:none; background:var(--yellow-bg); border:1px solid var(--yellow); color:var(--yellow); border-radius:20px; padding:4px 16px; font-size:13px; font-weight:700; }
+.score-badge.vis { display:inline-block; }
+.show-btn { font-size:12px; background:transparent; border:1px solid var(--border); border-radius:5px; color:var(--muted); cursor:pointer; padding:3px 10px; font-family:'Inter',sans-serif; transition:border-color .15s,color .15s; }
+.show-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+/* ── Num labels ── */
+.row-num { font-weight:700; color:var(--accent); min-width:20px; font-size:13px; display:inline-block; }
+
+/* ── Responsive ── */
+@media(max-width:480px) {
+  .anagram-grid { grid-template-columns:1fr 1fr; }
+  .match-table td:first-child { width:50%; }
+}
+</style>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <button class="theme-btn" onclick="toggleTheme()">🌙 / ☀️</button>
+  <div class="eyebrow">Homework · Unit 10B</div>
+  <h1>Party Time</h1>
+  <div class="sub">Vocabulary &amp; Grammar — <em>be going to</em></div>
+</div>
+
+<!-- ── Name + Progress ── -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input class="name-input" id="nameInput" type="text" placeholder="Type your name…">
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="pfill"></div></div>
+    <span class="prog-label" id="plabel">0 / 5</span>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ══════════ EX 1: ANAGRAMS ══════════ -->
+<div class="ex-card" id="card1">
+  <div class="ex-hd">
+    <span class="ex-num">1</span>
+    <h3>Vocabulary — Anagrams</h3>
+  </div>
+  <p class="ex-instr"><strong>Put the letters in the correct order to make words.</strong> All words are party vocabulary from Unit 10B.</p>
+  <div class="anagram-grid" id="anaGrid">
+    <div class="anagram-item"><span class="anagram-num">1</span><span class="scrambled">gins</span><input class="ana-inp" data-ans="sing" oninput="chkAna(this)" onchange="chkAna(this)" placeholder="?"></div>
+    <div class="anagram-item"><span class="anagram-num">2</span><span class="scrambled">aslda</span><input class="ana-inp" data-ans="salad" oninput="chkAna(this)" onchange="chkAna(this)" placeholder="?"></div>
+    <div class="anagram-item"><span class="anagram-num">3</span><span class="scrambled">wandescsih</span><input class="ana-inp" data-ans="sandwiches" oninput="chkAna(this)" onchange="chkAna(this)" placeholder="?"></div>
+    <div class="anagram-item"><span class="anagram-num">4</span><span class="scrambled">sirdkn</span><input class="ana-inp" data-ans="drinks" oninput="chkAna(this)" onchange="chkAna(this)" placeholder="?"></div>
+    <div class="anagram-item"><span class="anagram-num">5</span><span class="scrambled">ankscs</span><input class="ana-inp" data-ans="snacks" oninput="chkAna(this)" onchange="chkAna(this)" placeholder="?"></div>
+    <div class="anagram-item"><span class="anagram-num">6</span><span class="scrambled">tresesd</span><input class="ana-inp" data-ans="dessert" oninput="chkAna(this)" onchange="chkAna(this)" placeholder="?"></div>
+    <div class="anagram-item"><span class="anagram-num">7</span><span class="scrambled">cenda</span><input class="ana-inp" data-ans="dance" oninput="chkAna(this)" onchange="chkAna(this)" placeholder="?"></div>
+    <div class="anagram-item"><span class="anagram-num">8</span><span class="scrambled">klat</span><input class="ana-inp" data-ans="talk" oninput="chkAna(this)" onchange="chkAna(this)" placeholder="?"></div>
+    <div class="anagram-item"><span class="anagram-num">9</span><span class="scrambled">itnels</span><input class="ana-inp" data-ans="listen" oninput="chkAna(this)" onchange="chkAna(this)" placeholder="?"></div>
+    <div class="anagram-item"><span class="anagram-num">10</span><span class="scrambled">uritf</span><input class="ana-inp" data-ans="fruit" oninput="chkAna(this)" onchange="chkAna(this)" placeholder="?"></div>
+    <div class="anagram-item"><span class="anagram-num">11</span><span class="scrambled">yalp</span><input class="ana-inp" data-ans="play" oninput="chkAna(this)" onchange="chkAna(this)" placeholder="?"></div>
+  </div>
+  <div class="btn-row">
+    <button class="check-btn" onclick="checkAna()">Check Exercise 1</button>
+    <button class="reset-btn" onclick="resetEx('card1')">Reset</button>
+    <span class="score-badge" id="sc1"></span>
+  </div>
+</div>
+
+<!-- ══════════ EX 2: MATCH ══════════ -->
+<div class="ex-card" id="card2">
+  <div class="ex-hd">
+    <span class="ex-num">2</span>
+    <h3>Vocabulary — Match the Sentence Halves</h3>
+  </div>
+  <p class="ex-instr"><strong>Choose the correct ending (a–e) for each sentence beginning.</strong></p>
+  <table class="match-table">
+    <tr>
+      <td><span class="row-num">1</span> My dad often sings</td>
+      <td><select class="match-select" data-ans="d" onchange="chkSelect(this)">
+        <option value="">— choose —</option>
+        <option value="a">a. to friends at school.</option>
+        <option value="b">b. to songs on her phone.</option>
+        <option value="c">c. dance at parties.</option>
+        <option value="d">d. songs in the bathroom.</option>
+        <option value="e">e. games every Saturday.</option>
+      </select></td>
+    </tr>
+    <tr>
+      <td><span class="row-num">2</span> Anna loves to listen</td>
+      <td><select class="match-select" data-ans="b" onchange="chkSelect(this)">
+        <option value="">— choose —</option>
+        <option value="a">a. to friends at school.</option>
+        <option value="b">b. to songs on her phone.</option>
+        <option value="c">c. dance at parties.</option>
+        <option value="d">d. songs in the bathroom.</option>
+        <option value="e">e. games every Saturday.</option>
+      </select></td>
+    </tr>
+    <tr>
+      <td><span class="row-num">3</span> Me and my friends play</td>
+      <td><select class="match-select" data-ans="e" onchange="chkSelect(this)">
+        <option value="">— choose —</option>
+        <option value="a">a. to friends at school.</option>
+        <option value="b">b. to songs on her phone.</option>
+        <option value="c">c. dance at parties.</option>
+        <option value="d">d. songs in the bathroom.</option>
+        <option value="e">e. games every Saturday.</option>
+      </select></td>
+    </tr>
+    <tr>
+      <td><span class="row-num">4</span> Every day, I talk</td>
+      <td><select class="match-select" data-ans="a" onchange="chkSelect(this)">
+        <option value="">— choose —</option>
+        <option value="a">a. to friends at school.</option>
+        <option value="b">b. to songs on her phone.</option>
+        <option value="c">c. dance at parties.</option>
+        <option value="d">d. songs in the bathroom.</option>
+        <option value="e">e. games every Saturday.</option>
+      </select></td>
+    </tr>
+    <tr>
+      <td><span class="row-num">5</span> We always like to</td>
+      <td><select class="match-select" data-ans="c" onchange="chkSelect(this)">
+        <option value="">— choose —</option>
+        <option value="a">a. to friends at school.</option>
+        <option value="b">b. to songs on her phone.</option>
+        <option value="c">c. dance at parties.</option>
+        <option value="d">d. songs in the bathroom.</option>
+        <option value="e">e. games every Saturday.</option>
+      </select></td>
+    </tr>
+  </table>
+  <div class="btn-row">
+    <button class="check-btn" onclick="checkMatch()">Check Exercise 2</button>
+    <button class="reset-btn" onclick="resetEx('card2')">Reset</button>
+    <span class="score-badge" id="sc2"></span>
+  </div>
+</div>
+
+<!-- ══════════ EX 3: WORD ORDER ══════════ -->
+<div class="ex-card" id="card3">
+  <div class="ex-hd">
+    <span class="ex-num">3</span>
+    <h3>Grammar — Word Order</h3>
+  </div>
+  <p class="ex-instr"><strong>Put the words in the correct order to make sentences.</strong> Use <em>be going to</em>.</p>
+  <div class="word-order-list">
+    <div class="wo-item">
+      <div class="wo-prompt">1 · my / visit / I'm / parents / to / going</div>
+      <input class="wo-input" data-ans="i'm going to visit my parents." placeholder="Write the sentence…" oninput="chkWO(this)" onchange="chkWO(this)">
+      <div class="wo-answer" id="wa1">✅ I'm going to visit my parents.</div>
+    </div>
+    <div class="wo-item">
+      <div class="wo-prompt">2 · Lucia / my house / to / is / going / come / to</div>
+      <input class="wo-input" data-ans="lucia is going to come to my house." placeholder="Write the sentence…" oninput="chkWO(this)" onchange="chkWO(this)">
+      <div class="wo-answer" id="wa2">✅ Lucia is going to come to my house.</div>
+    </div>
+    <div class="wo-item">
+      <div class="wo-prompt">3 · a / are / going / watch / We / film / to</div>
+      <input class="wo-input" data-ans="we are going to watch a film." data-ans2="we're going to watch a film." placeholder="Write the sentence…" oninput="chkWO(this)" onchange="chkWO(this)">
+      <div class="wo-answer" id="wa3">✅ We are going to watch a film.</div>
+    </div>
+    <div class="wo-item">
+      <div class="wo-prompt">4 · football / not / are / play / They / to / going</div>
+      <input class="wo-input" data-ans="they aren't going to play football." data-ans2="they are not going to play football." placeholder="Write the sentence…" oninput="chkWO(this)" onchange="chkWO(this)">
+      <div class="wo-answer" id="wa4">✅ They aren't going to play football.</div>
+    </div>
+    <div class="wo-item">
+      <div class="wo-prompt">5 · going / be / restaurant / a / is / The party / at / to</div>
+      <input class="wo-input" data-ans="the party is going to be at a restaurant." placeholder="Write the sentence…" oninput="chkWO(this)" onchange="chkWO(this)">
+      <div class="wo-answer" id="wa5">✅ The party is going to be at a restaurant.</div>
+    </div>
+    <div class="wo-item">
+      <div class="wo-prompt">6 · She / arrive / to / 8 o'clock / the party / going / is / at</div>
+      <input class="wo-input" data-ans="she is going to arrive at the party at 8 o'clock." data-ans2="she is going to arrive at 8 o'clock." placeholder="Write the sentence…" oninput="chkWO(this)" onchange="chkWO(this)">
+      <div class="wo-answer" id="wa6">✅ She is going to arrive at the party at 8 o'clock.</div>
+    </div>
+    <div class="wo-item">
+      <div class="wo-prompt">7 · move / going / to / house / I'm / new / a / to</div>
+      <input class="wo-input" data-ans="i'm going to move to a new house." placeholder="Write the sentence…" oninput="chkWO(this)" onchange="chkWO(this)">
+      <div class="wo-answer" id="wa7">✅ I'm going to move to a new house.</div>
+    </div>
+    <div class="wo-item">
+      <div class="wo-prompt">8 · going / Edward / to / isn't / school / go / to</div>
+      <input class="wo-input" data-ans="edward isn't going to go to school." data-ans2="edward is not going to go to school." placeholder="Write the sentence…" oninput="chkWO(this)" onchange="chkWO(this)">
+      <div class="wo-answer" id="wa8">✅ Edward isn't going to go to school.</div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="check-btn" onclick="checkWO()">Check Exercise 3</button>
+    <button class="show-btn" onclick="showAllWO()">Show all answers</button>
+    <button class="reset-btn" onclick="resetEx('card3')">Reset</button>
+    <span class="score-badge" id="sc3"></span>
+  </div>
+</div>
+
+<!-- ══════════ EX 4: CORRECT THE SENTENCES ══════════ -->
+<div class="ex-card" id="card4">
+  <div class="ex-hd">
+    <span class="ex-num">4</span>
+    <h3>Grammar — Correct the Sentences</h3>
+  </div>
+  <p class="ex-instr"><strong>Each sentence has ONE mistake.</strong> Write the correct sentence in the box. Use <em>be going to</em>.</p>
+  <div class="correct-list">
+    <div class="corr-item">
+      <div class="corr-wrong">1 · I going to study French next year.</div>
+      <input class="corr-input" data-ans="i'm going to study french next year." placeholder="Write the correct sentence…" oninput="chkCorr(this)" onchange="chkCorr(this)">
+      <div class="corr-answer" id="ca1">✅ I<strong>'m</strong> going to study French next year.</div>
+    </div>
+    <div class="corr-item">
+      <div class="corr-wrong">2 · My brother's going change jobs next month.</div>
+      <input class="corr-input" data-ans="my brother's going to change jobs next month." placeholder="Write the correct sentence…" oninput="chkCorr(this)" onchange="chkCorr(this)">
+      <div class="corr-answer" id="ca2">✅ My brother's going <strong>to</strong> change jobs next month.</div>
+    </div>
+    <div class="corr-item">
+      <div class="corr-wrong">3 · Charlotte and Leonie is going to visit the museum.</div>
+      <input class="corr-input" data-ans="charlotte and leonie are going to visit the museum." placeholder="Write the correct sentence…" oninput="chkCorr(this)" onchange="chkCorr(this)">
+      <div class="corr-answer" id="ca3">✅ Charlotte and Leonie <strong>are</strong> going to visit the museum.</div>
+    </div>
+    <div class="corr-item">
+      <div class="corr-wrong">4 · I'm not going doing anything on Saturday!</div>
+      <input class="corr-input" data-ans="i'm not going to do anything on saturday!" placeholder="Write the correct sentence…" oninput="chkCorr(this)" onchange="chkCorr(this)">
+      <div class="corr-answer" id="ca4">✅ I'm not going <strong>to do</strong> anything on Saturday!</div>
+    </div>
+    <div class="corr-item">
+      <div class="corr-wrong">5 · They aren't going take the train to Paris.</div>
+      <input class="corr-input" data-ans="they aren't going to take the train to paris." placeholder="Write the correct sentence…" oninput="chkCorr(this)" onchange="chkCorr(this)">
+      <div class="corr-answer" id="ca5">✅ They aren't going <strong>to</strong> take the train to Paris.</div>
+    </div>
+    <div class="corr-item">
+      <div class="corr-wrong">6 · We isn't going to play the game.</div>
+      <input class="corr-input" data-ans="we aren't going to play the game." data-ans2="we are not going to play the game." placeholder="Write the correct sentence…" oninput="chkCorr(this)" onchange="chkCorr(this)">
+      <div class="corr-answer" id="ca6">✅ We <strong>aren't</strong> going to play the game.</div>
+    </div>
+    <div class="corr-item">
+      <div class="corr-wrong">7 · I go to have dinner with Martin tomorrow.</div>
+      <input class="corr-input" data-ans="i'm going to have dinner with martin tomorrow." placeholder="Write the correct sentence…" oninput="chkCorr(this)" onchange="chkCorr(this)">
+      <div class="corr-answer" id="ca7">✅ I<strong>'m going to</strong> have dinner with Martin tomorrow.</div>
+    </div>
+    <div class="corr-item">
+      <div class="corr-wrong">8 · Jenny going to have a baby next year.</div>
+      <input class="corr-input" data-ans="jenny is going to have a baby next year." placeholder="Write the correct sentence…" oninput="chkCorr(this)" onchange="chkCorr(this)">
+      <div class="corr-answer" id="ca8">✅ Jenny <strong>is</strong> going to have a baby next year.</div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="check-btn" onclick="checkCorr()">Check Exercise 4</button>
+    <button class="show-btn" onclick="showAllCorr()">Show all answers</button>
+    <button class="reset-btn" onclick="resetEx('card4')">Reset</button>
+    <span class="score-badge" id="sc4"></span>
+  </div>
+</div>
+
+<!-- ══════════ EX 5: GAP FILL ══════════ -->
+<div class="ex-card" id="card5">
+  <div class="ex-hd">
+    <span class="ex-num">5</span>
+    <h3>Grammar — Be Going To Gap Fill</h3>
+  </div>
+  <p class="ex-instr"><strong>Complete the sentences with <em>be going to</em> and the verbs in brackets.</strong></p>
+  <ul class="sent-list">
+    <li>
+      <span class="snum">1</span> I
+      <input class="gap" data-ans="'m going to see|am going to see" placeholder="____________" oninput="chkGap(this)" onchange="chkGap(this)">
+      (see) Tim at the weekend.
+    </li>
+    <li>
+      <span class="snum">2</span> We
+      <input class="gap" data-ans="aren't going to go|are not going to go" placeholder="____________" oninput="chkGap(this)" onchange="chkGap(this)">
+      (not go) on holiday this year.
+    </li>
+    <li>
+      <span class="snum">3</span> Luisa
+      <input class="gap" data-ans="is going to open" placeholder="____________" oninput="chkGap(this)" onchange="chkGap(this)">
+      (open) an Italian restaurant.
+    </li>
+    <li>
+      <span class="snum">4</span> My parents
+      <input class="gap" data-ans="are going to sell" placeholder="____________" oninput="chkGap(this)" onchange="chkGap(this)">
+      (sell) their house.
+    </li>
+    <li>
+      <span class="snum">5</span> Sam
+      <input class="gap" data-ans="is going to change" placeholder="____________" oninput="chkGap(this)" onchange="chkGap(this)">
+      (change) jobs.
+    </li>
+    <li>
+      <span class="snum">6</span> Frank
+      <input class="gap" data-ans="isn't going to move|is not going to move" placeholder="____________" oninput="chkGap(this)" onchange="chkGap(this)">
+      (not move) to the city next year.
+    </li>
+    <li>
+      <span class="snum">7</span> You
+      <input class="gap" data-ans="are going to play|'re going to play" placeholder="____________" oninput="chkGap(this)" onchange="chkGap(this)">
+      (play) the game!
+    </li>
+    <li>
+      <span class="snum">8</span> I
+      <input class="gap" data-ans="'m not going to dance|am not going to dance" placeholder="____________" oninput="chkGap(this)" onchange="chkGap(this)">
+      (not dance) at the party.
+    </li>
+  </ul>
+  <div class="btn-row">
+    <button class="check-btn" onclick="checkGaps()">Check Exercise 5</button>
+    <button class="reset-btn" onclick="resetEx('card5')">Reset</button>
+    <span class="score-badge" id="sc5"></span>
+  </div>
+</div>
+
+<!-- ══════════ SEND TO TEACHER ══════════ -->
+<div class="ex-card" style="background:var(--accent-light);border-color:var(--accent);">
+  <div class="ex-hd">
+    <span class="ex-num" style="background:var(--accent);">✉</span>
+    <h3 style="color:var(--accent);">Send to Teacher</h3>
+  </div>
+  <p class="ex-instr" style="margin-bottom:14px;">Make sure you've written your name above, then click the button to email your answers to your teacher.</p>
+  <button class="check-btn" onclick="sendToTeacher()" style="background:var(--accent);font-size:14px;padding:11px 28px;">📧 Send to Teacher</button>
+</div>
+
+</div><!-- /main -->
+
+<script>
+/* ── Theme ── */
+function toggleTheme() {
+  const r = document.documentElement;
+  const cur = r.getAttribute('data-theme');
+  r.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+}
+
+/* ── Progress ── */
+const done = { ex1:false, ex2:false, ex3:false, ex4:false, ex5:false };
+function updateProgress() {
+  const n = Object.values(done).filter(Boolean).length;
+  const total = Object.keys(done).length;
+  const pct = Math.round(n / total * 100);
+  const f = document.getElementById('pfill');
+  f.style.width = pct + '%';
+  f.classList.toggle('done', pct === 100);
+  document.getElementById('plabel').textContent = n + ' / ' + total;
+}
+
+/* ── Normalise ── */
+function norm(s) {
+  return s.trim().toLowerCase().replace(/['']/g, "'").replace(/\s+/g, ' ');
+}
+function matchAns(val, inp) {
+  const v = norm(val);
+  const a1 = norm(inp.dataset.ans || '');
+  const a2 = inp.dataset.ans2 ? norm(inp.dataset.ans2) : null;
+  return v === a1 || (a2 && v === a2);
+}
+
+/* ── Ex 1: Anagrams ── */
+function chkAna(inp) {
+  const v = norm(inp.value);
+  if (!v) { inp.classList.remove('correct','wrong'); return; }
+  inp.classList.toggle('correct', v === inp.dataset.ans);
+  inp.classList.toggle('wrong',   v !== inp.dataset.ans);
+}
+function checkAna() {
+  let c = 0, a = 0;
+  document.querySelectorAll('#card1 .ana-inp').forEach(inp => {
+    chkAna(inp);
+    if (inp.value.trim()) { a++; if (inp.classList.contains('correct')) c++; }
+  });
+  const sc = document.getElementById('sc1');
+  sc.textContent = a === 0 ? 'Fill in some answers first!' : c + ' / 11 correct';
+  sc.classList.add('vis');
+  if (c === 11) done.ex1 = true;
+  updateProgress();
+}
+
+/* ── Ex 2: Match ── */
+function chkSelect(sel) {
+  sel.classList.remove('correct','wrong');
+  if (!sel.value) return;
+  sel.classList.add(sel.value === sel.dataset.ans ? 'correct' : 'wrong');
+}
+function checkMatch() {
+  let c = 0, a = 0;
+  document.querySelectorAll('#card2 .match-select').forEach(sel => {
+    chkSelect(sel);
+    if (sel.value) { a++; if (sel.classList.contains('correct')) c++; }
+  });
+  const sc = document.getElementById('sc2');
+  sc.textContent = a === 0 ? 'Choose some answers first!' : c + ' / 5 correct';
+  sc.classList.add('vis');
+  if (c === 5) done.ex2 = true;
+  updateProgress();
+}
+
+/* ── Ex 3: Word order ── */
+function chkWO(inp) {
+  const v = norm(inp.value);
+  if (!v) { inp.classList.remove('correct','wrong'); return; }
+  inp.classList.toggle('correct', matchAns(v, inp));
+  inp.classList.toggle('wrong',  !matchAns(v, inp));
+}
+function checkWO() {
+  let c = 0, a = 0;
+  const inputs = document.querySelectorAll('#card3 .wo-input');
+  inputs.forEach(inp => {
+    chkWO(inp);
+    if (inp.value.trim()) { a++; if (inp.classList.contains('correct')) c++; }
+  });
+  const sc = document.getElementById('sc3');
+  sc.textContent = a === 0 ? 'Write some sentences first!' : c + ' / 8 correct';
+  sc.classList.add('vis');
+  if (c === 8) done.ex3 = true;
+  updateProgress();
+}
+function showAllWO() {
+  for (let i=1; i<=8; i++) {
+    const el = document.getElementById('wa'+i);
+    if (el) el.classList.add('vis');
+  }
+}
+
+/* ── Ex 4: Correct sentences ── */
+function chkCorr(inp) {
+  const v = norm(inp.value);
+  if (!v) { inp.classList.remove('correct','wrong'); return; }
+  inp.classList.toggle('correct', matchAns(v, inp));
+  inp.classList.toggle('wrong',  !matchAns(v, inp));
+}
+function checkCorr() {
+  let c = 0, a = 0;
+  document.querySelectorAll('#card4 .corr-input').forEach(inp => {
+    chkCorr(inp);
+    if (inp.value.trim()) { a++; if (inp.classList.contains('correct')) c++; }
+  });
+  const sc = document.getElementById('sc4');
+  sc.textContent = a === 0 ? 'Write some corrections first!' : c + ' / 8 correct';
+  sc.classList.add('vis');
+  if (c === 8) done.ex4 = true;
+  updateProgress();
+}
+function showAllCorr() {
+  for (let i=1; i<=8; i++) {
+    const el = document.getElementById('ca'+i);
+    if (el) el.classList.add('vis');
+  }
+}
+
+/* ── Ex 5: Gap fill ── */
+function chkGap(inp) {
+  const accepted = inp.dataset.ans.split('|').map(norm);
+  const v = norm(inp.value);
+  if (!v) { inp.classList.remove('correct','wrong'); return; }
+  inp.classList.toggle('correct', accepted.includes(v));
+  inp.classList.toggle('wrong',  !accepted.includes(v));
+}
+function checkGaps() {
+  let c = 0, a = 0;
+  document.querySelectorAll('#card5 .gap').forEach(inp => {
+    chkGap(inp);
+    if (inp.value.trim()) { a++; if (inp.classList.contains('correct')) c++; }
+  });
+  const sc = document.getElementById('sc5');
+  sc.textContent = a === 0 ? 'Fill in some answers first!' : c + ' / 8 correct';
+  sc.classList.add('vis');
+  if (c === 8) done.ex5 = true;
+  updateProgress();
+}
+
+/* ── Send to Teacher ── */
+function sendToTeacher() {
+  const name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+  // Ex 1 – Anagrams
+  let ex1 = 'EXERCISE 1 – Anagrams\n';
+  const scrambles = ['gins','aslda','wandescsih','sirdkn','ankscs','tresesd','cenda','klat','itnels','uritf','yalp'];
+  document.querySelectorAll('#card1 .ana-inp').forEach((inp,i) => {
+    const status = inp.classList.contains('correct') ? '✓' : inp.classList.contains('wrong') ? '✗' : '—';
+    ex1 += `  ${i+1}. ${scrambles[i]} → ${inp.value || '(blank)'}  ${status}\n`;
+  });
+
+  // Ex 2 – Match
+  let ex2 = 'EXERCISE 2 – Match the Halves\n';
+  const starts = [
+    'My dad often sings',
+    'Anna loves to listen',
+    'Me and my friends play',
+    'Every day, I talk',
+    'We always like to'
+  ];
+  document.querySelectorAll('#card2 .match-select').forEach((sel,i) => {
+    const chosen = sel.options[sel.selectedIndex]?.text || '(not chosen)';
+    const status = sel.classList.contains('correct') ? '✓' : sel.classList.contains('wrong') ? '✗' : '—';
+    ex2 += `  ${i+1}. ${starts[i]} … ${chosen}  ${status}\n`;
+  });
+
+  // Ex 3 – Word order
+  let ex3 = 'EXERCISE 3 – Word Order\n';
+  const prompts3 = [
+    'my/visit/I\'m/parents/to/going',
+    'Lucia/my house/to/is/going/come/to',
+    'a/are/going/watch/We/film/to',
+    'to/going/play/not/They\'re/football',
+    'she/Is/to/going/party/have/a',
+    'city/going/the/to/move/We\'re/to',
+    'next/not/going/year/I\'m/study/to',
+    'he/Is/to/going/at/work/weekend/the'
+  ];
+  document.querySelectorAll('#card3 .wo-input').forEach((inp,i) => {
+    const status = inp.classList.contains('correct') ? '✓' : inp.classList.contains('wrong') ? '✗' : '—';
+    ex3 += `  ${i+1}. [${prompts3[i]}]\n     → ${inp.value || '(blank)'}  ${status}\n`;
+  });
+
+  // Ex 4 – Correct the sentences
+  let ex4 = 'EXERCISE 4 – Correct the Sentences\n';
+  const wrong4 = [
+    "I going to study French next year.",
+    "My brother's going change jobs next month.",
+    "Charlotte and Leonie is going to visit the museum.",
+    "I'm not going doing anything on Saturday!",
+    "They aren't going take the train to Paris.",
+    "We isn't going to play the game.",
+    "I'm go to have dinner with Martin tomorrow.",
+    "Jenny going to have a baby next year."
+  ];
+  document.querySelectorAll('#card4 .corr-input').forEach((inp,i) => {
+    const status = inp.classList.contains('correct') ? '✓' : inp.classList.contains('wrong') ? '✗' : '—';
+    ex4 += `  ${i+1}. ✗ ${wrong4[i]}\n     → ${inp.value || '(blank)'}  ${status}\n`;
+  });
+
+  // Ex 5 – Gap fill
+  let ex5 = 'EXERCISE 5 – Gap Fill (be going to)\n';
+  const sentences5 = [
+    "We _____ (see) a new film tonight.",
+    "They _____ (not go) to the concert.",
+    "She _____ (open) a café next year.",
+    "My parents _____ (sell) their house.",
+    "The weather _____ (change) tomorrow.",
+    "He _____ (not move) to a new city.",
+    "You _____ (play) the game!",
+    "I _____ (not dance) at the party."
+  ];
+  document.querySelectorAll('#card5 .gap').forEach((inp,i) => {
+    const status = inp.classList.contains('correct') ? '✓' : inp.classList.contains('wrong') ? '✗' : '—';
+    ex5 += `  ${i+1}. ${sentences5[i].replace('_____', inp.value || '______')}  ${status}\n`;
+  });
+
+  const pct = Math.round(Object.values(done).filter(Boolean).length / Object.keys(done).length * 100);
+  const body = `Student: ${name}\nProgress: ${pct}%\n\n${ex1}\n${ex2}\n${ex3}\n${ex4}\n${ex5}`;
+  const subject = `Homework – Party Time – ${name}`;
+  window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+/* ── Reset ── */
+function resetEx(cardId) {
+  const card = document.getElementById(cardId);
+  card.querySelectorAll('input,select').forEach(el => {
+    el.value = '';
+    el.classList.remove('correct','wrong');
+  });
+  card.querySelectorAll('.score-badge').forEach(b => b.classList.remove('vis'));
+  card.querySelectorAll('.wo-answer,.corr-answer').forEach(el => el.classList.remove('vis'));
+  const map = {card1:'ex1',card2:'ex2',card3:'ex3',card4:'ex4',card5:'ex5'};
+  if (map[cardId]) done[map[cardId]] = false;
+  updateProgress();
+}
+</script>
