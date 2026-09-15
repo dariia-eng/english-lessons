@@ -1,0 +1,1504 @@
+<title>Language Mission</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --bg:       #0B1622;
+  --surf:     #121F30;
+  --surf2:    #192C42;
+  --border:   #243650;
+  --text:     #DDE9F6;
+  --muted:    #6A90B4;
+  --amber:    #F5A623;
+  --amber-d:  rgba(245,166,35,.14);
+  --teal:     #32C8BF;
+  --teal-d:   rgba(50,200,191,.13);
+  --ok:       #3DD68C;
+  --ok-d:     rgba(61,214,140,.13);
+  --err:      #F36F6F;
+  --err-d:    rgba(243,111,111,.13);
+  --purple:   #A78BFA;
+  --purple-d: rgba(167,139,250,.13);
+  --r:        10px;
+  --rs:       7px;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#EEF4FB;--surf:#fff;--surf2:#E2EDF8;--border:#C0D4EC;
+  --text:#0B1622;--muted:#3D6080;
+  --amber:#B87000;--amber-d:rgba(184,112,0,.11);
+  --teal:#0E9C94;--teal-d:rgba(14,156,148,.11);
+  --ok:#0E8A4A;--ok-d:rgba(14,138,74,.11);
+  --err:#C53030;--err-d:rgba(197,48,48,.11);
+  --purple:#6D3FC7;--purple-d:rgba(109,63,199,.11);
+}}
+:root[data-theme="dark"]{
+  --bg:#0B1622;--surf:#121F30;--surf2:#192C42;--border:#243650;
+  --text:#DDE9F6;--muted:#6A90B4;
+  --amber:#F5A623;--amber-d:rgba(245,166,35,.14);
+  --teal:#32C8BF;--teal-d:rgba(50,200,191,.13);
+  --ok:#3DD68C;--ok-d:rgba(61,214,140,.13);
+  --err:#F36F6F;--err-d:rgba(243,111,111,.13);
+  --purple:#A78BFA;--purple-d:rgba(167,139,250,.13);
+}
+:root[data-theme="light"]{
+  --bg:#EEF4FB;--surf:#fff;--surf2:#E2EDF8;--border:#C0D4EC;
+  --text:#0B1622;--muted:#3D6080;
+  --amber:#B87000;--amber-d:rgba(184,112,0,.11);
+  --teal:#0E9C94;--teal-d:rgba(14,156,148,.11);
+  --ok:#0E8A4A;--ok-d:rgba(14,138,74,.11);
+  --err:#C53030;--err-d:rgba(197,48,48,.11);
+  --purple:#6D3FC7;--purple-d:rgba(109,63,199,.11);
+}
+
+/* ── RESET ───────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',system-ui,sans-serif;
+  color:var(--text);background:var(--bg);
+  min-height:100vh;
+  padding-bottom:60px;
+}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;text-wrap:balance;line-height:1.15}
+
+/* ── LAYOUT ─────────────────────────────────────────────── */
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+
+/* ── TOP BAR ─────────────────────────────────────────────── */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+  padding:12px 0;
+  margin-bottom:36px;
+}
+.topbar-inner{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.act-label{
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--muted);
+  min-width:100px;
+}
+.dots{display:flex;gap:5px;align-items:center;flex:1;justify-content:center}
+.dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--border);transition:all .3s;
+  cursor:pointer;
+}
+.dot:not(.now):hover{transform:scale(1.35);background:var(--muted)}
+.dot.done{background:var(--ok)}
+.dot.done:hover{background:var(--amber)!important}
+.dot.now{background:var(--amber);width:22px;border-radius:4px;cursor:default}
+.dot.visited-ahead{background:var(--teal);opacity:.6}
+.dot.visited-ahead:hover{opacity:1}
+.score-pill{
+  display:flex;align-items:center;gap:5px;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:15px;
+  color:var(--amber);
+  background:var(--amber-d);
+  padding:4px 12px;border-radius:20px;
+}
+.theme-btn{
+  background:none;border:1px solid var(--border);
+  color:var(--muted);border-radius:6px;
+  padding:4px 8px;font-size:13px;cursor:pointer;
+  transition:all .2s;
+}
+.theme-btn:hover{border-color:var(--amber);color:var(--amber)}
+
+/* ── SCREENS ─────────────────────────────────────────────── */
+.screen{display:none}
+.screen.active{display:block;animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ── BADGES ─────────────────────────────────────────────── */
+.badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 11px;border-radius:20px;margin-bottom:14px;
+}
+.b-amber{background:var(--amber-d);color:var(--amber)}
+.b-err  {background:var(--err-d);color:var(--err)}
+.b-teal {background:var(--teal-d);color:var(--teal)}
+.b-ok   {background:var(--ok-d);color:var(--ok)}
+.b-purple{background:var(--purple-d);color:var(--purple)}
+
+.act-title{font-size:clamp(24px,6vw,34px);font-weight:800;margin-bottom:6px}
+.act-sub{font-size:15px;color:var(--muted);margin-bottom:28px;line-height:1.5}
+
+/* ── BUTTONS ─────────────────────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;
+  border:none;border-radius:var(--rs);cursor:pointer;
+  padding:12px 22px;transition:all .18s;
+}
+.btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.btn-amber{background:var(--amber);color:#0B1622}
+.btn-amber:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{background:var(--surf2);color:var(--text)}
+.btn-full{width:100%;padding:14px;font-size:16px;margin-top:24px}
+.btn-full:disabled{opacity:.38;cursor:not-allowed;transform:none}
+
+/* ── CHOICE BUTTONS ─────────────────────────────────────── */
+.choices{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.cbtn{
+  width:100%;text-align:left;
+  padding:13px 18px;border-radius:var(--rs);
+  border:2px solid var(--border);background:var(--surf);
+  color:var(--text);font-family:'DM Sans',sans-serif;
+  font-size:15px;cursor:pointer;line-height:1.45;
+  transition:border-color .15s,background .15s;
+}
+.cbtn:hover:not(:disabled){border-color:var(--amber);background:var(--amber-d)}
+.cbtn.ok {border-color:var(--ok)!important;background:var(--ok-d)!important;color:var(--ok);font-weight:600}
+.cbtn.no {border-color:var(--err)!important;background:var(--err-d)!important;color:var(--err)}
+.cbtn.show{border-color:var(--ok)!important;background:var(--ok-d)!important;color:var(--ok);opacity:.65}
+.cbtn:disabled{cursor:not-allowed}
+
+/* ── Q PROGRESS ─────────────────────────────────────────── */
+.qprog{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.qdots{display:flex;gap:5px}
+.qdot{width:9px;height:9px;border-radius:50%;background:var(--border);transition:.25s}
+.qdot.done{background:var(--ok)}
+.qdot.now{background:var(--amber)}
+.qnum{font-size:12px;color:var(--muted);font-weight:600}
+
+/* ── QUESTION CARD ──────────────────────────────────────── */
+.qcard{
+  background:var(--surf);border:1px solid var(--border);
+  border-radius:var(--r);padding:22px;margin-bottom:14px;
+}
+.qlabel{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.qtext{font-size:17px;font-weight:500;line-height:1.55}
+.qtext em{color:var(--amber);font-style:normal;font-weight:700}
+.qhint{font-size:13px;color:var(--muted);margin-top:9px;font-style:italic}
+
+/* ── CONVERSATION ───────────────────────────────────────── */
+.convo{
+  background:var(--surf2);border-radius:var(--rs);
+  padding:16px 18px;margin-bottom:14px;
+  border-left:3px solid var(--border);
+}
+.cl{margin-bottom:8px;font-size:15px;line-height:1.6}
+.cl:last-child{margin-bottom:0}
+.sp{font-weight:700;font-size:11px;letter-spacing:.07em;text-transform:uppercase;margin-right:6px}
+.sp-a{color:var(--teal)}.sp-b{color:var(--amber)}
+
+/* ── FEEDBACK STRIP ─────────────────────────────────────── */
+.fb{display:none;padding:11px 16px;border-radius:var(--rs);font-weight:600;font-size:14px;margin-top:12px;line-height:1.4}
+.fb.show{display:block}
+.fb.good{background:var(--ok-d);color:var(--ok)}
+.fb.bad {background:var(--err-d);color:var(--err)}
+
+/* ── MATCHING GAME ──────────────────────────────────────── */
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match-col{display:flex;flex-direction:column;gap:7px}
+.mc{
+  background:var(--surf);border:2px solid var(--border);
+  border-radius:var(--rs);padding:11px 14px;
+  cursor:pointer;font-size:14px;font-weight:500;
+  line-height:1.4;transition:all .18s;
+  min-height:48px;display:flex;align-items:center;
+}
+.mc:hover:not(.matched){border-color:var(--amber);background:var(--amber-d)}
+.mc.sel{border-color:var(--amber);background:var(--amber-d)}
+.mc.matched{border-color:var(--ok)!important;background:var(--ok-d)!important;color:var(--ok);pointer-events:none;font-weight:600}
+.mc.flash-no{border-color:var(--err);background:var(--err-d)}
+.match-score{margin-top:14px;font-size:15px;font-weight:600;color:var(--muted)}
+
+/* ── WORD BANK ──────────────────────────────────────────── */
+.bank{
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding:14px 16px;background:var(--surf2);
+  border-radius:var(--rs);margin-bottom:20px;
+}
+.chip{
+  padding:6px 14px;border-radius:20px;
+  border:2px solid var(--teal);background:var(--teal-d);
+  color:var(--teal);font-weight:600;font-size:14px;
+  cursor:pointer;transition:all .18s;
+  font-family:'DM Sans',sans-serif;
+}
+.chip:hover:not(.used){background:var(--teal);color:var(--bg)}
+.chip.used{opacity:.28;pointer-events:none}
+
+.fill-q{margin-bottom:14px;font-size:15px;line-height:1.85}
+.fill-q strong{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin-right:6px}
+.blank{
+  display:inline-block;min-width:110px;padding:1px 10px;
+  border-bottom:2px solid var(--border);border-radius:4px 4px 0 0;
+  cursor:pointer;transition:all .18s;font-weight:600;
+  color:var(--muted);vertical-align:middle;
+}
+.blank.active{border-bottom-color:var(--amber);background:var(--amber-d);color:var(--amber)}
+.blank.filled{color:var(--teal);border-bottom-color:var(--teal)}
+.blank.ok-fill{color:var(--ok)!important;border-bottom-color:var(--ok)!important}
+.blank.no-fill{color:var(--err)!important;border-bottom-color:var(--err)!important}
+
+/* ── STORY TEXT ─────────────────────────────────────────── */
+.story{
+  background:var(--surf);border:1px solid var(--border);
+  border-radius:var(--r);padding:22px;
+  font-size:15px;line-height:2.1;
+}
+.qsel{
+  -webkit-appearance:none;appearance:none;
+  background:var(--amber-d);border:2px solid var(--amber);
+  border-radius:5px;color:var(--amber);
+  font-weight:700;font-family:'DM Sans',sans-serif;font-size:14px;
+  padding:2px 8px;cursor:pointer;min-width:82px;
+  text-align:center;
+}
+.qsel.ok{background:var(--ok-d)!important;border-color:var(--ok)!important;color:var(--ok)!important}
+.qsel.no{background:var(--err-d)!important;border-color:var(--err)!important;color:var(--err)!important}
+
+/* ── REFLECT ─────────────────────────────────────────────── */
+.refl-item{
+  background:var(--surf);border:1px solid var(--border);
+  border-radius:var(--rs);padding:16px;margin-bottom:10px;
+}
+.refl-text{font-size:15px;font-weight:500;margin-bottom:10px}
+.stars{display:flex;gap:8px}
+.star{
+  font-size:22px;background:none;border:none;cursor:pointer;
+  filter:grayscale(1) opacity(.35);transition:all .12s;line-height:1;
+}
+.star:hover{transform:scale(1.2)}
+.star.lit{filter:none}
+
+/* ── RESULTS ─────────────────────────────────────────────── */
+.results-wrap{text-align:center;padding:48px 0 32px}
+.result-badge{font-size:72px;display:block;margin-bottom:20px}
+.result-num{
+  font-family:'Syne',sans-serif;font-size:80px;font-weight:800;
+  color:var(--amber);line-height:1;
+}
+.result-of{font-size:16px;color:var(--muted);margin:4px 0 20px}
+.result-msg{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px}
+.result-detail{font-size:15px;color:var(--muted);max-width:480px;margin:0 auto}
+.result-breakdown{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:10px;margin:28px 0;text-align:left;
+}
+.rb-item{
+  background:var(--surf);border:1px solid var(--border);
+  border-radius:var(--rs);padding:12px 14px;
+}
+.rb-name{font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.rb-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text)}
+
+/* ── INTRO ──────────────────────────────────────────────── */
+.intro-hero{text-align:center;padding:48px 0 36px}
+.intro-icon{font-size:56px;display:block;margin-bottom:22px}
+.intro-h{font-size:clamp(32px,9vw,52px);font-weight:800;line-height:1.05;margin-bottom:14px}
+.intro-h span{color:var(--amber)}
+.intro-p{font-size:16px;color:var(--muted);max-width:460px;margin:0 auto 34px;line-height:1.6}
+.acts-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:10px;margin-bottom:36px;text-align:left;
+}
+.act-card{
+  background:var(--surf);border:1px solid var(--border);
+  border-radius:var(--rs);padding:14px 16px;
+}
+.ac-icon{font-size:20px;margin-bottom:6px}
+.ac-name{font-weight:700;font-size:14px;margin-bottom:3px}
+.ac-desc{font-size:12px;color:var(--muted)}
+
+/* ── IDIOM GRID ─────────────────────────────────────────── */
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+
+/* ── BACK/FORWARD NAV ───────────────────────────────────────── */
+.back-btn{padding:7px 14px;font-size:13px;margin-bottom:18px;display:inline-flex}
+.dot.done{cursor:pointer;transition:all .2s}
+.dot.done:hover{background:var(--amber)!important;transform:scale(1.3)}
+.dot.visited-ahead{
+  background:var(--teal);opacity:.55;cursor:pointer;transition:all .2s;
+}
+.dot.visited-ahead:hover{opacity:1;transform:scale(1.3)}
+
+/* ── SPEAKING CARDS ─────────────────────────────────────────── */
+.speak-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:24px}
+.speak-card{
+  background:var(--surf);border:2px solid var(--border);
+  border-radius:var(--r);overflow:hidden;
+  transition:border-color .2s,box-shadow .2s,transform .15s;
+  cursor:pointer;
+}
+.speak-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
+.speak-card.revealed{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-d);cursor:default}
+.speak-card.revealed:hover{transform:none}
+
+/* closed face — icon + theme only */
+.speak-card-face{
+  padding:32px 20px 28px;
+  display:flex;flex-direction:column;align-items:center;
+  gap:12px;text-align:center;
+}
+.speak-card-icon{font-size:40px;line-height:1}
+.speak-tap-hint{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.speak-card.revealed .speak-card-face{display:none}
+
+/* revealed content */
+.speak-content{display:none;padding:18px 18px 20px}
+.speak-card.revealed .speak-content{display:block;animation:fadeUp .22s ease}
+.speak-card-scenario{font-size:14px;line-height:1.65;font-weight:500;color:var(--text);margin-bottom:14px}
+.speak-questions{padding:14px 0 0;border-top:1px solid var(--border)}
+.speak-q-item{
+  font-size:14px;line-height:1.6;padding:8px 0;
+  border-bottom:1px solid rgba(50,200,191,.18);color:var(--text);
+  display:flex;gap:8px;align-items:flex-start;
+}
+.speak-q-item:last-child{border-bottom:none}
+.speak-q-num{flex-shrink:0;font-weight:800;font-family:'Syne',sans-serif;font-size:13px;color:var(--teal);margin-top:2px}
+.speak-vocab{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(50,200,191,.18)}
+.speak-vocab-chip{
+  background:var(--surf2);border:1px solid var(--border);
+  border-radius:20px;padding:3px 10px;
+  font-size:12px;font-weight:600;color:var(--muted);
+  font-style:italic;
+}
+.speak-close-btn{
+  display:block;width:100%;margin-top:14px;padding:8px;
+  background:none;border:1.5px dashed var(--border);border-radius:var(--rs);
+  color:var(--muted);font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:600;cursor:pointer;
+  text-align:center;transition:all .18s;
+}
+.speak-close-btn:hover{border-color:var(--err);color:var(--err)}
+.speak-tip{
+  background:var(--amber-d);border:1px solid var(--amber);
+  border-radius:var(--rs);padding:12px 16px;
+  font-size:13px;color:var(--amber);margin-bottom:20px;
+  line-height:1.55;
+}
+.speak-theme-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  padding:2px 9px;border-radius:20px;margin-bottom:8px;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media(max-width:520px){
+  .match-wrap{grid-template-columns:1fr}
+  .match-col:nth-child(2){display:none}
+  .mobile-note{display:block!important}
+  .choice-grid{grid-template-columns:1fr 1fr}
+}
+.mobile-note{display:none;font-size:13px;color:var(--muted);background:var(--surf2);
+  padding:10px 14px;border-radius:var(--rs);margin-bottom:14px}
+
+@media(prefers-reduced-motion:reduce){
+  *,.screen.active{animation:none!important;transition:none!important}
+}
+@keyframes pop{0%{transform:scale(.92)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
+.pop-anim{animation:pop .3s ease}
+</style>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="topbar-inner">
+      <span class="act-label" id="actLabel">Mission</span>
+      <div class="dots" id="dots"></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="score-pill">⭐ <span id="scoreN">0</span></div>
+        <button class="theme-btn" onclick="toggleTheme()">☀/🌙</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     INTRO
+════════════════════════════════════════════════════════════ -->
+<div class="wrap">
+<section id="s-intro" class="screen active">
+  <div class="intro-hero">
+    <span class="intro-icon">🔐</span>
+    <h1 class="intro-h">Language<br><span>Mission</span></h1>
+    <p class="intro-p">Units 5 & 6 — Money, Crime &amp; Communication. Seven activities, 60–70 minutes. Earn stars, complete the mission.</p>
+    <div class="acts-grid">
+      <div class="act-card"><div class="ac-icon">💰</div><div class="ac-name">Money Mixer</div><div class="ac-desc">Phrasal verbs with money</div></div>
+      <div class="act-card"><div class="ac-icon">🔍</div><div class="ac-name">Crime Alert</div><div class="ac-desc">Law &amp; crime vocabulary</div></div>
+      <div class="act-card"><div class="ac-icon">⚡</div><div class="ac-name">Verb Vortex</div><div class="ac-desc">Gerunds &amp; infinitives</div></div>
+      <div class="act-card"><div class="ac-icon">🕵️</div><div class="ac-name">Word Spy</div><div class="ac-desc">Relationships vocabulary</div></div>
+      <div class="act-card"><div class="ac-icon">🔁</div><div class="ac-name">Reported Speech</div><div class="ac-desc">Transform what was said</div></div>
+      <div class="act-card"><div class="ac-icon">🧩</div><div class="ac-name">Quantifiers Quest</div><div class="ac-desc">Complete a crime story</div></div>
+      <div class="act-card"><div class="ac-icon">🏝️</div><div class="ac-name">Idiom Island</div><div class="ac-desc">English idiom challenge</div></div>
+      <div class="act-card"><div class="ac-icon">🗣️</div><div class="ac-name">Speaking</div><div class="ac-desc">Real-life situation cards</div></div>
+    </div>
+    <button class="btn btn-amber" style="font-size:18px;padding:16px 48px" onclick="startLesson()">Start Mission →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     ACT 1 — MONEY MIXER (matching)
+════════════════════════════════════════════════════════════ -->
+<section id="s-1" class="screen">
+  <div class="badge b-amber">💰 Warm-Up · 8 min</div>
+  <h2 class="act-title">Money Mixer</h2>
+  <p class="act-sub">Click a phrase on the left, then click its matching ending on the right. Match all 7 pairs!</p>
+  <div class="mobile-note">📱 On a small screen, tap a phrase — then tap the correct ending below.</div>
+  <div class="match-wrap" id="matchGrid"></div>
+  <div class="fb" id="fb-1"></div>
+  <div class="match-score" id="matchScore">0 / 7 matched</div>
+  <button class="btn btn-amber btn-full" id="bn-1" disabled onclick="nav(1)">Next Activity →</button>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     ACT 2 — CRIME ALERT (MCQ)
+════════════════════════════════════════════════════════════ -->
+<section id="s-2" class="screen">
+  <div class="badge b-err">🔍 Activity 1 · 10 min</div>
+  <h2 class="act-title">Crime Alert</h2>
+  <p class="act-sub">Choose the correct word or phrase for each crime &amp; law sentence.</p>
+  <div class="qprog"><div class="qdots" id="qd-2"></div><span class="qnum" id="qn-2"></span></div>
+  <div class="qcard" id="qc-2"></div>
+  <div class="choices" id="ch-2"></div>
+  <div class="fb" id="fb-2"></div>
+  <button class="btn btn-amber btn-full" id="bn-2" disabled onclick="nav(2)">Next Activity →</button>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     ACT 3 — VERB VORTEX (MCQ with conversations)
+════════════════════════════════════════════════════════════ -->
+<section id="s-3" class="screen">
+  <div class="badge b-teal">⚡ Activity 2 · 12 min</div>
+  <h2 class="act-title">Verb Vortex</h2>
+  <p class="act-sub">Choose the correct verb form — gerund (-ing) or infinitive (to + verb) — for each conversation.</p>
+  <div class="qprog"><div class="qdots" id="qd-3"></div><span class="qnum" id="qn-3"></span></div>
+  <div id="qc-3"></div>
+  <div class="choices" id="ch-3"></div>
+  <div class="fb" id="fb-3"></div>
+  <button class="btn btn-amber btn-full" id="bn-3" disabled onclick="nav(3)">Next Activity →</button>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     ACT 4 — WORD SPY (word bank)
+════════════════════════════════════════════════════════════ -->
+<section id="s-4" class="screen">
+  <div class="badge b-amber">🕵️ Activity 3 · 8 min</div>
+  <h2 class="act-title">Word Spy</h2>
+  <p class="act-sub">Click a word from the bank below, then click the blank where it belongs. Fill all 8 gaps!</p>
+  <div class="bank" id="bank-4"></div>
+  <div id="fills-4"></div>
+  <div class="fb" id="fb-4"></div>
+  <button class="btn btn-amber btn-full" id="bn-4" disabled onclick="act4Next()">Check Answers →</button>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     ACT 5 — REPORTED SPEECH (MCQ)
+════════════════════════════════════════════════════════════ -->
+<section id="s-5" class="screen">
+  <div class="badge b-teal">🔁 Activity 4 · 10 min</div>
+  <h2 class="act-title">Reported Speech</h2>
+  <p class="act-sub">Someone said something. Choose the correct reported version.</p>
+  <div class="qprog"><div class="qdots" id="qd-5"></div><span class="qnum" id="qn-5"></span></div>
+  <div class="qcard" id="qc-5"></div>
+  <div class="choices" id="ch-5"></div>
+  <div class="fb" id="fb-5"></div>
+  <button class="btn btn-amber btn-full" id="bn-5" disabled onclick="nav(5)">Next Activity →</button>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     ACT 6 — QUANTIFIERS QUEST (story dropdowns)
+════════════════════════════════════════════════════════════ -->
+<section id="s-6" class="screen">
+  <div class="badge b-ok">🧩 Activity 5 · 8 min</div>
+  <h2 class="act-title">Quantifiers Quest</h2>
+  <p class="act-sub">Choose the correct quantifier for each gap in this real crime story.</p>
+  <div class="story" id="story-6"></div>
+  <div class="fb" id="fb-6"></div>
+  <button class="btn btn-amber btn-full" id="bn-6" onclick="act6Check()">Check Story →</button>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     ACT 7 — IDIOM ISLAND (MCQ 2×2 grid)
+════════════════════════════════════════════════════════════ -->
+<section id="s-7" class="screen">
+  <div class="badge b-purple">🏝️ Activity 6 · 7 min</div>
+  <h2 class="act-title">Idiom Island</h2>
+  <p class="act-sub">Complete each question with the correct idiom word.</p>
+  <div class="qprog"><div class="qdots" id="qd-7"></div><span class="qnum" id="qn-7"></span></div>
+  <div class="qcard" id="qc-7"></div>
+  <div class="choice-grid" id="ch-7"></div>
+  <div class="fb" id="fb-7"></div>
+  <button class="btn btn-amber btn-full" id="bn-7" disabled onclick="nav(7)">Speaking Task →</button>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SPEAKING TASKS
+════════════════════════════════════════════════════════════ -->
+<section id="s-speak" class="screen">
+  <div class="badge b-teal">🗣️ Speaking · 10 min</div>
+  <h2 class="act-title">Speaking Challenge</h2>
+  <p class="act-sub">Read each situation, then discuss! Click a card to reveal the discussion questions. Try to use the vocabulary hints from today's lesson.</p>
+  <div class="speak-tip">💡 <strong>Tip for your teacher:</strong> Pick 2–3 cards to discuss together. There are no right or wrong answers — speak for as long as you can!</div>
+  <div class="speak-grid" id="speakGrid"></div>
+  <button class="btn btn-amber btn-full" onclick="navToReflect()">Reflect on my learning →</button>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     REFLECT
+════════════════════════════════════════════════════════════ -->
+<section id="s-8" class="screen">
+  <div class="badge b-teal">✨ Reflect · 4 min</div>
+  <h2 class="act-title">How confident do you feel?</h2>
+  <p class="act-sub">Rate yourself honestly: 1 star = not yet confident, 5 stars = very confident.</p>
+  <div id="reflItems"></div>
+  <button class="btn btn-amber btn-full" onclick="showResults()">See My Results →</button>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     RESULTS
+════════════════════════════════════════════════════════════ -->
+<section id="s-results" class="screen">
+  <div class="results-wrap">
+    <span class="result-badge" id="resBadge">🏆</span>
+    <div class="result-num" id="resNum">0</div>
+    <div class="result-of">points earned</div>
+    <div class="result-msg" id="resMsg"></div>
+    <p class="result-detail" id="resDet"></p>
+    <div class="result-breakdown" id="resBdown"></div>
+    <button class="btn btn-amber" style="padding:14px 44px;font-size:17px" onclick="restart()">Play Again 🔄</button>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────
+
+const MATCH = [
+  {p:"cut back on",    e:"unnecessary luxuries"},
+  {p:"pay back",       e:"what you owe"},
+  {p:"splash out on",  e:"a holiday in the Maldives"},
+  {p:"stock up on",    e:"sweets and crisps"},
+  {p:"get into",       e:"debt"},
+  {p:"set aside",      e:"something for a rainy day"},
+  {p:"live on",        e:"£10 a week"},
+];
+
+const CRIME = [
+  {s:"If criminals are caught, the police _____ them.",
+   o:["find them","can't find them"],c:0,
+   ex:"Being caught = the police FIND them."},
+  {s:"If somebody is charged with a crime, he or she _____.",
+   o:["is sent to prison","must go to court"],c:1,
+   ex:"Charged means going to court — not necessarily to prison yet."},
+  {s:"If criminals plead guilty, they _____ the crime.",
+   o:["admit","deny"],c:0,
+   ex:"Pleading guilty = admitting the crime."},
+  {s:"Somebody is found guilty or not guilty by _____.",
+   o:["the police","a judge or jury"],c:1,
+   ex:"The verdict is delivered by a judge or jury in court."},
+  {s:"Criminals only go on trial if they commit _____ offences.",
+   o:["minor","serious"],c:1,
+   ex:"Trials are for serious offences — minor ones are handled differently."},
+  {s:"A _____ breaks into people's houses.",
+   o:["burglar","shoplifter"],c:0,
+   ex:"A burglar breaks in. A shoplifter steals from shops."},
+  {s:"If criminals are sentenced, they _____ a punishment.",
+   o:["are given","aren't given"],c:0,
+   ex:"Sentenced = receiving (being given) a punishment."},
+  {s:"If a criminal evades arrest, he or she _____.",
+   o:["is caught","doesn't get caught"],c:1,
+   ex:"Evade = escape/avoid, so they don't get caught."},
+];
+
+const VERBS = [
+  {convo:[{sp:"A",t:"Why are you wasting time going back to the office?"},
+          {sp:"B",t:"I ___ [sort out] a problem. I forgot to turn on the alarm."}],
+   q:"Speaker B: 'I ___ a problem'",
+   hint:"Past continuous: an action in progress at that moment.",
+   o:["sorted out","was sorting out","to sort out"],c:1,
+   ex:"'Was sorting out' — past continuous (action in progress)."},
+  {convo:[{sp:"A",t:"Have you quit smoking?"},
+          {sp:"B",t:"Yeah and I've started ___ [feel] so much healthier!"}],
+   q:"I've started ___ so much healthier",
+   hint:"After 'start', you can use -ing or to+verb. Which sounds more natural here?",
+   o:["feel","feeling","to feel"],c:1,
+   ex:"'Feeling' — 'start' can take a gerund or infinitive; both work."},
+  {convo:[{sp:"A",t:"Is it polite ___ [ask] people about their salary?"},
+          {sp:"B",t:"No, you should try to avoid the subject altogether."}],
+   q:"Is it polite ___ people about their salary?",
+   hint:"'It is + adjective + ___' — which form follows?",
+   o:["asking","to ask","ask"],c:1,
+   ex:"'To ask' — after 'It is + adjective', use the infinitive."},
+  {convo:[{sp:"A",t:"Are you worried about ___ [take] this test?"},
+          {sp:"B",t:"I can't help feeling a bit nervous!"}],
+   q:"Are you worried about ___ this test?",
+   hint:"After prepositions (about, of, by, in...) use ___",
+   o:["take","to take","taking"],c:2,
+   ex:"'Taking' — after a preposition ('about'), use the gerund."},
+  {convo:[{sp:"A",t:"Are you looking forward to ___ [visit] your sister in Hong Kong?"},
+          {sp:"B",t:"Yes, but I can't imagine sitting on a plane for 14 hours!"}],
+   q:"Are you looking forward to ___ your sister?",
+   hint:"'To' in 'look forward to' is a PREPOSITION, not part of the infinitive!",
+   o:["visit","to visit","visiting"],c:2,
+   ex:"'Visiting' — the 'to' in 'look forward to' is a preposition → gerund follows."},
+  {convo:[{sp:"A",t:"Thanks for ___ [be] so supportive."},
+          {sp:"B",t:"Not at all. It's important to listen and remember talking to you."}],
+   q:"Thanks for ___ so supportive.",
+   hint:"After 'for' (preposition), which form do we need?",
+   o:["be","being","to be"],c:1,
+   ex:"'Being' — after the preposition 'for', use the gerund."},
+  {convo:[{sp:"A",t:"I recommend ___ [read] this book — it's amazing!"},
+          {sp:"B",t:"Thanks. I'll try to find it online."}],
+   q:"I recommend ___ this book.",
+   hint:"Which verbs are always followed by the gerund: enjoy, avoid, recommend, finish...",
+   o:["read","to read","reading"],c:2,
+   ex:"'Reading' — 'recommend' always takes a gerund."},
+  {convo:[{sp:"A",t:"Did she offer ___ [help] you move?"},
+          {sp:"B",t:"Yes! I didn't expect her to stay the whole day."}],
+   q:"Did she offer ___ you move?",
+   hint:"'Offer' is followed by which form? Think: agree, decide, offer, refuse, want...",
+   o:["helping","help","to help"],c:2,
+   ex:"'To help' — 'offer' always takes the infinitive (to + verb)."},
+];
+
+const WORDS = [
+  {t:"Do you have a close ___ with one particular friend?",  a:"bond"},
+  {t:"What did you and your siblings ___ about?",            a:"fall out"},
+  {t:"Did your parents ___ you when you did well?",          a:"praise"},
+  {t:"Do you ever ___ what somebody's wearing?",             a:"criticise"},
+  {t:"In a crisis, do you tend to panic or ___?",            a:"stay calm"},
+  {t:"Does it drive you up the wall when people ___ you mid-sentence?", a:"interrupt"},
+  {t:"Are you good at sensing ___ between people?",          a:"tension"},
+  {t:"What can you do to avoid ___ between neighbours?",     a:"conflict"},
+];
+const WORD_BANK = ["bond","conflict","criticise","fall out","interrupt","praise","stay calm","tension"];
+
+const REPORTED = [
+  {d:'"My teacher\'s giving me too much homework," Vicky said.',
+   o:["Vicky said that her teacher was giving her too much homework.",
+      "Vicky said that her teacher is giving her too much homework.",
+      "Vicky told that my teacher was giving me too much homework."],
+   c:0,ex:"'Is giving' → 'was giving' (backshift). 'My' → 'her'."},
+  {d:'"I don\'t believe you\'re really 35," Jenny said to Tim.',
+   o:["Jenny told Tim that she doesn't believe he was really 35.",
+      "Jenny told Tim that she didn't believe he was really 35.",
+      "Jenny said Tim that she didn't believe he was really 35."],
+   c:1,ex:"'Don't' → 'didn't'. We use 'told Tim', NOT 'said Tim'."},
+  {d:'"I\'ll be late home from college this evening," Jake told us.',
+   o:["Jake said he will be late home from college this evening.",
+      "Jake said he would be late home from college that evening.",
+      "Jake told us he would be late home from college this evening."],
+   c:1,ex:"'Will' → 'would'. 'This evening' → 'that evening' (time shift)."},
+  {d:'"Have you done your homework yet?" Jessie\'s dad asked.',
+   o:["Jessie's dad asked if she had done her homework yet.",
+      "Jessie's dad asked if she has done her homework yet.",
+      "Jessie's dad asked did she do her homework yet."],
+   c:0,ex:"Yes/no question → 'if/whether'. Present perfect → past perfect."},
+  {d:'"Why can\'t you give me a lift to the party?" Jo asked her mum.',
+   o:["Jo asked her mum why she couldn't give her a lift to the party.",
+      "Jo asked her mum why can't she give her a lift to the party.",
+      "Jo asked to her mum why she couldn't give her a lift."],
+   c:0,ex:"Wh-question: keep 'why', use statement word order. 'Can't' → 'couldn't'."},
+  {d:'"Do you want to come to the party later?" Tony asked Chloe.',
+   o:["Tony asked Chloe do she want to come to the party later.",
+      "Tony asked Chloe if she wanted to come to the party later.",
+      "Tony asked Chloe that she wanted to come to the party later."],
+   c:1,ex:"Yes/no question → 'if'. 'Want' → 'wanted'. Statement word order."},
+];
+
+// Story segments: text node between/after each blank
+const STORY_SEGS = [
+  "A notorious villain robbed ",
+  " US banks between 1985 and 1990. The robber loved attention, so after ",
+  " crime, he sent ",
+  " of letters to newspapers and TV stations around the country, laughing at his investigators. Although ",
+  " of these letters led to his arrest, in 2004 the robber sent a ",
+  " more items to the police. One of these was a computer disk. Forensic experts analysed ",
+  " of the deleted data and traced it to a man named Leroy living in Wyoming. It took the police ",
+  " time to check ",
+  " Leroy in the area and arrest Leroy Ryder. He admitted his guilt and was sentenced to life imprisonment."
+];
+const STORY_BLANKS = [
+  {c:"several", o:["several","every","no"]},
+  {c:"each",    o:["each","all","few"]},
+  {c:"lots",    o:["lots","no","every"]},
+  {c:"none",    o:["none","all","several"]},
+  {c:"few",     o:["few","no","lots"]},
+  {c:"all",     o:["all","none","every"]},
+  {c:"no",      o:["no","few","lots"]},
+  {c:"every",   o:["every","several","no"]},
+];
+
+const IDIOMS = [
+  {q:"Do taxis cost an arm and a ___ in your country?",
+   o:["leg","hand","foot","back"],c:0,
+   ex:"'Cost an arm and a leg' = very expensive"},
+  {q:"When were you last over the ___ about something?",
+   o:["stars","moon","sky","roof"],c:1,
+   ex:"'Over the moon' = extremely happy or excited"},
+  {q:"Is updating your social media profile a piece of ___?",
+   o:["pie","bread","cake","work"],c:2,
+   ex:"'A piece of cake' = very easy"},
+  {q:"Do pop-ups on online pages drive you up the ___?",
+   o:["roof","tree","ladder","wall"],c:3,
+   ex:"'Drive you up the wall' = make you very annoyed"},
+  {q:"When did a view last take your ___ away?",
+   o:["heart","mind","breath","sight"],c:2,
+   ex:"'Take your breath away' = be absolutely stunning"},
+  {q:"What would you describe as 'out of this ___'?",
+   o:["galaxy","universe","place","world"],c:3,
+   ex:"'Out of this world' = extraordinary, amazing"},
+];
+
+const SPEAK_CARDS = [
+  {
+    icon:'💸', theme:'Money', color:'amber',
+    scenario:"You discover your flatmate has been quietly using money from your shared grocery fund for personal things for months. You feel upset — but you don't want to fall out with them because they've been having a tough time financially lately.",
+    qs:[
+      "What would you say to your flatmate? How do you raise the issue without making the tension worse?",
+      "Has money ever caused conflict in one of your relationships? What happened?",
+      "How do you feel about sharing finances with friends or family members?"
+    ],
+    vocab:["fall out","tension","conflict","pay back","set aside"]
+  },
+  {
+    icon:'💼', theme:'Money', color:'amber',
+    scenario:"Your company offers you a promotion — a 40% salary increase — but you'd have to cut back on your personal time, splash out on relocating to another city, and live on a tight budget for the first six months while getting settled in.",
+    qs:[
+      "Would you take the promotion? What are the pros and cons?",
+      "Talk about a time when you had to make a difficult financial decision.",
+      "How do you balance money and lifestyle? Is salary the most important factor when choosing a job?"
+    ],
+    vocab:["cut back on","splash out on","live on","stock up on","get into debt"]
+  },
+  {
+    icon:'🏪', theme:'Crime', color:'err',
+    scenario:"You're in a supermarket when you notice an elderly person shoplifting food. They look hungry and confused. A security guard is nearby and hasn't noticed yet. The person sees you watching — they look terrified.",
+    qs:[
+      "What would you do? Would you report it, ignore it, or do something else?",
+      "At what point does a minor offence become something that must be reported?",
+      "Do you think the legal system always delivers justice? Give an example."
+    ],
+    vocab:["shoplifter","minor offence","plead guilty","sentence","evade arrest"]
+  },
+  {
+    icon:'📞', theme:'Crime', color:'err',
+    scenario:"Your best friend calls you in a panic. They witnessed something that might have been a crime, but they're afraid to go to the police — worried about being called as a witness in court and getting involved in a long legal process.",
+    qs:[
+      "What advice would you give your friend? How would you help them stay calm?",
+      "Do people have a duty to report crimes they witness? Where do you draw the line?",
+      "Can you describe what happens — step by step — after someone is charged with a crime?"
+    ],
+    vocab:["witness","charged with","on trial","found guilty","sentenced"]
+  },
+  {
+    icon:'🤝', theme:'Relationships', color:'teal',
+    scenario:"A colleague you like keeps interrupting you in team meetings. Tension is building between you. Other colleagues have noticed it happening. You want to deal with it — but you value the relationship and don't want to create more conflict.",
+    qs:[
+      "How would you resolve this conflict without making things worse? What would you say?",
+      "Have you ever had to deal with a difficult working relationship? What did you do?",
+      "What are the best strategies for avoiding conflict in professional situations?"
+    ],
+    vocab:["interrupt","tension","conflict","stay calm","criticise"]
+  },
+  {
+    icon:'💬', theme:'Relationships', color:'teal',
+    scenario:"A close friend has started criticising your new partner harshly every time you meet. You suspect they're jealous of the time you're spending with your partner. You feel torn — you don't want to fall out with your friend, but you need to defend someone you care about.",
+    qs:[
+      "How do you handle this situation? What do you say to your friend?",
+      "When — if ever — is it okay to criticise a friend's relationship choices?",
+      "Describe the qualities you value most in your closest friendships. How is a close bond built?"
+    ],
+    vocab:["criticise","bond","fall out","praise","conflict"]
+  },
+];
+
+const REFLECT_ITEMS = [
+  "I can have a conversation about spending money.",
+  "I can talk about quantities.",
+  "I can summarise a text.",
+  "I can talk about things I love and loathe.",
+  "I can summarise a negotiation.",
+  "I can paraphrase what somebody has said.",
+  "I can deal with and resolve conflicts.",
+];
+
+// ─────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────
+let score = 0;
+let actScores = {};  // act# → points
+let q = {};          // per-activity current question index & state
+let act4Blanks = []; // filled words for act 4
+let act4Checked = false;
+let act6Checked = false;
+let activeBlank = 0;
+let selectedChip = null;
+const visited = new Set(); // screens that have been initialised — don't reinit on back-nav
+
+function addScore(pts, act) {
+  score += pts;
+  actScores[act] = (actScores[act]||0) + pts;
+  const el = document.getElementById('scoreN');
+  el.textContent = score;
+  el.parentElement.classList.add('pop-anim');
+  setTimeout(()=>el.parentElement.classList.remove('pop-anim'), 300);
+}
+
+// ─────────────────────────────────────────────────────────────
+// PROGRESS BAR
+// ─────────────────────────────────────────────────────────────
+const ACT_NAMES = ['Warm-Up','Crime Alert','Verb Vortex','Word Spy','Reported Speech','Quantifiers','Idiom Island','Reflect'];
+const DOT_SCREEN = ['1','2','3','4','5','6','7']; // dot index → screen id
+
+function initDots() {
+  const c = document.getElementById('dots');
+  c.innerHTML = '';
+  for (let i=0;i<7;i++) {
+    const d=document.createElement('div');
+    d.className='dot';d.id=`d${i}`;
+    d.title=ACT_NAMES[i];
+    d.onclick=()=>jumpTo(DOT_SCREEN[i], i+1); // always navigable
+    c.appendChild(d);
+  }
+}
+function updateDots(act) { // 1-based: 1=act1 ... 7=act7, 8=reflect/speak
+  document.getElementById('actLabel').textContent = ACT_NAMES[act-1]||'Mission';
+  for (let i=0;i<7;i++) {
+    const d=document.getElementById(`d${i}`);
+    if (!d) continue;
+    d.className='dot';
+    if (i<act-1) {
+      d.classList.add('done');
+      d.title=`↩ ${ACT_NAMES[i]}`;
+    } else if (i===act-1) {
+      d.classList.add('now');
+      d.title=ACT_NAMES[i];
+    } else if (visited.has(DOT_SCREEN[i])) {
+      // ahead of current position but already visited — teal, clickable
+      d.classList.add('visited-ahead');
+      d.title=`→ ${ACT_NAMES[i]}`;
+    } else {
+      d.title=ACT_NAMES[i];
+    }
+  }
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(`s-${id}`).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─────────────────────────────────────────────────────────────
+// THEME
+// ─────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const root=document.documentElement;
+  const cur=root.getAttribute('data-theme');
+  root.setAttribute('data-theme', cur==='dark'?'light':'dark');
+}
+
+// ─────────────────────────────────────────────────────────────
+// INTRO
+// ─────────────────────────────────────────────────────────────
+function startLesson() { jumpTo('1', 1); }
+function restart() {
+  score=0;actScores={};q={};act4Blanks=[];act4Checked=false;act6Checked=false;
+  visited.clear();
+  document.getElementById('scoreN').textContent='0';
+  initDots();
+  document.getElementById('actLabel').textContent='Mission';
+  showScreen('intro');
+}
+
+// ─────────────────────────────────────────────────────────────
+// NAV
+// ─────────────────────────────────────────────────────────────
+// Maps: from-screen → {target screen, init function, dot position}
+const NAV_FWD = {
+  1: {s:'2',   init:()=>initAct2(), dot:2},
+  2: {s:'3',   init:()=>initAct3(), dot:3},
+  3: {s:'4',   init:()=>initAct4(), dot:4},
+  4: {s:'5',   init:()=>initAct5(), dot:5},
+  5: {s:'6',   init:()=>initAct6(), dot:6},
+  6: {s:'7',   init:()=>initAct7(), dot:7},
+  7: {s:'speak',init:()=>initSpeak(),dot:8},
+};
+const BACK_TARGET = {
+  '1':'intro','2':'1','3':'2','4':'3',
+  '5':'4','6':'5','7':'6','speak':'7','8':'speak'
+};
+const BACK_DOT = {
+  '1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'speak':8,'8':8
+};
+
+// ── jumpTo: the ONE navigation primitive ───────────────────────
+// Initialises a screen on first visit, then shows it.
+// sid = screen id string ('1'..'7', 'speak', '8')
+// dotPos = 1-based dot position to pass to updateDots
+const JUMP_INIT = {
+  '1':initAct1,'2':initAct2,'3':initAct3,'4':initAct4,
+  '5':initAct5,'6':initAct6,'7':initAct7,
+  'speak':initSpeak,'8':initReflect
+};
+function jumpTo(sid, dotPos) {
+  if (!visited.has(sid)) { visited.add(sid); if (JUMP_INIT[sid]) JUMP_INIT[sid](); }
+  showScreen(sid);
+  updateDots(dotPos);
+}
+
+function nav(from) {
+  const cfg = NAV_FWD[from];
+  if (cfg) jumpTo(cfg.s, cfg.dot);
+}
+
+function goBack(fromScreen) {
+  const target = BACK_TARGET[fromScreen];
+  if (!target) return;
+  if (target === 'intro') {
+    showScreen('intro'); initDots();
+    document.getElementById('actLabel').textContent = 'Mission';
+    return;
+  }
+  jumpTo(target, BACK_DOT[target]);
+}
+
+function navToReflect() { jumpTo('8', 8); }
+
+// ─────────────────────────────────────────────────────────────
+// ACT 1 — MATCHING
+// ─────────────────────────────────────────────────────────────
+let matchSel={left:null,right:null};
+let matchCount=0;
+
+function initAct1() {
+  matchSel={left:null,right:null}; matchCount=0;
+  const grid=document.getElementById('matchGrid');
+  grid.innerHTML='<div class="match-col" id="mL"></div><div class="match-col" id="mR"></div>';
+  const rights=[...MATCH.map(m=>m.e)].sort(()=>Math.random()-.5);
+  MATCH.forEach((m,i)=>{
+    const lc=mc(m.p,'left',i); document.getElementById('mL').appendChild(lc);
+  });
+  rights.forEach(e=>{
+    const orig=MATCH.findIndex(m=>m.e===e);
+    const rc=mc(e,'right',orig); document.getElementById('mR').appendChild(rc);
+  });
+  setFb('fb-1','','');
+  document.getElementById('matchScore').textContent='0 / 7 matched';
+  document.getElementById('bn-1').disabled=true;
+}
+function mc(text,side,idx) {
+  const d=document.createElement('div');
+  d.className='mc'; d.textContent=text;
+  d.dataset.side=side; d.dataset.idx=idx;
+  d.onclick=()=>matchClick(d,side,idx);
+  return d;
+}
+function matchClick(card,side,idx) {
+  if (card.classList.contains('matched')) return;
+  if (side==='left') {
+    document.querySelectorAll('.mc[data-side="left"]').forEach(c=>c.classList.remove('sel'));
+    card.classList.add('sel');
+    matchSel.left=idx;
+    if (matchSel.right!==null) doMatch();
+  } else {
+    document.querySelectorAll('.mc[data-side="right"]').forEach(c=>c.classList.remove('sel'));
+    card.classList.add('sel');
+    matchSel.right=idx;
+    if (matchSel.left!==null) doMatch();
+  }
+}
+function doMatch() {
+  const li=matchSel.left, ri=matchSel.right;
+  const lc=document.querySelector(`.mc[data-side="left"][data-idx="${li}"]`);
+  const rc=document.querySelector(`.mc[data-side="right"][data-idx="${ri}"]`);
+  if (li===ri) {
+    lc.classList.remove('sel'); lc.classList.add('matched');
+    rc.classList.remove('sel'); rc.classList.add('matched');
+    matchCount++;
+    addScore(10,1);
+    document.getElementById('matchScore').textContent=`${matchCount} / 7 matched`;
+    setFb('fb-1','good',`✓ "${MATCH[li].p}" → "${MATCH[li].e}"`);
+    if (matchCount===7){
+      document.getElementById('bn-1').disabled=false;
+      setFb('fb-1','good','🎉 All 7 matched! Great work on these money phrasal verbs!');
+    }
+  } else {
+    lc.classList.add('flash-no'); rc.classList.add('flash-no');
+    setFb('fb-1','bad','✗ Not quite — try a different combination!');
+    setTimeout(()=>{
+      lc.classList.remove('flash-no','sel');
+      rc.classList.remove('flash-no','sel');
+    },750);
+  }
+  matchSel={left:null,right:null};
+}
+
+// ─────────────────────────────────────────────────────────────
+// MCQ HELPER
+// ─────────────────────────────────────────────────────────────
+function initMCQ(act, data, cardId, choicesId, dotId, numId, btnId, fbId, pts, onDone) {
+  q[act]={cur:0,score:0};
+  // build dots
+  const dc=document.getElementById(dotId); dc.innerHTML='';
+  data.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='qdot'+(i===0?' now':''); d.id=`${dotId}-${i}`; dc.appendChild(d);
+  });
+  document.getElementById(btnId).disabled=true;
+  renderMCQ(act,data,cardId,choicesId,dotId,numId,btnId,fbId,pts,onDone);
+}
+
+function renderMCQ(act,data,cardId,choicesId,dotId,numId,btnId,fbId,pts,onDone) {
+  const i=q[act].cur, item=data[i];
+  document.getElementById(numId).textContent=`Question ${i+1} of ${data.length}`;
+  setFb(fbId,'','');
+
+  // card
+  const card=document.getElementById(cardId);
+  if (card) {
+    card.innerHTML=`<div class="qlabel">Choose the correct option</div>
+      <p class="qtext">${(item.s||item.q||'').replace('_____','<em>_____</em>').replace('___','<em>___</em>')}</p>
+      ${item.hint?`<p class="qhint">💡 ${item.hint}</p>`:''}`;
+  }
+
+  // convo (act3)
+  if (item.convo) {
+    const conv=`<div class="convo">${item.convo.map(l=>`<div class="cl"><span class="sp sp-${l.sp.toLowerCase()}">${l.sp}:</span>${l.t.replace('___','<em>___</em>')}</div>`).join('')}</div>
+      <div class="qcard"><div class="qlabel">Choose the correct form</div><p class="qtext">${item.q.replace('___','<em>___</em>')}</p>${item.hint?`<p class="qhint">💡 ${item.hint}</p>`:''}</div>`;
+    document.getElementById(cardId).innerHTML=conv;
+  }
+
+  // direct speech (act5)
+  if (item.d) {
+    card.innerHTML=`<div class="qlabel">Direct Speech</div>
+      <p class="qtext" style="color:var(--teal);font-style:italic">${item.d}</p>
+      <p style="margin-top:10px;font-size:13px;color:var(--muted)">Which is the correct reported version?</p>`;
+  }
+
+  // choices — shuffle display order but track original indices
+  const choices=document.getElementById(choicesId);
+  choices.innerHTML='';
+  const shuffled=item.o.map((t,i)=>({t,i})).sort(()=>Math.random()-.5);
+  shuffled.forEach(({t,i})=>{
+    const btn=document.createElement('button');
+    btn.className='cbtn'; btn.textContent=t;
+    btn.onclick=()=>answerMCQ(i,btn,act,data,cardId,choicesId,dotId,numId,btnId,fbId,pts,onDone);
+    choices.appendChild(btn);
+  });
+  q[act].answered=false;
+}
+
+function answerMCQ(idx,btn,act,data,cardId,choicesId,dotId,numId,btnId,fbId,pts,onDone) {
+  if (q[act].answered) return;
+  q[act].answered=true;
+  const item=data[q[act].cur];
+  document.querySelectorAll(`#${choicesId} .cbtn`).forEach(b=>b.disabled=true);
+  if (idx===item.c) {
+    btn.classList.add('ok');
+    setFb(fbId,'good',`✓ Correct! ${item.ex}`);
+    q[act].score++; addScore(pts,act);
+  } else {
+    btn.classList.add('no');
+    document.querySelectorAll(`#${choicesId} .cbtn`).forEach(b=>{ if (b.textContent===item.o[item.c]) b.classList.add('show'); });
+    setFb(fbId,'bad',`✗ ${item.ex}`);
+  }
+  const dot=document.getElementById(`${dotId}-${q[act].cur}`);
+  if (dot){dot.classList.remove('now');dot.classList.add('done');}
+  setTimeout(()=>{
+    q[act].cur++;
+    if (q[act].cur<data.length) {
+      const nd=document.getElementById(`${dotId}-${q[act].cur}`);
+      if (nd) nd.classList.add('now');
+      renderMCQ(act,data,cardId,choicesId,dotId,numId,btnId,fbId,pts,onDone);
+    } else {
+      document.getElementById(btnId).disabled=false;
+      if (onDone) onDone(q[act].score,data.length,fbId);
+    }
+  },1700);
+}
+
+function mcqDone(sc,tot,fbId,name) {
+  setFb(fbId,'good',`✅ ${sc}/${tot} — ${name} complete!`);
+}
+
+// ─────────────────────────────────────────────────────────────
+// ACT 2 — CRIME
+// ─────────────────────────────────────────────────────────────
+function initAct2() {
+  initMCQ(2,CRIME,'qc-2','ch-2','qd-2','qn-2','bn-2','fb-2',8,
+    (sc,tot)=>mcqDone(sc,tot,'fb-2','Crime Alert'));
+}
+
+// ─────────────────────────────────────────────────────────────
+// ACT 3 — VERB VORTEX
+// ─────────────────────────────────────────────────────────────
+function initAct3() {
+  initMCQ(3,VERBS,'qc-3','ch-3','qd-3','qn-3','bn-3','fb-3',8,
+    (sc,tot)=>mcqDone(sc,tot,'fb-3','Verb Vortex'));
+}
+
+// ─────────────────────────────────────────────────────────────
+// ACT 4 — WORD SPY
+// ─────────────────────────────────────────────────────────────
+function initAct4() {
+  act4Blanks=new Array(WORDS.length).fill('');
+  act4Checked=false; activeBlank=0; selectedChip=null;
+
+  // word bank
+  const bank=document.getElementById('bank-4'); bank.innerHTML='';
+  [...WORD_BANK].sort(()=>Math.random()-.5).forEach(w=>{
+    const chip=document.createElement('button');
+    chip.className='chip'; chip.textContent=w; chip.dataset.word=w;
+    chip.onclick=()=>chipClick(chip,w);
+    bank.appendChild(chip);
+  });
+
+  // sentences
+  const fills=document.getElementById('fills-4'); fills.innerHTML='';
+  WORDS.forEach((item,i)=>{
+    const p=item.t.split('___');
+    const div=document.createElement('div');
+    div.className='fill-q';
+    div.innerHTML=`<strong>${i+1}.</strong> ${p[0]}<span class="blank${i===0?' active':''}" id="bl-${i}" onclick="blankClick(${i})">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>${p[1]}`;
+    fills.appendChild(div);
+  });
+
+  setFb('fb-4','','');
+  document.getElementById('bn-4').disabled=true;
+  document.getElementById('bn-4').textContent='Check Answers →';
+  document.getElementById('bn-4').onclick=()=>act4Next();
+}
+
+function blankClick(i) {
+  document.querySelectorAll('#fills-4 .blank').forEach(b=>b.classList.remove('active'));
+  activeBlank=i;
+  const bl=document.getElementById(`bl-${i}`);
+  if (!bl.classList.contains('ok-fill')&&!bl.classList.contains('no-fill'))
+    bl.classList.add('active');
+  // if a chip is pre-selected, place it
+  if (selectedChip) { placeChip(selectedChip.word, selectedChip.chip); selectedChip=null; }
+}
+
+function chipClick(chip,word) {
+  if (chip.classList.contains('used')) return;
+  // If blank already active, place directly
+  if (activeBlank!==null) {
+    // return previous word in this blank to bank
+    const prev=act4Blanks[activeBlank];
+    if (prev) {
+      document.querySelectorAll('#bank-4 .chip').forEach(c=>{ if(c.dataset.word===prev) c.classList.remove('used'); });
+    }
+    placeChip(word,chip);
+  } else {
+    selectedChip={word,chip};
+    document.querySelectorAll('#bank-4 .chip').forEach(c=>c.style.outline='');
+    chip.style.outline='2px solid var(--amber)';
+  }
+}
+
+function placeChip(word,chip) {
+  const bl=document.getElementById(`bl-${activeBlank}`);
+  act4Blanks[activeBlank]=word;
+  chip.classList.add('used');
+  bl.textContent=word;
+  bl.classList.remove('active');
+  bl.classList.add('filled');
+  // Advance to next empty blank
+  const next=act4Blanks.findIndex((v,i)=>i>activeBlank&&v==='');
+  const first=act4Blanks.findIndex(v=>v==='');
+  if (next!==-1) { activeBlank=next; document.querySelectorAll('#fills-4 .blank').forEach(b=>b.classList.remove('active')); document.getElementById(`bl-${next}`).classList.add('active'); }
+  else if (first!==-1) { activeBlank=first; document.querySelectorAll('#fills-4 .blank').forEach(b=>b.classList.remove('active')); document.getElementById(`bl-${first}`).classList.add('active'); }
+  else activeBlank=null;
+  if (act4Blanks.every(v=>v!=='')) document.getElementById('bn-4').disabled=false;
+}
+
+function act4Next() {
+  if (!act4Checked) {
+    let correct=0;
+    WORDS.forEach((item,i)=>{
+      const bl=document.getElementById(`bl-${i}`);
+      bl.classList.remove('filled','active');
+      if (act4Blanks[i]===item.a){bl.classList.add('ok-fill');correct++;}
+      else{bl.classList.add('no-fill');bl.title=`Answer: ${item.a}`;}
+    });
+    addScore(correct*8,4);
+    const pct=correct/WORDS.length;
+    setFb('fb-4',pct>=.7?'good':'bad',
+      pct===1?'🎉 Perfect! All 8 correct!':`${correct}/8 correct. Hover red words to see the answers.`);
+    act4Checked=true;
+    document.getElementById('bn-4').textContent='Next Activity →';
+    document.getElementById('bn-4').onclick=()=>nav(4);
+    return;
+  }
+  nav(4);
+}
+
+// ─────────────────────────────────────────────────────────────
+// ACT 5 — REPORTED SPEECH
+// ─────────────────────────────────────────────────────────────
+function initAct5() {
+  initMCQ(5,REPORTED,'qc-5','ch-5','qd-5','qn-5','bn-5','fb-5',8,
+    (sc,tot)=>mcqDone(sc,tot,'fb-5','Reported Speech'));
+}
+
+// ─────────────────────────────────────────────────────────────
+// ACT 6 — QUANTIFIERS
+// ─────────────────────────────────────────────────────────────
+function initAct6() {
+  act6Checked=false;
+  const story=document.getElementById('story-6');
+  let html=STORY_SEGS[0];
+  STORY_BLANKS.forEach((b,i)=>{
+    const opts=[...b.o].sort(()=>Math.random()-.5);
+    html+=`<select class="qsel" id="qs-${i}"><option value="">___</option>${opts.map(o=>`<option value="${o}">${o}</option>`).join('')}</select>`;
+    html+=STORY_SEGS[i+1];
+  });
+  story.innerHTML=html;
+  setFb('fb-6','','');
+  document.getElementById('bn-6').textContent='Check Story →';
+  document.getElementById('bn-6').onclick=()=>act6Check();
+  act6Checked=false;
+}
+
+function act6Check() {
+  if (act6Checked) { nav(6); return; }
+  let correct=0;
+  STORY_BLANKS.forEach((b,i)=>{
+    const sel=document.getElementById(`qs-${i}`);
+    if (!sel) return;
+    sel.disabled=true;
+    const val=sel.value;
+    if (val===b.c){sel.classList.add('ok');correct++;}
+    else{sel.classList.add('no');sel.innerHTML=`<option value="${b.c}">${b.c}</option>`;sel.value=b.c;}
+  });
+  addScore(correct*5,6);
+  setFb('fb-6',correct>=6?'good':'bad',
+    correct===8?`🎉 Perfect! All quantifiers correct!`:`${correct}/8 correct. Wrong gaps now show the right answer.`);
+  act6Checked=true;
+  document.getElementById('bn-6').textContent='Next Activity →';
+  document.getElementById('bn-6').onclick=()=>nav(6);
+}
+
+// ─────────────────────────────────────────────────────────────
+// ACT 7 — IDIOM ISLAND
+// ─────────────────────────────────────────────────────────────
+function initAct7() {
+  // Use 2×2 grid choices
+  q[7]={cur:0,score:0};
+  const dc=document.getElementById('qd-7'); dc.innerHTML='';
+  IDIOMS.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='qdot'+(i===0?' now':''); d.id=`qd-7-${i}`; dc.appendChild(d);
+  });
+  document.getElementById('bn-7').disabled=true;
+  renderIdiom();
+}
+function renderIdiom() {
+  const i=q[7].cur, item=IDIOMS[i];
+  document.getElementById('qn-7').textContent=`Question ${i+1} of ${IDIOMS.length}`;
+  setFb('fb-7','','');
+  document.getElementById('qc-7').innerHTML=`<div class="qlabel">Complete the Idiom</div><p class="qtext">${item.q.replace('___','<em>___</em>')}</p>`;
+  const grid=document.getElementById('ch-7'); grid.innerHTML='';
+  const shuffled=item.o.map((t,i)=>({t,i})).sort(()=>Math.random()-.5);
+  shuffled.forEach(({t,i:origI})=>{
+    const btn=document.createElement('button');
+    btn.className='cbtn'; btn.textContent=t;
+    btn.onclick=()=>answerIdiom(origI,btn);
+    grid.appendChild(btn);
+  });
+  q[7].answered=false;
+}
+function answerIdiom(idx,btn) {
+  if (q[7].answered) return;
+  q[7].answered=true;
+  const item=IDIOMS[q[7].cur];
+  document.querySelectorAll('#ch-7 .cbtn').forEach(b=>b.disabled=true);
+  if (idx===item.c){
+    btn.classList.add('ok');
+    setFb('fb-7','good',`✓ ${item.ex}`);
+    q[7].score++; addScore(8,7);
+  } else {
+    btn.classList.add('no');
+    document.querySelectorAll('#ch-7 .cbtn').forEach(b=>{ if(b.textContent===item.o[item.c]) b.classList.add('show'); });
+    setFb('fb-7','bad',`✗ ${item.ex}`);
+  }
+  const dot=document.getElementById(`qd-7-${q[7].cur}`);
+  if(dot){dot.classList.remove('now');dot.classList.add('done');}
+  setTimeout(()=>{
+    q[7].cur++;
+    if(q[7].cur<IDIOMS.length){
+      const nd=document.getElementById(`qd-7-${q[7].cur}`);
+      if(nd) nd.classList.add('now');
+      renderIdiom();
+    } else {
+      document.getElementById('bn-7').disabled=false;
+      setFb('fb-7','good',`🏝️ ${q[7].score}/${IDIOMS.length} — Idiom Island complete!`);
+    }
+  },1700);
+}
+
+// ─────────────────────────────────────────────────────────────
+// SPEAKING
+// ─────────────────────────────────────────────────────────────
+function initSpeak() {
+  const grid = document.getElementById('speakGrid');
+  grid.innerHTML = '';
+  const colorMap = {
+    amber: {tag:'b-amber', accent:'var(--amber)'},
+    err:   {tag:'b-err',   accent:'var(--err)'},
+    teal:  {tag:'b-teal',  accent:'var(--teal)'},
+  };
+  SPEAK_CARDS.forEach((card, idx) => {
+    const cm = colorMap[card.color];
+    const div = document.createElement('div');
+    div.className = 'speak-card';
+    div.innerHTML = `
+      <div class="speak-card-face">
+        <span class="speak-card-icon">${card.icon}</span>
+        <div class="badge ${cm.tag}" style="font-size:13px;padding:4px 14px">${card.theme}</div>
+        <span class="speak-tap-hint">tap to open</span>
+      </div>
+      <div class="speak-content" id="sc-${idx}">
+        <div class="badge ${cm.tag}" style="margin-bottom:10px;font-size:12px">${card.theme}</div>
+        <p class="speak-card-scenario">${card.scenario}</p>
+        <div class="speak-questions">
+          ${card.qs.map((q,qi)=>`<div class="speak-q-item"><span class="speak-q-num">${qi+1}.</span><span>${q}</span></div>`).join('')}
+          <div class="speak-vocab">
+            ${card.vocab.map(v=>`<span class="speak-vocab-chip">📌 ${v}</span>`).join('')}
+          </div>
+        </div>
+        <button class="speak-close-btn" onclick="event.stopPropagation();revealSpeak(${idx})">✕ Close</button>
+      </div>
+    `;
+    div.addEventListener('click', () => { if (!div.classList.contains('revealed')) revealSpeak(idx); });
+    grid.appendChild(div);
+  });
+}
+function revealSpeak(idx) {
+  const card = document.getElementById(`sc-${idx}`).closest('.speak-card');
+  card.classList.toggle('revealed');
+}
+
+// ─────────────────────────────────────────────────────────────
+// REFLECT
+// ─────────────────────────────────────────────────────────────
+function initReflect() {
+  const c=document.getElementById('reflItems'); c.innerHTML='';
+  REFLECT_ITEMS.forEach((txt,i)=>{
+    const div=document.createElement('div'); div.className='refl-item';
+    div.innerHTML=`<p class="refl-text">${txt}</p>
+      <div class="stars" id="st-${i}">${[1,2,3,4,5].map(n=>`<button class="star" data-v="${n}" onclick="rateStar(${i},${n})">⭐</button>`).join('')}</div>`;
+    c.appendChild(div);
+  });
+}
+function rateStar(i,v) {
+  document.querySelectorAll(`#st-${i} .star`).forEach(s=>{
+    s.classList.toggle('lit',parseInt(s.dataset.v)<=v);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
+// RESULTS
+// ─────────────────────────────────────────────────────────────
+function showResults() {
+  showScreen('results');
+  document.getElementById('actLabel').textContent='Results';
+  for(let i=0;i<7;i++){const d=document.getElementById(`d${i}`);if(d)d.className='dot done';}
+
+  const MAX=7*10+8*8+8*8+8*8+6*8+8*5+6*8; // 70+64+64+64+48+40+48=398
+  const pct=score/MAX;
+
+  document.getElementById('resNum').textContent=score;
+
+  let badge,msg,det;
+  if (pct>=.85){badge='🏆';msg='Outstanding Mission!';det='You aced it across all activities. Brilliant English skills!';}
+  else if (pct>=.70){badge='🥇';msg='Excellent Work!';det='Strong performance throughout. Keep practising the trickier grammar points!';}
+  else if (pct>=.55){badge='🥈';msg='Good Effort!';det='You\'ve got the core ideas down. Review gerunds, reported speech, and quantifiers for extra practice.';}
+  else {badge='💪';msg='Keep Going!';det='Lots of new language today — it takes time to stick! Try again and watch your score climb.';}
+
+  document.getElementById('resBadge').textContent=badge;
+  document.getElementById('resMsg').textContent=msg;
+  document.getElementById('resDet').textContent=det;
+
+  const bdown=document.getElementById('resBdown');
+  const actNames={1:'Money Mixer',2:'Crime Alert',3:'Verb Vortex',4:'Word Spy',5:'Reported Speech',6:'Quantifiers',7:'Idioms'};
+  bdown.innerHTML=Object.entries(actNames).map(([k,name])=>`
+    <div class="rb-item">
+      <div class="rb-name">${name}</div>
+      <div class="rb-val">${actScores[k]||0} pts</div>
+    </div>`).join('');
+}
+
+// ─────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────
+function setFb(id,type,msg) {
+  const el=document.getElementById(id);
+  el.className='fb'+(type?' show '+type:'');
+  el.textContent=msg;
+}
+
+// ─────────────────────────────────────────────────────────────
+// BACK + FORWARD BUTTONS — injected into every non-intro screen
+// ─────────────────────────────────────────────────────────────
+// Forward map: screen → {target screen id, dot position, label}
+const FWD_MAP = {
+  '1':  {s:'2',    dot:2, label:'Crime Alert →'},
+  '2':  {s:'3',    dot:3, label:'Verb Vortex →'},
+  '3':  {s:'4',    dot:4, label:'Word Spy →'},
+  '4':  {s:'5',    dot:5, label:'Reported Speech →'},
+  '5':  {s:'6',    dot:6, label:'Quantifiers Quest →'},
+  '6':  {s:'7',    dot:7, label:'Idiom Island →'},
+  '7':  {s:'speak',dot:8, label:'Speaking →'},
+  'speak':{s:'8',  dot:8, label:'Reflect →'},
+};
+
+function addBackButtons() {
+  const backLabels = {
+    '1':'← Overview','2':'← Money Mixer','3':'← Crime Alert',
+    '4':'← Verb Vortex','5':'← Word Spy','6':'← Reported Speech',
+    '7':'← Quantifiers','speak':'← Idiom Island','8':'← Speaking',
+  };
+  Object.keys(backLabels).forEach(sid => {
+    const s = document.getElementById(`s-${sid}`);
+    if (!s) return;
+
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:8px';
+    row.id = `navrow-${sid}`;
+
+    // back button
+    const back = document.createElement('button');
+    back.className = 'btn btn-ghost back-btn';
+    back.style.margin = '0';
+    back.textContent = backLabels[sid];
+    back.onclick = () => goBack(sid);
+    row.appendChild(back);
+
+    // forward button (hidden until that screen is visited)
+    const fwd = FWD_MAP[sid];
+    if (fwd) {
+      const fwdBtn = document.createElement('button');
+      fwdBtn.className = 'btn btn-ghost back-btn';
+      fwdBtn.style.margin = '0';
+      fwdBtn.textContent = fwd.label;
+      fwdBtn.onclick = () => jumpTo(fwd.s, fwd.dot);
+      row.appendChild(fwdBtn);
+    }
+
+    s.insertBefore(row, s.firstChild);
+  });
+}
+
+
+// ─────────────────────────────────────────────────────────────
+// BOOT
+// ─────────────────────────────────────────────────────────────
+initDots();
+addBackButtons();
+</script>
