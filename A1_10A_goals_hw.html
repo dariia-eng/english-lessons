@@ -1,0 +1,697 @@
+<title>Would Like · Love To — Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Tokens ── */
+:root{
+  --bg:#f7f6f2;--surface:#fff;--border:#e4ddd4;--text:#1a1208;
+  --muted:#7a6f60;--accent:#c8781a;--accent-light:#fef0dc;
+  --hero:#1c2b1a;
+  --green:#16a34a;--green-bg:#dcfce7;
+  --red:#dc2626;--red-bg:#fee2e2;
+  --yellow:#d97706;--yellow-bg:#fef3c7;
+  --shadow:0 2px 14px rgba(0,0,0,.07);--r:12px;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1209;--surface:#161d13;--border:#252f20;--text:#eaf2e5;
+    --muted:#8a9a84;--accent:#e8922a;--accent-light:#2a1e0a;
+    --green-bg:#052e16;--red-bg:#450a0a;--yellow-bg:#451a03;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1209;--surface:#161d13;--border:#252f20;--text:#eaf2e5;
+  --muted:#8a9a84;--accent:#e8922a;--accent-light:#2a1e0a;
+  --green-bg:#052e16;--red-bg:#450a0a;--yellow-bg:#451a03;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.65;}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,var(--hero) 0%,#0a1a08 100%);color:#fff;padding:36px 28px 30px;position:relative;overflow:hidden;}
+.hero::after{content:'10A';position:absolute;right:16px;bottom:-8px;font-family:'Playfair Display',serif;font-size:110px;font-weight:900;color:rgba(255,255,255,.06);line-height:1;pointer-events:none;}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.6;margin-bottom:6px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(24px,5vw,40px);font-weight:900;line-height:1.1;margin-bottom:4px;}
+.hero .sub{font-size:13px;opacity:.75;}
+.theme-btn{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:7px;padding:5px 11px;font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;}
+.theme-btn:hover{background:rgba(255,255,255,.22);}
+
+/* ── Name + Progress ── */
+.name-bar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 22px;display:flex;align-items:center;gap:14px;box-shadow:0 1px 8px rgba(0,0,0,.06);flex-wrap:wrap;}
+.name-bar label{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;}
+.name-input{border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:7px;padding:5px 12px;font-family:'Inter',sans-serif;font-size:14px;outline:none;flex:1;min-width:140px;max-width:240px;transition:border-color .2s;}
+.name-input:focus{border-color:var(--accent);}
+.prog-wrap{display:flex;align-items:center;gap:8px;flex:2;min-width:180px;}
+.prog-track{flex:1;height:7px;background:var(--border);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--accent);border-radius:4px;width:0%;transition:width .4s cubic-bezier(.4,0,.2,1);}
+.prog-fill.done{background:var(--green);}
+.prog-label{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap;}
+
+/* ── Layout ── */
+.main{max-width:860px;margin:0 auto;padding:32px 18px 72px;}
+.ex-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px 22px;margin-bottom:22px;box-shadow:var(--shadow);}
+.ex-hd{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.ex-num{background:var(--accent);color:#fff;font-size:12px;font-weight:700;border-radius:7px;padding:4px 11px;letter-spacing:.06em;font-family:'Inter',sans-serif;white-space:nowrap;}
+.ex-hd h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text);}
+.ex-hd h3 em{font-style:italic;}
+.ex-instr{font-size:13.5px;color:var(--muted);margin-bottom:16px;}
+.btn-row{display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap;}
+.check-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:background .15s,transform .1s;}
+.check-btn:hover{background:#9a5c12;transform:translateY(-1px);}
+.reset-btn{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+.score-badge{display:none;background:var(--yellow-bg);border:1px solid var(--yellow);color:var(--yellow);border-radius:20px;padding:4px 16px;font-size:13px;font-weight:700;}
+.score-badge.vis{display:inline-block;}
+
+/* ── Word bank ── */
+.word-bank{background:var(--accent-light);border:1px solid var(--accent);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;}
+.word-bank strong{color:var(--accent);font-size:11px;display:block;margin-bottom:5px;letter-spacing:.07em;text-transform:uppercase;}
+.word-bank span{display:inline-block;margin:2px 4px;font-weight:600;color:var(--text);}
+.word-bank .used{text-decoration:line-through;opacity:.45;}
+
+/* ── Ex 1: Match ── */
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.match-col{display:flex;flex-direction:column;gap:6px;}
+.match-item{display:flex;align-items:center;gap:8px;background:var(--bg);border:2px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13.5px;font-weight:500;cursor:pointer;text-align:left;transition:border-color .15s,background .15s;position:relative;font-family:'Inter',sans-serif;color:var(--text);}
+.match-item:hover{border-color:var(--accent);}
+.match-item.sel-L{border-color:var(--accent);background:var(--accent-light);}
+.match-item.matched{border-color:var(--accent);opacity:.85;}
+.match-item.match-correct{border-color:var(--green);background:var(--green-bg);color:var(--green);}
+.match-item.match-wrong{border-color:var(--red);background:var(--red-bg);color:var(--red);}
+.pair-tag{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-size:10px;font-weight:700;flex-shrink:0;opacity:0;}
+.match-item.matched .pair-tag{opacity:1;}
+.match-item.match-correct .pair-tag,.match-item.match-wrong .pair-tag{opacity:0;}
+@media(max-width:520px){.match-wrap{grid-template-columns:1fr;}}
+
+/* ── Ex 2 & 4: Button groups ── */
+.sent-list{display:flex;flex-direction:column;gap:10px;}
+.sent-item{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;}
+.s-num{min-width:22px;font-size:13px;font-weight:700;color:var(--muted);padding-top:7px;flex-shrink:0;}
+.s-body{flex:1;min-width:220px;}
+.s-text{font-size:14px;line-height:1.6;margin-bottom:6px;}
+.opt-group{display:flex;flex-wrap:wrap;gap:6px;}
+.opt-btn{border:2px solid var(--border);background:var(--bg);color:var(--text);border-radius:7px;padding:5px 14px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:border-color .15s,background .15s;}
+.opt-btn:hover{border-color:var(--accent);}
+.opt-btn.sel-correct{border-color:var(--green);background:var(--green-bg);color:var(--green);}
+.opt-btn.sel-wrong{border-color:var(--red);background:var(--red-bg);color:var(--red);}
+.opt-btn.reveal{border-color:var(--green);background:var(--green-bg);color:var(--green);opacity:.6;}
+
+/* ── Ex 6: Gap fill ── */
+.ex6-list{display:flex;flex-direction:column;gap:12px;}
+.ex6-item{display:flex;align-items:flex-start;gap:10px;}
+.ex6-num{min-width:22px;font-size:13px;font-weight:700;color:var(--muted);padding-top:2px;flex-shrink:0;}
+.ex6-sent{font-size:14px;line-height:1.9;flex:1;}
+.ex6-given{color:var(--muted);font-style:italic;}
+.ex6-given .ex6-ans{font-style:normal;color:var(--accent);font-weight:700;}
+.g-inp{display:inline-block;border:none;border-bottom:2px solid var(--accent);background:transparent;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;outline:none;padding:1px 4px;transition:border-color .2s;}
+.g-inp:focus{border-bottom-color:var(--accent);}
+.g-inp.g-sm{width:70px;}
+.g-inp.g-lg{width:130px;}
+.g-inp.correct{border-bottom-color:var(--green);color:var(--green);font-weight:600;}
+.g-inp.wrong{border-bottom-color:var(--red);color:var(--red);}
+.show-ans{font-size:12px;color:var(--green);font-weight:700;margin-left:3px;}
+
+/* ── Send to Teacher ── */
+.send-card{background:var(--accent-light);border:1px solid var(--accent);}
+.send-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:11px 28px;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;width:100%;max-width:320px;transition:background .15s,transform .1s;}
+.send-btn:hover{background:#9a5c12;transform:translateY(-1px);}
+</style>
+
+<!-- ── Hero ── -->
+<header class="hero">
+  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
+  <p class="eyebrow">Homework · Unit 10A</p>
+  <h1>Would Like &amp; Love To</h1>
+  <p class="sub">Collocations · Grammar · <em>would like / love to</em></p>
+</header>
+
+<!-- ── Name + Progress ── -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" class="name-input" type="text" placeholder="Type your name…">
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="pfill"></div></div>
+    <span class="prog-label" id="plabel">0 / 4</span>
+  </div>
+</div>
+
+<main class="main">
+
+<!-- ══════════ EX 1: MATCH ══════════ -->
+<div class="ex-card" id="card1">
+  <div class="ex-hd"><span class="ex-num">1</span><h3>Vocabulary — Match the Collocations</h3></div>
+  <p class="ex-instr"><strong>Click a verb on the left, then click the matching phrase on the right.</strong> Click a paired item to undo.</p>
+  <div class="match-wrap">
+    <div class="match-col" id="left-col">
+      <button class="match-item" data-side="L" data-id="1" onclick="selectMatch(this)"><span class="pair-tag" id="pt_L_1"></span>1&nbsp; have</button>
+      <button class="match-item" data-side="L" data-id="2" onclick="selectMatch(this)"><span class="pair-tag" id="pt_L_2"></span>2&nbsp; try</button>
+      <button class="match-item" data-side="L" data-id="3" onclick="selectMatch(this)"><span class="pair-tag" id="pt_L_3"></span>3&nbsp; join</button>
+      <button class="match-item" data-side="L" data-id="4" onclick="selectMatch(this)"><span class="pair-tag" id="pt_L_4"></span>4&nbsp; make</button>
+      <button class="match-item" data-side="L" data-id="5" onclick="selectMatch(this)"><span class="pair-tag" id="pt_L_5"></span>5&nbsp; change</button>
+      <button class="match-item" data-side="L" data-id="6" onclick="selectMatch(this)"><span class="pair-tag" id="pt_L_6"></span>6&nbsp; build</button>
+      <button class="match-item" data-side="L" data-id="7" onclick="selectMatch(this)"><span class="pair-tag" id="pt_L_7"></span>7&nbsp; move</button>
+      <button class="match-item" data-side="L" data-id="8" onclick="selectMatch(this)"><span class="pair-tag" id="pt_L_8"></span>8&nbsp; start</button>
+      <button class="match-item" data-side="L" data-id="9" onclick="selectMatch(this)"><span class="pair-tag" id="pt_L_9"></span>9&nbsp; spend</button>
+      <button class="match-item" data-side="L" data-id="10" onclick="selectMatch(this)"><span class="pair-tag" id="pt_L_10"></span>10&nbsp; sell</button>
+    </div>
+    <div class="match-col" id="right-col">
+      <button class="match-item" data-side="R" data-id="f" onclick="selectMatch(this)"><span class="pair-tag" id="pt_R_f"></span>f &nbsp; children</button>
+      <button class="match-item" data-side="R" data-id="a" onclick="selectMatch(this)"><span class="pair-tag" id="pt_R_a"></span>a &nbsp; time with my family</button>
+      <button class="match-item" data-side="R" data-id="g" onclick="selectMatch(this)"><span class="pair-tag" id="pt_R_g"></span>g &nbsp; a new sport</button>
+      <button class="match-item" data-side="R" data-id="b" onclick="selectMatch(this)"><span class="pair-tag" id="pt_R_b"></span>b &nbsp; jobs</button>
+      <button class="match-item" data-side="R" data-id="i" onclick="selectMatch(this)"><span class="pair-tag" id="pt_R_i"></span>i &nbsp; new friends</button>
+      <button class="match-item" data-side="R" data-id="h" onclick="selectMatch(this)"><span class="pair-tag" id="pt_R_h"></span>h &nbsp; some old clothes</button>
+      <button class="match-item" data-side="R" data-id="j" onclick="selectMatch(this)"><span class="pair-tag" id="pt_R_j"></span>j &nbsp; a club</button>
+      <button class="match-item" data-side="R" data-id="e" onclick="selectMatch(this)"><span class="pair-tag" id="pt_R_e"></span>e &nbsp; to a big city</button>
+      <button class="match-item" data-side="R" data-id="c" onclick="selectMatch(this)"><span class="pair-tag" id="pt_R_c"></span>c &nbsp; a house</button>
+      <button class="match-item" data-side="R" data-id="d" onclick="selectMatch(this)"><span class="pair-tag" id="pt_R_d"></span>d &nbsp; a business</button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="check-btn" onclick="checkEx1()">Check Exercise 1</button>
+    <button class="reset-btn" onclick="resetEx1()">Reset</button>
+    <span class="score-badge" id="sc1"></span>
+  </div>
+</div>
+
+<!-- ══════════ EX 2: CHOOSE CORRECT ALTERNATIVE ══════════ -->
+<div class="ex-card" id="card2">
+  <div class="ex-hd"><span class="ex-num">2</span><h3>Vocabulary — Choose the Correct Alternative</h3></div>
+  <p class="ex-instr"><strong>Click the correct word to complete each sentence.</strong></p>
+  <div class="sent-list">
+
+    <div class="sent-item">
+      <span class="s-num">1</span>
+      <div class="s-body">
+        <div class="s-text">I didn't like my old job, so I ___ jobs last year.</div>
+        <div class="opt-group" data-ans="changed">
+          <button class="opt-btn" onclick="pickOpt(this)">started</button>
+          <button class="opt-btn" onclick="pickOpt(this)">changed</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">2</span>
+      <div class="s-body">
+        <div class="s-text">Last year, I ___ a football team at work.</div>
+        <div class="opt-group" data-ans="joined">
+          <button class="opt-btn" onclick="pickOpt(this)">joined</button>
+          <button class="opt-btn" onclick="pickOpt(this)">built</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">3</span>
+      <div class="s-body">
+        <div class="s-text">My parents ___ this house in the 1970s.</div>
+        <div class="opt-group" data-ans="built">
+          <button class="opt-btn" onclick="pickOpt(this)">moved</button>
+          <button class="opt-btn" onclick="pickOpt(this)">built</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">4</span>
+      <div class="s-body">
+        <div class="s-text">I don't ___ much time with my parents because I don't live near them.</div>
+        <div class="opt-group" data-ans="spend">
+          <button class="opt-btn" onclick="pickOpt(this)">make</button>
+          <button class="opt-btn" onclick="pickOpt(this)">spend</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">5</span>
+      <div class="s-body">
+        <div class="s-text">My sister ___ a daughter last year. Her name is Emily.</div>
+        <div class="opt-group" data-ans="had">
+          <button class="opt-btn" onclick="pickOpt(this)">had</button>
+          <button class="opt-btn" onclick="pickOpt(this)">tried</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">6</span>
+      <div class="s-body">
+        <div class="s-text">I ___ lots of friends when I was at university.</div>
+        <div class="opt-group" data-ans="made">
+          <button class="opt-btn" onclick="pickOpt(this)">made</button>
+          <button class="opt-btn" onclick="pickOpt(this)">built</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">7</span>
+      <div class="s-body">
+        <div class="s-text">I went to a painting class last week because I wanted to ___ something different.</div>
+        <div class="opt-group" data-ans="try">
+          <button class="opt-btn" onclick="pickOpt(this)">have</button>
+          <button class="opt-btn" onclick="pickOpt(this)">try</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">8</span>
+      <div class="s-body">
+        <div class="s-text">John ___ all his old books on the internet.</div>
+        <div class="opt-group" data-ans="sold">
+          <button class="opt-btn" onclick="pickOpt(this)">sold</button>
+          <button class="opt-btn" onclick="pickOpt(this)">moved</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">9</span>
+      <div class="s-body">
+        <div class="s-text">We're from a small village, but last year we ___ to a big city.</div>
+        <div class="opt-group" data-ans="moved">
+          <button class="opt-btn" onclick="pickOpt(this)">changed</button>
+          <button class="opt-btn" onclick="pickOpt(this)">moved</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">10</span>
+      <div class="s-body">
+        <div class="s-text">Florence loves making cakes and last year she ___ a small cake company.</div>
+        <div class="opt-group" data-ans="started">
+          <button class="opt-btn" onclick="pickOpt(this)">started</button>
+          <button class="opt-btn" onclick="pickOpt(this)">built</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="check-btn" onclick="checkEx2()">Check Exercise 2</button>
+    <button class="reset-btn" onclick="resetCard('card2','ex2')">Reset</button>
+    <span class="score-badge" id="sc2"></span>
+  </div>
+</div>
+
+<!-- ══════════ EX 4: GRAMMAR A OR B ══════════ -->
+<div class="ex-card" id="card4">
+  <div class="ex-hd"><span class="ex-num">4</span><h3>Grammar — Choose the Correct Option</h3></div>
+  <p class="ex-instr"><strong>Click a or b to complete each sentence.</strong></p>
+  <div class="sent-list">
+
+    <div class="sent-item">
+      <span class="s-num">1</span>
+      <div class="s-body">
+        <div class="s-text">Where ___ you like to go this afternoon?</div>
+        <div class="opt-group" data-ans="would">
+          <button class="opt-btn" onclick="pickOpt(this)">a &nbsp;do</button>
+          <button class="opt-btn" onclick="pickOpt(this)">b &nbsp;would</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">2</span>
+      <div class="s-body">
+        <div class="s-text">I'd love ___ to a small village in the mountains.</div>
+        <div class="opt-group" data-ans="to move">
+          <button class="opt-btn" onclick="pickOpt(this)">a &nbsp;to move</button>
+          <button class="opt-btn" onclick="pickOpt(this)">b &nbsp;moving</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">3</span>
+      <div class="s-body">
+        <div class="s-text">___ to join a book club. I love reading.</div>
+        <div class="opt-group" data-ans="i'd like">
+          <button class="opt-btn" onclick="pickOpt(this)">a &nbsp;I like</button>
+          <button class="opt-btn" onclick="pickOpt(this)">b &nbsp;I'd like</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">4</span>
+      <div class="s-body">
+        <div class="s-text">___ you like to start a business?</div>
+        <div class="opt-group" data-ans="would">
+          <button class="opt-btn" onclick="pickOpt(this)">a &nbsp;Do</button>
+          <button class="opt-btn" onclick="pickOpt(this)">b &nbsp;Would</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">5</span>
+      <div class="s-body">
+        <div class="s-text">I ___ like to change jobs. I love my job!</div>
+        <div class="opt-group" data-ans="wouldn't">
+          <button class="opt-btn" onclick="pickOpt(this)">a &nbsp;don't</button>
+          <button class="opt-btn" onclick="pickOpt(this)">b &nbsp;wouldn't</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">6</span>
+      <div class="s-body">
+        <div class="s-text">I'd ___ to spend more time with my sister.</div>
+        <div class="opt-group" data-ans="love">
+          <button class="opt-btn" onclick="pickOpt(this)">a &nbsp;love</button>
+          <button class="opt-btn" onclick="pickOpt(this)">b &nbsp;loving</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">7</span>
+      <div class="s-body">
+        <div class="s-text">When would you like ___ on holiday?</div>
+        <div class="opt-group" data-ans="to go">
+          <button class="opt-btn" onclick="pickOpt(this)">a &nbsp;go</button>
+          <button class="opt-btn" onclick="pickOpt(this)">b &nbsp;to go</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-item">
+      <span class="s-num">8</span>
+      <div class="s-body">
+        <div class="s-text">Tom would ___ to try flying a plane!</div>
+        <div class="opt-group" data-ans="love">
+          <button class="opt-btn" onclick="pickOpt(this)">a &nbsp;loves</button>
+          <button class="opt-btn" onclick="pickOpt(this)">b &nbsp;love</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="check-btn" onclick="checkEx4()">Check Exercise 4</button>
+    <button class="reset-btn" onclick="resetCard('card4','ex4')">Reset</button>
+    <span class="score-badge" id="sc4"></span>
+  </div>
+</div>
+
+<!-- ══════════ EX 6: COMPLETE WITH WOULD LIKE ══════════ -->
+<div class="ex-card" id="card6">
+  <div class="ex-hd"><span class="ex-num">6</span><h3>Grammar — Complete with <em>would like</em></h3></div>
+  <p class="ex-instr"><strong>Complete the questions</strong> using <strong><em>would like</em></strong> and a verb from the box.</p>
+  <div class="word-bank">
+    <strong>Verb box</strong>
+    <span>do</span> · <span class="used">go ✓</span> · <span>join</span> · <span>speak</span> · <span>study</span> · <span>watch</span>
+  </div>
+  <div class="ex6-list">
+
+    <div class="ex6-item ex6-given">
+      <span class="ex6-num">1</span>
+      <div class="ex6-sent">Where <span class="ex6-ans">would</span> you <span class="ex6-ans">like to go</span> on holiday? <em>(example)</em></div>
+    </div>
+
+    <div class="ex6-item">
+      <span class="ex6-num">2</span>
+      <div class="ex6-sent">A: <input class="g-inp g-sm" data-ans="would" placeholder="___" oninput="chkG(this)" onchange="chkG(this)"> you <input class="g-inp g-lg" data-ans="like to watch" placeholder="___" oninput="chkG(this)" onchange="chkG(this)"> a film tonight?<br><small style="color:var(--muted)">B: No, thanks. I've got lots of homework.</small></div>
+    </div>
+
+    <div class="ex6-item">
+      <span class="ex6-num">3</span>
+      <div class="ex6-sent">A: What <input class="g-inp g-sm" data-ans="would" placeholder="___" oninput="chkG(this)" onchange="chkG(this)"> Sara <input class="g-inp g-lg" data-ans="like to study" placeholder="___" oninput="chkG(this)" onchange="chkG(this)"> at college?<br><small style="color:var(--muted)">B: Art. She loves painting and drawing.</small></div>
+    </div>
+
+    <div class="ex6-item">
+      <span class="ex6-num">4</span>
+      <div class="ex6-sent">A: What <input class="g-inp g-sm" data-ans="would" placeholder="___" oninput="chkG(this)" onchange="chkG(this)"> you <input class="g-inp g-lg" data-ans="like to do" placeholder="___" oninput="chkG(this)" onchange="chkG(this)"> in the future?<br><small style="color:var(--muted)">B: I'd love to be a doctor.</small></div>
+    </div>
+
+    <div class="ex6-item">
+      <span class="ex6-num">5</span>
+      <div class="ex6-sent">A: What languages <input class="g-inp g-sm" data-ans="would" placeholder="___" oninput="chkG(this)" onchange="chkG(this)"> you <input class="g-inp g-lg" data-ans="like to speak" placeholder="___" oninput="chkG(this)" onchange="chkG(this)">?<br><small style="color:var(--muted)">B: Japanese and Arabic.</small></div>
+    </div>
+
+    <div class="ex6-item">
+      <span class="ex6-num">6</span>
+      <div class="ex6-sent">A: <input class="g-inp g-sm" data-ans="would" placeholder="___" oninput="chkG(this)" onchange="chkG(this)"> you <input class="g-inp g-lg" data-ans="like to join" placeholder="___" oninput="chkG(this)" onchange="chkG(this)"> a gym?<br><small style="color:var(--muted)">B: Yes. I'd like to do more exercise.</small></div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="check-btn" onclick="checkEx6()">Check Exercise 6</button>
+    <button class="reset-btn" onclick="resetEx6()">Reset</button>
+    <span class="score-badge" id="sc6"></span>
+  </div>
+</div>
+
+<!-- ══════════ SEND TO TEACHER ══════════ -->
+<div class="ex-card send-card">
+  <div class="ex-hd">
+    <span class="ex-num" style="background:var(--accent);">✉</span>
+    <h3 style="color:var(--accent);">Send to Teacher</h3>
+  </div>
+  <p class="ex-instr" style="margin-bottom:14px;">Make sure your name is written above, then send your answers to your teacher.</p>
+  <button class="send-btn" onclick="sendToTeacher()">📤 Send to Teacher</button>
+</div>
+
+</main>
+
+<script>
+/* ── Theme ── */
+const root=document.documentElement;
+function toggleTheme(){
+  const d=root.getAttribute('data-theme');
+  if(d==='dark'){root.setAttribute('data-theme','light');document.getElementById('themeBtn').textContent='🌙 Dark';}
+  else if(d==='light'){root.removeAttribute('data-theme');document.getElementById('themeBtn').textContent='☀️ Light';}
+  else{root.setAttribute('data-theme','dark');document.getElementById('themeBtn').textContent='☀️ Light';}
+}
+
+/* ── Progress ── */
+const done={ex1:false,ex2:false,ex4:false,ex6:false};
+function updateProgress(){
+  const n=Object.values(done).filter(Boolean).length;
+  const total=Object.keys(done).length;
+  const fill=document.getElementById('pfill');
+  fill.style.width=(n/total*100)+'%';
+  fill.classList.toggle('done',n===total);
+  document.getElementById('plabel').textContent=n+' / '+total;
+}
+
+/* ── Ex 1: Match ── */
+let selectedL=null;
+const pairs1={};
+const correct1={'1':'f','2':'g','3':'j','4':'i','5':'b','6':'c','7':'e','8':'d','9':'a','10':'h'};
+const PAIR_SYMBOLS=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
+let pairCount=0;
+
+function selectMatch(btn){
+  const side=btn.dataset.side;
+  const id=btn.dataset.id;
+
+  // Click on already-paired item → unpair
+  if(btn.classList.contains('matched')){
+    const sym=btn.querySelector('.pair-tag').textContent;
+    document.querySelectorAll('#card1 .match-item.matched').forEach(b=>{
+      if(b.querySelector('.pair-tag').textContent===sym){
+        b.classList.remove('matched','match-correct','match-wrong');
+        b.querySelector('.pair-tag').textContent='';
+        if(b.dataset.side==='L') delete pairs1[b.dataset.id];
+      }
+    });
+    selectedL=null;
+    return;
+  }
+
+  if(side==='L'){
+    document.querySelectorAll('#card1 .match-item.sel-L').forEach(b=>b.classList.remove('sel-L'));
+    btn.classList.add('sel-L');
+    selectedL=btn;
+  } else {
+    if(!selectedL) return;
+    const sym=PAIR_SYMBOLS[pairCount%10]; pairCount++;
+    [selectedL,btn].forEach(b=>{
+      b.classList.remove('sel-L');
+      b.classList.add('matched');
+      b.querySelector('.pair-tag').textContent=sym;
+    });
+    pairs1[selectedL.dataset.id]=id;
+    selectedL=null;
+  }
+}
+
+function checkEx1(){
+  let correct=0;
+  document.querySelectorAll('#card1 .match-item.matched').forEach(b=>{
+    if(b.dataset.side!=='L') return;
+    const ok=correct1[b.dataset.id]===pairs1[b.dataset.id];
+    const rhId=pairs1[b.dataset.id];
+    const rh=document.querySelector(`#card1 .match-item[data-side="R"][data-id="${rhId}"]`);
+    [b,rh].forEach(el=>{if(el){el.classList.add(ok?'match-correct':'match-wrong');}});
+    if(ok) correct++;
+  });
+  const sc=document.getElementById('sc1');
+  sc.textContent=correct+' / 10 correct';
+  sc.classList.add('vis');
+  if(correct===10){done.ex1=true;updateProgress();}
+}
+
+function resetEx1(){
+  pairCount=0; selectedL=null;
+  Object.keys(pairs1).forEach(k=>delete pairs1[k]);
+  document.querySelectorAll('#card1 .match-item').forEach(b=>{
+    b.classList.remove('matched','sel-L','match-correct','match-wrong');
+    b.querySelector('.pair-tag').textContent='';
+  });
+  document.getElementById('sc1').classList.remove('vis');
+  done.ex1=false; updateProgress();
+}
+
+/* ── Ex 2 & 4: Button groups ── */
+function pickOpt(btn){
+  const grp=btn.parentElement;
+  if(btn.classList.contains('sel-correct')||btn.classList.contains('sel-wrong')) return;
+  grp.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('sel-correct','sel-wrong','reveal'));
+  btn.classList.add('sel-pending');
+  btn._selected=true;
+  btn.classList.remove('sel-pending');
+  btn.dataset.picked='1';
+}
+
+function checkOptGroups(cardId,scId,doneKey,total){
+  let correct=0;
+  document.querySelectorAll('#'+cardId+' .opt-group').forEach(grp=>{
+    const ans=grp.dataset.ans.toLowerCase().trim();
+    const picked=Array.from(grp.querySelectorAll('.opt-btn')).find(b=>b.dataset.picked==='1');
+    grp.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('sel-correct','sel-wrong','reveal'));
+    if(!picked) return;
+    const val=picked.textContent.replace(/^[ab]\s+/i,'').trim().toLowerCase();
+    const ok=val===ans||val.replace(/['']/g,"'")===ans;
+    picked.classList.add(ok?'sel-correct':'sel-wrong');
+    if(!ok){
+      const correctBtn=Array.from(grp.querySelectorAll('.opt-btn')).find(b=>{
+        const v=b.textContent.replace(/^[ab]\s+/i,'').trim().toLowerCase();
+        return v===ans||v.replace(/['']/g,"'")===ans;
+      });
+      if(correctBtn) correctBtn.classList.add('reveal');
+    }
+    if(ok) correct++;
+  });
+  const sc=document.getElementById(scId);
+  sc.textContent=correct+' / '+total+' correct';
+  sc.classList.add('vis');
+  if(correct===total){done[doneKey]=true;updateProgress();}
+}
+
+function checkEx2(){checkOptGroups('card2','sc2','ex2',10);}
+function checkEx4(){checkOptGroups('card4','sc4','ex4',8);}
+
+function resetCard(cardId,doneKey){
+  document.querySelectorAll('#'+cardId+' .opt-btn').forEach(b=>{
+    b.classList.remove('sel-correct','sel-wrong','reveal');
+    delete b.dataset.picked;
+  });
+  document.querySelector('#'+cardId+' .score-badge').classList.remove('vis');
+  done[doneKey]=false; updateProgress();
+}
+
+/* ── Ex 6: Gap fill ── */
+function norm(s){return s.trim().toLowerCase().replace(/['']/g,"'").replace(/\s+/g,' ');}
+function chkG(inp){
+  const ans=inp.dataset.ans.split('|').map(norm);
+  const val=norm(inp.value);
+  if(!val){inp.classList.remove('correct','wrong');return;}
+  const ok=ans.includes(val);
+  inp.classList.toggle('correct',ok);
+  inp.classList.toggle('wrong',!ok);
+  // reveal on wrong after blur
+  let span=inp.nextElementSibling;
+  if(span&&span.classList.contains('show-ans')) span.remove();
+  if(!ok){
+    span=document.createElement('span');
+    span.className='show-ans';
+    span.textContent='('+inp.dataset.ans.split('|')[0]+')';
+    inp.after(span);
+  }
+}
+function checkEx6(){
+  const inputs=document.querySelectorAll('#card6 .g-inp');
+  let correct=0;
+  inputs.forEach(inp=>{
+    chkG(inp);
+    if(inp.classList.contains('correct')) correct++;
+  });
+  const sc=document.getElementById('sc6');
+  sc.textContent=correct+' / '+inputs.length+' correct';
+  sc.classList.add('vis');
+  if(correct===inputs.length){done.ex6=true;updateProgress();}
+}
+function resetEx6(){
+  document.querySelectorAll('#card6 .g-inp').forEach(inp=>{
+    inp.value='';
+    inp.classList.remove('correct','wrong');
+    const span=inp.nextElementSibling;
+    if(span&&span.classList.contains('show-ans')) span.remove();
+  });
+  document.getElementById('sc6').classList.remove('vis');
+  done.ex6=false; updateProgress();
+}
+
+/* ── Send to Teacher ── */
+function sendToTeacher(){
+  const name=document.getElementById('nameInput').value.trim()||'Anonymous';
+  const pct=Math.round(Object.values(done).filter(Boolean).length/Object.keys(done).length*100);
+
+  // Ex 1
+  const verbs=['have','try','join','make','change','build','move','start','spend','sell'];
+  const phraseMap={a:'time with my family',b:'jobs',c:'a house',d:'a business',e:'to a big city',f:'children',g:'a new sport',h:'some old clothes',i:'new friends',j:'a club'};
+  let s1='EXERCISE 1 – Match the Collocations\n';
+  for(let i=1;i<=10;i++){
+    const ph=pairs1[String(i)]?phraseMap[pairs1[String(i)]]:'(not matched)';
+    const ok=correct1[String(i)]===pairs1[String(i)]?'✓':'✗';
+    s1+=`  ${i}. ${verbs[i-1]} → ${ph}  ${ok}\n`;
+  }
+
+  // Ex 2
+  const sents2=['I didn\'t like my old job…','Last year, I ___ a football team…','My parents ___ this house…','I don\'t ___ much time with my parents…','My sister ___ a daughter last year…','I ___ lots of friends at university…','I wanted to ___ something different.','John ___ all his old books online.','…we ___ to a big city.','Florence ___ a small cake company.'];
+  let s2='EXERCISE 2 – Choose the Correct Alternative\n';
+  document.querySelectorAll('#card2 .opt-group').forEach((grp,i)=>{
+    const picked=Array.from(grp.querySelectorAll('.opt-btn')).find(b=>b.dataset.picked==='1');
+    const val=picked?picked.textContent.replace(/^[ab]\s+/i,'').trim():'(not chosen)';
+    const ok=picked?(picked.classList.contains('sel-correct')?'✓':'✗'):'—';
+    s2+=`  ${i+1}. ${sents2[i]} → ${val}  ${ok}\n`;
+  });
+
+  // Ex 4
+  const sents4=['Where ___ you like to go this afternoon?','I\'d love ___ to a small village.','___ to join a book club.','___ you like to start a business?','I ___ like to change jobs.','I\'d ___ to spend more time with my sister.','When would you like ___ on holiday?','Tom would ___ to try flying a plane!'];
+  let s4='EXERCISE 4 – Grammar: would like/love to\n';
+  document.querySelectorAll('#card4 .opt-group').forEach((grp,i)=>{
+    const picked=Array.from(grp.querySelectorAll('.opt-btn')).find(b=>b.dataset.picked==='1');
+    const val=picked?picked.textContent.replace(/^[ab]\s+/i,'').trim():'(not chosen)';
+    const ok=picked?(picked.classList.contains('sel-correct')?'✓':'✗'):'—';
+    s4+=`  ${i+1}. ${sents4[i]} → ${val}  ${ok}\n`;
+  });
+
+  // Ex 6
+  let s6='EXERCISE 6 – Complete with would like + verb\n';
+  s6+='  1. (given) Where would you like to go on holiday?\n';
+  const q6=['A: ___ you ___ a film tonight?','A: What ___ Sara ___ at college?','A: What ___ you ___ in the future?','A: What languages ___ you ___?','A: ___ you ___ a gym?'];
+  const inps6=document.querySelectorAll('#card6 .g-inp');
+  for(let i=0;i<5;i++){
+    const b1=inps6[i*2]?.value||'(blank)';
+    const b2=inps6[i*2+1]?.value||'(blank)';
+    const ok1=inps6[i*2]?.classList.contains('correct')?'✓':'✗';
+    const ok2=inps6[i*2+1]?.classList.contains('correct')?'✓':'✗';
+    s6+=`  ${i+2}. ${q6[i]} → "${b1}" ${ok1} / "${b2}" ${ok2}\n`;
+  }
+
+  const body=`Student: ${name}\nProgress: ${pct}%\n\n${s1}\n${s2}\n${s4}\n${s6}`;
+  const subject=`Homework – Would Like & Love To – ${name}`;
+  window.location.href=`mailto:dariia.mlnk@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+updateProgress();
+</script>
