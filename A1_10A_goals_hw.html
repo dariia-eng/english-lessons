@@ -60,6 +60,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .check-btn:hover{background:#9a5c12;transform:translateY(-1px);}
 .reset-btn{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;}
 .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+.check-all-btn{background:var(--green);color:#fff;border:none;border-radius:8px;padding:7px 18px;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap;transition:background .15s,transform .1s;}
+.check-all-btn:hover{background:#15803d;transform:translateY(-1px);}
+.check-all-btn.all-done{background:var(--green);}
 .score-badge{display:none;background:var(--yellow-bg);border:1px solid var(--yellow);color:var(--yellow);border-radius:20px;padding:4px 16px;font-size:13px;font-weight:700;}
 .score-badge.vis{display:inline-block;}
 
@@ -95,6 +98,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .opt-btn.sel-correct{border-color:var(--green);background:var(--green-bg);color:var(--green);}
 .opt-btn.sel-wrong{border-color:var(--red);background:var(--red-bg);color:var(--red);}
 .opt-btn.reveal{border-color:var(--green);background:var(--green-bg);color:var(--green);opacity:.6;}
+.opt-btn.sel-pick{border-color:var(--accent);background:var(--accent-light);color:var(--accent);}
 
 /* ── Ex 6: Gap fill ── */
 .ex6-list{display:flex;flex-direction:column;gap:12px;}
@@ -133,6 +137,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <div class="prog-track"><div class="prog-fill" id="pfill"></div></div>
     <span class="prog-label" id="plabel">0 / 4</span>
   </div>
+  <button class="check-all-btn" onclick="checkAll()" id="checkAllBtn">✔ Check All</button>
 </div>
 
 <main class="main">
@@ -554,10 +559,11 @@ function resetEx1(){
 function pickOpt(btn){
   const grp=btn.parentElement;
   if(btn.classList.contains('sel-correct')||btn.classList.contains('sel-wrong')) return;
-  grp.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('sel-correct','sel-wrong','reveal'));
-  btn.classList.add('sel-pending');
-  btn._selected=true;
-  btn.classList.remove('sel-pending');
+  grp.querySelectorAll('.opt-btn').forEach(b=>{
+    b.classList.remove('sel-correct','sel-wrong','reveal','sel-pick');
+    delete b.dataset.picked;
+  });
+  btn.classList.add('sel-pick');
   btn.dataset.picked='1';
 }
 
@@ -591,7 +597,7 @@ function checkEx4(){checkOptGroups('card4','sc4','ex4',8);}
 
 function resetCard(cardId,doneKey){
   document.querySelectorAll('#'+cardId+' .opt-btn').forEach(b=>{
-    b.classList.remove('sel-correct','sel-wrong','reveal');
+    b.classList.remove('sel-correct','sel-wrong','reveal','sel-pick');
     delete b.dataset.picked;
   });
   document.querySelector('#'+cardId+' .score-badge').classList.remove('vis');
@@ -691,6 +697,16 @@ function sendToTeacher(){
   const body=`Student: ${name}\nProgress: ${pct}%\n\n${s1}\n${s2}\n${s4}\n${s6}`;
   const subject=`Homework – Would Like & Love To – ${name}`;
   window.location.href=`mailto:dariia.mlnk@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function checkAll(){
+  checkEx1();
+  checkEx2();
+  checkEx4();
+  checkEx6();
+  const btn=document.getElementById('checkAllBtn');
+  btn.textContent='✔ All Checked!';
+  setTimeout(()=>{ btn.textContent='✔ Check All'; },2000);
 }
 
 updateProgress();
