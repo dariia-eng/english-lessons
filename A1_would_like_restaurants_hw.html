@@ -1,0 +1,548 @@
+<title>Restaurant Homework</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root {
+  --bg:#F7F6F3; --surface:#FFFFFF; --border:#E2E0DA; --text:#18181B; --muted:#6B6D75;
+  --accent:#1A6FA0; --accent-lt:#E8F3FA; --accent-dk:#125480;
+  --gold:#D97706; --gold-lt:#FEF3C7;
+  --green:#166534; --green-lt:#DCFCE7; --green-btn:#15803D;
+  --red-lt:#FEE2E2; --red:#991B1B;
+  --chip-bg:#E5E7EB; --chip-txt:#374151;
+  --rest:#7C2D12; --rest-lt:#FFF7ED; --rest-bd:#FDBA74;
+  --shadow:0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:0 4px 12px rgba(0,0,0,.10);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1117;--surface:#1A1D27;--border:#2A2D3A;--text:#E8E8EC;--muted:#8B8FA8;
+    --accent:#5BAAD4;--accent-lt:#0F2333;--accent-dk:#7CC4E8;
+    --gold:#FBBF24;--gold-lt:#1C1500;--green:#4ADE80;--green-lt:#052E16;--green-btn:#16A34A;
+    --red-lt:#1F0A0A;--red:#FCA5A5;--chip-bg:#2A2D3A;--chip-txt:#C0C4D6;
+    --rest:#431407;--rest-lt:#1C0A00;--rest-bd:#92400E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1117;--surface:#1A1D27;--border:#2A2D3A;--text:#E8E8EC;--muted:#8B8FA8;
+  --accent:#5BAAD4;--accent-lt:#0F2333;--accent-dk:#7CC4E8;
+  --gold:#FBBF24;--gold-lt:#1C1500;--green:#4ADE80;--green-lt:#052E16;--green-btn:#16A34A;
+  --red-lt:#1F0A0A;--red:#FCA5A5;--chip-bg:#2A2D3A;--chip-txt:#C0C4D6;
+  --rest:#431407;--rest-lt:#1C0A00;--rest-bd:#92400E;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:0 16px 80px;}
+
+/* HEADER */
+.hw-header{background:var(--rest);color:#fff;padding:36px 24px 28px;text-align:center;margin:0 -16px;position:relative;}
+.hw-eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.7;margin-bottom:8px;}
+.hw-title{font-size:clamp(24px,5vw,38px);font-weight:800;margin-bottom:6px;}
+.hw-sub{font-size:14px;opacity:.8;font-family:'Lora',serif;font-style:italic;}
+#dmBtn{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:50%;width:38px;height:38px;font-size:17px;cursor:pointer;color:#fff;}
+
+/* NAME BAR */
+.name-bar-wrap{max-width:760px;margin:0 auto;}
+.name-bar{
+  position:sticky;top:0;z-index:10;
+  background:var(--surface);border-bottom:2px solid var(--rest-bd);
+  padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.name-bar label{font-size:13px;font-weight:700;color:var(--rest);white-space:nowrap;}
+.name-bar input{
+  border:1.5px solid var(--border);border-radius:6px;background:var(--bg);
+  color:var(--text);font-size:14px;font-family:inherit;
+  padding:6px 12px;outline:none;flex:1;max-width:280px;
+}
+.name-bar input:focus{border-color:var(--rest-bd);}
+
+/* PROGRESS */
+.progress-wrap{max-width:760px;margin:16px auto 0;padding:0 4px;}
+.progress-header{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;}
+.progress-bar{background:var(--border);border-radius:20px;height:8px;overflow:hidden;}
+.progress-fill{background:var(--rest);height:100%;border-radius:20px;transition:width .4s ease;width:0%;}
+
+/* EXERCISE CARD */
+.ex-card{max-width:760px;margin:20px auto 0;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+.ex-hd{display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--rest-lt);border-bottom:2px solid var(--rest-bd);}
+.ex-num{background:var(--rest);color:#fff;font-size:12px;font-weight:700;min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ex-title{font-size:16px;font-weight:700;flex:1;}
+.ex-tag{font-size:11px;font-weight:600;background:rgba(124,45,18,.12);color:var(--rest);padding:2px 10px;border-radius:20px;white-space:nowrap;}
+.ex-instr{padding:14px 20px 0;font-size:14px;color:var(--muted);font-family:'Lora',serif;font-style:italic;line-height:1.5;}
+.ex-body{padding:16px 20px;}
+
+/* WORD BANK */
+.word-bank{background:var(--bg);border:1.5px dashed var(--rest-bd);border-radius:8px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.wb-chip{font-size:13px;font-weight:600;background:var(--surface);border:1.5px solid var(--rest-bd);border-radius:20px;padding:3px 12px;color:var(--rest);font-family:'Lora',serif;font-style:italic;}
+
+/* DIALOGUE GAP-FILL */
+.hw-dialogue{display:flex;flex-direction:column;gap:8px;}
+.hw-line{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:8px;font-family:'Lora',serif;font-size:14px;line-height:1.8;flex-wrap:wrap;}
+.hw-line.waiter{background:var(--rest-lt);border:1px solid var(--rest-bd);}
+.hw-line.customer{background:var(--accent-lt);border:1px solid var(--speak-bd,#BFDBFE);}
+.hw-speaker{font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);min-width:72px;margin-top:5px;flex-shrink:0;}
+.gap-input{
+  border:none;border-bottom:2px solid var(--rest-bd);background:transparent;
+  color:var(--text);font-size:14px;font-family:'Lora',serif;
+  outline:none;padding:0 4px;
+  transition:border-color .15s;vertical-align:bottom;
+}
+.gap-input:focus{border-bottom-color:var(--rest);}
+.gap-input.correct{border-bottom-color:var(--green-btn);color:var(--green-btn);font-weight:600;}
+.gap-input.wrong{border-bottom-color:var(--red);color:var(--red);}
+
+/* MULTIPLE CHOICE */
+.mc-items{display:flex;flex-direction:column;gap:10px;}
+.mc-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.mc-q{font-family:'Lora',serif;font-size:14px;margin-bottom:8px;line-height:1.5;}
+.mc-btns{display:flex;flex-wrap:wrap;gap:6px;}
+.mc-btn{background:var(--chip-bg);color:var(--chip-txt);border:1.5px solid var(--border);border-radius:6px;padding:6px 16px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;}
+.mc-btn:hover{border-color:var(--accent);color:var(--accent);}
+.mc-btn.correct{background:var(--green-lt);border-color:var(--green-btn);color:var(--green-btn);}
+.mc-btn.wrong{background:var(--red-lt);border-color:var(--red);color:var(--red);text-decoration:line-through;}
+.mc-btn.reveal{background:var(--green-lt);border-color:var(--green-btn);color:var(--green-btn);font-style:italic;}
+
+/* MATCH */
+.match-area{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.match-col{display:flex;flex-direction:column;gap:6px;}
+.match-chip{
+  padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;
+  font-size:13px;font-weight:600;font-family:'Lora',serif;
+  cursor:pointer;background:var(--surface);transition:all .15s;text-align:center;
+  user-select:none;
+}
+.match-chip:hover{border-color:var(--accent);background:var(--accent-lt);}
+.match-chip.selected{border-color:var(--gold);background:var(--gold-lt);box-shadow:0 0 0 2px var(--gold);}
+.match-chip.matched{border-color:var(--green-btn);background:var(--green-lt);color:var(--green-btn);cursor:default;font-weight:700;}
+.match-chip.wrong-flash{border-color:var(--red);background:var(--red-lt);animation:shake .35s;}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+.check-btn{background:var(--green-btn);color:#fff;border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .15s;font-family:inherit;}
+.check-btn:hover{background:var(--green);}
+.reset-btn{background:var(--chip-bg);color:var(--chip-txt);border:1.5px solid var(--border);border-radius:6px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;}
+.reset-btn:hover{border-color:var(--muted);}
+
+/* FEEDBACK */
+.feedback{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:600;display:none;}
+.feedback.show{display:block;}
+.feedback.good{background:var(--green-lt);color:var(--green-btn);}
+.feedback.bad{background:var(--red-lt);color:var(--red);}
+
+/* SEND CARD */
+.send-card{max-width:760px;margin:28px auto 0;background:var(--gold-lt);border:2px solid var(--rest-bd);border-radius:12px;padding:24px;text-align:center;box-shadow:var(--shadow);}
+.send-card h3{font-size:17px;font-weight:700;margin-bottom:6px;}
+.send-card p{font-size:13px;color:var(--muted);margin-bottom:16px;}
+.send-btn{background:var(--rest);color:#fff;border:none;border-radius:8px;padding:11px 28px;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;font-family:inherit;}
+.send-btn:hover{filter:brightness(1.1);}
+
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+@media(max-width:540px){
+  .match-area{grid-template-columns:1fr;}
+  .name-bar input{max-width:100%;}
+  .hw-line{font-size:13px;}
+}
+</style>
+
+<!-- HEADER -->
+<div class="hw-header">
+  <div class="hw-eyebrow">🍽️ Homework</div>
+  <h1 class="hw-title">At the Restaurant</h1>
+  <div class="hw-sub">Would like · Food vocabulary · Collocations</div>
+  <button id="dmBtn" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
+</div>
+
+<!-- NAME BAR -->
+<div class="name-bar-wrap">
+  <div class="name-bar">
+    <label for="nameInput">Your name:</label>
+    <input id="nameInput" type="text" placeholder="Type your name here…">
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-header">
+    <span>📊 Progress</span>
+    <span id="plabel">0 / 3 completed</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     EXERCISE 1 · Gap-fill dialogue
+════════════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <div class="ex-num">1</div>
+    <div class="ex-title">Complete the conversation</div>
+    <span class="ex-tag">Gap-fill</span>
+  </div>
+  <div class="ex-instr">Fill in the blanks. Use the words from the word bank. Some words are used more than once!</div>
+  <div class="ex-body">
+
+    <div class="word-bank">
+      <span class="wb-chip">I'd like</span>
+      <span class="wb-chip">Would you like</span>
+      <span class="wb-chip">I'd love to</span>
+      <span class="wb-chip">a glass of</span>
+      <span class="wb-chip">a bowl of</span>
+      <span class="wb-chip">a cup of</span>
+      <span class="wb-chip">a slice of</span>
+    </div>
+
+    <div class="hw-dialogue">
+
+      <div class="hw-line waiter">
+        <span class="hw-speaker">🧑‍🍳 Waiter</span>
+        <span>Good evening! Are you ready to order?</span>
+      </div>
+
+      <div class="hw-line customer">
+        <span class="hw-speaker">👩 You</span>
+        <span>Yes! <input class="gap-input" data-ans="i'd like" style="width:88px" placeholder="________"> <input class="gap-input" data-ans="a bowl of" style="width:88px" placeholder="________"> tomato soup to start, please.</span>
+      </div>
+
+      <div class="hw-line waiter">
+        <span class="hw-speaker">🧑‍🍳 Waiter</span>
+        <span>And for the main course, <input class="gap-input" data-ans="would you like" style="width:120px" placeholder="________"> the pasta or the fish?</span>
+      </div>
+
+      <div class="hw-line customer">
+        <span class="hw-speaker">👩 You</span>
+        <span><input class="gap-input" data-ans="i'd like" style="width:88px" placeholder="________"> the grilled chicken, please. And <input class="gap-input" data-ans="a glass of" style="width:88px" placeholder="________"> still water.</span>
+      </div>
+
+      <div class="hw-line waiter">
+        <span class="hw-speaker">🧑‍🍳 Waiter</span>
+        <span><input class="gap-input" data-ans="would you like" style="width:120px" placeholder="________"> to see the dessert menu?</span>
+      </div>
+
+      <div class="hw-line customer">
+        <span class="hw-speaker">👩 You</span>
+        <span>Yes — <input class="gap-input" data-ans="i'd love to,i would love to" style="width:100px" placeholder="________">! And <input class="gap-input" data-ans="a slice of" style="width:88px" placeholder="________"> chocolate cake, please!</span>
+      </div>
+
+      <div class="hw-line waiter">
+        <span class="hw-speaker">🧑‍🍳 Waiter</span>
+        <span>Of course. <input class="gap-input" data-ans="would you like" style="width:120px" placeholder="________"> <input class="gap-input" data-ans="a cup of" style="width:80px" placeholder="________"> coffee?</span>
+      </div>
+
+      <div class="hw-line customer">
+        <span class="hw-speaker">👩 You</span>
+        <span>Yes, please! <input class="gap-input" data-ans="i'd like" style="width:88px" placeholder="________"> an espresso.</span>
+      </div>
+
+    </div>
+
+    <div class="btn-row">
+      <button class="check-btn" onclick="checkGap()">✓ Check answers</button>
+      <button class="reset-btn" onclick="resetGap()">↺ Reset</button>
+    </div>
+    <div class="feedback" id="gap-feedback"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     EXERCISE 2 · Multiple choice adjectives
+════════════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <div class="ex-num">2</div>
+    <div class="ex-title">Food adjectives</div>
+    <span class="ex-tag">Multiple choice</span>
+  </div>
+  <div class="ex-instr">Choose the best adjective to complete each sentence. Click to check immediately!</div>
+  <div class="ex-body">
+    <div class="mc-items">
+
+      <div class="mc-item" id="mc1">
+        <div class="mc-q">1. The bread came out of the oven five minutes ago — it's hot and very ___.</div>
+        <div class="mc-btns">
+          <button class="mc-btn" data-correct="false" onclick="mcClick(this,'mc1')">mild</button>
+          <button class="mc-btn" data-correct="true"  onclick="mcClick(this,'mc1')">crispy</button>
+          <button class="mc-btn" data-correct="false" onclick="mcClick(this,'mc1')">sweet</button>
+        </div>
+      </div>
+
+      <div class="mc-item" id="mc2">
+        <div class="mc-q">2. I don't like hot food! Is the curry ___? Can I have something without chilli?</div>
+        <div class="mc-btns">
+          <button class="mc-btn" data-correct="false" onclick="mcClick(this,'mc2')">spicy</button>
+          <button class="mc-btn" data-correct="true"  onclick="mcClick(this,'mc2')">mild</button>
+          <button class="mc-btn" data-correct="false" onclick="mcClick(this,'mc2')">salty</button>
+        </div>
+      </div>
+
+      <div class="mc-item" id="mc3">
+        <div class="mc-q">3. The carbonara has a rich sauce made with cream and parmesan — it's very ___.</div>
+        <div class="mc-btns">
+          <button class="mc-btn" data-correct="false" onclick="mcClick(this,'mc3')">grilled</button>
+          <button class="mc-btn" data-correct="false" onclick="mcClick(this,'mc3')">salty</button>
+          <button class="mc-btn" data-correct="true"  onclick="mcClick(this,'mc3')">creamy</button>
+        </div>
+      </div>
+
+      <div class="mc-item" id="mc4">
+        <div class="mc-q">4. The chocolate cake has a lot of sugar — it's very ___.</div>
+        <div class="mc-btns">
+          <button class="mc-btn" data-correct="false" onclick="mcClick(this,'mc4')">salty</button>
+          <button class="mc-btn" data-correct="true"  onclick="mcClick(this,'mc4')">sweet</button>
+          <button class="mc-btn" data-correct="false" onclick="mcClick(this,'mc4')">fresh</button>
+        </div>
+      </div>
+
+      <div class="mc-item" id="mc5">
+        <div class="mc-q">5. The chicken is cooked on the barbecue — it's ___ with lemon and herbs.</div>
+        <div class="mc-btns">
+          <button class="mc-btn" data-correct="true"  onclick="mcClick(this,'mc5')">grilled</button>
+          <button class="mc-btn" data-correct="false" onclick="mcClick(this,'mc5')">creamy</button>
+          <button class="mc-btn" data-correct="false" onclick="mcClick(this,'mc5')">spicy</button>
+        </div>
+      </div>
+
+      <div class="mc-item" id="mc6">
+        <div class="mc-q">6. The salad uses vegetables from the market today — very ___ and healthy!</div>
+        <div class="mc-btns">
+          <button class="mc-btn" data-correct="false" onclick="mcClick(this,'mc6')">salty</button>
+          <button class="mc-btn" data-correct="false" onclick="mcClick(this,'mc6')">crispy</button>
+          <button class="mc-btn" data-correct="true"  onclick="mcClick(this,'mc6')">fresh</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="btn-row">
+      <button class="check-btn" onclick="checkMC()">✓ Check score</button>
+      <button class="reset-btn" onclick="resetMC()">↺ Reset</button>
+    </div>
+    <div class="feedback" id="mc-feedback"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     EXERCISE 3 · Match the pairs
+════════════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <div class="ex-num">3</div>
+    <div class="ex-title">Match the collocations</div>
+    <span class="ex-tag">Match</span>
+  </div>
+  <div class="ex-instr">Click a word on the left, then click the matching food or drink on the right. Find all 6 pairs!</div>
+  <div class="ex-body">
+    <div class="match-area">
+      <div class="match-col">
+        <div class="match-chip" data-pair="a" data-side="L" onclick="matchClick(this)">a cup of</div>
+        <div class="match-chip" data-pair="b" data-side="L" onclick="matchClick(this)">a glass of</div>
+        <div class="match-chip" data-pair="c" data-side="L" onclick="matchClick(this)">a bowl of</div>
+        <div class="match-chip" data-pair="d" data-side="L" onclick="matchClick(this)">a slice of</div>
+        <div class="match-chip" data-pair="e" data-side="L" onclick="matchClick(this)">a plate of</div>
+        <div class="match-chip" data-pair="f" data-side="L" onclick="matchClick(this)">a bottle of</div>
+      </div>
+      <div class="match-col">
+        <div class="match-chip" data-pair="c" data-side="R" onclick="matchClick(this)">🍲 soup</div>
+        <div class="match-chip" data-pair="a" data-side="R" onclick="matchClick(this)">☕ coffee</div>
+        <div class="match-chip" data-pair="e" data-side="R" onclick="matchClick(this)">🍝 pasta</div>
+        <div class="match-chip" data-pair="d" data-side="R" onclick="matchClick(this)">🍰 cake</div>
+        <div class="match-chip" data-pair="f" data-side="R" onclick="matchClick(this)">💧 water (for the table)</div>
+        <div class="match-chip" data-pair="b" data-side="R" onclick="matchClick(this)">🍷 wine</div>
+      </div>
+    </div>
+    <div id="match-score" style="font-size:13px;color:var(--muted);font-style:italic;margin-top:4px;">Click a pair to start matching…</div>
+    <div class="btn-row">
+      <button class="reset-btn" onclick="resetMatch()">↺ Reset</button>
+    </div>
+    <div class="feedback" id="match-feedback"></div>
+  </div>
+</div>
+
+
+<!-- SEND TO TEACHER -->
+<div class="send-card">
+  <h3>📬 Send to your teacher</h3>
+  <p>Make sure your name is typed at the top, then click the button below to send your answers.</p>
+  <button class="send-btn" onclick="sendToTeacher()">✉️ Send to Teacher</button>
+</div>
+
+
+<script>
+/* ── PROGRESS ── */
+const done = { ex1: false, ex2: false, ex3: false };
+function updateProgress() {
+  const n = Object.values(done).filter(Boolean).length;
+  const total = Object.keys(done).length;
+  document.getElementById('pfill').style.width = (n / total * 100) + '%';
+  document.getElementById('plabel').textContent = n + ' / ' + total + ' completed';
+}
+
+/* ── EX 1: GAP-FILL ── */
+function checkGap() {
+  const inputs = document.querySelectorAll('.gap-input');
+  let correct = 0;
+  inputs.forEach(inp => {
+    const ans = inp.value.toLowerCase().trim().replace(/\s+/g, ' ');
+    const accepted = inp.dataset.ans.split(',').map(a => a.trim());
+    inp.classList.remove('correct', 'wrong');
+    if (accepted.includes(ans)) {
+      inp.classList.add('correct'); correct++;
+    } else {
+      inp.classList.add('wrong');
+    }
+  });
+  const total = inputs.length;
+  const fb = document.getElementById('gap-feedback');
+  const allOk = correct === total;
+  fb.className = 'feedback show ' + (allOk ? 'good' : 'bad');
+  fb.textContent = allOk
+    ? `✓ Perfect! All ${total} blanks correct! 🎉`
+    : `${correct} / ${total} correct — check the red answers and try again!`;
+  if (allOk) { done.ex1 = true; updateProgress(); }
+}
+function resetGap() {
+  document.querySelectorAll('.gap-input').forEach(i => { i.value = ''; i.classList.remove('correct', 'wrong'); });
+  document.getElementById('gap-feedback').className = 'feedback';
+  done.ex1 = false; updateProgress();
+}
+
+/* ── EX 2: MULTIPLE CHOICE ── */
+const mcGroups = ['mc1','mc2','mc3','mc4','mc5','mc6'];
+function mcClick(btn, groupId) {
+  const group = document.getElementById(groupId);
+  if (group.querySelector('.correct,.wrong,.reveal')) return;
+  const isCorrect = btn.dataset.correct === 'true';
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) {
+    group.querySelectorAll('[data-correct="true"]').forEach(b => b.classList.add('reveal'));
+  }
+  group.querySelectorAll('.mc-btn').forEach(b => b.style.pointerEvents = 'none');
+}
+function checkMC() {
+  const numCorrect = mcGroups.filter(id =>
+    document.getElementById(id).querySelector('.correct')
+  ).length;
+  const numAnswered = mcGroups.filter(id =>
+    document.getElementById(id).querySelector('.correct,.wrong')
+  ).length;
+  const fb = document.getElementById('mc-feedback');
+  if (numAnswered < mcGroups.length) {
+    fb.className = 'feedback show bad';
+    fb.textContent = 'Please answer all questions first!';
+    return;
+  }
+  const allOk = numCorrect === mcGroups.length;
+  fb.className = 'feedback show ' + (allOk ? 'good' : 'bad');
+  fb.textContent = allOk
+    ? `✓ Excellent! All ${mcGroups.length} / ${mcGroups.length} correct! 🌟`
+    : `${numCorrect} / ${mcGroups.length} correct — well done! Keep practising!`;
+  if (allOk) { done.ex2 = true; updateProgress(); }
+}
+function resetMC() {
+  mcGroups.forEach(id => {
+    document.getElementById(id).querySelectorAll('.mc-btn').forEach(b => {
+      b.className = 'mc-btn'; b.style.pointerEvents = '';
+    });
+  });
+  document.getElementById('mc-feedback').className = 'feedback';
+  done.ex2 = false; updateProgress();
+}
+
+/* ── EX 3: MATCH ── */
+let matchSel = null, matchCount = 0;
+function matchClick(chip) {
+  if (chip.classList.contains('matched')) return;
+  if (!matchSel) {
+    if (chip.classList.contains('selected')) { chip.classList.remove('selected'); return; }
+    chip.classList.add('selected');
+    matchSel = chip;
+  } else {
+    // Same chip — deselect
+    if (chip === matchSel) { chip.classList.remove('selected'); matchSel = null; return; }
+    // Same side — switch selection
+    if (chip.dataset.side === matchSel.dataset.side) {
+      matchSel.classList.remove('selected');
+      chip.classList.add('selected');
+      matchSel = chip;
+      return;
+    }
+    // Different sides — check pair
+    if (chip.dataset.pair === matchSel.dataset.pair) {
+      chip.classList.remove('selected'); chip.classList.add('matched');
+      matchSel.classList.remove('selected'); matchSel.classList.add('matched');
+      matchCount++;
+      document.getElementById('match-score').textContent = `✓ ${matchCount} / 6 pairs matched!`;
+      if (matchCount === 6) {
+        const fb = document.getElementById('match-feedback');
+        fb.className = 'feedback show good';
+        fb.textContent = '🎉 All 6 pairs matched! Great work!';
+        done.ex3 = true; updateProgress();
+      }
+    } else {
+      // Wrong — flash red
+      chip.classList.add('wrong-flash');
+      matchSel.classList.add('wrong-flash');
+      const a = matchSel, b = chip;
+      setTimeout(() => {
+        a.classList.remove('selected', 'wrong-flash');
+        b.classList.remove('wrong-flash');
+      }, 380);
+    }
+    matchSel = null;
+  }
+}
+function resetMatch() {
+  document.querySelectorAll('.match-chip').forEach(c => { c.className = 'match-chip'; });
+  matchSel = null; matchCount = 0;
+  document.getElementById('match-score').textContent = 'Click a pair to start matching…';
+  document.getElementById('match-feedback').className = 'feedback';
+  done.ex3 = false; updateProgress();
+}
+
+/* ── SEND TO TEACHER ── */
+function sendToTeacher() {
+  const name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+  // Ex 1
+  const gaps = document.querySelectorAll('.gap-input');
+  let ex1 = '';
+  gaps.forEach((inp, i) => {
+    const val = inp.value.trim() || '(blank)';
+    const ok = inp.classList.contains('correct') ? '✓' : inp.classList.contains('wrong') ? '✗' : '-';
+    ex1 += `  Blank ${i + 1}: "${val}" ${ok}\n`;
+  });
+
+  // Ex 2
+  let ex2 = '';
+  mcGroups.forEach((id, i) => {
+    const sel = document.getElementById(id).querySelector('.correct, .wrong');
+    const ans = sel ? sel.textContent : '(not answered)';
+    const ok = sel ? (sel.classList.contains('correct') ? '✓' : '✗') : '-';
+    ex2 += `  Q${i + 1}: ${ans} ${ok}\n`;
+  });
+
+  // Ex 3
+  const ex3 = `  ${matchCount} / 6 pairs matched${matchCount === 6 ? ' ✓' : ''}\n`;
+
+  const bodyStr = `Student: ${name}
+
+=== Exercise 1: Complete the conversation ===
+${ex1}
+=== Exercise 2: Food adjectives ===
+${ex2}
+=== Exercise 3: Match the collocations ===
+${ex3}
+Progress: ${Object.values(done).filter(Boolean).length} / 3 exercises completed`;
+
+  const subject = encodeURIComponent(`Homework – ${name} – At the Restaurant`);
+  window.location.href = `mailto:daryaaa2028@gmail.com?subject=${subject}&body=${encodeURIComponent(bodyStr)}`;
+}
+
+/* ── DARK MODE ── */
+function toggleDark() {
+  const root = document.documentElement;
+  const isDark = root.getAttribute('data-theme') === 'dark';
+  root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('dmBtn').textContent = isDark ? '🌙' : '☀️';
+}
+</script>
