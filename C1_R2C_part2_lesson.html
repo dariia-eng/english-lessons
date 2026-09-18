@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Local Issues — Part 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F0F7F4;--surface:#FFFFFF;--surface-2:#E3F3EE;--border:#B3D9CC;
+  --ink:#071A13;--ink-mid:#1A5C42;--ink-muted:#5B9E86;
+  --primary:#0E7490;--primary-lt:#ECFEFF;--primary-dk:#0C5F77;
+  --c-warmup:#D97706;--c-warmup-lt:#FEF3C7;
+  --c-vocab:#0891B2;--c-vocab-lt:#ECFEFF;
+  --c-language:#7C3AED;--c-language-lt:#F5F3FF;
+  --c-practice:#0E7490;--c-practice-lt:#ECFEFF;
+  --c-speaking:#0A7065;--c-speaking-lt:#D9F2EF;
+  --c-roleplay:#B45309;--c-roleplay-lt:#FEF3C7;
+  --c-wrapup:#374151;--c-wrapup-lt:#F9FAFB;
+  --success:#15803D;--success-lt:#DCFCE7;
+  --error:#B91C1C;--error-lt:#FEF2F2;
+  --r:14px;--r-sm:8px;
+  --shadow:0 1px 12px rgba(14,116,144,.08);
+  --shadow-md:0 4px 24px rgba(14,116,144,.14);
+  --fh:'Outfit',sans-serif;--fb:'DM Sans',sans-serif;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#021014;--surface:#061A20;--surface-2:#0B2530;--border:#0F3544;
+  --ink:#C8EAF0;--ink-mid:#5BB8CC;--ink-muted:#2A6878;
+  --primary:#22D3EE;--primary-lt:#06141A;--primary-dk:#06B6D4;
+  --c-warmup:#FBB53A;--c-warmup-lt:#1A1205;
+  --c-vocab:#22D3EE;--c-vocab-lt:#061518;
+  --c-language:#A78BFA;--c-language-lt:#160D26;
+  --c-practice:#22D3EE;--c-practice-lt:#061518;
+  --c-speaking:#2DD4B8;--c-speaking-lt:#082018;
+  --c-roleplay:#FBB53A;--c-roleplay-lt:#1A1205;
+  --c-wrapup:#9CA3AF;--c-wrapup-lt:#0D1117;
+  --success:#22C991;--success-lt:#051510;
+  --error:#F87171;--error-lt:#1F0808;
+  --shadow:0 1px 12px rgba(0,0,0,.4);--shadow-md:0 4px 24px rgba(0,0,0,.5);
+}}
+:root[data-theme="dark"]{
+  --bg:#021014;--surface:#061A20;--surface-2:#0B2530;--border:#0F3544;
+  --ink:#C8EAF0;--ink-mid:#5BB8CC;--ink-muted:#2A6878;
+  --primary:#22D3EE;--primary-lt:#06141A;--primary-dk:#06B6D4;
+  --c-warmup:#FBB53A;--c-warmup-lt:#1A1205;
+  --c-vocab:#22D3EE;--c-vocab-lt:#061518;
+  --c-language:#A78BFA;--c-language-lt:#160D26;
+  --c-practice:#22D3EE;--c-practice-lt:#061518;
+  --c-speaking:#2DD4B8;--c-speaking-lt:#082018;
+  --c-roleplay:#FBB53A;--c-roleplay-lt:#1A1205;
+  --c-wrapup:#9CA3AF;--c-wrapup-lt:#0D1117;
+  --success:#22C991;--success-lt:#051510;
+  --error:#F87171;--error-lt:#1F0808;
+  --shadow:0 1px 12px rgba(0,0,0,.4);--shadow-md:0 4px 24px rgba(0,0,0,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.65;padding-top:60px;}
+h1,h2,h3,h4{font-family:var(--fh);text-wrap:balance;line-height:1.2;}
+button{font-family:var(--fb);cursor:pointer;border:none;outline:none;}
+
+/* NAV */
+.stage-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:var(--shadow);}
+.nav-inner{max-width:920px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;}
+.nav-pills{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:0;}
+.pill{font-family:var(--fh);font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:20px;background:var(--surface-2);color:var(--ink-mid);border:1.5px solid var(--border);transition:all .2s;white-space:nowrap;text-decoration:none;}
+.pill:hover{border-color:var(--primary);color:var(--primary);}
+.pill[data-s="s1"].active{background:var(--c-warmup);border-color:var(--c-warmup);color:#fff;}
+.pill[data-s="s2"].active{background:var(--c-language);border-color:var(--c-language);color:#fff;}
+.pill[data-s="s3"].active{background:var(--c-vocab);border-color:var(--c-vocab);color:#fff;}
+.pill[data-s="s4"].active{background:var(--c-practice);border-color:var(--c-practice);color:#fff;}
+.pill[data-s="s5"].active{background:var(--c-speaking);border-color:var(--c-speaking);color:#fff;}
+.pill[data-s="s6"].active{background:var(--c-roleplay);border-color:var(--c-roleplay);color:#fff;}
+.pill[data-s="s7"].active{background:var(--c-wrapup);border-color:var(--c-wrapup);color:#fff;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dk) 100%);color:#fff;text-align:center;padding:48px 20px 44px;}
+.hero-eyebrow{font-family:var(--fh);font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;opacity:.75;margin-bottom:12px;}
+.hero-title{font-size:clamp(2.2rem,6vw,3.4rem);font-weight:900;margin-bottom:10px;}
+.hero-sub{font-size:1.05rem;opacity:.8;}
+
+/* MAIN */
+main{max-width:920px;margin:0 auto;padding:32px 16px 80px;}
+
+/* STAGE */
+.stage{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:28px;border-top:4px solid var(--stc,var(--primary));overflow:hidden;}
+.stage[data-type="warmup"]{--stc:var(--c-warmup);--stc-lt:var(--c-warmup-lt);}
+.stage[data-type="language"]{--stc:var(--c-language);--stc-lt:var(--c-language-lt);}
+.stage[data-type="vocab"]{--stc:var(--c-vocab);--stc-lt:var(--c-vocab-lt);}
+.stage[data-type="practice"]{--stc:var(--c-practice);--stc-lt:var(--c-practice-lt);}
+.stage[data-type="speaking"]{--stc:var(--c-speaking);--stc-lt:var(--c-speaking-lt);}
+.stage[data-type="roleplay"]{--stc:var(--c-roleplay);--stc-lt:var(--c-roleplay-lt);}
+.stage[data-type="wrapup"]{--stc:var(--c-wrapup);--stc-lt:var(--c-wrapup-lt);}
+.stage-head{padding:18px 22px 16px;background:var(--stc-lt,var(--surface-2));}
+.stage-label{font-family:var(--fh);font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--stc,var(--primary));margin-bottom:2px;}
+.stage-title{font-size:1.35rem;font-weight:800;color:var(--ink);}
+.stage-body{padding:22px;}
+
+/* INSTRUCTION */
+.instruction{background:var(--stc-lt,var(--surface-2));border-left:3px solid var(--stc,var(--primary));border-radius:0 var(--r-sm) var(--r-sm) 0;padding:12px 16px;margin-bottom:20px;font-size:.93rem;color:var(--ink-mid);}
+.instruction strong{color:var(--ink);}
+
+/* SPEAKING / DISCUSSION CARD */
+.speaking-card{background:var(--stc-lt,var(--surface-2));border:1.5px solid var(--stc,var(--primary));border-radius:var(--r);padding:18px 20px;margin-top:18px;}
+.speaking-card h4{font-family:var(--fh);font-size:.9rem;font-weight:700;color:var(--stc,var(--primary));margin-bottom:8px;}
+.speaking-card p,.speaking-card ul{font-size:.96rem;color:var(--ink);}
+.speaking-card ul{padding-left:18px;display:flex;flex-direction:column;gap:6px;}
+
+/* DISCUSSION QUESTIONS — more prominent for 1-to-1 */
+.discuss-card{background:var(--stc-lt,var(--surface-2));border:2px solid var(--stc,var(--primary));border-radius:var(--r);padding:20px 22px;margin-top:18px;}
+.discuss-card .dc-label{font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--stc,var(--primary));margin-bottom:12px;}
+.discuss-card ol{padding-left:18px;display:flex;flex-direction:column;gap:10px;}
+.discuss-card li{font-size:.96rem;color:var(--ink);line-height:1.6;}
+.discuss-card li em{color:var(--stc,var(--primary));font-style:italic;}
+
+/* GRAMMAR BOX */
+.grammar-box{background:var(--stc-lt,var(--surface-2));border-radius:var(--r);padding:20px 22px;margin-bottom:20px;border:1.5px solid var(--stc,var(--primary));}
+.grammar-box h3{font-family:var(--fh);font-size:1.1rem;font-weight:800;color:var(--stc,var(--primary));margin-bottom:14px;}
+.grammar-section{margin-bottom:16px;}
+.grammar-section:last-child{margin-bottom:0;}
+.grammar-section h4{font-family:var(--fh);font-size:.85rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px;}
+.pattern{background:var(--surface);border-radius:var(--r-sm);padding:10px 14px;font-family:var(--fh);font-size:.9rem;color:var(--ink);border:1px solid var(--border);margin-bottom:6px;}
+.pattern em{color:var(--stc,var(--primary));font-style:normal;font-weight:700;}
+.pattern .ex{font-size:.82rem;color:var(--ink-muted);margin-top:4px;font-style:italic;font-family:var(--fb);}
+
+/* CHECK */
+.check-btn{font-family:var(--fh);font-size:13px;font-weight:700;padding:10px 24px;border-radius:24px;cursor:pointer;border:none;background:var(--primary);color:#fff;margin-top:14px;transition:opacity .2s;}
+.check-btn:hover{opacity:.88;}
+.score-badge{display:inline-block;font-family:var(--fh);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-left:10px;vertical-align:middle;}
+.score-badge.perfect{background:var(--success-lt);color:var(--success);}
+.score-badge.partial{background:#FEF3C7;color:#B45309;}
+
+/* CLASSIFY BUTTONS */
+.cls-btn{font-family:var(--fh);font-size:12px;font-weight:700;padding:5px 14px;border-radius:14px;cursor:pointer;border:none;color:#fff;transition:opacity .2s;}
+.cls-btn:hover{opacity:.85;}
+.cls-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* PRONUNCIATION */
+.pron-list{display:flex;flex-direction:column;gap:10px;}
+.pron-item{background:var(--surface-2);border-radius:var(--r-sm);padding:14px 16px;border:1px solid var(--border);}
+.pron-sentence{font-size:.97rem;color:var(--ink);margin-bottom:8px;}
+.pron-sentence .wk{background:var(--primary-lt);color:var(--primary);padding:2px 6px;border-radius:4px;font-weight:600;}
+.reveal-btn{font-family:var(--fh);font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:14px;cursor:pointer;background:var(--stc-lt,var(--surface-2));color:var(--stc,var(--primary));border:1.5px solid var(--stc,var(--primary));transition:all .15s;}
+.reveal-btn:hover{background:var(--stc,var(--primary));color:#fff;}
+.reveal-box{font-size:.83rem;color:var(--ink-muted);margin-top:6px;font-style:italic;display:none;}
+.reveal-box.show{display:block;}
+
+/* REWRITE */
+.rewrite-list{display:flex;flex-direction:column;gap:14px;}
+.rewrite-item{border:1.5px solid var(--border);border-radius:var(--r-sm);padding:16px 18px;}
+.original{font-size:.88rem;color:var(--ink-muted);margin-bottom:8px;font-style:italic;}
+.rewrite-prompt{font-size:.97rem;color:var(--ink);font-weight:600;margin-bottom:6px;}
+.rewrite-input{width:100%;border:none;border-bottom:2px solid var(--stc,var(--primary));padding:6px 4px;font-family:var(--fb);font-size:.95rem;color:var(--ink);background:none;outline:none;resize:none;min-height:36px;}
+.model-answer{font-size:.83rem;margin-top:6px;padding:6px 10px;border-radius:var(--r-sm);background:var(--stc-lt,var(--surface-2));color:var(--stc,var(--primary));display:none;}
+.model-answer.show{display:block;}
+.answer-btn{font-family:var(--fh);font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;cursor:pointer;background:var(--surface-2);color:var(--ink-mid);border:1.5px solid var(--border);margin-top:6px;transition:all .15s;}
+.answer-btn:hover{border-color:var(--stc,var(--primary));color:var(--stc,var(--primary));}
+
+/* PERSONALISATION */
+.personal-list{display:flex;flex-direction:column;gap:12px;}
+.personal-item{background:var(--surface-2);border-radius:var(--r-sm);padding:14px 16px;border:1px solid var(--border);}
+.personal-prompt{font-size:.97rem;color:var(--ink);font-weight:600;margin-bottom:4px;}
+.personal-prompt span{color:var(--stc,var(--primary));}
+.comp-textarea{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:8px 12px;font-family:var(--fb);font-size:.9rem;background:var(--surface);color:var(--ink);resize:vertical;min-height:54px;}
+
+/* ROLE CARDS (1-to-1) */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.role-card{border-radius:var(--r-sm);padding:18px 18px;border:2px solid;}
+.role-card.student-card{border-color:var(--c-language);background:var(--c-language-lt);}
+.role-card.teacher-card{border-color:var(--c-practice);background:var(--c-practice-lt);}
+.role-badge{font-size:10px;font-family:var(--fh);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px;}
+.role-name{font-family:var(--fh);font-size:1rem;font-weight:800;color:var(--ink);margin-bottom:8px;}
+.role-goal{font-size:.84rem;color:var(--ink-mid);margin-bottom:10px;line-height:1.55;}
+.role-tasks{font-size:.82rem;color:var(--ink-mid);list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:10px;padding:0;}
+.role-tasks li::before{content:'→ ';color:var(--stc,var(--primary));}
+.role-opener{font-size:.8rem;font-style:italic;color:var(--ink-mid);border-top:1px solid var(--border);padding-top:8px;margin-top:4px;}
+.role-opener strong{color:var(--ink);font-style:normal;}
+
+/* PROPOSALS */
+.proposals{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.proposal-card{border:1.5px solid var(--border);border-radius:var(--r);padding:12px 16px;background:var(--surface-2);}
+.proposal-title{font-family:var(--fh);font-size:.92rem;font-weight:700;color:var(--ink);margin-bottom:2px;}
+.proposal-desc{font-size:.85rem;color:var(--ink-mid);}
+
+/* PHASE STEPS */
+.phase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0;}
+.phase-box{background:var(--surface-2);border-radius:var(--r-sm);padding:14px 16px;border:1px solid var(--border);}
+.phase-label{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--stc,var(--primary));margin-bottom:8px;}
+.phase-box ul{list-style:none;font-size:.84rem;color:var(--ink-mid);display:flex;flex-direction:column;gap:5px;}
+.phase-box li::before{content:'• ';}
+
+/* WRAPUP */
+.wrapup-qs{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+.wrapup-q{background:var(--surface-2);border-radius:var(--r-sm);padding:14px 16px;border:1px solid var(--border);}
+.wrapup-q .qn{font-family:var(--fh);font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:4px;}
+.wrapup-q .qt{font-size:.97rem;color:var(--ink);font-weight:500;}
+.lang-all{background:var(--stc-lt,var(--surface-2));border-radius:var(--r);padding:16px 18px;border:1px solid var(--border);}
+.lang-all h4{font-family:var(--fh);font-size:.95rem;font-weight:800;color:var(--stc,var(--primary));margin-bottom:12px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.chip{font-size:.83rem;font-style:italic;background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:5px 12px;color:var(--ink);}
+
+/* UTILS */
+.section-label{font-family:var(--fh);font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-muted);margin:22px 0 10px;}
+.section-label:first-child{margin-top:0;}
+.divider{height:1px;background:var(--border);margin:20px 0;}
+.hint{font-size:.82rem;color:var(--ink-muted);font-style:italic;margin-top:4px;}
+
+@media(max-width:580px){
+  .role-grid{grid-template-columns:1fr;}
+  .phase-grid{grid-template-columns:1fr;}
+}
+
+/* ── QUESTION CARDS ───────────────────────────────── */
+.card-deck{background:var(--card);border:2px solid var(--c-roleplay);border-radius:14px;padding:24px;max-width:640px;margin:0 auto;}
+.q-card{min-height:160px;display:flex;flex-direction:column;justify-content:space-between;}
+.q-text{font-size:1.08rem;line-height:1.65;color:var(--text);flex:1;padding-bottom:8px;}
+.q-tip{font-size:.8rem;color:var(--c-roleplay);font-weight:600;background:color-mix(in srgb,var(--c-roleplay) 10%,transparent);border-radius:6px;padding:7px 11px;margin-top:10px;}
+.card-nav{display:flex;align-items:center;gap:10px;margin-top:20px;justify-content:center;flex-wrap:wrap;}
+.card-btn{padding:8px 20px;border-radius:8px;border:1.5px solid var(--c-roleplay);background:transparent;color:var(--c-roleplay);font-weight:600;cursor:pointer;font-size:.88rem;transition:background .15s,color .15s;}
+.card-btn:hover,.card-btn.primary{background:var(--c-roleplay);color:#fff;}
+.card-counter{font-size:.82rem;color:var(--subtle);min-width:50px;text-align:center;}
+
+/* ── VOCAB REVISION ───────────────────────────────── */
+.pair-table{width:100%;border-collapse:collapse;margin-top:8px;}
+.pair-table th{font-size:.76rem;text-transform:uppercase;letter-spacing:.07em;color:var(--subtle);padding:6px 10px;border-bottom:1.5px solid var(--border);text-align:left;}
+.pair-table td{padding:9px 10px;border-bottom:1px solid var(--border);font-size:.95rem;vertical-align:middle;}
+.pair-table td:first-child{color:var(--c-roleplay);font-weight:700;}
+.pair-cell{cursor:pointer;color:var(--subtle);font-style:italic;user-select:none;transition:color .2s;}
+.pair-cell.revealed{color:var(--text);font-style:normal;font-weight:600;}
+.pair-cell .reveal-hint{font-size:.77rem;color:var(--subtle);font-style:normal;font-weight:400;margin-left:4px;}
+.gap-list{list-style:none;padding:0;display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+.gap-item{background:var(--card);border-radius:10px;padding:13px 16px;font-size:.96rem;line-height:1.65;}
+.gap-sel{padding:3px 8px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:.93rem;cursor:pointer;margin:0 3px;}
+.gap-fb{font-size:.82rem;margin-left:6px;font-weight:600;}
+.gap-fb.ok{color:#16a34a;}.gap-fb.no{color:#dc2626;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="stage-nav">
+  <div class="nav-inner">
+    <div class="nav-pills">
+      <a class="pill" data-s="s1" href="#s1">🔁 Review</a>
+      <a class="pill" data-s="s2" href="#s2">📐 Grammar</a>
+      <a class="pill" data-s="s3" href="#s3">🔊 Pronunc.</a>
+      <a class="pill" data-s="s4" href="#s4">✏️ Practice</a>
+      <a class="pill" data-s="s5" href="#s5">💬 Speaking</a>
+      <a class="pill" data-s="s6" href="#s6">🃏 Questions</a>
+      <a class="pill" data-s="s7" href="#s7">📚 Vocab</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-eyebrow">Unit 2C · Lesson 2 of 2 · C1 · 1-to-1</div>
+  <h1 class="hero-title">Local Issues</h1>
+  <p class="hero-sub">Cleft Sentences · Pronunciation · City Council Role-Play</p>
+</header>
+
+<main>
+
+<!-- ═══ S1: REVIEW ═══ -->
+<section class="stage" id="s1" data-type="warmup">
+  <div class="stage-head">
+    <div class="stage-label">Stage 1 · Warm-up</div>
+    <div class="stage-title">Quick Review</div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction"><strong>Without looking at your notes</strong>, answer your teacher's questions from memory. Speak in full sentences — try to use vocabulary from last lesson.</div>
+
+    <div class="discuss-card">
+      <div class="dc-label">💬 Your teacher will ask you…</div>
+      <ol>
+        <li>Can you give me three positive–negative word pairs from last lesson? Use each one in a sentence about a real place or situation you know.</li>
+        <li>In Lesson 1 we saw sentences beginning with <em>"What I'm saying is…"</em> and <em>"It was my colleague who…"</em> — what do these have in common? What kind of effect do they create?</li>
+        <li>Look at the four council proposals below. Which one do you think is the most urgent issue in a city you know? Why?</li>
+      </ol>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;">
+      <div style="background:var(--surface-2);border-radius:var(--r-sm);padding:12px 14px;border:1px solid var(--border);font-size:.88rem;color:var(--ink-mid);">🚲 <strong style="color:var(--ink);">Cycling network</strong> — safe lanes across the city</div>
+      <div style="background:var(--surface-2);border-radius:var(--r-sm);padding:12px 14px;border:1px solid var(--border);font-size:.88rem;color:var(--ink-mid);">🚌 <strong style="color:var(--ink);">Public transport</strong> — modernise ageing buses</div>
+      <div style="background:var(--surface-2);border-radius:var(--r-sm);padding:12px 14px;border:1px solid var(--border);font-size:.88rem;color:var(--ink-mid);">🏚 <strong style="color:var(--ink);">Neighbourhood renewal</strong> — revitalise run-down areas</div>
+      <div style="background:var(--surface-2);border-radius:var(--r-sm);padding:12px 14px;border:1px solid var(--border);font-size:.88rem;color:var(--ink-mid);">🏠 <strong style="color:var(--ink);">Affordable housing</strong> — 200 homes on brownfield land</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S2: LANGUAGE FOCUS ═══ -->
+<section class="stage" id="s2" data-type="language">
+  <div class="stage-head">
+    <div class="stage-label">Stage 2 · Language Focus</div>
+    <div class="stage-title">Cleft Sentences</div>
+  </div>
+  <div class="stage-body">
+    <div class="grammar-box">
+      <h3>Two Cleft Types</h3>
+
+      <div class="grammar-section">
+        <h4>1 — It-Cleft</h4>
+        <div class="pattern">
+          <em>It</em> + be + <em>[emphasised information]</em> + who / that + [rest of sentence]
+          <div class="ex">"It's <strong>the unemployed</strong> who are worst off."</div>
+          <div class="ex">"It was <strong>at the last meeting</strong> that we discussed this."</div>
+          <div class="ex">"It's <strong>on Clarence Road</strong> that we'd like speed bumps."</div>
+        </div>
+        <p style="font-size:.85rem;color:var(--ink-mid);margin-top:6px;">→ Highlights a <strong>specific person, time, place, or thing</strong> — contrasting it with what the listener might expect.</p>
+      </div>
+
+      <div class="grammar-section">
+        <h4>2 — What-Cleft (Pseudo-Cleft)</h4>
+        <div class="pattern">
+          <em>What</em> + [subject + verb] + is/was + <em>[new / emphasised information]</em>
+          <div class="ex">"<strong>What I'm saying</strong> is that it's important to plan ahead."</div>
+          <div class="ex">"<strong>What we did</strong> was set up a committee."</div>
+          <div class="ex">"<strong>What I hate</strong> is being ignored."</div>
+          <div class="ex">"<strong>All we want</strong> is cheaper homes."</div>
+        </div>
+        <p style="font-size:.85rem;color:var(--ink-mid);margin-top:6px;">→ The <em>what</em>-clause contains known or background information; the part after <em>is/was</em> is the new, highlighted point.</p>
+      </div>
+
+      <div class="grammar-section">
+        <h4>Side by Side</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="pattern" style="border-color:var(--c-language);">
+            <div style="font-size:.78rem;font-weight:700;color:var(--c-language);margin-bottom:4px;">IT-CLEFT</div>
+            "It was <em>the council</em> that approved the plan."<br>
+            <div class="ex">Highlights: <em>who</em> approved it</div>
+          </div>
+          <div class="pattern" style="border-color:var(--c-practice);">
+            <div style="font-size:.78rem;font-weight:700;color:var(--c-practice);margin-bottom:4px;">WHAT-CLEFT</div>
+            "What the council did was <em>approve the plan</em>."<br>
+            <div class="ex">Highlights: <em>what</em> they did</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Quick Check — Which type?</div>
+    <div class="instruction">Classify each sentence. Click your answer, then check.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;" id="classifyGrid">
+      <div class="rewrite-item" id="cl1">
+        <div class="original">"What I can't stand is the constant roadworks."</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="cls-btn" style="background:var(--c-practice);" onclick="classifyCheck(1,'what')">What-cleft</button>
+          <button class="cls-btn" style="background:var(--c-language);" onclick="classifyCheck(1,'it')">It-cleft</button>
+          <span class="score-badge" id="cl1r" style="display:none;"></span>
+        </div>
+      </div>
+      <div class="rewrite-item" id="cl2">
+        <div class="original">"It's the mayor who is responsible for this decision."</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="cls-btn" style="background:var(--c-practice);" onclick="classifyCheck(2,'what')">What-cleft</button>
+          <button class="cls-btn" style="background:var(--c-language);" onclick="classifyCheck(2,'it')">It-cleft</button>
+          <span class="score-badge" id="cl2r" style="display:none;"></span>
+        </div>
+      </div>
+      <div class="rewrite-item" id="cl3">
+        <div class="original">"What we need is more affordable housing."</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="cls-btn" style="background:var(--c-practice);" onclick="classifyCheck(3,'what')">What-cleft</button>
+          <button class="cls-btn" style="background:var(--c-language);" onclick="classifyCheck(3,'it')">It-cleft</button>
+          <span class="score-badge" id="cl3r" style="display:none;"></span>
+        </div>
+      </div>
+      <div class="rewrite-item" id="cl4">
+        <div class="original">"It was last year that the council closed the library."</div>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+          <button class="cls-btn" style="background:var(--c-practice);" onclick="classifyCheck(4,'what')">What-cleft</button>
+          <button class="cls-btn" style="background:var(--c-language);" onclick="classifyCheck(4,'it')">It-cleft</button>
+          <span class="score-badge" id="cl4r" style="display:none;"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="discuss-card" style="margin-top:18px;">
+      <div class="dc-label">💬 Check your understanding — tell your teacher</div>
+      <ol>
+        <li>Explain the difference between the two cleft types in your own words — without reading from the box above.</li>
+        <li>Which type would you use to answer: <em>"Who approved the budget cuts?"</em> And which for: <em>"What did the council finally agree on?"</em></li>
+        <li>Make up one it-cleft and one what-cleft about a real situation — it doesn't have to be about local issues.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S3: PRONUNCIATION ═══ -->
+<section class="stage" id="s3" data-type="vocab">
+  <div class="stage-head">
+    <div class="stage-label">Stage 3 · Pronunciation</div>
+    <div class="stage-title">Weak Form of <em>that</em></div>
+  </div>
+  <div class="stage-body">
+    <div class="grammar-box">
+      <h3>Weak Form: <em>that</em> /ðət/</h3>
+      <p style="font-size:.9rem;color:var(--ink-mid);">In spoken English, the conjunction <strong>that</strong> is almost always unstressed — it's pronounced with a weak schwa /ə/ sound: /ðət/, not /ðæt/. This is especially common in cleft sentences after <em>is/was</em>.</p>
+      <div class="pattern" style="margin-top:10px;">
+        Strong (for emphasis/contrast): <em>"I know <strong>that</strong>"</em> → /ðæt/<br>
+        <span class="ex">Weak (in normal speech): <em>"What I'm saying is <strong>that</strong> /ðət/ we need to act."</em></span>
+      </div>
+    </div>
+
+    <div class="section-label">Exercise 8a — Read aloud, then reveal</div>
+    <div class="instruction"><strong>Read each sentence aloud before clicking.</strong> Try to use the weak /ðət/ naturally. Your teacher will give feedback on your linking and stress. Click to see how connected speech works in practice.</div>
+
+    <div class="pron-list">
+      <div class="pron-item">
+        <div class="pron-sentence">1. "What I'm saying is <span class="wk">that</span> we have to invest in the future."</div>
+        <button class="reveal-btn" onclick="revealPron(this)">Show connected speech</button>
+        <div class="reveal-box">Fast speech: <em>"What I'm saying's-that we…"</em> — <em>is</em> contracts and <em>that</em> is barely audible.</div>
+      </div>
+      <div class="pron-item">
+        <div class="pron-sentence">2. "It's the residents <span class="wk">that</span> will benefit most."</div>
+        <button class="reveal-btn" onclick="revealPron(this)">Show connected speech</button>
+        <div class="reveal-box">Fast speech: <em>"It's the residents-that will…"</em> — <em>that</em> links smoothly into the next word.</div>
+      </div>
+      <div class="pron-item">
+        <div class="pron-sentence">3. "I believe <span class="wk">that</span> this is the right decision."</div>
+        <button class="reveal-btn" onclick="revealPron(this)">Show connected speech</button>
+        <div class="reveal-box">Very reduced: <em>"I believe-that this…"</em> — so reduced it may sound like a final /t/ on "believe".</div>
+      </div>
+      <div class="pron-item">
+        <div class="pron-sentence">4. "What we want is <span class="wk">that</span> this project moves forward."</div>
+        <button class="reveal-btn" onclick="revealPron(this)">Show connected speech</button>
+        <div class="reveal-box">After <em>is</em>: <em>"What we want's-that…"</em> — both words reduced together.</div>
+      </div>
+      <div class="pron-item">
+        <div class="pron-sentence">5. "We all know <span class="wk">that</span> cuts have consequences."</div>
+        <button class="reveal-btn" onclick="revealPron(this)">Show connected speech</button>
+        <div class="reveal-box">Smooth linking: <em>"We all know-that cuts…"</em></div>
+      </div>
+    </div>
+
+    <div class="discuss-card" style="margin-top:16px;">
+      <div class="dc-label">🔊 Exercise 8b — Listen and repeat drill</div>
+      <ol>
+        <li>Your teacher reads each sentence — repeat it immediately, matching the rhythm and weak /ðət/.</li>
+        <li>Then swap: you read, your teacher repeats and gives feedback on any over-stressed <em>that</em>.</li>
+        <li>Finally, say this sentence from memory three times, getting faster each time: <em>"What I'm saying is that it's the community that matters most."</em></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S4: PRACTICE ═══ -->
+<section class="stage" id="s4" data-type="practice">
+  <div class="stage-head">
+    <div class="stage-label">Stage 4 · Practice</div>
+    <div class="stage-title">Rewrite Using Cleft Sentences</div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction"><strong>Exercise 9</strong> — Rewrite each sentence using the prompt. Write your answer, then say it aloud — your teacher will check your pronunciation and grammar at the same time. Click <em>Show model answer</em> to compare.</div>
+
+    <div class="rewrite-list">
+
+      <div class="rewrite-item">
+        <div class="original">Original: <em>"It's not feasible to increase the number of buses."</em></div>
+        <div class="rewrite-prompt">Prompt: <strong>What I'm saying…</strong></div>
+        <textarea class="rewrite-input" placeholder="What I'm saying is…" rows="2"></textarea>
+        <div>
+          <button class="answer-btn" onclick="toggleAnswer('rw1ans')">Show model answer</button>
+          <div class="model-answer" id="rw1ans">✓ <strong>What I'm saying is that</strong> it's not feasible to increase the number of buses.</div>
+        </div>
+      </div>
+
+      <div class="rewrite-item">
+        <div class="original">Original: <em>"We discussed dog walker regulations at the last meeting."</em></div>
+        <div class="rewrite-prompt">Prompt: <strong>It was at the last meeting…</strong></div>
+        <textarea class="rewrite-input" placeholder="It was at the last meeting…" rows="2"></textarea>
+        <div>
+          <button class="answer-btn" onclick="toggleAnswer('rw2ans')">Show model answer</button>
+          <div class="model-answer" id="rw2ans">✓ <strong>It was at the last meeting that</strong> we discussed dog walker regulations.</div>
+        </div>
+      </div>
+
+      <div class="rewrite-item">
+        <div class="original">Original: <em>"We discussed the policy at length."</em></div>
+        <div class="rewrite-prompt">Prompt: <strong>What we did…</strong></div>
+        <textarea class="rewrite-input" placeholder="What we did was…" rows="2"></textarea>
+        <div>
+          <button class="answer-btn" onclick="toggleAnswer('rw3ans')">Show model answer</button>
+          <div class="model-answer" id="rw3ans">✓ <strong>What we did was</strong> discuss the policy at length.</div>
+        </div>
+      </div>
+
+      <div class="rewrite-item">
+        <div class="original">Original: <em>"We'd like speed bumps on Clarence Road."</em></div>
+        <div class="rewrite-prompt">Prompt: <strong>It's on Clarence Road…</strong></div>
+        <textarea class="rewrite-input" placeholder="It's on Clarence Road…" rows="2"></textarea>
+        <div>
+          <button class="answer-btn" onclick="toggleAnswer('rw4ans')">Show model answer</button>
+          <div class="model-answer" id="rw4ans">✓ <strong>It's on Clarence Road that</strong> we'd like speed bumps.</div>
+        </div>
+      </div>
+
+      <div class="rewrite-item">
+        <div class="original">Original: <em>"Many residents enjoy cycling to work."</em></div>
+        <div class="rewrite-prompt">Prompt: <strong>What many residents…</strong></div>
+        <textarea class="rewrite-input" placeholder="What many residents…" rows="2"></textarea>
+        <div>
+          <button class="answer-btn" onclick="toggleAnswer('rw5ans')">Show model answer</button>
+          <div class="model-answer" id="rw5ans">✓ <strong>What many residents enjoy</strong> is cycling to work. <em>or</em> What many residents do is cycle to work.</div>
+        </div>
+      </div>
+
+      <div class="rewrite-item">
+        <div class="original">Original: <em>"We don't know how people will react."</em></div>
+        <div class="rewrite-prompt">Prompt: <strong>What we don't know…</strong></div>
+        <textarea class="rewrite-input" placeholder="What we don't know is…" rows="2"></textarea>
+        <div>
+          <button class="answer-btn" onclick="toggleAnswer('rw6ans')">Show model answer</button>
+          <div class="model-answer" id="rw6ans">✓ <strong>What we don't know is</strong> how people will react.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="discuss-card" style="margin-top:18px;">
+      <div class="dc-label">💬 After checking — discuss with your teacher</div>
+      <ol>
+        <li>Which sentence felt most unnatural to say aloud? Why?</li>
+        <li>Did you use the weak /ðət/ when you read your answers? Go back and try again if not.</li>
+        <li>Your teacher will pick two of your answers — can you explain <em>why</em> the cleft structure is more emphatic than the original?</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S5: SPEAKING — PERSONALISATION ═══ -->
+<section class="stage" id="s5" data-type="speaking">
+  <div class="stage-head">
+    <div class="stage-label">Stage 5 · Speaking</div>
+    <div class="stage-title">About Where You Live</div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction"><strong>Exercise 10a</strong> — Complete each prompt about a city or place you know well. Use the cleft patterns from this lesson. Write at least one sentence, then read it aloud to your teacher — they'll ask follow-up questions.</div>
+
+    <div class="personal-list">
+      <div class="personal-item">
+        <div class="personal-prompt"><span>What I love most about</span> where I live is…</div>
+        <textarea class="comp-textarea" placeholder="e.g. What I love most about my city is the variety of street food markets at weekends."></textarea>
+      </div>
+      <div class="personal-item">
+        <div class="personal-prompt"><span>What annoys me most about</span> where I live is…</div>
+        <textarea class="comp-textarea" placeholder="e.g. What annoys me most about where I live is the lack of safe cycling infrastructure."></textarea>
+      </div>
+      <div class="personal-item">
+        <div class="personal-prompt"><span>It's the lack of</span> __________ that most affects daily life there.</div>
+        <textarea class="comp-textarea" placeholder="e.g. It's the lack of affordable housing that most affects daily life in my city."></textarea>
+      </div>
+      <div class="personal-item">
+        <div class="personal-prompt"><span>What the local council</span> should prioritise is…</div>
+        <textarea class="comp-textarea" placeholder="e.g. What the local council should prioritise is investing in public green spaces."></textarea>
+      </div>
+    </div>
+
+    <div class="discuss-card" style="margin-top:16px;">
+      <div class="dc-label">💬 Exercise 10b — Your teacher will follow up with…</div>
+      <ol>
+        <li><em>"Why does that issue matter to you specifically? Has it affected your daily life?"</em></li>
+        <li><em>"What would you say to a councillor who argued it's too expensive to fix? Use a cleft sentence to push back."</em></li>
+        <li><em>"If you had to choose just one thing to improve, what would it be — and why? Explain using both an it-cleft and a what-cleft."</em></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S6: QUESTION CARDS ═══ -->
+<section class="stage" id="s6" data-type="roleplay">
+  <div class="stage-head">
+    <div class="stage-label">Stage 6 · Discussion</div>
+    <div class="stage-title">Question Cards</div>
+  </div>
+  <div class="stage-body">
+    <div class="instruction">Draw a card and discuss. Each card has a discussion question linked to the lesson topic and vocabulary. Use <strong>cleft sentences</strong> and the <strong>connotation words</strong> from Lessons 3 &amp; 4 in your answers. Shuffle to randomise the order at any time.</div>
+
+    <div class="card-deck" id="cardDeck">
+      <div class="q-card">
+        <div class="q-text" id="qText"></div>
+        <div class="q-tip" id="qTip"></div>
+      </div>
+      <div class="card-nav">
+        <button class="card-btn" onclick="cardGo(-1)">← Back</button>
+        <span class="card-counter" id="cardCounter"></span>
+        <button class="card-btn primary" onclick="cardShuffle()">🔀 Shuffle</button>
+        <button class="card-btn" onclick="cardGo(1)">Next →</button>
+      </div>
+    </div>
+
+    <div class="lang-all" style="margin-top:20px;">
+      <h4>Useful Language</h4>
+      <div class="chips">
+        <span class="chip">What I love about my city is…</span>
+        <span class="chip">It's the community that matters most.</span>
+        <span class="chip">What I'd change first is…</span>
+        <span class="chip">It was [person] who first noticed…</span>
+        <span class="chip">What concerns me is…</span>
+        <span class="chip">All I want is…</span>
+        <span class="chip">It's not X but Y that…</span>
+        <span class="chip">What I find challenging is…</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S7: VOCAB REVISION ═══ -->
+<section class="stage" id="s7" data-type="wrapup">
+  <div class="stage-head">
+    <div class="stage-label">Stage 7 · Vocabulary</div>
+    <div class="stage-title">Connotation Revision</div>
+  </div>
+  <div class="stage-body">
+
+    <!-- Part A: Pairs table -->
+    <div class="section-label">Part A — Positive vs. Negative</div>
+    <div class="instruction">The left column shows a word with a <strong>positive</strong> connotation. Click the right column cell to reveal its <strong>negative</strong> equivalent — the word that describes the same thing but sounds worse.</div>
+    <table class="pair-table">
+      <thead><tr><th>✅ Positive</th><th>❌ Negative (click to reveal)</th><th>Same situation…</th></tr></thead>
+      <tbody>
+        <tr><td>vintage</td><td><span class="pair-cell" onclick="revealPair(this)">tap to reveal<span class="reveal-hint">→</span></span></td><td>old objects / style</td></tr>
+        <tr><td>relaxed</td><td><span class="pair-cell" onclick="revealPair(this)">tap to reveal<span class="reveal-hint">→</span></span></td><td>atmosphere / pace</td></tr>
+        <tr><td>economical</td><td><span class="pair-cell" onclick="revealPair(this)">tap to reveal<span class="reveal-hint">→</span></span></td><td>attitude to money</td></tr>
+        <tr><td>challenging</td><td><span class="pair-cell" onclick="revealPair(this)">tap to reveal<span class="reveal-hint">→</span></span></td><td>a hard situation</td></tr>
+        <tr><td>issues</td><td><span class="pair-cell" onclick="revealPair(this)">tap to reveal<span class="reveal-hint">→</span></span></td><td>things that are wrong</td></tr>
+        <tr><td>charming</td><td><span class="pair-cell" onclick="revealPair(this)">tap to reveal<span class="reveal-hint">→</span></span></td><td>old-fashioned place</td></tr>
+        <tr><td>firm</td><td><span class="pair-cell" onclick="revealPair(this)">tap to reveal<span class="reveal-hint">→</span></span></td><td>not changing one's mind</td></tr>
+        <tr><td>lively</td><td><span class="pair-cell" onclick="revealPair(this)">tap to reveal<span class="reveal-hint">→</span></span></td><td>noisy, energetic place</td></tr>
+        <tr><td>crowd</td><td><span class="pair-cell" onclick="revealPair(this)">tap to reveal<span class="reveal-hint">→</span></span></td><td>a lot of people</td></tr>
+      </tbody>
+    </table>
+
+    <!-- Part B: Gap-fill -->
+    <div class="section-label" style="margin-top:22px;">Part B — Choose the Right Word</div>
+    <div class="instruction">Select the word that fits the <strong>positive</strong> connotation for each context. Then click <strong>Check</strong>.</div>
+    <ul class="gap-list" id="gapList">
+      <li class="gap-item">1. The new café has brought a <select class="gap-sel" id="g1"><option value="">—</option><option>lively</option><option>rowdy</option></select> atmosphere to the high street. <span class="gap-fb" id="gf1"></span></li>
+      <li class="gap-item">2. Their approach to the budget has always been <select class="gap-sel" id="g2"><option value="">—</option><option>economical</option><option>penny-pinching</option></select> — they never waste money. <span class="gap-fb" id="gf2"></span></li>
+      <li class="gap-item">3. The local councillor remained <select class="gap-sel" id="g3"><option value="">—</option><option>firm</option><option>stubborn</option></select> on the issue throughout the debate. <span class="gap-fb" id="gf3"></span></li>
+      <li class="gap-item">4. There's always a huge <select class="gap-sel" id="g4"><option value="">—</option><option>crowd</option><option>mob</option></select> at the Saturday market, which the traders love. <span class="gap-fb" id="gf4"></span></li>
+      <li class="gap-item">5. Living in this city can be <select class="gap-sel" id="g5"><option value="">—</option><option>challenging</option><option>difficult</option></select>, but it teaches you so much. <span class="gap-fb" id="gf5"></span></li>
+    </ul>
+    <button class="check-btn" onclick="checkGaps()" id="gapCheckBtn" style="margin-top:12px;">Check answers</button>
+    <span class="score-badge" id="gapScore" style="display:none;margin-left:10px;"></span>
+
+    <!-- Part C: Quick-fire oral -->
+    <div class="section-label" style="margin-top:22px;">Part C — Quick-Fire Challenge</div>
+    <div class="speaking-card">
+      <h4>🎯 Teacher → Student</h4>
+      <p>Your teacher says a <strong>negative</strong> word. You respond with the positive equivalent and use it in a sentence containing a cleft structure. Aim for natural speed.</p>
+      <div class="chips" style="margin-top:10px;">
+        <span class="chip"><em>Teacher:</em> "archaic"</span>
+        <span class="chip"><em>Teacher:</em> "chaotic"</span>
+        <span class="chip"><em>Teacher:</em> "penny-pinching"</span>
+        <span class="chip"><em>Teacher:</em> "rowdy"</span>
+        <span class="chip"><em>Teacher:</em> "stubborn"</span>
+        <span class="chip"><em>Teacher:</em> "mob"</span>
+        <span class="chip"><em>Teacher:</em> "problems"</span>
+        <span class="chip"><em>Teacher:</em> "quaint"</span>
+      </div>
+      <p style="margin-top:12px;font-size:.9rem;"><strong>Example:</strong> Teacher says <em>"difficult"</em> → Student: <em>"Challenging — What I find challenging about city life is the cost of housing."</em></p>
+    </div>
+
+    <div class="lang-all" style="margin-top:16px;">
+      <h4>Key Patterns to Take Away</h4>
+      <div class="chips">
+        <span class="chip">It was [person/place/time] who/that…</span>
+        <span class="chip">What I'm saying is that…</span>
+        <span class="chip">What [subject] [verb] is…</span>
+        <span class="chip">All we want is…</span>
+        <span class="chip">It's [noun] that [verb]…</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+// ── SCROLL SPY ─────────────────────────────────────────
+const pills=document.querySelectorAll('.pill[data-s]');
+const sections=document.querySelectorAll('.stage');
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){
+    const id=e.target.id;
+    pills.forEach(p=>p.classList.toggle('active',p.dataset.s===id));
+  }});
+},{threshold:.3});
+sections.forEach(s=>io.observe(s));
+
+// ── CLASSIFY CHECK ─────────────────────────────────────
+const clAnswers={1:'what',2:'it',3:'what',4:'it'};
+function classifyCheck(n,choice){
+  const correct=clAnswers[n];
+  const badge=document.getElementById('cl'+n+'r');
+  const item=document.getElementById('cl'+n);
+  item.querySelectorAll('.cls-btn').forEach(b=>b.disabled=true);
+  badge.style.display='inline-block';
+  if(choice===correct){
+    badge.className='score-badge perfect';badge.textContent='✓ Correct';
+  } else {
+    badge.className='score-badge partial';badge.textContent='✗ '+correct[0].toUpperCase()+correct.slice(1)+'-cleft';
+  }
+}
+
+// ── PRONUNCIATION REVEAL ───────────────────────────────
+function revealPron(btn){
+  const box=btn.nextElementSibling;
+  box.classList.toggle('show');
+  btn.textContent=box.classList.contains('show')?'Hide':'Show connected speech';
+}
+
+// ── REWRITE MODEL ANSWER ───────────────────────────────
+function toggleAnswer(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('show');
+  const btn=el.previousElementSibling;
+  btn.textContent=el.classList.contains('show')?'Hide model answer':'Show model answer';
+}
+
+// ── QUESTION CARDS ─────────────────────────────────────
+const CARDS=[
+  {q:"What's one thing you genuinely love about where you live — and one thing you'd change immediately if you could?",
+   tip:"💬 Vocab: lively / rowdy · charming / quaint"},
+  {q:"Some people say affordable housing spoils the character of a neighbourhood. Do you agree — or is that a way of keeping others out?",
+   tip:"💬 Vocab: issues / problems · challenging / difficult"},
+  {q:"If you had to choose between renovating a run-down market and expanding a cycling network, which would you pick — and why?",
+   tip:"💬 Vocab: vintage / archaic · economical / penny-pinching"},
+  {q:"A new café opens on your street and gets very popular. How do you feel as a local resident?",
+   tip:"💬 Vocab: lively / rowdy · crowd / mob"},
+  {q:"How should local councils decide which improvements to prioritise — resident votes, budget constraints, or long-term planning?",
+   tip:"💬 Vocab: challenging / difficult · firm / stubborn"},
+  {q:"Is there a difference between a councillor being firm and being stubborn? Give an example of each from real life.",
+   tip:"💬 Key pair: firm (✅) vs. stubborn (❌)"},
+  {q:"Is it ever fair to call a neighbourhood 'run-down'? What does that phrase say about the person using it?",
+   tip:"💬 Vocab: charming / quaint · issues / problems"},
+  {q:"Your neighbour wants to open a weekend market stall. You know it will bring a crowd every Saturday. Is that a good thing?",
+   tip:"💬 Vocab: crowd / mob · lively / rowdy"},
+  {q:"Think of a local issue you care about. How would you argue for it at a council meeting — what cleft sentence would you open with?",
+   tip:"💬 Try: \"What the community needs is…\" or \"It's [X] that matters most.\""},
+  {q:"What makes a city feel like home to you — the people, the places, the history, or something else entirely?",
+   tip:"💬 Vocab: vintage / archaic · relaxed / chaotic"}
+];
+let cardOrder=[...Array(CARDS.length).keys()];
+let cardIdx=0;
+
+function cardRender(){
+  const c=CARDS[cardOrder[cardIdx]];
+  document.getElementById('qText').textContent=c.q;
+  document.getElementById('qTip').textContent=c.tip;
+  document.getElementById('cardCounter').textContent=(cardIdx+1)+' / '+CARDS.length;
+}
+
+function cardGo(dir){
+  cardIdx=(cardIdx+dir+CARDS.length)%CARDS.length;
+  cardRender();
+}
+
+function cardShuffle(){
+  for(let i=cardOrder.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [cardOrder[i],cardOrder[j]]=[cardOrder[j],cardOrder[i]];
+  }
+  cardIdx=0;
+  cardRender();
+}
+
+cardRender();
+
+// ── VOCAB PAIR REVEAL ──────────────────────────────────
+const PAIR_NEG=['archaic','chaotic','penny-pinching','difficult','problems','quaint','stubborn','rowdy','mob'];
+function revealPair(el){
+  const row=el.closest('tr');
+  const rowIdx=row.rowIndex-1;
+  el.textContent=PAIR_NEG[rowIdx];
+  el.classList.add('revealed');
+  el.onclick=null;
+  el.style.cursor='default';
+}
+
+// ── GAP-FILL CHECK ─────────────────────────────────────
+const GAP_ANS={g1:'lively',g2:'economical',g3:'firm',g4:'crowd',g5:'challenging'};
+function checkGaps(){
+  let score=0;
+  Object.entries(GAP_ANS).forEach(([id,ans])=>{
+    const sel=document.getElementById(id);
+    const fb=document.getElementById('gf'+id.slice(1));
+    if(!sel.value){fb.textContent='';return;}
+    if(sel.value===ans){score++;sel.style.borderColor='#16a34a';fb.className='gap-fb ok';fb.textContent='✓';}
+    else{sel.style.borderColor='#dc2626';fb.className='gap-fb no';fb.textContent='✗ '+ans;}
+    sel.disabled=true;
+  });
+  const total=Object.keys(GAP_ANS).length;
+  const badge=document.getElementById('gapScore');
+  badge.style.display='inline-block';
+  badge.className='score-badge '+(score===total?'perfect':'partial');
+  badge.textContent=score+'/'+total;
+  document.getElementById('gapCheckBtn').disabled=true;
+}
+</script>
+</body>
+</html>
