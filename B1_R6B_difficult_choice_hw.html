@@ -1,0 +1,729 @@
+<!doctype html>
+<title>A Difficult Choice – Homework</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root {
+  --c-bg:#F4F5FB;--c-surface:#FFFFFF;--c-surface2:#EEF0FA;
+  --c-indigo:#2D3A8C;--c-indigo-lt:#E8EAFB;--c-indigo-dk:#1E2866;
+  --c-coral:#E8603C;--c-coral-lt:#FDF0EC;
+  --c-green:#2D7D5A;--c-green-lt:#E6F4EE;
+  --c-red:#C0392B;--c-red-lt:#FDECEA;
+  --c-amber:#B8860B;--c-amber-lt:#FFF8E1;
+  --c-text:#1A1A2E;--c-muted:#6B7080;--c-border:#DDE0EF;
+  --font-d:'Poppins',system-ui,sans-serif;
+  --font-b:'Inter',system-ui,sans-serif;
+  --r:13px;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --c-bg:#12152A;--c-surface:#1C2040;--c-surface2:#252A50;
+  --c-text:#E8EAF5;--c-muted:#8890B0;--c-border:#2D3460;
+  --c-indigo-lt:#1E2460;--c-coral-lt:#3A1A10;
+  --c-green-lt:#0E2A1E;--c-red-lt:#2A0E0A;--c-amber-lt:#2A2000;
+}}
+:root[data-theme=dark]{
+  --c-bg:#12152A;--c-surface:#1C2040;--c-surface2:#252A50;
+  --c-text:#E8EAF5;--c-muted:#8890B0;--c-border:#2D3460;
+  --c-indigo-lt:#1E2460;--c-coral-lt:#3A1A10;
+  --c-green-lt:#0E2A1E;--c-red-lt:#2A0E0A;--c-amber-lt:#2A2000;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-b);background:var(--c-bg);color:var(--c-text);font-size:15px;line-height:1.6;padding-inline:16px;padding-block:0 env(safe-area-inset-bottom,0px)}
+
+/* ── HEADER ── */
+.hw-header{background:var(--c-indigo);color:#fff;padding:28px 20px 22px;margin-inline:-16px;margin-bottom:0;position:relative}
+.hw-eyebrow{font-family:var(--font-d);font-size:.7rem;font-weight:700;letter-spacing:.12em;opacity:.65;text-transform:uppercase;margin-bottom:6px}
+.hw-header h1{font-family:var(--font-d);font-size:1.55rem;font-weight:700;line-height:1.2;margin-bottom:4px}
+.hw-sub{font-size:.83rem;opacity:.7}
+.theme-btn{position:absolute;top:18px;right:16px;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:8px;padding:5px 10px;font-size:.8rem;cursor:pointer;font-family:var(--font-b)}
+.theme-btn:hover{background:rgba(255,255,255,.25)}
+
+/* ── NAME BAR ── */
+.name-bar{position:sticky;top:0;z-index:50;background:var(--c-surface);border-bottom:1.5px solid var(--c-border);padding:10px 16px;margin-inline:-16px;display:flex;align-items:center;gap:10px}
+.name-bar label{font-size:.82rem;font-weight:600;color:var(--c-muted);white-space:nowrap}
+.name-bar input{flex:1;border:1.5px solid var(--c-border);border-radius:8px;padding:6px 10px;font-size:.88rem;font-family:var(--font-b);background:var(--c-surface);color:var(--c-text);outline:none;max-width:300px}
+.name-bar input:focus{border-color:var(--c-indigo)}
+
+/* ── PROGRESS ── */
+.progress-wrap{background:var(--c-surface);border-bottom:1.5px solid var(--c-border);padding:10px 16px 10px;margin-inline:-16px;margin-bottom:24px}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.progress-top span{font-size:.78rem;color:var(--c-muted)}
+.progress-top strong{font-size:.78rem;color:var(--c-indigo);font-weight:600}
+.progress-track{background:var(--c-surface2);border-radius:99px;height:7px;overflow:hidden}
+.progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--c-indigo),var(--c-coral));transition:width .5s}
+
+/* ── EXERCISE CARD ── */
+.ex-card{background:var(--c-surface);border-radius:var(--r);border:1.5px solid var(--c-border);padding:20px;margin-bottom:18px}
+.ex-hd{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.ex-num{background:var(--c-indigo);color:#fff;font-family:var(--font-d);font-size:.72rem;font-weight:700;border-radius:6px;padding:2px 9px;letter-spacing:.04em}
+.ex-title{font-family:var(--font-d);font-size:1rem;font-weight:700;color:var(--c-indigo)}
+.ex-instr{font-size:.85rem;color:var(--c-muted);margin-bottom:16px;line-height:1.5}
+.btn-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.btn{border:none;border-radius:8px;padding:8px 18px;font-size:.85rem;font-family:var(--font-b);font-weight:600;cursor:pointer;transition:opacity .15s}
+.btn-check{background:var(--c-coral);color:#fff}
+.btn-reset{background:var(--c-surface2);color:var(--c-text);border:1.5px solid var(--c-border)}
+.btn:hover{opacity:.85}
+.ex-score{font-size:.83rem;color:var(--c-muted);margin-top:8px}
+
+/* ── FEEDBACK ── */
+.feedback{border-radius:8px;padding:10px 14px;font-size:.85rem;margin-top:10px;display:none}
+.feedback.correct{background:var(--c-green-lt);color:var(--c-green);border:1.5px solid var(--c-green)}
+.feedback.wrong{background:var(--c-amber-lt);color:var(--c-amber);border:1.5px solid var(--c-amber)}
+
+/* ── MATCH EXERCISE ── */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:480px){.match-grid{grid-template-columns:1fr}}
+.match-col-hd{font-size:.75rem;font-weight:700;color:var(--c-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;padding-inline:4px}
+.match-btn{width:100%;text-align:left;background:var(--c-surface2);border:1.5px solid var(--c-border);border-radius:9px;padding:9px 11px;font-size:.83rem;font-family:var(--font-b);color:var(--c-text);cursor:pointer;transition:border-color .15s,background .15s;position:relative;line-height:1.45}
+.match-btn .num{font-weight:700;color:var(--c-indigo);margin-right:4px}
+.match-btn .ltr{font-weight:700;color:var(--c-coral);margin-right:4px}
+.match-btn:hover:not(:disabled){border-color:var(--c-indigo);background:var(--c-indigo-lt)}
+.match-btn.selected{border-color:var(--c-coral);background:var(--c-coral-lt);box-shadow:0 0 0 3px rgba(232,96,60,.15)}
+.match-btn.paired{border-color:var(--c-indigo);background:var(--c-indigo-lt)}
+.match-btn.correct-m{border-color:var(--c-green);background:var(--c-green-lt);color:var(--c-green)}
+.match-btn.wrong-m{border-color:var(--c-red);background:var(--c-red-lt)}
+.pair-badge{display:inline-block;background:var(--c-indigo);color:#fff;border-radius:4px;font-size:.67rem;font-weight:700;padding:1px 6px;margin-left:6px;vertical-align:middle;font-family:var(--font-d)}
+.match-btn.correct-m .pair-badge{background:var(--c-green)}
+.match-btn.wrong-m .pair-badge{background:var(--c-red)}
+
+/* ── WORD COMPLETE ── */
+.word-item{margin-bottom:12px;line-height:1.7}
+.word-item .ctx{font-size:.88rem}
+.gap-input{border:none;border-bottom:2px solid var(--c-indigo);background:transparent;color:var(--c-text);font-family:var(--font-b);font-size:.88rem;padding:1px 4px;width:110px;outline:none;text-align:center;transition:border-color .15s}
+.gap-input:focus{border-color:var(--c-coral)}
+.gap-input.correct{border-color:var(--c-green);color:var(--c-green);background:var(--c-green-lt);border-radius:4px 4px 0 0}
+.gap-input.wrong{border-color:var(--c-red);color:var(--c-red)}
+.word-fb{font-size:.78rem;margin-left:4px}
+.word-fb.correct{color:var(--c-green)}
+.word-fb.wrong{color:var(--c-red)}
+.hint-txt{font-size:.75rem;color:var(--c-muted);margin-top:2px}
+
+/* ── MULTIPLE CHOICE ── */
+.mc-item{border:1.5px solid var(--c-border);border-radius:10px;padding:14px;margin-bottom:10px}
+.mc-situation{font-size:.87rem;font-style:italic;color:var(--c-muted);margin-bottom:10px;line-height:1.5}
+.mc-opts{display:flex;flex-direction:column;gap:7px}
+.mc-opt{background:var(--c-surface2);border:1.5px solid var(--c-border);border-radius:8px;padding:8px 12px;font-size:.84rem;font-family:var(--font-b);color:var(--c-text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s;line-height:1.45}
+.mc-opt .opt-ltr{font-weight:700;color:var(--c-indigo);margin-right:5px}
+.mc-opt:hover:not(:disabled){border-color:var(--c-indigo);background:var(--c-indigo-lt)}
+.mc-opt.chosen{border-color:var(--c-coral);background:var(--c-coral-lt)}
+.mc-opt.correct-c{border-color:var(--c-green);background:var(--c-green-lt);color:var(--c-green)}
+.mc-opt.wrong-c{border-color:var(--c-red);background:var(--c-red-lt)}
+.mc-opt:disabled{cursor:default;opacity:.8}
+
+/* ── GAP CONVERSATION ── */
+.conv-bubble{border-left:3px solid var(--c-border);padding:10px 14px;margin-bottom:8px;border-radius:0 8px 8px 0;background:var(--c-surface2);font-size:.88rem;line-height:1.65}
+.conv-bubble.speaker-b{border-left-color:var(--c-indigo);background:var(--c-indigo-lt)}
+.conv-spk{font-weight:700;font-size:.75rem;letter-spacing:.05em;color:var(--c-muted);margin-bottom:3px}
+.conv-bubble.speaker-b .conv-spk{color:var(--c-indigo)}
+.gap-sel{display:inline-block;border:none;border-bottom:2px solid var(--c-coral);background:transparent;font-family:var(--font-b);font-size:.88rem;color:var(--c-text);padding:1px 3px;cursor:pointer;min-width:80px;outline:none}
+.gap-sel:focus{border-color:var(--c-indigo)}
+.gap-sel.correct-s{border-color:var(--c-green);color:var(--c-green);background:var(--c-green-lt);border-radius:4px 4px 0 0}
+.gap-sel.wrong-s{border-color:var(--c-red);color:var(--c-red)}
+.word-box{background:var(--c-indigo-lt);border:1.5px solid var(--c-border);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:.83rem;line-height:1.8;color:var(--c-muted)}
+.word-box strong{color:var(--c-indigo);font-weight:600}
+.word-box .wb{display:inline-block;background:var(--c-surface);border:1px solid var(--c-border);border-radius:5px;padding:1px 7px;margin:2px;font-weight:500;color:var(--c-text)}
+
+/* ── SEND TO TEACHER ── */
+.send-card{background:var(--c-indigo);color:#fff;border-radius:var(--r);padding:22px;margin-bottom:32px}
+.send-card h3{font-family:var(--font-d);font-size:1rem;font-weight:700;margin-bottom:6px}
+.send-card p{font-size:.83rem;opacity:.75;margin-bottom:14px;line-height:1.5}
+.btn-send{background:#fff;color:var(--c-indigo);border:none;border-radius:9px;padding:11px 22px;font-size:.9rem;font-family:var(--font-b);font-weight:700;cursor:pointer;transition:opacity .15s}
+.btn-send:hover{opacity:.88}
+.complete-badge{display:none;background:var(--c-green-lt);border:1.5px solid var(--c-green);border-radius:10px;padding:12px 16px;margin-top:16px;color:var(--c-green);font-size:.88rem;font-weight:600}
+</style>
+
+<!-- ── HEADER ── -->
+<div class="hw-header">
+  <button class="theme-btn" id="themeBtn">🌙 Dark</button>
+  <p class="hw-eyebrow">Unit 6B · Homework</p>
+  <h1>A Difficult Choice</h1>
+  <p class="hw-sub">Vocabulary: bad behaviour &amp; crime · Grammar: giving advice</p>
+</div>
+
+<!-- ── NAME BAR ── -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…" autocomplete="name">
+</div>
+
+<!-- ── PROGRESS ── -->
+<div class="progress-wrap">
+  <div class="progress-top">
+    <span>Progress</span>
+    <strong id="plabel">0 / 4 exercises checked</strong>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="pfill" style="width:0%"></div></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     EXERCISE 1 — MATCH THE HALVES
+══════════════════════════════════════ -->
+<div class="ex-card" id="ex1">
+  <div class="ex-hd">
+    <span class="ex-num">EX 1</span>
+    <span class="ex-title">Match the sentence halves</span>
+  </div>
+  <p class="ex-instr">Click a sentence beginning (1–6), then click the correct ending (a–f) to pair them.</p>
+
+  <div class="match-grid">
+    <div>
+      <p class="match-col-hd">Beginning</p>
+      <button class="match-btn" data-side="L" data-id="1"><span class="num">1.</span> Dropping <span class="pair-badge" id="pb-L1" hidden></span></button>
+      <button class="match-btn" data-side="L" data-id="2" style="margin-top:6px"><span class="num">2.</span> Jumping the <span class="pair-badge" id="pb-L2" hidden></span></button>
+      <button class="match-btn" data-side="L" data-id="3" style="margin-top:6px"><span class="num">3.</span> Speeding <span class="pair-badge" id="pb-L3" hidden></span></button>
+      <button class="match-btn" data-side="L" data-id="4" style="margin-top:6px"><span class="num">4.</span> Cheating <span class="pair-badge" id="pb-L4" hidden></span></button>
+      <button class="match-btn" data-side="L" data-id="5" style="margin-top:6px"><span class="num">5.</span> Lying about <span class="pair-badge" id="pb-L5" hidden></span></button>
+      <button class="match-btn" data-side="L" data-id="6" style="margin-top:6px"><span class="num">6.</span> Stealing things <span class="pair-badge" id="pb-L6" hidden></span></button>
+    </div>
+    <div>
+      <p class="match-col-hd">Ending</p>
+      <button class="match-btn" data-side="R" data-id="a"><span class="ltr">a.</span> is against the law, and can cause accidents. <span class="pair-badge" id="pb-Ra" hidden></span></button>
+      <button class="match-btn" data-side="R" data-id="b" style="margin-top:6px"><span class="ltr">b.</span> in exams is wrong. <span class="pair-badge" id="pb-Rb" hidden></span></button>
+      <button class="match-btn" data-side="R" data-id="c" style="margin-top:6px"><span class="ltr">c.</span> your age is not illegal. <span class="pair-badge" id="pb-Rc" hidden></span></button>
+      <button class="match-btn" data-side="R" data-id="d" style="margin-top:6px"><span class="ltr">d.</span> litter on the streets is just rude. <span class="pair-badge" id="pb-Rd" hidden></span></button>
+      <button class="match-btn" data-side="R" data-id="e" style="margin-top:6px"><span class="ltr">e.</span> from your friends is really dishonest. <span class="pair-badge" id="pb-Re" hidden></span></button>
+      <button class="match-btn" data-side="R" data-id="f" style="margin-top:6px"><span class="ltr">f.</span> queue is not fair to everyone else. <span class="pair-badge" id="pb-Rf" hidden></span></button>
+    </div>
+  </div>
+
+  <div class="feedback" id="fb1"></div>
+  <p class="ex-score" id="sc1"></p>
+  <div class="btn-row">
+    <button class="btn btn-check" id="chk1">Check ✓</button>
+    <button class="btn btn-reset" id="rst1">Reset</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     EXERCISE 2 — COMPLETE THE WORDS
+══════════════════════════════════════ -->
+<div class="ex-card" id="ex2">
+  <div class="ex-hd">
+    <span class="ex-num">EX 2</span>
+    <span class="ex-title">Complete the missing words</span>
+  </div>
+  <p class="ex-instr">Type the missing word in each gap. The first and last letters are given as a clue.</p>
+
+  <div class="word-item">
+    <div class="ctx">1. He's always so late, it's just
+      <input class="gap-input" id="w1" data-ans="rude" maxlength="10" placeholder="r___e">
+      <span class="word-fb" id="wf1"></span>
+    </div>
+    <p class="hint-txt">Hint: r _ _ _ e &nbsp;(4 letters, means not polite)</p>
+  </div>
+
+  <div class="word-item">
+    <div class="ctx">2. Is it against
+      <input class="gap-input" id="w2a" data-ans="the" maxlength="5" placeholder="t__" style="width:50px">
+      <input class="gap-input" id="w2b" data-ans="law" maxlength="5" placeholder="l__" style="width:50px">
+      to smoke in restaurants here?
+      <span class="word-fb" id="wf2"></span>
+    </div>
+    <p class="hint-txt">Hint: t__ &nbsp;l__ &nbsp;(two words)</p>
+  </div>
+
+  <div class="word-item">
+    <div class="ctx">3. Driving without lights at night is
+      <input class="gap-input" id="w3" data-ans="illegal" maxlength="10" placeholder="i_____l">
+      <span class="word-fb" id="wf3"></span>
+    </div>
+    <p class="hint-txt">Hint: i _ _ _ _ _ l &nbsp;(7 letters, against the law)</p>
+  </div>
+
+  <div class="word-item">
+    <div class="ctx">4. It was really
+      <input class="gap-input" id="w4" data-ans="dishonest" maxlength="12" placeholder="d_______t">
+      of her to say the gift was from her.
+      <span class="word-fb" id="wf4"></span>
+    </div>
+    <p class="hint-txt">Hint: d _ _ _ _ _ _ _ t &nbsp;(9 letters, not honest)</p>
+  </div>
+
+  <div class="word-item">
+    <div class="ctx">5. Why are you giving him more cake? That's not
+      <input class="gap-input" id="w5" data-ans="fair" maxlength="8" placeholder="f__r">
+      !
+      <span class="word-fb" id="wf5"></span>
+    </div>
+    <p class="hint-txt">Hint: f _ _ r &nbsp;(4 letters, equal / just)</p>
+  </div>
+
+  <div class="feedback" id="fb2"></div>
+  <p class="ex-score" id="sc2"></p>
+  <div class="btn-row">
+    <button class="btn btn-check" id="chk2">Check ✓</button>
+    <button class="btn btn-reset" id="rst2">Reset</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     EXERCISE 3 — CHOOSE THE CORRECT ALTERNATIVE
+══════════════════════════════════════ -->
+<div class="ex-card" id="ex3">
+  <div class="ex-hd">
+    <span class="ex-num">EX 3</span>
+    <span class="ex-title">Choose the correct alternative</span>
+  </div>
+  <p class="ex-instr">Read each problem, then click the correct option (a or b).</p>
+
+  <!-- 1 -->
+  <div class="mc-item">
+    <p class="mc-situation">1. Oh no! I can't find my wallet!</p>
+    <div class="mc-opts">
+      <button class="mc-opt" data-q="1" data-val="a" data-correct="false"><span class="opt-ltr">a</span> Don't worry. If I am you, I'd call the restaurant where we had lunch.</button>
+      <button class="mc-opt" data-q="1" data-val="b" data-correct="true"><span class="opt-ltr">b</span> Don't worry. If I were you, I'd call the restaurant where we had lunch.</button>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="mc-item">
+    <p class="mc-situation">2. Mina is so stressed. Her boss sends her emails all the time, even when she's finished work!</p>
+    <div class="mc-opts">
+      <button class="mc-opt" data-q="2" data-val="a" data-correct="false"><span class="opt-ltr">a</span> She should talked to him and explain how she feels.</button>
+      <button class="mc-opt" data-q="2" data-val="b" data-correct="true"><span class="opt-ltr">b</span> She should talk to him and tell him how she feels.</button>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="mc-item">
+    <p class="mc-situation">3. Joe is really angry and he isn't speaking to me. I don't know what to do.</p>
+    <div class="mc-opts">
+      <button class="mc-opt" data-q="3" data-val="a" data-correct="true"><span class="opt-ltr">a</span> You could call him and tell him that you are sorry.</button>
+      <button class="mc-opt" data-q="3" data-val="b" data-correct="false"><span class="opt-ltr">b</span> You could to call him and tell him that you are sorry.</button>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="mc-item">
+    <p class="mc-situation">4. He's always saying stupid things to me during the lessons.</p>
+    <div class="mc-opts">
+      <button class="mc-opt" data-q="4" data-val="a" data-correct="true"><span class="opt-ltr">a</span> You ought to tell the teacher.</button>
+      <button class="mc-opt" data-q="4" data-val="b" data-correct="false"><span class="opt-ltr">b</span> You ought tell the teacher.</button>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="mc-item">
+    <p class="mc-situation">5. We know that he stole the money, but what should we do about it?</p>
+    <div class="mc-opts">
+      <button class="mc-opt" data-q="5" data-val="a" data-correct="false"><span class="opt-ltr">a</span> If I were you, I would to tell the truth. It's the right thing to do.</button>
+      <button class="mc-opt" data-q="5" data-val="b" data-correct="true"><span class="opt-ltr">b</span> If I were you, I would tell the truth. It's the right thing to do.</button>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="mc-item">
+    <p class="mc-situation">6. People who talk loudly on public transport really annoy me.</p>
+    <div class="mc-opts">
+      <button class="mc-opt" data-q="6" data-val="a" data-correct="true"><span class="opt-ltr">a</span> I know, but you shouldn't say anything. It's a public place!</button>
+      <button class="mc-opt" data-q="6" data-val="b" data-correct="false"><span class="opt-ltr">b</span> I know, but you shouldn't to say anything. It's a public place.</button>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="mc-item">
+    <p class="mc-situation">7. I don't think I'll tell anyone about it.</p>
+    <div class="mc-opts">
+      <button class="mc-opt" data-q="7" data-val="a" data-correct="true"><span class="opt-ltr">a</span> If I were you, I would.</button>
+      <button class="mc-opt" data-q="7" data-val="b" data-correct="false"><span class="opt-ltr">b</span> If I am you, I will.</button>
+    </div>
+  </div>
+
+  <!-- 8 -->
+  <div class="mc-item">
+    <p class="mc-situation">8. I don't think I need to phone him, do I?</p>
+    <div class="mc-opts">
+      <button class="mc-opt" data-q="8" data-val="a" data-correct="false"><span class="opt-ltr">a</span> I think you ought phone him, yes.</button>
+      <button class="mc-opt" data-q="8" data-val="b" data-correct="true"><span class="opt-ltr">b</span> I think you ought to phone him, yes.</button>
+    </div>
+  </div>
+
+  <div class="feedback" id="fb3"></div>
+  <p class="ex-score" id="sc3"></p>
+  <div class="btn-row">
+    <button class="btn btn-check" id="chk3">Check ✓</button>
+    <button class="btn btn-reset" id="rst3">Reset</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     EXERCISE 4 — COMPLETE THE CONVERSATION
+══════════════════════════════════════ -->
+<div class="ex-card" id="ex4">
+  <div class="ex-hd">
+    <span class="ex-num">EX 4</span>
+    <span class="ex-title">Complete the conversation</span>
+  </div>
+  <p class="ex-instr">Choose the correct expression from the box to complete each gap.</p>
+
+  <div class="word-box">
+    <span class="wb">I ought to</span>
+    <span class="wb">I think you should</span>
+    <span class="wb">If I were you</span>
+    <span class="wb">So what should</span>
+    <span class="wb">What do you think I should do?</span>
+    <span class="wb">You shouldn't</span>
+  </div>
+
+  <div class="conv-bubble">
+    <p class="conv-spk">A:</p>
+    <p>Raquel left the office early again yesterday! This is the third time this week. I'm really annoyed. It's so unfair.</p>
+  </div>
+  <div class="conv-bubble speaker-b">
+    <p class="conv-spk">B:</p>
+    <p>The third time this week! Wow, that's a lot. Does your boss know?</p>
+  </div>
+  <div class="conv-bubble">
+    <p class="conv-spk">A:</p>
+    <p>No, my boss is never there in the evenings, so she doesn't know. 1. <select class="gap-sel" id="g4-1" data-ans="What do you think I should do?"><option value="">choose…</option><option>I ought to</option><option>I think you should</option><option>If I were you</option><option>So what should</option><option>What do you think I should do?</option><option>You shouldn't</option></select></p>
+  </div>
+  <div class="conv-bubble speaker-b">
+    <p class="conv-spk">B:</p>
+    <p>2. <select class="gap-sel" id="g4-2" data-ans="If I were you"><option value="">choose…</option><option>I ought to</option><option>I think you should</option><option>If I were you</option><option>So what should</option><option>What do you think I should do?</option><option>You shouldn't</option></select>, I'd tell your boss. She should know if her employees leave work early.</p>
+  </div>
+  <div class="conv-bubble">
+    <p class="conv-spk">A:</p>
+    <p>Hm, I don't want to do that. It's quite serious and my boss is very busy at the moment.</p>
+  </div>
+  <div class="conv-bubble speaker-b">
+    <p class="conv-spk">B:</p>
+    <p>3. <select class="gap-sel" id="g4-3" data-ans="I think you should"><option value="">choose…</option><option>I ought to</option><option>I think you should</option><option>If I were you</option><option>So what should</option><option>What do you think I should do?</option><option>You shouldn't</option></select> say something to Raquel then. It's very dishonest to leave work early so often.</p>
+  </div>
+  <div class="conv-bubble">
+    <p class="conv-spk">A:</p>
+    <p>I agree. I'll speak to her tomorrow. 4. <select class="gap-sel" id="g4-4" data-ans="I ought to"><option value="">choose…</option><option>I ought to</option><option>I think you should</option><option>If I were you</option><option>So what should</option><option>What do you think I should do?</option><option>You shouldn't</option></select> think about what I'm going to say!</p>
+  </div>
+  <div class="conv-bubble speaker-b">
+    <p class="conv-spk">B:</p>
+    <p>5. <select class="gap-sel" id="g4-5" data-ans="You shouldn't"><option value="">choose…</option><option>I ought to</option><option>I think you should</option><option>If I were you</option><option>So what should</option><option>What do you think I should do?</option><option>You shouldn't</option></select> feel bad, Jake. It's the right thing to do.</p>
+  </div>
+  <div class="conv-bubble">
+    <p class="conv-spk">A:</p>
+    <p>You're right. 6. <select class="gap-sel" id="g4-6" data-ans="So what should"><option value="">choose…</option><option>I ought to</option><option>I think you should</option><option>If I were you</option><option>So what should</option><option>What do you think I should do?</option><option>You shouldn't</option></select> I say?</p>
+  </div>
+  <div class="conv-bubble speaker-b">
+    <p class="conv-spk">B:</p>
+    <p>Er, that's your decision! Good luck!</p>
+  </div>
+
+  <div class="feedback" id="fb4"></div>
+  <p class="ex-score" id="sc4"></p>
+  <div class="btn-row">
+    <button class="btn btn-check" id="chk4">Check ✓</button>
+    <button class="btn btn-reset" id="rst4">Reset</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SEND TO TEACHER
+══════════════════════════════════════ -->
+<div class="send-card">
+  <h3>📤 Send to your teacher</h3>
+  <p>When you've finished all exercises, click the button below to email your answers to your teacher.</p>
+  <button class="btn-send" id="btnSend">Send answers →</button>
+  <div class="complete-badge" id="completeBadge">🎉 All done! Great work — your answers are ready to send.</div>
+</div>
+
+<script>
+(function () {
+  /* ─────────────────────── THEME ─────────────────────── */
+  var themeBtn = document.getElementById('themeBtn');
+  var isDark = false;
+  themeBtn.addEventListener('click', function () {
+    isDark = !isDark;
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    themeBtn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+  });
+
+  /* ─────────────────────── PROGRESS ─────────────────────── */
+  var done = { ex1: false, ex2: false, ex3: false, ex4: false };
+  function updateProgress() {
+    var n = Object.values(done).filter(Boolean).length;
+    document.getElementById('pfill').style.width = (n / 4 * 100) + '%';
+    document.getElementById('plabel').textContent = n + ' / 4 exercises checked';
+    if (n === 4) document.getElementById('completeBadge').style.display = 'block';
+  }
+
+  /* ─────────────────────── FEEDBACK ─────────────────────── */
+  function showFb(id, type, msg) {
+    var el = document.getElementById(id);
+    el.className = 'feedback ' + type;
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     EXERCISE 1 — MATCH THE HALVES
+  ══════════════════════════════════════════════════════════ */
+  var correct1 = { '1': 'd', '2': 'f', '3': 'a', '4': 'b', '5': 'c', '6': 'e' };
+  var pairs = {};
+  var selLeft = null;
+
+  document.querySelectorAll('#ex1 .match-btn[data-side="L"]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('#ex1 .match-btn[data-side="L"]').forEach(function (b) { b.classList.remove('selected'); });
+      selLeft = btn.getAttribute('data-id');
+      btn.classList.add('selected');
+    });
+  });
+
+  document.querySelectorAll('#ex1 .match-btn[data-side="R"]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (!selLeft) return;
+      var rid = btn.getAttribute('data-id');
+
+      // Remove old pairing from this left item
+      if (pairs[selLeft]) {
+        var oldR = document.querySelector('#ex1 .match-btn[data-side="R"][data-id="' + pairs[selLeft] + '"]');
+        if (oldR) {
+          oldR.classList.remove('paired');
+          document.getElementById('pb-R' + pairs[selLeft]).hidden = true;
+        }
+      }
+      // Remove any left already paired to this right
+      Object.keys(pairs).forEach(function (k) {
+        if (pairs[k] === rid && k !== selLeft) {
+          var oldL = document.querySelector('#ex1 .match-btn[data-side="L"][data-id="' + k + '"]');
+          if (oldL) oldL.classList.remove('paired');
+          document.getElementById('pb-L' + k).hidden = true;
+          delete pairs[k];
+        }
+      });
+
+      pairs[selLeft] = rid;
+      var lBtn = document.querySelector('#ex1 .match-btn[data-side="L"][data-id="' + selLeft + '"]');
+      lBtn.classList.remove('selected');
+      lBtn.classList.add('paired');
+      btn.classList.add('paired');
+
+      var badgeL = document.getElementById('pb-L' + selLeft);
+      badgeL.textContent = rid;
+      badgeL.hidden = false;
+
+      var badgeR = document.getElementById('pb-R' + rid);
+      badgeR.textContent = selLeft;
+      badgeR.hidden = false;
+
+      selLeft = null;
+    });
+  });
+
+  document.getElementById('chk1').addEventListener('click', function () {
+    var correct = 0, total = 6;
+    document.querySelectorAll('#ex1 .match-btn').forEach(function (b) {
+      b.classList.remove('correct-m', 'wrong-m');
+    });
+    Object.keys(correct1).forEach(function (lid) {
+      var lBtn = document.querySelector('#ex1 .match-btn[data-side="L"][data-id="' + lid + '"]');
+      var rBtn = pairs[lid]
+        ? document.querySelector('#ex1 .match-btn[data-side="R"][data-id="' + pairs[lid] + '"]')
+        : null;
+      var isRight = pairs[lid] === correct1[lid];
+      if (isRight) {
+        correct++;
+        if (lBtn) lBtn.classList.add('correct-m');
+        if (rBtn) rBtn.classList.add('correct-m');
+      } else {
+        if (lBtn) lBtn.classList.add('wrong-m');
+        if (rBtn) rBtn.classList.add('wrong-m');
+      }
+    });
+    document.getElementById('sc1').textContent = correct + ' / ' + total + ' correct';
+    if (correct === total) {
+      showFb('fb1', 'correct', '🎉 All matched correctly!');
+      done.ex1 = true;
+    } else {
+      showFb('fb1', 'wrong', correct + '/6 — red pairs need fixing. Tip: think about the full sentence meaning!');
+      done.ex1 = true;
+    }
+    updateProgress();
+  });
+
+  document.getElementById('rst1').addEventListener('click', function () {
+    pairs = {}; selLeft = null;
+    document.querySelectorAll('#ex1 .match-btn').forEach(function (b) {
+      b.classList.remove('selected', 'paired', 'correct-m', 'wrong-m');
+    });
+    document.querySelectorAll('#ex1 .pair-badge').forEach(function (b) { b.hidden = true; });
+    document.getElementById('fb1').style.display = 'none';
+    document.getElementById('sc1').textContent = '';
+    done.ex1 = false; updateProgress();
+  });
+
+  /* ══════════════════════════════════════════════════════════
+     EXERCISE 2 — COMPLETE THE WORDS
+  ══════════════════════════════════════════════════════════ */
+  var wordGroups = [
+    { inputs: ['w1'], fb: 'wf1' },
+    { inputs: ['w2a', 'w2b'], fb: 'wf2' },
+    { inputs: ['w3'], fb: 'wf3' },
+    { inputs: ['w4'], fb: 'wf4' },
+    { inputs: ['w5'], fb: 'wf5' }
+  ];
+
+  document.getElementById('chk2').addEventListener('click', function () {
+    var correct = 0, total = wordGroups.length;
+    wordGroups.forEach(function (grp) {
+      var allRight = grp.inputs.every(function (id) {
+        var inp = document.getElementById(id);
+        return inp.value.trim().toLowerCase() === inp.getAttribute('data-ans');
+      });
+      grp.inputs.forEach(function (id) {
+        var inp = document.getElementById(id);
+        inp.classList.remove('correct', 'wrong');
+        inp.classList.add(allRight ? 'correct' : 'wrong');
+      });
+      var fbEl = document.getElementById(grp.fb);
+      if (allRight) {
+        fbEl.textContent = '✓'; fbEl.className = 'word-fb correct'; correct++;
+      } else {
+        var ans = grp.inputs.map(function (id) { return document.getElementById(id).getAttribute('data-ans'); }).join(' ');
+        fbEl.textContent = '✗ ' + ans; fbEl.className = 'word-fb wrong';
+      }
+    });
+    document.getElementById('sc2').textContent = correct + ' / ' + total + ' correct';
+    if (correct === total) showFb('fb2', 'correct', '🎉 All words correct!');
+    else showFb('fb2', 'wrong', correct + '/5 — check the red answers above.');
+    done.ex2 = true; updateProgress();
+  });
+
+  document.getElementById('rst2').addEventListener('click', function () {
+    ['w1','w2a','w2b','w3','w4','w5'].forEach(function (id) {
+      var inp = document.getElementById(id);
+      inp.value = ''; inp.classList.remove('correct', 'wrong');
+    });
+    ['wf1','wf2','wf3','wf4','wf5'].forEach(function (id) {
+      var el = document.getElementById(id);
+      el.textContent = ''; el.className = 'word-fb';
+    });
+    document.getElementById('fb2').style.display = 'none';
+    document.getElementById('sc2').textContent = '';
+    done.ex2 = false; updateProgress();
+  });
+
+  /* ══════════════════════════════════════════════════════════
+     EXERCISE 3 — MULTIPLE CHOICE
+  ══════════════════════════════════════════════════════════ */
+  var mc = {};
+  document.querySelectorAll('#ex3 .mc-opt').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var q = btn.getAttribute('data-q');
+      document.querySelectorAll('#ex3 .mc-opt[data-q="' + q + '"]').forEach(function (b) {
+        b.classList.remove('chosen');
+      });
+      btn.classList.add('chosen');
+      mc[q] = btn.getAttribute('data-val');
+    });
+  });
+
+  document.getElementById('chk3').addEventListener('click', function () {
+    var correct = 0, total = 8;
+    for (var q = 1; q <= 8; q++) {
+      document.querySelectorAll('#ex3 .mc-opt[data-q="' + q + '"]').forEach(function (b) {
+        b.classList.remove('correct-c', 'wrong-c');
+        b.disabled = true;
+        if (b.getAttribute('data-correct') === 'true') b.classList.add('correct-c');
+        else if (b.classList.contains('chosen')) b.classList.add('wrong-c');
+      });
+      var isRight = document.querySelector('#ex3 .mc-opt[data-q="' + q + '"][data-val="' + mc[q] + '"][data-correct="true"]');
+      if (isRight) correct++;
+    }
+    document.getElementById('sc3').textContent = correct + ' / ' + total + ' correct';
+    if (correct === total) showFb('fb3', 'correct', '🎉 Perfect — all 8 correct!');
+    else showFb('fb3', 'wrong', correct + '/8 — the correct answers are highlighted in green.');
+    done.ex3 = true; updateProgress();
+  });
+
+  document.getElementById('rst3').addEventListener('click', function () {
+    mc = {};
+    document.querySelectorAll('#ex3 .mc-opt').forEach(function (b) {
+      b.classList.remove('chosen', 'correct-c', 'wrong-c');
+      b.disabled = false;
+    });
+    document.getElementById('fb3').style.display = 'none';
+    document.getElementById('sc3').textContent = '';
+    done.ex3 = false; updateProgress();
+  });
+
+  /* ══════════════════════════════════════════════════════════
+     EXERCISE 4 — GAP-FILL CONVERSATION
+  ══════════════════════════════════════════════════════════ */
+  document.getElementById('chk4').addEventListener('click', function () {
+    var correct = 0, total = 6;
+    for (var i = 1; i <= 6; i++) {
+      var sel = document.getElementById('g4-' + i);
+      sel.classList.remove('correct-s', 'wrong-s');
+      if (sel.value === sel.getAttribute('data-ans')) {
+        sel.classList.add('correct-s'); correct++;
+      } else {
+        sel.classList.add('wrong-s');
+      }
+    }
+    document.getElementById('sc4').textContent = correct + ' / ' + total + ' correct';
+    if (correct === total) showFb('fb4', 'correct', '🎉 All gaps correct — great work!');
+    else showFb('fb4', 'wrong', correct + '/6 — red gaps need fixing. Re-read the context around each gap.');
+    done.ex4 = true; updateProgress();
+  });
+
+  document.getElementById('rst4').addEventListener('click', function () {
+    for (var i = 1; i <= 6; i++) {
+      var sel = document.getElementById('g4-' + i);
+      sel.value = ''; sel.classList.remove('correct-s', 'wrong-s');
+    }
+    document.getElementById('fb4').style.display = 'none';
+    document.getElementById('sc4').textContent = '';
+    done.ex4 = false; updateProgress();
+  });
+
+  /* ══════════════════════════════════════════════════════════
+     SEND TO TEACHER
+  ══════════════════════════════════════════════════════════ */
+  document.getElementById('btnSend').addEventListener('click', function () {
+    var name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+    var lines = ['Student: ' + name, 'Lesson: A Difficult Choice – Unit 6B', ''];
+
+    // Ex1
+    lines.push('=== Exercise 1: Match the sentence halves ===');
+    [1,2,3,4,5,6].forEach(function(n) {
+      lines.push(n + ' → ' + (pairs[String(n)] || '(not answered)') + (pairs[String(n)] === correct1[String(n)] ? ' ✓' : ' ✗'));
+    });
+    lines.push('');
+
+    // Ex2
+    lines.push('=== Exercise 2: Complete the missing words ===');
+    var w2labels = ['1. (rude)','2. (the law)','3. (illegal)','4. (dishonest)','5. (fair)'];
+    var w2ids = [['w1'],['w2a','w2b'],['w3'],['w4'],['w5']];
+    w2ids.forEach(function(grp, i) {
+      var ans = grp.map(function(id){ return document.getElementById(id).value.trim() || '—'; }).join(' ');
+      var correct = grp.every(function(id){ var el = document.getElementById(id); return el.value.trim().toLowerCase() === el.getAttribute('data-ans'); });
+      lines.push((i+1) + '. ' + ans + (correct ? ' ✓' : ' ✗'));
+    });
+    lines.push('');
+
+    // Ex3
+    lines.push('=== Exercise 3: Choose the correct alternative ===');
+    for (var q = 1; q <= 8; q++) {
+      var chosen = mc[String(q)] || '—';
+      var isCorr = document.querySelector('#ex3 .mc-opt[data-q="' + q + '"][data-val="' + chosen + '"][data-correct="true"]');
+      lines.push(q + '. Chose: ' + chosen + (isCorr ? ' ✓' : ' ✗'));
+    }
+    lines.push('');
+
+    // Ex4
+    lines.push('=== Exercise 4: Complete the conversation ===');
+    var ex4ans = ['What do you think I should do?','If I were you','I think you should','I ought to','You shouldn\'t','So what should'];
+    for (var j = 1; j <= 6; j++) {
+      var sel = document.getElementById('g4-' + j);
+      var val = sel.value || '(not answered)';
+      lines.push(j + '. ' + val + (val === sel.getAttribute('data-ans') ? ' ✓' : ' ✗'));
+    }
+
+    var body = encodeURIComponent(lines.join('\n'));
+    var subject = encodeURIComponent('Homework – ' + name + ' – A Difficult Choice (Unit 6B)');
+    window.location.href = 'mailto:daryaaa2028@gmail.com?subject=' + subject + '&body=' + body;
+  });
+
+})();
+</script>
