@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Guilty Pleasures — Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap">
+<style>
+/* ── TOKENS ───────────────────────────────────────── */
+:root {
+  --bg:      #f5f4f0;
+  --surf:    #ffffff;
+  --surf2:   #efecea;
+  --text:    #191815;
+  --muted:   #78746e;
+  --border:  #dedad4;
+  --ok:      #27b085;
+  --ok-d:    rgba(39,176,133,.12);
+  --err:     #dc4f4f;
+  --err-d:   rgba(220,79,79,.11);
+  --amber:   #e09818;
+  --amber-d: rgba(224,152,24,.13);
+  --teal:    #2ec0b8;
+  --teal-d:  rgba(46,192,184,.12);
+  --r:       14px;
+  --rs:      8px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:     #17161a;
+    --surf:   #222028;
+    --surf2:  #1c1b21;
+    --text:   #eeeae4;
+    --muted:  #8c887f;
+    --border: #353240;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:     #17161a;
+  --surf:   #222028;
+  --surf2:  #1c1b21;
+  --text:   #eeeae4;
+  --muted:  #8c887f;
+  --border: #353240;
+  color-scheme: dark;
+}
+
+/* ── RESET ────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'DM Sans',sans-serif;
+  font-size:16px;line-height:1.7;
+  background:var(--bg);color:var(--text);
+  padding-block:0 max(env(safe-area-inset-bottom,0px),32px);
+  padding-inline:16px;
+}
+
+/* ── HEADER ───────────────────────────────────────── */
+.hw-header{
+  background:linear-gradient(140deg,#1c1a24 0%,#2d2840 100%);
+  color:#fff;
+  margin-inline:-16px;
+  padding:40px 28px 34px;
+  position:relative;
+}
+.hw-eyebrow{
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:var(--amber);margin-bottom:12px;
+}
+.hw-header h1{
+  font-family:'Syne',sans-serif;font-size:clamp(26px,5vw,38px);
+  font-weight:800;line-height:1.1;text-wrap:balance;margin-bottom:8px;
+}
+.hw-subtitle{color:rgba(255,255,255,.5);font-size:14px;font-weight:500}
+.theme-btn{
+  position:absolute;top:20px;right:20px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;padding:5px 14px;color:rgba(255,255,255,.75);
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;transition:background .18s;
+}
+.theme-btn:hover{background:rgba(255,255,255,.16)}
+
+/* ── NAME BAR ─────────────────────────────────────── */
+.name-bar{
+  position:sticky;top:0;z-index:10;
+  background:var(--surf);border-bottom:1px solid var(--border);
+  padding:10px 16px;display:flex;align-items:center;gap:12px;
+  margin-inline:-16px;
+}
+.name-bar label{font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.name-bar input{
+  flex:1;min-width:0;border:1.5px solid var(--border);border-radius:var(--rs);
+  padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:14px;
+  background:var(--bg);color:var(--text);outline:none;transition:border-color .18s;
+}
+.name-bar input:focus{border-color:var(--amber)}
+
+/* ── PROGRESS ─────────────────────────────────────── */
+.progress-wrap{
+  margin:18px 0 22px;padding:14px 18px;
+  background:var(--surf);border:1px solid var(--border);border-radius:var(--r);
+}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.progress-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.progress-count{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--amber)}
+.progress-track{height:7px;background:var(--surf2);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--teal));border-radius:4px;transition:width .4s ease;width:0%}
+
+/* ── EXERCISE CARD ────────────────────────────────── */
+.ex-card{
+  background:var(--surf);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;margin-bottom:20px;
+}
+.ex-hd{
+  padding:18px 22px 14px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+}
+.ex-num{
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;
+  background:var(--amber-d);color:var(--amber);
+  padding:3px 11px;border-radius:20px;white-space:nowrap;flex-shrink:0;
+}
+.ex-hd h2{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;line-height:1.3}
+.ex-instr{
+  padding:13px 22px;font-size:14px;color:var(--muted);font-weight:500;
+  border-bottom:1px solid var(--border);font-style:italic;line-height:1.5;
+}
+.ex-body{padding:20px 22px}
+
+/* ── MCQ ──────────────────────────────────────────── */
+.mcq-opts{display:flex;flex-direction:column;gap:10px}
+.mcq-btn{
+  width:100%;padding:13px 18px;
+  border:1.5px solid var(--border);border-radius:var(--rs);
+  background:var(--surf2);color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;
+  cursor:pointer;transition:all .18s;text-align:left;
+  display:flex;align-items:center;gap:12px;
+}
+.mcq-btn:hover:not([disabled]){border-color:var(--amber);background:var(--amber-d)}
+.mcq-opt-letter{
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:800;
+  color:var(--muted);min-width:18px;
+}
+.mcq-btn.correct{background:var(--ok-d);border-color:var(--ok);color:var(--ok);font-weight:600}
+.mcq-btn.correct .mcq-opt-letter{color:var(--ok)}
+.mcq-btn.wrong{background:var(--err-d);border-color:var(--err);color:var(--err)}
+.mcq-btn[disabled]{cursor:default}
+
+/* ── READING SECTION ──────────────────────────────── */
+.reading-card{
+  background:var(--surf);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;margin-bottom:20px;
+}
+.reading-hd{
+  padding:16px 22px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  cursor:pointer;user-select:none;
+}
+.reading-hd-left{display:flex;align-items:center;gap:12px}
+.reading-tag{
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;
+  background:var(--teal-d);color:var(--teal);
+  padding:3px 11px;border-radius:20px;flex-shrink:0;
+}
+.reading-hd h2{font-family:'Syne',sans-serif;font-size:15px;font-weight:700}
+.reading-toggle{
+  font-size:12px;color:var(--muted);font-weight:600;
+  background:var(--surf2);border:1px solid var(--border);
+  padding:4px 13px;border-radius:20px;white-space:nowrap;
+  transition:all .18s;flex-shrink:0;
+}
+.reading-hd:hover .reading-toggle{border-color:var(--teal);color:var(--teal)}
+.reading-body{display:none;padding:20px 22px 24px}
+.reading-body.open{display:block;animation:fadeUp .22s ease}
+
+.forum-intro{
+  font-size:14px;color:var(--muted);font-style:italic;
+  margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);
+}
+.forum-post{
+  padding:13px 16px;border-radius:var(--rs);
+  margin-bottom:9px;background:var(--surf2);
+}
+.forum-post.main-post{
+  background:color-mix(in srgb,var(--teal) 8%,var(--surf));
+  border-left:3px solid var(--teal);
+}
+.forum-author{
+  font-family:'Syne',sans-serif;font-size:13px;font-weight:800;
+  margin-bottom:5px;display:flex;align-items:center;gap:8px;color:var(--text);
+}
+.forum-letter{
+  width:22px;height:22px;border-radius:5px;
+  background:var(--teal);color:#fff;
+  font-size:11px;font-weight:800;
+  display:inline-flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.forum-post.main-post .forum-letter{background:var(--amber)}
+.forum-text{
+  font-size:15px;line-height:1.75;color:var(--text);
+  font-weight:400;
+}
+.forum-subpost{
+  margin-left:20px;padding:11px 16px;
+  background:var(--surf);border:1px solid var(--border);
+  border-radius:var(--rs);margin-bottom:9px;
+}
+.forum-subpost .forum-letter{
+  background:var(--surf2);color:var(--muted);
+  border:1px solid var(--border);
+}
+
+/* ── WRITER-ID GAP-FILL ───────────────────────────── */
+.wid-item{
+  display:flex;align-items:baseline;gap:10px;
+  padding:13px 0;border-bottom:1px solid var(--border);
+  font-size:15px;line-height:1.6;
+}
+.wid-item:last-child{border-bottom:none}
+.wid-num{
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:800;
+  color:var(--amber);min-width:22px;flex-shrink:0;margin-top:1px;
+}
+.wid-q{flex:1}
+.wid-inputs{display:flex;gap:6px;flex-shrink:0}
+.wid-input{
+  border:none;border-bottom:2px solid var(--border);
+  background:transparent;color:var(--text);
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:700;
+  text-align:center;width:34px;padding:2px 4px;
+  outline:none;transition:border-color .18s;text-transform:lowercase;
+}
+.wid-input:focus{border-color:var(--amber)}
+.wid-input.correct{border-color:var(--ok);color:var(--ok)}
+.wid-input.wrong{border-color:var(--err);color:var(--err)}
+.wid-ans{font-size:12px;font-weight:700;color:var(--ok);margin-left:4px;display:none;white-space:nowrap}
+.wid-ans.show{display:inline}
+
+/* ── T/F ──────────────────────────────────────────── */
+.tf-item{
+  padding:13px 0;border-bottom:1px solid var(--border);
+  display:flex;flex-direction:column;gap:10px;
+}
+.tf-item:last-child{border-bottom:none}
+.tf-stmt{font-size:15px;line-height:1.65;display:flex;gap:10px;align-items:flex-start}
+.tf-num{font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:var(--teal);min-width:22px;flex-shrink:0;margin-top:3px}
+.tf-btns{display:flex;gap:8px;padding-left:32px}
+.tf-btn{
+  padding:7px 26px;border:1.5px solid var(--border);border-radius:var(--rs);
+  background:var(--surf2);color:var(--text);
+  font-family:'Syne',sans-serif;font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .18s;
+}
+.tf-btn:hover:not([disabled]){border-color:var(--teal);background:var(--teal-d)}
+.tf-btn.correct{background:var(--ok-d);border-color:var(--ok);color:var(--ok)}
+.tf-btn.wrong{background:var(--err-d);border-color:var(--err);color:var(--err)}
+.tf-btn.reveal{border-color:var(--ok);color:var(--ok);background:var(--ok-d)}
+.tf-btn[disabled]{cursor:default}
+.tf-correction{
+  font-size:13px;color:var(--ok);font-style:italic;padding-left:32px;
+  display:none;font-weight:600;line-height:1.5;
+}
+.tf-correction.show{display:block}
+
+/* ── BUTTONS ROW ──────────────────────────────────── */
+.btn-row{
+  display:flex;gap:10px;flex-wrap:wrap;padding:0 22px 22px;
+}
+.btn{
+  padding:10px 24px;border-radius:var(--rs);border:none;
+  font-family:'Syne',sans-serif;font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .18s;
+}
+.btn-check{background:var(--amber);color:#fff}
+.btn-check:hover{filter:brightness(1.08)}
+.btn-reset{background:var(--surf2);color:var(--muted);border:1.5px solid var(--border)}
+.btn-reset:hover{border-color:var(--err);color:var(--err)}
+
+/* ── SEND CARD ────────────────────────────────────── */
+.send-card{
+  background:linear-gradient(135deg,var(--teal-d),var(--amber-d));
+  border:1.5px solid var(--teal);border-radius:var(--r);
+  padding:30px 24px;text-align:center;margin-bottom:36px;
+}
+.send-card h3{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;margin-bottom:8px}
+.send-card p{font-size:14px;color:var(--muted);margin-bottom:22px;max-width:360px;margin-inline:auto;line-height:1.6}
+.btn-send{
+  background:var(--teal);color:#fff;
+  padding:13px 34px;border-radius:var(--rs);border:none;
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;transition:filter .18s;
+}
+.btn-send:hover{filter:brightness(1.1)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hw-header">
+  <button class="theme-btn" onclick="toggleTheme()">🌙 Theme</button>
+  <div class="hw-eyebrow">Homework · Unit 6</div>
+  <h1>Guilty Pleasures</h1>
+  <div class="hw-subtitle">Reading comprehension · Vocabulary in context</div>
+</header>
+
+<!-- NAME BAR -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-top">
+    <span class="progress-label">Exercises done</span>
+    <span class="progress-count" id="plabel">0 / 3</span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+</div>
+
+
+<!-- ══ EX 1 ═══════════════════════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 1</span>
+    <h2>Read the forum quickly. What do you think a guilty pleasure is?</h2>
+  </div>
+  <div class="ex-instr">Choose the best definition — a, b, or c.</div>
+  <div class="ex-body">
+    <div class="mcq-opts">
+      <button class="mcq-btn" data-opt="a" onclick="answerMCQ(this)">
+        <span class="mcq-opt-letter">a</span> Something you love to hate
+      </button>
+      <button class="mcq-btn" data-opt="b" onclick="answerMCQ(this)">
+        <span class="mcq-opt-letter">b</span> Something you do that no one else does
+      </button>
+      <button class="mcq-btn" data-opt="c" onclick="answerMCQ(this)">
+        <span class="mcq-opt-letter">c</span> Something you enjoy but feel bad about
+      </button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-reset" onclick="resetMCQ()">Reset</button>
+  </div>
+</div>
+
+
+<!-- ══ READING TEXT ════════════════════════════════════════════ -->
+<div class="reading-card">
+  <div class="reading-hd" onclick="toggleReading()">
+    <div class="reading-hd-left">
+      <span class="reading-tag">Read</span>
+      <h2>What are your guilty pleasures?</h2>
+    </div>
+    <span class="reading-toggle" id="readToggle">Show text ▾</span>
+  </div>
+  <div class="reading-body" id="readingBody">
+    <p class="forum-intro">Read the forum posts below. You'll need them for Exercises 2 and 3.</p>
+
+    <div class="forum-post main-post">
+      <div class="forum-author"><span class="forum-letter">a</span> Brittany</div>
+      <p class="forum-text">I've just spent all afternoon watching a box set while still wearing my pyjamas. I've had three cups of tea and eaten an entire week's worth of biscuits and later, I'm going to order a takeaway because I can't be bothered to cook. That's a lot of guilty pleasures in one day but I just don't care. What guilty pleasures do you enjoy?</p>
+    </div>
+
+    <div class="forum-subpost">
+      <div class="forum-author"><span class="forum-letter">b</span> Markus</div>
+      <p class="forum-text">Your afternoon sounds great. Add in falling asleep in front of the TV and it'd be absolutely perfect!</p>
+    </div>
+
+    <div class="forum-subpost">
+      <div class="forum-author"><span class="forum-letter">c</span> Geo</div>
+      <p class="forum-text">Our problem with ordering a takeaway is that we order enough for a small army and then either stuff our faces with it until we feel sick, or we throw some away. First the pleasure, then the guilt.</p>
+    </div>
+
+    <div class="forum-post main-post">
+      <div class="forum-author"><span class="forum-letter">d</span> Chris</div>
+      <p class="forum-text">I have a habit of eating that well-known hazelnut spread out of the jar with a teaspoon. I know I shouldn't but I just can't seem to help myself.</p>
+    </div>
+
+    <div class="forum-subpost">
+      <div class="forum-author"><span class="forum-letter">e</span> Doug</div>
+      <p class="forum-text">My flatmate hates it when I do that so I've started using a dessert spoon just to irritate him. I make sure I get every last bit out of the jar, too. Don't want to miss out on any little bit.</p>
+    </div>
+
+    <div class="forum-subpost">
+      <div class="forum-author"><span class="forum-letter">f</span> Kat</div>
+      <p class="forum-text">I put it on top of ice cream. One spoonful is enough but it's the tastiest thing ever.</p>
+    </div>
+
+    <div class="forum-subpost">
+      <div class="forum-author"><span class="forum-letter">g</span> Rik</div>
+      <p class="forum-text">I secretly bring chocolate into the house so no one knows I have it. Then, I find a quiet corner and eat the whole lot. I don't feel bad about it. I tell myself that I'm saving my family from unnecessary calories.</p>
+    </div>
+
+    <div class="forum-post main-post">
+      <div class="forum-author"><span class="forum-letter">h</span> Andrew</div>
+      <p class="forum-text">Looking through people's photos online is definitely something I do and feel guilty about. I'm not really sure it's a pleasure, though. More like a depressing habit I've started and can't break.</p>
+    </div>
+
+    <div class="forum-subpost">
+      <div class="forum-author"><span class="forum-letter">i</span> Nick</div>
+      <p class="forum-text">Taking a hundred selfies to find one good one must be the guilty pleasure of an entire generation, or so I've heard.</p>
+    </div>
+
+    <div class="forum-subpost">
+      <div class="forum-author"><span class="forum-letter">j</span> Samera</div>
+      <p class="forum-text">I'm not sure this is much fun either.</p>
+    </div>
+
+    <div class="forum-post main-post">
+      <div class="forum-author"><span class="forum-letter">k</span> Paul</div>
+      <p class="forum-text">My wife insists she's right about pretty much everything, so when I prove her wrong, I make sure I fully enjoy it. Don't get me wrong, I love her very much but it's good to keep her feet on the ground every now and then.</p>
+    </div>
+
+    <div class="forum-subpost">
+      <div class="forum-author"><span class="forum-letter">l</span> Silvie</div>
+      <p class="forum-text">Ha ha! I was drinking some tea when I read this and it came out my nose! In my case, it's my brother who I like to prove wrong.</p>
+    </div>
+
+    <div class="forum-post main-post">
+      <div class="forum-author"><span class="forum-letter">m</span> Bradley</div>
+      <p class="forum-text">I recently called in sick at work even though I wasn't. I'm not proud of it, but I felt I was owed it with all the extra hours I do and the fact that I'm rarely actually sick. I just chilled out at home reading, eating and sleeping while the kids were at school. Bliss.</p>
+    </div>
+
+    <div class="forum-subpost">
+      <div class="forum-author"><span class="forum-letter">n</span> Lilia</div>
+      <p class="forum-text">My friend took a day off sick and went to a cricket match. He appeared on TV, the boss's wife caught sight of him and he lost his job! I have a few guilty pleasures as a parent. One is eating chocolate and sweets from the kids' sweetie drawer. Another is pretending I think computer games are bad but then I play their games when they're in bed.</p>
+    </div>
+
+    <div class="forum-post main-post">
+      <div class="forum-author"><span class="forum-letter">o</span> Fran</div>
+      <p class="forum-text">I watch my daughter's Disney films even when she's at play school and I'm alone in the house. They're strangely comforting. I guess they remind me of when I was a child and life was simpler and less confusing.</p>
+    </div>
+
+    <div class="forum-post main-post">
+      <div class="forum-author"><span class="forum-letter">p</span> Mynameismybusiness</div>
+      <p class="forum-text">Listening to Trevor Doonican's Greatest Hits from the 1960s. I know what you think – that I'm an elderly woman – but I'm actually a 31-year-old male. It reminds me of my grandma, OK?!</p>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══ EX 2 ═══════════════════════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 2</span>
+    <h2>Read the article again. Which writer(s) (a–p)…</h2>
+  </div>
+  <div class="ex-instr">Write the letter(s) next to each question. Some questions have more than one answer.</div>
+  <div class="ex-body">
+
+    <div class="wid-item">
+      <span class="wid-num">1</span>
+      <span class="wid-q">tries to find out about people by looking at their pictures?</span>
+      <span class="wid-inputs">
+        <input class="wid-input" data-ans="h" maxlength="1" placeholder="__">
+        <span class="wid-ans" id="wa-1">→ h</span>
+      </span>
+    </div>
+
+    <div class="wid-item">
+      <span class="wid-num">2</span>
+      <span class="wid-q">admits having unusual taste in music?</span>
+      <span class="wid-inputs">
+        <input class="wid-input" data-ans="p" maxlength="1" placeholder="__">
+        <span class="wid-ans" id="wa-2">→ p</span>
+      </span>
+    </div>
+
+    <div class="wid-item">
+      <span class="wid-num">3</span>
+      <span class="wid-q">like to correct someone?</span>
+      <span class="wid-inputs">
+        <input class="wid-input" data-ans="k" maxlength="1" placeholder="__">
+        <input class="wid-input" data-ans="l" maxlength="1" placeholder="__">
+        <span class="wid-ans" id="wa-3">→ k, l</span>
+      </span>
+    </div>
+
+    <div class="wid-item">
+      <span class="wid-num">4</span>
+      <span class="wid-q">knows someone who got into trouble for something?</span>
+      <span class="wid-inputs">
+        <input class="wid-input" data-ans="n" maxlength="1" placeholder="__">
+        <span class="wid-ans" id="wa-4">→ n</span>
+      </span>
+    </div>
+
+    <div class="wid-item">
+      <span class="wid-num">5</span>
+      <span class="wid-q">avoids sharing something with others?</span>
+      <span class="wid-inputs">
+        <input class="wid-input" data-ans="g" maxlength="1" placeholder="__">
+        <span class="wid-ans" id="wa-5">→ g</span>
+      </span>
+    </div>
+
+    <div class="wid-item">
+      <span class="wid-num">6</span>
+      <span class="wid-q">feels bad about wasting something?</span>
+      <span class="wid-inputs">
+        <input class="wid-input" data-ans="c" maxlength="1" placeholder="__">
+        <span class="wid-ans" id="wa-6">→ c</span>
+      </span>
+    </div>
+
+    <div class="wid-item">
+      <span class="wid-num">7</span>
+      <span class="wid-q">use items that belong to their children?</span>
+      <span class="wid-inputs">
+        <input class="wid-input" data-ans="n" maxlength="1" placeholder="__">
+        <input class="wid-input" data-ans="o" maxlength="1" placeholder="__">
+        <span class="wid-ans" id="wa-7">→ n, o</span>
+      </span>
+    </div>
+
+    <div class="wid-item">
+      <span class="wid-num">8</span>
+      <span class="wid-q">describe a day where they lazed around at home?</span>
+      <span class="wid-inputs">
+        <input class="wid-input" data-ans="a" maxlength="1" placeholder="__">
+        <input class="wid-input" data-ans="m" maxlength="1" placeholder="__">
+        <span class="wid-ans" id="wa-8">→ a, m</span>
+      </span>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkWID()">Check</button>
+    <button class="btn btn-reset" onclick="resetWID()">Reset</button>
+  </div>
+</div>
+
+
+<!-- ══ EX 3 ═══════════════════════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 3</span>
+    <h2>Read the article again. Are the sentences true (T) or false (F)?</h2>
+  </div>
+  <div class="ex-instr">Choose T or F. If the sentence is false, find the correct information in the text.</div>
+  <div class="ex-body">
+
+    <div class="tf-item" data-correct="T">
+      <div class="tf-stmt"><span class="tf-num">1</span><span>Brittany is fine about having so many guilty pleasures in one day.</span></div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="answerTF(this,1,'T')">T</button>
+        <button class="tf-btn" onclick="answerTF(this,1,'F')">F</button>
+      </div>
+      <div class="tf-correction" id="tc-1">✓ True — she says "I just don't care."</div>
+    </div>
+
+    <div class="tf-item" data-correct="F">
+      <div class="tf-stmt"><span class="tf-num">2</span><span>Markus says that Brittany's exact day is perfect for him.</span></div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="answerTF(this,2,'T')">T</button>
+        <button class="tf-btn" onclick="answerTF(this,2,'F')">F</button>
+      </div>
+      <div class="tf-correction" id="tc-2">✗ False — he would add falling asleep in front of the TV to make it perfect.</div>
+    </div>
+
+    <div class="tf-item" data-correct="F">
+      <div class="tf-stmt"><span class="tf-num">3</span><span>Chris thinks there's nothing wrong with his habit.</span></div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="answerTF(this,3,'T')">T</button>
+        <button class="tf-btn" onclick="answerTF(this,3,'F')">F</button>
+      </div>
+      <div class="tf-correction" id="tc-3">✗ False — he says "I know I shouldn't."</div>
+    </div>
+
+    <div class="tf-item" data-correct="T">
+      <div class="tf-stmt"><span class="tf-num">4</span><span>Rik makes excuses to himself about his behaviour.</span></div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="answerTF(this,4,'T')">T</button>
+        <button class="tf-btn" onclick="answerTF(this,4,'F')">F</button>
+      </div>
+      <div class="tf-correction" id="tc-4">✓ True — he tells himself he's "saving his family from unnecessary calories."</div>
+    </div>
+
+    <div class="tf-item" data-correct="F">
+      <div class="tf-stmt"><span class="tf-num">5</span><span>Andrew enjoys the action he describes.</span></div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="answerTF(this,5,'T')">T</button>
+        <button class="tf-btn" onclick="answerTF(this,5,'F')">F</button>
+      </div>
+      <div class="tf-correction" id="tc-5">✗ False — he says "I'm not really sure it's a pleasure."</div>
+    </div>
+
+    <div class="tf-item" data-correct="F">
+      <div class="tf-stmt"><span class="tf-num">6</span><span>Nick admits that he takes too many photos of himself.</span></div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="answerTF(this,6,'T')">T</button>
+        <button class="tf-btn" onclick="answerTF(this,6,'F')">F</button>
+      </div>
+      <div class="tf-correction" id="tc-6">✗ False — he's talking about his whole generation in general, not himself.</div>
+    </div>
+
+    <div class="tf-item" data-correct="T">
+      <div class="tf-stmt"><span class="tf-num">7</span><span>Bradley feels that he deserved a break.</span></div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="answerTF(this,7,'T')">T</button>
+        <button class="tf-btn" onclick="answerTF(this,7,'F')">F</button>
+      </div>
+      <div class="tf-correction" id="tc-7">✓ True — he says he "felt he was owed it."</div>
+    </div>
+
+    <div class="tf-item" data-correct="F">
+      <div class="tf-stmt"><span class="tf-num">8</span><span>Certain films remind Fran of her daughter's childhood.</span></div>
+      <div class="tf-btns">
+        <button class="tf-btn" onclick="answerTF(this,8,'T')">T</button>
+        <button class="tf-btn" onclick="answerTF(this,8,'F')">F</button>
+      </div>
+      <div class="tf-correction" id="tc-8">✗ False — they remind her of her OWN childhood, not her daughter's.</div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkTF()">Check</button>
+    <button class="btn btn-reset" onclick="resetTF()">Reset</button>
+  </div>
+</div>
+
+
+<!-- ══ SEND TO TEACHER ════════════════════════════════════════ -->
+<div class="send-card">
+  <h3>📬 Send to your teacher</h3>
+  <p>Finished? Click below to email your answers.</p>
+  <button class="btn-send" onclick="sendToTeacher()">Send to Teacher</button>
+</div>
+
+
+<script>
+// ── READING TOGGLE ─────────────────────────────────
+function toggleReading() {
+  const body = document.getElementById('readingBody');
+  const btn  = document.getElementById('readToggle');
+  body.classList.toggle('open');
+  btn.textContent = body.classList.contains('open') ? 'Hide text ▴' : 'Show text ▾';
+}
+
+// ── THEME ──────────────────────────────────────────
+function toggleTheme() {
+  const r = document.documentElement;
+  const cur = r.getAttribute('data-theme');
+  if (!cur) {
+    r.setAttribute('data-theme', window.matchMedia('(prefers-color-scheme:dark)').matches ? 'light' : 'dark');
+  } else {
+    r.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+  }
+}
+
+// ── PROGRESS ───────────────────────────────────────
+const done = { ex1: false, ex2: false, ex3: false };
+function updateProgress() {
+  const n = Object.values(done).filter(Boolean).length;
+  document.getElementById('pfill').style.width = (n / 3 * 100) + '%';
+  document.getElementById('plabel').textContent = n + ' / 3';
+}
+
+// ── EX 1 — MCQ ────────────────────────────────────
+let mcqAnswered = false;
+function answerMCQ(btn) {
+  if (mcqAnswered) return;
+  mcqAnswered = true;
+  document.querySelectorAll('.mcq-btn').forEach(b => {
+    b.disabled = true;
+    if (b.dataset.opt === 'c') b.classList.add('correct');
+    else if (b === btn) b.classList.add('wrong');
+  });
+  done.ex1 = true; updateProgress();
+}
+function resetMCQ() {
+  mcqAnswered = false;
+  document.querySelectorAll('.mcq-btn').forEach(b => {
+    b.disabled = false; b.className = 'mcq-btn';
+  });
+  done.ex1 = false; updateProgress();
+}
+
+// ── EX 2 — WRITER ID ──────────────────────────────
+function checkWID() {
+  const items = document.querySelectorAll('.wid-item');
+  items.forEach((item, idx) => {
+    const inputs = item.querySelectorAll('.wid-input');
+    const ans = item.querySelector('.wid-ans');
+    let allCorrect = true;
+    inputs.forEach(inp => {
+      const val = inp.value.trim().toLowerCase();
+      const expected = inp.dataset.ans.toLowerCase();
+      inp.classList.remove('correct','wrong');
+      if (!val) { inp.classList.add('wrong'); allCorrect = false; return; }
+      if (val === expected) inp.classList.add('correct');
+      else { inp.classList.add('wrong'); allCorrect = false; }
+      inp.disabled = true;
+    });
+    if (!allCorrect && ans) ans.classList.add('show');
+  });
+  done.ex2 = true; updateProgress();
+}
+function resetWID() {
+  document.querySelectorAll('.wid-input').forEach(inp => {
+    inp.value=''; inp.disabled=false;
+    inp.classList.remove('correct','wrong');
+  });
+  document.querySelectorAll('.wid-ans').forEach(a => a.classList.remove('show'));
+  done.ex2 = false; updateProgress();
+}
+
+// ── EX 3 — T/F ────────────────────────────────────
+const tfAnswered = {};
+function answerTF(btn, q, chosen) {
+  if (tfAnswered[q]) return;
+  tfAnswered[q] = chosen;
+  const item = btn.closest('.tf-item');
+  const correct = item.dataset.correct;
+  item.querySelectorAll('.tf-btn').forEach(b => b.disabled = true);
+  const correction = document.getElementById('tc-' + q);
+  if (chosen === correct) {
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    item.querySelectorAll('.tf-btn').forEach(b => {
+      if (b.textContent.trim() === correct) b.classList.add('reveal');
+    });
+  }
+  if (correction) correction.classList.add('show');
+}
+function checkTF() {
+  document.querySelectorAll('.tf-item').forEach((item, i) => {
+    const q = i + 1;
+    if (!tfAnswered[q]) {
+      const correct = item.dataset.correct;
+      item.querySelectorAll('.tf-btn').forEach(b => {
+        b.disabled = true;
+        if (b.textContent.trim() === correct) b.classList.add('reveal');
+      });
+      const correction = document.getElementById('tc-' + q);
+      if (correction) correction.classList.add('show');
+      tfAnswered[q] = '?';
+    }
+  });
+  done.ex3 = true; updateProgress();
+}
+function resetTF() {
+  Object.keys(tfAnswered).forEach(k => delete tfAnswered[k]);
+  document.querySelectorAll('.tf-btn').forEach(b => {
+    b.disabled = false; b.className = 'tf-btn';
+  });
+  document.querySelectorAll('.tf-correction').forEach(d => d.classList.remove('show'));
+  done.ex3 = false; updateProgress();
+}
+
+// ── SEND TO TEACHER ────────────────────────────────
+function sendToTeacher() {
+  const name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+  // Ex 1
+  const mcqPicked = document.querySelector('.mcq-btn.correct, .mcq-btn.wrong');
+  const ex1ans = mcqPicked
+    ? mcqPicked.textContent.trim() + (mcqPicked.classList.contains('correct') ? ' ✓' : ' ✗')
+    : '(not answered)';
+
+  // Ex 2
+  const widLines = [];
+  document.querySelectorAll('.wid-item').forEach((item, i) => {
+    const vals = Array.from(item.querySelectorAll('.wid-input'))
+      .map(inp => inp.value.trim() || '_').join(', ');
+    const corrects = Array.from(item.querySelectorAll('.wid-input'))
+      .every(inp => inp.classList.contains('correct'));
+    widLines.push(`  ${i+1}. ${vals} ${corrects ? '✓' : '✗'}`);
+  });
+
+  // Ex 3
+  const tfLines = [];
+  document.querySelectorAll('.tf-item').forEach((item, i) => {
+    const q = i + 1;
+    const stmt = item.querySelector('.tf-stmt span:last-child').textContent.trim();
+    const ans = tfAnswered[q] || '(not answered)';
+    const correct = item.dataset.correct;
+    const mark = ans === correct ? '✓' : '✗';
+    tfLines.push(`  ${q}. ${stmt}\n     Answer: ${ans} ${mark}`);
+  });
+
+  const body =
+`Student: ${name}
+Unit 6 Homework — Guilty Pleasures
+
+━━━ Exercise 1: Definition ━━━
+${ex1ans}
+
+━━━ Exercise 2: Which writer(s)? ━━━
+${widLines.join('\n')}
+
+━━━ Exercise 3: True or False? ━━━
+${tfLines.join('\n')}
+`;
+
+  const subject = encodeURIComponent(`Homework – ${name} – Unit 6 Guilty Pleasures`);
+  window.location.href = `mailto:daryaaa2028@gmail.com?subject=${subject}&body=${encodeURIComponent(body)}`;
+}
+</script>
+</body>
+</html>
