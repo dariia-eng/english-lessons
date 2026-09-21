@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 10C – My Plans</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* === TOKENS === */
+:root {
+  --hero: #4a0e0e;
+  --hero-text: #f5e6e6;
+  --accent: #c8781a;
+  --accent-light: #fdf0e0;
+  --accent-dark: #9a5c12;
+  --bg: #faf8f6;
+  --surface: #ffffff;
+  --surface2: #f4f1ee;
+  --border: #e2d8d0;
+  --text: #2c1f1a;
+  --text-muted: #7a6560;
+  --green: #2e7d32;
+  --green-light: #e8f5e9;
+  --red: #c62828;
+  --red-light: #ffebee;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --hero: #380a0a;
+    --bg: #1a1210;
+    --surface: #241a18;
+    --surface2: #2e2220;
+    --border: #4a3530;
+    --text: #f0e6e0;
+    --text-muted: #a08880;
+    --green-light: #1a3320;
+    --red-light: #3a1010;
+    --accent-light: #3a2010;
+  }
+}
+:root[data-theme="dark"] {
+  --hero: #380a0a;
+  --bg: #1a1210;
+  --surface: #241a18;
+  --surface2: #2e2220;
+  --border: #4a3530;
+  --text: #f0e6e0;
+  --text-muted: #a08880;
+  --green-light: #1a3320;
+  --red-light: #3a1010;
+  --accent-light: #3a2010;
+}
+
+/* === RESET === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  padding-inline: 16px;
+}
+
+/* === HERO === */
+.hero {
+  background: var(--hero);
+  color: var(--hero-text);
+  padding: 52px 24px 44px;
+  margin-inline: -16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 30%, rgba(200,120,26,0.18) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 6vw, 3.2rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 10px;
+  text-wrap: balance;
+}
+.hero-sub {
+  font-size: 1rem;
+  opacity: 0.75;
+  font-style: italic;
+}
+.hero-tags {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.hero-tag {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--hero-text);
+}
+.theme-toggle {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: var(--hero-text);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.28); }
+
+/* === STAGE NAV === */
+.stage-nav {
+  display: flex;
+  gap: 8px;
+  padding: 16px 0 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-wrap: wrap;
+}
+.stage-nav::-webkit-scrollbar { display: none; }
+.stage-pill {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+.stage-pill:hover { background: var(--accent-light); color: var(--accent); }
+
+/* === STAGE SECTIONS === */
+.stage { margin-bottom: 52px; }
+.stage-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+}
+.stage-badge {
+  background: var(--hero);
+  color: var(--hero-text);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.stage-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* === EXERCISE CARDS === */
+.ex-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.ex-hd {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--hero);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ex-num {
+  background: var(--accent);
+  color: white;
+  min-width: 28px; height: 28px;
+  border-radius: 14px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  padding: 0 6px;
+}
+.ex-instr {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+/* === SEASON CARDS === */
+.season-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.season-card {
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 12px 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s;
+  user-select: none;
+  position: relative;
+}
+.season-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.season-card.revealed { border-color: var(--green); background: var(--green-light); }
+.season-emoji { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+.season-photo-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.season-reveal {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.3s;
+  font-size: 0.85rem;
+}
+.season-card.revealed .season-reveal { max-height: 60px; opacity: 1; }
+.season-hint {
+  position: absolute;
+  bottom: 5px; right: 8px;
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.season-card.revealed .season-hint { display: none; }
+
+/* === INFO / GRAMMAR BOXES === */
+.info-box {
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+.info-box h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  color: var(--accent-dark);
+  margin-bottom: 8px;
+}
+.grammar-box {
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.grammar-box h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  color: var(--hero);
+  margin-bottom: 14px;
+}
+.grammar-row {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 6px 10px;
+  align-items: baseline;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+.grammar-label {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+.prep-tag {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin: 1px 2px;
+}
+
+/* === GAP-FILL === */
+.gap-sentence {
+  margin-bottom: 14px;
+  font-size: 0.95rem;
+  line-height: 2;
+}
+.gap-sentence .snum {
+  font-weight: 700;
+  color: var(--accent);
+  margin-right: 6px;
+}
+.gap-input {
+  border: none;
+  border-bottom: 2px solid var(--accent);
+  background: transparent;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  padding: 2px 4px;
+  width: 100px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.gap-input:focus { border-bottom-color: var(--accent-dark); }
+.gap-input.correct { border-bottom-color: var(--green); background: var(--green-light); color: var(--green); }
+.gap-input.wrong { border-bottom-color: var(--red); background: var(--red-light); color: var(--red); }
+.gap-input.wide { width: 160px; }
+.gap-input.xwide { width: 210px; }
+
+/* === GRAMMAR BOX INPUTS === */
+.gb-input {
+  border: none;
+  border-bottom: 2px solid var(--accent);
+  background: transparent;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  padding: 2px 4px;
+  width: 90px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.gb-input.wide { width: 110px; }
+.gb-input.correct { border-bottom-color: var(--green); background: var(--green-light); color: var(--green); }
+.gb-input.wrong { border-bottom-color: var(--red); background: var(--red-light); color: var(--red); }
+
+/* === MATCH HALVES === */
+.match-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+@media (max-width: 520px) { .match-cols { grid-template-columns: 1fr; } }
+.match-col { display: flex; flex-direction: column; gap: 8px; }
+.match-item {
+  border: 2px solid var(--border);
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  transition: border-color 0.15s, background 0.15s;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.match-item:hover { border-color: var(--accent); }
+.match-item.selected { border-color: var(--accent); background: var(--accent-light); }
+.match-item.paired { border-color: var(--green); background: var(--green-light); cursor: default; }
+.match-item.wrong-pair { border-color: var(--red); background: var(--red-light); animation: shake 0.35s; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 30%{transform:translateX(-5px)} 70%{transform:translateX(5px)} }
+.match-sym {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.match-item.paired .match-sym { background: var(--green); }
+
+/* === MAKE QUESTIONS === */
+.make-q-row { margin-bottom: 16px; }
+.make-q-prompt {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+  font-style: italic;
+}
+.make-q-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.make-q-input:focus { border-color: var(--accent); }
+.make-q-input.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+.make-q-input.wrong { border-color: var(--red); background: var(--red-light); }
+.answer-reveal {
+  font-size: 0.8rem;
+  color: var(--green);
+  margin-top: 5px;
+  display: none;
+  font-weight: 500;
+}
+.make-q-row.checked .answer-reveal { display: block; }
+
+/* === FREE TEXTAREA === */
+.free-textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  padding: 10px 12px;
+  resize: vertical;
+  min-height: 70px;
+  outline: none;
+  margin-top: 6px;
+  transition: border-color 0.2s;
+}
+.free-textarea:focus { border-color: var(--accent); }
+.free-sentence { margin-bottom: 16px; font-size: 0.95rem; }
+.free-sentence .fs-label { font-weight: 600; color: var(--accent); margin-right: 4px; }
+
+/* === BUTTONS === */
+.btn-row { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+.btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn:active { transform: scale(0.97); }
+.btn-check { background: var(--accent); color: white; }
+.btn-check:hover { opacity: 0.88; }
+.btn-reset { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+
+/* === FEEDBACK === */
+.feedback { margin-top: 10px; font-size: 0.875rem; font-weight: 600; min-height: 20px; }
+.feedback.good { color: var(--green); }
+.feedback.bad { color: var(--red); }
+
+/* === SPEAKING === */
+.speaking-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.speaking-card {
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 16px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.speaking-card h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  color: var(--accent-dark);
+  margin-bottom: 6px;
+}
+.speaking-card p { font-size: 0.875rem; color: var(--text); line-height: 1.5; }
+
+/* === FLIP CARDS === */
+.flip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.flip-card {
+  height: 150px;
+  perspective: 900px;
+  cursor: pointer;
+}
+.flip-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.flip-card.flipped .flip-inner {
+  transform: rotateY(180deg);
+}
+.flip-front, .flip-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 12px;
+  text-align: center;
+  user-select: none;
+}
+.flip-front {
+  background: var(--hero);
+  color: var(--hero-text);
+  border: 1px solid rgba(200,120,26,0.3);
+}
+.flip-back {
+  background: var(--accent);
+  color: #fff;
+  transform: rotateY(180deg);
+}
+.flip-emoji {
+  font-size: 1.8rem;
+  display: block;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+.flip-front h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--hero-text);
+  margin-bottom: 0;
+}
+.flip-back p {
+  font-size: 0.85rem;
+  font-style: italic;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.flip-hint {
+  position: absolute;
+  bottom: 7px;
+  font-size: 0.62rem;
+  opacity: 0.55;
+  letter-spacing: 0.04em;
+}
+.prompt-starter {
+  background: var(--surface2);
+  border-left: 4px solid var(--accent);
+  padding: 12px 16px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-bottom: 12px;
+  font-size: 0.875rem;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* === FIND SOMEONE TABLE === */
+.fst {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.fst th, .fst td {
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  text-align: left;
+}
+.fst th { background: var(--hero); color: var(--hero-text); font-weight: 600; }
+.fst tr:nth-child(even) td { background: var(--surface2); }
+.fst td.q-col { color: var(--accent); font-style: italic; }
+.fst td.name-col { color: var(--text-muted); font-style: italic; width: 100px; }
+
+/* === PLAN CALENDAR TABLE === */
+.plan-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.plan-table th, .plan-table td { border: 1px solid var(--border); }
+.plan-table th { background: var(--hero); color: var(--hero-text); padding: 10px 14px; font-weight: 600; font-size: 0.875rem; text-align: left; }
+.plan-table td { padding: 6px 10px; }
+.plan-table td.period { padding: 10px 14px; font-weight: 600; color: var(--text-muted); font-size: 0.875rem; }
+.plan-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  padding: 4px 4px;
+  outline: none;
+}
+.plan-input:focus { background: var(--accent-light); border-radius: 4px; }
+.plan-input::placeholder { color: var(--text-muted); font-style: italic; }
+
+/* === TABLE UTILS === */
+.tbl { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-bottom: 16px; }
+.tbl th, .tbl td { border: 1px solid var(--border); padding: 9px 12px; }
+.tbl th { background: var(--surface2); font-weight: 600; text-align: left; }
+.tbl td { color: var(--text-muted); }
+
+/* === FOOTER === */
+.lesson-footer {
+  background: var(--hero);
+  color: var(--hero-text);
+  text-align: center;
+  padding: 36px 24px;
+  margin-inline: -16px;
+  margin-top: 52px;
+}
+.lesson-footer h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+.lesson-footer p { opacity: 0.7; font-size: 0.875rem; line-height: 1.8; }
+
+@media (max-width: 480px) {
+  .hero { padding: 36px 16px 28px; }
+  .ex-card { padding: 16px; }
+  .season-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<header class="hero" id="top">
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme" id="theme-btn">🌙</button>
+  <div class="hero-eyebrow">Unit 10C · Interactive Lesson</div>
+  <h1>My Plans</h1>
+  <div class="hero-sub">Using <em>be going to</em> for future plans</div>
+  <div class="hero-tags">
+    <span class="hero-tag">🗓️ be going to</span>
+    <span class="hero-tag">🌸 Seasons</span>
+    <span class="hero-tag">⏰ Time expressions</span>
+    <span class="hero-tag">✈️ Future plans</span>
+  </div>
+</header>
+
+<!-- ===== STAGE NAV ===== -->
+<nav class="stage-nav">
+  <a href="#leadin" class="stage-pill">🌸 1 · Lead-in</a>
+  <a href="#vocab" class="stage-pill">📚 2 · Vocabulary</a>
+  <a href="#context" class="stage-pill">📅 3 · Context</a>
+  <a href="#clarify" class="stage-pill">🔍 4 · Clarify</a>
+  <a href="#practice" class="stage-pill">✏️ 5 · Practice</a>
+  <a href="#freer" class="stage-pill">💬 6 · Freer</a>
+  <a href="#speaking" class="stage-pill">🗣️ 7 · Speaking</a>
+</nav>
+
+<main>
+
+<!-- ============================= STAGE 1: LEAD-IN ============================= -->
+<section class="stage" id="leadin">
+  <div class="stage-header">
+    <span class="stage-badge">Stage 1</span>
+    <h2>Lead-in — The Four Seasons</h2>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">1</span>Seasons — click each photo to reveal the name</div>
+    <div class="ex-instr">Look at the photos. Which season do they show? Tap a card to check your answer.</div>
+
+    <div class="season-grid">
+      <div class="season-card" onclick="revealSeason(this)">
+        <span class="season-emoji">❄️🌨️⛄</span>
+        <div class="season-photo-label">Photo A</div>
+        <div class="season-reveal"><strong>Winter</strong> — cold, snow, short days</div>
+        <span class="season-hint">tap to reveal</span>
+      </div>
+      <div class="season-card" onclick="revealSeason(this)">
+        <span class="season-emoji">🌸🌱🌿</span>
+        <div class="season-photo-label">Photo B</div>
+        <div class="season-reveal"><strong>Spring</strong> — warm, flowers, new life</div>
+        <span class="season-hint">tap to reveal</span>
+      </div>
+      <div class="season-card" onclick="revealSeason(this)">
+        <span class="season-emoji">🍂🍁🌾</span>
+        <div class="season-photo-label">Photo C</div>
+        <div class="season-reveal"><strong>Autumn</strong> — leaves fall, cool &amp; golden</div>
+        <span class="season-hint">tap to reveal</span>
+      </div>
+      <div class="season-card" onclick="revealSeason(this)">
+        <span class="season-emoji">☀️🏖️🌻</span>
+        <div class="season-photo-label">Photo D</div>
+        <div class="season-reveal"><strong>Summer</strong> — hot, sunny, long days</div>
+        <span class="season-hint">tap to reveal</span>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <h4>💬 Warm-up discussion</h4>
+      <p style="font-size:0.9rem;line-height:1.7">What season is it in your city right now? · What's your favourite season and why? · What do you usually do in each season? · Any plans for the coming months?</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= STAGE 2: VOCABULARY ============================= -->
+<section class="stage" id="vocab">
+  <div class="stage-header">
+    <span class="stage-badge">Stage 2</span>
+    <h2>Vocabulary — Time Expressions</h2>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">3a</span>Prepositions with time expressions</div>
+    <div class="ex-instr">Complete each gap with <strong>in</strong>, <strong>next</strong>, <strong>on</strong>, or <strong>for</strong>.</div>
+
+    <div class="grammar-box">
+      <h4>⚡ Preposition quick-reference</h4>
+      <div class="grammar-row"><span class="grammar-label">in</span><span>seasons (<em>in winter</em>) · months (<em>in June</em>) · years (<em>in 2026</em>)</span></div>
+      <div class="grammar-row"><span class="grammar-label">next</span><span>week / month / year / + day (<em>next Monday</em>, <em>next summer</em>)</span></div>
+      <div class="grammar-row"><span class="grammar-label">on</span><span>specific dates &amp; days (<em>on 5th July</em>, <em>on Friday</em>)</span></div>
+      <div class="grammar-row"><span class="grammar-label">for</span><span>durations — <em>how long?</em> (<em>for three days</em>, <em>for a week</em>)</span></div>
+    </div>
+
+    <div id="prep-sentences">
+      <div class="gap-sentence"><span class="snum">1.</span>I'm going to visit Paris <input class="gap-input" data-ans="in" id="p1a" placeholder="___"> autumn and I want to go <input class="gap-input" data-ans="in" id="p1b" placeholder="___"> October.</div>
+      <div class="gap-sentence"><span class="snum">2.</span>She's going to start a new job <input class="gap-input" data-ans="in" id="p2" placeholder="___"> spring.</div>
+      <div class="gap-sentence"><span class="snum">3.</span>We're going to travel <input class="gap-input" data-ans="next" id="p3a" placeholder="___"> month. <input class="gap-input" data-ans="next,Next" id="p3b" placeholder="___"> year we plan to visit Japan.</div>
+      <div class="gap-sentence"><span class="snum">4.</span>He's going to arrive <input class="gap-input" data-ans="on" id="p4a" placeholder="___"> 15th March and leave <input class="gap-input" data-ans="on" id="p4b" placeholder="___"> 20th March.</div>
+      <div class="gap-sentence"><span class="snum">5.</span>They're going to stay <input class="gap-input" data-ans="for" id="p5a" placeholder="___"> five days and then travel <input class="gap-input" data-ans="for" id="p5b" placeholder="___"> two more weeks.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkPreps()">Check</button>
+      <button class="btn btn-reset" onclick="resetPreps()">Reset</button>
+    </div>
+    <div class="feedback" id="prep-fb"></div>
+  </div>
+</section>
+
+<!-- ============================= STAGE 3: CONTEXT ============================= -->
+<section class="stage" id="context">
+  <div class="stage-header">
+    <span class="stage-badge">Stage 3</span>
+    <h2>Context — Reading a Calendar</h2>
+  </div>
+
+  <!-- EX 2 -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">2</span>Complete the sentences using Elena's calendar</div>
+    <div class="ex-instr">Read the calendar, then complete the gaps.</div>
+
+    <div class="info-box" style="margin-bottom:18px">
+      <h4>📅 Elena's Calendar</h4>
+      <p style="font-size:0.85rem;line-height:2">
+        <strong>5 July →</strong> Travel to Osaka, Japan &nbsp;(7-day trip)<br>
+        <strong>12 July →</strong> Return from Osaka<br>
+        <strong>15 July–15 Aug →</strong> Take Jake to summer school (3 weeks)<br>
+        <strong>20 August →</strong> Visit Olga's mother in St Petersburg (3 days)<br>
+        <strong>15 December →</strong> Christmas party with colleagues
+      </p>
+    </div>
+
+    <div id="cal-sentences">
+      <div class="gap-sentence"><span class="snum">1.</span>On 5th July, Elena is going to <input class="gap-input xwide" data-ans="travel to Osaka,go to Osaka" id="c1" placeholder="________________">.</div>
+      <div class="gap-sentence"><span class="snum">2.</span>She is going to stay in Osaka for <input class="gap-input" data-ans="seven,7" id="c2" placeholder="______"> days.</div>
+      <div class="gap-sentence"><span class="snum">3.</span>In July she is going to <input class="gap-input xwide" data-ans="take Jake to summer school" id="c3" placeholder="____________________">.</div>
+      <div class="gap-sentence"><span class="snum">4.</span>Jake is going to stay at summer school for <input class="gap-input" data-ans="three,3" id="c4" placeholder="______"> weeks.</div>
+      <div class="gap-sentence"><span class="snum">5.</span>In August she is going to visit <input class="gap-input wide" data-ans="Olga's mother" id="c5" placeholder="______________">.</div>
+      <div class="gap-sentence"><span class="snum">6.</span>The Christmas party is in <input class="gap-input" data-ans="December" id="c6" placeholder="___________">.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkCal()">Check</button>
+      <button class="btn btn-reset" onclick="resetCal()">Reset</button>
+    </div>
+    <div class="feedback" id="cal-fb"></div>
+  </div>
+
+  <!-- EX 6 -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">6</span>Match the questions with the answers</div>
+    <div class="ex-instr">Click a question on the left, then click the matching answer on the right. Correct pairs turn green automatically!</div>
+
+    <div class="match-cols" id="match6">
+      <div class="match-col" id="m6-qcol">
+        <div class="match-item" data-id="q1" data-pair="d" onclick="selectMatch(this,'q')">
+          <span class="match-sym">1</span>
+          <span>What is Elena going to do in July?</span>
+        </div>
+        <div class="match-item" data-id="q2" data-pair="c" onclick="selectMatch(this,'q')">
+          <span class="match-sym">2</span>
+          <span>How long is she going to stay in Osaka?</span>
+        </div>
+        <div class="match-item" data-id="q3" data-pair="b" onclick="selectMatch(this,'q')">
+          <span class="match-sym">3</span>
+          <span>Is she going to visit her parents in summer?</span>
+        </div>
+        <div class="match-item" data-id="q4" data-pair="a" onclick="selectMatch(this,'q')">
+          <span class="match-sym">4</span>
+          <span>When is the Christmas party?</span>
+        </div>
+      </div>
+      <div class="match-col" id="m6-acol">
+        <div class="match-item" data-id="a" data-pair="q4" onclick="selectMatch(this,'a')">
+          <span class="match-sym">a</span>
+          <span>It's on 15th December.</span>
+        </div>
+        <div class="match-item" data-id="b" data-pair="q3" onclick="selectMatch(this,'a')">
+          <span class="match-sym">b</span>
+          <span>No, she's going to visit Olga's mother.</span>
+        </div>
+        <div class="match-item" data-id="c" data-pair="q2" onclick="selectMatch(this,'a')">
+          <span class="match-sym">c</span>
+          <span>She's going to stay for seven days.</span>
+        </div>
+        <div class="match-item" data-id="d" data-pair="q1" onclick="selectMatch(this,'a')">
+          <span class="match-sym">d</span>
+          <span>She's going to travel to Osaka and take Jake to summer school.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkMatch6()">Check</button>
+      <button class="btn btn-reset" onclick="resetMatch6()">Reset</button>
+    </div>
+    <div class="feedback" id="match6-fb"></div>
+  </div>
+</section>
+
+<!-- ============================= STAGE 4: CLARIFY ============================= -->
+<section class="stage" id="clarify">
+  <div class="stage-header">
+    <span class="stage-badge">Stage 4</span>
+    <h2>Clarify — <em>be going to</em>: Questions</h2>
+  </div>
+
+  <div class="info-box">
+    <h4>🔍 Meaning — CCQs</h4>
+    <p style="font-size:0.875rem;line-height:1.8">
+      <em>"Elena is going to travel to Osaka."</em><br>
+      ✅ Did she decide this before today? <strong>YES</strong><br>
+      ✅ Is this a plan or intention (not a prediction from what we can see)? <strong>YES</strong><br>
+      ❌ Did she decide this at the moment of speaking? <strong>NO</strong> (that would be <em>will</em>)
+    </p>
+  </div>
+
+  <!-- EX 7 -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">7</span>Complete the grammar table</div>
+    <div class="ex-instr">Fill in the gaps to complete the <strong>be going to</strong> question forms and short answers.</div>
+
+    <div class="grammar-box">
+      <h4>📝 be going to — Questions &amp; Short Answers</h4>
+      <table class="tbl" style="margin-bottom:0">
+        <thead>
+          <tr>
+            <th style="width:55%">Question</th>
+            <th>Short answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input class="gb-input" data-ans="Are" id="g1" placeholder="___"> you going to travel in July?</td>
+            <td>Yes, I am. / No, <input class="gb-input wide" data-ans="I'm not" id="g2" placeholder="________">.</td>
+          </tr>
+          <tr>
+            <td><input class="gb-input" data-ans="Are" id="g3" placeholder="___"> they going to stay for a week?</td>
+            <td>Yes, they <input class="gb-input" data-ans="are" id="g4" placeholder="___">.</td>
+          </tr>
+          <tr>
+            <td>What <input class="gb-input" data-ans="are" id="g5" placeholder="___"> you going <input class="gb-input" data-ans="to" id="g6" placeholder="___"> do next summer?</td>
+            <td><span style="font-style:italic;color:var(--text-muted)">(open answer)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkGrammar()">Check</button>
+      <button class="btn btn-reset" onclick="resetGrammar()">Reset</button>
+    </div>
+    <div class="feedback" id="grammar-fb"></div>
+  </div>
+
+  <!-- FORM SUMMARY -->
+  <div class="ex-card">
+    <div class="ex-hd" style="color:var(--accent-dark)">📐 Form Summary</div>
+    <div style="font-size:0.9rem;line-height:2.2">
+      <div><strong>Positive:</strong> &nbsp;Subject + <span class="prep-tag">am / is / are</span> + going to + base verb</div>
+      <div><strong>Negative:</strong> &nbsp;Subject + <span class="prep-tag">am not / isn't / aren't</span> + going to + base verb</div>
+      <div><strong>Yes/No Q:</strong> &nbsp;<span class="prep-tag">Am / Is / Are</span> + subject + going to + base verb?</div>
+      <div><strong>Wh- Q:</strong> &nbsp;<span class="prep-tag">What / Where / When / Who / How long</span> + <span class="prep-tag">am / is / are</span> + subject + going to + base verb?</div>
+    </div>
+    <div class="info-box" style="margin-top:16px;margin-bottom:0">
+      <h4>🗣️ Pronunciation note</h4>
+      <p style="font-size:0.875rem"><em>going to</em> → often said as <strong>"gonna"</strong> in natural speech. Students should recognise it but practise the full form in writing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= STAGE 5: CONTROLLED PRACTICE ============================= -->
+<section class="stage" id="practice">
+  <div class="stage-header">
+    <span class="stage-badge">Stage 5</span>
+    <h2>Controlled Practice</h2>
+  </div>
+
+  <!-- EX 9 -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">9</span>Add the one missing word</div>
+    <div class="ex-instr">Each sentence is missing exactly one word. Type it in the gap.</div>
+
+    <div id="ex9-sentences">
+      <div class="gap-sentence"><span class="snum">1.</span>I'm going <input class="gap-input" data-ans="to" id="e9_1" placeholder="___"> visit Rome next spring.</div>
+      <div class="gap-sentence"><span class="snum">2.</span><input class="gap-input" data-ans="Are,are" id="e9_2" placeholder="___"> you going to travel in August?</div>
+      <div class="gap-sentence"><span class="snum">3.</span><input class="gap-input" data-ans="Is,is" id="e9_3" placeholder="___"> she going to call her parents tonight?</div>
+      <div class="gap-sentence"><span class="snum">4.</span><input class="gap-input" data-ans="What,what" id="e9_4" placeholder="______"> are they going to do next year?</div>
+      <div class="gap-sentence"><span class="snum">5.</span>He isn't <input class="gap-input" data-ans="going" id="e9_5" placeholder="_____"> to take a long holiday this year.</div>
+      <div class="gap-sentence"><span class="snum">6.</span>We <input class="gap-input" data-ans="are,Are" id="e9_6" placeholder="___"> going to stay at a hotel for five nights.</div>
+      <div class="gap-sentence"><span class="snum">7.</span>She's going <input class="gap-input" data-ans="to" id="e9_7" placeholder="___"> start a new course in September.</div>
+      <div class="gap-sentence"><span class="snum">8.</span><input class="gap-input" data-ans="Are,are" id="e9_8" placeholder="___"> you going to buy a new flat next year?</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkEx9()">Check</button>
+      <button class="btn btn-reset" onclick="resetEx9()">Reset</button>
+    </div>
+    <div class="feedback" id="ex9-fb"></div>
+  </div>
+
+  <!-- EX 10a -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">10a</span>Write questions using <em>be going to</em></div>
+    <div class="ex-instr">Use the prompts to write complete questions. Include question marks!</div>
+
+    <div id="ex10a-rows">
+      <div class="make-q-row" id="mq1">
+        <div class="make-q-prompt">1.&nbsp; you / do / <em>in the autumn?</em></div>
+        <input class="make-q-input" id="mq1-inp" placeholder="What are you going to…">
+        <div class="answer-reveal">✅ What are you going to do in the autumn?</div>
+      </div>
+      <div class="make-q-row" id="mq2">
+        <div class="make-q-prompt">2.&nbsp; you / go / <em>next weekend?</em></div>
+        <input class="make-q-input" id="mq2-inp" placeholder="Where are you going to go…">
+        <div class="answer-reveal">✅ Where are you going to go next weekend?</div>
+      </div>
+      <div class="make-q-row" id="mq3">
+        <div class="make-q-prompt">3.&nbsp; you / study / <em>on Sunday?</em></div>
+        <input class="make-q-input" id="mq3-inp" placeholder="Are you going to study…">
+        <div class="answer-reveal">✅ Are you going to study on Sunday?</div>
+      </div>
+      <div class="make-q-row" id="mq4">
+        <div class="make-q-prompt">4.&nbsp; you / go on holiday?</div>
+        <input class="make-q-input" id="mq4-inp" placeholder="When are you going to go…">
+        <div class="answer-reveal">✅ When are you going to go on holiday?</div>
+      </div>
+      <div class="make-q-row" id="mq5">
+        <div class="make-q-prompt">5.&nbsp; you / have dinner with / <em>on Saturday?</em></div>
+        <input class="make-q-input" id="mq5-inp" placeholder="Who are you going to have dinner with…">
+        <div class="answer-reveal">✅ Who are you going to have dinner with on Saturday?</div>
+      </div>
+      <div class="make-q-row" id="mq6">
+        <div class="make-q-prompt">6.&nbsp; you / take a trip / <em>next month?</em></div>
+        <input class="make-q-input" id="mq6-inp" placeholder="Are you going to take a trip…">
+        <div class="answer-reveal">✅ Are you going to take a trip next month?</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkEx10a()">Check</button>
+      <button class="btn btn-reset" onclick="resetEx10a()">Reset</button>
+    </div>
+    <div class="feedback" id="ex10a-fb"></div>
+  </div>
+</section>
+
+<!-- ============================= STAGE 6: FREER PRACTICE ============================= -->
+<section class="stage" id="freer">
+  <div class="stage-header">
+    <span class="stage-badge">Stage 6</span>
+    <h2>Freer Practice — About You</h2>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">4</span>Complete sentences that are true for you</div>
+    <div class="ex-instr">Write your own real plans. Use <strong>be going to</strong>. There is no "wrong" answer — just use correct grammar!</div>
+
+    <div class="free-sentence">
+      <span class="fs-label">1.</span>This weekend, I'm going to…
+      <textarea class="free-textarea" placeholder="e.g. visit my family / stay at home and relax / watch a film…"></textarea>
+    </div>
+    <div class="free-sentence">
+      <span class="fs-label">2.</span>Next summer, I'm going to…
+      <textarea class="free-textarea" placeholder="e.g. travel to Italy / work on a new project / go to the beach…"></textarea>
+    </div>
+    <div class="free-sentence">
+      <span class="fs-label">3.</span>I'm NOT going to… next month, because…
+      <textarea class="free-textarea" placeholder="e.g. I'm not going to travel next month because I have a lot of work."></textarea>
+    </div>
+    <div class="free-sentence">
+      <span class="fs-label">4.</span>In winter, I'm going to…
+      <textarea class="free-textarea" placeholder="e.g. go skiing / spend more time reading / start a new hobby…"></textarea>
+    </div>
+    <div class="free-sentence">
+      <span class="fs-label">5.</span>Write a question for your classmate using <em>be going to</em>:
+      <textarea class="free-textarea" placeholder="e.g. Are you going to change jobs next year? / What are you going to do next weekend?"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= STAGE 7: SPEAKING ============================= -->
+<section class="stage" id="speaking">
+  <div class="stage-header">
+    <span class="stage-badge">Stage 7</span>
+    <h2>Speaking Activities</h2>
+  </div>
+
+  <!-- 10b Pair Work -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">10b</span>Pair Work — Ask &amp; Answer</div>
+    <div class="ex-instr">Use the questions from Exercise 10a. Ask your partner and listen carefully. Try to add follow-up questions!</div>
+
+    <div class="speaking-grid">
+      <div class="speaking-card">
+        <h4>🗣️ Student A — asks</h4>
+        <p>Ask the questions from 10a. Note down 2 interesting things your partner says.</p>
+      </div>
+      <div class="speaking-card">
+        <h4>👂 Student B — answers</h4>
+        <p>Answer fully. Add <em>when, where,</em> and <em>with whom</em> wherever you can.</p>
+      </div>
+    </div>
+
+    <div class="prompt-starter">
+      💬 <strong>Example:</strong> "What are you going to do in the autumn?" → "I'm going to start a new Spanish course in October. I'm going to study on Monday and Wednesday evenings with a friend from work."
+    </div>
+    <div class="prompt-starter">
+      🔄 <strong>Follow-up ideas:</strong> "Oh really? How long are you going to study?" · "Who are you going to study with?" · "Where are you going to go?" · "Why are you going to do that?"
+    </div>
+
+    <div style="margin-top:14px">
+      <strong style="font-size:0.875rem">📝 What did your partner say?</strong>
+      <textarea class="free-textarea" placeholder="My partner is going to…"></textarea>
+    </div>
+  </div>
+
+  <!-- Ex 11 Plan Notes -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">11</span>My Calendar — Fill in your plans &amp; report</div>
+    <div class="ex-instr">Write your real plans in the table. Then tell your partner using <em>be going to</em>.</div>
+
+    <table class="plan-table">
+      <thead>
+        <tr>
+          <th>Time period</th>
+          <th>My plan (be going to…)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="period">This weekend</td><td><input class="plan-input" type="text" placeholder="I'm going to…"></td></tr>
+        <tr><td class="period">Next week</td><td><input class="plan-input" type="text" placeholder="I'm going to…"></td></tr>
+        <tr><td class="period">Next month</td><td><input class="plan-input" type="text" placeholder="I'm going to…"></td></tr>
+        <tr><td class="period">In winter</td><td><input class="plan-input" type="text" placeholder="I'm going to…"></td></tr>
+        <tr><td class="period">Next year</td><td><input class="plan-input" type="text" placeholder="I'm going to…"></td></tr>
+        <tr><td class="period">Next summer</td><td><input class="plan-input" type="text" placeholder="I'm going to…"></td></tr>
+      </tbody>
+    </table>
+
+    <div class="prompt-starter">
+      🗣️ Now tell your partner: <em>"Next month, I'm going to…"</em> &nbsp;Your partner asks: <em>"Oh really? How long are you going to stay?" / "Who are you going to go with?" / "Why are you going to do that?"</em>
+    </div>
+  </div>
+
+  <!-- Extra: Find Someone Who -->
+  <div class="ex-card">
+    <div class="ex-hd" style="color:var(--accent-dark)">🎲 Extra — Find Someone Who…</div>
+    <div class="ex-instr">Walk around the class. Ask questions using <em>be going to</em> and write a classmate's name when they say YES!</div>
+
+    <table class="fst">
+      <thead>
+        <tr>
+          <th>Find someone who is going to…</th>
+          <th class="q-col" style="color:white">Ask: "Are you going to…?"</th>
+          <th>Name ✏️</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>…travel abroad next summer</td>
+          <td class="q-col">Are you going to travel abroad next summer?</td>
+          <td class="name-col">_____________</td>
+        </tr>
+        <tr>
+          <td>…go to the cinema this week</td>
+          <td class="q-col">Are you going to go to the cinema this week?</td>
+          <td class="name-col">_____________</td>
+        </tr>
+        <tr>
+          <td>…study a new language next year</td>
+          <td class="q-col">Are you going to study a new language next year?</td>
+          <td class="name-col">_____________</td>
+        </tr>
+        <tr>
+          <td>…visit family in the autumn</td>
+          <td class="q-col">Are you going to visit family in the autumn?</td>
+          <td class="name-col">_____________</td>
+        </tr>
+        <tr>
+          <td>…change something about their routine</td>
+          <td class="q-col">Are you going to change your routine next month?</td>
+          <td class="name-col">_____________</td>
+        </tr>
+        <tr>
+          <td>…go on holiday for more than a week</td>
+          <td class="q-col">Are you going to go on holiday for more than a week?</td>
+          <td class="name-col">_____________</td>
+        </tr>
+        <tr>
+          <td>…start a new hobby or course</td>
+          <td class="q-col">Are you going to start a new hobby or course soon?</td>
+          <td class="name-col">_____________</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Extra: Prompt Cards -->
+  <div class="ex-card">
+    <div class="ex-hd" style="color:var(--accent-dark)">🃏 Extra — Speaking Prompt Cards</div>
+    <div class="ex-instr">Take turns tapping a card. Your partner asks a question using <em>be going to</em>. Answer with as much detail as possible!</div>
+
+    <div class="flip-grid" id="prompt-cards">
+      <div class="flip-card" onclick="flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <span class="flip-emoji">🗓️</span>
+            <h4>Weekend</h4>
+            <span class="flip-hint">tap to flip</span>
+          </div>
+          <div class="flip-back">
+            <p>What are you going to do this weekend?</p>
+            <span class="flip-hint">tap to flip back</span>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <span class="flip-emoji">✈️</span>
+            <h4>Next Holiday</h4>
+            <span class="flip-hint">tap to flip</span>
+          </div>
+          <div class="flip-back">
+            <p>Where are you going to go on your next holiday?</p>
+            <span class="flip-hint">tap to flip back</span>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <span class="flip-emoji">🎓</span>
+            <h4>Learning</h4>
+            <span class="flip-hint">tap to flip</span>
+          </div>
+          <div class="flip-back">
+            <p>What are you going to study or learn next year?</p>
+            <span class="flip-hint">tap to flip back</span>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <span class="flip-emoji">🍽️</span>
+            <h4>This Week</h4>
+            <span class="flip-hint">tap to flip</span>
+          </div>
+          <div class="flip-back">
+            <p>Where are you going to eat out this week?</p>
+            <span class="flip-hint">tap to flip back</span>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <span class="flip-emoji">👨‍👩‍👧</span>
+            <h4>People</h4>
+            <span class="flip-hint">tap to flip</span>
+          </div>
+          <div class="flip-back">
+            <p>Who are you going to spend time with next month?</p>
+            <span class="flip-hint">tap to flip back</span>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <span class="flip-emoji">💼</span>
+            <h4>Work / Life</h4>
+            <span class="flip-hint">tap to flip</span>
+          </div>
+          <div class="flip-back">
+            <p>What are you going to change about your routine next year?</p>
+            <span class="flip-hint">tap to flip back</span>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <span class="flip-emoji">🏠</span>
+            <h4>Home</h4>
+            <span class="flip-hint">tap to flip</span>
+          </div>
+          <div class="flip-back">
+            <p>What are you going to do at home this weekend?</p>
+            <span class="flip-hint">tap to flip back</span>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <span class="flip-emoji">🎉</span>
+            <h4>Special event</h4>
+            <span class="flip-hint">tap to flip</span>
+          </div>
+          <div class="flip-back">
+            <p>Are you going to celebrate anything special soon?</p>
+            <span class="flip-hint">tap to flip back</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-starter" style="margin-top:12px">
+      💡 <strong>Follow-up questions:</strong> How long? · Where exactly? · Who with? · Why? · How are you going to get there? · How often?
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="lesson-footer">
+  <h3>Unit 10C — My Plans ✅</h3>
+  <p>Great work today! Try to use <em>be going to</em> at least 5 times before the next lesson.<br>
+  Talk about one real plan with a friend or colleague in English.</p>
+  <p style="margin-top:20px">Teacher: <a href="mailto:dariia.mlnk@gmail.com" style="color:var(--accent);text-decoration:none">dariia.mlnk@gmail.com</a></p>
+</footer>
+
+<script>
+// ============== UTILITIES ==============
+function norm(s){
+  return String(s).trim().toLowerCase()
+    .replace(/['']/g,"'")
+    .replace(/\s+/g,' ');
+}
+
+function toggleTheme(){
+  const r=document.documentElement;
+  const btn=document.getElementById('theme-btn');
+  const cur=r.getAttribute('data-theme');
+  if(cur==='dark'){ r.setAttribute('data-theme','light'); btn.textContent='🌙'; }
+  else if(cur==='light'){ r.removeAttribute('data-theme'); btn.textContent='🌙'; }
+  else { r.setAttribute('data-theme','dark'); btn.textContent='☀️'; }
+}
+
+// ============== SEASON CARDS ==============
+function revealSeason(card){
+  card.classList.toggle('revealed');
+}
+
+// ============== GENERIC GAP-FILL CHECKER ==============
+function checkGaps(ids, fbId){
+  var correct=0, total=ids.length;
+  ids.forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el) return;
+    var answers=el.getAttribute('data-ans').split(',').map(norm);
+    if(answers.indexOf(norm(el.value)) > -1){
+      el.classList.add('correct'); el.classList.remove('wrong'); correct++;
+    } else {
+      el.classList.add('wrong'); el.classList.remove('correct');
+      el.title='Answer: '+el.getAttribute('data-ans').split(',')[0];
+    }
+  });
+  var fb=document.getElementById(fbId);
+  if(fb){
+    fb.textContent=correct+' / '+total+' correct'+(correct===total?' 🎉':'');
+    fb.className='feedback '+(correct===total?'good':'bad');
+  }
+}
+
+function resetGaps(ids, fbId){
+  ids.forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){ el.value=''; el.className=el.className.replace(/\s*(gap-input|gb-input)/,'').replace('correct','').replace('wrong','').trim(); el.classList.add(el.tagName==='INPUT' && el.classList.contains('gb-input')?'gb-input':'gap-input'); el.title=''; }
+  });
+  var fb=document.getElementById(fbId);
+  if(fb){ fb.textContent=''; fb.className='feedback'; }
+}
+
+// simpler reset that preserves base class
+function resetInputs(ids, baseClass, fbId){
+  ids.forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el) return;
+    el.value='';
+    el.className=baseClass;
+    el.title='';
+  });
+  var fb=document.getElementById(fbId);
+  if(fb){ fb.textContent=''; fb.className='feedback'; }
+}
+
+// ============== PREPS ==============
+var prepIds=['p1a','p1b','p2','p3a','p3b','p4a','p4b','p5a','p5b'];
+function checkPreps(){ checkGaps(prepIds,'prep-fb'); }
+function resetPreps(){ resetInputs(prepIds,'gap-input','prep-fb'); }
+
+// ============== CALENDAR ==============
+var calIds=['c1','c2','c3','c4','c5','c6'];
+function checkCal(){ checkGaps(calIds,'cal-fb'); }
+function resetCal(){ resetInputs(calIds,'gap-input','cal-fb'); }
+
+// ============== GRAMMAR BOX ==============
+var grammarIds=['g1','g2','g3','g4','g5','g6'];
+function checkGrammar(){
+  var correct=0, total=grammarIds.length;
+  grammarIds.forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el) return;
+    var answers=el.getAttribute('data-ans').split(',').map(norm);
+    if(answers.indexOf(norm(el.value)) > -1){
+      el.classList.add('correct'); el.classList.remove('wrong'); correct++;
+    } else {
+      el.classList.add('wrong'); el.classList.remove('correct');
+    }
+  });
+  var fb=document.getElementById('grammar-fb');
+  fb.textContent=correct+' / '+total+' correct'+(correct===total?' 🎉':'');
+  fb.className='feedback '+(correct===total?'good':'bad');
+}
+function resetGrammar(){ resetInputs(grammarIds,'gb-input','grammar-fb'); }
+
+// ============== EX 9 ==============
+var ex9Ids=['e9_1','e9_2','e9_3','e9_4','e9_5','e9_6','e9_7','e9_8'];
+function checkEx9(){ checkGaps(ex9Ids,'ex9-fb'); }
+function resetEx9(){ resetInputs(ex9Ids,'gap-input','ex9-fb'); }
+
+// ============== EX 10a ==============
+var mqAnswers={
+  mq1:["what are you going to do in the autumn?","what are you going to do in autumn?"],
+  mq2:["where are you going to go next weekend?"],
+  mq3:["are you going to study on sunday?"],
+  mq4:["when are you going to go on holiday?"],
+  mq5:["who are you going to have dinner with on saturday?"],
+  mq6:["are you going to take a trip next month?"]
+};
+
+function normQ(s){
+  return norm(s).replace(/[.!,]/g,'').replace(/\?$/,'');
+}
+
+function checkEx10a(){
+  var correct=0, total=6;
+  for(var i=1;i<=6;i++){
+    var inp=document.getElementById('mq'+i+'-inp');
+    var row=document.getElementById('mq'+i);
+    if(!inp) continue;
+    var val=normQ(inp.value);
+    var matched=mqAnswers['mq'+i].some(function(a){ return normQ(a)===val; });
+    if(matched){ inp.classList.add('correct'); inp.classList.remove('wrong'); correct++; }
+    else { inp.classList.add('wrong'); inp.classList.remove('correct'); }
+    if(row) row.classList.add('checked');
+  }
+  var fb=document.getElementById('ex10a-fb');
+  fb.textContent=correct+' / '+total+' correct'+(correct===total?' 🎉':'');
+  fb.className='feedback '+(correct===total?'good':'bad');
+}
+function resetEx10a(){
+  for(var i=1;i<=6;i++){
+    var inp=document.getElementById('mq'+i+'-inp');
+    var row=document.getElementById('mq'+i);
+    if(inp){ inp.value=''; inp.className='make-q-input'; }
+    if(row) row.classList.remove('checked');
+  }
+  var fb=document.getElementById('ex10a-fb');
+  if(fb){ fb.textContent=''; fb.className='feedback'; }
+}
+
+// ============== MATCH EX 6 ==============
+var m6Sel={q:null,a:null};
+
+function selectMatch(item,side){
+  if(item.classList.contains('paired')) return;
+  if(m6Sel[side]){ m6Sel[side].classList.remove('selected'); }
+  item.classList.add('selected');
+  m6Sel[side]=item;
+
+  if(m6Sel.q && m6Sel.a){
+    var qPair=m6Sel.q.getAttribute('data-pair');
+    var aId=m6Sel.a.getAttribute('data-id');
+    if(qPair===aId){
+      m6Sel.q.classList.remove('selected'); m6Sel.q.classList.add('paired');
+      m6Sel.a.classList.remove('selected'); m6Sel.a.classList.add('paired');
+    } else {
+      var qEl=m6Sel.q, aEl=m6Sel.a;
+      qEl.classList.add('wrong-pair'); aEl.classList.add('wrong-pair');
+      setTimeout(function(){
+        qEl.classList.remove('wrong-pair','selected');
+        aEl.classList.remove('wrong-pair','selected');
+      },500);
+    }
+    m6Sel={q:null,a:null};
+  }
+}
+
+function checkMatch6(){
+  var paired=document.querySelectorAll('#m6-qcol .match-item.paired').length;
+  var fb=document.getElementById('match6-fb');
+  fb.textContent=paired+' / 4 correct'+(paired===4?' 🎉':'');
+  fb.className='feedback '+(paired===4?'good':'bad');
+}
+function resetMatch6(){
+  document.querySelectorAll('#match6 .match-item').forEach(function(el){
+    el.classList.remove('paired','selected','wrong-pair');
+  });
+  m6Sel={q:null,a:null};
+  var fb=document.getElementById('match6-fb');
+  if(fb){ fb.textContent=''; fb.className='feedback'; }
+}
+
+// ============== SPEAKING CARDS ==============
+function flipCard(card){
+  card.classList.toggle('flipped');
+}
+</script>
+</body>
+</html>
