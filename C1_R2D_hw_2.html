@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>HW · Phrases &amp; Listening</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+  <style>
+/* ── TOKENS ── */
+:root{
+  --bg:#f0f9ff;--card:#ffffff;--text:#0f172a;--subtle:#64748b;
+  --border:#bae6fd;--sh:0 2px 8px rgba(0,0,0,.07);
+  --acc:#0E7490;--acc-d:#0c4a6e;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1f2e;--card:#0f2235;--text:#f0f9ff;--subtle:#7dd3fc;
+  --border:#1e3a52;--sh:0 2px 8px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --bg:#0c1f2e;--card:#0f2235;--text:#f0f9ff;--subtle:#7dd3fc;
+  --border:#1e3a52;--sh:0 2px 8px rgba(0,0,0,.35);
+}
+
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:16px;}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#0E7490 0%,#0c4a6e 100%);color:#fff;padding:40px 20px 32px;text-align:center;}
+.hero-eye{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.72;margin-bottom:6px;}
+.hero h1{font-family:'Outfit',sans-serif;font-size:clamp(1.65rem,4vw,2.3rem);font-weight:800;line-height:1.1;margin-bottom:6px;}
+.hero-sub{font-size:.92rem;opacity:.8;margin-top:4px;}
+
+/* ── LAYOUT ── */
+main{max-width:840px;margin:0 auto;padding:0 16px 60px;}
+
+/* ── NAME BAR ── */
+.name-bar{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1.5px solid var(--border);padding:9px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 6px rgba(0,0,0,.06);}
+.name-bar label{font-size:.82rem;font-weight:600;color:var(--subtle);white-space:nowrap;}
+.name-bar input{flex:1;max-width:280px;border:1.5px solid var(--border);border-radius:7px;padding:5px 10px;font-family:inherit;font-size:.91rem;background:var(--bg);color:var(--text);outline:none;}
+.name-bar input:focus{border-color:var(--acc);}
+.theme-btn{margin-left:auto;background:none;border:1.5px solid var(--border);border-radius:7px;padding:4px 10px;font-size:.8rem;cursor:pointer;color:var(--subtle);}
+
+/* ── PROGRESS ── */
+.prog-wrap{max-width:840px;margin:0 auto;padding:14px 16px 0;}
+.prog-bar{background:var(--border);border-radius:20px;height:8px;overflow:hidden;}
+.prog-fill{background:var(--acc);height:100%;border-radius:20px;width:0%;transition:width .4s ease;}
+.prog-lbl{font-size:.76rem;color:var(--subtle);margin-top:5px;text-align:right;}
+
+/* ── EX CARD ── */
+.ex-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:24px 22px;margin-top:28px;box-shadow:var(--sh);}
+.ex-hd{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.ex-num{font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--acc);color:#fff;padding:2px 9px;border-radius:20px;}
+.ex-title{font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;color:var(--text);}
+.ex-instr{font-size:.88rem;color:var(--subtle);line-height:1.5;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+
+/* ── GAP FILL ── */
+.gap-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.gap-item{background:color-mix(in srgb,var(--acc) 5%,var(--card));border:1px solid var(--border);border-radius:9px;padding:10px 14px;font-size:.93rem;line-height:1.7;display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+.gap-n{font-weight:700;color:var(--acc);min-width:18px;font-size:.85rem;}
+input.gap{border:none;border-bottom:2px solid var(--acc);background:transparent;font-family:inherit;font-size:.93rem;width:100px;padding:2px 4px;outline:none;color:var(--text);}
+input.gap:focus{border-bottom-color:#0c4a6e;}
+input.gap:disabled{opacity:.7;}
+
+/* Word box */
+.word-box{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px;padding:12px 14px;background:color-mix(in srgb,var(--acc) 7%,var(--card));border:1px solid var(--border);border-radius:9px;}
+.word-box-lbl{width:100%;font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--subtle);margin-bottom:2px;}
+.word-chip{font-size:.85rem;font-weight:600;color:var(--acc);background:var(--card);border:1.5px solid var(--acc);border-radius:6px;padding:2px 10px;}
+
+/* ── CATEGORISATION ── */
+.cat-legend{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+.cat-chip{font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:20px;border:1.5px solid var(--acc);color:var(--acc);background:color-mix(in srgb,var(--acc) 8%,transparent);}
+.cat-list{display:flex;flex-direction:column;gap:9px;}
+.cat-row{display:flex;align-items:center;gap:10px;background:color-mix(in srgb,var(--acc) 5%,var(--card));border:1px solid var(--border);border-radius:9px;padding:9px 13px;}
+.cat-row.correct{border-color:#16a34a;background:color-mix(in srgb,#16a34a 8%,var(--card));}
+.cat-row.wrong{border-color:#dc2626;background:color-mix(in srgb,#dc2626 7%,var(--card));}
+.cat-phrase{flex:1;font-size:.92rem;font-style:italic;color:var(--text);}
+select.sel{border:1.5px solid var(--border);border-radius:7px;padding:4px 8px;font-family:inherit;font-size:.88rem;background:var(--bg);color:var(--text);cursor:pointer;outline:none;}
+select.sel:focus{border-color:var(--acc);}
+select.sel:disabled{opacity:.65;cursor:default;}
+
+/* ── OPEN WRITING ── */
+.prompt-list{display:flex;flex-direction:column;gap:14px;}
+.prompt-item{border:1.5px solid var(--border);border-radius:10px;overflow:hidden;}
+.prompt-q{background:color-mix(in srgb,var(--acc) 9%,var(--card));padding:10px 14px;font-size:.9rem;font-weight:600;color:var(--acc);line-height:1.5;}
+.prompt-q span{font-weight:400;color:var(--text);}
+textarea.open-ans{width:100%;border:none;border-top:1px solid var(--border);padding:10px 14px;font-family:inherit;font-size:.91rem;color:var(--text);background:var(--card);resize:vertical;min-height:80px;outline:none;line-height:1.6;}
+textarea.open-ans:focus{background:color-mix(in srgb,var(--acc) 3%,var(--card));}
+
+/* ── BUTTONS ── */
+.btn-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px;}
+.check-btn{background:var(--acc);color:#fff;border:none;border-radius:8px;padding:8px 20px;font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:background .15s;}
+.check-btn:hover{background:var(--acc-d);}
+.check-btn:disabled{opacity:.5;cursor:default;}
+.reset-btn{background:none;border:1.5px solid var(--border);border-radius:8px;padding:7px 16px;font-family:inherit;font-size:.88rem;color:var(--subtle);cursor:pointer;transition:border-color .15s;}
+.reset-btn:hover{border-color:var(--acc);color:var(--acc);}
+.score-badge{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;font-size:.82rem;font-weight:700;}
+.score-badge.perfect{background:color-mix(in srgb,#16a34a 15%,transparent);color:#16a34a;}
+.score-badge.partial{background:color-mix(in srgb,#D97706 15%,transparent);color:#D97706;}
+
+/* ── TEACHER CARD ── */
+.teacher-card{background:var(--card);border:2px solid var(--acc);border-radius:14px;padding:22px;margin-top:32px;text-align:center;}
+.teacher-card h3{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:6px;}
+.teacher-card p{font-size:.87rem;color:var(--subtle);margin-bottom:16px;line-height:1.5;}
+.send-btn{background:linear-gradient(135deg,var(--acc),var(--acc-d));color:#fff;border:none;border-radius:9px;padding:10px 28px;font-family:inherit;font-size:.93rem;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(14,116,144,.3);transition:opacity .15s;}
+.send-btn:hover{opacity:.88;}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-eye">Homework · Lesson 5</div>
+  <h1>Phrases &amp; Listening</h1>
+  <div class="hero-sub">Useful Phrases · Listening · Open Reflection</div>
+</header>
+
+<!-- NAME BAR -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+  <button class="theme-btn" onclick="toggleTheme()">☀ / ☾</button>
+</div>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-bar"><div class="prog-fill" id="pfill"></div></div>
+  <div class="prog-lbl"><span id="plabel">0 / 3</span> exercises complete</div>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- EXERCISE 1 — GAP FILL: ENDING A CONVERSATION      -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 1</span>
+    <span class="ex-title">Ending a Conversation — Gap Fill</span>
+  </div>
+  <div class="ex-instr">
+    Complete each phrase with one, two or three words. All the answers come from the <strong>Useful Phrases 2</strong> box in Stage 6. Use the word bank below for help — but try without it first!
+  </div>
+
+  <div class="word-box">
+    <div class="word-box-lbl">Word bank</div>
+    <span class="word-chip">get / head</span>
+    <span class="word-chip">just</span>
+    <span class="word-chip">shoot</span>
+    <span class="word-chip">better be</span>
+    <span class="word-chip">was lovely to</span>
+    <span class="word-chip">it's getting</span>
+  </div>
+
+  <ul class="gap-list">
+    <li class="gap-item" id="gr1">
+      <span class="gap-n">1</span>
+      I'll <input class="gap" id="p1" placeholder="…"> back to work.
+    </li>
+    <li class="gap-item" id="gr2">
+      <span class="gap-n">2</span>
+      Anyway, <input class="gap" id="p2" placeholder="…"> late.
+    </li>
+    <li class="gap-item" id="gr3">
+      <span class="gap-n">3</span>
+      I'd <input class="gap" id="p3" placeholder="…"> off.
+    </li>
+    <li class="gap-item" id="gr4">
+      <span class="gap-n">4</span>
+      Oh, hey — sorry, but I've <input class="gap" id="p4" placeholder="…"> seen someone…
+    </li>
+    <li class="gap-item" id="gr5">
+      <span class="gap-n">5</span>
+      It <input class="gap" id="p5" placeholder="…"> meet you.
+    </li>
+    <li class="gap-item" id="gr6">
+      <span class="gap-n">6</span>
+      I might have to <input class="gap" id="p6" placeholder="…">, too.
+    </li>
+  </ul>
+
+  <div class="btn-row">
+    <button class="check-btn" id="ex1Btn" onclick="checkEx1()">Check answers</button>
+    <button class="reset-btn" onclick="resetEx1()">Reset</button>
+    <span class="score-badge" id="ex1Score" style="display:none;"></span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- EXERCISE 2 — CATEGORISATION: USEFUL PHRASES 1     -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 2</span>
+    <span class="ex-title">Keeping the Conversation — Categorise</span>
+  </div>
+  <div class="ex-instr">
+    Each phrase below comes from <strong>Useful Phrases 1</strong> (Stage 6). Match each phrase to its category (a–d) using the dropdown.
+  </div>
+
+  <div class="cat-legend">
+    <span class="cat-chip">a — active listening</span>
+    <span class="cat-chip">b — pressing for details</span>
+    <span class="cat-chip">c — keeping your turn</span>
+    <span class="cat-chip">d — getting back to your story</span>
+  </div>
+
+  <div class="cat-list">
+    <div class="cat-row" id="cr1">
+      <span class="cat-phrase">"No way!"</span>
+      <select class="sel" id="c1"><option value="">— a/b/c/d —</option><option>a</option><option>b</option><option>c</option><option>d</option></select>
+    </div>
+    <div class="cat-row" id="cr2">
+      <span class="cat-phrase">"Do tell!"</span>
+      <select class="sel" id="c2"><option value="">— a/b/c/d —</option><option>a</option><option>b</option><option>c</option><option>d</option></select>
+    </div>
+    <div class="cat-row" id="cr3">
+      <span class="cat-phrase">"Let me finish."</span>
+      <select class="sel" id="c3"><option value="">— a/b/c/d —</option><option>a</option><option>b</option><option>c</option><option>d</option></select>
+    </div>
+    <div class="cat-row" id="cr4">
+      <span class="cat-phrase">"So as I was saying…"</span>
+      <select class="sel" id="c4"><option value="">— a/b/c/d —</option><option>a</option><option>b</option><option>c</option><option>d</option></select>
+    </div>
+    <div class="cat-row" id="cr5">
+      <span class="cat-phrase">"How rude!"</span>
+      <select class="sel" id="c5"><option value="">— a/b/c/d —</option><option>a</option><option>b</option><option>c</option><option>d</option></select>
+    </div>
+    <div class="cat-row" id="cr6">
+      <span class="cat-phrase">"What happened then?"</span>
+      <select class="sel" id="c6"><option value="">— a/b/c/d —</option><option>a</option><option>b</option><option>c</option><option>d</option></select>
+    </div>
+    <div class="cat-row" id="cr7">
+      <span class="cat-phrase">"Hang on, there's more."</span>
+      <select class="sel" id="c7"><option value="">— a/b/c/d —</option><option>a</option><option>b</option><option>c</option><option>d</option></select>
+    </div>
+    <div class="cat-row" id="cr8">
+      <span class="cat-phrase">"Getting back to…"</span>
+      <select class="sel" id="c8"><option value="">— a/b/c/d —</option><option>a</option><option>b</option><option>c</option><option>d</option></select>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="check-btn" id="ex2Btn" onclick="checkEx2()">Check answers</button>
+    <button class="reset-btn" onclick="resetEx2()">Reset</button>
+    <span class="score-badge" id="ex2Score" style="display:none;"></span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- EXERCISE 3 — OPEN REFLECTION                      -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 3</span>
+    <span class="ex-title">Reflection &amp; Personal Response</span>
+  </div>
+  <div class="ex-instr">
+    Answer the three questions below in your own words. There are no right or wrong answers — your teacher wants to see your thinking. Write at least 2–3 sentences for each.
+  </div>
+
+  <div class="prompt-list">
+    <div class="prompt-item">
+      <div class="prompt-q">1 &nbsp;·&nbsp; <span>Think about a conversation you had recently (in any language). Did anyone <strong>butt in</strong>, <strong>go off on a tangent</strong>, or <strong>clam up</strong>? What happened, and how did the conversation end?</span></div>
+      <textarea class="open-ans" id="r1" rows="4" placeholder="Write your answer here…" oninput="checkOpen()"></textarea>
+    </div>
+  </div>
+
+  <div class="btn-row" style="margin-top:12px;">
+    <span id="ex3Status" style="font-size:.85rem;color:var(--subtle);">Fill in all three answers to complete this exercise.</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SEND TO TEACHER                                   -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="teacher-card">
+  <h3>📩 Send to Your Teacher</h3>
+  <p>When you've finished, click below to email your answers directly.<br>Make sure your name is filled in at the top.</p>
+  <button class="send-btn" onclick="sendToTeacher()">Send to Teacher</button>
+</div>
+
+</main>
+
+<script>
+// ── THEME ──────────────────────────────────────────
+function toggleTheme(){
+  const r=document.documentElement;
+  const cur=r.getAttribute('data-theme');
+  r.setAttribute('data-theme',cur==='dark'?'light':'dark');
+}
+
+// ── PROGRESS ──────────────────────────────────────
+const done={ex1:false,ex2:false,ex3:false};
+function updateProgress(){
+  const n=Object.values(done).filter(Boolean).length;
+  const total=Object.keys(done).length;
+  document.getElementById('pfill').style.width=(n/total*100)+'%';
+  document.getElementById('plabel').textContent=n+' / '+total;
+}
+updateProgress();
+
+// ── EXERCISE 1: GAP FILL ─────────────────────────
+const GAP_ANS={
+  p1:['get','head'],
+  p2:["i'm getting","it's getting","getting","im getting"],
+  p3:['better be','better head'],
+  p4:['just'],
+  p5:['was lovely to','was great to','was nice to','was good to','lovely to','great to','nice to','good to'],
+  p6:['shoot','run','make a move','head off','go']
+};
+function normalise(s){return s.trim().toLowerCase().replace(/['']/g,"'");}
+
+function checkEx1(){
+  let score=0,total=Object.keys(GAP_ANS).length;
+  Object.entries(GAP_ANS).forEach(([id,accepted])=>{
+    const inp=document.getElementById(id);
+    const row=document.getElementById('gr'+id.slice(1));
+    const val=normalise(inp.value);
+    const ok=accepted.some(a=>val===a||val.includes(a));
+    if(ok){score++;inp.style.borderBottomColor='#16a34a';row.style.borderColor='#16a34a';}
+    else{inp.style.borderBottomColor='#dc2626';row.style.borderColor='#dc2626';
+      if(inp.value.trim()){inp.placeholder='→ '+accepted[0];}
+      else{inp.placeholder='→ '+accepted[0];}
+    }
+    inp.disabled=true;
+  });
+  const b=document.getElementById('ex1Score');
+  b.style.display='inline-flex';
+  b.className='score-badge '+(score===total?'perfect':'partial');
+  b.textContent=score+'/'+total;
+  document.getElementById('ex1Btn').disabled=true;
+  if(score===total){done.ex1=true;updateProgress();}
+  else if(score>=Math.ceil(total*.5)){done.ex1=true;updateProgress();}
+}
+
+function resetEx1(){
+  Object.keys(GAP_ANS).forEach(id=>{
+    const inp=document.getElementById(id);
+    inp.value='';inp.disabled=false;inp.style.borderBottomColor='';
+    const row=document.getElementById('gr'+id.slice(1));
+    row.style.borderColor='';
+  });
+  document.getElementById('ex1Score').style.display='none';
+  document.getElementById('ex1Btn').disabled=false;
+  done.ex1=false;updateProgress();
+}
+
+// ── EXERCISE 2: CATEGORISATION ───────────────────
+const CAT_ANS={c1:'a',c2:'b',c3:'c',c4:'d',c5:'a',c6:'b',c7:'c',c8:'d'};
+
+function checkEx2(){
+  let score=0,total=Object.keys(CAT_ANS).length;
+  Object.entries(CAT_ANS).forEach(([id,ans])=>{
+    const sel=document.getElementById(id);
+    const row=document.getElementById('cr'+id.slice(1));
+    if(sel.value===ans){score++;row.classList.add('correct');}
+    else{row.classList.add('wrong');}
+    sel.disabled=true;
+  });
+  const b=document.getElementById('ex2Score');
+  b.style.display='inline-flex';
+  b.className='score-badge '+(score===total?'perfect':'partial');
+  b.textContent=score+'/'+total;
+  document.getElementById('ex2Btn').disabled=true;
+  if(score>=Math.ceil(total*.5)){done.ex2=true;updateProgress();}
+}
+
+function resetEx2(){
+  Object.keys(CAT_ANS).forEach(id=>{
+    const sel=document.getElementById(id);
+    sel.value='';sel.disabled=false;
+    const row=document.getElementById('cr'+id.slice(1));
+    row.classList.remove('correct','wrong');
+  });
+  document.getElementById('ex2Score').style.display='none';
+  document.getElementById('ex2Btn').disabled=false;
+  done.ex2=false;updateProgress();
+}
+
+// ── EXERCISE 3: OPEN WRITING ─────────────────────
+function checkOpen(){
+  const r1=document.getElementById('r1').value.trim();
+  const status=document.getElementById('ex3Status');
+  if(r1.length>10){
+    done.ex3=true;
+    status.textContent='✓ Answer written — ready to send to your teacher.';
+    status.style.color='#16a34a';
+  } else {
+    done.ex3=false;
+    status.textContent='Write your answer to complete this exercise.';
+    status.style.color='';
+  }
+  updateProgress();
+}
+
+// ── SEND TO TEACHER ───────────────────────────────
+function sendToTeacher(){
+  const name=document.getElementById('nameInput').value.trim()||'Anonymous';
+
+  // Ex 1 answers
+  const gapParts=Object.keys(GAP_ANS).map((id,i)=>{
+    const inp=document.getElementById(id);
+    return (i+1)+'. "'+inp.value+'"';
+  }).join('\n');
+
+  // Ex 2 answers
+  const phrases=['No way!','Do tell!','Let me finish.','So as I was saying…','How rude!','What happened then?','Hang on, there\'s more.','Getting back to…'];
+  const catParts=Object.keys(CAT_ANS).map((id,i)=>{
+    const sel=document.getElementById(id);
+    return (i+1)+'. "'+phrases[i]+'" → '+( sel.value||'(blank)');
+  }).join('\n');
+
+  // Ex 3 answers
+  const r1=document.getElementById('r1').value.trim()||'(no answer)';
+
+  const body=
+    'Student: '+name+'\n'+
+    'Homework: Lesson 5 — Phrases & Listening\n\n'+
+    '── EXERCISE 1: Ending a Conversation (Gap Fill) ──\n'+gapParts+'\n\n'+
+    '── EXERCISE 2: Keeping the Conversation (Categorise) ──\n'+catParts+'\n\n'+
+    '── EXERCISE 3: Reflection ──\n'+
+    r1;
+
+  const sub=encodeURIComponent('Homework – '+name+' – Lesson 5 Phrases & Listening');
+  window.location.href='mailto:dariia.mlnk@gmail.com?subject='+sub+'&body='+encodeURIComponent(body);
+}
+</script>
+</body>
+</html>
