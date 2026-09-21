@@ -1,0 +1,635 @@
+<title>Unit 7C Homework</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg:       #f3f7f4;
+  --surface:  #ffffff;
+  --surface2: #e8f3eb;
+  --surface3: #d9ecde;
+  --border:   #c2ddc9;
+  --green:    #1a7a40;
+  --green2:   #229150;
+  --green-lt: rgba(26,122,64,.1);
+  --teal:     #0d7a8f;
+  --teal-lt:  rgba(13,122,143,.1);
+  --amber:    #b86c0a;
+  --amber-lt: rgba(184,108,10,.1);
+  --blue:     #1559a8;
+  --blue-lt:  rgba(21,89,168,.1);
+  --red:      #c93535;
+  --red-lt:   rgba(201,53,53,.08);
+  --text:     #111c15;
+  --muted:    #4a6154;
+  --radius:   14px;
+  --radius-sm:8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#0c1910; --surface:#112018; --surface2:#172d20; --surface3:#1e3a2a;
+    --border:#274834; --green:#3ecf7a; --green2:#4de88a; --green-lt:rgba(62,207,122,.12);
+    --teal:#00c4d4; --teal-lt:rgba(0,196,212,.12); --amber:#f5a623; --amber-lt:rgba(245,166,35,.12);
+    --blue:#4d9af5; --blue-lt:rgba(77,154,245,.13); --red:#f06a5a; --red-lt:rgba(240,106,90,.1);
+    --text:#d4edda; --muted:#7aaa8a;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#0c1910; --surface:#112018; --surface2:#172d20; --surface3:#1e3a2a;
+  --border:#274834; --green:#3ecf7a; --green2:#4de88a; --green-lt:rgba(62,207,122,.12);
+  --teal:#00c4d4; --teal-lt:rgba(0,196,212,.12); --amber:#f5a623; --amber-lt:rgba(245,166,35,.12);
+  --blue:#4d9af5; --blue-lt:rgba(77,154,245,.13); --red:#f06a5a; --red-lt:rgba(240,106,90,.1);
+  --text:#d4edda; --muted:#7aaa8a;
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { background:var(--bg); color:var(--text); font-family:'Inter',system-ui,sans-serif; font-size:15px; line-height:1.65; min-height:100%; }
+
+/* HEADER */
+.hw-header {
+  background:linear-gradient(135deg,#1a7a40 0%,#0d7a8f 100%);
+  color:#fff; padding:30px 24px 22px; position:relative;
+}
+.hw-header .eyebrow { font-size:10px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; opacity:.7; margin-bottom:4px; }
+.hw-header h1 { font-family:'Space Grotesk',sans-serif; font-size:24px; font-weight:700; line-height:1.2; }
+.hw-header .sub { font-size:13px; opacity:.8; margin-top:4px; }
+.theme-btn { position:absolute; top:16px; right:16px; background:rgba(255,255,255,.18); border:none; color:#fff; border-radius:20px; padding:5px 12px; font-size:12px; cursor:pointer; }
+
+/* NAME BAR */
+.name-bar {
+  background:var(--surface); border-bottom:1px solid var(--border);
+  padding:10px 20px; display:flex; align-items:center; gap:10px;
+  position:sticky; top:0; z-index:100; flex-wrap:wrap;
+}
+.name-bar label { font-size:13px; font-weight:600; color:var(--muted); white-space:nowrap; }
+.name-bar input { flex:1; min-width:180px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface2); color:var(--text); font-family:'Inter',sans-serif; font-size:13px; padding:6px 10px; outline:none; }
+.name-bar input:focus { border-color:var(--green); }
+
+/* PROGRESS */
+.progress-wrap { background:var(--surface); border-bottom:1px solid var(--border); padding:8px 20px; display:flex; align-items:center; gap:12px; }
+.progress-bar { flex:1; height:8px; background:var(--surface3); border-radius:4px; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--green),var(--teal)); border-radius:4px; width:0%; transition:width .4s; }
+.progress-label { font-size:12px; font-weight:600; color:var(--muted); white-space:nowrap; }
+
+/* MAIN */
+.main { max-width:780px; margin:0 auto; padding:20px 20px 60px; }
+
+/* EXERCISE CARD */
+.ex-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; margin-bottom:20px; }
+.ex-hd { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+.ex-num { background:var(--green-lt); color:var(--green); border-radius:20px; padding:3px 11px; font-size:11px; font-weight:700; letter-spacing:.5px; font-family:'Space Grotesk',sans-serif; }
+.ex-num.teal { background:var(--teal-lt); color:var(--teal); }
+.ex-num.amber { background:var(--amber-lt); color:var(--amber); }
+.ex-num.blue { background:var(--blue-lt); color:var(--blue); }
+.ex-title { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; }
+.ex-instr { font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.6; }
+
+/* WORD BOX */
+.word-box {
+  background:var(--green-lt); border:1px solid var(--green);
+  border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:14px;
+  font-size:13px; line-height:2.1;
+}
+.word-box strong { color:var(--green); }
+.word-chip { display:inline-block; background:var(--surface); border:1px solid var(--green); border-radius:20px; padding:2px 10px; margin:2px 3px; font-size:13px; color:var(--green); }
+
+/* GAP FILL */
+input.gap { border:none; border-bottom:2px solid var(--border); background:transparent; color:var(--text); font-size:14px; padding:2px 4px; width:170px; outline:none; transition:border-color .2s; }
+input.gap:focus { border-color:var(--teal); }
+input.gap.ok  { border-color:var(--green); color:var(--green); }
+input.gap.bad { border-color:var(--red); color:var(--red); }
+.gap-sent { margin-bottom:12px; font-size:14px; line-height:2.0; }
+.gap-sent .sent-num { font-weight:700; color:var(--muted); margin-right:6px; }
+
+/* WORD ORDER */
+.wo-item { margin-bottom:14px; }
+.wo-item .wo-q { font-size:13px; color:var(--muted); margin-bottom:6px; font-style:italic; }
+.wo-item input.wo-inp { width:100%; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface2); color:var(--text); font-size:14px; padding:8px 10px; outline:none; font-family:'Inter',sans-serif; transition:border-color .2s; }
+.wo-item input.wo-inp:focus { border-color:var(--teal); }
+.wo-item input.wo-inp.ok  { border-color:var(--green); background:var(--green-lt); }
+.wo-item input.wo-inp.bad { border-color:var(--red); background:var(--red-lt); }
+.wo-item .wo-fb { font-size:12px; margin-top:4px; min-height:1em; }
+.wo-item .wo-fb.ok  { color:var(--green); }
+.wo-item .wo-fb.bad { color:var(--red); }
+
+/* MC BUTTONS */
+.mc-item { margin-bottom:14px; }
+.mc-item .mc-q { font-size:14px; margin-bottom:8px; line-height:1.7; }
+.mc-opts { display:flex; flex-wrap:wrap; gap:7px; }
+.mc-btn { border:1px solid var(--border); background:var(--surface2); color:var(--text); border-radius:var(--radius-sm); padding:7px 14px; font-size:13px; font-family:'Inter',sans-serif; cursor:pointer; transition:.15s; }
+.mc-btn:hover { border-color:var(--teal); }
+.mc-btn.chosen { background:var(--teal); color:#fff; border-color:var(--teal); }
+.mc-btn.correct { background:var(--green); color:#fff; border-color:var(--green); }
+.mc-btn.wrong   { background:var(--red-lt); border-color:var(--red); color:var(--red); }
+
+/* TRANSFORM */
+.tf-item { margin-bottom:14px; }
+.tf-item .tf-q { font-size:14px; margin-bottom:4px; }
+.tf-item .tf-start { font-size:13px; color:var(--muted); margin-bottom:6px; }
+.tf-item input.tf-inp { width:100%; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface2); color:var(--text); font-size:14px; padding:8px 10px; outline:none; font-family:'Inter',sans-serif; transition:border-color .2s; }
+.tf-item input.tf-inp:focus { border-color:var(--teal); }
+.tf-item input.tf-inp.ok  { border-color:var(--green); background:var(--green-lt); }
+.tf-item input.tf-inp.bad { border-color:var(--red); background:var(--red-lt); }
+.tf-item .tf-fb { font-size:12px; margin-top:4px; min-height:1em; }
+.tf-item .tf-fb.ok  { color:var(--green); }
+.tf-item .tf-fb.bad { color:var(--red); }
+
+/* BUTTONS */
+.btn { border:none; cursor:pointer; border-radius:var(--radius-sm); padding:9px 18px; font-size:13px; font-weight:600; font-family:'Inter',sans-serif; transition:opacity .15s; }
+.btn:active { opacity:.8; }
+.btn-green  { background:var(--green); color:#fff; }
+.btn-teal   { background:var(--teal); color:#fff; }
+.btn-amber  { background:var(--amber); color:#fff; }
+.btn-blue   { background:var(--blue); color:#fff; }
+.btn-ghost  { background:var(--surface2); color:var(--text); border:1px solid var(--border); }
+.btn-row    { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+.fb-score   { font-size:13px; font-weight:600; margin-top:10px; min-height:1em; }
+.fb-score.ok  { color:var(--green); }
+.fb-score.bad { color:var(--red); }
+
+/* SEND */
+.send-card {
+  background:var(--teal-lt); border:1px solid var(--teal);
+  border-radius:var(--radius); padding:18px 20px; margin-bottom:20px;
+  text-align:center;
+}
+.send-card h3 { font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700; color:var(--teal); margin-bottom:6px; }
+.send-card p { font-size:13px; color:var(--muted); margin-bottom:14px; }
+</style>
+
+<!-- HEADER -->
+<div class="hw-header">
+  <div class="eyebrow">Unit 7C · Homework</div>
+  <h1>Cultural Awareness</h1>
+  <div class="sub">Vocabulary &amp; Introductory <em>It</em> — p.54</div>
+  <button class="theme-btn" id="theme-btn">🌙 Dark</button>
+</div>
+
+<!-- NAME BAR -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+  <div class="progress-label" id="plabel">0 / 4</div>
+</div>
+
+<div class="main">
+
+  <!-- ═══ EX 1 — VOCABULARY GAP FILL ═══ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-num">Exercise 1</span>
+      <span class="ex-title">Vocabulary — complete the sentences</span>
+    </div>
+    <p class="ex-instr">Complete each sentence with the correct word. There is <strong>one extra word</strong> you don't need.</p>
+    <div class="word-box">
+      <strong>Words:</strong><br>
+      <span class="word-chip">acquaintance</span>
+      <span class="word-chip">brother-in-law</span>
+      <span class="word-chip">classmate</span>
+      <span class="word-chip">client</span>
+      <span class="word-chip">co-worker</span>
+      <span class="word-chip">distant relative</span>
+      <span class="word-chip">ex-partner</span>
+      <span class="word-chip">flatmate</span>
+      <span class="word-chip">senior colleague</span>
+    </div>
+    <div id="ex1-items"></div>
+    <div class="btn-row">
+      <button class="btn btn-green" data-action="checkEx1">Check</button>
+      <button class="btn btn-ghost" data-action="resetEx1">↺ Reset</button>
+    </div>
+    <div class="fb-score" id="ex1-score"></div>
+  </div>
+
+  <!-- ═══ EX 2 — WORD ORDER ═══ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-num teal">Exercise 2</span>
+      <span class="ex-title">Word order — put the words in the correct order</span>
+    </div>
+    <p class="ex-instr">Rearrange the words to make a correct sentence. Use a capital letter at the start.</p>
+    <div id="ex2-items"></div>
+    <div class="btn-row">
+      <button class="btn btn-teal" data-action="checkEx2">Check</button>
+      <button class="btn btn-ghost" data-action="resetEx2">↺ Reset</button>
+    </div>
+    <div class="fb-score" id="ex2-score"></div>
+  </div>
+
+  <!-- ═══ EX 3 — MULTIPLE CHOICE ═══ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-num amber">Exercise 3</span>
+      <span class="ex-title">Multiple choice — choose the correct option(s)</span>
+    </div>
+    <p class="ex-instr">Choose the correct option (a, b or c). More than one option may be correct — select <strong>all</strong> that apply, then check.</p>
+    <div id="ex3-items"></div>
+    <div class="btn-row">
+      <button class="btn btn-amber" data-action="checkEx3">Check</button>
+      <button class="btn btn-ghost" data-action="resetEx3">↺ Reset</button>
+    </div>
+    <div class="fb-score" id="ex3-score"></div>
+  </div>
+
+  <!-- ═══ EX 4 — SENTENCE TRANSFORMATION ═══ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-num blue">Exercise 4</span>
+      <span class="ex-title">Sentence transformation — complete the second sentence</span>
+    </div>
+    <p class="ex-instr">Complete the second sentence so it means the same as the first. Use the word given as a starter.</p>
+    <div id="ex4-items"></div>
+    <div class="btn-row">
+      <button class="btn btn-blue" data-action="checkEx4">Check</button>
+      <button class="btn btn-ghost" data-action="resetEx4">↺ Reset</button>
+    </div>
+    <div class="fb-score" id="ex4-score"></div>
+  </div>
+
+  <!-- SEND TO TEACHER -->
+  <div class="send-card">
+    <h3>📧 Send to Teacher</h3>
+    <p>When you've finished all exercises, send your answers to your teacher.</p>
+    <button class="btn btn-teal" data-action="sendToTeacher">Send to Teacher</button>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+/* ── THEME ── */
+var themeBtn=document.getElementById('theme-btn');
+var dark=false;
+themeBtn.addEventListener('click',function(){
+  dark=!dark;
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  themeBtn.textContent=dark?'☀️ Light':'🌙 Dark';
+});
+
+/* ── PROGRESS ── */
+var done={ex1:false,ex2:false,ex3:false,ex4:false};
+function updateProgress(){
+  var n=Object.values(done).filter(Boolean).length;
+  var total=Object.keys(done).length;
+  document.getElementById('pfill').style.width=(n/total*100)+'%';
+  document.getElementById('plabel').textContent=n+' / '+total;
+}
+
+/* ══════════════════════════════════════
+   EX 1 — VOCABULARY GAP FILL
+══════════════════════════════════════ */
+var ex1Data=[
+  {text:'Leah\'s more of an _____ than a friend. I\'ve only met her a few times.', ans:['acquaintance']},
+  {text:'One of my _____ does very little work and expects the rest of us to do it for her.', ans:['co-workers','co-worker']},
+  {text:'Nicholas likes a tidy home but his _____ is really messy. I don\'t know how they live together!', ans:['flatmate']},
+  {text:'One of my _____ wants to meet for lunch to discuss work. She pays me a lot of money so I can\'t say no!', ans:['clients','client']},
+  {text:'I saw my _____ today while I was with my new girlfriend. That was awkward.', ans:['ex-partner']},
+  {text:'I\'m going out with my sister and _____ tonight. I\'m so glad she married him, he\'s lots of fun.', ans:['brother-in-law']},
+  {text:'I don\'t really get on with my _____. She\'s not at all like my husband. You wouldn\'t think they had the same parents!', ans:['distant relative']},
+  {text:'My _____ and I are going out to celebrate finishing our course.', ans:['classmate']},
+];
+/* Note: 'senior colleague' is the extra word */
+
+function buildEx1(){
+  var el=document.getElementById('ex1-items');
+  el.innerHTML=ex1Data.map(function(d,i){
+    var txt=d.text.replace('_____','<input class="gap" id="e1-'+i+'" type="text" placeholder="…" style="width:190px;">');
+    return '<div class="gap-sent"><span class="sent-num">'+(i+1)+'.</span>'+txt+'</div>';
+  }).join('');
+}
+
+function checkEx1(){
+  var correct=0;
+  ex1Data.forEach(function(d,i){
+    var inp=document.getElementById('e1-'+i);
+    if(!inp) return;
+    var val=inp.value.trim().toLowerCase();
+    var match=d.ans.some(function(a){ return val===a.toLowerCase(); });
+    inp.classList.toggle('ok',match&&val!=='');
+    inp.classList.toggle('bad',!match||val==='');
+    if(match&&val!=='') correct++;
+  });
+  var sc=document.getElementById('ex1-score');
+  if(correct===ex1Data.length){ sc.className='fb-score ok'; sc.textContent='✓ All correct! ('+correct+'/'+ex1Data.length+')'; done.ex1=true; }
+  else { sc.className='fb-score bad'; sc.textContent='✗ '+correct+'/'+ex1Data.length+' correct. Check the red ones.'; }
+  updateProgress();
+}
+
+function resetEx1(){
+  ex1Data.forEach(function(d,i){ var inp=document.getElementById('e1-'+i); if(inp){ inp.value=''; inp.className='gap'; } });
+  document.getElementById('ex1-score').textContent=''; done.ex1=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   EX 2 — WORD ORDER
+══════════════════════════════════════ */
+var ex2Data=[
+  {scrambled:'seems / Lyn and Ellie / me / it / have fallen out / to / that',
+   ans:['it seems to me that lyn and ellie have fallen out',
+        'it seems to me that lyn and ellie have fallen out.'],
+   display:'It seems to me that Lyn and Ellie have fallen out.'},
+  {scrambled:'if / going to / it / feels / rain / as / it\'s',
+   ans:['it feels as if it\'s going to rain','it feels as if it\'s going to rain.'],
+   display:'It feels as if it\'s going to rain.'},
+  {scrambled:'that / me / it / a lot of money / we\'re / strikes / spending',
+   ans:['it strikes me that we\'re spending a lot of money','it strikes me that we\'re spending a lot of money.'],
+   display:'It strikes me that we\'re spending a lot of money.'},
+  {scrambled:'though / a hard time / you\'re / it / as / having / sounds',
+   ans:['it sounds as though you\'re having a hard time','it sounds as though you\'re having a hard time.'],
+   display:'It sounds as though you\'re having a hard time.'},
+  {scrambled:'I\'ve / occurs / that / been here before / to me / never / it',
+   ans:['it occurs to me that i\'ve never been here before','it occurs to me that i\'ve never been here before.'],
+   display:'It occurs to me that I\'ve never been here before.'},
+  {scrambled:'you\'ve / a great day / looks / if / had / it / as',
+   ans:['it looks as if you\'ve had a great day','it looks as if you\'ve had a great day.'],
+   display:'It looks as if you\'ve had a great day.'},
+];
+
+function buildEx2(){
+  var el=document.getElementById('ex2-items');
+  el.innerHTML=ex2Data.map(function(d,i){
+    return '<div class="wo-item">'
+      +'<div class="wo-q"><strong>'+(i+1)+'.</strong> <em>'+d.scrambled+'</em></div>'
+      +'<input class="wo-inp" id="e2-'+i+'" type="text" placeholder="Write your sentence here…">'
+      +'<div class="wo-fb" id="e2-fb-'+i+'"></div>'
+      +'</div>';
+  }).join('');
+}
+
+function checkEx2(){
+  var correct=0;
+  ex2Data.forEach(function(d,i){
+    var inp=document.getElementById('e2-'+i);
+    var fb=document.getElementById('e2-fb-'+i);
+    if(!inp) return;
+    var val=inp.value.trim().toLowerCase().replace(/[.!?]$/,'');
+    var match=d.ans.some(function(a){ return val===a.toLowerCase().replace(/[.!?]$/,''); });
+    inp.classList.toggle('ok',match&&val!=='');
+    inp.classList.toggle('bad',!match||val==='');
+    if(match&&val!==''){ correct++; fb.className='wo-fb ok'; fb.textContent='✓ Correct!'; }
+    else if(val!==''){ fb.className='wo-fb bad'; fb.textContent='✗ Answer: '+d.display; }
+    else { fb.className='wo-fb bad'; fb.textContent='Please write an answer.'; }
+  });
+  var sc=document.getElementById('ex2-score');
+  if(correct===ex2Data.length){ sc.className='fb-score ok'; sc.textContent='✓ All correct! ('+correct+'/'+ex2Data.length+')'; done.ex2=true; }
+  else { sc.className='fb-score bad'; sc.textContent='✗ '+correct+'/'+ex2Data.length+' correct.'; }
+  updateProgress();
+}
+
+function resetEx2(){
+  ex2Data.forEach(function(d,i){
+    var inp=document.getElementById('e2-'+i); if(inp){ inp.value=''; inp.className='wo-inp'; }
+    var fb=document.getElementById('e2-fb-'+i); if(fb){ fb.textContent=''; fb.className='wo-fb'; }
+  });
+  document.getElementById('ex2-score').textContent=''; done.ex2=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   EX 3 — MULTIPLE CHOICE
+   (More than one option may be correct)
+══════════════════════════════════════ */
+var ex3Data=[
+  {q:'1. It _____ people spend so much time online these days.',
+   opts:['a) bothers me that','b) alarms me that','c) turns out that'],
+   correct:[0,1],  /* a and b correct; c wrong (turns out = it's discovered) */
+   explain:'a and b ✓ — "bother" and "alarm" + me + that describe feelings. "turns out" doesn\'t take "me" before "that".'},
+  {q:'2. It\'s not that Sam and I don\'t get on, it\'s _____ that we don\'t really know each other.',
+   opts:['a) still','b) yet','c) just'],
+   correct:[2],
+   explain:'c ✓ — "it\'s just that" is the fixed phrase used with "it\'s not that".'},
+  {q:'3. It _____ me that the temperature\'s getting warmer here each year.',
+   opts:['a) strikes','b) looks','c) occurs'],
+   correct:[0,2],
+   explain:'a and c ✓ — "strikes me that" and "occurs to me that" both work. "looks" needs "like/as if", not "me that".'},
+  {q:'4. I thought my appointment was today but it _____ it\'s tomorrow.',
+   opts:['a) surprises me that','b) followed that','c) turns out that'],
+   correct:[2],
+   explain:'c ✓ — "it turns out that" means you discovered something. "Surprises me" could work grammatically but changes the meaning.'},
+  {q:'5. It _____ that no one likes my cooking. You aren\'t eating it!',
+   opts:['a) looks as if','b) appears','c) feels to me'],
+   correct:[0,1],
+   explain:'a and b ✓ — "it looks as if" and "it appears" both express how a situation seems. "feels to me" needs "that" and a different construction.'},
+  {q:'6. From what you\'ve told me, it _____ you\'re going to have a great holiday.',
+   opts:['a) sounds as though','b) looks as if','c) feel as though'],
+   correct:[0,1],
+   explain:'a and b ✓ — both "sounds as though" and "looks as if" work here. "feel" (c) must be "feels" and would need a personal object.'},
+];
+
+/* Track selections: array of arrays */
+var ex3Selected=ex3Data.map(function(){ return []; });
+
+function buildEx3(){
+  var el=document.getElementById('ex3-items');
+  el.innerHTML=ex3Data.map(function(d,qi){
+    return '<div class="mc-item">'
+      +'<div class="mc-q"><strong>'+d.q+'</strong></div>'
+      +'<div class="mc-opts" id="mc-'+qi+'">'
+      +d.opts.map(function(opt,oi){
+        return '<button class="mc-btn" data-qi="'+qi+'" data-oi="'+oi+'">'+opt+'</button>';
+      }).join('')
+      +'</div>'
+      +'<div class="wo-fb" id="mc-fb-'+qi+'"></div>'
+      +'</div>';
+  }).join('');
+}
+
+function checkEx3(){
+  var allCorrect=0;
+  ex3Data.forEach(function(d,qi){
+    var sel=ex3Selected[qi];
+    var fb=document.getElementById('mc-fb-'+qi);
+    var btns=document.querySelectorAll('[data-qi="'+qi+'"]');
+    var correct=d.correct.slice().sort().join(',')===(sel.slice().sort().join(','));
+    btns.forEach(function(btn){
+      var oi=parseInt(btn.dataset.oi);
+      var isCorrect=d.correct.indexOf(oi)>-1;
+      var isSelected=sel.indexOf(oi)>-1;
+      btn.className='mc-btn';
+      if(isCorrect){ btn.classList.add('correct'); }
+      else if(isSelected&&!isCorrect){ btn.classList.add('wrong'); }
+    });
+    if(fb){
+      if(correct){ fb.className='wo-fb ok'; fb.textContent='✓ Correct!'; allCorrect++; }
+      else { fb.className='wo-fb bad'; fb.textContent='✗ '+d.explain; }
+    }
+  });
+  var sc=document.getElementById('ex3-score');
+  if(allCorrect===ex3Data.length){ sc.className='fb-score ok'; sc.textContent='✓ All correct! ('+allCorrect+'/'+ex3Data.length+')'; done.ex3=true; }
+  else { sc.className='fb-score bad'; sc.textContent='✗ '+allCorrect+'/'+ex3Data.length+' correct.'; }
+  updateProgress();
+}
+
+function resetEx3(){
+  ex3Selected=ex3Data.map(function(){ return []; });
+  document.querySelectorAll('.mc-btn').forEach(function(btn){ btn.className='mc-btn'; });
+  ex3Data.forEach(function(d,qi){ var fb=document.getElementById('mc-fb-'+qi); if(fb){ fb.textContent=''; fb.className='wo-fb'; } });
+  document.getElementById('ex3-score').textContent=''; done.ex3=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   EX 4 — SENTENCE TRANSFORMATION
+══════════════════════════════════════ */
+var ex4Data=[
+  {q1:'You don\'t seem very happy.',
+   start:'It seems',
+   ans:['it seems that you\'re not very happy','it seems you\'re not very happy',
+        'it seems like you\'re not very happy','it seems as if you\'re not very happy',
+        'it seems as though you\'re not very happy','it seems to me that you\'re not very happy',
+        'it seems (that) you\'re not very happy'],
+   display:'It seems (that) you\'re not very happy / It seems as if you\'re not very happy.'},
+  {q1:'I realise that the shops close early on a Sunday.',
+   start:'It occurs',
+   ans:['it occurs to me that the shops close early on a sunday',
+        'it occurs to me that shops close early on a sunday'],
+   display:'It occurs to me that the shops close early on a Sunday.'},
+  {q1:'I tried to call you but I didn\'t have any battery.',
+   start:'I tried to call you but it turned',
+   ans:['i tried to call you but it turned out that i didn\'t have any battery',
+        'i tried to call you but it turned out i didn\'t have any battery'],
+   display:'I tried to call you but it turned out (that) I didn\'t have any battery.'},
+  {q1:'I\'m surprised that anyone eats this awful fast food.',
+   start:'It amazes',
+   ans:['it amazes me that anyone eats this awful fast food',
+        'it amazes me to think that anyone eats this awful fast food'],
+   display:'It amazes me that anyone eats this awful fast food.'},
+  {q1:'From what I\'ve seen, this is a lovely house.',
+   start:'It looks',
+   ans:['it looks like this is a lovely house','it looks as if this is a lovely house',
+        'it looks as though this is a lovely house'],
+   display:'It looks like / as if / as though this is a lovely house.'},
+  {q1:'I\'m worried that Tammy always looks fed up.',
+   start:'It',
+   ans:['it worries me that tammy always looks fed up',
+        'it concerns me that tammy always looks fed up',
+        'it bothers me that tammy always looks fed up',
+        'it alarms me that tammy always looks fed up'],
+   display:'It worries / concerns / bothers me that Tammy always looks fed up.'},
+];
+
+function buildEx4(){
+  var el=document.getElementById('ex4-items');
+  el.innerHTML=ex4Data.map(function(d,i){
+    return '<div class="tf-item">'
+      +'<div class="tf-q"><strong>'+(i+1)+'.</strong> '+d.q1+'</div>'
+      +'<div class="tf-start" style="margin-bottom:6px;font-style:normal;color:var(--text);">'+d.start+' <input class="tf-inp" id="e4-'+i+'" type="text" placeholder="complete the sentence…"></div>'
+      +'<div class="tf-fb" id="e4-fb-'+i+'"></div>'
+      +'</div>';
+  }).join('');
+}
+
+function normalise(s){ return s.trim().toLowerCase().replace(/[.!?]$/,'').replace(/\s+/g,' '); }
+
+function checkEx4(){
+  var correct=0;
+  ex4Data.forEach(function(d,i){
+    var inp=document.getElementById('e4-'+i);
+    var fb=document.getElementById('e4-fb-'+i);
+    if(!inp) return;
+    var fullVal=normalise(d.start+' '+inp.value);
+    var match=d.ans.some(function(a){ return fullVal===normalise(a)||normalise(inp.value)===normalise(a.replace(new RegExp('^'+d.start.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*','i'),'')); });
+    /* also try just the completion part */
+    var valOnly=normalise(inp.value);
+    if(!match) match=d.ans.some(function(a){
+      var aFull=normalise(a);
+      return aFull===valOnly||aFull.endsWith(valOnly);
+    });
+    inp.classList.toggle('ok',match&&inp.value.trim()!=='');
+    inp.classList.toggle('bad',!match||inp.value.trim()==='');
+    if(match&&inp.value.trim()!==''){ correct++; fb.className='tf-fb ok'; fb.textContent='✓ Correct!'; }
+    else if(inp.value.trim()!==''){ fb.className='tf-fb bad'; fb.textContent='✗ Answer: '+d.display; }
+    else { fb.className='tf-fb bad'; fb.textContent='Please write an answer.'; }
+  });
+  var sc=document.getElementById('ex4-score');
+  if(correct===ex4Data.length){ sc.className='fb-score ok'; sc.textContent='✓ All correct! ('+correct+'/'+ex4Data.length+')'; done.ex4=true; }
+  else { sc.className='fb-score bad'; sc.textContent='✗ '+correct+'/'+ex4Data.length+' correct.'; }
+  updateProgress();
+}
+
+function resetEx4(){
+  ex4Data.forEach(function(d,i){
+    var inp=document.getElementById('e4-'+i); if(inp){ inp.value=''; inp.className='tf-inp'; }
+    var fb=document.getElementById('e4-fb-'+i); if(fb){ fb.textContent=''; fb.className='tf-fb'; }
+  });
+  document.getElementById('ex4-score').textContent=''; done.ex4=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   SEND TO TEACHER
+══════════════════════════════════════ */
+function sendToTeacher(){
+  var name=document.getElementById('nameInput').value.trim()||'Anonymous';
+
+  /* Ex1 */
+  var ex1answers=ex1Data.map(function(d,i){
+    var inp=document.getElementById('e1-'+i);
+    return (i+1)+'. '+d.text.replace('_____','[ '+(inp?inp.value:'—')+' ]');
+  }).join('\n');
+
+  /* Ex2 */
+  var ex2answers=ex2Data.map(function(d,i){
+    var inp=document.getElementById('e2-'+i);
+    return (i+1)+'. '+(inp&&inp.value?inp.value:'—');
+  }).join('\n');
+
+  /* Ex3 */
+  var ex3answers=ex3Data.map(function(d,qi){
+    var sel=ex3Selected[qi];
+    return (qi+1)+'. '+(sel.length>0?sel.map(function(oi){ return d.opts[oi]; }).join(' + '):'—');
+  }).join('\n');
+
+  /* Ex4 */
+  var ex4answers=ex4Data.map(function(d,i){
+    var inp=document.getElementById('e4-'+i);
+    return (i+1)+'. '+d.start+' '+(inp&&inp.value?inp.value:'—');
+  }).join('\n');
+
+  var body='Student: '+name+'\n\n'
+    +'=== Exercise 1: Vocabulary Gap Fill ===\n'+ex1answers+'\n\n'
+    +'=== Exercise 2: Word Order ===\n'+ex2answers+'\n\n'
+    +'=== Exercise 3: Multiple Choice ===\n'+ex3answers+'\n\n'
+    +'=== Exercise 4: Sentence Transformation ===\n'+ex4answers;
+
+  var subject='7C Homework – '+name;
+  window.location.href='mailto:dariia.mlnk@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+}
+
+/* ══════════════════════════════════════
+   EVENT DELEGATION
+══════════════════════════════════════ */
+document.addEventListener('click',function(e){
+  var t=e.target;
+
+  /* MC button tap */
+  var mcBtn=t.closest('.mc-btn');
+  if(mcBtn){
+    var qi=parseInt(mcBtn.dataset.qi);
+    var oi=parseInt(mcBtn.dataset.oi);
+    var idx=ex3Selected[qi].indexOf(oi);
+    if(idx>-1){ ex3Selected[qi].splice(idx,1); mcBtn.classList.remove('chosen'); }
+    else { ex3Selected[qi].push(oi); mcBtn.classList.add('chosen'); }
+    return;
+  }
+
+  var act=t.dataset.action||(t.closest&&t.closest('[data-action]')&&t.closest('[data-action]').dataset.action);
+  if(!act) return;
+
+  if(act==='checkEx1'){ checkEx1(); return; }
+  if(act==='resetEx1'){ resetEx1(); return; }
+  if(act==='checkEx2'){ checkEx2(); return; }
+  if(act==='resetEx2'){ resetEx2(); return; }
+  if(act==='checkEx3'){ checkEx3(); return; }
+  if(act==='resetEx3'){ resetEx3(); return; }
+  if(act==='checkEx4'){ checkEx4(); return; }
+  if(act==='resetEx4'){ resetEx4(); return; }
+  if(act==='sendToTeacher'){ sendToTeacher(); return; }
+});
+
+/* ══ INIT ══ */
+buildEx1();
+buildEx2();
+buildEx3();
+buildEx4();
+updateProgress();
+</script>
