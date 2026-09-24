@@ -1,0 +1,710 @@
+<title>Wanderlust Tenses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF2F2; --surface:#FFFFFF; --surface-2:#E3EBEB; --ink:#13263A; --ink-soft:#4C5F70; --line:#C8D5D7;
+  --teal:#0B6E6A; --teal-soft:#D3ECE9; --coral:#D9502B; --coral-soft:#FBE3D9; --sun:#B67B06; --sun-soft:#F7EBCD;
+  --ok:#1E7F4F; --ok-soft:#DDF3E6; --bad:#B8362A; --bad-soft:#FBE1DD;
+  --f-display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0C1824; --surface:#132536; --surface-2:#1A3045; --ink:#E4EEF1; --ink-soft:#9DB2BF; --line:#294560;
+    --teal:#52C2B8; --teal-soft:#153E42; --coral:#FF7C57; --coral-soft:#48241A; --sun:#F2B84B; --sun-soft:#3B2F14;
+    --ok:#52C98E; --ok-soft:#143A29; --bad:#FF8373; --bad-soft:#452019;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0C1824; --surface:#132536; --surface-2:#1A3045; --ink:#E4EEF1; --ink-soft:#9DB2BF; --line:#294560;
+  --teal:#52C2B8; --teal-soft:#153E42; --coral:#FF7C57; --coral-soft:#48241A; --sun:#F2B84B; --sun-soft:#3B2F14;
+  --ok:#52C98E; --ok-soft:#143A29; --bad:#FF8373; --bad-soft:#452019;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:var(--f-body); font-size:17px; line-height:1.55;}
+.wrap{max-width:900px; margin:0 auto; padding-inline:16px; padding-block:0 64px;}
+h1,h2,h3{font-family:var(--f-display); line-height:1.12; text-wrap:balance; margin:0}
+h2{font-size:clamp(1.6rem,4vw,2.15rem); font-weight:800; letter-spacing:-.01em}
+h3{font-size:1.25rem; font-weight:700}
+p{margin:0}
+.mono{font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase}
+button{font:inherit; cursor:pointer}
+:focus-visible{outline:3px solid var(--coral); outline-offset:2px}
+
+/* top bar */
+.bar{position:sticky; top:env(safe-area-inset-top,0px); z-index:10; background:color-mix(in srgb,var(--bg) 88%,transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--line)}
+.bar-in{max-width:900px; margin:0 auto; padding-inline:16px; padding-block:8px; display:flex; gap:8px; align-items:center}
+.legs{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; flex:1}
+.legs::-webkit-scrollbar{display:none}
+.legs a{flex:none; text-decoration:none; color:var(--ink-soft); font-family:var(--f-mono); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:var(--surface)}
+.legs a:hover{color:var(--teal); border-color:var(--teal)}
+.theme-btn{flex:none; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px; width:36px; height:36px; display:grid; place-items:center}
+
+/* ticket hero */
+.ticket{margin-top:28px; display:grid; grid-template-columns:1fr auto; background:var(--surface); border-radius:18px; border:1px solid var(--line); overflow:hidden}
+.ticket-main{padding:26px 26px 22px; display:grid; gap:14px}
+.route{display:flex; align-items:center; gap:14px; font-family:var(--f-display); font-weight:800; font-size:clamp(2.2rem,8vw,3.6rem); letter-spacing:-.02em; color:var(--teal)}
+.route .plane{font-size:.5em; color:var(--coral); transform:translateY(-2px)}
+.ticket h1{font-size:clamp(1.3rem,3.6vw,1.75rem); font-weight:700}
+.ticket-meta{display:flex; flex-wrap:wrap; gap:18px 28px}
+.ticket-meta div{display:grid; gap:2px}
+.ticket-meta b{font-family:var(--f-mono); font-size:.95rem}
+.ticket-meta .mono{color:var(--ink-soft)}
+.stub{border-left:2px dashed var(--line); padding:22px; display:grid; align-content:center; gap:8px; background:var(--teal-soft); min-width:170px; position:relative}
+.stub::before,.stub::after{content:""; position:absolute; left:-12px; width:22px; height:22px; border-radius:50%; background:var(--bg)}
+.stub::before{top:-11px} .stub::after{bottom:-11px}
+.stub .big{font-family:var(--f-display); font-weight:800; font-size:2.4rem; color:var(--teal); line-height:1}
+@media (max-width:620px){ .ticket{grid-template-columns:1fr} .stub{border-left:0; border-top:2px dashed var(--line)} .stub::before,.stub::after{display:none} }
+
+/* stages */
+section.stage{margin-top:56px; scroll-margin-top:70px}
+.stage-head{display:grid; gap:6px; margin-bottom:20px}
+.stage-head .mono{color:var(--coral)}
+.stage-head p{color:var(--ink-soft); max-width:62ch}
+.block{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px; display:grid; gap:16px}
+.block + .block{margin-top:18px}
+.sub{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.sub .mono{color:var(--ink-soft)}
+.note{font-size:.93rem; color:var(--ink-soft)}
+
+/* lead-in photo cards */
+.photos{display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:14px}
+.pcard{position:relative; border-radius:12px; overflow:hidden; background:var(--surface-2); border:1px solid var(--line); cursor:pointer; text-align:left; padding:0; color:inherit; display:grid}
+.scene{aspect-ratio:4/3; width:100%; max-width:100%; overflow:hidden; position:relative}
+.scene svg,.scene img{width:100%; height:100%; display:block; object-fit:cover}
+.tap{position:absolute; left:8px; top:8px; background:rgba(15,25,40,.72); color:#fff; font-family:var(--f-mono); font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; padding:4px 8px; border-radius:6px; transition:opacity .25s}
+.pcard.open .tap{opacity:0}
+.cap{padding:10px 12px 12px; display:grid; gap:2px}
+.cap .hint{font-size:.85rem; color:var(--ink-soft)}
+.cap .answer{font-family:var(--f-display); font-weight:700; font-size:1.1rem; color:var(--teal); max-height:0; opacity:0; overflow:hidden; transition:max-height .35s ease, opacity .35s ease}
+.pcard.open .answer{max-height:80px; opacity:1}
+.upl{position:absolute; right:8px; top:8px; background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:6px; font-size:.7rem; padding:3px 7px; font-family:var(--f-mono); cursor:pointer; opacity:.85}
+.upl input{position:absolute; width:1px; height:1px; opacity:0}
+.discuss{background:var(--sun-soft); border-radius:12px; padding:16px 18px; display:grid; gap:6px}
+.discuss .mono{color:var(--sun)}
+.discuss p{font-family:var(--f-display); font-size:1.2rem; font-weight:700}
+
+/* blog */
+.blog{display:grid; gap:14px; max-width:68ch}
+.blog-top{display:flex; gap:12px; align-items:center}
+.avatar{width:44px; height:44px; border-radius:50%; background:var(--coral); color:#fff; display:grid; place-items:center; font-family:var(--f-display); font-weight:800}
+.blog h3{font-size:1.5rem}
+.v{background:var(--teal-soft); border-radius:5px; padding:1px 4px; font-weight:700; color:var(--ink); white-space:nowrap}
+.v sup{font-family:var(--f-mono); font-size:.62rem; color:var(--teal); margin-right:2px; font-weight:700}
+.col{text-decoration:underline; text-decoration-color:var(--coral); text-decoration-thickness:2px; text-underline-offset:3px}
+.legend{display:flex; gap:16px; flex-wrap:wrap; font-size:.85rem; color:var(--ink-soft)}
+
+/* exercises */
+.q{display:grid; gap:8px}
+.q + .q{margin-top:6px; padding-top:14px; border-top:1px dashed var(--line)}
+.q-text{font-weight:700}
+.opts{display:flex; flex-wrap:wrap; gap:8px}
+.opt{border:1.5px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px; padding:7px 14px; font-size:.95rem; text-align:left}
+.opt:hover{border-color:var(--teal)}
+.opt.right{background:var(--ok-soft); border-color:var(--ok); color:var(--ink)}
+.opt.wrong{background:var(--bad-soft); border-color:var(--bad); color:var(--ink); text-decoration:line-through}
+.why{font-size:.9rem; color:var(--ink-soft); display:none}
+.q.done .why{display:block}
+.gap{font:inherit; font-size:.95rem; border:0; border-bottom:2px solid var(--line); background:var(--surface-2); color:var(--ink); padding:3px 8px; border-radius:6px 6px 0 0; min-width:0; width:9.5em; max-width:100%}
+.gap.w-s{width:5.5em} .gap.w-l{width:14em}
+.gap:focus{outline:none; border-bottom-color:var(--teal)}
+select.gap{width:auto; padding-right:4px}
+.gap.ok{border-bottom-color:var(--ok); background:var(--ok-soft)}
+.gap.bad{border-bottom-color:var(--bad); background:var(--bad-soft)}
+.key{font-family:var(--f-mono); font-size:.78rem; color:var(--ok); margin-left:4px}
+.btns{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.btn{border:0; border-radius:999px; padding:9px 18px; font-weight:700; font-size:.92rem}
+.btn-main{background:var(--teal); color:var(--surface)}
+.btn-ghost{background:transparent; color:var(--ink-soft); border:1.5px solid var(--line)}
+.score{font-family:var(--f-mono); font-size:.85rem; color:var(--ink-soft)}
+.score.full{color:var(--ok)}
+
+/* collocation match */
+.match{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:10px 22px; counter-reset:m}
+.match label{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid var(--line)}
+.match label span::before{counter-increment:m; content:counter(m) "  "; font-family:var(--f-mono); font-size:.75rem; color:var(--ink-soft)}
+.nounbox{display:flex; flex-wrap:wrap; gap:6px}
+.nounbox span{font-family:var(--f-mono); font-size:.8rem; background:var(--surface-2); padding:4px 10px; border-radius:6px}
+
+/* work it out */
+.wio{display:grid; gap:0}
+.wio-row{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; padding:9px 0; border-bottom:1px solid var(--line)}
+.wio-row .t{font-family:var(--f-display); font-weight:700; font-size:.8rem; color:var(--teal); letter-spacing:.02em; display:block}
+.wio-row em{color:var(--ink-soft)}
+
+/* tense cards + timelines */
+.tenses{display:grid; gap:18px}
+.tense{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px; display:grid; gap:14px}
+.tense-head{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:baseline}
+.tense-head .mono{color:var(--ink-soft)}
+.tl-box{background:var(--surface-2); border-radius:10px; padding:10px 8px 4px; overflow-x:auto}
+.tl{width:100%; min-width:520px; height:auto; display:block}
+.tl-lab{fill:var(--ink); font-family:var(--f-body); font-size:14px; font-weight:700; paint-order:stroke; stroke:var(--surface-2); stroke-width:5px; stroke-linejoin:round}
+.cheat-card .tl-lab{stroke:var(--surface)}
+.tl-lab-soft{fill:var(--ink-soft); font-weight:400; font-style:italic}
+.tl-lab-sun{fill:var(--sun)}
+.tl-cap{fill:var(--ink-soft); font-family:var(--f-mono); font-size:11px; letter-spacing:.12em}
+.tl-cap-now{fill:var(--coral); font-weight:700}
+.tl-axis{stroke:var(--ink-soft); stroke-width:2}
+.tl-arrow{stroke:var(--ink-soft); stroke-width:2; fill:none}
+.tl-nowline{stroke:var(--coral); stroke-width:2; stroke-dasharray:3 4}
+.tl-span{stroke:var(--teal); stroke-width:6; stroke-linecap:round}
+.tl-wave{stroke:var(--teal); stroke-width:4; fill:none; stroke-linecap:round}
+.tl-dot{fill:var(--teal)}
+.tl-pt{fill:var(--surface); stroke:var(--ink-soft); stroke-width:2.5}
+.tl-x{stroke:var(--coral); stroke-width:4; stroke-linecap:round; fill:none}
+.tl-link{stroke:var(--ink-soft); stroke-width:2; stroke-dasharray:6 5}
+.tl-flag{stroke:var(--sun); stroke-width:2.5; stroke-dasharray:4 3}
+.tl-flagtri{fill:var(--sun)}
+.tl-br{stroke:var(--ink-soft); stroke-width:1.8; fill:none}
+.uses{display:grid; gap:6px; margin:0; padding:0; list-style:none}
+.uses li{display:grid; grid-template-columns:auto 1fr; gap:10px}
+.uses .lt{font-family:var(--f-mono); font-size:.75rem; color:var(--coral); padding-top:3px}
+.uses i{color:var(--ink-soft)}
+.warn{background:var(--sun-soft); border-radius:8px; padding:8px 12px; font-size:.9rem}
+.ccq{border-top:1px dashed var(--line); padding-top:12px}
+.ccq .mono{color:var(--ink-soft); display:block; margin-bottom:6px}
+
+.pairs{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr)); gap:18px}
+.pair{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px; display:grid; gap:10px}
+.pair .side{display:grid; gap:4px}
+.pair .side p{font-size:.93rem}
+.pair .tag{font-family:var(--f-mono); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--teal)}
+.pair .tl{min-width:420px}
+
+.rule{display:grid; gap:0}
+.rule-row{display:grid; grid-template-columns:minmax(150px,210px) 1fr; gap:12px; align-items:center; padding:10px 0; border-bottom:1px solid var(--line)}
+.rule-row b{font-family:var(--f-display)}
+.rule-row .f{font-family:var(--f-mono); font-size:.88rem}
+@media (max-width:560px){ .rule-row{grid-template-columns:1fr; gap:4px} }
+
+.mistakes{background:var(--sun-soft); border-radius:14px; padding:20px 22px; display:grid; gap:12px}
+.mistakes .mono{color:var(--sun)}
+.mis{display:grid; gap:6px; padding-bottom:12px; border-bottom:1px dashed color-mix(in srgb,var(--sun) 40%,transparent)}
+.mis:last-child{border-bottom:0; padding-bottom:0}
+.mis .wrongs{text-decoration:line-through; text-decoration-color:var(--bad)}
+.mis .fix{color:var(--ok); font-weight:700}
+.mis button{justify-self:start; background:transparent; border:1.5px solid var(--sun); color:var(--ink); border-radius:999px; padding:4px 12px; font-size:.82rem}
+
+/* chat */
+.chat{display:grid; gap:10px; max-width:640px}
+.msg{max-width:88%; padding:10px 14px; border-radius:16px; line-height:1.9}
+.msg .who{display:block; font-family:var(--f-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); line-height:1.4}
+.msg.m{background:var(--surface-2); border-bottom-left-radius:4px; justify-self:start}
+.msg.l{background:var(--teal-soft); border-bottom-right-radius:4px; justify-self:end}
+.msg .gap{background:var(--surface)}
+.cue{font-size:.8rem; color:var(--ink-soft); font-style:italic}
+
+.rev{display:grid; gap:12px; counter-reset:r}
+.rev p{padding-left:30px; position:relative; line-height:2}
+.rev p::before{counter-increment:r; content:counter(r); position:absolute; left:0; top:4px; font-family:var(--f-mono); font-size:.72rem; color:var(--ink-soft)}
+
+/* freer */
+.prompts{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); gap:14px}
+.prompt{display:grid; gap:8px}
+.prompt label{font-weight:700}
+.prompt label small{display:block; font-weight:400; color:var(--ink-soft); font-size:.85rem}
+textarea{font:inherit; font-size:.95rem; color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:10px 12px; min-height:92px; resize:vertical; width:100%}
+textarea:focus{outline:none; border-color:var(--teal)}
+.check-list{display:flex; flex-wrap:wrap; gap:8px; list-style:none; margin:0; padding:0}
+.check-list li{font-size:.85rem; border:1.5px solid var(--line); border-radius:999px; padding:5px 12px; color:var(--ink-soft); transition:all .25s}
+.check-list li::before{content:"○ "}
+.check-list li.done{border-color:var(--ok); background:var(--ok-soft); color:var(--ink)}
+.check-list li.done::before{content:"✓ "; color:var(--ok); font-weight:700}
+.roleplay{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:14px}
+.role{border-radius:12px; padding:16px 18px; display:grid; gap:8px; align-content:start}
+.role.a{background:var(--teal-soft)} .role.b{background:var(--coral-soft)}
+.role ul{margin:0; padding-left:18px; display:grid; gap:4px; font-size:.93rem}
+
+/* wrap-up */
+.conf{display:grid; gap:0}
+.conf-row{display:grid; grid-template-columns:minmax(0,1fr) minmax(120px,200px) 7.5em; gap:12px; align-items:center; padding:8px 0; border-bottom:1px solid var(--line)}
+.conf-row input{width:100%; accent-color:var(--teal)}
+.conf-row output{font-family:var(--f-mono); font-size:.75rem; text-align:right}
+@media (max-width:520px){ .conf-row{grid-template-columns:1fr 6.5em} .conf-row input{grid-column:1/-1; grid-row:2} }
+.cheat{display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr)); gap:12px}
+.cheat-card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px; display:grid; gap:6px; align-content:start}
+.cheat-card b{font-family:var(--f-display)}
+.cheat-card .f{font-family:var(--f-mono); font-size:.75rem; color:var(--teal)}
+.cheat-card .tl{min-width:0}
+.cheat-card .tl-lab{font-size:19px}
+.cheat-card .tl-cap{font-size:15px}
+footer{margin-top:48px; color:var(--ink-soft); font-size:.85rem; text-align:center}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+
+<header class="bar">
+  <div class="bar-in">
+    <nav class="legs" aria-label="Lesson stages">
+      <a href="#leadin">01 Lead-in</a><a href="#context">02 Context</a><a href="#clarify">03 Clarify</a><a href="#practice">04 Practice</a><a href="#freer">05 Speak &amp; write</a><a href="#wrap">06 Wrap-up</a>
+    </nav>
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="ticket">
+    <div class="ticket-main">
+      <span class="mono" style="color:var(--ink-soft)">Boarding pass · English Hub B2+ · Unit 1 revision</span>
+      <div class="route">BCN <span class="plane">✈</span> DPS</div>
+      <h1>Wanderlust: present &amp; future forms + travel collocations</h1>
+      <div class="ticket-meta">
+        <div><span class="mono">Passenger</span><b>Student</b></div>
+        <div><span class="mono">Level</span><b>B2+</b></div>
+        <div><span class="mono">Duration</span><b>60–75 min</b></div>
+        <div><span class="mono">Stops</span><b>9 tenses · 9 collocations</b></div>
+      </div>
+    </div>
+    <div class="stub">
+      <span class="mono" style="color:var(--ink-soft)">Gate</span>
+      <span class="big">B2+</span>
+      <span class="mono" style="color:var(--ink-soft)">Seat 1A · Window</span>
+    </div>
+  </div>
+
+  <!-- STAGE 1 -->
+  <section class="stage" id="leadin">
+    <div class="stage-head">
+      <span class="mono">Stage 01 · Lead-in · 5 min</span>
+      <h2>Where would you rather be?</h2>
+      <p>Look at each place. How would you describe it in two words, an adjective and a noun? Tap a card to see the collocation from your book.</p>
+    </div>
+    <div class="photos" id="photos"></div>
+    <p class="note" style="margin-top:10px">Teacher: use “＋ photo” on any card to drop in your own picture for today’s class.</p>
+    <div class="discuss" style="margin-top:18px">
+      <span class="mono">Talk about it</span>
+      <p>What’s the most memorable trip you’ve ever taken? And where are you going next?</p>
+    </div>
+  </section>
+
+  <!-- STAGE 2 -->
+  <section class="stage" id="context">
+    <div class="stage-head">
+      <span class="mono">Stage 02 · Context · 10 min</span>
+      <h2>Lucía’s travel blog</h2>
+      <p>Lucía, a student from Seville, is backpacking around Indonesia. Read her latest post, then answer the three questions.</p>
+    </div>
+    <article class="block blog">
+      <div class="blog-top"><div class="avatar">L</div><div><h3>Three weeks in paradise (and counting)</h3><span class="mono" style="color:var(--ink-soft)">Ubud, Bali · posted 14:05</span></div></div>
+      <p>Greetings from Bali! I <span class="v"><sup>1</sup>’ve been</span> here for three weeks now, and I honestly <span class="v"><sup>2</sup>love</span> this place. Right now I <span class="v"><sup>3</sup>’m sitting</span> on the balcony of my guesthouse in Ubud, surrounded by rice terraces and some of the most <span class="col">picturesque countryside</span> I’ve ever seen. The room isn’t exactly <span class="col">luxurious accommodation</span>, but the <span class="col">breathtaking views</span> more than make up for it.</p>
+      <p>Life here has a lovely rhythm. Every morning the sun <span class="v"><sup>4</sup>rises</span> over the volcano at six, and by nine the streets are full of scooters. I <span class="v"><sup>5</sup>’ve been learning</span> to surf since I arrived: slowly, and with a lot of salt water up my nose!</p>
+      <p>Tomorrow is a big day. My ferry to the Gili Islands <span class="v"><sup>6</sup>leaves</span> at 7.30, and on Saturday I <span class="v"><sup>7</sup>’m meeting</span> my friend Marta there. She booked her flights months ago. We <span class="v"><sup>8</sup>’re going to climb</span> Mount Rinjani on Lombok, and everyone says reaching the crater rim gives you <span class="col">an exhilarating feeling</span>. The Gilis are such <span class="col">an exotic location</span>: no cars, just bikes, horses and <span class="col">unspoilt countryside</span>. Marta wanted to book <span class="col">an all-inclusive resort</span>, but I said no way. I’d much rather find <span class="col">a unique location</span> than stay in <span class="col">a glamorous resort</span> full of influencers.</p>
+      <p>This time next week I <span class="v"><sup>9</sup>’ll be snorkelling</span> with turtles. By the end of the month I <span class="v"><sup>10</sup>’ll have visited</span> five islands, and by the time I fly home in October I <span class="v"><sup>11</sup>’ll have been travelling</span> for two whole months. My mum won’t recognise me!</p>
+      <p>Oh no, look at those black clouds over the volcano. It <span class="v"><sup>12</sup>’s going to pour</span> any minute. OK, I <span class="v"><sup>13</sup>’ll finish</span> this post later and go and rescue my washing! As soon as I <span class="v"><sup>14</sup>get</span> to the Gilis, I’ll upload the photos. And if you ever come here, I think you <span class="v"><sup>15</sup>’ll love</span> it as much as I do. 🌴</p>
+      <div class="legend"><span><span class="v"><sup>1</sup>verb</span> = verb form for Exercise B</span><span><span class="col">underlined</span> = travel collocation</span></div>
+    </article>
+
+    <div class="block ex" style="margin-top:18px">
+      <div class="sub"><h3>Quick check</h3><span class="score"></span></div>
+      <div class="q mcq" data-c="0"><p class="q-text">1. Where is Lucía while she’s writing?</p><div class="opts"><button class="opt">In Ubud, Bali</button><button class="opt">On the Gili Islands</button><button class="opt">At home in Seville</button></div><p class="why">“Right now I’m sitting on the balcony of my guesthouse in Ubud.”</p></div>
+      <div class="q mcq" data-c="1"><p class="q-text">2. How long has she been in Bali?</p><div class="opts"><button class="opt">Two months</button><button class="opt">Three weeks</button><button class="opt">Since yesterday</button></div><p class="why">“I’ve been here for three weeks now.” Two months is how long she will have been travelling by October.</p></div>
+      <div class="q mcq" data-c="2"><p class="q-text">3. Why does she stop writing?</p><div class="opts"><button class="opt">Her ferry is leaving</button><button class="opt">Marta is calling her</button><button class="opt">It’s about to rain</button></div><p class="why">“It’s going to pour any minute… I’ll go and rescue my washing!”</p></div>
+      <div class="btns"><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+  </section>
+
+  <!-- STAGE 3 -->
+  <section class="stage" id="clarify">
+    <div class="stage-head">
+      <span class="mono">Stage 03 · Clarify · 20 min</span>
+      <h2>Words first, then the tenses</h2>
+      <p>This is your book’s Exercise A and Exercise B, with timelines to show how each form works.</p>
+    </div>
+
+    <div class="block ex">
+      <div class="sub"><h3>A · Complete the collocations</h3><span class="score"></span></div>
+      <p class="note">Choose a noun for each adjective. Two nouns are used twice. The blog above will help.</p>
+      <div class="nounbox"><span>accommodation</span><span>countryside</span><span>feeling</span><span>location</span><span>resort</span><span>surroundings</span><span>views</span></div>
+      <div class="match" id="matchA"></div>
+      <div class="btns"><button class="btn btn-main check">Check</button><button class="btn btn-ghost show">Show answers</button><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+
+    <div class="block ex">
+      <div class="sub"><h3>B · Work it out</h3><span class="score"></span></div>
+      <p class="note">Match each numbered verb form (1–15) in Lucía’s blog with the reason for choosing it. Each number is used once.</p>
+      <div class="wio" id="wio"></div>
+      <div class="btns"><button class="btn btn-main check">Check</button><button class="btn btn-ghost show">Show answers</button><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+
+    <div class="stage-head" style="margin-top:40px">
+      <span class="mono">Timeline explorer</span>
+      <h3 style="font-size:1.5rem">See each tense on a timeline</h3>
+      <p>The dashed coral line is <b>NOW</b>. <span style="color:var(--teal)">Solid bar</span> = a state · <span style="color:var(--teal)">wavy line</span> = an activity in progress · <span style="color:var(--coral)">✕</span> = a single event · <span style="color:var(--sun)">flag</span> = a point in the future.</p>
+    </div>
+    <div class="tenses" id="tenses"></div>
+
+    <div class="stage-head" style="margin-top:40px">
+      <span class="mono">Don’t mix them up</span>
+      <h3 style="font-size:1.5rem">Four tricky pairs</h3>
+    </div>
+    <div class="pairs" id="pairs"></div>
+
+    <div class="block ex" style="margin-top:18px">
+      <div class="sub"><h3>Rule card: form</h3><span class="score"></span></div>
+      <p class="note">Complete the formulas.</p>
+      <div class="rule" id="rule"></div>
+      <div class="btns"><button class="btn btn-main check">Check</button><button class="btn btn-ghost show">Show answers</button><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+
+    <div class="mistakes" style="margin-top:18px" id="mistakes">
+      <span class="mono">Spot the mistake</span>
+      <p class="note" style="color:var(--ink)">Each sentence has one mistake. Can you fix it before you reveal the answer?</p>
+    </div>
+  </section>
+
+  <!-- STAGE 4 -->
+  <section class="stage" id="practice">
+    <div class="stage-head">
+      <span class="mono">Stage 04 · Controlled practice · 15 min</span>
+      <h2>Practice</h2>
+    </div>
+
+    <div class="block ex">
+      <div class="sub"><h3>1 · Lucía &amp; Marta’s chat</h3><span class="score"></span></div>
+      <p class="note">Put the verbs in brackets into the best form. Contractions (’ll, ’m, ’ve) are fine.</p>
+      <div class="chat" id="chat"></div>
+      <div class="btns"><button class="btn btn-main check">Check</button><button class="btn btn-ghost show">Show answers</button><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+
+    <div class="block ex">
+      <div class="sub"><h3>2 · Choose the best form</h3><span class="score"></span></div>
+      <div id="choose"></div>
+      <div class="btns"><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+
+    <div class="block ex">
+      <div class="sub"><h3>3 · Travel-brochure collocations</h3><span class="score"></span></div>
+      <p class="note">Write the full collocation (adjective + noun). The first letters are given.</p>
+      <div class="rev" id="rev"></div>
+      <div class="btns"><button class="btn btn-main check">Check</button><button class="btn btn-ghost show">Show answers</button><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+  </section>
+
+  <!-- STAGE 5 -->
+  <section class="stage" id="freer">
+    <div class="stage-head">
+      <span class="mono">Stage 05 · Freer practice · 10–15 min</span>
+      <h2>Your dream trip</h2>
+      <p>Write or say your answers. The checklist below ticks itself as you use each target form.</p>
+    </div>
+    <div class="block">
+      <div class="prompts">
+        <div class="prompt"><label for="f1">This time next year…<small>Where will you be and what will you be doing?</small></label><textarea id="f1" class="free" placeholder="This time next year I’ll be…"></textarea></div>
+        <div class="prompt"><label for="f2">By the time I’m 30…<small>Which places will you have visited? What will you have done?</small></label><textarea id="f2" class="free" placeholder="By the time I’m 30, I’ll have…"></textarea></div>
+        <div class="prompt"><label for="f3">A trip on my list<small>How long have you been wanting to go there? What are you going to do there?</small></label><textarea id="f3" class="free" placeholder="I’ve been wanting to go to… for…"></textarea></div>
+        <div class="prompt"><label for="f4">Describe your dream destination<small>Use at least four collocations from today.</small></label><textarea id="f4" class="free" placeholder="It’s an exotic location with…"></textarea></div>
+      </div>
+      <div style="display:grid; gap:8px">
+        <span class="mono" style="color:var(--ink-soft)">Target language checklist</span>
+        <ul class="check-list" id="checklist"></ul>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Role-play: the travel agent</h3>
+      <div class="roleplay">
+        <div class="role a"><span class="mono" style="color:var(--teal)">You · travel agent</span><p>Sell your client the perfect holiday. Describe the place and the hotel, and give the full itinerary.</p><ul><li>Your flight <b>leaves</b> at… / <b>lands</b> at…</li><li>On day 2 you<b>’ll be relaxing</b> by the pool…</li><li>By the end of the week you<b>’ll have seen</b>…</li><li>I promise you<b>’ll love</b> it!</li></ul></div>
+        <div class="role b"><span class="mono" style="color:var(--coral)">Teacher · client</span><p>You’re hard to please. Ask:</p><ul><li>What time does the flight leave?</li><li>What will I be doing on day 3?</li><li>Is it an all-inclusive resort?</li><li>What are the views like?</li><li>Look, it says here it rains a lot… is it going to rain?</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAGE 6 -->
+  <section class="stage" id="wrap">
+    <div class="stage-head">
+      <span class="mono">Stage 06 · Wrap-up · 5 min</span>
+      <h2>How confident do you feel?</h2>
+      <p>Move each slider. Anything marked “needs practice” goes on next lesson’s list.</p>
+    </div>
+    <div class="block"><div class="conf" id="conf"></div></div>
+    <div class="stage-head" style="margin-top:32px">
+      <span class="mono">Revision sheet</span>
+      <h3 style="font-size:1.5rem">All nine timelines on one page</h3>
+      <p>Screenshot this before your exam.</p>
+    </div>
+    <div class="cheat" id="cheat"></div>
+  </section>
+
+  <footer>English Hub B2+ · Unit 1 revision · Present &amp; future forms · Travel collocations</footer>
+</main>
+
+<script>
+(function(){
+  /* ---------- theme ---------- */
+  const root=document.documentElement;
+  document.getElementById('themeBtn').addEventListener('click',()=>{
+    const cur=root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    root.setAttribute('data-theme', cur==='dark'?'light':'dark');
+  });
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  /* ---------- scenes ---------- */
+  function grad(id,a,b){return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs>`}
+  const svgW=s=>`<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${s}</svg>`;
+  const SC={
+    beach(){ let leaves=''; [[-160,70],[-120,75],[-60,72],[-20,70],[30,60],[-90,66]].forEach(([r,l])=>{leaves+=`<ellipse cx="${118+l/2}" cy="118" rx="${l/2+8}" ry="11" fill="#1F6E48" transform="rotate(${r} 118 118)"/>`});
+      return svgW(grad('g1','#F49A62','#FCE2AE')+`<rect width="400" height="300" fill="url(#g1)"/><circle cx="285" cy="140" r="38" fill="#FFF2D2"/><rect y="160" width="400" height="70" fill="#15928F"/><rect y="176" width="400" height="4" fill="#6ACFC7" opacity=".6"/><rect x="230" y="192" width="120" height="3" fill="#6ACFC7" opacity=".5"/><path d="M0 225 Q200 195 400 228 L400 300 L0 300Z" fill="#F0D39B"/><path d="M92 290 Q100 200 118 118" stroke="#6B4A2B" stroke-width="9" fill="none" stroke-linecap="round"/>${leaves}`)},
+    mountains(){return svgW(grad('g2','#BDE2EF','#EEF8FA')+`<rect width="400" height="300" fill="url(#g2)"/><circle cx="90" cy="70" r="26" fill="#FFF6DC"/><polygon points="0,190 90,80 170,180 255,62 335,170 400,100 400,300 0,300" fill="#8EB2C8"/><polygon points="255,62 240,84 249,81 256,90 263,81 272,85" fill="#fff"/><polygon points="90,80 78,97 86,95 92,102 98,95 104,97" fill="#fff"/><polygon points="0,225 70,150 150,225 235,125 325,225 400,160 400,300 0,300" fill="#4D7C9E"/><polygon points="0,300 0,245 120,205 220,255 300,215 400,248 400,300" fill="#23455F"/>`)},
+    pool(){ let w=''; for(let r=0;r<3;r++)for(let c=0;c<8;c++) w+=`<rect x="${58+c*38}" y="${78+r*30}" width="22" height="16" rx="2" fill="#7FC6DA"/>`;
+      return svgW(`<rect width="400" height="300" fill="#9BD6EC"/><rect x="36" y="60" width="328" height="130" fill="#F5EEE2"/><rect x="36" y="52" width="328" height="10" fill="#E0D2BC"/>${w}<rect y="188" width="400" height="112" fill="#EADCC3"/><rect x="40" y="215" width="320" height="60" rx="10" fill="#36B6CF"/><path d="M60 235 h60 M200 250 h80" stroke="#A9E6F0" stroke-width="3" stroke-linecap="round"/><line x1="70" y1="175" x2="70" y2="212" stroke="#6B5A45" stroke-width="3"/><path d="M40 178 Q70 150 100 178Z" fill="#E4633F"/><line x1="330" y1="175" x2="330" y2="212" stroke="#6B5A45" stroke-width="3"/><path d="M300 178 Q330 150 360 178Z" fill="#F2B84B"/><rect x="120" y="198" width="44" height="8" rx="3" fill="#fff"/><rect x="236" y="198" width="44" height="8" rx="3" fill="#fff"/>`)},
+    countryside(){ let t=''; [[60,190,22],[95,200,16],[330,175,20],[360,190,15]].forEach(([x,y,r])=>{t+=`<rect x="${x-3}" y="${y}" width="6" height="${r}" fill="#5A3F28"/><circle cx="${x}" cy="${y}" r="${r}" fill="#2E6B3A"/>`});
+      return svgW(`<rect width="400" height="300" fill="#CFE8F2"/><ellipse cx="300" cy="60" rx="40" ry="12" fill="#fff"/><ellipse cx="110" cy="45" rx="30" ry="9" fill="#fff"/><ellipse cx="90" cy="300" rx="240" ry="130" fill="#A3CF7E"/><ellipse cx="340" cy="310" rx="230" ry="140" fill="#72B05C"/><ellipse cx="200" cy="350" rx="320" ry="110" fill="#4E8F46"/><path d="M160 300 Q190 260 230 240 Q270 222 250 205" stroke="#E9D9B2" stroke-width="10" fill="none" stroke-linecap="round"/><rect x="230" y="170" width="50" height="36" fill="#F5EEDF"/><polygon points="224,172 255,146 286,172" fill="#B4533B"/><rect x="249" y="186" width="12" height="20" fill="#7A5236"/>${t}`)},
+    paraglide(){return svgW(grad('g5','#63B0DE','#DDF0F9')+`<rect width="400" height="300" fill="url(#g5)"/><ellipse cx="80" cy="70" rx="44" ry="13" fill="#fff" opacity=".9"/><ellipse cx="320" cy="110" rx="36" ry="10" fill="#fff" opacity=".85"/><path d="M130 85 Q205 25 280 85 Q205 62 130 85Z" fill="#E4633F"/><path d="M160 70 Q205 44 250 70" stroke="#F2B84B" stroke-width="6" fill="none"/><path d="M133 85 L203 160 M277 85 L207 160 M175 72 L204 160 M235 72 L206 160" stroke="#304050" stroke-width="1"/><circle cx="205" cy="158" r="6" fill="#304050"/><rect x="200" y="163" width="10" height="16" rx="3" fill="#304050"/><polygon points="0,300 0,235 90,205 170,240 260,200 400,238 400,300" fill="#5E9A55"/><polygon points="0,300 0,265 140,248 260,270 400,255 400,300" fill="#3C7340"/>`)},
+    suite(){return svgW(grad('g6','#F2E1CB','#E6CFAF')+`<rect width="400" height="300" fill="url(#g6)"/><rect x="250" y="40" width="110" height="120" rx="4" fill="#23355A"/><circle cx="330" cy="70" r="10" fill="#F6E7B8"/><rect x="250" y="130" width="110" height="30" fill="#1A2744"/><line x1="305" y1="40" x2="305" y2="160" stroke="#E6CFAF" stroke-width="4"/><line x1="140" y1="0" x2="140" y2="40" stroke="#B8903E" stroke-width="2"/><circle cx="140" cy="48" r="10" fill="#E3B04B"/><circle cx="124" cy="56" r="5" fill="#F4D38A"/><circle cx="156" cy="56" r="5" fill="#F4D38A"/><rect x="50" y="140" width="220" height="60" rx="12" fill="#7C5A40"/><rect x="40" y="190" width="240" height="70" rx="8" fill="#FFFFFF"/><rect x="40" y="215" width="240" height="45" rx="6" fill="#C79E55"/><ellipse cx="100" cy="190" rx="34" ry="12" fill="#FBF6EE"/><ellipse cx="220" cy="190" rx="34" ry="12" fill="#FBF6EE"/><rect y="260" width="400" height="40" fill="#9C7A5B"/>`)},
+    marina(){ let b=''; const cols=['#F6EAD7','#F2C6A0','#EBD9C0','#F7F1E6','#E8B98F']; for(let i=0;i<10;i++){b+=`<rect x="${20+i*38}" y="${120-(i%3)*14}" width="30" height="${40+(i%3)*14}" fill="${cols[i%5]}"/><rect x="${27+i*38}" y="${132-(i%3)*14}" width="6" height="6" fill="#F2B84B"/>`}
+      return svgW(grad('g7','#F5AE86','#FDE6CF')+`<rect width="400" height="300" fill="url(#g7)"/><polygon points="0,170 0,110 80,90 180,100 260,80 400,105 400,170" fill="#C9A27C"/>${b}<rect y="165" width="400" height="135" fill="#2A7EA6"/><path d="M60 215 L170 215 L155 232 L75 232Z" fill="#fff"/><rect x="90" y="203" width="50" height="12" rx="3" fill="#fff"/><line x1="115" y1="140" x2="115" y2="203" stroke="#fff" stroke-width="2"/><path d="M230 250 L360 250 L342 270 L248 270Z" fill="#fff"/><rect x="262" y="236" width="70" height="14" rx="3" fill="#fff"/><rect x="272" y="240" width="50" height="4" fill="#2A7EA6"/><path d="M40 285 h80 M260 290 h70" stroke="#6AB3D3" stroke-width="3" stroke-linecap="round"/>`)},
+    lighthouse(){ let s=''; for(let i=0;i<26;i++){s+=`<circle cx="${(i*83)%400}" cy="${(i*47)%150}" r="${i%3?1.2:1.8}" fill="#fff" opacity=".8"/>`}
+      return svgW(grad('g8','#16244A','#41568A')+`<rect width="400" height="300" fill="url(#g8)"/>${s}<circle cx="330" cy="60" r="18" fill="#F5EFD8"/><circle cx="338" cy="55" r="16" fill="#1C2C55"/><polygon points="215,95 400,40 400,150" fill="#F6E08A" opacity=".25"/><rect y="215" width="400" height="85" fill="#122240"/><polygon points="120,300 140,225 200,205 270,220 300,300" fill="#2D394F"/><polygon points="185,212 193,110 213,110 221,212" fill="#F4F1EA"/><polygon points="189,170 190,155 216,155 217,170" fill="#D24B3A"/><polygon points="191,135 192,122 214,122 215,135" fill="#D24B3A"/><rect x="190" y="92" width="26" height="20" fill="#F6E08A"/><polygon points="186,92 203,78 220,92" fill="#D24B3A"/>`)}
+  };
+  const PHOTOS=[
+    ['beach','Turquoise sea, palm trees, far from home…','an exotic location'],
+    ['mountains','Standing at the top, looking down…','breathtaking views'],
+    ['pool','Food, drinks and activities, all paid for…','an all-inclusive resort'],
+    ['countryside','Green hills, a tiny cottage, no buildings…','picturesque / unspoilt countryside'],
+    ['paraglide','Flying over the valley…','an exhilarating feeling'],
+    ['suite','Silk sheets, a chandelier, room service…','luxurious accommodation'],
+    ['marina','Yachts, celebrities, expensive cocktails…','a glamorous resort'],
+    ['lighthouse','A hotel inside an old lighthouse…','a unique location']
+  ];
+  const ph=document.getElementById('photos');
+  PHOTOS.forEach(([k,hint,ans],i)=>{
+    const d=document.createElement('div');
+    d.className='pcard'; d.tabIndex=0; d.setAttribute('role','button'); d.setAttribute('aria-label','Reveal collocation '+(i+1));
+    d.innerHTML=`<div class="scene">${SC[k]()}<span class="tap">Tap to reveal</span><label class="upl" title="Replace with your own photo">＋ photo<input type="file" accept="image/*" id="up${i}"></label></div><div class="cap"><span class="hint">${esc(hint)}</span><span class="answer">${esc(ans)}</span></div>`;
+    const toggle=()=>d.classList.toggle('open');
+    d.addEventListener('click',e=>{ if(e.target.closest('.upl')) return; toggle(); });
+    d.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
+    const inp=d.querySelector('input');
+    inp.addEventListener('change',()=>{ const f=inp.files&&inp.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ const sc=d.querySelector('.scene'); const old=sc.querySelector('svg,img'); const img=document.createElement('img'); img.src=r.result; img.alt=ans; old.replaceWith(img); }; r.readAsDataURL(f); });
+    ph.appendChild(d);
+  });
+
+  /* ---------- timelines ---------- */
+  const X=v=>30+v*5.4;
+  function wave(a,b,y){let d=`M${a.toFixed(1)} ${y}`; for(let x=a;x<=b;x+=2){d+=` L${x.toFixed(1)} ${(y+Math.sin((x-a)/14*2*Math.PI)*5).toFixed(1)}`} return d;}
+  function lab(x,y,t,cls){const cx=Math.max(125,Math.min(475,x)); return `<text x="${cx.toFixed(1)}" y="${y}" text-anchor="middle" class="${cls||'tl-lab'}">${esc(t)}</text>`}
+  function renderTL(rows){
+    const RH=80, top=30, axisY=top+rows.length*RH+4; let s=`<line x1="300" y1="10" x2="300" y2="${axisY}" class="tl-nowline"/>`;
+    rows.forEach((row,i)=>{ const y=top+i*RH+34;
+      row.forEach(e=>{
+        if(e.k==='span'){const a=X(e.a),b=X(e.b); s+= e.wavy?`<path d="${wave(a,b,y)}" class="tl-wave"/>`:`<line x1="${a}" y1="${y}" x2="${b}" y2="${y}" class="tl-span"/>`; if(e.label) s+=lab((a+b)/2,y-18,e.label);}
+        else if(e.k==='dots'){const a=X(e.a),b=X(e.b); for(let j=0;j<e.n;j++){s+=`<circle cx="${(a+(b-a)*j/(e.n-1)).toFixed(1)}" cy="${y}" r="4.5" class="tl-dot"/>`} if(e.label) s+=lab((a+b)/2,y-18,e.label);}
+        else if(e.k==='x'){const x=X(e.at); s+=`<path d="M${x-7} ${y-7} L${x+7} ${y+7} M${x+7} ${y-7} L${x-7} ${y+7}" class="tl-x"/>`; if(e.label) s+=lab(x,e.below?y+30:y-18,e.label);}
+        else if(e.k==='dot'){const x=X(e.at); s+=`<circle cx="${x}" cy="${y}" r="6" class="tl-pt"/>`; if(e.label) s+=lab(x,e.below?y+30:y-18,e.label,'tl-lab tl-lab-soft');}
+        else if(e.k==='link'){const a=X(e.a)+9,b=X(e.b)-11; s+=`<line x1="${a}" y1="${y}" x2="${b}" y2="${y}" class="tl-link"/><path d="M${b-6} ${y-5} L${b+1} ${y} L${b-6} ${y+5}" class="tl-arrow"/>`;}
+        else if(e.k==='flag'){const x=X(e.at); s+=`<line x1="${x}" y1="${y-34}" x2="${x}" y2="${y+14}" class="tl-flag"/><path d="M${x} ${y-34} L${x+15} ${y-29} L${x} ${y-24}Z" class="tl-flagtri"/>`; if(e.label) s+=lab(x,y+32,e.label,'tl-lab tl-lab-sun');}
+        else if(e.k==='br'){const a=X(e.a),b=X(e.b); s+=`<path d="M${a} ${y+11} L${a} ${y+17} L${b} ${y+17} L${b} ${y+11}" class="tl-br"/>`; if(e.label) s+=lab((a+b)/2,y+36,e.label,'tl-lab tl-lab-soft');}
+      });
+    });
+    s+=`<line x1="18" y1="${axisY}" x2="580" y2="${axisY}" class="tl-axis"/><path d="M572 ${axisY-5} L580 ${axisY} L572 ${axisY+5}" class="tl-arrow"/>`;
+    s+=`<text x="20" y="${axisY+20}" class="tl-cap">PAST</text><text x="300" y="${axisY+20}" text-anchor="middle" class="tl-cap tl-cap-now">NOW</text><text x="578" y="${axisY+20}" text-anchor="end" class="tl-cap">FUTURE</text>`;
+    return `<svg viewBox="0 0 600 ${axisY+28}" class="tl" role="img" aria-label="Timeline">${s}</svg>`;
+  }
+
+  const TENSES=[
+    {key:'ps', name:'Present simple', f:'I love · it rises · it leaves',
+      tl:[[{k:'span',a:4,b:96,label:'state: I love this place'}],[{k:'dots',a:6,b:94,n:12,label:'every day: the sun rises at six'}],[{k:'x',at:72,label:'timetable: the ferry leaves at 7.30'}]],
+      uses:[['a','Present states','I <b>love</b> this place.'],['b','Regular or “timeless” events','Every morning the sun <b>rises</b> at six.'],['c','Scheduled future events (timetables)','My ferry <b>leaves</b> at 7.30 tomorrow.'],['d','Future meaning after <i>when, while, after, as soon as…</i>','As soon as I <b>get</b> to the Gilis, I’ll upload the photos.']],
+      warn:'After <b>when / as soon as / after / before / until</b> we don’t use <i>will</i>: ✗ <s>As soon as I will get</s> → ✓ As soon as I <b>get</b>.',
+      ccq:[['“My ferry leaves at 7.30 tomorrow.” Why the present simple for a future event?',['It’s on an official timetable','She decided just now','She’s guessing'],0,'Timetables, schedules and programmes → present simple.'],['“As soon as I get to the Gilis…” Is “get” about now or the future?',['Now','The future'],1,'The meaning is future, but after “as soon as” we use the present simple.']]},
+    {key:'pc', name:'Present continuous', f:'I’m sitting · I’m meeting',
+      tl:[[{k:'span',a:40,b:60,wavy:1,label:'in progress now: I’m sitting…'}],[{k:'dot',at:20,label:'arranged',below:1},{k:'link',a:20,b:76},{k:'x',at:76,label:'I’m meeting Marta (Sat)'}]],
+      uses:[['a','Activities in progress now','Right now I<b>’m sitting</b> on the balcony.'],['b','Future arrangements (people, time and place are agreed)','On Saturday I<b>’m meeting</b> Marta.']],
+      ccq:[['“I’m meeting Marta on Saturday.” Have they already agreed on it?',['Yes, it’s arranged','No, it’s just an idea'],0,'Present continuous for the future = an arrangement, usually with another person, a time and a place.']]},
+    {key:'will', name:'Future simple (will)', f:'I’ll finish · you’ll love',
+      tl:[[{k:'dot',at:50,label:'decide NOW',below:1},{k:'link',a:50,b:70},{k:'x',at:70,label:'I’ll finish it later'}],[{k:'x',at:82,label:'opinion: you’ll love it'}]],
+      uses:[['a','Spontaneous decisions, offers, promises','OK, I<b>’ll finish</b> this post later.'],['b','Predictions based on your own opinion','I think you<b>’ll love</b> it.']],
+      ccq:[['“I’ll finish this post later.” When did Lucía decide?',['At the moment of speaking','Days ago'],0,'She sees the clouds and decides on the spot, so a spontaneous decision → will.'],['“I think you’ll love it.” Is this based on evidence or on her opinion?',['Evidence she can see','Her opinion'],1,'Opinion predictions often come with I think / I’m sure / probably → will.']]},
+    {key:'going', name:'going to', f:'we’re going to climb · it’s going to pour',
+      tl:[[{k:'dot',at:18,label:'plan made earlier',below:1},{k:'link',a:18,b:75},{k:'x',at:75,label:'we’re going to climb'}],[{k:'dot',at:50,label:'evidence: black clouds',below:1},{k:'link',a:50,b:62},{k:'x',at:62,label:'it’s going to pour'}]],
+      uses:[['a','Plans or intentions made earlier','We<b>’re going to climb</b> Mount Rinjani.'],['b','Predictions based on facts or evidence','Look at those clouds. It<b>’s going to pour</b>.']],
+      ccq:[['“It’s going to pour.” Why going to and not will?',['She can see the black clouds','It’s on a timetable','She decided just now'],0,'Evidence you can see now → going to.']]},
+    {key:'pps', name:'Present perfect simple', f:'I’ve been here for…',
+      tl:[[{k:'span',a:18,b:50,label:'I’ve been here'},{k:'br',a:18,b:50,label:'for three weeks'}]],
+      uses:[['·','Measuring the time of states up to now (how long / for / since)','I<b>’ve been</b> here for three weeks.']],
+      warn:'State verbs (<i>be, know, love, have</i> = own) don’t go in the continuous: ✗ <s>I’ve been knowing her for years</s> → ✓ I<b>’ve known</b> her for years.',
+      ccq:[['“I’ve been here for three weeks.” Is Lucía still in Bali?',['Yes','No'],0,'The state started in the past and continues up to now.']]},
+    {key:'ppc', name:'Present perfect continuous', f:'I’ve been learning…',
+      tl:[[{k:'span',a:22,b:50,wavy:1,label:'I’ve been learning to surf'},{k:'br',a:22,b:50,label:'since I arrived'}]],
+      uses:[['·','Measuring the time of actions up to now','I<b>’ve been learning</b> to surf since I arrived.']],
+      ccq:[['“I’ve been learning to surf since I arrived.” Has she finished learning?',['No, it’s still going on','Yes, she’s an expert now'],0,'An activity from the past up to now, and probably continuing.']]},
+    {key:'fc', name:'Future continuous', f:'I’ll be snorkelling',
+      tl:[[{k:'flag',at:78,label:'this time next week'},{k:'span',a:69,b:88,wavy:1,label:'I’ll be snorkelling'}]],
+      uses:[['·','Events in progress at a particular future time','This time next week I<b>’ll be snorkelling</b> with turtles.']],
+      ccq:[['At that time next week, is the snorkelling finished or in progress?',['In progress','Finished','Not started yet'],0,'Future continuous = in the middle of an activity at a future moment.']]},
+    {key:'fps', name:'Future perfect simple', f:'I’ll have visited',
+      tl:[[{k:'x',at:56},{k:'x',at:62},{k:'x',at:68},{k:'x',at:74,label:'five islands visited'},{k:'flag',at:84,label:'by the end of the month'}]],
+      uses:[['·','Events that will be completed by a particular future time','By the end of the month I<b>’ll have visited</b> five islands.']],
+      ccq:[['On the last day of the month, will the five visits be finished?',['Yes, before that point','No, they’ll start then'],0,'“By + time” = before or at that point, finished. Look back from the flag.']]},
+    {key:'fpc', name:'Future perfect continuous', f:'I’ll have been travelling',
+      tl:[[{k:'span',a:22,b:84,wavy:1,label:'I’ll have been travelling for 2 months'},{k:'flag',at:84,label:'when I fly home'}]],
+      uses:[['·','Results of incomplete processes at a particular future time (how long, up to that point)','By the time I fly home, I<b>’ll have been travelling</b> for two months… my mum won’t recognise me!']],
+      ccq:[['At the moment she flies home, what are we measuring?',['How long the travelling has lasted up to that moment','How many places she has visited'],0,'Duration of an activity up to a future point, often with a visible result (tired, tanned, fluent…).']]}
+  ];
+  const tensesEl=document.getElementById('tenses');
+  TENSES.forEach(t=>{
+    const c=document.createElement('article'); c.className='tense ex';
+    c.innerHTML=`<div class="tense-head"><h3>${t.name}</h3><span class="mono">${esc(t.f)}</span></div>
+      <div class="tl-box">${renderTL(t.tl)}</div>
+      <ul class="uses">${t.uses.map(u=>`<li><span class="lt">${u[0]==='·'?'•':'('+u[0]+')'}</span><span><b>${u[1]}</b><br><i>${u[2]}</i></span></li>`).join('')}</ul>
+      ${t.warn?`<p class="warn">${t.warn}</p>`:''}
+      <div class="ccq"><span class="mono">Check you understand</span>${t.ccq.map(q=>`<div class="q mcq" data-c="${q[2]}"><p class="q-text">${esc(q[0])}</p><div class="opts">${q[1].map(o=>`<button class="opt">${esc(o)}</button>`).join('')}</div><p class="why">${esc(q[3])}</p></div>`).join('')}</div>`;
+    tensesEl.appendChild(c);
+  });
+
+  const PAIRS=[
+    ['will vs going to: predictions',['will · opinion','I think it<b>’ll rain</b> later. (just my feeling)',[[{k:'x',at:78,label:'I think it’ll rain'}]]],['going to · evidence','Look at the sky! It<b>’s going to rain</b>.',[[{k:'dot',at:50,label:'black clouds',below:1},{k:'link',a:50,b:62},{k:'x',at:62,label:'it’s going to rain'}]]]],
+    ['Present continuous vs going to: plans',['present continuous · arrangement','I<b>’m meeting</b> Marta at 10. (we’ve agreed)',[[{k:'dot',at:25,label:'agreed',below:1},{k:'link',a:25,b:70},{k:'x',at:70,label:'meeting Marta at 10'}]]],['going to · intention','I<b>’m going to visit</b> Peru one day. (my plan)',[[{k:'dot',at:30,label:'decided',below:1},{k:'link',a:30,b:86},{k:'x',at:86,label:'visit Peru one day'}]]]],
+    ['Future continuous vs future perfect',['future continuous · in progress','At 9 am I<b>’ll be having</b> breakfast.',[[{k:'flag',at:76,label:'9 am'},{k:'span',a:68,b:86,wavy:1,label:'having breakfast'}]]],['future perfect · finished','By 9 am I<b>’ll have had</b> breakfast.',[[{k:'x',at:66,label:'had breakfast'},{k:'flag',at:78,label:'by 9 am'}]]]],
+    ['Present perfect simple vs continuous',['simple · result / how many','I<b>’ve visited</b> three temples today.',[[{k:'x',at:26},{k:'x',at:36},{k:'x',at:46,label:'three temples'}]]],['continuous · activity / how long','I<b>’ve been visiting</b> temples all day. I’m exhausted!',[[{k:'span',a:20,b:50,wavy:1,label:'visiting temples'},{k:'br',a:20,b:50,label:'all day'}]]]]
+  ];
+  const pairsEl=document.getElementById('pairs');
+  PAIRS.forEach(p=>{
+    const d=document.createElement('div'); d.className='pair';
+    d.innerHTML=`<h3>${p[0]}</h3>`+[p[1],p[2]].map(s=>`<div class="side"><span class="tag">${s[0]}</span><p>${s[1]}</p><div class="tl-box">${renderTL(s[2])}</div></div>`).join('');
+    pairsEl.appendChild(d);
+  });
+
+  /* ---------- rule card ---------- */
+  const gap=(ans,cls)=>`<input class="gap ${cls||''}" data-ans="${esc(ans)}" autocomplete="off" spellcheck="false" aria-label="answer">`;
+  const RULE=[
+    ['Present simple','I / you / we / they + verb · he / she / it + verb + '+gap('s,-s,es,-es,-s/-es','w-s')],
+    ['Present continuous','am / is / are + verb + '+gap('ing,-ing','w-s')],
+    ['will','will (’ll) + '+gap('base form,infinitive,base verb,bare infinitive,base,verb')],
+    ['going to','am / is / are + '+gap('going to')+' + base verb'],
+    ['Present perfect simple','have / has + '+gap('past participle,participle,v3,third form,3rd form')],
+    ['Present perfect continuous','have / has + '+gap('been','w-s')+' + verb-ing'],
+    ['Future continuous','will + '+gap('be','w-s')+' + verb-ing'],
+    ['Future perfect simple','will + '+gap('have','w-s')+' + past participle'],
+    ['Future perfect continuous','will + have + '+gap('been','w-s')+' + verb-ing']
+  ];
+  document.getElementById('rule').innerHTML=RULE.map(r=>`<div class="rule-row"><b>${r[0]}</b><span class="f">${r[1]}</span></div>`).join('');
+
+  /* ---------- exercise A ---------- */
+  const NOUNS=['accommodation','countryside','feeling','location','resort','surroundings','views'];
+  const A=[['picturesque','countryside,surroundings'],['unique','location'],['an exhilarating','feeling'],['an exotic','location'],['unspoilt','countryside'],['luxurious','accommodation,surroundings'],['an all-inclusive','resort'],['breathtaking','views'],['glamorous','resort']];
+  document.getElementById('matchA').innerHTML=A.map((a,i)=>`<label for="a${i}"><span>${a[0]}</span><select class="gap" id="a${i}" data-ans="${a[1]}"><option value="">choose…</option>${NOUNS.map(n=>`<option>${n}</option>`).join('')}</select></label>`).join('');
+
+  /* ---------- work it out ---------- */
+  const WIO=[
+    ['Present simple','(a) present states','2'],['Present simple','(b) regular or “timeless” events','4'],['Present simple','(c) scheduled future events','6'],['Present simple','(d) future meaning after <em>when, while, after, as soon as…</em>','14'],
+    ['Present continuous','(a) activities in progress now','3'],['Present continuous','(b) future arrangements','7'],
+    ['Future simple (will)','(a) spontaneous decisions / offers / promises','13'],['Future simple (will)','(b) predictions based on your own opinion','15'],
+    ['going to','(a) plans made earlier','8'],['going to','(b) predictions based on facts / evidence','12'],
+    ['Present perfect simple','measuring the time of states up to now (<em>how long / for / since</em>)','1'],
+    ['Present perfect continuous','measuring the time of actions up to now','5'],
+    ['Future continuous','events in progress at a particular future time','9'],
+    ['Future perfect simple','events completed by a particular future time','10'],
+    ['Future perfect continuous','results of incomplete processes at a particular future time','11']
+  ];
+  const numOpts='<option value="">#</option>'+Array.from({length:15},(_,i)=>`<option>${i+1}</option>`).join('');
+  document.getElementById('wio').innerHTML=WIO.map((w,i)=>`<div class="wio-row"><label for="w${i}"><span class="t">${w[0]}</span>${w[1]}</label><select class="gap" id="w${i}" data-ans="${w[2]}">${numOpts}</select></div>`).join('');
+
+  /* ---------- mistakes ---------- */
+  const MIS=[['When I will arrive in Rome, I’ll call you.','When I <b>arrive</b> in Rome, I’ll call you.','No will after when / as soon as.'],['I’m knowing this city really well.','I <b>know</b> this city really well.','“Know” is a state verb, so no continuous.'],['Look at the sky! It will rain.','Look at the sky! It<b>’s going to</b> rain.','Evidence you can see → going to.'],['By Friday I will visit five museums.','By Friday I <b>will have visited</b> five museums.','By + future time, completed → future perfect.'],['I’ve been being in Bali for three weeks.','I<b>’ve been</b> in Bali for three weeks.','“Be” is a state, so present perfect simple.']];
+  const misEl=document.getElementById('mistakes');
+  MIS.forEach((m,i)=>{const d=document.createElement('div'); d.className='mis'; d.innerHTML=`<p class="wrongs">${m[0]}</p><p class="fix" hidden>✓ ${m[1]} <span class="note" style="font-weight:400">${m[2]}</span></p><button type="button" aria-expanded="false">Show correction</button>`;
+    const b=d.querySelector('button'),f=d.querySelector('.fix'); b.addEventListener('click',()=>{f.hidden=!f.hidden; b.textContent=f.hidden?'Show correction':'Hide correction'; b.setAttribute('aria-expanded',String(!f.hidden));}); misEl.appendChild(d);});
+
+  /* ---------- chat ---------- */
+  const g=(cue,ans,cls)=>`${gap(ans,cls)} <span class="cue">(${cue})</span>`;
+  const CHAT=[
+    ['m','Marta',`Hey! What ${g('you / do','are you doing','w-l')} right now?`],
+    ['l','Lucía',`I ${g('lie',"'m lying,am lying")} by the pool. Bliss 😎`],
+    ['m','Marta',`Lucky you! Listen, my fast boat ${g('arrive','arrives')} at 9.40 on Saturday.`],
+    ['l','Lucía',`Perfect. I ${g('wait',"'ll be waiting,will be waiting,'ll wait,will wait",'w-l')} for you at the harbour.`],
+    ['m','Marta',`How long ${g('you / be','have you been','w-l')} in Indonesia now?`],
+    ['l','Lucía',`Nearly a month! And I ${g('surf',"'ve been surfing,have been surfing",'w-l')} every day since I arrived, so I’m finally OK at it 😂`],
+    ['m','Marta','So what’s the plan for Monday?'],
+    ['l','Lucía',`We ${g('climb',"'re going to climb,are going to climb,'re climbing,are climbing",'w-l')} Mount Rinjani. I booked the guide yesterday.`],
+    ['m','Marta',`A sunrise hike?? By the time we reach the top, we ${g('walk',"'ll have been walking,will have been walking",'w-l')} for six hours!`],
+    ['l','Lucía',`Trust me, it’s worth it. I think you ${g('love',"'ll love,will love")} the views.`],
+    ['m','Marta',`OK OK. As soon as I ${g('get','get','w-s')} off the boat, I ${g('text',"'ll text,will text,'ll message,will message")} you.`],
+    ['l','Lucía',`Great! And by Sunday I ${g('finish',"'ll have finished,will have finished",'w-l')} my blog post, so you can read it on the boat.`]
+  ];
+  document.getElementById('chat').innerHTML=CHAT.map(c=>`<div class="msg ${c[0]}"><span class="who">${c[1]}</span>${c[2]}</div>`).join('');
+
+  /* ---------- choose ---------- */
+  const CH=[
+    ['Look at that queue at check-in! We ___ miss our flight.',['are going to','will'],0,'Evidence (the queue) → going to.'],
+    ['“The taxi’s here!” “OK, I ___ bring the bags down.”',['’ll','’m going to'],0,'A spontaneous offer → will.'],
+    ['The museum ___ at 10 on Sundays.',['opens','is opening'],0,'Timetable / regular event → present simple.'],
+    ['I ___ my cousin in Lisbon next weekend. We’ve already booked a table.',['’m seeing','’ll see'],0,'Fixed arrangement → present continuous.'],
+    ['This time tomorrow we ___ over the Alps.',['’ll fly','’ll be flying'],1,'In progress at a future time → future continuous.'],
+    ['By the time you arrive, I ___ all the souvenirs.',['’ll have bought','’ll be buying'],0,'Completed before a future point → future perfect.'],
+    ['We ___ this hotel for ten years. It’s our favourite.',['’ve known','’ve been knowing'],0,'“Know” is a state verb → present perfect simple.'],
+    ['I’m exhausted! I ___ around the old town all day.',['’ve walked','’ve been walking'],1,'Activity up to now, with a visible result → present perfect continuous.'],
+    ['When we ___ in Rome, we’ll rent scooters.',['arrive','will arrive'],0,'After when → present simple with future meaning.'],
+    ['I think Venice ___ too crowded in August.',['will be','is being'],0,'Opinion prediction (I think) → will.']
+  ];
+  document.getElementById('choose').innerHTML=CH.map((q,i)=>`<div class="q mcq" data-c="${q[2]}"><p class="q-text">${i+1}. ${esc(q[0]).replace('___','<span style="color:var(--coral)">_____</span>')}</p><div class="opts">${q[1].map(o=>`<button class="opt">${esc(o)}</button>`).join('')}</div><p class="why">${esc(q[3])}</p></div>`).join('');
+
+  /* ---------- reviews ---------- */
+  const REV=[
+    ['If you want food, drinks and activities all included in the price, book an','a____-i________ r_____','all-inclusive resort,all inclusive resort','.'],
+    ['Monaco and Saint-Tropez are famous for being','g________ r______','glamorous resorts,glamorous resort','full of yachts and celebrities.'],
+    ['Paragliding over the valley gave me','an e__________ f______','exhilarating feeling','I’ll never forget.'],
+    ['The Cotswolds are known for their','p__________ c__________','picturesque countryside,picturesque surroundings','of stone cottages and green hills.'],
+    ['Every room in our hotel had','b____________ v____','breathtaking views','of the volcano.'],
+    ['The island has no roads and no hotels, just','u________ c__________','unspoilt countryside,unspoiled countryside','and wild beaches.'],
+    ['Marble bathrooms, silk sheets, a private butler: truly','l_________ a____________','luxurious accommodation','.'],
+    ['A hotel inside a 19th-century lighthouse? What a','u_____ l_______','unique location','!']
+  ];
+  document.getElementById('rev').innerHTML=REV.map(r=>`<p>${r[0]} <input class="gap w-l" data-ans="${r[2]}" data-strip="1" placeholder="${r[1]}" autocomplete="off" spellcheck="false" aria-label="collocation"> ${r[3]}</p>`).join('');
+
+  /* ---------- generic checking ---------- */
+  const norm=(s,strip)=>{s=String(s).toLowerCase().replace(/[’‘`]/g,"'").replace(/\s+/g,' ').trim(); if(strip) s=s.replace(/^(an?|the)\s+/,''); return s;};
+  const fields=ex=>[...ex.querySelectorAll('[data-ans]')];
+  function score(ex,ok,total){const sc=ex.querySelector(':scope > .sub .score, :scope > .tense-head .score'); if(!sc) return; sc.textContent=total?`${ok} / ${total}`:''; sc.classList.toggle('full',total&&ok===total);}
+  document.querySelectorAll('.ex').forEach(ex=>{
+    const chk=ex.querySelector(':scope > .btns .check'), show=ex.querySelector(':scope > .btns .show'), rst=ex.querySelector(':scope > .btns .reset');
+    if(chk) chk.addEventListener('click',()=>{ let ok=0; const fs=fields(ex); fs.forEach(f=>{ const strip=!!f.dataset.strip; const alts=f.dataset.ans.split(',').map(a=>norm(a,strip)); const v=norm(f.value,strip); const good=v&&alts.includes(v); f.classList.toggle('ok',!!good); f.classList.toggle('bad',!good); if(good) ok++; }); score(ex,ok,fs.length); });
+    if(show) show.addEventListener('click',()=>{ fields(ex).forEach(f=>{ if(f.classList.contains('ok')) return; const nx=f.nextElementSibling; if(nx&&nx.classList.contains('key')) return; const k=document.createElement('span'); k.className='key'; k.textContent='→ '+f.dataset.ans.split(',')[0]; f.after(k); }); });
+    if(rst) rst.addEventListener('click',()=>{ fields(ex).forEach(f=>{ f.value=''; f.classList.remove('ok','bad'); }); ex.querySelectorAll('.key').forEach(k=>k.remove()); ex.querySelectorAll('.mcq').forEach(q=>{ q.classList.remove('done'); q.dataset.ans=''; q.querySelectorAll('.opt').forEach(o=>o.classList.remove('right','wrong')); }); score(ex,0,0); });
+  });
+  document.querySelectorAll('.mcq').forEach(q=>{
+    const opts=[...q.querySelectorAll('.opt')];
+    opts.forEach((o,i)=>o.addEventListener('click',()=>{
+      if(q.classList.contains('done')) return;
+      const c=+q.dataset.c;
+      if(i===c){ o.classList.add('right'); q.classList.add('done'); q.dataset.ans=q.querySelector('.wrong')?'0':'1'; }
+      else { o.classList.add('wrong'); }
+      const ex=q.closest('.block.ex'); if(ex){ const all=[...ex.querySelectorAll('.mcq')]; const done=all.filter(x=>x.classList.contains('done')); score(ex,done.filter(x=>x.dataset.ans==='1').length,all.length); }
+    }));
+  });
+
+  /* ---------- freer checklist ---------- */
+  const COLL=/\b(picturesque|unique|exhilarating|exotic|unspoilt|unspoiled|luxurious|all-inclusive|all inclusive|breathtaking|glamorous)\s+(accommodation|countryside|feelings?|locations?|resorts?|surroundings|views?)\b/gi;
+  const CHECKS=[
+    ['Future continuous (’ll be + -ing)',/\b(will|'ll)\s+be\s+\w+ing\b/i],
+    ['Future perfect (’ll have + V3)',/\b(will|'ll)\s+have\s+(?!been\s+\w+ing)\w+/i],
+    ['Future perfect continuous',/\b(will|'ll)\s+have\s+been\s+\w+ing\b/i],
+    ['Present perfect continuous',/\b(have|has|'ve|'s)\s+been\s+\w+ing\b/i],
+    ['going to',/\bgoing to\s+\w+/i],
+    ['Present simple after when / as soon as',/\b(when|as soon as|after|before|until|once)\s+(i|we|you|they|he|she|it)\s+(?!will\b|'ll\b)\w+/i],
+    ['4 collocations',null]
+  ];
+  const cl=document.getElementById('checklist');
+  cl.innerHTML=CHECKS.map((c,i)=>`<li id="ck${i}">${c[0]}</li>`).join('');
+  const frees=[...document.querySelectorAll('.free')];
+  function runChecks(){
+    const txt=frees.map(t=>t.value).join('\n').replace(/[’‘]/g,"'");
+    CHECKS.forEach((c,i)=>{ const li=document.getElementById('ck'+i); if(c[1]) li.classList.toggle('done',c[1].test(txt)); else { const m=new Set((txt.match(COLL)||[]).map(s=>s.toLowerCase().split(/\s+/)[0])); li.textContent=`Collocations: ${m.size} / 4`; li.classList.toggle('done',m.size>=4); } });
+  }
+  frees.forEach(t=>t.addEventListener('input',runChecks)); runChecks();
+
+  /* ---------- confidence ---------- */
+  const LV=['needs practice','getting there','confident'];
+  document.getElementById('conf').innerHTML=TENSES.map((t,i)=>`<div class="conf-row"><label for="c${i}">${t.name}</label><input type="range" id="c${i}" min="0" max="2" step="1" value="1"><output id="o${i}">${LV[1]}</output></div>`).join('')+`<div class="conf-row"><label for="c9">Travel collocations</label><input type="range" id="c9" min="0" max="2" step="1" value="1"><output id="o9">${LV[1]}</output></div>`;
+  for(let i=0;i<10;i++){ const r=document.getElementById('c'+i), o=document.getElementById('o'+i); const upd=()=>{o.textContent=LV[r.value]; o.style.color=['var(--bad)','var(--sun)','var(--ok)'][r.value];}; r.addEventListener('input',upd); upd(); }
+
+  /* ---------- cheat sheet ---------- */
+  const FORMS={ps:'verb / verb + s',pc:'am/is/are + -ing',will:'will + base form',going:'am/is/are + going to + base',pps:'have/has + V3',ppc:'have/has + been + -ing',fc:'will + be + -ing',fps:'will + have + V3',fpc:'will + have + been + -ing'};
+  document.getElementById('cheat').innerHTML=TENSES.map(t=>`<div class="cheat-card"><b>${t.name}</b><span class="f">${FORMS[t.key]}</span>${renderTL(t.tl)}</div>`).join('');
+})();
+</script>
