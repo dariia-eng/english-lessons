@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 10C Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root {
+  --hero: #4a0e0e;
+  --hero-text: #fff;
+  --accent: #c8781a;
+  --accent-light: #f3e0c7;
+  --bg: #fdfaf7;
+  --surface: #ffffff;
+  --surface2: #f5f0eb;
+  --border: #e0d4c4;
+  --text: #1a1208;
+  --text2: #5a4a35;
+  --prompt-bg: #fef7ee;
+  --prompt-border: #e8c890;
+  --correct: #1a6b3c;
+  --correct-bg: #d4eddf;
+  --wrong: #9b2020;
+  --wrong-bg: #fde8e8;
+  --selected: #4a0e0e;
+  --selected-text: #fff;
+  --radius: 12px;
+  --shadow: 0 2px 12px rgba(74,14,14,.10);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1a100a; --surface: #261710; --surface2: #2e1d12;
+    --border: #4a3020; --text: #f0e6d8; --text2: #b09070;
+    --accent-light: #3a2510; --prompt-bg: #2a1d0e; --prompt-border: #7a5020;
+    --correct: #4caf80; --correct-bg: #0d2e1a;
+    --wrong: #e07070; --wrong-bg: #2e0d0d;
+    --selected: #c8781a; --shadow: 0 2px 12px rgba(0,0,0,.40);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1a100a; --surface: #261710; --surface2: #2e1d12;
+  --border: #4a3020; --text: #f0e6d8; --text2: #b09070;
+  --accent-light: #3a2510; --prompt-bg: #2a1d0e; --prompt-border: #7a5020;
+  --correct: #4caf80; --correct-bg: #0d2e1a;
+  --wrong: #e07070; --wrong-bg: #2e0d0d;
+  --selected: #c8781a; --shadow: 0 2px 12px rgba(0,0,0,.40);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.5; }
+
+/* Header */
+.site-header { background: var(--hero); color: var(--hero-text); padding: 1rem 1.2rem .85rem; position: relative; }
+.header-inner { max-width: 780px; margin: 0 auto; }
+.header-eyebrow { font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; opacity: .75; font-weight: 600; margin-bottom: .2rem; }
+.header-title { font-family: 'Playfair Display', serif; font-size: clamp(1.3rem,3.5vw,1.75rem); line-height: 1.2; text-wrap: balance; }
+.header-sub { margin-top: .2rem; font-size: .82rem; opacity: .85; }
+.theme-toggle { position: absolute; top: .85rem; right: 1rem; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25); color: #fff; border-radius: 8px; padding: .28rem .6rem; font-size: .75rem; cursor: pointer; font-family: 'Inter', sans-serif; }
+.theme-toggle:hover { background: rgba(255,255,255,.25); }
+
+/* Name bar */
+.name-bar { position: sticky; top: 0; z-index: 10; background: var(--accent); color: #fff; padding: .38rem 1.2rem; display: flex; align-items: center; gap: .65rem; }
+.name-bar label { font-size: .8rem; font-weight: 600; white-space: nowrap; }
+.name-bar input { flex: 1; max-width: 280px; background: rgba(255,255,255,.25); border: 1px solid rgba(255,255,255,.4); color: #fff; padding: .22rem .6rem; border-radius: 6px; font-family: 'Inter', sans-serif; font-size: .85rem; }
+.name-bar input::placeholder { color: rgba(255,255,255,.65); }
+.name-bar input:focus { outline: 2px solid rgba(255,255,255,.7); }
+
+/* Progress */
+.progress-wrap { background: var(--surface2); border-bottom: 1px solid var(--border); padding: .32rem 1.2rem; }
+.progress-inner { max-width: 780px; margin: 0 auto; display: flex; align-items: center; gap: .65rem; }
+.progress-label { font-size: .75rem; color: var(--text2); font-weight: 600; min-width: 3rem; }
+.progress-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+#pfill { height: 100%; background: var(--accent); border-radius: 3px; width: 0%; transition: width .4s ease; }
+
+/* Main */
+.main { max-width: 780px; margin: 0 auto; padding: .9rem .9rem 2.5rem; }
+
+/* Exercise cards */
+.ex-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: .85rem; overflow: hidden; }
+.ex-hd { background: var(--hero); color: #fff; padding: .5rem 1rem; display: flex; align-items: baseline; gap: .6rem; }
+.ex-num { font-size: .64rem; letter-spacing: .15em; text-transform: uppercase; opacity: .75; font-weight: 600; }
+.ex-title { font-family: 'Playfair Display', serif; font-size: .97rem; }
+.ex-body { padding: .75rem 1rem .7rem; }
+.ex-instr { font-size: .83rem; color: var(--text2); margin-bottom: .6rem; font-style: italic; }
+
+/* Buttons */
+.btn-row { display: flex; gap: .4rem; margin-top: .65rem; flex-wrap: wrap; }
+.btn { padding: .32rem .75rem; border: none; border-radius: 7px; font-family: 'Inter', sans-serif; font-size: .78rem; font-weight: 600; cursor: pointer; transition: opacity .2s, transform .1s; }
+.btn:hover { opacity: .88; } .btn:active { transform: scale(.97); }
+.btn-check { background: var(--accent); color: #fff; }
+.btn-reset { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+
+/* Gap-fill inputs */
+.gap-input { display: inline-block; border: none; border-bottom: 2px solid var(--accent); background: transparent; color: var(--text); font-family: 'Inter', sans-serif; font-size: .95rem; text-align: center; padding: .05rem .15rem; min-width: 60px; transition: border-color .2s; }
+.gap-input:focus { outline: none; border-bottom-color: var(--hero); }
+.gap-input.correct { border-bottom-color: var(--correct); color: var(--correct); background: var(--correct-bg); border-radius: 3px; }
+.gap-input.wrong { border-bottom-color: var(--wrong); color: var(--wrong); background: var(--wrong-bg); border-radius: 3px; }
+.gap-input.given-val { opacity: .65; background: var(--surface2); border-radius: 4px; cursor: default; border-bottom-color: var(--border); }
+
+/* Ex 1 — Months grid */
+.months-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .4rem .65rem; }
+.month-row { display: flex; align-items: center; gap: .4rem; }
+.month-num { color: var(--text2); font-size: .78rem; min-width: 1.5rem; font-weight: 600; }
+
+/* Ex 2 — Story */
+.word-box { display: flex; flex-wrap: wrap; gap: .28rem .4rem; margin-bottom: .6rem; padding: .45rem .7rem; background: var(--accent-light); border-radius: 7px; border: 1px solid var(--prompt-border); }
+.word-box-label { width: 100%; font-size: .68rem; color: var(--text2); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .15rem; }
+.word-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: .15rem .45rem; font-size: .82rem; font-weight: 500; color: var(--text2); }
+.story-text { font-size: .92rem; line-height: 2; background: var(--surface2); border-radius: 7px; padding: .7rem .9rem; }
+
+/* Ex 3 — MC */
+.conv-block { margin-bottom: .65rem; padding: .55rem .75rem; background: var(--surface2); border-radius: 7px; border: 1px solid var(--border); }
+.conv-block:last-child { margin-bottom: 0; }
+.conv-label { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); margin-bottom: .3rem; }
+.conv-line { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem; font-size: .92rem; line-height: 1.8; margin-bottom: .05rem; }
+.mc-group { display: inline-flex; gap: .2rem; }
+.mc-btn { padding: .17rem .45rem; border: 1.5px solid var(--border); border-radius: 5px; background: var(--surface); color: var(--text); font-family: 'Inter', sans-serif; font-size: .85rem; cursor: pointer; transition: background .15s, border-color .15s; }
+.mc-btn:hover { background: var(--accent-light); border-color: var(--accent); }
+.mc-btn.selected { background: var(--selected); color: var(--selected-text); border-color: var(--selected); }
+.mc-btn.correct { background: var(--correct-bg); color: var(--correct); border-color: var(--correct); }
+.mc-btn.wrong { background: var(--wrong-bg); color: var(--wrong); border-color: var(--wrong); }
+.mc-btn:disabled { cursor: default; opacity: .9; }
+
+/* Ex 4 & 5 — Tasks */
+.task-list { display: flex; flex-direction: column; gap: .55rem; }
+.task-row { display: flex; gap: .5rem; }
+.task-num { font-weight: 700; color: var(--accent); min-width: 1.6rem; padding-top: .38rem; font-size: .9rem; }
+.task-body { flex: 1; display: flex; flex-direction: column; gap: .25rem; }
+
+/* The prompt chip — clearly visible */
+.task-prompt { display: inline-flex; align-items: center; gap: .28rem; background: var(--prompt-bg); border: 1.5px solid var(--prompt-border); border-radius: 5px; padding: .22rem .55rem; font-size: .83rem; color: var(--text); font-weight: 500; line-height: 1.4; }
+.task-prompt-icon { opacity: .6; font-size: .75rem; }
+
+/* given task row */
+.task-given-answer { font-style: italic; font-size: .87rem; color: var(--text2); padding: .15rem .35rem; }
+.task-given-label { font-size: .68rem; background: var(--surface2); border-radius: 4px; padding: .08rem .35rem; color: var(--text2); margin-left: .25rem; }
+
+/* write input */
+.task-input { border: none; border-bottom: 2px solid var(--accent); background: transparent; color: var(--text); font-family: 'Inter', sans-serif; font-size: .92rem; padding: .15rem .12rem; width: 100%; }
+.task-input:focus { outline: none; border-bottom-color: var(--hero); }
+.task-input.correct { border-bottom-color: var(--correct); color: var(--correct); background: var(--correct-bg); border-radius: 4px; padding: .15rem .45rem; }
+.task-input.wrong { border-bottom-color: var(--wrong); color: var(--wrong); background: var(--wrong-bg); border-radius: 4px; padding: .15rem .45rem; }
+
+/* Ex 5 — question text above answer blank */
+.task-question { font-size: .87rem; color: var(--text); font-weight: 500; }
+
+/* Ex 6 — Match */
+.match-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem .9rem; }
+.match-col-label { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text2); margin-bottom: .25rem; padding-bottom: .22rem; border-bottom: 1px solid var(--border); }
+.match-item { padding: .38rem .6rem; border: 1.5px solid var(--border); border-radius: 7px; background: var(--surface2); cursor: pointer; font-size: .82rem; line-height: 1.4; transition: background .15s, border-color .15s; user-select: none; }
+.match-item:hover { background: var(--accent-light); border-color: var(--accent); }
+.match-item.selected { background: var(--hero); color: #fff; border-color: var(--hero); }
+.match-item.matched-correct { background: var(--correct-bg); color: var(--correct); border-color: var(--correct); cursor: default; }
+.match-item.matched-wrong { background: var(--wrong-bg); color: var(--wrong); border-color: var(--wrong); cursor: default; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+.shake { animation: shake .35s ease; }
+.match-status { font-size: .76rem; margin-top: .4rem; color: var(--text2); font-weight: 500; }
+
+/* Send card */
+.send-card { background: var(--hero); color: #fff; border-radius: var(--radius); padding: .85rem 1.1rem; display: flex; flex-direction: column; gap: .4rem; }
+.send-card h3 { font-family: 'Playfair Display', serif; font-size: .97rem; }
+.send-card p { font-size: .82rem; opacity: .85; }
+.btn-send { align-self: flex-start; background: var(--accent); color: #fff; border: none; border-radius: 7px; padding: .4rem 1rem; font-family: 'Inter', sans-serif; font-size: .85rem; font-weight: 600; cursor: pointer; }
+.btn-send:hover { opacity: .88; }
+
+@media (max-width: 500px) {
+  .match-wrap { grid-template-columns: 1fr; }
+  .months-grid { grid-template-columns: 1fr 1fr; }
+  .name-bar { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <button class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</button>
+  <div class="header-inner">
+    <p class="header-eyebrow">Unit 10C · Homework</p>
+    <h1 class="header-title">I'm Going to Win!</h1>
+    <p class="header-sub">be going to · future plans &amp; intentions</p>
+  </div>
+</header>
+
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…" autocomplete="name">
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <span class="progress-label" id="plabel">0 / 6</span>
+    <div class="progress-track"><div id="pfill"></div></div>
+  </div>
+</div>
+
+<main class="main">
+
+  <!-- ─── Exercise 1 ─── -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">Exercise 1</span><span class="ex-title">Complete the months of the year</span></div>
+    <div class="ex-body">
+      <p class="ex-instr">Write the missing months in the correct order.</p>
+      <div class="months-grid" id="months-grid">
+        <div class="month-row">
+          <span class="month-num">1.</span>
+          <input class="gap-input given-val" value="January" readonly tabindex="-1">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx1()">Check</button>
+        <button class="btn btn-reset" onclick="resetEx1()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Exercise 2 ─── -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">Exercise 2</span><span class="ex-title">Complete the text with the words in the box</span></div>
+    <div class="ex-body">
+      <p class="ex-instr">Use each word once. Gap 1 is already done for you.</p>
+      <div class="word-box">
+        <span class="word-box-label">Word box</span>
+        <span class="word-chip">for</span>
+        <span class="word-chip">for</span>
+        <span class="word-chip">fortnight</span>
+        <span class="word-chip">in</span>
+        <span class="word-chip">on</span>
+        <span class="word-chip">st</span>
+        <span class="word-chip">summer</span>
+        <span class="word-chip">th</span>
+        <span class="word-chip">winter</span>
+        <span class="word-chip">with</span>
+      </div>
+      <div class="story-text" id="story-text"></div>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx2()">Check</button>
+        <button class="btn btn-reset" onclick="resetEx2()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Exercise 3 ─── -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">Exercise 3</span><span class="ex-title">Choose the correct alternatives</span></div>
+    <div class="ex-body">
+      <p class="ex-instr">Click the correct word or phrase in each conversation.</p>
+      <div id="mc-wrap"></div>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx3()">Check</button>
+        <button class="btn btn-reset" onclick="resetEx3()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Exercise 4 ─── -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">Exercise 4</span><span class="ex-title">Write questions with <em>be going to</em></span></div>
+    <div class="ex-body">
+      <p class="ex-instr">Write a <em>be going to</em> question for each situation. Question 1 is an example.</p>
+      <div class="task-list" id="ex4-list"></div>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx4()">Check</button>
+        <button class="btn btn-reset" onclick="resetEx4()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Exercise 5 ─── -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">Exercise 5</span><span class="ex-title">Complete the short answers</span></div>
+    <div class="ex-body">
+      <p class="ex-instr">Write a short answer for each question. Answer (a) is an example.</p>
+      <div class="task-list" id="ex5-list"></div>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx5()">Check</button>
+        <button class="btn btn-reset" onclick="resetEx5()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Exercise 6 ─── -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">Exercise 6</span><span class="ex-title">Match the answers (a–h) with the questions (1–8)</span></div>
+    <div class="ex-body">
+      <p class="ex-instr">Click a question, then click its matching answer.</p>
+      <div class="match-wrap">
+        <div><div class="match-col-label">Questions</div><div id="match-qs" style="display:flex;flex-direction:column;gap:.4rem;"></div></div>
+        <div><div class="match-col-label">Answers</div><div id="match-as" style="display:flex;flex-direction:column;gap:.4rem;"></div></div>
+      </div>
+      <p class="match-status" id="match-status"></p>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx6()">Check</button>
+        <button class="btn btn-reset" onclick="resetEx6()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Send to Teacher ─── -->
+  <div class="send-card">
+    <h3>📬 Send to Teacher</h3>
+    <p>Finished? Send your answers to your teacher.</p>
+    <button class="btn-send" onclick="sendToTeacher()">Send to Teacher</button>
+  </div>
+
+</main>
+
+<script>
+/* ── Progress ── */
+const done = { ex1:false, ex2:false, ex3:false, ex4:false, ex5:false, ex6:false };
+function updateProgress(){
+  const n = Object.values(done).filter(Boolean).length;
+  document.getElementById('pfill').style.width = (n/6*100)+'%';
+  document.getElementById('plabel').textContent = n+' / 6';
+}
+
+function toggleTheme(){
+  const h = document.documentElement;
+  h.setAttribute('data-theme', h.getAttribute('data-theme')==='dark'?'light':'dark');
+}
+
+function norm(s){ return String(s).trim().toLowerCase().replace(/['']/g,"'").replace(/\s+/g,' '); }
+function normQ(s){ return norm(s).replace(/[?.!,]/g,''); }
+
+/* ══════════════════════════════════════
+   EX 1 — MONTHS
+══════════════════════════════════════ */
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+(function(){
+  const g = document.getElementById('months-grid');
+  for(let i=2;i<=12;i++){
+    const d = document.createElement('div');
+    d.className = 'month-row';
+    d.innerHTML = `<span class="month-num">${i}.</span><input class="gap-input" id="m${i}" type="text" autocomplete="off" placeholder="…">`;
+    g.appendChild(d);
+  }
+})();
+
+function checkEx1(){
+  let ok=true;
+  for(let i=2;i<=12;i++){
+    const el=document.getElementById('m'+i);
+    const v=norm(el.value);
+    if(!v){ok=false;continue;}
+    if(v===norm(MONTHS[i-1])){ el.className='gap-input correct'; el.readOnly=true; }
+    else { el.className='gap-input wrong'; ok=false; }
+  }
+  if(ok){ done.ex1=true; updateProgress(); }
+}
+function resetEx1(){
+  for(let i=2;i<=12;i++){ const e=document.getElementById('m'+i); e.className='gap-input'; e.value=''; e.readOnly=false; }
+  done.ex1=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   EX 2 — GAP-FILL TEXT
+══════════════════════════════════════ */
+const STORY = [
+  'My name is Ella and I’m going to travel this ',
+  {id:'g1', ans:'summer', given:true},
+  '. I’m going to go to Norway for a ',
+  {id:'g2', ans:'fortnight', alts:['a fortnight']},
+  ' with my friend. We’re going to go ',
+  {id:'g3', ans:'for'},
+  ' three weeks. We want to be there ',
+  {id:'g4', ans:'in'},
+  ' July. I’m going to stay ',
+  {id:'g5', ans:'with'},
+  ' my friend’s family. We’re going to travel ',
+  {id:'g6', ans:'on'},
+  ' the 4',
+  {id:'g7', ans:'th'},
+  ' of July. It’s going to be cold – it’s ',
+  {id:'g8', ans:'winter'},
+  ' there in July! I’m going to go skiing ',
+  {id:'g9', ans:'for'},
+  ' two weeks. Then I’m going to come home on the 1',
+  {id:'g10', ans:'st'},
+  ' of August.'
+];
+
+(function(){
+  let html='';
+  STORY.forEach(p=>{
+    if(typeof p==='string'){ html+=p; return; }
+    if(p.given){
+      html+=`<input class="gap-input given-val" id="${p.id}" value="${p.ans}" readonly tabindex="-1" size="7">`;
+    } else {
+      html+=`<input class="gap-input" id="${p.id}" type="text" autocomplete="off" placeholder="…" size="${Math.max(4,p.ans.length+2)}">`;
+    }
+  });
+  document.getElementById('story-text').innerHTML = html;
+})();
+
+function checkEx2(){
+  let ok=true;
+  STORY.forEach(p=>{
+    if(typeof p==='string'||p.given) return;
+    const el=document.getElementById(p.id);
+    const v=norm(el.value);
+    const acc=[norm(p.ans),...(p.alts||[]).map(norm)];
+    if(!v){ok=false;return;}
+    if(acc.includes(v)){ el.className='gap-input correct'; el.readOnly=true; }
+    else { el.className='gap-input wrong'; ok=false; }
+  });
+  if(ok){ done.ex2=true; updateProgress(); }
+}
+function resetEx2(){
+  STORY.forEach(p=>{ if(typeof p==='string'||p.given) return; const e=document.getElementById(p.id); e.className='gap-input'; e.value=''; e.readOnly=false; });
+  done.ex2=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   EX 3 — MULTIPLE CHOICE
+══════════════════════════════════════ */
+const CONVS = [
+  { label:'Conversation 1', lines:[
+    { spk:'A', pre:'', opts:['Are you','Do you'], ans:'Are you', post:' going to travel to the UK next year?' },
+    { spk:'B', pre:'No, ', opts:["I'm not","I don't"], ans:"I'm not", post:' going to travel there.' }
+  ]},
+  { label:'Conversation 2', lines:[
+    { spk:'A', pre:'', opts:['Are we','Do we'], ans:'Are we', post:' going to be in time for the show?' },
+    { spk:'B', pre:'Yes, ', opts:['we are','we do'], ans:'we are', post:', I think so.' }
+  ]},
+  { label:'Conversation 3', lines:[
+    { spk:'A', pre:"Let's ", opts:['watch','to watch'], ans:'watch', post:' the tennis match tonight.' },
+    { spk:'B', pre:'Good idea! ', opts:["We're","We"], ans:"We're", post:' going to watch it together.' }
+  ]},
+  { label:'Conversation 4', lines:[
+    { spk:'A', pre:'', opts:['Is','Are'], ans:'Is', post:' Max going to win the race?' },
+    { spk:'B', pre:'No, he ', opts:["isn't","aren't"], ans:"isn't", post:' going to win it.' }
+  ]},
+  { label:'Conversation 5', lines:[
+    { spk:'A', pre:'What time ', opts:['are','is'], ans:'are', post:' you going to arrive?' },
+    { spk:'B', pre:'We ', opts:['are','is'], ans:'are', post:' going to get there at about 7 pm.' }
+  ]},
+  { label:'Conversation 6', lines:[
+    { spk:'A', pre:'When ', opts:['are','is'], ans:'are', post:' they going to leave?' },
+    { spk:'B', pre:'', opts:["I'm","They're"], ans:"I'm", post:' not sure. Maybe tomorrow.' }
+  ]}
+];
+
+(function(){
+  const wrap=document.getElementById('mc-wrap');
+  CONVS.forEach((c,ci)=>{
+    const div=document.createElement('div'); div.className='conv-block';
+    let h=`<div class="conv-label">${c.label}</div>`;
+    c.lines.forEach((l,li)=>{
+      h+=`<div class="conv-line"><strong>${l.spk}:</strong> ${l.pre}<span class="mc-group">`;
+      l.opts.forEach((o,oi)=>{
+        h+=`<button class="mc-btn" data-ci="${ci}" data-li="${li}" data-oi="${oi}" onclick="pickMC(this)">${o}</button>`;
+      });
+      h+=`</span>${l.post}</div>`;
+    });
+    div.innerHTML=h; wrap.appendChild(div);
+  });
+})();
+
+function pickMC(btn){
+  const ci=+btn.dataset.ci, li=+btn.dataset.li;
+  document.querySelectorAll(`.mc-btn[data-ci="${ci}"][data-li="${li}"]`).forEach(b=>{ b.classList.remove('selected'); b.disabled=false; });
+  btn.classList.add('selected');
+}
+function checkEx3(){
+  let ok=true;
+  CONVS.forEach((c,ci)=>{
+    c.lines.forEach((l,li)=>{
+      const btns=document.querySelectorAll(`.mc-btn[data-ci="${ci}"][data-li="${li}"]`);
+      let any=false;
+      btns.forEach(b=>{
+        if(b.classList.contains('selected')){
+          any=true;
+          const chosen=CONVS[ci].lines[li].opts[+b.dataset.oi];
+          if(norm(chosen)===norm(l.ans)){ b.classList.replace('selected','correct'); }
+          else {
+            b.classList.replace('selected','wrong'); ok=false;
+            btns.forEach(bb=>{ if(norm(CONVS[ci].lines[li].opts[+bb.dataset.oi])===norm(l.ans)) bb.classList.add('correct'); });
+          }
+          b.disabled=true;
+        } else { b.disabled=true; }
+      });
+      if(!any) ok=false;
+    });
+  });
+  if(ok){ done.ex3=true; updateProgress(); }
+}
+function resetEx3(){
+  document.querySelectorAll('.mc-btn').forEach(b=>{ b.className='mc-btn'; b.disabled=false; });
+  done.ex3=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   EX 4 — WRITE QUESTIONS
+══════════════════════════════════════ */
+const EX4 = [
+  { n:1,  situation:'you / move to another city / next year',           ans:'Are you going to move to another city next year?',         given:true },
+  { n:2,  situation:'Duncan / play football / tomorrow',                 ans:'Is Duncan going to play football tomorrow?' },
+  { n:3,  situation:'Emma and George / visit us / this weekend',        ans:'Are Emma and George going to visit us this weekend?' },
+  { n:4,  situation:'we / be late for class',                           ans:'Are we going to be late for class?' },
+  { n:5,  situation:'they / learn Spanish',                             ans:'Are they going to learn Spanish?' },
+  { n:6,  situation:'Alex / make dinner / tonight',                     ans:'Is Alex going to make dinner tonight?' },
+  { n:7,  situation:'you / take the train / to London',                 ans:'Are you going to take the train to London?' },
+];
+
+(function(){
+  const list=document.getElementById('ex4-list');
+  EX4.forEach(q=>{
+    const row=document.createElement('div'); row.className='task-row';
+    const body=document.createElement('div'); body.className='task-body';
+
+    // Situation chip
+    const chip=document.createElement('div'); chip.className='task-prompt';
+    chip.innerHTML=`<span class="task-prompt-icon">📌</span>${q.situation}`;
+    body.appendChild(chip);
+
+    if(q.given){
+      const given=document.createElement('div');
+      given.innerHTML=`<span class="task-given-answer">${q.ans}</span><span class="task-given-label">example</span>`;
+      given.style.display='flex'; given.style.alignItems='center'; given.style.gap='.4rem';
+      body.appendChild(given);
+    } else {
+      const inp=document.createElement('input');
+      inp.className='task-input'; inp.id='ex4-'+q.n;
+      inp.type='text'; inp.autocomplete='off'; inp.placeholder='Write the question here…';
+      body.appendChild(inp);
+    }
+
+    const num=document.createElement('span'); num.className='task-num'; num.textContent=q.n+'.';
+    row.appendChild(num); row.appendChild(body);
+    list.appendChild(row);
+  });
+})();
+
+function checkEx4(){
+  let ok=true;
+  EX4.forEach(q=>{
+    if(q.given) return;
+    const el=document.getElementById('ex4-'+q.n);
+    const v=normQ(el.value);
+    if(!v){ok=false;return;}
+    if(v===normQ(q.ans)){ el.className='task-input correct'; el.readOnly=true; }
+    else { el.className='task-input wrong'; ok=false; }
+  });
+  if(ok){ done.ex4=true; updateProgress(); }
+}
+function resetEx4(){
+  EX4.forEach(q=>{ if(q.given) return; const e=document.getElementById('ex4-'+q.n); e.className='task-input'; e.value=''; e.readOnly=false; });
+  done.ex4=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   EX 5 — SHORT ANSWERS
+══════════════════════════════════════ */
+const EX5 = [
+  { l:'a', q:'Are we going to win the match?',           ans:"we're not",  alts:["we aren't","no, we're not","no, we aren't"],                      given:true },
+  { l:'b', q:'Are you going to cook dinner tonight?',   ans:"we aren't",  alts:["we're not","no, we aren't","no, we're not"] },
+  { l:'c', q:'Are they going to be here on time?',      ans:'they are',   alts:["yes, they are","yes they are"] },
+  { l:'d', q:'Is Emma going to call us tonight?',       ans:"she is",     alts:["yes, she is","yes she is"] },
+  { l:'e', q:'Is Tom going to come to the party?',      ans:"he isn't",   alts:["he's not","no, he isn't","no, he's not"] },
+  { l:'f', q:'Are you going to leave now?',             ans:"I'm not",    alts:["no, I'm not"] },
+  { l:'g', q:'Are Sam and Lily going to get married?',  ans:'they are',   alts:["yes, they are","yes they are"] },
+  { l:'h', q:'Are you going to finish it today?',       ans:"I am",       alts:["yes, I am","yes I am"] },
+];
+
+(function(){
+  const list=document.getElementById('ex5-list');
+  EX5.forEach(q=>{
+    const row=document.createElement('div'); row.className='task-row';
+    const body=document.createElement('div'); body.className='task-body';
+
+    // Question text — clearly visible as a prompt
+    const qDiv=document.createElement('div'); qDiv.className='task-question';
+    qDiv.textContent=q.q;
+    body.appendChild(qDiv);
+
+    if(q.given){
+      const given=document.createElement('div');
+      given.innerHTML=`<span class="task-given-answer">${q.ans}</span><span class="task-given-label">example</span>`;
+      given.style.display='flex'; given.style.alignItems='center'; given.style.gap='.4rem';
+      body.appendChild(given);
+    } else {
+      const inp=document.createElement('input');
+      inp.className='task-input'; inp.id='ex5-'+q.l;
+      inp.type='text'; inp.autocomplete='off'; inp.placeholder='Short answer…';
+      body.appendChild(inp);
+    }
+
+    const num=document.createElement('span'); num.className='task-num'; num.textContent=q.l+')';
+    row.appendChild(num); row.appendChild(body);
+    list.appendChild(row);
+  });
+})();
+
+function checkEx5(){
+  let ok=true;
+  EX5.forEach(q=>{
+    if(q.given) return;
+    const el=document.getElementById('ex5-'+q.l);
+    const v=normQ(el.value);
+    if(!v){ok=false;return;}
+    const acc=[normQ(q.ans),...q.alts.map(normQ)];
+    if(acc.includes(v)){ el.className='task-input correct'; el.readOnly=true; }
+    else { el.className='task-input wrong'; ok=false; }
+  });
+  if(ok){ done.ex5=true; updateProgress(); }
+}
+function resetEx5(){
+  EX5.forEach(q=>{ if(q.given) return; const e=document.getElementById('ex5-'+q.l); e.className='task-input'; e.value=''; e.readOnly=false; });
+  done.ex5=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   EX 6 — MATCHING
+══════════════════════════════════════ */
+const MQ = [
+  {id:'q1', txt:'1. Are you going to stay in a hotel?'},
+  {id:'q2', txt:'2. Is the train going to leave soon?'},
+  {id:'q3', txt:'3. Are they going to win the championship?'},
+  {id:'q4', txt:'4. Is she going to call him back?'},
+  {id:'q5', txt:'5. Are we going to eat out tonight?'},
+  {id:'q6', txt:'6. Is he going to retire next year?'},
+  {id:'q7', txt:'7. Are you going to pack your suitcase?'},
+  {id:'q8', txt:'8. Is the film going to be long?'},
+];
+const MA = [
+  {id:'ma_h', txt:'h. Yes, it is. In about five minutes.'},
+  {id:'ma_b', txt:"b. No, we aren't. We're going to cook at home."},
+  {id:'ma_a', txt:"a. No, I think it's going to be quite short."},
+  {id:'ma_d', txt:'d. Yes, I am. After breakfast.'},
+  {id:'ma_e', txt:"e. Yes, they are. They're playing really well."},
+  {id:'ma_g', txt:"g. No, she isn't. She's going to send an email."},
+  {id:'ma_c', txt:"c. Yes, he is. He's 65 next March."},
+  {id:'ma_f', txt:"f. No, I'm not. I'm going to stay with friends."},
+];
+// q1→ma_f, q2→ma_h, q3→ma_e, q4→ma_g, q5→ma_b, q6→ma_c, q7→ma_d, q8→ma_a
+const MKEY = {q1:'ma_f',q2:'ma_h',q3:'ma_e',q4:'ma_g',q5:'ma_b',q6:'ma_c',q7:'ma_d',q8:'ma_a'};
+let mSel=null;
+const mPairs={};
+
+(function(){
+  const qc=document.getElementById('match-qs'), ac=document.getElementById('match-as');
+  MQ.forEach(q=>{ const e=document.createElement('div'); e.className='match-item'; e.id=q.id; e.textContent=q.txt; e.onclick=()=>mClick(q.id,'q'); qc.appendChild(e); });
+  MA.forEach(a=>{ const e=document.createElement('div'); e.className='match-item'; e.id=a.id; e.textContent=a.txt; e.onclick=()=>mClick(a.id,'a'); ac.appendChild(e); });
+})();
+
+function mClick(id,side){
+  const el=document.getElementById(id);
+  if(el.classList.contains('matched-correct')||el.classList.contains('matched-wrong')) return;
+  if(!mSel){ mSel=id; el.classList.add('selected'); return; }
+  if(mSel===id){ el.classList.remove('selected'); mSel=null; return; }
+  const pEl=document.getElementById(mSel);
+  const pSide=mSel.startsWith('q')?'q':'a';
+  if(pSide===side){ pEl.classList.remove('selected'); mSel=id; el.classList.add('selected'); return; }
+  const qId=pSide==='q'?mSel:id, aId=pSide==='a'?mSel:id;
+  Object.keys(mPairs).forEach(k=>{ if(mPairs[k]===aId||k===qId) delete mPairs[k]; });
+  mPairs[qId]=aId;
+  document.getElementById(qId).classList.add('selected');
+  document.getElementById(aId).classList.add('selected');
+  mSel=null;
+  document.getElementById('match-status').textContent=Object.keys(mPairs).length+' pair(s) selected — press Check when ready.';
+}
+function checkEx6(){
+  let n=0;
+  Object.entries(mPairs).forEach(([qId,aId])=>{
+    const qE=document.getElementById(qId), aE=document.getElementById(aId);
+    if(MKEY[qId]===aId){
+      qE.classList.remove('selected'); qE.classList.add('matched-correct');
+      aE.classList.remove('selected'); aE.classList.add('matched-correct');
+      n++;
+    } else {
+      qE.classList.remove('selected'); qE.classList.add('matched-wrong');
+      aE.classList.remove('selected'); aE.classList.add('matched-wrong');
+      qE.classList.add('shake'); aE.classList.add('shake');
+      setTimeout(()=>{ qE.classList.remove('shake','matched-wrong'); aE.classList.remove('shake','matched-wrong'); delete mPairs[qId]; },700);
+    }
+  });
+  mSel=null;
+  document.getElementById('match-status').textContent=n+' / 8 correct.';
+  if(n===8){ done.ex6=true; updateProgress(); }
+}
+function resetEx6(){
+  Object.keys(mPairs).forEach(k=>delete mPairs[k]); mSel=null;
+  [...MQ,...MA].forEach(x=>{ document.getElementById(x.id).className='match-item'; });
+  document.getElementById('match-status').textContent='';
+  done.ex6=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   SEND TO TEACHER
+══════════════════════════════════════ */
+function collectEx1(){
+  const lines=['Exercise 1 – Months:'];
+  for(let i=2;i<=12;i++){
+    const v=document.getElementById('m'+i)?.value||'(blank)';
+    lines.push('  '+i+'. '+v+' '+(norm(v)===norm(MONTHS[i-1])?'✓':'✗'));
+  }
+  return lines.join('\n');
+}
+function collectEx2(){
+  const lines=['Exercise 2 – Gap-fill:'];
+  STORY.forEach(p=>{ if(typeof p==='string'||p.given) return; const v=document.getElementById(p.id)?.value||'(blank)'; const acc=[norm(p.ans),...(p.alts||[]).map(norm)]; lines.push('  '+p.id+': '+v+' '+(acc.includes(norm(v))?'✓':'✗')); });
+  return lines.join('\n');
+}
+function collectEx3(){
+  const lines=['Exercise 3 – MC:'];
+  CONVS.forEach((c,ci)=>{ c.lines.forEach((l,li)=>{ const btns=document.querySelectorAll(`.mc-btn[data-ci="${ci}"][data-li="${li}"]`); let ch='(none)'; btns.forEach(b=>{ if(b.classList.contains('selected')||b.classList.contains('correct')||b.classList.contains('wrong')) ch=CONVS[ci].lines[li].opts[+b.dataset.oi]; }); lines.push('  '+c.label+' line '+(li+1)+': '+ch+' '+(norm(ch)===norm(l.ans)?'✓':'✗')); }); });
+  return lines.join('\n');
+}
+function collectEx4(){
+  const lines=['Exercise 4 – Questions:'];
+  EX4.forEach(q=>{ if(q.given) return; const v=document.getElementById('ex4-'+q.n)?.value||'(blank)'; lines.push('  '+q.n+'. '+v+' '+(normQ(v)===normQ(q.ans)?'✓':'✗')); });
+  return lines.join('\n');
+}
+function collectEx5(){
+  const lines=['Exercise 5 – Short answers:'];
+  EX5.forEach(q=>{ if(q.given) return; const v=document.getElementById('ex5-'+q.l)?.value||'(blank)'; const acc=[normQ(q.ans),...q.alts.map(normQ)]; lines.push('  '+q.l+') '+v+' '+(acc.includes(normQ(v))?'✓':'✗')); });
+  return lines.join('\n');
+}
+function collectEx6(){
+  const lines=['Exercise 6 – Matching:'];
+  MQ.forEach(q=>{ const aId=mPairs[q.id]; const aObj=MA.find(a=>a.id===aId); const ok=aId&&MKEY[q.id]===aId; lines.push('  '+q.txt+' → '+(aObj?aObj.txt:'(not matched)')+' '+(ok?'✓':'✗')); });
+  return lines.join('\n');
+}
+
+function sendToTeacher(){
+  const name=document.getElementById('nameInput').value.trim()||'Anonymous';
+  const body=[
+    'Student: '+name,
+    'Lesson: Unit 10C – I’m Going to Win!',
+    'Date: '+new Date().toLocaleDateString(),
+    '',
+    collectEx1(),'',collectEx2(),'',collectEx3(),'',collectEx4(),'',collectEx5(),'',collectEx6()
+  ].join('\n');
+  const s=encodeURIComponent('Homework – '+name+' – Unit 10C');
+  const b=encodeURIComponent(body);
+  window.location.href='mailto:dariia.mlnk@gmail.com?subject='+s+'&body='+b;
+}
+</script>
+</body>
+</html>
