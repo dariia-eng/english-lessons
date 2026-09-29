@@ -1,0 +1,929 @@
+<title>Culture Shock — Studying Abroad</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Lora:ital,wght@0,600;1,400&display=swap');
+:root{
+  --terra:#c0522a;--terra-lt:#fdf0eb;--terra-dk:#8c3a1d;
+  --teal:#1a7a72;--teal-lt:#e6f4f3;
+  --sand:#f7f2ec;--card:#ffffff;--text:#1e1a17;--muted:#7a7068;
+  --border:#e0d8d0;--radius:12px;--shadow:0 2px 10px rgba(0,0,0,.07);
+  --correct:#166534;--correct-bg:#dcfce7;
+  --wrong:#991b1b;--wrong-bg:#fee2e2;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --sand:#1a1714;--card:#242019;--text:#ede8e2;--muted:#9e968c;
+  --border:#3a342c;--terra-lt:#2d1a12;--teal-lt:#0f2422;
+}}
+:root[data-theme="dark"]{
+  --sand:#1a1714;--card:#242019;--text:#ede8e2;--muted:#9e968c;
+  --border:#3a342c;--terra-lt:#2d1a12;--teal-lt:#0f2422;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--sand);color:var(--text);font-size:15px;line-height:1.6;padding-inline:16px;padding-block:env(safe-area-inset-top,0px) env(safe-area-inset-bottom,0px);}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,var(--terra-dk) 0%,var(--terra) 60%,#d4784e 100%);color:#fff;border-radius:var(--radius);margin-block:14px;padding:24px 20px 20px;position:relative;overflow:hidden;}
+.hdr::before{content:'✈';position:absolute;right:18px;bottom:-10px;font-size:80px;opacity:.1;}
+.hdr .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.8;margin-bottom:4px;}
+.hdr h1{font-family:'Lora',serif;font-size:1.7rem;font-weight:600;line-height:1.2;}
+.hdr .sub{font-size:13px;opacity:.78;margin-top:5px;}
+.hdr .pill{display:inline-block;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 12px;font-size:12px;margin-top:8px;}
+.theme-btn{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:13px;}
+
+/* NAV */
+.nav-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-block:4px;margin-bottom:14px;}
+.nav-pills{display:flex;gap:6px;min-width:max-content;}
+.nav-pill{background:var(--card);border:1.5px solid var(--border);color:var(--muted);border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;white-space:nowrap;transition:all .2s;font-family:'Nunito',sans-serif;}
+.nav-pill.active,.nav-pill:hover{background:var(--terra);border-color:var(--terra);color:#fff;}
+
+/* STAGE */
+.stage{display:none;}.stage.active{display:block;}
+.stage-title{font-size:1.05rem;font-weight:800;color:var(--terra);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--terra-lt);}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;box-shadow:var(--shadow);}
+.card h3{font-size:.95rem;font-weight:800;margin-bottom:10px;color:var(--terra);}
+.instr{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:10px;}
+
+/* VIDEO EMBED */
+.video-wrap{position:relative;padding-bottom:56.25%;border-radius:var(--radius);overflow:hidden;margin-bottom:14px;}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+
+/* SPEAKER CARDS */
+.speakers{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:10px;}
+.spk{background:var(--terra-lt);border:1.5px solid var(--terra);border-radius:10px;padding:10px 12px;text-align:center;}
+.spk .flag{font-size:22px;margin-bottom:3px;}
+.spk .name{font-weight:800;font-size:13px;color:var(--terra);}
+.spk .detail{font-size:11px;color:var(--muted);}
+
+/* POLL */
+.opt-group{display:flex;flex-direction:column;gap:7px;margin:8px 0;}
+.opt-btn{background:var(--card);border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;text-align:left;cursor:pointer;font-size:14px;font-family:'Nunito',sans-serif;transition:all .15s;}
+.opt-btn:hover{border-color:var(--terra);background:var(--terra-lt);}
+.opt-btn.selected{background:var(--terra);border-color:var(--terra);color:#fff;}
+.opt-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+.opt-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);}
+
+/* T/F */
+.tf-item{margin-bottom:9px;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:9px;}
+.tf-item p{font-size:13.5px;margin-bottom:6px;}
+.tf-btns{display:flex;gap:6px;}
+.tf-btn{border:1.5px solid var(--border);background:var(--card);border-radius:6px;padding:5px 16px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;}
+.tf-btn.sel-t{background:var(--teal);border-color:var(--teal);color:#fff;}
+.tf-btn.sel-f{background:var(--terra);border-color:var(--terra);color:#fff;}
+.tf-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+.tf-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);}
+
+/* WHO SAID IT */
+.quote-item{margin-bottom:10px;background:var(--teal-lt);border:1.5px solid var(--teal);border-radius:10px;padding:12px 14px;}
+.quote-text{font-family:'Lora',serif;font-style:italic;font-size:14px;margin-bottom:8px;color:var(--text);}
+.who-opts{display:flex;flex-wrap:wrap;gap:6px;}
+.who-btn{border:1.5px solid var(--border);background:var(--card);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:12px;font-weight:700;font-family:'Nunito',sans-serif;transition:all .15s;}
+.who-btn:hover{border-color:var(--teal);background:var(--teal-lt);}
+.who-btn.selected{background:var(--teal);border-color:var(--teal);color:#fff;}
+.who-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+.who-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);}
+
+/* GAP FILL */
+.gap-sent{margin-bottom:10px;font-size:14px;line-height:2.2;}
+.gap-inp{border:none;border-bottom:2px solid var(--border);background:transparent;color:var(--text);font-size:14px;padding:1px 4px;width:150px;outline:none;font-family:'Nunito',sans-serif;transition:border-color .2s;}
+.gap-inp:focus{border-color:var(--terra);}
+.gap-inp.correct{border-color:var(--correct);color:var(--correct);}
+.gap-inp.wrong{border-color:var(--wrong);color:var(--wrong);}
+
+/* DRAG MATCH */
+.match-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:520px){.match-layout{grid-template-columns:1fr;}}
+.match-col-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:6px;}
+.def-chip{background:var(--card);border:1.5px dashed var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);margin-bottom:7px;cursor:grab;user-select:none;transition:all .15s;}
+.def-chip:hover{border-color:var(--terra);background:var(--terra-lt);}
+.def-chip.dragging{opacity:.4;cursor:grabbing;}
+.def-chip.matched{display:none;}
+.drop-zone{min-height:40px;border:1.5px dashed var(--border);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--muted);background:transparent;margin-top:5px;transition:background .15s;}
+.drop-zone.drag-over{background:var(--terra-lt);border-color:var(--terra);}
+.drop-zone.filled{border-style:solid;border-color:var(--teal);background:var(--teal-lt);color:var(--text);}
+.drop-zone.correct-match{border-color:var(--correct);background:var(--correct-bg);color:var(--correct);}
+.drop-zone.wrong-match{border-color:var(--wrong);background:var(--wrong-bg);color:var(--wrong);}
+.phrase-row{margin-bottom:10px;}
+.phrase-label{font-weight:800;font-size:13.5px;color:var(--terra);}
+
+/* GRAMMAR */
+.gram-box{background:var(--teal-lt);border-left:4px solid var(--teal);border-radius:0 var(--radius) var(--radius) 0;padding:14px 16px;margin-bottom:12px;}
+.gram-box h4{color:var(--teal);font-weight:800;margin-bottom:8px;font-size:.9rem;}
+.gram-row{font-size:14px;margin-bottom:6px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;}
+.gram-pattern{font-weight:700;font-size:13px;color:var(--teal);min-width:180px;}
+.gram-ex{font-style:italic;font-family:'Lora',serif;color:var(--muted);}
+.gram-note{background:var(--terra-lt);border:1.5px solid var(--terra);border-radius:9px;padding:12px 14px;margin-top:10px;font-size:13.5px;}
+.gram-note strong{color:var(--terra);}
+
+/* CCQ */
+.ccq-item{margin-bottom:10px;}
+.ccq-q{font-size:14px;font-weight:700;margin-bottom:6px;}
+
+/* DISC CARD */
+.disc-card{background:var(--terra-lt);border:1.5px solid var(--terra);border-radius:var(--radius);padding:14px;margin-bottom:10px;}
+.disc-card p{font-size:14px;margin-bottom:6px;}
+.disc-card ul{padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:4px;}
+
+/* SPEAK AREA */
+.speak-area{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px;background:var(--card);color:var(--text);font-size:14px;resize:vertical;min-height:80px;font-family:'Nunito',sans-serif;}
+.speak-area:focus{outline:none;border-color:var(--terra);}
+
+/* ROLE CARD */
+.role-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:12px;}
+.role-card{background:var(--card);border:1.5px solid var(--teal);border-radius:var(--radius);padding:14px;}
+.role-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);font-weight:800;margin-bottom:4px;}
+.role-card p{font-size:13.5px;}
+
+/* SCENARIO */
+.scenario-item{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:8px;}
+.scenario-item p{font-size:14px;margin-bottom:6px;}
+.sc-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.sc-btn{border:1.5px solid var(--border);background:var(--card);border-radius:6px;padding:5px 14px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;transition:all .15s;}
+.sc-btn:hover{border-color:var(--terra);}
+.sc-btn.sel-cs{background:var(--terra);border-color:var(--terra);color:#fff;}
+.sc-btn.sel-cd{background:var(--teal);border-color:var(--teal);color:#fff;}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.check-btn{background:var(--terra);color:#fff;border:none;border-radius:9px;padding:9px 20px;cursor:pointer;font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;}
+.reset-btn{background:var(--card);color:var(--muted);border:1.5px solid var(--border);border-radius:9px;padding:9px 14px;cursor:pointer;font-size:14px;font-family:'Nunito',sans-serif;}
+.check-btn:hover{opacity:.88;}.reset-btn:hover{border-color:var(--terra);color:var(--terra);}
+.nav-btn{display:inline-block;background:var(--terra);color:#fff;border:none;border-radius:9px;padding:10px 22px;cursor:pointer;font-size:14px;font-weight:700;margin-top:4px;font-family:'Nunito',sans-serif;}
+.nav-btn:hover{opacity:.88;}
+.fb{font-size:13px;margin-top:8px;font-weight:700;}
+.fb.ok{color:var(--correct);}.fb.bad{color:var(--wrong);}
+
+/* ORDER TASK */
+.order-bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+.order-chip{background:var(--terra-lt);border:1.5px solid var(--terra);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:14px;font-weight:700;color:var(--terra);user-select:none;transition:all .15s;}
+.order-chip:hover{background:var(--terra);color:#fff;}
+.order-chip.placed{opacity:.35;cursor:default;pointer-events:none;}
+.order-slots{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.order-slot{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px dashed var(--border);border-radius:9px;padding:10px 14px;min-height:44px;cursor:pointer;transition:background .15s;}
+.order-slot:hover{background:var(--terra-lt);}
+.order-slot.filled{border-style:solid;border-color:var(--terra);background:var(--terra-lt);}
+.order-slot .slot-num{font-weight:800;color:var(--terra);font-size:13px;min-width:20px;}
+.order-slot .slot-val{font-size:14px;font-weight:700;color:var(--terra);}
+.order-slot.correct-s{border-color:var(--correct);background:var(--correct-bg);}
+.order-slot.wrong-s{border-color:var(--wrong);background:var(--wrong-bg);}
+</style>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="eyebrow">Listening & Grammar</div>
+  <h1>Culture Shock</h1>
+  <div class="sub">Real students. Real stories. Studying abroad.</div>
+  <div class="pill">🎯 used to / be used to / get used to</div>
+  <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+</div>
+
+<!-- NAV -->
+<div class="nav-wrap">
+  <div class="nav-pills">
+    <button class="nav-pill active" data-stage="0">🌍 Warm-up</button>
+    <button class="nav-pill" data-stage="1">📚 Vocabulary</button>
+    <button class="nav-pill" data-stage="2">🎬 Video</button>
+    <button class="nav-pill" data-stage="3">👂 Listening</button>
+    <button class="nav-pill" data-stage="4">📐 Grammar</button>
+    <button class="nav-pill" data-stage="5">✏️ Practice</button>
+    <button class="nav-pill" data-stage="6">🗣 Speaking</button>
+  </div>
+</div>
+
+<!-- ═══ STAGE 0: WARM-UP ═══ -->
+<div class="stage active" id="stage-0">
+  <div class="stage-title">🌍 Warm-up — Have you ever felt out of place?</div>
+
+  <div class="card">
+    <h3>Think &amp; discuss</h3>
+    <p class="instr">Talk to a partner about these questions.</p>
+    <ol style="padding-left:18px;display:flex;flex-direction:column;gap:10px;font-size:14px;">
+      <li>Have you ever lived or spent a long time in another country? How did it feel?</li>
+      <li>What do you think would be the hardest thing about moving abroad — language, food, friends, or something else?</li>
+      <li>What do you know about "culture shock"? Have you heard this phrase before?</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>Quick poll — What would you miss most?</h3>
+    <p class="instr">Tap your answer, then tell your partner why.</p>
+    <div class="opt-group" id="wu-poll">
+      <button class="opt-btn" data-poll="wu">🍽 My favourite food from home</button>
+      <button class="opt-btn" data-poll="wu">👨‍👩‍👧 My family and close friends</button>
+      <button class="opt-btn" data-poll="wu">🗣 Speaking my own language all day</button>
+      <button class="opt-btn" data-poll="wu">🏙 Knowing how everything works (transport, shops…)</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Meet the students</h3>
+    <p class="instr">You're going to watch five real students talk about their experience studying abroad. Here's who they are.</p>
+    <div class="speakers">
+      <div class="spk"><div class="flag">🇺🇸</div><div class="name">Christy</div><div class="detail">New York → UK</div></div>
+      <div class="spk"><div class="flag">🇧🇬</div><div class="name">Val</div><div class="detail">Bulgaria → Colorado</div></div>
+      <div class="spk"><div class="flag">🇭🇰</div><div class="name">Stephanie</div><div class="detail">Hong Kong → Newcastle</div></div>
+      <div class="spk"><div class="flag">🇦🇺</div><div class="name">Arya</div><div class="detail">Australia → Virginia</div></div>
+      <div class="spk"><div class="flag">🇳🇬</div><div class="name">Emmanuel</div><div class="detail">Nigeria → London</div></div>
+    </div>
+  </div>
+
+  <button class="nav-btn" data-action="goStage" data-target="1">Next: Vocabulary →</button>
+</div>
+
+<!-- ═══ STAGE 1: VOCABULARY ═══ -->
+<div class="stage" id="stage-1">
+  <div class="stage-title">📚 Vocabulary — Before you watch</div>
+
+  <div class="card">
+    <h3>Match the words to the definitions</h3>
+    <p class="instr">You'll hear all these words in the video. Drag the definitions onto the correct words, or tap a definition then tap a word.</p>
+    <div class="match-layout">
+      <div>
+        <div class="match-col-label">Words</div>
+        <div id="vocab-phrase-col"></div>
+      </div>
+      <div>
+        <div class="match-col-label">Definitions — drag these</div>
+        <div id="vocab-def-bank"></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="check-btn" onclick="checkVocabMatch()">Check</button>
+      <button class="reset-btn" onclick="resetVocabMatch()">Reset</button>
+    </div>
+    <div class="fb" id="fb-vocab"></div>
+  </div>
+
+  <button class="nav-btn" data-action="goStage" data-target="2">Next: Watch the video →</button>
+</div>
+
+<!-- ═══ STAGE 2: VIDEO ═══ -->
+<div class="stage" id="stage-2">
+  <div class="stage-title">🎬 Video — Studying Abroad: Culture Shock</div>
+
+  <div class="card">
+    <h3>First viewing — gist task</h3>
+    <p class="instr">Watch the video once. Then answer the questions below.</p>
+  </div>
+
+  <div class="video-wrap">
+    <iframe src="https://www.youtube.com/embed/z5EEz_R_RiE" allowfullscreen loading="lazy"></iframe>
+  </div>
+
+  <div class="card">
+    <h3>1 — Put the three stages in the correct order</h3>
+    <p class="instr">The video describes three stages of the students' experience. Tap each stage to place it in order (1 = first, 3 = last).</p>
+    <div class="order-bank" id="stage-bank">
+      <div class="order-chip" data-stage-val="A">😟 Feeling homesick &amp; overwhelmed</div>
+      <div class="order-chip" data-stage-val="B">😊 Excitement &amp; everything feels new</div>
+      <div class="order-chip" data-stage-val="C">🏠 Adjusting and feeling at home</div>
+    </div>
+    <div class="order-slots" id="stage-slots">
+      <div class="order-slot" data-slot="0"><span class="slot-num">1st</span><span class="slot-val"></span></div>
+      <div class="order-slot" data-slot="1"><span class="slot-num">2nd</span><span class="slot-val"></span></div>
+      <div class="order-slot" data-slot="2"><span class="slot-num">3rd</span><span class="slot-val"></span></div>
+    </div>
+    <div class="btn-row">
+      <button class="check-btn" onclick="checkOrder()">Check</button>
+      <button class="reset-btn" onclick="resetOrder()">Reset</button>
+    </div>
+    <div class="fb" id="fb-order"></div>
+  </div>
+
+  <div class="card">
+    <h3>2 — Which student do you relate to most?</h3>
+    <p class="instr">Discuss with a partner: which of the five students' stories is closest to your own experience or personality? Why?</p>
+    <textarea class="speak-area" placeholder="Write your thoughts here…"></textarea>
+  </div>
+
+  <button class="nav-btn" data-action="goStage" data-target="3">Next: Detailed listening →</button>
+</div>
+
+<!-- ═══ STAGE 3: LISTENING ═══ -->
+<div class="stage" id="stage-3">
+  <div class="stage-title">👂 Listening — Watch again, listen carefully</div>
+
+  <div class="card">
+    <h3>Exercise A — True or False?</h3>
+    <p class="instr">🎧 Watch the video again. Are these sentences true (T) or false (F)?</p>
+    <div id="tf-items"></div>
+    <div class="btn-row">
+      <button class="check-btn" onclick="checkTF()">Check</button>
+      <button class="reset-btn" onclick="resetTF()">Reset</button>
+    </div>
+    <div class="fb" id="fb-tf"></div>
+  </div>
+
+  <div class="card">
+    <h3>Exercise B — Who said it?</h3>
+    <p class="instr">Match each quote to the correct student. Tap a name to select your answer.</p>
+    <div id="who-items"></div>
+    <div class="btn-row">
+      <button class="check-btn" onclick="checkWho()">Check</button>
+      <button class="reset-btn" onclick="resetWho()">Reset</button>
+    </div>
+    <div class="fb" id="fb-who"></div>
+  </div>
+
+  <button class="nav-btn" data-action="goStage" data-target="4">Next: Grammar →</button>
+</div>
+
+<!-- ═══ STAGE 4: GRAMMAR ═══ -->
+<div class="stage" id="stage-4">
+  <div class="stage-title">📐 Grammar — used to / be used to / get used to</div>
+
+  <!-- USED TO -->
+  <div class="card">
+    <h3>🔍 Guided discovery — used to</h3>
+    <p class="instr">Look at these sentences from the video. Answer the questions.</p>
+    <div style="background:var(--terra-lt);border-radius:9px;padding:12px 14px;margin-bottom:14px;font-family:'Lora',serif;font-style:italic;font-size:14.5px;display:flex;flex-direction:column;gap:6px;">
+      <div>"I <strong>used to</strong> see them all the time."</div>
+      <div>"Things I <strong>was used to</strong> having around me."</div>
+      <div>"I started to <strong>get used to</strong> the food."</div>
+    </div>
+
+    <div class="disc-card" id="disc0">
+      <div class="ccq-q">1. Does "I used to see them" mean she sees them now?</div>
+      <div class="opt-group" id="disc0-opts" style="margin:0;">
+        <button class="opt-btn" data-disc="0" data-correct="false">Yes — she still sees them</button>
+        <button class="opt-btn" data-disc="0" data-correct="true">No — she doesn't see them now</button>
+      </div>
+      <div class="disc-ans" id="disc0-ans">✅ Correct! <em>used to</em> describes a past habit that has stopped.</div>
+    </div>
+
+    <div class="disc-card" id="disc1">
+      <div class="ccq-q">2. "Was used to having" — is this about starting a habit or already having one?</div>
+      <div class="opt-group" id="disc1-opts" style="margin:0;">
+        <button class="opt-btn" data-disc="1" data-correct="false">Starting a new habit</button>
+        <button class="opt-btn" data-disc="1" data-correct="true">Already having a familiar habit</button>
+      </div>
+      <div class="disc-ans" id="disc1-ans">✅ Right! <em>be used to</em> = something is already familiar / normal for you.</div>
+    </div>
+
+    <div class="disc-card" id="disc2">
+      <div class="ccq-q">3. "Get used to the food" — does this happen quickly or gradually?</div>
+      <div class="opt-group" id="disc2-opts" style="margin:0;">
+        <button class="opt-btn" data-disc="2" data-correct="false">Quickly — all at once</button>
+        <button class="opt-btn" data-disc="2" data-correct="true">Gradually — over time</button>
+      </div>
+      <div class="disc-ans" id="disc2-ans">✅ Exactly! <em>get used to</em> = the process of becoming familiar with something new.</div>
+    </div>
+  </div>
+
+  <div class="gram-box">
+    <h4>📌 used to — Summary</h4>
+    <div class="gram-row"><span class="gram-pattern">used to + infinitive</span><span class="gram-ex">I used to eat Chinese food every day. (past habit — not now)</span></div>
+    <div class="gram-row"><span class="gram-pattern">be used to + -ing / noun</span><span class="gram-ex">I was used to having friends around me. (already familiar)</span></div>
+    <div class="gram-row"><span class="gram-pattern">get used to + -ing / noun</span><span class="gram-ex">I started to get used to the food. (process of adapting)</span></div>
+  </div>
+
+  <button class="nav-btn" data-action="goStage" data-target="5">Next: Practice →</button>
+</div>
+
+<!-- ═══ STAGE 5: PRACTICE ═══ -->
+<div class="stage" id="stage-5">
+  <div class="stage-title">✏️ Practice — used to / be used to / get used to</div>
+
+  <div class="card">
+    <h3>Exercise A — Choose the correct form</h3>
+    <p class="instr">Click the correct option to complete each sentence.</p>
+    <div id="mc-usedto"></div>
+    <div class="btn-row">
+      <button class="check-btn" onclick="checkMC()">Check</button>
+      <button class="reset-btn" onclick="resetMC()">Reset</button>
+    </div>
+    <div class="fb" id="fb-mc"></div>
+  </div>
+
+  <div class="card">
+    <h3>Exercise B — Gap fill</h3>
+    <p class="instr">Complete each sentence with the correct form. Type your answer.</p>
+    <div id="gap-usedto"></div>
+    <div class="btn-row">
+      <button class="check-btn" onclick="checkGap('gap-usedto',gapsUsedTo)">Check</button>
+      <button class="reset-btn" onclick="resetGap('gap-usedto')">Reset</button>
+    </div>
+    <div class="fb" id="fb-gap-usedto"></div>
+  </div>
+
+  <div class="card">
+    <h3>Exercise C — Sentence transformation</h3>
+    <p class="instr">Rewrite each sentence using the form shown in brackets. Keep the meaning the same.</p>
+    <div id="gap-transform"></div>
+    <div class="btn-row">
+      <button class="check-btn" onclick="checkGap('gap-transform',gapsTransform)">Check</button>
+      <button class="reset-btn" onclick="resetGap('gap-transform')">Reset</button>
+    </div>
+    <div class="fb" id="fb-gap-transform"></div>
+  </div>
+
+  <div class="card">
+    <h3>Exercise D — Error correction</h3>
+    <p class="instr">Each sentence has one mistake. Tap "Show answer" to check.</p>
+    <div id="err-items"></div>
+  </div>
+
+  <button class="nav-btn" data-action="goStage" data-target="6">Next: Speaking →</button>
+</div>
+
+<!-- ═══ STAGE 6: SPEAKING ═══ -->
+<div class="stage" id="stage-6">
+  <div class="stage-title">🗣 Speaking — Habits, change &amp; adaptation</div>
+
+  <!-- CARD 1: Warm-up discussion -->
+  <div class="card">
+    <h3>🔥 Warm-up — 2 minutes</h3>
+    <p class="instr">Tell your partner about <strong>one habit you used to have</strong> that you no longer have, and <strong>one thing you've recently had to get used to</strong>. It doesn't have to be about living abroad!</p>
+    <div class="disc-card" style="margin-top:10px;">
+      <p style="font-size:13px;color:var(--muted);margin:0 0 6px;">💬 Language to use:</p>
+      <ul style="margin:0;padding-left:18px;font-size:13.5px;display:flex;flex-direction:column;gap:4px;">
+        <li><em>I used to … but now I …</em></li>
+        <li><em>I wasn't used to … at first, but …</em></li>
+        <li><em>It took me a while to get used to …ing</em></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CARD 2: Discussion cards (flip) -->
+  <div class="card">
+    <h3>🃏 Discussion cards</h3>
+    <p class="instr">Take turns picking a card. Read it aloud and answer — give details and ask your partner a follow-up question. Aim for 2–3 minutes per card.</p>
+    <div id="speak-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:10px;"></div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+      <button class="check-btn" id="shuffle-btn" onclick="shuffleSpeakCards()">🔀 Shuffle</button>
+      <button class="reset-btn" onclick="resetSpeakCards()">Reset</button>
+    </div>
+  </div>
+
+  <!-- CARD 3: Role-play -->
+  <div class="card">
+    <h3>🎭 Role-play — A &amp; B conversation (3–4 min)</h3>
+    <p class="instr">Choose your role and have a natural conversation. Try to use all three grammar forms.</p>
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-label">Student A — Just arrived abroad</div>
+        <p>You moved to a new country 3 weeks ago. You're finding it exciting but overwhelming. Talk about what you miss, what feels strange, and what you're slowly adapting to.</p>
+        <div style="margin-top:8px;font-size:13px;color:var(--teal);font-weight:700;">Use: <em>I used to… / I'm not used to… / I'm getting used to…</em></div>
+      </div>
+      <div class="role-card">
+        <div class="role-label">Student B — Lived abroad 2+ years</div>
+        <p>Give advice to Student A. Share what was hard when you first arrived, what shocked you about the local habits, and what you eventually got used to.</p>
+        <div style="margin-top:8px;font-size:13px;color:var(--teal);font-weight:700;">Use: <em>I used to feel… / I wasn't used to… / I gradually got used to…</em></div>
+      </div>
+    </div>
+    <div class="disc-card" style="margin-top:10px;">
+      <p style="margin:0 0 6px;font-size:13px;"><strong>Conversation topics:</strong></p>
+      <ul style="margin:0;padding-left:18px;font-size:13.5px;display:flex;flex-direction:column;gap:3px;">
+        <li>Daily routines — mealtimes, shopping hours, weekend culture</li>
+        <li>Social habits — how people greet each other, personal space, small talk</li>
+        <li>Work / study culture — punctuality, formality, expectations</li>
+        <li>Language — misunderstandings, accents, local expressions</li>
+        <li>Food — what you miss, what surprised you, what you've adopted</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CARD 4: Reflect & write -->
+  <div class="card">
+    <h3>✍️ Reflect &amp; write</h3>
+    <p class="instr">After the discussion, write 3–4 sentences about yourself using all three grammar forms.</p>
+    <textarea class="speak-area" style="min-height:90px;" placeholder="e.g. I used to stay up very late, but since starting this job I've had to get used to going to bed early. I wasn't used to…"></textarea>
+  </div>
+
+</div>
+
+<script>
+/* ── THEME ── */
+function toggleTheme(){ var r=document.documentElement; r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark'); }
+
+/* ── VOCAB MATCH ── */
+var vocabData=[
+  {word:'daunting',      def:'making you feel nervous or frightened because it seems difficult'},
+  {word:'homesick',      def:'feeling sad because you miss your home, family and friends'},
+  {word:'overwhelmed',   def:'having too many feelings or problems at once; unable to cope'},
+  {word:'welfare advisor',def:'a person at university whose job is to help students with personal problems'},
+  {word:'homely',        def:'making a place feel warm, comfortable and like home'},
+  {word:'flatmate',      def:'someone you share a flat or apartment with'},
+  {word:'adjust',        def:'to slowly become familiar with a new situation'},
+  {word:'bond',          def:'to form a close relationship with someone'},
+];
+var vocabMatch={};
+var vocabTapSel=null;
+
+(function buildVocabMatch(){
+  var phraseCol=document.getElementById('vocab-phrase-col');
+  var defBank=document.getElementById('vocab-def-bank');
+  if(!phraseCol||!defBank) return;
+  var order=[0,1,2,3,4,5,6,7].sort(function(){ return Math.random()-.5; });
+  vocabData.forEach(function(d,i){
+    vocabMatch[i]=null;
+    var row=document.createElement('div');
+    row.className='phrase-row';
+    row.innerHTML='<div class="phrase-label">'+d.word+'</div>'
+      +'<div class="drop-zone" id="vdrop-'+i+'" data-phrase="'+i+'">drop here</div>';
+    phraseCol.appendChild(row);
+  });
+  order.forEach(function(di){
+    var chip=document.createElement('div');
+    chip.className='def-chip';
+    chip.setAttribute('draggable','true');
+    chip.dataset.def=di;
+    chip.id='vchip-'+di;
+    chip.textContent=vocabData[di].def;
+    chip.addEventListener('dragstart',function(e){ chip.classList.add('dragging'); e.dataTransfer.setData('text/plain',String(di)); });
+    chip.addEventListener('dragend',function(){ chip.classList.remove('dragging'); });
+    chip.addEventListener('click',function(){
+      if(chip.classList.contains('matched')) return;
+      document.querySelectorAll('.def-chip').forEach(function(c){ c.style.outline=''; });
+      if(vocabTapSel===di){ vocabTapSel=null; return; }
+      vocabTapSel=di; chip.style.outline='2px solid var(--terra)';
+    });
+    defBank.appendChild(chip);
+  });
+  document.querySelectorAll('.drop-zone').forEach(function(zone){
+    zone.addEventListener('dragover',function(e){ e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave',function(){ zone.classList.remove('drag-over'); });
+    zone.addEventListener('drop',function(e){ e.preventDefault(); zone.classList.remove('drag-over'); placeVocab(parseInt(zone.dataset.phrase),parseInt(e.dataTransfer.getData('text/plain'))); });
+    zone.addEventListener('click',function(){ if(vocabTapSel!==null){ placeVocab(parseInt(zone.dataset.phrase),vocabTapSel); vocabTapSel=null; document.querySelectorAll('.def-chip').forEach(function(c){ c.style.outline=''; }); } });
+  });
+})();
+
+function placeVocab(pi,di){
+  var prev=vocabMatch[pi];
+  if(prev!==null){ var oc=document.getElementById('vchip-'+prev); if(oc){ oc.classList.remove('matched'); oc.style.display=''; document.getElementById('vocab-def-bank').appendChild(oc); } vocabMatch[pi]=null; }
+  Object.keys(vocabMatch).forEach(function(p){ if(vocabMatch[p]===di&&parseInt(p)!==pi){ vocabMatch[p]=null; var z=document.getElementById('vdrop-'+p); z.textContent='drop here'; z.className='drop-zone'; } });
+  vocabMatch[pi]=di;
+  var chip=document.getElementById('vchip-'+di);
+  var zone=document.getElementById('vdrop-'+pi);
+  zone.textContent=vocabData[di].def; zone.className='drop-zone filled';
+  if(chip){ chip.classList.add('matched'); chip.style.display='none'; }
+}
+function checkVocabMatch(){
+  var ok=0;
+  vocabData.forEach(function(d,i){
+    var z=document.getElementById('vdrop-'+i);
+    z.classList.remove('correct-match','wrong-match');
+    if(vocabMatch[i]===null) return;
+    if(vocabMatch[i]===i){ z.classList.add('correct-match'); ok++; } else z.classList.add('wrong-match');
+  });
+  var fb=document.getElementById('fb-vocab');
+  fb.textContent='Score: '+ok+' / '+vocabData.length; fb.className='fb '+(ok===vocabData.length?'ok':'bad');
+}
+function resetVocabMatch(){
+  vocabData.forEach(function(d,i){ vocabMatch[i]=null; var z=document.getElementById('vdrop-'+i); z.textContent='drop here'; z.className='drop-zone'; });
+  vocabData.forEach(function(d,i){ var c=document.getElementById('vchip-'+i); if(c){ c.classList.remove('matched'); c.style.display=''; c.style.outline=''; } });
+  vocabTapSel=null;
+  var fb=document.getElementById('fb-vocab'); fb.textContent=''; fb.className='fb';
+}
+
+/* ── ORDER TASK ── */
+var orderAns=['B','A','C']; // correct order
+var orderSlotVals=[null,null,null];
+var orderTapChip=null;
+
+(function setupOrder(){
+  document.querySelectorAll('.order-chip').forEach(function(chip){
+    chip.addEventListener('click',function(){
+      if(chip.classList.contains('placed')) return;
+      document.querySelectorAll('.order-chip').forEach(function(c){ c.style.outline=''; });
+      if(orderTapChip===chip.dataset.stageVal){ orderTapChip=null; return; }
+      orderTapChip=chip.dataset.stageVal; chip.style.outline='2px solid var(--terra)';
+    });
+  });
+  document.querySelectorAll('.order-slot').forEach(function(slot){
+    slot.addEventListener('click',function(){
+      if(orderTapChip===null) return;
+      var si=parseInt(slot.dataset.slot);
+      // remove from any previous slot
+      var prev=orderSlotVals[si];
+      if(prev!==null){ var pc=document.querySelector('[data-stage-val="'+prev+'"]'); if(pc){ pc.classList.remove('placed'); pc.style.outline=''; } }
+      // remove chip from its previous slot
+      orderSlotVals.forEach(function(v,idx){ if(v===orderTapChip&&idx!==si){ orderSlotVals[idx]=null; var s=document.querySelectorAll('.order-slot')[idx]; s.querySelector('.slot-val').textContent=''; s.className='order-slot'; } });
+      orderSlotVals[si]=orderTapChip;
+      slot.querySelector('.slot-val').textContent=document.querySelector('[data-stage-val="'+orderTapChip+'"]').textContent;
+      slot.className='order-slot filled';
+      document.querySelector('[data-stage-val="'+orderTapChip+'"]').classList.add('placed');
+      document.querySelectorAll('.order-chip').forEach(function(c){ c.style.outline=''; });
+      orderTapChip=null;
+    });
+  });
+})();
+
+function checkOrder(){
+  var ok=0;
+  var slots=document.querySelectorAll('.order-slot');
+  orderSlotVals.forEach(function(v,i){
+    slots[i].classList.remove('correct-s','wrong-s');
+    if(v===null) return;
+    if(v===orderAns[i]){ slots[i].classList.add('correct-s'); ok++; } else slots[i].classList.add('wrong-s');
+  });
+  var fb=document.getElementById('fb-order');
+  fb.textContent=ok===3?'✅ Perfect! Excitement → Homesickness → Adjustment':'Score: '+ok+'/3 — try again';
+  fb.className='fb '+(ok===3?'ok':'bad');
+}
+function resetOrder(){
+  orderSlotVals=[null,null,null]; orderTapChip=null;
+  document.querySelectorAll('.order-slot').forEach(function(s){ s.className='order-slot'; s.querySelector('.slot-val').textContent=''; });
+  document.querySelectorAll('.order-chip').forEach(function(c){ c.classList.remove('placed'); c.style.outline=''; });
+  var fb=document.getElementById('fb-order'); fb.textContent=''; fb.className='fb';
+}
+
+/* ── T/F ── */
+var tfData=[
+  {sent:'Emmanuel had never seen English movies before arriving in the UK.', ans:'F'},
+  {sent:'Stephanie felt homesick and wanted to go back home.', ans:'T'},
+  {sent:'Arya had spent months away from her parents before going abroad.', ans:'F'},
+  {sent:'The students found it hard to understand some local expressions.', ans:'T'},
+  {sent:'A welfare advisor suggested Stephanie decorate her room to feel more at home.', ans:'T'},
+  {sent:'Emmanuel joined a football club to meet local people.', ans:'F'},
+];
+var tfSel={};
+(function buildTF(){
+  var el=document.getElementById('tf-items');
+  tfData.forEach(function(d,i){
+    var div=document.createElement('div'); div.className='tf-item';
+    div.innerHTML='<p>'+(i+1)+'. '+d.sent+'</p><div class="tf-btns"><button class="tf-btn" data-tf="'+i+'" data-val="T">T</button><button class="tf-btn" data-tf="'+i+'" data-val="F">F</button></div>';
+    el.appendChild(div);
+  });
+})();
+function checkTF(){
+  var ok=0;
+  tfData.forEach(function(d,i){
+    document.querySelectorAll('[data-tf="'+i+'"]').forEach(function(b){
+      b.classList.remove('correct','wrong');
+      if(b.dataset.val===tfSel[i]) b.classList.add(tfSel[i]===d.ans?'correct':'wrong');
+    });
+    if(tfSel[i]===d.ans) ok++;
+  });
+  var fb=document.getElementById('fb-tf'); fb.textContent='Score: '+ok+' / '+tfData.length; fb.className='fb '+(ok===tfData.length?'ok':'bad');
+}
+function resetTF(){
+  tfSel={};
+  document.querySelectorAll('.tf-btn').forEach(function(b){ b.classList.remove('sel-t','sel-f','correct','wrong'); });
+  document.getElementById('fb-tf').textContent=''; document.getElementById('fb-tf').className='fb';
+}
+
+/* ── WHO SAID IT ── */
+var whoData=[
+  {quote:'"I used to see them all the time — now though you were so far away it was quite hard."', ans:'Val'},
+  {quote:'"We were used to watching English movies back in Nigeria, so seeing it for real — we were very excited."', ans:'Emmanuel'},
+  {quote:'"It\'s terrible, so that\'s when I realised I needed to learn how to cook."', ans:'Stephanie'},
+  {quote:'"I\'d never been away from my parents for longer than a couple of weeks."', ans:'Arya'},
+  {quote:'"Swings and roundabouts — seriously, what does that mean?"', ans:'Christy'},
+];
+var whoSel={};
+var whoNames=['Christy','Val','Stephanie','Arya','Emmanuel'];
+(function buildWho(){
+  var el=document.getElementById('who-items');
+  whoData.forEach(function(d,i){
+    var div=document.createElement('div'); div.className='quote-item';
+    var btns=whoNames.map(function(n){ return '<button class="who-btn" data-who="'+i+'" data-name="'+n+'">'+n+'</button>'; }).join('');
+    div.innerHTML='<div class="quote-text">'+d.quote+'</div><div class="who-opts">'+btns+'</div>';
+    el.appendChild(div);
+  });
+})();
+function checkWho(){
+  var ok=0;
+  whoData.forEach(function(d,i){
+    document.querySelectorAll('[data-who="'+i+'"]').forEach(function(b){
+      b.classList.remove('correct','wrong');
+      if(b.dataset.name===whoSel[i]) b.classList.add(whoSel[i]===d.ans?'correct':'wrong');
+    });
+    if(whoSel[i]===d.ans) ok++;
+  });
+  var fb=document.getElementById('fb-who'); fb.textContent='Score: '+ok+' / '+whoData.length; fb.className='fb '+(ok===whoData.length?'ok':'bad');
+}
+function resetWho(){
+  whoSel={};
+  document.querySelectorAll('.who-btn').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+  document.getElementById('fb-who').textContent=''; document.getElementById('fb-who').className='fb';
+}
+
+
+/* ── GAP — USED TO ── */
+var gapsUsedTo=[
+  {pre:'1. When Emmanuel was in Nigeria, he', blank:'used to watch', post:'English movies. (past habit)'},
+  {pre:'2. Arya', blank:"wasn't used to", post:"being away from her parents for so long. (not familiar with)"},
+  {pre:'3. After a few months, Stephanie started to', blank:'get used to', post:"cooking for herself. (process of adapting)"},
+  {pre:'4. Val', blank:'used to see', post:'her friends every day back home. (past habit — not now)'},
+  {pre:'5. At first, Christy', blank:"couldn't get used to", post:"the British expressions. (unable to adapt)"},
+  {pre:'6. Now Emmanuel feels at home — he', blank:'is used to', post:'the London lifestyle. (familiar, adapted)'},
+];
+
+/* ── MC — CHOOSE CORRECT FORM ── */
+var mcData=[
+  {q:'1. Before moving to London, Emmanuel _____ a lot of English movies.', opts:['used to watching','used to watch','was used to watch'], ans:1},
+  {q:'2. Arya found the driving difficult — she _____ on the left.', opts:['used to drive','wasn\'t used to driving','didn\'t get used to drive'], ans:1},
+  {q:'3. After joining the badminton club, Stephanie slowly _____ speaking English every day.', opts:['used to','got used to','was used to'], ans:1},
+  {q:'4. Val _____ very cold winters in Bulgaria, so Colorado didn\'t shock her.', opts:['used to','got used to','was used to'], ans:2},
+  {q:'5. Christy _____ seeing her family every day back in New York.', opts:['used to see','was used to seeing','got used to see'], ans:1},
+  {q:'6. After a few months, she _____ the public transport system.', opts:['used to','got used to','was used to'], ans:1},
+];
+var mcSel={};
+(function buildMC(){
+  var el=document.getElementById('mc-usedto'); if(!el) return;
+  mcData.forEach(function(d,i){
+    var div=document.createElement('div');
+    div.style.cssText='margin-bottom:14px;padding:12px 14px;border:1px solid var(--border);border-radius:9px;background:var(--terra-lt);';
+    var btns=d.opts.map(function(o,j){
+      return '<button class="mc-opt sc-btn" data-mi="'+i+'" data-mv="'+j+'">'+o+'</button>';
+    }).join('');
+    div.innerHTML='<p style="font-size:14px;margin-bottom:8px;font-family:Lora,serif;font-style:italic;">'+d.q+'</p>'
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap;">'+btns+'</div>'
+;
+    el.appendChild(div);
+  });
+})();
+function checkMC(){
+  var ok=0;
+  mcData.forEach(function(d,i){
+    var sel=mcSel[i];
+    document.querySelectorAll('[data-mi="'+i+'"]').forEach(function(btn){
+      btn.style.background=''; btn.style.color=''; btn.style.borderColor='';
+      if(parseInt(btn.dataset.mv)===d.ans){ btn.style.background='var(--correct-bg)'; btn.style.color='var(--correct)'; btn.style.borderColor='var(--correct)'; }
+      else if(parseInt(btn.dataset.mv)===sel){ btn.style.background='var(--wrong-bg)'; btn.style.color='var(--wrong)'; btn.style.borderColor='var(--wrong)'; }
+    });
+    if(sel===d.ans) ok++;
+  });
+  var fb=document.getElementById('fb-mc');
+  if(fb){ fb.textContent='Score: '+ok+' / '+mcData.length; fb.className='fb '+(ok===mcData.length?'ok':'bad'); }
+}
+function resetMC(){
+  mcSel={};
+  document.querySelectorAll('.mc-opt').forEach(function(b){ b.style.background=''; b.style.color=''; b.style.borderColor=''; });
+  var fb=document.getElementById('fb-mc'); if(fb){ fb.textContent=''; fb.className='fb'; }
+}
+
+/* ── SENTENCE TRANSFORMATION ── */
+var gapsTransform=[
+  {pre:'1. "In the past, I ate Chinese food every day." →', blank:'I used to eat Chinese food every day.', post:'(used to)'},
+  {pre:'2. "The public transport system is strange — I\'m not familiar with it." →', blank:"I'm not used to the public transport system.", post:'(be used to)'},
+  {pre:'3. "The food was strange, but she adapted over time." →', blank:'She got used to the food.', post:'(get used to)'},
+  {pre:'4. "I lived near my family before — that was normal for me." →', blank:'I was used to living near my family.', post:'(be used to)'},
+  {pre:'5. "Speaking English all day was difficult at first, but now it\'s fine." →', blank:'I got used to speaking English all day.', post:'(get used to)'},
+];
+
+/* ── ERROR CORRECTION ── */
+var errData=[
+  {orig:'1. I used to living in Hong Kong before I moved to Newcastle.', correction:'used to <u>live</u> — "used to" takes a bare infinitive, not -ing.'},
+  {orig:'2. She got used to eat Chinese food every day.', correction:'got used to <u>eating</u> — "get used to" takes -ing (gerund).'},
+  {orig:'3. Emmanuel didn\'t used to speak English outside Nigeria.', correction:'<u>didn\'t use to</u> speak — in negatives, use "didn\'t use to" (no -d).'},
+  {orig:'4. Arya wasn\'t used to drive on the right side of the road.', correction:'wasn\'t used to <u>driving</u> — "be used to" takes -ing, not to-infinitive.'},
+  {orig:'5. At first Val couldn\'t get used to wake up so early for classes.', correction:'get used to <u>waking</u> up — "get used to" takes -ing.'},
+  {orig:'6. Before moving abroad, she was use to seeing her family every day.', correction:'was <u>used</u> to seeing — "be used to" needs the -d on "used".'},
+];
+(function buildErr(){
+  var el=document.getElementById('err-items');
+  errData.forEach(function(d,i){
+    var div=document.createElement('div');
+    div.style.cssText='margin-bottom:10px;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:9px;';
+    div.innerHTML='<p style="font-size:14px;font-style:italic;margin-bottom:6px;">'+d.orig+'</p>'
+      +'<button class="reset-btn" onclick="this.nextElementSibling.style.display=\'block\';this.style.display=\'none\'">Show answer</button>'
+      +'<div style="display:none;margin-top:6px;font-size:13px;color:var(--correct);font-weight:700;">✅ '+d.correction+'</div>';
+    el.appendChild(div);
+  });
+})();
+
+/* ── SPEAKING CARDS ── */
+var speakCards=[
+  {emoji:'🍽️', topic:'Eating habits', prompt:'Describe how your eating habits have changed over the past few years. What did you use to eat that you no longer eat? What have you had to get used to eating?'},
+  {emoji:'📱', topic:'Technology &amp; routines', prompt:'How has technology changed your daily routine? What habits did you use to have before smartphones? Is there anything about modern technology you still struggle to get used to?'},
+  {emoji:'✈️', topic:'Moving &amp; adapting', prompt:'Imagine you\'ve just moved to a new city or country. What three things do you think would be hardest to get used to? What habits from home would you miss most?'},
+  {emoji:'💼', topic:'Work &amp; study culture', prompt:'Have you ever worked or studied somewhere with a very different culture (formal/informal, punctual/relaxed)? What were you not used to? Did you eventually get used to it?'},
+  {emoji:'🌙', topic:'Sleep &amp; lifestyle', prompt:'Think about your sleep and lifestyle habits — when you were a teenager versus now. What used to be completely normal that you no longer do? What took you the longest to get used to as an adult?'},
+  {emoji:'🗣️', topic:'Social habits', prompt:'Different cultures have very different social rules — greetings, personal space, eye contact, small talk. Which social habit from another culture do you think would take you the longest to get used to, and why?'},
+  {emoji:'🏙️', topic:'City life', prompt:'Compare the city or town you grew up in with where you live now. What did you use to take for granted? What aspects of city life are you still not fully used to?'},
+  {emoji:'🧠', topic:'Learning a language', prompt:'Think about your experience learning English. What aspects did you find hardest to get used to — pronunciation, grammar, culture? What used to confuse you that now feels natural?'},
+  {emoji:'👨‍👩‍👧', topic:'Family &amp; independence', prompt:'How has your relationship with your family changed as you\'ve grown up or moved away? What family habits did you use to rely on? What have you had to get used to doing independently?'},
+  {emoji:'🌦️', topic:'Climate &amp; environment', prompt:'Have you ever lived somewhere with a very different climate? What did you use to love about your home climate? How long did it take to get used to the change?'},
+];
+var speakCardOrder=[];
+var speakRevealed={};
+
+function shuffleSpeakCards(){
+  speakCardOrder=speakCards.map(function(_,i){ return i; }).sort(function(){ return Math.random()-.5; });
+  speakRevealed={};
+  renderSpeakCards();
+}
+function resetSpeakCards(){
+  speakRevealed={};
+  renderSpeakCards();
+}
+function renderSpeakCards(){
+  var el=document.getElementById('speak-cards'); if(!el) return;
+  el.innerHTML='';
+  speakCardOrder.forEach(function(ci){
+    var d=speakCards[ci];
+    var revealed=speakRevealed[ci];
+    var card=document.createElement('div');
+    card.style.cssText='background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:box-shadow .2s;min-height:90px;display:flex;flex-direction:column;gap:8px;';
+    if(revealed){
+      card.innerHTML='<div style="font-size:22px;line-height:1;">'+d.emoji+'</div>'
+        +'<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--terra);">'+d.topic+'</div>'
+        +'<p style="font-size:13.5px;margin:0;color:var(--fg);line-height:1.5;">'+d.prompt+'</p>';
+      card.style.borderColor='var(--terra)';
+    } else {
+      card.innerHTML='<div style="font-size:30px;line-height:1;text-align:center;margin:auto;">'+d.emoji+'</div>'
+        +'<div style="text-align:center;font-size:12px;color:var(--muted);">Tap to reveal</div>';
+    }
+    card.addEventListener('click',function(){ speakRevealed[ci]=true; renderSpeakCards(); });
+    el.appendChild(card);
+  });
+}
+shuffleSpeakCards();
+
+/* ── GAP FILL ENGINE ── */
+function buildGap(cid, data){
+  var el=document.getElementById(cid); if(!el) return;
+  data.forEach(function(d,i){
+    var p=document.createElement('p'); p.className='gap-sent';
+    p.innerHTML=(i+1)+'. '+d.pre+' <input class="gap-inp" data-idx="'+i+'" data-ans="'+d.blank.toLowerCase()+'" placeholder="…"> '+d.post;
+    el.appendChild(p);
+  });
+}
+buildGap('gap-usedto',gapsUsedTo);
+buildGap('gap-transform',gapsTransform);
+
+function checkGap(cid, data){
+  var el=document.getElementById(cid);
+  var inputs=el.querySelectorAll('.gap-inp'); var ok=0;
+  inputs.forEach(function(inp){
+    var ans=inp.dataset.ans.split('|').map(function(a){ return a.trim().toLowerCase(); });
+    var val=inp.value.trim().toLowerCase();
+    inp.classList.remove('correct','wrong');
+    if(ans.indexOf(val)!==-1){ inp.classList.add('correct'); ok++; } else inp.classList.add('wrong');
+  });
+  var fb=document.getElementById('fb-'+cid);
+  if(fb){ fb.textContent='Score: '+ok+' / '+inputs.length; fb.className='fb '+(ok===inputs.length?'ok':'bad'); }
+}
+function resetGap(cid){
+  var el=document.getElementById(cid);
+  el.querySelectorAll('.gap-inp').forEach(function(inp){ inp.value=''; inp.classList.remove('correct','wrong'); });
+  var fb=document.getElementById('fb-'+cid); if(fb){ fb.textContent=''; fb.className='fb'; }
+}
+
+/* ── NAV / EVENTS ── */
+function goStage(n){
+  document.querySelectorAll('.stage').forEach(function(s){ s.classList.remove('active'); });
+  document.querySelectorAll('.nav-pill').forEach(function(p){ p.classList.remove('active'); });
+  var s=document.getElementById('stage-'+n); var p=document.querySelector('[data-stage="'+n+'"]');
+  if(s) s.classList.add('active'); if(p) p.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.addEventListener('click',function(e){
+  var t=e.target;
+
+  /* nav pill */
+  var np=t.closest('.nav-pill'); if(np){ goStage(parseInt(np.dataset.stage)); return; }
+
+  /* poll */
+  var pb=t.closest('[data-poll]');
+  if(pb){ var pg=pb.dataset.poll; document.querySelectorAll('[data-poll="'+pg+'"]').forEach(function(b){ b.classList.remove('selected'); }); pb.classList.add('selected'); return; }
+
+  /* tf */
+  var tfb=t.closest('.tf-btn');
+  if(tfb){ var idx=tfb.dataset.tf; tfSel[idx]=tfb.dataset.val; document.querySelectorAll('[data-tf="'+idx+'"]').forEach(function(b){ b.classList.remove('sel-t','sel-f'); }); tfb.classList.add(tfb.dataset.val==='T'?'sel-t':'sel-f'); return; }
+
+  /* who */
+  var wb=t.closest('.who-btn');
+  if(wb){ var wi=wb.dataset.who; whoSel[wi]=wb.dataset.name; document.querySelectorAll('[data-who="'+wi+'"]').forEach(function(b){ b.classList.remove('selected'); }); wb.classList.add('selected'); return; }
+
+  /* discovery — used to CCQ */
+  var discBtn=t.closest('[data-disc]');
+  if(discBtn && !t.closest('[data-itd]')){
+    var di=discBtn.dataset.disc;
+    var correct=discBtn.dataset.correct==='true';
+    var group=document.querySelectorAll('[data-disc="'+di+'"]');
+    group.forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    discBtn.classList.add(correct?'correct':'wrong');
+    if(correct) document.getElementById('disc'+di+'-ans').classList.add('shown');
+    return;
+  }
+
+  /* discovery — intro it */
+  var itdBtn=t.closest('[data-itd]');
+  if(itdBtn){
+    var itdi=itdBtn.dataset.itd;
+    var itcorrect=itdBtn.dataset.correct==='true';
+    document.querySelectorAll('[data-itd="'+itdi+'"]').forEach(function(b){ b.classList.remove('selected','correct','wrong'); });
+    itdBtn.classList.add(itcorrect?'correct':'wrong');
+    if(itcorrect) document.getElementById('itd-'+itdi).classList.add('shown');
+    return;
+  }
+
+  /* MC option buttons */
+  var mcb=t.closest('.mc-opt');
+  if(mcb){ var mi=mcb.dataset.mi; mcSel[mi]=parseInt(mcb.dataset.mv); document.querySelectorAll('[data-mi="'+mi+'"]').forEach(function(b){ b.style.background=''; b.style.color=''; b.style.borderColor=''; }); mcb.style.background='var(--terra)'; mcb.style.color='#fff'; mcb.style.borderColor='var(--terra)'; return; }
+
+  /* goStage action */
+  var act=t.dataset.action||(t.closest&&t.closest('[data-action]')&&t.closest('[data-action]').dataset.action);
+  if(!act) return;
+  if(act==='goStage'){ goStage(parseInt(t.dataset.target||t.closest('[data-action]').dataset.target)); return; }
+});
+
+/* disc-ans shown class helper */
+var style=document.createElement('style');
+style.textContent='.disc-ans{display:none;margin-top:8px;font-size:13px;color:var(--correct);font-weight:700;}.disc-ans.shown{display:block;}';
+document.head.appendChild(style);
+</script>
