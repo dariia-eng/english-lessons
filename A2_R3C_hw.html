@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unit 3C Homework · Going Out</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#0b727a;--teal-dk:#085d64;--teal-lt:#e6f4f5;
+  --orange:#f07440;--orange-dk:#d4612e;--orange-lt:#fff0eb;
+  --bg:#f5f7f8;--surface:#ffffff;--text:#1a2a2b;--text2:#4a6062;
+  --border:#d0e4e6;--ok:#1d7d3c;--ok-bg:#e8f7ed;
+  --err:#c0392b;--err-bg:#fdecea;
+  --radius:12px;--shadow:0 2px 10px rgba(0,0,0,.08)
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1f20;--surface:#162728;--text:#e8f4f5;--text2:#7eb5b8;
+  --border:#1e3d3f;--teal-lt:#1a3d3f;--ok-bg:#0e3d1e;--err-bg:#3d110e;--orange-lt:#2a1a10
+}}
+:root[data-theme="dark"]{
+  --bg:#0f1f20;--surface:#162728;--text:#e8f4f5;--text2:#7eb5b8;
+  --border:#1e3d3f;--teal-lt:#1a3d3f;--ok-bg:#0e3d1e;--err-bg:#3d110e;--orange-lt:#2a1a10
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:1rem;line-height:1.65;padding-bottom:5rem}
+h1,h2,h3,.pill{font-family:'Poppins',sans-serif}
+
+/* HEADER */
+.site-hd{background:var(--teal);color:#fff;padding:2rem 1.5rem 1.5rem;position:relative}
+.site-hd .eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-bottom:.35rem}
+.site-hd h1{font-size:1.9rem;font-weight:700;line-height:1.2}
+.site-hd .sub{opacity:.85;font-size:.92rem;margin-top:.35rem}
+.theme-btn{position:absolute;top:1.1rem;right:1.1rem;background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:20px;padding:.3rem .8rem;cursor:pointer;font-size:.82rem;font-family:'Inter',sans-serif}
+
+/* NAME BAR */
+.name-bar{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:2px solid var(--teal-lt);padding:.7rem 1.5rem;display:flex;align-items:center;gap:.75rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.name-bar label{font-weight:600;color:var(--teal);font-size:.88rem;white-space:nowrap}
+.name-bar input{flex:1;max-width:320px;border:1.5px solid var(--border);border-radius:7px;padding:.35rem .75rem;font-family:'Inter',sans-serif;font-size:.88rem;background:var(--bg);color:var(--text);outline:none}
+.name-bar input:focus{border-color:var(--teal)}
+
+/* PROGRESS */
+.prog-wrap{max-width:800px;margin:1.2rem auto 0;padding:0 1rem}
+.prog-bar{background:var(--border);border-radius:10px;height:8px;overflow:hidden;margin-bottom:.35rem}
+.prog-fill{background:var(--teal);height:100%;border-radius:10px;width:0%;transition:width .4s}
+.prog-lbl{font-size:.8rem;color:var(--text2);text-align:right}
+
+/* EXERCISE CARD */
+.ex-card{max-width:800px;margin:1.75rem auto 0;padding:0 1rem}
+.ec{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.ex-hd{background:var(--teal);color:#fff;padding:.85rem 1.5rem;display:flex;align-items:center;gap:.75rem}
+.ex-hd .pill{background:rgba(255,255,255,.2);border-radius:20px;padding:.18rem .65rem;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;font-weight:600;white-space:nowrap}
+.ex-hd h2{font-size:1rem;font-weight:600}
+.ex-body{padding:1.4rem 1.5rem}
+.ex-instr{background:var(--teal-lt);border-left:4px solid var(--teal);padding:.65rem 1rem;border-radius:0 8px 8px 0;margin-bottom:1.2rem;font-size:.88rem;color:var(--teal-dk);line-height:1.55}
+
+/* DO/DOES EXERCISE */
+.dd-row{display:flex;align-items:flex-start;gap:.65rem;margin-bottom:.7rem;padding:.7rem 1rem;background:var(--bg);border-radius:8px;border:1.5px solid var(--border);font-size:.9rem}
+.dd-n{font-weight:700;color:var(--text2);min-width:1.3rem;margin-top:.15rem;flex-shrink:0}
+.dd-body{flex:1;display:flex;flex-wrap:wrap;align-items:center;gap:.25rem .2rem;line-height:1.8}
+.cbtn{border:1.5px solid var(--border);background:var(--surface);border-radius:6px;padding:.22rem .65rem;cursor:pointer;font-size:.88rem;margin:0 .1rem;transition:all .15s;font-family:'Inter',sans-serif;color:var(--text)}
+.cbtn:hover{border-color:var(--teal);background:var(--teal-lt)}
+.cbtn.sel{border-color:var(--teal);background:var(--teal);color:#fff}
+.cbtn.cor{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);font-weight:700}
+.cbtn.wrg{border-color:var(--err);background:var(--err-bg);color:var(--err)}
+
+/* CHOOSE ALTERNATIVE */
+.alt-row{display:flex;align-items:flex-start;gap:.65rem;margin-bottom:.7rem;padding:.7rem 1rem;background:var(--bg);border-radius:8px;border:1.5px solid var(--border);font-size:.9rem}
+.alt-n{font-weight:700;color:var(--text2);min-width:1.3rem;margin-top:.1rem;flex-shrink:0}
+.alt-body{flex:1}
+.alt-ctx{margin-bottom:.4rem;color:var(--text);line-height:1.6}
+.alt-opts{display:flex;flex-wrap:wrap;gap:.3rem}
+.abtn{border:1.5px solid var(--border);background:var(--surface);border-radius:6px;padding:.22rem .7rem;cursor:pointer;font-size:.88rem;transition:all .15s;font-family:'Inter',sans-serif;color:var(--text)}
+.abtn:hover{border-color:var(--teal);background:var(--teal-lt)}
+.abtn.sel{border-color:var(--teal);background:var(--teal);color:#fff}
+.abtn.cor{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);font-weight:700}
+.abtn.wrg{border-color:var(--err);background:var(--err-bg);color:var(--err)}
+
+/* GAP-FILL VERB */
+.gf-row{display:flex;align-items:flex-start;gap:.65rem;margin-bottom:.7rem;padding:.75rem 1rem;background:var(--bg);border-radius:8px;border:1.5px solid var(--border)}
+.gf-n{font-weight:700;color:var(--text2);min-width:1.3rem;margin-top:.25rem;flex-shrink:0;font-size:.9rem}
+.gf-body{flex:1;display:flex;flex-direction:column;gap:.3rem}
+.gf-sent{font-size:.9rem;line-height:1.7;display:flex;flex-wrap:wrap;align-items:center;gap:.2rem}
+.gf-inp{border:none;border-bottom:2px solid var(--teal);background:transparent;width:6.5rem;padding:.1rem .3rem;font-family:'Inter',sans-serif;font-size:.9rem;color:var(--text);outline:none;text-align:center}
+.gf-inp:focus{border-bottom-color:var(--orange)}
+.gf-inp.ok{border-bottom-color:var(--ok);color:var(--ok);font-weight:600}
+.gf-inp.no{border-bottom-color:var(--err);color:var(--err)}
+.gf-fb{font-size:.8rem;min-height:1rem}
+.gf-fb.ok{color:var(--ok);font-weight:600}
+.gf-fb.no{color:var(--err)}
+
+/* SHARED BUTTONS */
+.ex-bar{display:flex;align-items:center;gap:.6rem;margin-top:1.1rem;flex-wrap:wrap}
+.btn{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:.6rem 1.3rem;font-family:'Inter',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--teal-dk)}
+.btn-out{background:transparent;color:var(--teal);border:1.5px solid var(--teal);border-radius:8px;padding:.5rem 1.1rem;font-family:'Inter',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-out:hover{background:var(--teal-lt)}
+.score{font-size:.88rem;font-weight:600;color:var(--teal);margin-left:auto}
+
+/* SEND TO TEACHER */
+.send-card{max-width:800px;margin:2rem auto 0;padding:0 1rem}
+.send-inner{background:var(--orange-lt);border:2px solid var(--orange);border-radius:var(--radius);padding:1.4rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.send-icon{font-size:2rem;flex-shrink:0}
+.send-text{flex:1}
+.send-text h3{font-family:'Poppins',sans-serif;font-weight:700;color:var(--orange-dk);margin-bottom:.2rem;font-size:1rem}
+.send-text p{font-size:.85rem;color:var(--text2)}
+.btn-send{background:var(--orange);color:#fff;border:none;border-radius:8px;padding:.65rem 1.4rem;font-family:'Inter',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap}
+.btn-send:hover{background:var(--orange-dk)}
+
+@media(max-width:520px){
+  .site-hd h1{font-size:1.45rem}
+  .name-bar{flex-wrap:wrap}
+  .send-inner{flex-direction:column;text-align:center}
+  .send-icon{font-size:1.6rem}
+}
+</style>
+</head>
+<body>
+
+<header class="site-hd">
+  <div class="eyebrow">Unit 3C · Homework</div>
+  <h1>Going Out 🎉</h1>
+  <p class="sub">Present simple questions &nbsp;·&nbsp; Free-time activities 2</p>
+  <button class="theme-btn" onclick="toggleTheme()">🌙 Theme</button>
+</header>
+
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-bar"><div class="prog-fill" id="pfill"></div></div>
+  <div class="prog-lbl" id="plabel">0 / 3 exercises done</div>
+</div>
+
+<!-- ══════════════════════════════════ EXERCISE 1: DO / DOES -->
+<div class="ex-card">
+<div class="ec">
+  <div class="ex-hd">
+    <span class="pill">Exercise 1</span>
+    <h2>Complete with <em>do</em> or <em>does</em></h2>
+  </div>
+  <div class="ex-body">
+    <div class="ex-instr">Complete the questions with <strong>do</strong> or <strong>does</strong>. Click the correct word.</div>
+
+    <div class="dd-row">
+      <div class="dd-n">1</div>
+      <div class="dd-body">
+        <button class="cbtn" data-qn="d1" data-val="Do" onclick="pickDD(this,'d1')">Do</button>
+        <button class="cbtn" data-qn="d1" data-val="Does" onclick="pickDD(this,'d1')">Does</button>
+        you ever play video games?
+      </div>
+    </div>
+
+    <div class="dd-row">
+      <div class="dd-n">2</div>
+      <div class="dd-body">
+        <button class="cbtn" data-qn="d2" data-val="Do" onclick="pickDD(this,'d2')">Do</button>
+        <button class="cbtn" data-qn="d2" data-val="Does" onclick="pickDD(this,'d2')">Does</button>
+        she go out at the weekend?
+      </div>
+    </div>
+
+    <div class="dd-row">
+      <div class="dd-n">3</div>
+      <div class="dd-body">
+        What time
+        <button class="cbtn" data-qn="d3" data-val="do" onclick="pickDD(this,'d3')">do</button>
+        <button class="cbtn" data-qn="d3" data-val="does" onclick="pickDD(this,'d3')">does</button>
+        Chris start work?
+      </div>
+    </div>
+
+    <div class="dd-row">
+      <div class="dd-n">4</div>
+      <div class="dd-body">
+        How often
+        <button class="cbtn" data-qn="d4" data-val="do" onclick="pickDD(this,'d4')">do</button>
+        <button class="cbtn" data-qn="d4" data-val="does" onclick="pickDD(this,'d4')">does</button>
+        they go to the gym?
+      </div>
+    </div>
+
+    <div class="dd-row">
+      <div class="dd-n">5</div>
+      <div class="dd-body">
+        Where
+        <button class="cbtn" data-qn="d5" data-val="do" onclick="pickDD(this,'d5')">do</button>
+        <button class="cbtn" data-qn="d5" data-val="does" onclick="pickDD(this,'d5')">does</button>
+        you work?
+      </div>
+    </div>
+
+    <div class="dd-row">
+      <div class="dd-n">6</div>
+      <div class="dd-body">
+        What time
+        <button class="cbtn" data-qn="d6" data-val="do" onclick="pickDD(this,'d6')">do</button>
+        <button class="cbtn" data-qn="d6" data-val="does" onclick="pickDD(this,'d6')">does</button>
+        she get up in the morning?
+      </div>
+    </div>
+
+    <div class="dd-row">
+      <div class="dd-n">7</div>
+      <div class="dd-body">
+        Where
+        <button class="cbtn" data-qn="d7" data-val="do" onclick="pickDD(this,'d7')">do</button>
+        <button class="cbtn" data-qn="d7" data-val="does" onclick="pickDD(this,'d7')">does</button>
+        he live?
+      </div>
+    </div>
+
+    <div class="dd-row">
+      <div class="dd-n">8</div>
+      <div class="dd-body">
+        Who
+        <button class="cbtn" data-qn="d8" data-val="do" onclick="pickDD(this,'d8')">do</button>
+        <button class="cbtn" data-qn="d8" data-val="does" onclick="pickDD(this,'d8')">does</button>
+        you play games online with?
+      </div>
+    </div>
+
+    <div class="dd-row">
+      <div class="dd-n">9</div>
+      <div class="dd-body">
+        How many times a year
+        <button class="cbtn" data-qn="d9" data-val="do" onclick="pickDD(this,'d9')">do</button>
+        <button class="cbtn" data-qn="d9" data-val="does" onclick="pickDD(this,'d9')">does</button>
+        you go to the theatre?
+      </div>
+    </div>
+
+    <div class="dd-row">
+      <div class="dd-n">10</div>
+      <div class="dd-body">
+        <button class="cbtn" data-qn="d10" data-val="Do" onclick="pickDD(this,'d10')">Do</button>
+        <button class="cbtn" data-qn="d10" data-val="Does" onclick="pickDD(this,'d10')">Does</button>
+        he do any sport?
+      </div>
+    </div>
+
+    <div class="ex-bar">
+      <button class="btn" onclick="checkDD()">Check</button>
+      <button class="btn-out" onclick="resetDD()">Reset</button>
+      <span class="score" id="ddScore"></span>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════ EXERCISE 2: CORRECT ALTERNATIVE -->
+<div class="ex-card">
+<div class="ec">
+  <div class="ex-hd">
+    <span class="pill">Exercise 2</span>
+    <h2>Choose the correct alternative</h2>
+  </div>
+  <div class="ex-body">
+    <div class="ex-instr">Click the correct word or phrase to complete each sentence.</div>
+
+    <div class="alt-row">
+      <div class="alt-n">1</div>
+      <div class="alt-body">
+        <div class="alt-ctx">How often do you ___ football on TV?</div>
+        <div class="alt-opts">
+          <button class="abtn" data-qn="a1" data-val="play" onclick="pickAlt(this,'a1')">play</button>
+          <button class="abtn" data-qn="a1" data-val="watch" onclick="pickAlt(this,'a1')">watch</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="alt-row">
+      <div class="alt-n">2</div>
+      <div class="alt-body">
+        <div class="alt-ctx">I always ___ music in the car.</div>
+        <div class="alt-opts">
+          <button class="abtn" data-qn="a2" data-val="listen" onclick="pickAlt(this,'a2')">listen</button>
+          <button class="abtn" data-qn="a2" data-val="listen to" onclick="pickAlt(this,'a2')">listen to</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="alt-row">
+      <div class="alt-n">3</div>
+      <div class="alt-body">
+        <div class="alt-ctx">I try to ___ a museum once a month.</div>
+        <div class="alt-opts">
+          <button class="abtn" data-qn="a3" data-val="go to" onclick="pickAlt(this,'a3')">go to</button>
+          <button class="abtn" data-qn="a3" data-val="visit" onclick="pickAlt(this,'a3')">visit</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="alt-row">
+      <div class="alt-n">4</div>
+      <div class="alt-body">
+        <div class="alt-ctx">She ___ games online.</div>
+        <div class="alt-opts">
+          <button class="abtn" data-qn="a4" data-val="listens to" onclick="pickAlt(this,'a4')">listens to</button>
+          <button class="abtn" data-qn="a4" data-val="plays" onclick="pickAlt(this,'a4')">plays</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="alt-row">
+      <div class="alt-n">5</div>
+      <div class="alt-body">
+        <div class="alt-ctx">Let's ___ the theatre tonight.</div>
+        <div class="alt-opts">
+          <button class="abtn" data-qn="a5" data-val="go to" onclick="pickAlt(this,'a5')">go to</button>
+          <button class="abtn" data-qn="a5" data-val="go" onclick="pickAlt(this,'a5')">go</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="alt-row">
+      <div class="alt-n">6</div>
+      <div class="alt-body">
+        <div class="alt-ctx">Do you ___ videos online?</div>
+        <div class="alt-opts">
+          <button class="abtn" data-qn="a6" data-val="watch" onclick="pickAlt(this,'a6')">watch</button>
+          <button class="abtn" data-qn="a6" data-val="see" onclick="pickAlt(this,'a6')">see</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="alt-row">
+      <div class="alt-n">7</div>
+      <div class="alt-body">
+        <div class="alt-ctx">John and Gina ___ the cinema every weekend.</div>
+        <div class="alt-opts">
+          <button class="abtn" data-qn="a7" data-val="watch" onclick="pickAlt(this,'a7')">watch</button>
+          <button class="abtn" data-qn="a7" data-val="go to" onclick="pickAlt(this,'a7')">go to</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="alt-row">
+      <div class="alt-n">8</div>
+      <div class="alt-body">
+        <div class="alt-ctx">Do you ever ___ TV in the evening?</div>
+        <div class="alt-opts">
+          <button class="abtn" data-qn="a8" data-val="listen to" onclick="pickAlt(this,'a8')">listen to</button>
+          <button class="abtn" data-qn="a8" data-val="watch" onclick="pickAlt(this,'a8')">watch</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ex-bar">
+      <button class="btn" onclick="checkAlt()">Check</button>
+      <button class="btn-out" onclick="resetAlt()">Reset</button>
+      <span class="score" id="altScore"></span>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════ EXERCISE 3: VERB FORM -->
+<div class="ex-card">
+<div class="ec">
+  <div class="ex-hd">
+    <span class="pill">Exercise 3</span>
+    <h2>Complete with a verb in the correct form</h2>
+  </div>
+  <div class="ex-body">
+    <div class="ex-instr">Complete each sentence with a verb from the box in the correct form.<br>
+    <strong style="color:var(--teal)">go &nbsp;·&nbsp; play &nbsp;·&nbsp; meet &nbsp;·&nbsp; watch &nbsp;·&nbsp; read</strong></div>
+
+    <div class="gf-row">
+      <div class="gf-n">1</div>
+      <div class="gf-body">
+        <div class="gf-sent">For my birthday I want to <input class="gf-inp" id="g1" data-ans="go" placeholder="…" onkeydown="if(event.key==='Enter')checkGF()"> to the theatre.</div>
+        <div class="gf-fb" id="gfb1"></div>
+      </div>
+    </div>
+
+    <div class="gf-row">
+      <div class="gf-n">2</div>
+      <div class="gf-body">
+        <div class="gf-sent">When do you usually <input class="gf-inp" id="g2" data-ans="play" placeholder="…" onkeydown="if(event.key==='Enter')checkGF()"> video games?</div>
+        <div class="gf-fb" id="gfb2"></div>
+      </div>
+    </div>
+
+    <div class="gf-row">
+      <div class="gf-n">3</div>
+      <div class="gf-body">
+        <div class="gf-sent">How often do they <input class="gf-inp" id="g3" data-ans="play" placeholder="…" onkeydown="if(event.key==='Enter')checkGF()"> games online?</div>
+        <div class="gf-fb" id="gfb3"></div>
+      </div>
+    </div>
+
+    <div class="gf-row">
+      <div class="gf-n">4</div>
+      <div class="gf-body">
+        <div class="gf-sent">She <input class="gf-inp" id="g4" data-ans="meets" placeholder="…" onkeydown="if(event.key==='Enter')checkGF()"> her friends for coffee every Saturday.</div>
+        <div class="gf-fb" id="gfb4"></div>
+      </div>
+    </div>
+
+    <div class="gf-row">
+      <div class="gf-n">5</div>
+      <div class="gf-body">
+        <div class="gf-sent">Let's <input class="gf-inp" id="g5" data-ans="go" placeholder="…" onkeydown="if(event.key==='Enter')checkGF()"> to a concert this weekend.</div>
+        <div class="gf-fb" id="gfb5"></div>
+      </div>
+    </div>
+
+    <div class="gf-row">
+      <div class="gf-n">6</div>
+      <div class="gf-body">
+        <div class="gf-sent">She <input class="gf-inp" id="g6" data-ans="watches" placeholder="…" onkeydown="if(event.key==='Enter')checkGF()"> TV every evening.</div>
+        <div class="gf-fb" id="gfb6"></div>
+      </div>
+    </div>
+
+    <div class="gf-row">
+      <div class="gf-n">7</div>
+      <div class="gf-body">
+        <div class="gf-sent">They <input class="gf-inp" id="g7" data-ans="read" placeholder="…" onkeydown="if(event.key==='Enter')checkGF()"> books every night before bed.</div>
+        <div class="gf-fb" id="gfb7"></div>
+      </div>
+    </div>
+
+    <div class="gf-row">
+      <div class="gf-n">8</div>
+      <div class="gf-body">
+        <div class="gf-sent">How often do you <input class="gf-inp" id="g8" data-ans="go" placeholder="…" onkeydown="if(event.key==='Enter')checkGF()"> to the cinema?</div>
+        <div class="gf-fb" id="gfb8"></div>
+      </div>
+    </div>
+
+    <div class="ex-bar">
+      <button class="btn" onclick="checkGF()">Check</button>
+      <button class="btn-out" onclick="resetGF()">Reset</button>
+      <span class="score" id="gfScore"></span>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════ SEND TO TEACHER -->
+<div class="send-card">
+  <div class="send-inner">
+    <div class="send-icon">📧</div>
+    <div class="send-text">
+      <h3>Send to your teacher</h3>
+      <p>Make sure you've typed your name above, then click to email your answers.</p>
+    </div>
+    <button class="btn-send" onclick="sendToTeacher()">Send to Teacher ✉️</button>
+  </div>
+</div>
+
+<script>
+/* ── THEME ── */
+function toggleTheme(){
+  const r=document.documentElement;
+  r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');
+}
+
+/* ── PROGRESS ── */
+const done={ex1:false,ex2:false,ex3:false};
+function updateProgress(){
+  const n=Object.values(done).filter(Boolean).length;
+  document.getElementById('pfill').style.width=(n/3*100)+'%';
+  document.getElementById('plabel').textContent=n+' / 3 exercises done';
+}
+
+/* ── EXERCISE 1: DO / DOES ── */
+const DD_ANS={d1:'Do',d2:'Does',d3:'does',d4:'do',d5:'do',d6:'does',d7:'does',d8:'do',d9:'do',d10:'Does'};
+const DD_PICKED={};
+function pickDD(btn,qn){
+  document.querySelectorAll('.cbtn[data-qn="'+qn+'"]').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  DD_PICKED[qn]=btn.dataset.val;
+}
+function checkDD(){
+  let c=0,total=10;
+  Object.keys(DD_ANS).forEach(qn=>{
+    const pick=DD_PICKED[qn];
+    const btns=document.querySelectorAll('.cbtn[data-qn="'+qn+'"]');
+    btns.forEach(b=>{
+      b.classList.remove('sel','cor','wrg');
+      if(b.dataset.val===DD_ANS[qn])b.classList.add('cor');
+      else if(pick&&b.dataset.val===pick&&pick!==DD_ANS[qn])b.classList.add('wrg');
+    });
+    if(pick===DD_ANS[qn])c++;
+  });
+  document.getElementById('ddScore').textContent='Score: '+c+' / '+total;
+  if(c===total){done.ex1=true;updateProgress();}
+}
+function resetDD(){
+  for(let k in DD_PICKED)delete DD_PICKED[k];
+  document.querySelectorAll('.cbtn').forEach(b=>b.classList.remove('sel','cor','wrg'));
+  document.getElementById('ddScore').textContent='';
+  done.ex1=false;updateProgress();
+}
+
+/* ── EXERCISE 2: CORRECT ALTERNATIVE ── */
+const ALT_ANS={a1:'watch',a2:'listen to',a3:'go to',a4:'plays',a5:'go to',a6:'watch',a7:'go to',a8:'watch'};
+const ALT_PICKED={};
+function pickAlt(btn,qn){
+  document.querySelectorAll('.abtn[data-qn="'+qn+'"]').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  ALT_PICKED[qn]=btn.dataset.val;
+}
+function checkAlt(){
+  let c=0,total=8;
+  Object.keys(ALT_ANS).forEach(qn=>{
+    const pick=ALT_PICKED[qn];
+    const btns=document.querySelectorAll('.abtn[data-qn="'+qn+'"]');
+    btns.forEach(b=>{
+      b.classList.remove('sel','cor','wrg');
+      if(b.dataset.val===ALT_ANS[qn])b.classList.add('cor');
+      else if(pick&&b.dataset.val===pick&&pick!==ALT_ANS[qn])b.classList.add('wrg');
+    });
+    if(pick===ALT_ANS[qn])c++;
+  });
+  document.getElementById('altScore').textContent='Score: '+c+' / '+total;
+  if(c===total){done.ex2=true;updateProgress();}
+}
+function resetAlt(){
+  for(let k in ALT_PICKED)delete ALT_PICKED[k];
+  document.querySelectorAll('.abtn').forEach(b=>b.classList.remove('sel','cor','wrg'));
+  document.getElementById('altScore').textContent='';
+  done.ex2=false;updateProgress();
+}
+
+/* ── EXERCISE 3: VERB FORM ── */
+function norm(s){return s.trim().toLowerCase();}
+function checkGF(){
+  let c=0;
+  for(let n=1;n<=8;n++){
+    const inp=document.getElementById('g'+n);
+    const fb=document.getElementById('gfb'+n);
+    const ans=inp.dataset.ans;
+    const val=norm(inp.value);
+    if(!val){inp.className='gf-inp';fb.textContent='';fb.className='gf-fb';continue;}
+    if(val===ans){
+      c++;inp.className='gf-inp ok';
+      fb.textContent='✓ '+ans;fb.className='gf-fb ok';
+    }else{
+      inp.className='gf-inp no';
+      fb.textContent='✗ → '+ans;fb.className='gf-fb no';
+    }
+  }
+  document.getElementById('gfScore').textContent='Score: '+c+' / 8';
+  if(c===8){done.ex3=true;updateProgress();}
+}
+function resetGF(){
+  for(let n=1;n<=8;n++){
+    const inp=document.getElementById('g'+n);const fb=document.getElementById('gfb'+n);
+    inp.value='';inp.className='gf-inp';fb.textContent='';fb.className='gf-fb';
+  }
+  document.getElementById('gfScore').textContent='';
+  done.ex3=false;updateProgress();
+}
+
+/* ── SEND TO TEACHER ── */
+function sendToTeacher(){
+  const name=document.getElementById('nameInput').value.trim()||'Anonymous';
+
+  // Exercise 1 summary
+  let ex1lines='EXERCISE 1 — Do or Does?\n';
+  const dd_labels={d1:'1',d2:'2',d3:'3',d4:'4',d5:'5',d6:'6',d7:'7',d8:'8',d9:'9',d10:'10'};
+  Object.keys(DD_ANS).forEach((qn,i)=>{
+    const pick=DD_PICKED[qn]||'(no answer)';
+    const ok=(pick===DD_ANS[qn])?'✓':'✗';
+    ex1lines+='  '+dd_labels[qn]+'. '+pick+' '+ok+'\n';
+  });
+
+  // Exercise 2 summary
+  let ex2lines='EXERCISE 2 — Correct Alternative\n';
+  const alt_labels={a1:'1',a2:'2',a3:'3',a4:'4',a5:'5',a6:'6',a7:'7',a8:'8'};
+  Object.keys(ALT_ANS).forEach(qn=>{
+    const pick=ALT_PICKED[qn]||'(no answer)';
+    const ok=(pick===ALT_ANS[qn])?'✓':'✗';
+    ex2lines+='  '+alt_labels[qn]+'. '+pick+' '+ok+'\n';
+  });
+
+  // Exercise 3 summary
+  let ex3lines='EXERCISE 3 — Verb Form\n';
+  for(let n=1;n<=8;n++){
+    const inp=document.getElementById('g'+n);
+    const val=inp.value.trim()||'(no answer)';
+    const ok=(norm(inp.value)===inp.dataset.ans)?'✓':'✗';
+    ex3lines+='  '+n+'. '+val+' '+ok+'\n';
+  }
+
+  const body=encodeURIComponent(
+    'Student: '+name+'\nUnit 3C Homework — Going Out\n\n'+
+    ex1lines+'\n'+ex2lines+'\n'+ex3lines
+  );
+  const subject=encodeURIComponent('Unit 3C Homework – '+name);
+  window.location.href='mailto:dariia.mlnk@gmail.com?subject='+subject+'&body='+body;
+}
+</script>
+</body>
+</html>
