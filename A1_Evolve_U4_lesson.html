@@ -1,0 +1,863 @@
+<title>My Phone Is My World</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: one calm reading column; sticky stage bar with minute budget; numbered stages follow the CELTA lesson sequence. */
+:root{
+  --bg:#f3f8f7; --surface:#ffffff; --ink:#18302e; --muted:#5a706d; --line:#d3e4e1;
+  --teal:#1f8a80; --teal-soft:#dff1ee; --coral:#e9654b; --coral-soft:#fde8e2;
+  --good:#2e8a4a; --good-soft:#e2f3e6; --bad:#c2412d; --bad-soft:#fbe4df;
+  --amber-soft:#fff3d6; --amber-line:#e9c46a;
+  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1b1a; --surface:#16262a; --ink:#e6f2f0; --muted:#9ab3af; --line:#2a4044;
+  --teal:#4fc1b4; --teal-soft:#173a37; --coral:#ff8a70; --coral-soft:#3d2420;
+  --good:#6fd08b; --good-soft:#183424; --bad:#ff8a77; --bad-soft:#3d2019;
+  --amber-soft:#3a3018; --amber-line:#a88a3a; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0f1b1a; --surface:#16262a; --ink:#e6f2f0; --muted:#9ab3af; --line:#2a4044;
+  --teal:#4fc1b4; --teal-soft:#173a37; --coral:#ff8a70; --coral-soft:#3d2420;
+  --good:#6fd08b; --good-soft:#183424; --bad:#ff8a77; --bad-soft:#3d2019;
+  --amber-soft:#3a3018; --amber-line:#a88a3a; color-scheme:dark;}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.55;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:860px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15;margin:0}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+
+header.top{padding-block:28px 18px;display:flex;flex-direction:column;gap:10px}
+.eyebrow{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);font-weight:700}
+h1{font-size:clamp(34px,7vw,56px);font-weight:800;letter-spacing:-.02em}
+h1 span{color:var(--coral)}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--teal-soft);color:var(--ink);font-size:15px}
+.objective{font-size:19px}
+.objective b{color:var(--teal)}
+
+/* lesson plan panel */
+details.plan-panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 18px}
+details.plan-panel>summary{font-family:var(--display);font-weight:700;font-size:19px;cursor:pointer;color:var(--teal)}
+.pp{display:flex;flex-direction:column;gap:16px;margin-top:14px;font-size:16px}
+.aims{display:grid;grid-template-columns:150px 1fr;gap:6px 14px}
+.aims dt{font-weight:700;color:var(--coral);font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
+.aims dd{margin:0}
+@media (max-width:560px){.aims{grid-template-columns:1fr}.aims dd{margin-bottom:6px}}
+.pp h4{font-family:var(--display);font-size:17px;margin:0 0 6px}
+.tw{overflow-x:auto}
+table.ap{border-collapse:collapse;width:100%;min-width:560px;font-size:15px}
+table.ap th,table.ap td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+table.ap th{background:var(--teal-soft)}
+table.ap td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-block:10px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-top:14px}
+.bar a{flex:0 0 auto;text-decoration:none;color:var(--ink);font-size:14px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);white-space:nowrap}
+.bar a small{color:var(--muted);font-variant-numeric:tabular-nums;margin-left:4px}
+.bar a:hover{border-color:var(--teal)}
+#themeBtn{margin-left:auto;flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px}
+
+section.stage{padding-block:40px 8px;display:flex;flex-direction:column;gap:20px;scroll-margin-top:64px}
+.stage-head{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:baseline}
+.num{font-family:var(--display);font-weight:800;font-size:44px;color:var(--coral);line-height:1;font-variant-numeric:tabular-nums}
+.stage-head h2{font-size:clamp(24px,4.4vw,32px);font-weight:700}
+.stage-head .sub{color:var(--muted);font-size:15px;margin-top:2px}
+.mins{font-variant-numeric:tabular-nums;font-weight:700;color:var(--teal);font-size:15px;white-space:nowrap}
+
+details.tnote{border-left:3px solid var(--teal);background:var(--teal-soft);border-radius:0 var(--r) var(--r) 0;padding:10px 14px;font-size:16px}
+details.tnote summary{font-weight:700;color:var(--teal);cursor:pointer;font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+.tn{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;margin-top:10px}
+.tn dt{font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.tn dd{margin:0}
+.tn ol,.tn ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:3px}
+.tn .icq{font-style:italic}
+@media (max-width:560px){.tn{grid-template-columns:1fr}.tn dd{margin-bottom:6px}}
+
+.task{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.task h3{font-size:20px;font-weight:700;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.tag{font-family:var(--body);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--coral);font-weight:700}
+.tag.new{color:var(--teal)}
+.instr{color:var(--muted)}
+.pair{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid var(--teal);color:var(--teal);border-radius:6px;padding:1px 7px;font-weight:700;vertical-align:2px}
+.ff{border-top:1px dashed var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px;font-size:16px}
+.ff b{color:var(--teal)}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:none;border-radius:10px;padding:10px 18px;font-weight:700;font-size:16px}
+.btn.check{background:var(--teal);color:var(--surface)}
+.btn.reset{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.btn.ghost{background:var(--coral-soft);color:var(--ink)}
+.score{font-weight:700;font-variant-numeric:tabular-nums}
+
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card{border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;color:var(--ink);min-height:150px;justify-content:center}
+.card .emo{font-size:44px;line-height:1}
+.card .lab{font-size:16px;max-height:0;opacity:0;overflow:hidden;transition:max-height .3s,opacity .3s}
+.card .hint{font-size:13px;color:var(--muted)}
+.card.open{border-color:var(--teal);background:var(--teal-soft)}
+.card.open .lab{max-height:90px;opacity:1}
+.card.open .hint{display:none}
+.card .lab b{color:var(--coral)}
+
+.dialogue{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:18px}
+.dialogue .who{font-weight:700;color:var(--teal)}
+.dialogue .who.o{color:var(--coral)}
+.dialogue b{background:var(--amber-soft);padding:0 3px;border-radius:4px;font-weight:700}
+.dialogue.plain b{background:none;padding:0;font-weight:400}
+.gloss{font-size:16px;border:1px dashed var(--line);border-radius:10px;padding:10px 14px}
+.insider{border:2px solid var(--teal);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.insider .tag{color:var(--teal)}
+
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.tchip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 16px;font-size:17px}
+.tchip.on{border-color:var(--teal);background:var(--teal-soft);font-weight:700}
+.tchip.ok{border-color:var(--good);background:var(--good-soft)}
+.tchip.no{border-color:var(--bad);background:var(--bad-soft)}
+.tchip.miss{border-style:dashed;border-color:var(--good)}
+
+.tablewrap{overflow-x:auto}
+table.vt{border-collapse:collapse;width:100%;min-width:560px;font-size:16px}
+table.vt td{border:1px solid var(--line);padding:8px 10px;vertical-align:top;text-align:left}
+table.vt b{color:var(--coral)}
+table.vt .places{color:var(--muted);font-size:15px}
+
+ol.ex{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:12px;counter-reset:q}
+ol.ex>li{counter-increment:q;display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:baseline}
+ol.ex>li::before{content:counter(q);font-weight:700;color:var(--coral);font-variant-numeric:tabular-nums}
+.line{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:baseline;min-width:0}
+.cue{color:var(--muted);font-style:italic;font-size:16px}
+input.gap{font:inherit;font-size:17px;border:none;border-bottom:2px solid var(--line);background:transparent;color:var(--ink);padding:2px 4px;min-width:0;width:12ch;max-width:100%}
+input.gap.sm{width:6ch}
+input.gap.xl{width:30ch}
+input.gap.ok{border-color:var(--good);background:var(--good-soft)}
+input.gap.no{border-color:var(--bad);background:var(--bad-soft)}
+
+.mc{display:flex;flex-wrap:wrap;gap:8px}
+.mc button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 14px;font-size:17px}
+.mc button.sel{border-color:var(--teal);background:var(--teal-soft)}
+.mc button.ok{border-color:var(--good);background:var(--good-soft);font-weight:700}
+.mc button.no{border-color:var(--bad);background:var(--bad-soft)}
+.mc.inline{display:inline-flex}
+
+.xrow{display:grid;grid-template-columns:28px 90px 1fr;gap:8px;align-items:center}
+.xrow>span:first-child{font-weight:700;color:var(--coral)}
+.xrow .verb{font-weight:700}
+.xwords{display:flex;flex-wrap:wrap;gap:8px}
+.xw{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:5px 12px;font-size:17px}
+.xw.x{text-decoration:line-through;text-decoration-thickness:2px;color:var(--muted);border-color:var(--coral)}
+.xw.ok{border-color:var(--good);background:var(--good-soft)}
+.xw.no{border-color:var(--bad);background:var(--bad-soft)}
+.wordbox{display:flex;flex-wrap:wrap;gap:8px 18px;background:var(--coral-soft);border-radius:10px;padding:10px 16px;font-weight:700}
+
+/* pronunciation */
+.stress{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.stress{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sw{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;gap:4px}
+.sw .w{font-size:19px;letter-spacing:.02em}
+.sw .w em{font-style:normal;color:var(--coral);font-weight:700;text-transform:uppercase}
+.sw .ipa{font-size:14px;color:var(--muted)}
+.sw.said{border-color:var(--teal)}
+.chain{display:flex;flex-direction:column;gap:8px;font-size:20px}
+.chain p{padding:6px 12px;border-radius:8px;background:var(--teal-soft)}
+.chain p em{font-style:normal;font-weight:700;color:var(--coral)}
+.into{font-size:20px;display:flex;flex-direction:column;gap:6px}
+.into .arr{color:var(--coral);font-weight:700}
+.into em{font-style:normal;font-weight:700;color:var(--coral)}
+
+.gbox{border:2px solid var(--coral);border-radius:var(--r);overflow:hidden}
+.gbox .gh{background:var(--coral);color:var(--surface);padding:8px 14px;font-weight:700;font-family:var(--display)}
+.grows{display:grid;grid-template-columns:1fr 1fr}
+.grows div{padding:8px 14px;border-top:1px solid var(--line)}
+.grows b{color:var(--coral)}
+@media (max-width:560px){.grows{grid-template-columns:1fr}.grows div:nth-child(even){border-top:none;padding-top:0;color:var(--muted)}}
+.formula{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:18px}
+.formula .blk{background:var(--teal-soft);border-radius:8px;padding:6px 12px}
+.formula .op{color:var(--muted)}
+.mistakes{background:var(--amber-soft);border:1px solid var(--amber-line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:12px}
+.mrow{display:flex;flex-direction:column;gap:6px}
+.mrow .wrong{font-size:18px}
+.mrow .wrong s{color:var(--bad);text-decoration-thickness:1.5px}
+.mrow .right{color:var(--good);font-weight:700}
+.reveal-btn{align-self:flex-start;background:transparent;border:1px solid var(--amber-line);color:var(--ink);border-radius:8px;padding:4px 12px;font-size:14px}
+
+.bubbles{display:flex;flex-direction:column;gap:10px}
+.bub{max-width:520px;border:2px solid var(--teal);border-radius:16px;padding:10px 16px;font-style:italic}
+.bub.b{align-self:flex-end;border-color:var(--coral)}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.plans{grid-template-columns:1fr}}
+.plan{border:1.5px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:6px;background:var(--surface);text-align:left;color:var(--ink)}
+.plan .ph{display:flex;justify-content:space-between;align-items:baseline}
+.plan .ph h3{font-size:22px}
+.plan .price{font-family:var(--display);font-weight:800;font-size:28px;color:var(--coral);font-variant-numeric:tabular-nums}
+.plan .price small{font-size:14px;color:var(--muted);font-weight:500}
+.plan ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:17px}
+.plan.pick{border-color:var(--teal);background:var(--teal-soft)}
+.roles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.roles{grid-template-columns:1fr}}
+.role{border:1.5px solid var(--line);border-radius:var(--r);padding:16px;background:var(--surface);color:var(--ink);display:flex;flex-direction:column;gap:10px;min-width:0}
+.role .rh{font-family:var(--display);font-weight:700;font-size:19px;color:var(--coral)}
+.role .rb{font-size:17px;flex:1}
+.frames{display:flex;flex-direction:column;gap:6px;font-size:17px}
+.frames span{background:var(--teal-soft);padding:2px 8px;border-radius:6px;display:inline-block;margin:2px 0}
+textarea{font:inherit;font-size:17px;width:100%;min-height:90px;border:1.5px solid var(--line);border-radius:10px;padding:10px;background:var(--bg);color:var(--ink);resize:vertical}
+.survey{overflow-x:auto}
+.survey table{border-collapse:collapse;width:100%;min-width:600px;font-size:16px}
+.survey td,.survey th{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:middle}
+.survey th{background:var(--teal-soft)}
+.survey td input.name{font:inherit;font-size:16px;width:100%;border:none;background:transparent;color:var(--ink)}
+.board{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.board{grid-template-columns:1fr}}
+.board .col{display:flex;flex-direction:column;gap:6px}
+.board h4{font-family:var(--display);margin:0;font-size:17px}
+.board .good h4{color:var(--good)}
+.board .fix h4{color:var(--bad)}
+.tick{display:flex;gap:10px;align-items:center;font-size:17px}
+.tick input{width:22px;height:22px;accent-color:var(--teal)}
+footer{margin-top:40px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">Unit 4.2 · Using technology</div>
+  <h1>My phone is <span>my world</span></h1>
+  <div class="meta">
+    <span class="chip">A1</span><span class="chip">Adults 40+</span><span class="chip">80 minutes</span><span class="chip">Pages 36–37 · 132 · 144</span>
+  </div>
+  <p class="objective"><b>Today:</b> I can say how I use technology and ask <i>Do you…?</i> questions.</p>
+
+  <details class="plan-panel">
+    <summary>Lesson plan: aims, anticipated problems, timing</summary>
+    <div class="pp">
+      <dl class="aims">
+        <dt>Main aim</dt><dd>To clarify and give controlled and freer practice of simple present <i>yes/no</i> questions and short answers with <i>I / you / we</i>, in the context of using technology.</dd>
+        <dt>Subsidiary aims</dt><dd>Lexis: verb + noun collocations for using technology (<i>send messages, post photos, listen to music</i>). Listening for gist and detail. Pronunciation: rising intonation and weak <i>do</i> in questions; stressed short answers.</dd>
+        <dt>Learner outcome</dt><dd>By the end, Ss will have asked and answered <i>Do you…?</i> questions in a class survey and chosen the right phone plan for four customers.</dd>
+        <dt>Assumptions</dt><dd>Ss know <i>I / you / we</i>, affirmative simple present (<i>I like…</i>) and <i>phone, computer, internet</i>. Many already use WhatsApp, so some lexis will be partly known.</dd>
+      </dl>
+      <div>
+        <h4>Anticipated problems and solutions</h4>
+        <div class="tw"><table class="ap">
+          <tr><th>Problem</th><th>Solution</th></tr>
+          <tr><td>Ss form questions with intonation only, a direct transfer from Spanish/Catalan: <i>You use social media?</i></td><td>Finger highlighting: five fingers for five words, point to the missing first finger. Contrast with L1 on the board.</td></tr>
+          <tr><td>Ss answer <i>Yes, I use.</i> or just <i>Yes.</i></td><td>Drill the full short answer chorally; peer-correct during 3C. Board: <i>Yes, I <u>do</u>.</i></td></tr>
+          <tr><td>Ss add -s or -ing: <i>Do you listens / listening…?</i></td><td>CCQ: "After <i>Do you</i>, is the verb the same as in the dictionary?" Show that <i>Do</i> carries the question.</td></tr>
+          <tr><td>Ss confuse <i>Are you…?</i> and <i>Do you…?</i></td><td>Spot-the-mistake item 1; quick contrast: <i>Are you</i> + adjective (happy) vs <i>Do you</i> + verb (call).</td></tr>
+          <tr><td>Pronunciation: /e/ before s-clusters (<i>e-smartwatch</i>), stress on <i>tech<b>NO</b>logy</i>, the silent t in <i>listen</i>.</td><td>Stress cards in Stage 3; drill with the stressed syllable on the board in capitals.</td></tr>
+          <tr><td>Affective: some 40+ learners feel "bad with technology" or don't use social media or games.</td><td>Model "No, I don't" as a perfectly good answer. Personalise around their real use (WhatsApp, calls, news, radio, photos of grandchildren).</td></tr>
+          <tr><td>Fast finishers / mixed ability.</td><td>Extension box after each controlled task. Pair stronger with weaker Ss in 4B; weaker Ss take the customer role first.</td></tr>
+        </table></div>
+      </div>
+      <div>
+        <h4>Procedure</h4>
+        <div class="tw"><table class="ap">
+          <tr><th>Stage</th><th>Aim</th><th>Interaction</th><th>Time</th></tr>
+          <tr><td>1 Lead-in &amp; test</td><td>Engage Ss, set the context, find out what lexis Ss already know</td><td>T–Ss, S–S</td><td class="n">8′</td></tr>
+          <tr><td>2 Listening</td><td>Gist and detail listening; provide the context for the target language</td><td>S, S–S, T–Ss</td><td class="n">12′</td></tr>
+          <tr><td>3 Lexis clarification &amp; practice</td><td>Clarify MFP of the collocations; practise them</td><td>T–Ss, S, S–S</td><td class="n">12′</td></tr>
+          <tr><td>4 Grammar clarification</td><td>Guided discovery of MFP of <i>Do you…?</i>; drill pronunciation</td><td>S–S, T–Ss</td><td class="n">15′</td></tr>
+          <tr><td>5 Controlled practice</td><td>Accuracy practice of form and pronunciation</td><td>S, S–S, open/closed pairs</td><td class="n">13′</td></tr>
+          <tr><td>6 Freer practice</td><td>Fluency practice (mingle); reading for specific information (4B)</td><td>Mingle, S, S–S</td><td class="n">15′</td></tr>
+          <tr><td>7 Feedback</td><td>Content feedback, then delayed error correction</td><td>T–Ss, S–S</td><td class="n">5′</td></tr>
+        </table></div>
+      </div>
+      <div>
+        <h4>Board plan</h4>
+        <p>Left: new lexis with stress marked (<i>TECHnology, MESSages</i>). Centre: form <b>Do + I/you/we + verb … ?</b> → <i>Yes, I do. / No, I don't.</i> with ↗ over the question. Right: delayed error correction space.</p>
+      </div>
+    </div>
+  </details>
+</header>
+
+<nav class="bar" aria-label="Lesson stages">
+  <a href="#s1">1 Lead-in<small>8′</small></a>
+  <a href="#s2">2 Listening<small>12′</small></a>
+  <a href="#s3">3 Vocabulary<small>12′</small></a>
+  <a href="#s4">4 Grammar<small>15′</small></a>
+  <a href="#s5">5 Practice<small>13′</small></a>
+  <a href="#s6">6 Speaking<small>15′</small></a>
+  <a href="#s7">7 Feedback<small>5′</small></a>
+  <button id="themeBtn" type="button" aria-label="Switch light or dark theme">◐ Theme</button>
+</nav>
+
+<!-- ============ 1 LEAD-IN ============ -->
+<section class="stage" id="s1">
+  <div class="stage-head"><div class="num">1</div><div><h2>What do you do on your phone?</h2><div class="sub">Lead-in and test · Exercise 2B (first time)</div></div><div class="mins">0–8 min</div></div>
+  <details class="tnote"><summary>Teacher notes</summary><dl class="tn">
+    <dt>Stage aim</dt><dd>Generate interest, set the context and test what lexis Ss already know (test–teach–test).</dd>
+    <dt>Procedure</dt><dd><ol>
+      <li>Hold up your phone: "This is my phone. I love it! I send messages to my mum every day." Ask 2–3 Ss: "Have you got a phone? A tablet?"</li>
+      <li>Show each picture. Ss call out what the person does <b>before</b> you tap. Don't correct yet; note which verbs nobody knows.</li>
+      <li>Pairs: tell your partner three things you do on your phone (2B).</li>
+      <li>Nominate 3 Ss to report. Praise ideas; note errors for Stage 3.</li>
+    </ol></dd>
+    <dt>Instructions</dt><dd>"Look. Tell your partner: three things. I call… I send… Two minutes."</dd>
+    <dt>ICQs</dt><dd class="icq">How many things? (three) · Speak or write? (speak) · Alone or with a partner? (partner)</dd>
+    <dt>Interaction</dt><dd>T–Ss, then S–S</dd>
+  </dl></details>
+  <div class="task">
+    <p class="instr">What does the person do? Say it, then tap to check.</p>
+    <div class="cards" id="leadCards">
+      <button class="card" type="button"><span class="emo">📞</span><span class="lab">I <b>call</b> family on my cell phone.</span><span class="hint">tap</span></button>
+      <button class="card" type="button"><span class="emo">🎧</span><span class="lab">I <b>listen to</b> music on my phone.</span><span class="hint">tap</span></button>
+      <button class="card" type="button"><span class="emo">💻</span><span class="lab">I <b>chat with</b> friends on the internet.</span><span class="hint">tap</span></button>
+      <button class="card" type="button"><span class="emo">📱</span><span class="lab">I <b>use</b> apps on my cell phone and tablet.</span><span class="hint">tap</span></button>
+      <button class="card" type="button"><span class="emo">🎮</span><span class="lab">I <b>play</b> games on my computer.</span><span class="hint">tap</span></button>
+      <button class="card" type="button"><span class="emo">📧</span><span class="lab">I <b>read</b> emails on my tablet.</span><span class="hint">tap</span></button>
+      <button class="card" type="button"><span class="emo">💬</span><span class="lab">I <b>send</b> text messages on my phone.</span><span class="hint">tap</span></button>
+      <button class="card" type="button"><span class="emo">📸</span><span class="lab">I <b>post</b> photos on the internet.</span><span class="hint">tap</span></button>
+    </div>
+    <div class="actions"><button class="btn ghost" type="button" id="openAll">Show all</button><button class="btn reset" type="button" id="closeAll">Hide all</button></div>
+  </div>
+  <div class="task">
+    <h3><span class="tag">2B</span><span class="pair">Pair work</span> Say <u>three</u> things you do.</h3>
+    <p class="instr">Tap your three, then tell your partner.</p>
+    <div class="chips" id="myThree">
+      <button class="tchip" type="button">I call family</button>
+      <button class="tchip" type="button">I listen to music</button>
+      <button class="tchip" type="button">I chat with friends</button>
+      <button class="tchip" type="button">I use apps</button>
+      <button class="tchip" type="button">I play games</button>
+      <button class="tchip" type="button">I read emails</button>
+      <button class="tchip" type="button">I send text messages</button>
+      <button class="tchip" type="button">I post photos</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2 LISTENING ============ -->
+<section class="stage" id="s2">
+  <div class="stage-head"><div class="num">2</div><div><h2>Olivia at the phone store</h2><div class="sub">Prediction · gist (1A) · detail · response · audio 1.38</div></div><div class="mins">8–20 min</div></div>
+  <details class="tnote"><summary>Teacher notes</summary><dl class="tn">
+    <dt>Stage aim</dt><dd>Develop gist and detail listening; give Ss a meaningful context for the target questions.</dd>
+    <dt>Procedure</dt><dd><ol>
+      <li><b>Pre-teach</b> <i>phone plan</i>: show your phone bill. "I pay €15 every month. That's my phone plan." CCQ: "Do you pay one time or every month?" (every month)</li>
+      <li><b>Predict</b> (1′): Ss look at the photo of Olivia (p.37) and guess what she does on her phone.</li>
+      <li><b>Gist</b> (1A): text hidden. Play once. Ss tap the topics. Peer check, then check here.</li>
+      <li><b>Detail</b>: Ss read the six sentences first, then listen again and choose True / False. Peer check, then check here.</li>
+      <li><b>Response</b>: "Are you like Olivia? Is your phone your world?" Pairs, 1 minute.</li>
+      <li>Show the script. Ss read it in pairs (Clerk / Olivia), then swap. Highlight <i>What else?</i></li>
+    </ol></dd>
+    <dt>Instructions</dt><dd>Gist: "Listen. What does Olivia talk about? Choose. Don't write sentences." Detail: "Read first. Then listen. True or false?"</dd>
+    <dt>ICQs</dt><dd class="icq">Do you write sentences? (no) · How many times do you listen? (one) · Do you read the sentences before or after? (before)</dd>
+    <dt>Interaction</dt><dd>S, S–S peer check, T–Ss feedback</dd>
+  </dl></details>
+
+  <div class="gloss"><b>phone plan</b> (n): a service you pay for to make calls, send messages, and use the internet on your cell phone.</div>
+
+  <div class="task">
+    <h3><span class="tag new">Predict</span>What does Olivia do on her phone?</h3>
+    <p class="instr">Guess. Tap your ideas. No right or wrong answers yet.</p>
+    <div class="chips" id="predict">
+      <button class="tchip" type="button">calls friends</button><button class="tchip" type="button">sends messages</button>
+      <button class="tchip" type="button">reads emails</button><button class="tchip" type="button">plays games</button>
+      <button class="tchip" type="button">watches videos</button><button class="tchip" type="button">posts photos</button>
+    </div>
+  </div>
+
+  <div class="task" data-ex="chips">
+    <h3><span class="tag">1A</span>Gist: what does Olivia talk about?</h3>
+    <p class="instr">Listen and tap the things she talks about.</p>
+    <div class="chips">
+      <button class="tchip" type="button" data-c="0">family</button>
+      <button class="tchip" type="button" data-c="1">friends</button>
+      <button class="tchip" type="button" data-c="0">her laptop</button>
+      <button class="tchip" type="button" data-c="1">her phone</button>
+      <button class="tchip" type="button" data-c="0">school</button>
+      <button class="tchip" type="button" data-c="1">work</button>
+    </div>
+    <div class="actions"><button class="btn check" type="button">Check</button><button class="btn reset" type="button">Reset</button><span class="score" aria-live="polite"></span></div>
+  </div>
+
+  <div class="task" data-ex="mc">
+    <h3><span class="tag new">Detail</span>Listen again. True or false?</h3>
+    <ol class="ex">
+      <li><div class="line">Olivia's phone plan is cheap. <span class="mc"><button type="button">True</button><button type="button" data-c="1">False</button></span></div></li>
+      <li><div class="line">Olivia knows which plan she wants. <span class="mc"><button type="button">True</button><button type="button" data-c="1">False</button></span></div></li>
+      <li><div class="line">Olivia calls her friends. <span class="mc"><button type="button">True</button><button type="button" data-c="1">False</button></span></div></li>
+      <li><div class="line">She leaves voice messages. <span class="mc"><button type="button" data-c="1">True</button><button type="button">False</button></span></div></li>
+      <li><div class="line">She reads emails for work on her phone. <span class="mc"><button type="button" data-c="1">True</button><button type="button">False</button></span></div></li>
+      <li><div class="line">She watches videos on her phone. <span class="mc"><button type="button" data-c="1">True</button><button type="button">False</button></span></div></li>
+    </ol>
+    <div class="actions"><button class="btn check" type="button">Check</button><button class="btn reset" type="button">Reset</button><span class="score" aria-live="polite"></span></div>
+  </div>
+
+  <div class="task">
+    <h3><span class="tag new">Response</span><span class="pair">Pair work</span> Are you like Olivia? Is your phone your world?</h3>
+  </div>
+
+  <div class="task">
+    <div class="actions" style="justify-content:space-between">
+      <h3><span class="tag">1.38</span>Audio script</h3>
+      <div class="actions"><button class="btn ghost" type="button" id="toggleScript">Show text</button><button class="btn reset" type="button" id="toggleBold">Highlight off</button></div>
+    </div>
+    <div class="dialogue" id="script" hidden>
+      <span class="who">Clerk</span><span>Welcome to TechUBuy!</span>
+      <span class="who o">Olivia</span><span>Hi! I want a new phone plan. I love my phone. It's my world! But my plan is expensive.</span>
+      <span class="who">Clerk</span><span>Do you know which plan you want?</span>
+      <span class="who o">Olivia</span><span>No. I have no idea.</span>
+      <span class="who">Clerk</span><span>OK. First, I have some questions. What do you do on your phone? Do you <b>call</b> your friends?</span>
+      <span class="who o">Olivia</span><span>No. I <b>chat</b> with my friends, but I don't <i>call</i> them. We <b>send messages</b>. And we <b>leave voice messages</b>.</span>
+      <span class="who">Clerk</span><span>Ah, yes. And do you <b>send emails</b>?</span>
+      <span class="who o">Olivia</span><span>Yes. I <b>read emails</b> on my phone – from friends and for work.</span>
+      <span class="who">Clerk</span><span>And what else? Do you <b>listen to music</b> on your phone?</span>
+      <span class="who o">Olivia</span><span>Yes, I do, and I <b>watch videos</b>. I also <b>use social media</b> – I <b>post photos</b>, <b>leave comments</b>, …</span>
+      <span class="who">Clerk</span><span>OK. Your phone really <i>is</i> your world! So, we have three phone plans …</span>
+    </div>
+  </div>
+
+  <div class="insider">
+    <span class="tag">Insider English</span>
+    <p>Say <b>What else?</b> to ask for more information.</p>
+    <p class="instr"><i>And what else? Do you listen to music on your phone?</i></p>
+  </div>
+</section>
+
+<!-- ============ 3 VOCAB ============ -->
+<section class="stage" id="s3">
+  <div class="stage-head"><div class="num">3</div><div><h2>Vocabulary: using technology</h2><div class="sub">Clarification (MFP) · 2A · 2B listen and repeat · page 144 A &amp; B</div></div><div class="mins">20–32 min</div></div>
+  <details class="tnote"><summary>Teacher notes</summary><dl class="tn">
+    <dt>Stage aim</dt><dd>Clarify meaning, form and pronunciation of the collocations Ss didn't know in Stage 1; controlled practice.</dd>
+    <dt>Procedure</dt><dd><ol>
+      <li><b>2A</b>: Ss compare the chart with the script, alone, then peer check. (Answer: <i>buy</i>, <i>play</i>.)</li>
+      <li><b>Meaning</b>: elicit from the Stage 1 pictures; only clarify the verbs nobody knew. CCQ for <i>post</i>: "Is the photo on your phone only, or on the internet?" (internet)</li>
+      <li><b>Form</b>: verb + noun; prepositions <i>listen <u>to</u>, chat <u>with</u>, <u>on</u> my phone</i>. Ss do the preposition gap-fill.</li>
+      <li><b>Pronunciation</b> (2B, audio 1.39): choral then individual drill. Use the stress cards; tap a card to hear it. Mark stress on the board.</li>
+      <li><b>p.144 A &amp; B</b>: alone, peer check, then check here.</li>
+    </ol></dd>
+    <dt>Instructions</dt><dd>p.144 A: "One word is wrong. Cross it out. Alone. Two minutes."</dd>
+    <dt>ICQs</dt><dd class="icq">How many words do you cross out? (one in each line) · Alone or together? (alone)</dd>
+    <dt>Interaction</dt><dd>S, S–S, T–Ss</dd>
+  </dl></details>
+
+  <div class="task">
+    <h3><span class="tag">Chart</span>verbs + nouns</h3>
+    <div class="tablewrap"><table class="vt">
+      <tr><td><b>buy</b> apps / games / music / movies<br><b>call</b> friends / family<br><b>chat</b> with friends / family<br><b>listen</b> to music</td>
+          <td><b>play</b> games<br><b>post</b> photos / comments<br><b>read</b> emails / messages<br><b>send</b> emails / (text) messages</td>
+          <td><b>leave</b> voice messages / comments<br><b>use</b> apps / social media / technology<br><b>watch</b> movies / videos / TV</td></tr>
+      <tr><td colspan="3" class="places">… on the internet · … on my computer / laptop · … on my cell phone / tablet · … on my smartwatch</td></tr>
+    </table></div>
+  </div>
+
+  <div class="task" data-ex="chips">
+    <h3><span class="tag">2A</span>Which verbs are <u>not</u> in the conversation?</h3>
+    <p class="instr">Tap the verbs Olivia and the clerk do <b>not</b> use.</p>
+    <div class="chips">
+      <button class="tchip" type="button" data-c="1">buy</button>
+      <button class="tchip" type="button" data-c="0">call</button>
+      <button class="tchip" type="button" data-c="0">chat</button>
+      <button class="tchip" type="button" data-c="0">listen</button>
+      <button class="tchip" type="button" data-c="1">play</button>
+      <button class="tchip" type="button" data-c="0">post</button>
+      <button class="tchip" type="button" data-c="0">read</button>
+      <button class="tchip" type="button" data-c="0">send</button>
+      <button class="tchip" type="button" data-c="0">leave</button>
+      <button class="tchip" type="button" data-c="0">use</button>
+      <button class="tchip" type="button" data-c="0">watch</button>
+    </div>
+    <div class="actions"><button class="btn check" type="button">Check</button><button class="btn reset" type="button">Reset</button><span class="score" aria-live="polite"></span></div>
+  </div>
+
+  <div class="task" data-ex="gaps">
+    <h3><span class="tag new">Form</span>Small words: <i>to, with, on</i></h3>
+    <ol class="ex">
+      <li><div class="line">I listen <input class="gap sm" data-ans="to" aria-label="preposition 1"> music.</div></li>
+      <li><div class="line">I chat <input class="gap sm" data-ans="with" aria-label="preposition 2"> my friends.</div></li>
+      <li><div class="line">I read emails <input class="gap sm" data-ans="on" aria-label="preposition 3"> my tablet.</div></li>
+      <li><div class="line">I post photos <input class="gap sm" data-ans="on" aria-label="preposition 4"> the internet.</div></li>
+    </ol>
+    <div class="actions"><button class="btn check" type="button">Check</button><button class="btn reset" type="button">Reset</button><span class="score" aria-live="polite"></span></div>
+  </div>
+
+  <div class="task">
+    <h3><span class="tag new">Pronunciation</span>2B · Listen and repeat (1.39). Where is the stress?</h3>
+    <p class="instr">The <b style="color:var(--coral)">BIG</b> part is strong. Tap a word to hear it.</p>
+    <div class="stress" id="stress">
+      <button class="sw" type="button" data-say="technology"><span class="w">tech<em>no</em>logy</span><span class="ipa">/tekˈnɒlədʒi/</span></button>
+      <button class="sw" type="button" data-say="messages"><span class="w"><em>mes</em>sages</span><span class="ipa">/ˈmesɪdʒɪz/</span></button>
+      <button class="sw" type="button" data-say="listen"><span class="w"><em>lis</em>ten</span><span class="ipa">/ˈlɪsən/ · no "t"</span></button>
+      <button class="sw" type="button" data-say="comments"><span class="w"><em>com</em>ments</span><span class="ipa">/ˈkɒments/</span></button>
+      <button class="sw" type="button" data-say="videos"><span class="w"><em>vi</em>deos</span><span class="ipa">/ˈvɪdiəʊz/</span></button>
+      <button class="sw" type="button" data-say="emails"><span class="w"><em>e</em>mails</span><span class="ipa">/ˈiːmeɪlz/</span></button>
+      <button class="sw" type="button" data-say="social media"><span class="w">social <em>me</em>dia</span><span class="ipa">/ˈsəʊʃl ˈmiːdiə/</span></button>
+      <button class="sw" type="button" data-say="smartwatch"><span class="w"><em>smart</em>watch</span><span class="ipa">/ˈsmɑːtwɒtʃ/ · no "e-"</span></button>
+    </div>
+  </div>
+
+  <div class="task" data-ex="cross">
+    <h3><span class="tag">p.144 A</span>Cross out the word that doesn't belong.</h3>
+    <p class="instr">Tap the word that does <b>not</b> go with the verb.</p>
+    <div class="xrow"><span>1</span><span class="verb">call</span><div class="xwords"><button class="xw" type="button">friends</button><button class="xw" type="button" data-c="1">social media</button><button class="xw" type="button">family</button></div></div>
+    <div class="xrow"><span>2</span><span class="verb">watch</span><div class="xwords"><button class="xw" type="button">movies</button><button class="xw" type="button">videos</button><button class="xw" type="button" data-c="1">text messages</button></div></div>
+    <div class="xrow"><span>3</span><span class="verb">use</span><div class="xwords"><button class="xw" type="button" data-c="1">music</button><button class="xw" type="button">technology</button><button class="xw" type="button">apps</button></div></div>
+    <div class="xrow"><span>4</span><span class="verb">post</span><div class="xwords"><button class="xw" type="button" data-c="1">cell phone</button><button class="xw" type="button">comments</button><button class="xw" type="button">photos</button></div></div>
+    <div class="xrow"><span>5</span><span class="verb">send</span><div class="xwords"><button class="xw" type="button">text messages</button><button class="xw" type="button">email</button><button class="xw" type="button" data-c="1">with friends</button></div></div>
+    <div class="actions"><button class="btn check" type="button">Check</button><button class="btn reset" type="button">Reset</button><span class="score" aria-live="polite"></span></div>
+  </div>
+
+  <div class="task" data-ex="gaps">
+    <h3><span class="tag">p.144 B</span>Complete the sentences.</h3>
+    <div class="wordbox"><span>chat</span><span>listen</span><span>play</span><span>read</span><span>watch</span></div>
+    <ol class="ex">
+      <li><div class="line">I <input class="gap" data-ans="listen" aria-label="gap 1"> to music with earphones on my tablet.</div></li>
+      <li><div class="line">We don't <input class="gap" data-ans="watch" aria-label="gap 2"> movies on TV.</div></li>
+      <li><div class="line">My brother and I <input class="gap" data-ans="play" aria-label="gap 3"> games on our tablets.</div></li>
+      <li><div class="line">I don't <input class="gap" data-ans="read" aria-label="gap 4"> work emails at home.</div></li>
+      <li><div class="line">Do you <input class="gap" data-ans="chat" aria-label="gap 5"> with friends on the internet?</div></li>
+    </ol>
+    <div class="actions"><button class="btn check" type="button">Check</button><button class="btn reset" type="button">Reset</button><button class="btn ghost" type="button" data-show>Show answers</button><span class="score" aria-live="polite"></span></div>
+    <div class="ff"><b>Finished early?</b> Write two true sentences about you with words from the chart.</div>
+  </div>
+</section>
+
+<!-- ============ 4 GRAMMAR ============ -->
+<section class="stage" id="s4">
+  <div class="stage-head"><div class="num">4</div><div><h2>Grammar: <i>Do you…?</i></h2><div class="sub">Guided discovery · 3A · meaning · form · pronunciation</div></div><div class="mins">32–47 min</div></div>
+  <details class="tnote"><summary>Teacher notes</summary><dl class="tn">
+    <dt>Stage aim</dt><dd>Ss notice and work out the meaning, form and pronunciation of <i>yes/no</i> questions and short answers from the listening text.</dd>
+    <dt>Procedure</dt><dd><ol>
+      <li><b>Notice</b>: Ss find the questions in the script (Stage 2) and complete Step 1 in pairs.</li>
+      <li><b>3A</b>: Ss choose the rule, peer check, then check here.</li>
+      <li><b>Meaning</b>: ask the CCQs to the class; Ss answer before you check.</li>
+      <li><b>Form</b>: rule card with Ss. Only then show the grammar box as confirmation. Board the form.</li>
+      <li><b>Pronunciation</b>: model with natural speed; show ↗; drill chorally and individually. Back-chain the long question.</li>
+      <li><b>Spot the mistake</b>: pairs correct, then reveal.</li>
+    </ol></dd>
+    <dt>Instructions</dt><dd>"Look at the text. Find the questions. What's the first word? Work together."</dd>
+    <dt>ICQs</dt><dd class="icq">Where do you look? (the text) · Alone or together? (together)</dd>
+    <dt>Interaction</dt><dd>S–S, T–Ss. Keep TTT low; elicit, don't explain.</dd>
+  </dl></details>
+
+  <div class="task" data-ex="gaps">
+    <h3><span class="tag new">Step 1</span>Notice: find the questions in the conversation.</h3>
+    <p class="instr">Look at the script in Stage 2. Write the missing words.</p>
+    <ol class="ex">
+      <li><div class="line"><input class="gap sm" data-ans="do" aria-label="notice 1"> you know which plan you want?</div></li>
+      <li><div class="line"><input class="gap sm" data-ans="do" aria-label="notice 2"> you call your friends?</div></li>
+      <li><div class="line">And <input class="gap sm" data-ans="do" aria-label="notice 3"> you send emails?</div></li>
+      <li><div class="line">Do you listen to music on your phone? – Yes, I <input class="gap sm" data-ans="do" aria-label="notice 4">.</div></li>
+    </ol>
+    <div class="actions"><button class="btn check" type="button">Check</button><button class="btn reset" type="button">Reset</button><span class="score" aria-live="polite"></span></div>
+  </div>
+
+  <div class="task" data-ex="mc">
+    <h3><span class="tag">3A</span>Circle the correct answers.</h3>
+    <ol class="ex">
+      <li><div class="line">To make simple present questions, use <span class="mc inline"><button type="button" data-c="1">Do</button><button type="button">Are</button></span> + the subject (for example, <i>I</i> or <i>we</i>) + a verb.</div></li>
+      <li><div class="line">To make negative short answers, use <span class="mc inline"><button type="button">do</button><button type="button" data-c="1">don't</button></span>.</div></li>
+    </ol>
+    <div class="actions"><button class="btn check" type="button">Check</button><button class="btn reset" type="button">Reset</button><span class="score" aria-live="polite"></span></div>
+  </div>
+
+  <div class="task" data-ex="mc">
+    <h3><span class="tag new">Meaning</span>"Do you call your friends?"</h3>
+    <ol class="ex">
+      <li><div class="line">Does the clerk know the answer? <span class="mc"><button type="button">Yes</button><button type="button" data-c="1">No</button></span></div></li>
+      <li><div class="line">Is the question about today only, or about what Olivia usually does? <span class="mc"><button type="button">today only</button><button type="button" data-c="1">usually</button></span></div></li>
+      <li><div class="line">What can Olivia answer? <span class="mc"><button type="button">Yes, I call.</button><button type="button" data-c="1">Yes, I do.</button><button type="button">Yes, I am.</button></span></div></li>
+      <li><div class="line">After <i>Do you…</i>, the verb is… <span class="mc"><button type="button" data-c="1">call</button><button type="button">calls</button><button type="button">calling</button></span></div></li>
+    </ol>
+    <div class="actions"><button class="btn check" type="button">Check</button><button class="btn reset" type="button">Reset</button><span class="score" aria-live="polite"></span></div>
+  </div>
+
+  <div class="task" data-ex="gaps">
+    <h3><span class="tag new">Form</span>Rule card</h3>
+    <div class="formula">
+      <span class="blk"><input class="gap sm" data-ans="do" aria-label="rule word 1"></span><span class="op">+</span>
+      <span class="blk">I / you / we</span><span class="op">+</span>
+      <span class="blk">verb</span><span class="op">+ … ?</span>
+    </div>
+    <div class="formula">
+      <span class="blk">Yes,</span><span class="blk">I / you / we</span><span class="blk"><input class="gap sm" data-ans="do" aria-label="rule word 2"></span><span class="op">.</span>
+      <span class="op">/</span>
+      <span class="blk">No,</span><span class="blk">I / you / we</span><span class="blk"><input class="gap sm" data-ans="don't|dont|do not" aria-label="rule word 3" style="width:7ch"></span><span class="op">.</span>
+    </div>
+    <div class="actions"><button class="btn check" type="button">Check</button><button class="btn reset" type="button">Reset</button><button class="btn ghost" type="button" id="showBox">Show the grammar box</button><span class="score" aria-live="polite"></span></div>
+    <div class="gbox" id="gbox" hidden>
+      <div class="gh">Simple present yes/no questions with I, you, we</div>
+      <div class="grows">
+        <div><b>Do</b> I <b>post</b> good photos?</div><div>Yes, you <b>do</b>. / No, you <b>don't</b>.</div>
+        <div><b>Do</b> we <b>send</b> nice emails?</div><div>Yes, you <b>do</b>. / No, you <b>don't</b>.</div>
+        <div><b>Do</b> you <b>use</b> social media?</div><div>Yes, I <b>do</b>. / No, I <b>don't</b>.</div>
+        <div><b>Do</b> you <b>know</b> which plan you want?</div><div>Yes, I <b>do</b>. / No, I <b>don't</b>.</div>
+        <div><b>Do</b> you and your friends <b>play</b> games?</div><div>Yes, we <b>do</b>. / No, we <b>don't</b>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="task">
+    <h3><span class="tag new">Pronunciation</span>Say it naturally</h3>
+    <div class="into">
+      <p><span class="arr">↗</span> Do you use social <em>me</em>dia?</p>
+      <p class="instr" style="font-size:16px">The voice goes <b>up</b> at the end. <i>Do you</i> is fast and weak: /dʒə/ → "D'you use…?"</p>
+      <p><span class="arr">↘</span> Yes, I <em>DO</em>. · No, I <em>DON'T</em>.</p>
+      <p class="instr" style="font-size:16px">The last word is strong.</p>
+    </div>
+    <h3 style="font-size:17px">Back-chain drill: start at the end</h3>
+    <div class="chain" id="chain"></div>
+    <div class="actions"><button class="btn check" type="button" id="chainNext">Next line</button><button class="btn reset" type="button" id="chainReset">Start again</button></div>
+  </div>
+
+  <div class="mistakes">
+    <h3><span class="tag" style="color:var(--bad)">Spot the mistake</span></h3>
+    <div class="mrow"><span class="wrong">1 &nbsp;<s>Are</s> you use social media?</span><button class="reveal-btn" type="button">Show correction</button><span class="right" hidden>Do you use social media?</span></div>
+    <div class="mrow"><span class="wrong">2 &nbsp;Do you <s>listens</s> to music?</span><button class="reveal-btn" type="button">Show correction</button><span class="right" hidden>Do you listen to music?</span></div>
+    <div class="mrow"><span class="wrong">3 &nbsp;Do you send emails? – Yes, I <s>send</s>.</span><button class="reveal-btn" type="button">Show correction</button><span class="right" hidden>Yes, I do.</span></div>
+    <div class="mrow"><span class="wrong">4 &nbsp;Do you play games? – No, I <s>not</s>.</span><button class="reveal-btn" type="button">Show correction</button><span class="right" hidden>No, I don't.</span></div>
+    <div class="mrow"><span class="wrong">5 &nbsp;<s>You</s> watch videos on your phone?</span><button class="reveal-btn" type="button">Show correction</button><span class="right" hidden>Do you watch videos on your phone?</span></div>
+  </div>
+</section>
+
+<!-- ============ 5 CONTROLLED PRACTICE ============ -->
+<section class="stage" id="s5">
+  <div class="stage-head"><div class="num">5</div><div><h2>Controlled practice</h2><div class="sub">3B · page 132 A · 3C open and closed pairs</div></div><div class="mins">47–60 min</div></div>
+  <details class="tnote"><summary>Teacher notes</summary><dl class="tn">
+    <dt>Stage aim</dt><dd>Accuracy practice of the question form, short answers and pronunciation.</dd>
+    <dt>Procedure</dt><dd><ol>
+      <li><b>3B</b>: model item 1 together. Ss write alone (3′), peer check, then check here. Accept with or without "?".</li>
+      <li><b>p.132 A</b>: Ss write the question and choose their true answer.</li>
+      <li><b>3C</b>: <b>open pairs</b> first (S1 asks S2 across the room, class listens), then <b>closed pairs</b>. After "Yes, I do", the partner asks "What else?"</li>
+      <li>Monitor closely; correct form and intonation on the spot here (accuracy stage).</li>
+    </ol></dd>
+    <dt>Instructions</dt><dd>"Write the question. Use the words. Alone. Three minutes."</dd>
+    <dt>ICQs</dt><dd class="icq">Do you write or speak? (write) · What's the first word? (Do) · How long? (three minutes)</dd>
+    <dt>Interaction</dt><dd>S → S–S → open pairs → closed pairs</dd>
+  </dl></details>
+
+  <div class="task" data-ex="gaps">
+    <h3><span class="tag">3B</span>Complete the yes/no questions.</h3>
+    <p class="instr">Use the words in ( ).</p>
+    <ol class="ex">
+      <li><div class="line"><input class="gap xl" data-ans="do you listen to music" aria-label="question 1"> on your computer? <span class="cue">(you, listen to music)</span></div></li>
+      <li><div class="line"><input class="gap xl" data-ans="do you play games" aria-label="question 2"> on your phone? <span class="cue">(you, play games)</span></div></li>
+      <li><div class="line"><input class="gap xl" data-ans="do you and your friends send text messages" aria-label="question 3"> to your teachers? <span class="cue">(you and your friends, send text messages)</span></div></li>
+      <li><div class="line"><input class="gap xl" data-ans="do you post comments" aria-label="question 4"> on social media? <span class="cue">(you, post comments)</span></div></li>
+      <li><div class="line"><input class="gap xl" data-ans="do you watch videos" aria-label="question 5"> on your laptop? <span class="cue">(you, watch videos)</span></div></li>
+    </ol>
+    <div class="actions"><button class="btn check" type="button">Check</button><button class="btn reset" type="button">Reset</button><button class="btn ghost" type="button" data-show>Show answers</button><span class="score" aria-live="polite"></span></div>
+  </div>
+
+  <div class="task" data-ex="gaps">
+    <h3><span class="tag">p.132 A</span>Write questions. Then answer for you.</h3>
+    <ol class="ex">
+      <li><div class="line"><span class="cue">you / call your family / on the weekends</span></div><div></div>
+          <div class="line">Do you call your family on the weekends? <span class="mc pick"><button type="button" class="sel">Yes, I do.</button><button type="button">No, I don't.</button></span></div></li>
+      <li><div class="line"><span class="cue">you / post comments / on Twitter</span></div><div></div>
+          <div class="line"><input class="gap xl" data-ans="do you post comments on twitter|do you post comments on x" aria-label="page 132 question 2">? <span class="mc pick"><button type="button">Yes, I do.</button><button type="button">No, I don't.</button></span></div></li>
+      <li><div class="line"><span class="cue">you / send text messages / to your parents</span></div><div></div>
+          <div class="line"><input class="gap xl" data-ans="do you send text messages to your parents" aria-label="page 132 question 3">? <span class="mc pick"><button type="button">Yes, I do.</button><button type="button">No, I don't.</button></span></div></li>
+      <li><div class="line"><span class="cue">you and your friends / watch movies / on TV</span></div><div></div>
+          <div class="line"><input class="gap xl" data-ans="do you and your friends watch movies on tv" aria-label="page 132 question 4">? <span class="mc pick"><button type="button">Yes, we do.</button><button type="button">No, we don't.</button></span></div></li>
+    </ol>
+    <div class="actions"><button class="btn check" type="button">Check</button><button class="btn reset" type="button">Reset</button><button class="btn ghost" type="button" data-show>Show answers</button><span class="score" aria-live="polite"></span></div>
+    <div class="ff"><b>Finished early?</b> Write two more <i>Do you…?</i> questions for your partner.
+      <textarea id="ffQ" placeholder="Do you watch the news on your tablet?"></textarea></div>
+  </div>
+
+  <div class="task">
+    <h3><span class="tag">3C</span><span class="pair">Pair work</span> Ask and answer.</h3>
+    <p class="instr">Ask your partner the questions from 3B and p.132. Answer so it's true for you: <b>"Yes, I do."</b> or <b>"No, I don't."</b> After "Yes", ask <b>"What else?"</b></p>
+    <div class="bubbles">
+      <div class="bub">Do you play games on your phone?</div>
+      <div class="bub b">Yes, I do.</div>
+      <div class="bub">What else? Do you watch videos?</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6 FREER PRACTICE ============ -->
+<section class="stage" id="s6">
+  <div class="stage-head"><div class="num">6</div><div><h2>Speaking: which phone plan?</h2><div class="sub">4A as a mingle · 4B choose a plan for each customer</div></div><div class="mins">60–75 min</div></div>
+  <details class="tnote"><summary>Teacher notes</summary><dl class="tn">
+    <dt>Stage aim</dt><dd>4A: fluency practice of the target questions in a real information exchange. 4B: reading for specific information and justifying a choice.</dd>
+    <dt>Procedure</dt><dd><ol>
+      <li><b>4A mingle</b> (7′): Ss stand up and ask different classmates. Write a name for each "Yes". Ask "What else?" to get one more detail. <b>Don't interrupt.</b> Note good language and errors for Stage 7.</li>
+      <li><b>4B plans</b> (1′): quick look at the three plans. Ask "Which plan has games? Which plan is $15?"</li>
+      <li><b>4B customers</b> (4′): Ss work alone. They read each customer and choose a plan. The texts use <i>he / she</i> (reading only; don't teach 3rd-person -s today, just point at it if Ss ask).</li>
+      <li><b>Peer check</b> (2′): Ss compare with a partner using the frames: "Plan 2 is good for Carmen. She sends a lot of text messages. Do you agree?"</li>
+      <li>Check here. Fast finishers: which plan is good for them, and why?</li>
+    </ol></dd>
+    <dt>Instructions</dt><dd>"Read about four people. Choose a plan for each person. Alone. Four minutes."</dd>
+    <dt>ICQs</dt><dd class="icq">How many people? (four) · Alone or with a partner? (alone) · What do you choose? (a plan)</dd>
+    <dt>Answers</dt><dd>Carmen: Plan 2 (texts + photos) · Jordi: Plan 1 (talk time + music) · Marta: Plan 3 (data + games) · Antonio: Plan 2 (150 texts + photos)</dd>
+    <dt>Interaction</dt><dd>Mingle, then S (individual), then S–S peer check, T–Ss</dd>
+  </dl></details>
+
+  <div class="task">
+    <h3><span class="tag">4A</span><span class="pair">Mingle</span> What do you do on your phone and the internet?</h3>
+    <p class="instr">Stand up. Ask different people. Write a name for "Yes, I do."</p>
+    <div class="survey"><table>
+      <thead><tr><th>Do you…?</th><th>Name</th><th>What else?</th></tr></thead>
+      <tbody>
+        <tr><td>call your family every day?</td><td><input class="name" id="m1n" aria-label="name 1"></td><td><input class="name" id="m1w" aria-label="detail 1"></td></tr>
+        <tr><td>send voice messages?</td><td><input class="name" id="m2n" aria-label="name 2"></td><td><input class="name" id="m2w" aria-label="detail 2"></td></tr>
+        <tr><td>use social media?</td><td><input class="name" id="m3n" aria-label="name 3"></td><td><input class="name" id="m3w" aria-label="detail 3"></td></tr>
+        <tr><td>watch videos on the internet?</td><td><input class="name" id="m4n" aria-label="name 4"></td><td><input class="name" id="m4w" aria-label="detail 4"></td></tr>
+        <tr><td>read emails on your phone?</td><td><input class="name" id="m5n" aria-label="name 5"></td><td><input class="name" id="m5w" aria-label="detail 5"></td></tr>
+        <tr><td>play games on your tablet?</td><td><input class="name" id="m6n" aria-label="name 6"></td><td><input class="name" id="m6w" aria-label="detail 6"></td></tr>
+        <tr><td>post photos of your family?</td><td><input class="name" id="m7n" aria-label="name 7"></td><td><input class="name" id="m7w" aria-label="detail 7"></td></tr>
+        <tr><td>listen to music on your phone?</td><td><input class="name" id="m8n" aria-label="name 8"></td><td><input class="name" id="m8w" aria-label="detail 8"></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="task">
+    <h3><span class="tag">4B</span>The cell phone plans</h3>
+    <p class="instr">Look at the three plans. What do you get for $10, $15 and $20?</p>
+    <div class="plans" id="plans">
+      <button class="plan" type="button"><div class="ph"><h3>Plan 1</h3><span class="price">$10<small> / month</small></span></div>
+        <ul><li>2 GB data</li><li>100 minutes of talk time</li><li>100 text messages</li><li>🎵 Music app</li></ul></button>
+      <button class="plan" type="button"><div class="ph"><h3>Plan 2</h3><span class="price">$15<small> / month</small></span></div>
+        <ul><li>5 GB data</li><li>50 minutes of talk time</li><li>200 text messages</li><li>📷 Photo app</li></ul></button>
+      <button class="plan" type="button"><div class="ph"><h3>Plan 3</h3><span class="price">$20<small> / month</small></span></div>
+        <ul><li>10 GB data</li><li>60 minutes of talk time</li><li>50 text messages</li><li>🎮 5 games</li></ul></button>
+    </div>
+
+  </div>
+
+  <div class="task" data-ex="mc">
+    <h3><span class="tag">4B</span>Four customers. Choose the best plan for each person.</h3>
+    <p class="instr">Work alone. Read about each customer. Look at the plans. Choose Plan 1, 2 or 3.</p>
+    <div class="roles">
+      <div class="role"><span class="rh">Carmen, 54</span>
+        <span class="rb">Her grandchildren live in Germany. She sends a lot of text messages and posts photos of the family. She doesn't play games. She doesn't call a lot.</span>
+        <span class="mc"><button type="button">Plan 1</button><button type="button" data-c="1">Plan 2</button><button type="button">Plan 3</button></span></div>
+      <div class="role"><span class="rh">Jordi, 47</span>
+        <span class="rb">He calls his mum and his brother every day. He listens to music on the bus. He doesn't use social media. He doesn't watch videos.</span>
+        <span class="mc"><button type="button" data-c="1">Plan 1</button><button type="button">Plan 2</button><button type="button">Plan 3</button></span></div>
+      <div class="role"><span class="rh">Marta, 61</span>
+        <span class="rb">She watches videos and reads the news on the internet every day. She plays games on her phone. She doesn't send many text messages.</span>
+        <span class="mc"><button type="button">Plan 1</button><button type="button">Plan 2</button><button type="button" data-c="1">Plan 3</button></span></div>
+      <div class="role"><span class="rh">Antonio, 50</span>
+        <span class="rb">He chats with his friends and sends 150 text messages a month. He posts photos of his garden on social media. He doesn't play games.</span>
+        <span class="mc"><button type="button">Plan 1</button><button type="button" data-c="1">Plan 2</button><button type="button">Plan 3</button></span></div>
+    </div>
+    <div class="actions"><button class="btn check" type="button">Check</button><button class="btn reset" type="button">Reset</button><span class="score" aria-live="polite"></span></div>
+    <div class="frames">
+      <p><b>Compare with a partner:</b> <span>Plan 2 is good for Carmen.</span> <span>She sends a lot of text messages.</span> <span>Do you agree?</span> <span>Yes, I do. / No, I don't.</span></p>
+    </div>
+    <div class="ff"><b>Finished early?</b> Which plan is good for you? Why?
+      <textarea id="whyPlan" placeholder="Plan 2 is good for me. I send a lot of text messages and I post photos…"></textarea></div>
+  </div>
+</section>
+
+<!-- ============ 7 FEEDBACK ============ -->
+<section class="stage" id="s7">
+  <div class="stage-head"><div class="num">7</div><div><h2>Feedback</h2><div class="sub">Content first, then language · delayed error correction</div></div><div class="mins">75–80 min</div></div>
+  <details class="tnote"><summary>Teacher notes</summary><dl class="tn">
+    <dt>Stage aim</dt><dd>Respond to what Ss said, then praise good language and correct errors from the freer stage.</dd>
+    <dt>Procedure</dt><dd><ol>
+      <li><b>Content</b>: from the mingle: "Who calls their family every day? Who posts photos?" Then: "Which plan is good for you?"</li>
+      <li><b>Language</b>: type 2 good sentences and 2–3 errors you heard below (anonymous). Pairs correct the errors; then whole-class check.</li>
+      <li>Ss tick the can-do statements. Homework: workbook 4.2 or the homework page.</li>
+    </ol></dd>
+    <dt>Interaction</dt><dd>T–Ss, S–S</dd>
+  </dl></details>
+  <div class="task">
+    <h3><span class="tag new">Board</span>Language we heard today</h3>
+    <div class="board">
+      <div class="col good"><h4>✓ Great English</h4>
+        <textarea id="goodLang" placeholder="Type sentences you heard, e.g. What else? Do you post photos?"></textarea></div>
+      <div class="col fix"><h4>✗ Let's correct</h4>
+        <textarea id="fixLang" placeholder="Type errors you heard, e.g. You use WhatsApp? / Yes, I use."></textarea></div>
+    </div>
+  </div>
+  <div class="task">
+    <h3><span class="tag">Can you…?</span></h3>
+    <label class="tick"><input type="checkbox" id="cd1"> I can say 3 things I do on my phone.</label>
+    <label class="tick"><input type="checkbox" id="cd2"> I can ask <i>Do you…?</i> questions.</label>
+    <label class="tick"><input type="checkbox" id="cd3"> I can answer <i>Yes, I do. / No, I don't.</i></label>
+    <label class="tick"><input type="checkbox" id="cd4"> I can find a good phone plan for someone.</label>
+  </div>
+</section>
+
+<footer>Based on coursebook Unit 4.2 "My phone is my world", pages 36–37, grammar page 132, vocabulary page 144. Audio tracks 1.38 and 1.39 play from the coursebook. Exercises marked in teal are additions; coursebook exercise numbers are in coral.</footer>
+</div>
+
+<script>
+(function(){
+  const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const norm=s=>s.toLowerCase().replace(/[’']/g,"'").replace(/[?.!,]/g,"").replace(/\s+/g," ").trim();
+
+  $("#themeBtn").addEventListener("click",()=>{
+    const r=document.documentElement, cur=r.getAttribute("data-theme");
+    const dark=cur?cur==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+    r.setAttribute("data-theme",dark?"light":"dark");
+  });
+
+  $$("#leadCards .card").forEach(c=>c.addEventListener("click",()=>c.classList.toggle("open")));
+  $("#openAll").onclick=()=>$$("#leadCards .card").forEach(c=>c.classList.add("open"));
+  $("#closeAll").onclick=()=>$$("#leadCards .card").forEach(c=>c.classList.remove("open"));
+
+  $("#toggleScript").onclick=e=>{const s=$("#script");s.hidden=!s.hidden;e.target.textContent=s.hidden?"Show text":"Hide text";};
+  $("#toggleBold").onclick=e=>{const s=$("#script");s.classList.toggle("plain");e.target.textContent=s.classList.contains("plain")?"Highlight on":"Highlight off";};
+
+  $$("#myThree .tchip, #predict .tchip").forEach(b=>b.onclick=()=>b.classList.toggle("on"));
+  $$("#plans .plan").forEach(p=>p.onclick=()=>{$$("#plans .plan").forEach(x=>x.classList.remove("pick"));p.classList.add("pick");});
+  $$(".mc.pick").forEach(g=>$$("button",g).forEach(b=>b.onclick=()=>{$$("button",g).forEach(x=>x.classList.remove("sel"));b.classList.add("sel");}));
+  $$(".mrow .reveal-btn").forEach(b=>b.onclick=()=>{const r=b.nextElementSibling;r.hidden=!r.hidden;b.textContent=r.hidden?"Show correction":"Hide correction";});
+  $("#showBox").onclick=e=>{const g=$("#gbox");g.hidden=!g.hidden;e.target.textContent=g.hidden?"Show the grammar box":"Hide the grammar box";};
+
+  // stress cards: speak if the browser allows it
+  $$("#stress .sw").forEach(b=>b.onclick=()=>{
+    b.classList.add("said");
+    try{const u=new SpeechSynthesisUtterance(b.dataset.say);u.lang="en-GB";u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}
+  });
+
+  // back-chain drill
+  const chain=["…to your <em>par</em>ents?","…text <em>mes</em>sages to your <em>par</em>ents?","…send text <em>mes</em>sages to your <em>par</em>ents?","D'you send text <em>mes</em>sages to your <em>par</em>ents? ↗"];
+  let ci=0;
+  const drawChain=()=>{$("#chain").innerHTML=chain.slice(0,ci+1).map(l=>"<p>"+l+"</p>").join("");};
+  $("#chainNext").onclick=()=>{if(ci<chain.length-1){ci++;drawChain();}};
+  $("#chainReset").onclick=()=>{ci=0;drawChain();};
+  drawChain();
+
+  const say=(ex,ok,tot)=>{const s=$(".score",ex);if(s)s.textContent=ok+" / "+tot+(ok===tot?" — well done!":"");};
+  const clear=ex=>{const s=$(".score",ex);if(s)s.textContent="";};
+
+  $$("[data-ex]").forEach(ex=>{
+    const type=ex.dataset.ex, chk=$(".btn.check",ex), rst=$(".btn.reset",ex), show=$("[data-show]",ex);
+
+    if(type==="chips"){
+      const chips=$$(".tchip",ex);
+      chips.forEach(c=>c.onclick=()=>{c.classList.remove("ok","no","miss");c.classList.toggle("on");});
+      chk.onclick=()=>{let ok=0;chips.forEach(c=>{c.classList.remove("ok","no","miss");const want=c.dataset.c==="1",on=c.classList.contains("on");
+        if(want&&on){c.classList.add("ok");ok++}else if(!want&&on)c.classList.add("no");else if(want&&!on)c.classList.add("miss");else ok++;});
+        say(ex,ok,chips.length);};
+      rst.onclick=()=>{chips.forEach(c=>c.classList.remove("on","ok","no","miss"));clear(ex);};
+    }
+    if(type==="cross"){
+      const rows=$$(".xwords",ex);
+      rows.forEach(r=>$$(".xw",r).forEach(w=>w.onclick=()=>{$$(".xw",r).forEach(x=>x.classList.remove("x","ok","no"));w.classList.add("x");}));
+      chk.onclick=()=>{let ok=0;rows.forEach(r=>{const x=$(".xw.x",r);$$(".xw",r).forEach(w=>w.classList.remove("ok","no"));
+        if(x){if(x.dataset.c==="1"){x.classList.add("ok");ok++}else x.classList.add("no");}});say(ex,ok,rows.length);};
+      rst.onclick=()=>{$$(".xw",ex).forEach(w=>w.classList.remove("x","ok","no"));clear(ex);};
+    }
+    if(type==="mc"){
+      const groups=$$(".mc",ex);
+      groups.forEach(g=>$$("button",g).forEach(b=>b.onclick=()=>{$$("button",g).forEach(x=>x.classList.remove("sel","ok","no"));b.classList.add("sel");}));
+      chk.onclick=()=>{let ok=0;groups.forEach(g=>{const s=$("button.sel",g);$$("button",g).forEach(x=>x.classList.remove("ok","no"));
+        if(s){if(s.dataset.c==="1"){s.classList.add("ok");ok++}else s.classList.add("no");}});say(ex,ok,groups.length);};
+      rst.onclick=()=>{$$(".mc button",ex).forEach(b=>b.classList.remove("sel","ok","no"));clear(ex);};
+    }
+    if(type==="gaps"){
+      const inputs=$$("input.gap",ex);
+      inputs.forEach(i=>i.addEventListener("input",()=>i.classList.remove("ok","no")));
+      chk.onclick=()=>{let ok=0;inputs.forEach(i=>{const alts=i.dataset.ans.split("|").map(norm);const v=norm(i.value);i.classList.remove("ok","no");
+        if(alts.includes(v)){i.classList.add("ok");ok++}else i.classList.add("no");});say(ex,ok,inputs.length);};
+      rst.onclick=()=>{inputs.forEach(i=>{i.value="";i.classList.remove("ok","no");});$$(".mc.pick button",ex).forEach(b=>{if(!b.closest("li")||b.closest("li")!==$("ol.ex>li",ex))b.classList.remove("sel")});clear(ex);};
+      if(show)show.onclick=()=>{inputs.forEach(i=>{let a=i.dataset.ans.split("|")[0];
+        if(i.classList.contains("xl"))a=a.charAt(0).toUpperCase()+a.slice(1).replace(/\btwitter\b/,"Twitter").replace(/\btv\b/,"TV");
+        i.value=a;i.classList.remove("no");i.classList.add("ok");});clear(ex);};
+    }
+  });
+})();
+</script>
