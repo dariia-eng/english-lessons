@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unit 3C · Going Out</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#0b727a;--teal-dk:#085d64;--teal-lt:#e6f4f5;
+  --orange:#f07440;--orange-dk:#d4612e;--orange-lt:#fff0eb;
+  --bg:#f5f7f8;--surface:#ffffff;--text:#1a2a2b;--text2:#4a6062;
+  --border:#d0e4e6;--ok:#1d7d3c;--ok-bg:#e8f7ed;
+  --err:#c0392b;--err-bg:#fdecea;--warn:#b5690a;--warn-bg:#fff4e0;
+  --radius:12px;--shadow:0 2px 10px rgba(0,0,0,.08)
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1f20;--surface:#162728;--text:#e8f4f5;--text2:#7eb5b8;
+  --border:#1e3d3f;--teal-lt:#1a3d3f;--ok-bg:#0e3d1e;--err-bg:#3d110e;--warn-bg:#3d2a06;
+  --orange-lt:#2a1a10
+}}
+:root[data-theme="dark"]{
+  --bg:#0f1f20;--surface:#162728;--text:#e8f4f5;--text2:#7eb5b8;
+  --border:#1e3d3f;--teal-lt:#1a3d3f;--ok-bg:#0e3d1e;--err-bg:#3d110e;--warn-bg:#3d2a06;
+  --orange-lt:#2a1a10
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:1rem;line-height:1.65;padding-bottom:5rem}
+h1,h2,h3,.pill{font-family:'Poppins',sans-serif}
+/* HEADER */
+.site-hd{background:var(--teal);color:#fff;padding:2rem 1.5rem 1.5rem;position:relative}
+.site-hd .eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-bottom:.35rem}
+.site-hd h1{font-size:2rem;font-weight:700;line-height:1.2}
+.site-hd .sub{opacity:.85;font-size:.92rem;margin-top:.35rem}
+.theme-btn{position:absolute;top:1.1rem;right:1.1rem;background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:20px;padding:.3rem .8rem;cursor:pointer;font-size:.82rem;font-family:'Inter',sans-serif}
+/* GOALS BAR */
+.goals{max-width:800px;margin:1.5rem auto 0;padding:0 1rem}
+.goals-inner{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem 1.5rem;display:flex;gap:1.5rem;flex-wrap:wrap}
+.goal-item{display:flex;align-items:center;gap:.5rem;font-size:.88rem}
+.goal-lbl{font-weight:700;color:var(--teal)}
+/* STAGE */
+.stage{max-width:800px;margin:1.75rem auto 0;padding:0 1rem}
+.sc{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.sc-hd{background:var(--teal);color:#fff;padding:.9rem 1.5rem;display:flex;align-items:center;gap:.75rem}
+.sc-hd .pill{background:rgba(255,255,255,.2);border-radius:20px;padding:.18rem .65rem;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;font-weight:600;white-space:nowrap}
+.sc-hd h2{font-size:1.05rem;font-weight:600}
+.sc-body{padding:1.4rem 1.5rem}
+.instr{background:var(--teal-lt);border-left:4px solid var(--teal);padding:.7rem 1rem;border-radius:0 8px 8px 0;margin-bottom:1.2rem;font-size:.88rem;color:var(--teal-dk);line-height:1.55}
+/* LEAD-IN */
+.leadin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-bottom:1.25rem}
+.li-card{background:var(--teal-lt);border-radius:10px;padding:1.1rem .75rem;text-align:center}
+.li-card .emoji{font-size:2rem;margin-bottom:.4rem}
+.li-card .lbl{font-weight:600;color:var(--teal);font-size:.8rem;line-height:1.35}
+.disc-list{display:flex;flex-direction:column;gap:.55rem}
+.disc-row{display:flex;gap:.65rem;align-items:flex-start;padding:.7rem .9rem;background:var(--bg);border-radius:8px;border:1.5px solid var(--border)}
+.disc-row .dn{background:var(--teal);color:#fff;border-radius:50%;width:1.5rem;height:1.5rem;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.15rem}
+/* QUIZ */
+.quiz-q{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:1rem 1.2rem;margin-bottom:.85rem}
+.quiz-q .qt{font-weight:600;margin-bottom:.65rem;color:var(--text);font-size:.95rem}
+.quiz-opts{display:flex;flex-direction:column;gap:.4rem}
+.qopt{display:flex;gap:.6rem;align-items:flex-start;cursor:pointer;padding:.5rem .7rem;border-radius:7px;border:1.5px solid var(--border);transition:all .15s;background:var(--surface);font-size:.9rem}
+.qopt:hover{border-color:var(--teal);background:var(--teal-lt)}
+.qopt.chosen{border-color:var(--teal);background:var(--teal-lt)}
+.qopt .ql{font-weight:700;color:var(--teal);min-width:.9rem}
+.quiz-result{display:none;margin-top:1.25rem;padding:1.1rem 1.4rem;border-radius:10px;background:var(--orange-lt);border:2px solid var(--orange)}
+.quiz-result.show{display:block}
+.quiz-result .rt{font-weight:700;font-size:1.05rem;color:var(--orange-dk);margin-bottom:.5rem}
+.quiz-actions{display:flex;gap:.6rem;margin-top:1.25rem;flex-wrap:wrap}
+/* GRAMMAR RULE */
+.rule-box{background:var(--teal-lt);border-radius:10px;padding:1.2rem 1.4rem;margin-bottom:1.1rem;border:1.5px solid var(--border)}
+.rule-box h3{font-size:.95rem;font-weight:700;color:var(--teal);margin-bottom.9rem}
+.rtable{width:100%;border-collapse:collapse;margin-bottom:1rem;font-size:.88rem}
+.rtable th{background:var(--teal);color:#fff;padding:.5rem .75rem;text-align:left}
+.rtable td{padding:.5rem .75rem;border-bottom:1px solid var(--border);background:var(--surface)}
+.rtable td em{color:var(--teal);font-style:normal;font-weight:600}
+.rule-note{background:var(--warn-bg);border-left:4px solid var(--orange);padding:.7rem 1rem;border-radius:0 8px 8px 0;font-size:.88rem;margin-bottom:.85rem}
+.rule-note .ex{font-style:italic;color:var(--teal);margin-top:.35rem}
+/* CCQ */
+.ccq-item{margin-bottom:1rem}
+.ccq-q{font-weight:600;margin-bottom:.5rem;font-size:.95rem}
+.ccq-opts{display:flex;flex-direction:column;gap:.35rem}
+.copt{padding:.5rem .85rem;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:.88rem;transition:all .15s;background:var(--bg)}
+.copt:hover{border-color:var(--teal)}
+.copt.cor{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);font-weight:600}
+.copt.wrg{border-color:var(--err);background:var(--err-bg);color:var(--err)}
+/* DO/DOES GAP */
+.gap-row{display:flex;align-items:flex-start;gap:.7rem;margin-bottom:.75rem;padding:.75rem 1rem;background:var(--bg);border-radius:8px;border:1.5px solid var(--border);font-size:.9rem}
+.gn{font-weight:700;color:var(--text2);min-width:1.2rem;margin-top:.05rem}
+.gap-col{display:flex;flex-direction:column;gap:.35rem}
+.sp{font-weight:700;color:var(--teal);margin-right:.3rem}
+.cbtn{border:1.5px solid var(--border);background:var(--surface);border-radius:6px;padding:.25rem .7rem;cursor:pointer;font-size:.88rem;margin:0 .15rem;transition:all .15s;font-family:'Inter',sans-serif}
+.cbtn:hover{border-color:var(--teal);background:var(--teal-lt)}
+.cbtn.sel{border-color:var(--teal);background:var(--teal);color:#fff}
+.cbtn.cor{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);font-weight:700}
+.cbtn.wrg{border-color:var(--err);background:var(--err-bg);color:var(--err)}
+/* WORD ORDER */
+.wo-item{margin-bottom:.9rem;padding:.9rem 1rem;background:var(--bg);border:1.5px solid var(--border);border-radius:9px}
+.wo-tiles{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.55rem}
+.tile{background:var(--teal-lt);border:1.5px solid var(--teal);border-radius:5px;padding:.2rem .55rem;font-size:.8rem;color:var(--teal);font-weight:500}
+.wo-inp{width:100%;border:1.5px solid var(--border);border-radius:7px;padding:.45rem .75rem;font-family:'Inter',sans-serif;font-size:.88rem;background:var(--surface);color:var(--text);outline:none}
+.wo-inp:focus{border-color:var(--teal)}
+.wo-fb{font-size:.82rem;margin-top:.4rem;min-height:1.1rem}
+.wo-fb.ok{color:var(--ok);font-weight:600}
+.wo-fb.no{color:var(--err)}
+/* VOCABULARY */
+.bank{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.1rem;padding:.8rem 1rem;background:var(--teal-lt);border-radius:8px;border:1.5px dashed var(--teal)}
+.bank-chip{padding:.3rem .75rem;border-radius:20px;font-size:.83rem;font-weight:500;background:var(--surface);border:1.5px solid var(--border);cursor:pointer;transition:all .15s;user-select:none}
+.bank-chip:hover:not(.used){border-color:var(--teal);color:var(--teal)}
+.bank-chip.used{opacity:.4;cursor:not-allowed;text-decoration:line-through}
+.verb-group{margin-bottom:1.2rem}
+.verb-hd{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem}
+.vbadge{background:var(--teal);color:#fff;border-radius:6px;padding:.2rem .65rem;font-weight:700;font-size:.88rem;font-family:'Poppins',sans-serif}
+.vchips{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+.given-chip{padding:.3rem .7rem;border-radius:20px;font-size:.83rem;font-weight:500;background:var(--ok-bg);border:1.5px solid var(--ok);color:var(--ok)}
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:5.5rem;height:1.9rem;border-bottom:2px dashed var(--teal);padding:0 .4rem;font-size:.83rem;color:var(--text2);cursor:pointer;border-radius:4px;transition:background .15s}
+.slot:hover:not(.placed){background:var(--teal-lt)}
+.slot.placed{border-bottom:2px solid var(--ok);color:var(--ok);background:var(--ok-bg);font-weight:600}
+.slot.wrg-slot{border-bottom-color:var(--err);color:var(--err);background:var(--err-bg)}
+/* SPEAKING */
+.speak-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
+.sp-card{background:var(--teal-lt);border-radius:10px;padding:1rem 1.1rem;border:1.5px solid var(--border)}
+.sp-card .sq{font-weight:600;color:var(--teal);margin-bottom:.35rem;font-size:.92rem}
+.sp-card .st{font-size:.8rem;color:var(--text2);font-style:italic}
+/* INTERVIEW THE TEACHER CARDS */
+.itc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
+.itc{border-radius:11px;overflow:hidden;border:1.5px solid var(--border);cursor:pointer;min-height:9rem}
+.itc-front{background:var(--teal);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.1rem .9rem;min-height:9rem;gap:.5rem}
+.itc-front .itc-icon{font-size:1.8rem}
+.itc-front .itc-topic{font-weight:700;font-family:'Poppins',sans-serif;font-size:.95rem;line-height:1.3}
+.itc-front .itc-hint{font-size:.73rem;opacity:.8;margin-top:.2rem}
+.itc-back{background:var(--surface);display:none;flex-direction:column;padding:1rem 1.1rem;min-height:9rem;gap:.55rem}
+.itc-back .itc-q{font-weight:600;color:var(--teal);font-size:.9rem;line-height:1.4}
+.itc-back .itc-arow{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.itc-back .itc-abtn{background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:.25rem .7rem;cursor:pointer;font-size:.82rem;font-family:'Inter',sans-serif;transition:all .15s}
+.itc-back .itc-abtn:hover{border-color:var(--teal);background:var(--teal-lt)}
+.itc-back .itc-ans{font-size:.85rem;font-weight:700;min-height:1.2rem}
+.itc-back .itc-flip{font-size:.73rem;color:var(--text2);margin-top:auto;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+@media(max-width:520px){.itc-grid{grid-template-columns:1fr}}
+/* SHARED BUTTONS */
+.btn{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:.6rem 1.3rem;font-family:'Inter',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--teal-dk)}
+.btn-out{background:transparent;color:var(--teal);border:1.5px solid var(--teal);border-radius:8px;padding:.5rem 1.1rem;font-family:'Inter',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-out:hover{background:var(--teal-lt)}
+.ex-bar{display:flex;align-items:center;gap:.6rem;margin-top:1rem;flex-wrap:wrap}
+.score{font-size:.88rem;font-weight:600;color:var(--teal);margin-left:auto}
+@media(max-width:520px){.leadin-grid{grid-template-columns:repeat(2,1fr)}.speak-grid{grid-template-columns:1fr}.site-hd h1{font-size:1.5rem}.goals-inner{flex-direction:column;gap:.6rem}}
+</style>
+</head>
+<body>
+
+<header class="site-hd">
+  <div class="eyebrow">Unit 3C</div>
+  <h1>Going Out 🎉</h1>
+  <p class="sub">Free-time activities &nbsp;·&nbsp; Present simple questions</p>
+  <button class="theme-btn" onclick="toggleTheme()">🌙 Theme</button>
+</header>
+
+<div class="goals">
+  <div class="goals-inner">
+    <div class="goal-item"><span class="goal-lbl">Goal:</span> ask about free-time activities</div>
+    <div class="goal-item"><span class="goal-lbl">Grammar:</span> present simple questions</div>
+    <div class="goal-item"><span class="goal-lbl">Vocabulary:</span> free-time activities 2</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ STAGE 1: LEAD-IN -->
+<section class="stage">
+<div class="sc">
+  <div class="sc-hd">
+    <span class="pill">Stage 1</span>
+    <h2>Lead-in &nbsp;· &nbsp;🎬 What do you do in your free time?</h2>
+  </div>
+  <div class="sc-body">
+    <div class="instr">Look at the four pictures below. What activities do they show? Tell your teacher.</div>
+    <div class="leadin-grid">
+      <div class="li-card"><div class="emoji">🎉</div><div class="lbl">Going out with friends</div></div>
+      <div class="li-card"><div class="emoji">🍽️</div><div class="lbl">Eating at a restaurant</div></div>
+      <div class="li-card"><div class="emoji">🎬</div><div class="lbl">Going to the cinema</div></div>
+      <div class="li-card"><div class="emoji">🧘</div><div class="lbl">Exercising / staying in</div></div>
+    </div>
+    <div class="instr">Now answer these discussion questions:</div>
+    <div class="disc-list">
+      <div class="disc-row"><div class="dn">1</div><div>Do you go out every week — for example, to a restaurant with friends or to the cinema?</div></div>
+      <div class="disc-row"><div class="dn">2</div><div>Where do you usually go?</div></div>
+      <div class="disc-row"><div class="dn">3</div><div>Who do you usually go with?</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ STAGE 2: QUIZ -->
+<section class="stage">
+<div class="sc">
+  <div class="sc-hd">
+    <span class="pill">Stage 2</span>
+    <h2>Reading &nbsp;· &nbsp;Do you prefer the quiet life? 🏠</h2>
+  </div>
+  <div class="sc-body">
+    <div class="instr">Do the quiz! Choose the answer (a, b or c) that is true for you. Then we'll find out your result.</div>
+
+    <div class="quiz-q">
+      <div class="qt">1. How often do you go out on a Friday night?</div>
+      <div class="quiz-opts">
+        <div class="qopt" data-qi="1" data-opt="a" onclick="pickQ(1,'a')"><span class="ql">a</span> I always go out somewhere with my friends.</div>
+        <div class="qopt" data-qi="1" data-opt="b" onclick="pickQ(1,'b')"><span class="ql">b</span> I sometimes go out, but when I'm tired I stay in.</div>
+        <div class="qopt" data-qi="1" data-opt="c" onclick="pickQ(1,'c')"><span class="ql">c</span> I hardly ever go out. I usually stay at home with a book or a film.</div>
+      </div>
+    </div>
+
+    <div class="quiz-q">
+      <div class="qt">2. What do you usually do on your birthday?</div>
+      <div class="quiz-opts">
+        <div class="qopt" data-qi="2" data-opt="a" onclick="pickQ(2,'a')"><span class="ql">a</span> I have a big party at a restaurant and invite everyone I know!</div>
+        <div class="qopt" data-qi="2" data-opt="b" onclick="pickQ(2,'b')"><span class="ql">b</span> I go out for a meal with some of my friends and family.</div>
+        <div class="qopt" data-qi="2" data-opt="c" onclick="pickQ(2,'c')"><span class="ql">c</span> I invite some friends and family to my home.</div>
+      </div>
+    </div>
+
+    <div class="quiz-q">
+      <div class="qt">3. It's Saturday evening. What do you say to your best friend?</div>
+      <div class="quiz-opts">
+        <div class="qopt" data-qi="3" data-opt="a" onclick="pickQ(3,'a')"><span class="ql">a</span> "Where do you want to go tonight?"</div>
+        <div class="qopt" data-qi="3" data-opt="b" onclick="pickQ(3,'b')"><span class="ql">b</span> "Do you want to stay in or go out tonight?"</div>
+        <div class="qopt" data-qi="3" data-opt="c" onclick="pickQ(3,'c')"><span class="ql">c</span> "Do you want to come to my house tonight?"</div>
+      </div>
+    </div>
+
+    <div class="quiz-q">
+      <div class="qt">4. You're at home alone at the weekend. How do you feel?</div>
+      <div class="quiz-opts">
+        <div class="qopt" data-qi="4" data-opt="a" onclick="pickQ(4,'a')"><span class="ql">a</span> I hate it! It's really boring.</div>
+        <div class="qopt" data-qi="4" data-opt="b" onclick="pickQ(4,'b')"><span class="ql">b</span> OK. I sometimes go out but I often stay in.</div>
+        <div class="qopt" data-qi="4" data-opt="c" onclick="pickQ(4,'c')"><span class="ql">c</span> I love it. I often spend time by myself.</div>
+      </div>
+    </div>
+
+    <div class="quiz-q">
+      <div class="qt">5. Do you ever buy clothes online?</div>
+      <div class="quiz-opts">
+        <div class="qopt" data-qi="5" data-opt="a" onclick="pickQ(5,'a')"><span class="ql">a</span> No, I don't. I love clothes shops.</div>
+        <div class="qopt" data-qi="5" data-opt="b" onclick="pickQ(5,'b')"><span class="ql">b</span> Not usually. I go to the shops near my house.</div>
+        <div class="qopt" data-qi="5" data-opt="c" onclick="pickQ(5,'c')"><span class="ql">c</span> Yes, I do. I buy almost all my clothes online.</div>
+      </div>
+    </div>
+
+    <div class="quiz-q">
+      <div class="qt">6. What kind of sport do you usually do?</div>
+      <div class="quiz-opts">
+        <div class="qopt" data-qi="6" data-opt="a" onclick="pickQ(6,'a')"><span class="ql">a</span> I go to the gym or a sports club.</div>
+        <div class="qopt" data-qi="6" data-opt="b" onclick="pickQ(6,'b')"><span class="ql">b</span> I usually run near my home.</div>
+        <div class="qopt" data-qi="6" data-opt="c" onclick="pickQ(6,'c')"><span class="ql">c</span> I do exercise at home.</div>
+      </div>
+    </div>
+
+    <div id="quizResult" class="quiz-result"></div>
+    <div class="quiz-actions">
+      <button class="btn" onclick="showResult()">See my result 🎯</button>
+      <button class="btn-out" onclick="resetQuiz()">Reset</button>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ STAGE 3: GRAMMAR -->
+<section class="stage">
+<div class="sc">
+  <div class="sc-hd">
+    <span class="pill">Stage 3</span>
+    <h2>Clarify — Grammar &nbsp;· &nbsp;Present Simple Questions 📋</h2>
+  </div>
+  <div class="sc-body">
+    <div class="instr">Read the grammar box. Look back at the quiz to help you complete the gaps.</div>
+
+    <div class="rule-box">
+      <h3 style="margin-bottom:.85rem;font-size:.95rem">✅ Yes / No Questions</h3>
+      <table class="rtable">
+        <tr><th>Question</th><th>Short answer</th></tr>
+        <tr><td><em>Do</em> I / you / we / they ever buy clothes online?</td><td>Yes, I / you / we / they <em>do</em>.<br>No, I / you / we / they <em>don't</em>.</td></tr>
+        <tr><td><em>Does</em> he / she / it work?</td><td>Yes, he / she / it <em>does</em>.<br>No, he / she / it <em>doesn't</em>.</td></tr>
+      </table>
+      <div class="rule-note">
+        💡 Use <strong>ever</strong> with yes/no questions to mean <em>at any time</em>. It comes <strong>after the subject</strong>, before the main verb.<br>
+        <div class="ex">Do <u>you</u> <strong>ever</strong> cook at home?</div>
+      </div>
+      <h3 style="margin-bottom:.85rem;font-size:.95rem;margin-top:.85rem">❓ Wh- Questions</h3>
+      <table class="rtable">
+        <tr><th>Wh- word</th><th>do / does</th><th>Subject</th><th>Verb</th></tr>
+        <tr><td><em>How often</em></td><td>do</td><td>I / you / we / they</td><td>go out on a Friday night?</td></tr>
+        <tr><td><em>What</em></td><td>does</td><td>he / she / it</td><td>do?</td></tr>
+      </table>
+    </div>
+
+    <div class="rule-note" style="border-radius:0 8px 8px 0">
+      <strong>Remember:</strong> We use <strong>do</strong> with I / you / we / they and <strong>does</strong> with he / she / it.<br>
+      The main verb has <strong>no -s</strong> in questions: Does she <em>work</em>? ✓ &nbsp;&nbsp; Does she <em>works</em>? ✗
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ STAGE 4: CCQs -->
+<section class="stage">
+<div class="sc">
+  <div class="sc-hd">
+    <span class="pill">Stage 4</span>
+    <h2>Clarify — Meaning &nbsp;· &nbsp;Check Your Understanding 🤔</h2>
+  </div>
+  <div class="sc-body">
+    <div class="instr">Choose the correct answer for each question.</div>
+
+    <div class="ccq-item">
+      <div class="ccq-q">1. Which word do we use in questions with <em>he / she / it</em>?</div>
+      <div class="ccq-opts">
+        <div class="copt" data-c="0" onclick="pickCCQ(this,false)">do</div>
+        <div class="copt" data-c="1" onclick="pickCCQ(this,true)">does</div>
+        <div class="copt" data-c="0" onclick="pickCCQ(this,false)">did</div>
+      </div>
+    </div>
+
+    <div class="ccq-item">
+      <div class="ccq-q">2. Where does <em>ever</em> go in a yes/no question?</div>
+      <div class="ccq-opts">
+        <div class="copt" data-c="0" onclick="pickCCQ(this,false)">At the start: <em>Ever do you go out?</em></div>
+        <div class="copt" data-c="1" onclick="pickCCQ(this,true)">After the subject, before the main verb: <em>Do you <strong>ever</strong> go out?</em></div>
+        <div class="copt" data-c="0" onclick="pickCCQ(this,false)">At the end: <em>Do you go out ever?</em></div>
+      </div>
+    </div>
+
+    <div class="ccq-item">
+      <div class="ccq-q">3. Which question is correct?</div>
+      <div class="ccq-opts">
+        <div class="copt" data-c="0" onclick="pickCCQ(this,false)">Does she works at home?</div>
+        <div class="copt" data-c="1" onclick="pickCCQ(this,true)">Does she work at home?</div>
+        <div class="copt" data-c="0" onclick="pickCCQ(this,false)">Do she work at home?</div>
+      </div>
+    </div>
+
+    <div class="ccq-item">
+      <div class="ccq-q">4. How do we answer "Does he play sport?" — short answer (yes)?</div>
+      <div class="ccq-opts">
+        <div class="copt" data-c="0" onclick="pickCCQ(this,false)">Yes, he do.</div>
+        <div class="copt" data-c="1" onclick="pickCCQ(this,true)">Yes, he does.</div>
+        <div class="copt" data-c="0" onclick="pickCCQ(this,false)">Yes, he plays.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════ STAGE 5: DO / DOES -->
+<section class="stage">
+<div class="sc">
+  <div class="sc-hd">
+    <span class="pill">Stage 5</span>
+    <h2>Controlled Practice &nbsp;· &nbsp;Do or Does? 🎯</h2>
+  </div>
+  <div class="sc-body">
+    <div class="instr">Complete the mini-dialogues with <strong>do</strong>, <strong>does</strong>, <strong>don't</strong> or <strong>doesn't</strong>. Click to choose.</div>
+
+    <div class="gap-row">
+      <div class="gn">1</div>
+      <div class="gap-col">
+        <div><span class="sp">A:</span>
+          <button class="cbtn" data-qn="1" data-val="Do" onclick="pickDD(this,1)">Do</button>
+          <button class="cbtn" data-qn="1" data-val="Does" onclick="pickDD(this,1)">Does</button>
+          you ever go to the cinema?
+        </div>
+        <div><span class="sp">B:</span> No, I don't.</div>
+      </div>
+    </div>
+
+    <div class="gap-row">
+      <div class="gn">2</div>
+      <div class="gap-col">
+        <div><span class="sp">A:</span>
+          <button class="cbtn" data-qn="2" data-val="Do" onclick="pickDD(this,2)">Do</button>
+          <button class="cbtn" data-qn="2" data-val="Does" onclick="pickDD(this,2)">Does</button>
+          she do any sport?
+        </div>
+        <div><span class="sp">B:</span> Yes, she does.</div>
+      </div>
+    </div>
+
+    <div class="gap-row">
+      <div class="gn">3</div>
+      <div class="gap-col">
+        <div><span class="sp">A:</span> Do you ever have parties?</div>
+        <div><span class="sp">B:</span> No, I
+          <button class="cbtn" data-qn="3" data-val="don't" onclick="pickDD(this,3)">don't</button>
+          <button class="cbtn" data-qn="3" data-val="doesn't" onclick="pickDD(this,3)">doesn't</button>.
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-row">
+      <div class="gn">4</div>
+      <div class="gap-col">
+        <div><span class="sp">A:</span> Does he ever go to the gym?</div>
+        <div><span class="sp">B:</span> Yes, he
+          <button class="cbtn" data-qn="4" data-val="do" onclick="pickDD(this,4)">do</button>
+          <button class="cbtn" data-qn="4" data-val="does" onclick="pickDD(this,4)">does</button>.
+        </div>
+      </div>
+    </div>
+
+    <div class="ex-bar">
+      <button class="btn" onclick="checkDD()">Check</button>
+      <button class="btn-out" onclick="resetDD()">Reset</button>
+      <span class="score" id="ddScore"></span>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════ STAGE 6: WORD ORDER -->
+<section class="stage">
+<div class="sc">
+  <div class="sc-hd">
+    <span class="pill">Stage 6</span>
+    <h2>Controlled Practice &nbsp;· &nbsp;Make Questions ✍️</h2>
+  </div>
+  <div class="sc-body">
+    <div class="instr">Put the words in the correct order to make questions. Add <strong>do</strong> or <strong>does</strong>. Type your answer in the box.</div>
+
+    <div class="wo-item">
+      <div class="wo-tiles"><span class="tile">you</span><span class="tile">video games</span><span class="tile">play</span><span class="tile">ever</span><span class="tile">?</span></div>
+      <input class="wo-inp" id="wo1" placeholder="Write your question here…" onkeydown="if(event.key==='Enter')checkWO()">
+      <div class="wo-fb" id="wofb1"></div>
+    </div>
+
+    <div class="wo-item">
+      <div class="wo-tiles"><span class="tile">music</span><span class="tile">where</span><span class="tile">listen to</span><span class="tile">you</span><span class="tile">?</span></div>
+      <input class="wo-inp" id="wo2" placeholder="Write your question here…" onkeydown="if(event.key==='Enter')checkWO()">
+      <div class="wo-fb" id="wofb2"></div>
+    </div>
+
+    <div class="wo-item">
+      <div class="wo-tiles"><span class="tile">the piano</span><span class="tile">play</span><span class="tile">you</span><span class="tile">?</span></div>
+      <input class="wo-inp" id="wo3" placeholder="Write your question here…" onkeydown="if(event.key==='Enter')checkWO()">
+      <div class="wo-fb" id="wofb3"></div>
+    </div>
+
+    <div class="wo-item">
+      <div class="wo-tiles"><span class="tile">TV</span><span class="tile">you</span><span class="tile">how often</span><span class="tile">watch</span><span class="tile">?</span></div>
+      <input class="wo-inp" id="wo4" placeholder="Write your question here…" onkeydown="if(event.key==='Enter')checkWO()">
+      <div class="wo-fb" id="wofb4"></div>
+    </div>
+
+    <div class="wo-item">
+      <div class="wo-tiles"><span class="tile">watch</span><span class="tile">where</span><span class="tile">films</span><span class="tile">you</span><span class="tile">?</span></div>
+      <input class="wo-inp" id="wo5" placeholder="Write your question here…" onkeydown="if(event.key==='Enter')checkWO()">
+      <div class="wo-fb" id="wofb5"></div>
+    </div>
+
+    <div class="wo-item">
+      <div class="wo-tiles"><span class="tile">on your own</span><span class="tile">go</span><span class="tile">you</span><span class="tile">to the cinema</span><span class="tile">ever</span><span class="tile">?</span></div>
+      <input class="wo-inp" id="wo6" placeholder="Write your question here…" onkeydown="if(event.key==='Enter')checkWO()">
+      <div class="wo-fb" id="wofb6"></div>
+    </div>
+
+    <div class="wo-item">
+      <div class="wo-tiles"><span class="tile">listen to</span><span class="tile">when</span><span class="tile">you</span><span class="tile">music</span><span class="tile">?</span></div>
+      <input class="wo-inp" id="wo7" placeholder="Write your question here…" onkeydown="if(event.key==='Enter')checkWO()">
+      <div class="wo-fb" id="wofb7"></div>
+    </div>
+
+    <div class="wo-item">
+      <div class="wo-tiles"><span class="tile">the cinema</span><span class="tile">how many times a year</span><span class="tile">you</span><span class="tile">go to</span><span class="tile">?</span></div>
+      <input class="wo-inp" id="wo8" placeholder="Write your question here…" onkeydown="if(event.key==='Enter')checkWO()">
+      <div class="wo-fb" id="wofb8"></div>
+    </div>
+
+    <div class="ex-bar">
+      <button class="btn" onclick="checkWO()">Check All</button>
+      <button class="btn-out" onclick="resetWO()">Reset</button>
+      <span class="score" id="woScore"></span>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════ STAGE 7: VOCABULARY -->
+<section class="stage">
+<div class="sc">
+  <div class="sc-hd">
+    <span class="pill">Stage 7</span>
+    <h2>Vocabulary &nbsp;· &nbsp;Free-time Activities 🎭</h2>
+  </div>
+  <div class="sc-body">
+    <div class="instr">Click a word in the bank, then click the correct slot to place it. Complete the collocations.</div>
+
+    <div class="bank" id="vocabBank">
+      <span class="bank-chip" data-word="the piano / guitar" onclick="pickBank(this)">the piano / guitar</span>
+      <span class="bank-chip" data-word="games online" onclick="pickBank(this)">games online</span>
+      <span class="bank-chip" data-word="the radio" onclick="pickBank(this)">the radio</span>
+      <span class="bank-chip" data-word="a song" onclick="pickBank(this)">a song</span>
+      <span class="bank-chip" data-word="a football match" onclick="pickBank(this)">a football match</span>
+      <span class="bank-chip" data-word="a video online" onclick="pickBank(this)">a video online</span>
+      <span class="bank-chip" data-word="to a concert" onclick="pickBank(this)">to a concert</span>
+      <span class="bank-chip" data-word="to the theatre" onclick="pickBank(this)">to the theatre</span>
+    </div>
+
+    <div class="verb-group">
+      <div class="verb-hd"><span class="vbadge">play</span></div>
+      <div class="vchips">
+        <span class="given-chip">video games</span>
+        <span class="slot" data-key="play-1" data-filled="" onclick="pickSlot(this)">tap to fill</span>
+        <span class="slot" data-key="play-2" data-filled="" onclick="pickSlot(this)">tap to fill</span>
+      </div>
+    </div>
+
+    <div class="verb-group">
+      <div class="verb-hd"><span class="vbadge">listen to</span></div>
+      <div class="vchips">
+        <span class="given-chip">music</span>
+        <span class="slot" data-key="listen-1" data-filled="" onclick="pickSlot(this)">tap to fill</span>
+        <span class="slot" data-key="listen-2" data-filled="" onclick="pickSlot(this)">tap to fill</span>
+      </div>
+    </div>
+
+    <div class="verb-group">
+      <div class="verb-hd"><span class="vbadge">watch</span></div>
+      <div class="vchips">
+        <span class="given-chip">TV / a TV programme</span>
+        <span class="given-chip">a film</span>
+        <span class="slot" data-key="watch-1" data-filled="" onclick="pickSlot(this)">tap to fill</span>
+        <span class="slot" data-key="watch-2" data-filled="" onclick="pickSlot(this)">tap to fill</span>
+      </div>
+    </div>
+
+    <div class="verb-group">
+      <div class="verb-hd"><span class="vbadge">go</span></div>
+      <div class="vchips">
+        <span class="given-chip">to the cinema</span>
+        <span class="slot" data-key="go-1" data-filled="" onclick="pickSlot(this)">tap to fill</span>
+        <span class="slot" data-key="go-2" data-filled="" onclick="pickSlot(this)">tap to fill</span>
+      </div>
+    </div>
+
+    <div class="ex-bar">
+      <button class="btn" onclick="checkVocab()">Check</button>
+      <button class="btn-out" onclick="resetVocab()">Reset</button>
+      <span class="score" id="vocabScore"></span>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════ STAGE 8: SPEAKING -->
+<section class="stage">
+<div class="sc">
+  <div class="sc-hd">
+    <span class="pill">Stage 8</span>
+    <h2>Speaking Practice &nbsp;· &nbsp;Do you ever…? 💬</h2>
+  </div>
+  <div class="sc-body">
+    <div class="instr">Take turns asking and answering these questions. Try to say <strong>more</strong> — where, when, who with?</div>
+    <div class="speak-grid">
+      <div class="sp-card">
+        <div class="sq">Do you ever play video games?</div>
+        <div class="st">Follow-up: What do you usually play? When?</div>
+      </div>
+      <div class="sp-card">
+        <div class="sq">Where do you usually listen to music?</div>
+        <div class="st">Follow-up: What kind of music do you like?</div>
+      </div>
+      <div class="sp-card">
+        <div class="sq">How often do you go to the cinema?</div>
+        <div class="st">Follow-up: What kind of films do you watch?</div>
+      </div>
+      <div class="sp-card">
+        <div class="sq">Do you ever go to concerts or the theatre?</div>
+        <div class="st">Follow-up: When was the last time you went?</div>
+      </div>
+      <div class="sp-card">
+        <div class="sq">How often do you go out at the weekend?</div>
+        <div class="st">Follow-up: Do you prefer a busy life or a quiet life?</div>
+      </div>
+      <div class="sp-card">
+        <div class="sq">Do you ever watch sport — on TV or live?</div>
+        <div class="st">Follow-up: Do you go to football matches?</div>
+      </div>
+      <div class="sp-card">
+        <div class="sq">When do you usually listen to the radio?</div>
+        <div class="st">Follow-up: What do you listen to — music, news, podcasts?</div>
+      </div>
+      <div class="sp-card">
+        <div class="sq">How many times a year do you go to a restaurant?</div>
+        <div class="st">Follow-up: What kind of restaurant do you prefer?</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════════ STAGE 9: INTERVIEW THE TEACHER -->
+<section class="stage">
+<div class="sc">
+  <div class="sc-hd">
+    <span class="pill">Stage 9</span>
+    <h2>Speaking Game &nbsp;· &nbsp;Interview the Teacher! 🎤</h2>
+  </div>
+  <div class="sc-body">
+    <div class="instr">Tap a card to see a model question. Ask your teacher! Then mark their answer — Yes or No.</div>
+    <div class="itc-grid">
+
+      <div class="itc" id="itc1">
+        <div class="itc-front" onclick="flipCard(1)">
+          <div class="itc-icon">🎬</div>
+          <div class="itc-topic">Cinema</div>
+          <div class="itc-hint">Tap to see the question</div>
+        </div>
+        <div class="itc-back">
+          <div class="itc-q">How often do you go to the cinema?</div>
+          <div class="itc-flip" onclick="flipCard(1)">↩ flip back</div>
+        </div>
+      </div>
+
+      <div class="itc" id="itc2">
+        <div class="itc-front" onclick="flipCard(2)">
+          <div class="itc-icon">🎮</div>
+          <div class="itc-topic">Video Games</div>
+          <div class="itc-hint">Tap to see the question</div>
+        </div>
+        <div class="itc-back">
+          <div class="itc-q">Do you ever play video games?</div>
+          <div class="itc-flip" onclick="flipCard(2)">↩ flip back</div>
+        </div>
+      </div>
+
+      <div class="itc" id="itc3">
+        <div class="itc-front" onclick="flipCard(3)">
+          <div class="itc-icon">🎵</div>
+          <div class="itc-topic">Music</div>
+          <div class="itc-hint">Tap to see the question</div>
+        </div>
+        <div class="itc-back">
+          <div class="itc-q">Where do you usually listen to music?</div>
+          <div class="itc-flip" onclick="flipCard(3)">↩ flip back</div>
+        </div>
+      </div>
+
+      <div class="itc" id="itc4">
+        <div class="itc-front" onclick="flipCard(4)">
+          <div class="itc-icon">⚽</div>
+          <div class="itc-topic">Sport on TV</div>
+          <div class="itc-hint">Tap to see the question</div>
+        </div>
+        <div class="itc-back">
+          <div class="itc-q">Do you ever watch sport on TV?</div>
+          <div class="itc-flip" onclick="flipCard(4)">↩ flip back</div>
+        </div>
+      </div>
+
+      <div class="itc" id="itc5">
+        <div class="itc-front" onclick="flipCard(5)">
+          <div class="itc-icon">🎶</div>
+          <div class="itc-topic">Concerts</div>
+          <div class="itc-hint">Tap to see the question</div>
+        </div>
+        <div class="itc-back">
+          <div class="itc-q">How many times a year do you go to a concert?</div>
+          <div class="itc-flip" onclick="flipCard(5)">↩ flip back</div>
+        </div>
+      </div>
+
+      <div class="itc" id="itc6">
+        <div class="itc-front" onclick="flipCard(6)">
+          <div class="itc-icon">🎹</div>
+          <div class="itc-topic">Piano / Guitar</div>
+          <div class="itc-hint">Tap to see the question</div>
+        </div>
+        <div class="itc-back">
+          <div class="itc-q">Do you play the piano or guitar?</div>
+          <div class="itc-flip" onclick="flipCard(6)">↩ flip back</div>
+        </div>
+      </div>
+
+      <div class="itc" id="itc7">
+        <div class="itc-front" onclick="flipCard(7)">
+          <div class="itc-icon">🎭</div>
+          <div class="itc-topic">Theatre</div>
+          <div class="itc-hint">Tap to see the question</div>
+        </div>
+        <div class="itc-back">
+          <div class="itc-q">Do you ever go to the theatre?</div>
+          <div class="itc-flip" onclick="flipCard(7)">↩ flip back</div>
+        </div>
+      </div>
+
+      <div class="itc" id="itc8">
+        <div class="itc-front" onclick="flipCard(8)">
+          <div class="itc-icon">🎥</div>
+          <div class="itc-topic">Films at Home</div>
+          <div class="itc-hint">Tap to see the question</div>
+        </div>
+        <div class="itc-back">
+          <div class="itc-q">How often do you watch films at home?</div>
+          <div class="itc-flip" onclick="flipCard(8)">↩ flip back</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="instr" style="margin-top:1.1rem;margin-bottom:0">
+      💬 <strong>Follow-up:</strong> Were any answers surprising? Now ask your partner the same questions!
+    </div>
+  </div>
+</div>
+</section>
+
+<script>
+/* ── THEME TOGGLE ── */
+function toggleTheme(){
+  const r=document.documentElement;
+  const c=r.getAttribute('data-theme');
+  r.setAttribute('data-theme',c==='dark'?'light':'dark');
+}
+
+/* ── QUIZ ── */
+const PICKS={};
+function pickQ(qi,opt){
+  document.querySelectorAll('[data-qi="'+qi+'"]').forEach(el=>el.classList.remove('chosen'));
+  const el=document.querySelector('[data-qi="'+qi+'"][data-opt="'+opt+'"]');
+  if(el){el.classList.add('chosen');PICKS[qi]=opt;}
+}
+function showResult(){
+  const counts={a:0,b:0,c:0};
+  for(let i=1;i<=6;i++){const p=PICKS[i];if(p)counts[p]++;}
+  const top=Object.entries(counts).sort((x,y)=>y[1]-x[1])[0][0];
+  const RESULTS={
+    a:"<strong>Mostly A — The Social Star! 🎉</strong><br>You go out a lot! You like meeting new people. Be careful you don't become too tired. Life isn't always one big party — or is it?",
+    b:"<strong>Mostly B — Best of Both Worlds! 🌟</strong><br>You enjoy going out with friends but you're also happy to stay in. You like the best of both worlds!",
+    c:"<strong>Mostly C — The Home Lover! 🏠</strong><br>Your home is your favourite place — a place to get comfortable and enjoy life on your own or with friends and family. You're a true home lover."
+  };
+  const el=document.getElementById('quizResult');
+  el.innerHTML='<div class="rt">Your result:</div>'+RESULTS[top];
+  el.classList.add('show');
+}
+function resetQuiz(){
+  for(let k in PICKS)delete PICKS[k];
+  document.querySelectorAll('.qopt').forEach(el=>el.classList.remove('chosen'));
+  const el=document.getElementById('quizResult');el.innerHTML='';el.classList.remove('show');
+}
+
+/* ── CCQ ── */
+function pickCCQ(btn,correct){
+  const grp=btn.closest('.ccq-item').querySelectorAll('.copt');
+  grp.forEach(b=>{b.classList.remove('cor','wrg');b.onclick=null;});
+  btn.classList.add(correct?'cor':'wrg');
+  if(!correct){
+    grp.forEach(b=>{if(b.dataset.c==='1')b.classList.add('cor');});
+  }
+}
+
+/* ── DO / DOES (Ex 4a) ── */
+const DD_ANS={1:'Do',2:'Does',3:"don't",4:'does'};
+const DD_PICKED={};
+function pickDD(btn,qn){
+  document.querySelectorAll('.cbtn[data-qn="'+qn+'"]').forEach(b=>{b.classList.remove('sel');});
+  btn.classList.add('sel');
+  DD_PICKED[qn]=btn.dataset.val;
+}
+function checkDD(){
+  let c=0;
+  for(let n=1;n<=4;n++){
+    const pick=DD_PICKED[n];
+    const btns=document.querySelectorAll('.cbtn[data-qn="'+n+'"]');
+    if(!pick)continue;
+    const ok=(pick===DD_ANS[n]);
+    if(ok)c++;
+    btns.forEach(b=>{
+      b.classList.remove('sel');
+      if(b.dataset.val===DD_ANS[n])b.classList.add('cor');
+      else if(b.dataset.val===pick&&!ok)b.classList.add('wrg');
+    });
+  }
+  document.getElementById('ddScore').textContent='Score: '+c+' / 4';
+}
+function resetDD(){
+  for(let k in DD_PICKED)delete DD_PICKED[k];
+  document.querySelectorAll('.cbtn').forEach(b=>b.classList.remove('sel','cor','wrg'));
+  document.getElementById('ddScore').textContent='';
+}
+
+/* ── WORD ORDER (Ex 5a) ── */
+function norm(s){return s.trim().toLowerCase().replace(/[?!.]/g,'').replace(/\s+/g,' ');}
+const WO_ANS={
+  1:'do you ever play video games',
+  2:'where do you listen to music',
+  3:'do you play the piano',
+  4:'how often do you watch tv',
+  5:'where do you watch films',
+  6:'do you ever go to the cinema on your own',
+  7:'when do you listen to music',
+  8:'how many times a year do you go to the cinema'
+};
+function checkWO(){
+  let c=0;
+  for(let n=1;n<=8;n++){
+    const inp=document.getElementById('wo'+n);
+    const fb=document.getElementById('wofb'+n);
+    const val=norm(inp.value);
+    const ans=WO_ANS[n];
+    if(!val){fb.textContent='';fb.className='wo-fb';continue;}
+    if(val===ans){c++;fb.textContent='✓ '+inp.value.trim();fb.className='wo-fb ok';}
+    else{fb.innerHTML='✗ &rarr; '+WO_ANS[n]+'?';fb.className='wo-fb no';}
+  }
+  document.getElementById('woScore').textContent='Score: '+c+' / 8';
+}
+function resetWO(){
+  for(let n=1;n<=8;n++){
+    const inp=document.getElementById('wo'+n);const fb=document.getElementById('wofb'+n);
+    if(inp)inp.value='';if(fb){fb.textContent='';fb.className='wo-fb';}
+  }
+  document.getElementById('woScore').textContent='';
+}
+
+/* ── VOCABULARY (Ex 6a) ── */
+// Order-independent: any word from a verb group is correct in either slot for that verb
+const VGROUPS={
+  'play':['the piano / guitar','games online'],
+  'listen':['the radio','a song'],
+  'watch':['a football match','a video online'],
+  'go':['to a concert','to the theatre']
+};
+const VBANK=['the piano / guitar','games online','the radio','a song','a football match','a video online','to a concert','to the theatre'];
+let vPending=null; // currently selected bank chip
+
+function pickBank(chip){
+  if(chip.classList.contains('used'))return;
+  document.querySelectorAll('.bank-chip').forEach(c=>c.style.outline='');
+  if(vPending===chip.dataset.word){vPending=null;return;}
+  chip.style.outline='2px solid var(--teal)';
+  vPending=chip.dataset.word;
+}
+function pickSlot(slot){
+  if(!vPending)return;
+  // un-fill if already had something
+  const old=slot.dataset.filled;
+  if(old){
+    // return old chip to bank
+    document.querySelectorAll('.bank-chip').forEach(c=>{if(c.dataset.word===old){c.classList.remove('used');}});
+    slot.dataset.filled='';slot.textContent='';slot.classList.remove('placed','wrg-slot');
+  }
+  slot.dataset.filled=vPending;
+  slot.textContent=vPending;
+  slot.classList.add('placed');
+  // mark bank chip as used
+  document.querySelectorAll('.bank-chip').forEach(c=>{if(c.dataset.word===vPending){c.classList.add('used');c.style.outline='';}});
+  vPending=null;
+}
+function checkVocab(){
+  let c=0,t=0;
+  document.querySelectorAll('.slot').forEach(slot=>{
+    const key=slot.dataset.key;const filled=slot.dataset.filled;
+    if(!key)return;t++;
+    const verb=key.split('-')[0];
+    slot.classList.remove('placed','wrg-slot');
+    if(!filled)return;
+    if(VGROUPS[verb]&&VGROUPS[verb].includes(filled)){c++;slot.classList.add('placed');}
+    else{slot.classList.add('wrg-slot');}
+  });
+  document.getElementById('vocabScore').textContent='Score: '+c+' / '+t;
+}
+function resetVocab(){
+  document.querySelectorAll('.slot').forEach(slot=>{
+    slot.dataset.filled='';slot.textContent='';
+    slot.classList.remove('placed','wrg-slot');
+  });
+  document.querySelectorAll('.bank-chip').forEach(c=>{c.classList.remove('used');c.style.outline='';});
+  vPending=null;
+  document.getElementById('vocabScore').textContent='';
+}
+
+/* ── INTERVIEW THE TEACHER (Stage 9) ── */
+const itFlipped={};
+function flipCard(id){
+  const card=document.getElementById('itc'+id);
+  const isFlipped=itFlipped[id];
+  if(isFlipped){
+    card.querySelector('.itc-front').style.display='flex';
+    card.querySelector('.itc-back').style.display='none';
+    itFlipped[id]=false;
+  }else{
+    card.querySelector('.itc-front').style.display='none';
+    card.querySelector('.itc-back').style.display='flex';
+    itFlipped[id]=true;
+  }
+}
+function markYes(id){
+  document.getElementById('ans'+id).textContent='✅ Yes!';
+  document.getElementById('ans'+id).style.color='var(--ok)';
+}
+function markNo(id){
+  document.getElementById('ans'+id).textContent='❌ No!';
+  document.getElementById('ans'+id).style.color='var(--err)';
+}
+</script>
+</body>
+</html>
