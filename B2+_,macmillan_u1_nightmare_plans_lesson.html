@@ -1,0 +1,744 @@
+<title>Nightmare Flights</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF2F2; --surface:#FFFFFF; --surface-2:#E3EBEB; --ink:#13263A; --ink-soft:#4C5F70; --line:#C8D5D7;
+  --teal:#0B6E6A; --teal-soft:#D3ECE9; --coral:#D9502B; --coral-soft:#FBE3D9; --sun:#B67B06; --sun-soft:#F7EBCD;
+  --ok:#1E7F4F; --ok-soft:#DDF3E6; --bad:#B8362A; --bad-soft:#FBE1DD; --on-teal:#FFFFFF;
+  --f-display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0C1824; --surface:#132536; --surface-2:#1A3045; --ink:#E4EEF1; --ink-soft:#9DB2BF; --line:#294560;
+    --teal:#52C2B8; --teal-soft:#153E42; --coral:#FF7C57; --coral-soft:#48241A; --sun:#F2B84B; --sun-soft:#3B2F14;
+    --ok:#52C98E; --ok-soft:#143A29; --bad:#FF8373; --bad-soft:#452019; --on-teal:#0C1824;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0C1824; --surface:#132536; --surface-2:#1A3045; --ink:#E4EEF1; --ink-soft:#9DB2BF; --line:#294560;
+  --teal:#52C2B8; --teal-soft:#153E42; --coral:#FF7C57; --coral-soft:#48241A; --sun:#F2B84B; --sun-soft:#3B2F14;
+  --ok:#52C98E; --ok-soft:#143A29; --bad:#FF8373; --bad-soft:#452019; --on-teal:#0C1824;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg); color:var(--ink); font-family:var(--f-body); font-size:17px; line-height:1.55}
+.wrap{max-width:900px; margin:0 auto; padding-inline:16px; padding-block:0 64px}
+h1,h2,h3{font-family:var(--f-display); line-height:1.12; text-wrap:balance; margin:0}
+h2{font-size:clamp(1.6rem,4vw,2.15rem); font-weight:800; letter-spacing:-.01em}
+h3{font-size:1.25rem; font-weight:700}
+p{margin:0}
+.mono{font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase}
+button{font:inherit; cursor:pointer}
+:focus-visible{outline:3px solid var(--coral); outline-offset:2px}
+
+.bar{position:sticky; top:env(safe-area-inset-top,0px); z-index:10; background:color-mix(in srgb,var(--bg) 88%,transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--line)}
+.bar-in{max-width:900px; margin:0 auto; padding-inline:16px; padding-block:8px; display:flex; gap:8px; align-items:center}
+.legs{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; flex:1}
+.legs::-webkit-scrollbar{display:none}
+.legs a{flex:none; text-decoration:none; color:var(--ink-soft); font-family:var(--f-mono); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:var(--surface)}
+.legs a:hover{color:var(--teal); border-color:var(--teal)}
+.theme-btn{flex:none; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px; width:36px; height:36px; display:grid; place-items:center}
+
+.ticket{margin-top:28px; display:grid; grid-template-columns:1fr auto; background:var(--surface); border-radius:18px; border:1px solid var(--line); overflow:hidden}
+.ticket-main{padding:26px 26px 22px; display:grid; gap:14px}
+.route{display:flex; align-items:center; gap:14px; flex-wrap:wrap; font-family:var(--f-display); font-weight:800; font-size:clamp(2.2rem,8vw,3.6rem); letter-spacing:-.02em; color:var(--teal)}
+.route .plane{font-size:.5em; color:var(--coral)}
+.stamp{font-family:var(--f-mono); font-size:.9rem; letter-spacing:.14em; color:var(--coral); border:2.5px solid var(--coral); border-radius:6px; padding:4px 10px; transform:rotate(-6deg); align-self:center}
+.ticket h1{font-size:clamp(1.3rem,3.6vw,1.75rem); font-weight:700}
+.ticket-meta{display:flex; flex-wrap:wrap; gap:18px 28px}
+.ticket-meta div{display:grid; gap:2px}
+.ticket-meta b{font-family:var(--f-mono); font-size:.95rem}
+.ticket-meta .mono{color:var(--ink-soft)}
+.stub{border-left:2px dashed var(--line); padding:22px; display:grid; align-content:center; gap:8px; background:var(--coral-soft); min-width:170px; position:relative}
+.stub::before,.stub::after{content:""; position:absolute; left:-12px; width:22px; height:22px; border-radius:50%; background:var(--bg)}
+.stub::before{top:-11px} .stub::after{bottom:-11px}
+.stub .big{font-family:var(--f-display); font-weight:800; font-size:2.4rem; color:var(--coral); line-height:1}
+@media (max-width:620px){ .ticket{grid-template-columns:1fr} .stub{border-left:0; border-top:2px dashed var(--line)} .stub::before,.stub::after{display:none} }
+
+section.stage{margin-top:56px; scroll-margin-top:70px}
+.stage-head{display:grid; gap:6px; margin-bottom:20px}
+.stage-head .mono{color:var(--coral)}
+.stage-head p{color:var(--ink-soft); max-width:62ch}
+.aim{font-size:.85rem; color:var(--ink-soft); border-left:3px solid var(--sun); padding-left:10px}
+.aim b{color:var(--sun); font-family:var(--f-mono); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; margin-right:4px}
+.block{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px; display:grid; gap:16px}
+.block + .block{margin-top:18px}
+.sub{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.note{font-size:.93rem; color:var(--ink-soft)}
+
+/* lead-in */
+.photos{display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr)); gap:14px}
+.pcard{position:relative; border-radius:12px; overflow:hidden; background:var(--surface-2); border:1px solid var(--line); cursor:pointer; display:grid}
+.scene{aspect-ratio:4/3; width:100%; max-width:100%; overflow:hidden; position:relative}
+.scene svg,.scene img{width:100%; height:100%; display:block; object-fit:cover}
+.rank{position:absolute; left:8px; top:8px; min-width:34px; height:34px; border-radius:999px; background:rgba(15,25,40,.75); color:#fff; font-family:var(--f-display); font-weight:800; font-size:1.1rem; display:grid; place-items:center; padding:0 8px}
+.rank.set{background:var(--coral)}
+.upl{position:absolute; right:8px; top:8px; background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:6px; font-size:.7rem; padding:3px 7px; font-family:var(--f-mono); cursor:pointer; opacity:.9}
+.upl input{position:absolute; width:1px; height:1px; opacity:0}
+.cap{padding:10px 12px 12px; font-size:.93rem}
+.discuss{background:var(--sun-soft); border-radius:12px; padding:16px 18px; display:grid; gap:6px}
+.discuss .mono{color:var(--sun)}
+.discuss p{font-family:var(--f-display); font-size:1.15rem; font-weight:700}
+
+/* generic questions */
+.q{display:grid; gap:8px}
+.q + .q{padding-top:14px; border-top:1px dashed var(--line)}
+.q-text{font-weight:700}
+.opts{display:flex; flex-wrap:wrap; gap:8px}
+.opt{border:1.5px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px; padding:7px 14px; font-size:.95rem; text-align:left}
+.opt:hover{border-color:var(--teal)}
+.opt.right{background:var(--ok-soft); border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft); border-color:var(--bad); text-decoration:line-through}
+.why{font-size:.9rem; color:var(--ink-soft); display:none}
+.q.done .why{display:block}
+.gap{font:inherit; font-size:.95rem; border:0; border-bottom:2px solid var(--line); background:var(--surface-2); color:var(--ink); padding:3px 8px; border-radius:6px 6px 0 0; width:10em; max-width:100%}
+.gap.w-s{width:6em} .gap.w-l{width:13em}
+.gap:focus{outline:none; border-bottom-color:var(--teal)}
+select.gap{width:auto}
+.gap.ok{border-bottom-color:var(--ok); background:var(--ok-soft)}
+.gap.bad{border-bottom-color:var(--bad); background:var(--bad-soft)}
+.key{font-family:var(--f-mono); font-size:.78rem; color:var(--ok); margin-left:4px}
+.btns{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.btn{border:0; border-radius:999px; padding:9px 18px; font-weight:700; font-size:.92rem}
+.btn-main{background:var(--teal); color:var(--on-teal)}
+.btn-ghost{background:transparent; color:var(--ink-soft); border:1.5px solid var(--line)}
+.score{font-family:var(--f-mono); font-size:.85rem; color:var(--ink-soft)}
+.score.full{color:var(--ok)}
+
+/* vocab */
+.wordbox{display:flex; flex-wrap:wrap; gap:6px}
+.wordbox span{font-family:var(--f-mono); font-size:.8rem; background:var(--surface-2); padding:4px 10px; border-radius:6px}
+.defs{display:grid}
+.def-row{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; padding:9px 0; border-bottom:1px solid var(--line)}
+.def-row:last-child{border-bottom:0}
+@media (max-width:540px){ .def-row{grid-template-columns:1fr} }
+.stress{display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr)); gap:12px}
+.sw{background:var(--surface-2); border-radius:10px; padding:12px; display:grid; gap:8px}
+.syls{display:flex; flex-wrap:wrap; gap:4px}
+.syl{border:1.5px solid var(--line); background:var(--surface); color:var(--ink); border-radius:8px; padding:6px 10px; font-family:var(--f-display); font-weight:700; font-size:1.05rem}
+.syl.right{background:var(--ok-soft); border-color:var(--ok); text-transform:uppercase}
+.syl.wrong{background:var(--bad-soft); border-color:var(--bad)}
+.sw small{color:var(--ink-soft); font-size:.8rem}
+
+/* story */
+.story{display:grid; gap:14px; max-width:68ch}
+.story-top{display:flex; gap:12px; align-items:center}
+.avatar{width:44px; height:44px; border-radius:50%; background:var(--teal); color:var(--on-teal); display:grid; place-items:center; font-family:var(--f-display); font-weight:800; flex:none}
+.story h3{font-size:1.5rem}
+.v{background:var(--coral-soft); border-radius:5px; padding:1px 4px; font-weight:700; color:var(--ink)}
+.v sup{font-family:var(--f-mono); font-size:.62rem; color:var(--coral); margin-right:2px; font-weight:700}
+.kw{text-decoration:underline; text-decoration-color:var(--teal); text-decoration-thickness:2px; text-underline-offset:3px}
+.legend{display:flex; gap:16px; flex-wrap:wrap; font-size:.85rem; color:var(--ink-soft)}
+
+/* work it out */
+.wio{display:grid}
+.wio-row{display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:12px; align-items:center; padding:10px 0; border-bottom:1px solid var(--line)}
+.wio-row:last-child{border-bottom:0}
+.wio-row .lt{font-family:var(--f-mono); font-size:.8rem; color:var(--coral); font-weight:700}
+.wio-row .sel{display:flex; gap:6px}
+@media (max-width:540px){ .wio-row{grid-template-columns:auto minmax(0,1fr)} .wio-row .sel{grid-column:2} }
+
+/* timelines */
+.tenses{display:grid; gap:18px}
+.tense{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px; display:grid; gap:14px}
+.tense-head{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:baseline}
+.tense-head .mono{color:var(--ink-soft)}
+.tl-box{background:var(--surface-2); border-radius:10px; padding:10px 8px 4px; overflow-x:auto}
+.tl{width:100%; min-width:520px; height:auto; display:block}
+.tl-lab{fill:var(--ink); font-family:var(--f-body); font-size:14px; font-weight:700; paint-order:stroke; stroke:var(--surface-2); stroke-width:5px; stroke-linejoin:round}
+.tl-lab-soft{fill:var(--ink-soft); font-weight:400; font-style:italic}
+.tl-lab-sun{fill:var(--sun)}
+.tl-cap{fill:var(--ink-soft); font-family:var(--f-mono); font-size:11px; letter-spacing:.12em}
+.tl-cap-now{fill:var(--coral); font-weight:700}
+.tl-axis{stroke:var(--ink-soft); stroke-width:2}
+.tl-arrow{stroke:var(--ink-soft); stroke-width:2; fill:none}
+.tl-nowline{stroke:var(--coral); stroke-width:2; stroke-dasharray:3 4}
+.tl-span{stroke:var(--teal); stroke-width:6; stroke-linecap:round}
+.tl-wave{stroke:var(--teal); stroke-width:4; fill:none; stroke-linecap:round}
+.tl-pt{fill:var(--surface); stroke:var(--ink-soft); stroke-width:2.5}
+.tl-x{stroke:var(--coral); stroke-width:4; stroke-linecap:round; fill:none}
+.tl-link{stroke:var(--ink-soft); stroke-width:2; stroke-dasharray:6 5}
+.tl-flag{stroke:var(--sun); stroke-width:2.5; stroke-dasharray:4 3}
+.tl-flagtri{fill:var(--sun)}
+.tl-br{stroke:var(--ink-soft); stroke-width:1.8; fill:none}
+.uses{display:grid; gap:6px; margin:0; padding:0; list-style:none}
+.uses li{display:grid; grid-template-columns:auto 1fr; gap:10px}
+.uses .lt{font-family:var(--f-mono); font-size:.75rem; color:var(--coral); padding-top:3px}
+.uses i{color:var(--ink-soft)}
+.warn{background:var(--sun-soft); border-radius:8px; padding:8px 12px; font-size:.9rem}
+.ccq{border-top:1px dashed var(--line); padding-top:12px}
+.ccq > .mono{color:var(--ink-soft); display:block; margin-bottom:6px}
+.pairs{display:grid; grid-template-columns:1fr; gap:18px}
+.pair{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px; display:grid; gap:10px; align-content:start}
+.pair .side{display:grid; gap:4px}
+.pair .side p{font-size:.93rem}
+.pair .tag{font-family:var(--f-mono); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--teal)}
+.pair .sides{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr)); gap:14px}
+.pair .tl{min-width:360px}
+.rule{display:grid}
+.rule-row{display:grid; grid-template-columns:minmax(150px,230px) 1fr; gap:12px; align-items:center; padding:10px 0; border-bottom:1px solid var(--line)}
+.rule-row:last-child{border-bottom:0}
+.rule-row b{font-family:var(--f-display)}
+.rule-row .f{font-family:var(--f-mono); font-size:.88rem}
+@media (max-width:560px){ .rule-row{grid-template-columns:1fr; gap:4px} }
+.mistakes{background:var(--sun-soft); border-radius:14px; padding:20px 22px; display:grid; gap:12px; margin-top:18px}
+.mistakes > .mono{color:var(--sun)}
+.mis{display:grid; gap:6px; padding-bottom:12px; border-bottom:1px dashed color-mix(in srgb,var(--sun) 40%,transparent)}
+.mis:last-child{border-bottom:0; padding-bottom:0}
+.mis .wrongs{text-decoration:line-through; text-decoration-color:var(--bad)}
+.mis .fix{color:var(--ok); font-weight:700}
+.mis button{justify-self:start; background:transparent; border:1.5px solid var(--sun); color:var(--ink); border-radius:999px; padding:4px 12px; font-size:.82rem}
+
+.para{line-height:2.15; max-width:70ch; display:grid; gap:8px}
+.cue{font-size:.8rem; color:var(--ink-soft); font-style:italic}
+.num{font-family:var(--f-mono); font-size:.7rem; color:var(--coral); vertical-align:super}
+.vlist{display:grid; gap:10px; counter-reset:v}
+.vlist p{position:relative; padding-left:28px; line-height:2.1}
+.vlist p::before{counter-increment:v; content:counter(v); position:absolute; left:0; top:4px; font-family:var(--f-mono); font-size:.72rem; color:var(--ink-soft)}
+
+/* freer */
+.tabs{display:flex; gap:8px; flex-wrap:wrap}
+.tab{border:1.5px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px; padding:7px 14px; font-weight:700; font-size:.9rem}
+.tab[aria-selected="true"]{background:var(--teal); color:var(--on-teal); border-color:var(--teal)}
+.roleplay{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:14px}
+.role{border-radius:12px; padding:16px 18px; display:grid; gap:8px; align-content:start}
+.role.a{background:var(--teal-soft)} .role.b{background:var(--coral-soft)}
+.role ul{margin:0; padding-left:18px; display:grid; gap:4px; font-size:.93rem}
+textarea{font:inherit; font-size:.95rem; color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:10px 12px; min-height:140px; resize:vertical; width:100%}
+textarea:focus{outline:none; border-color:var(--teal)}
+.check-list{display:flex; flex-wrap:wrap; gap:8px; list-style:none; margin:0; padding:0}
+.check-list li{font-size:.85rem; border:1.5px solid var(--line); border-radius:999px; padding:5px 12px; color:var(--ink-soft); transition:all .25s}
+.check-list li::before{content:"○ "}
+.check-list li.done{border-color:var(--ok); background:var(--ok-soft); color:var(--ink)}
+.check-list li.done::before{content:"✓ "; color:var(--ok); font-weight:700}
+.stars{font-size:1.4rem; color:var(--coral); letter-spacing:2px}
+
+/* wrap-up */
+.board{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:14px}
+.board label{display:grid; gap:6px; font-weight:700}
+.board .good textarea{border-color:var(--ok)}
+.board .fixit textarea{border-color:var(--coral)}
+.conf{display:grid}
+.conf-row{display:grid; grid-template-columns:minmax(0,1fr) minmax(120px,200px) 7.5em; gap:12px; align-items:center; padding:8px 0; border-bottom:1px solid var(--line)}
+.conf-row:last-child{border-bottom:0}
+.conf-row input{width:100%; accent-color:var(--teal)}
+.conf-row output{font-family:var(--f-mono); font-size:.75rem; text-align:right}
+@media (max-width:520px){ .conf-row{grid-template-columns:1fr 6.5em} .conf-row input{grid-column:1/-1; grid-row:2} }
+.cheat{display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr)); gap:12px}
+.cheat-card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px; display:grid; gap:6px; align-content:start}
+.cheat-card b{font-family:var(--f-display)}
+.cheat-card .f{font-family:var(--f-mono); font-size:.75rem; color:var(--teal)}
+.cheat-card .tl{min-width:0}
+.cheat-card .tl-lab{font-size:19px; stroke:var(--surface)}
+.cheat-card .tl-cap{font-size:15px}
+footer{margin-top:48px; color:var(--ink-soft); font-size:.85rem; text-align:center}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+
+<header class="bar">
+  <div class="bar-in">
+    <nav class="legs" aria-label="Lesson stages">
+      <a href="#leadin">01 Lead-in</a><a href="#vocab">02 Vocabulary</a><a href="#reading">03 Story</a><a href="#grammar">04 Grammar</a><a href="#practice">05 Practice</a><a href="#freer">06 Speak &amp; write</a><a href="#wrap">07 Feedback</a>
+    </nav>
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="ticket">
+    <div class="ticket-main">
+      <span class="mono" style="color:var(--ink-soft)">Boarding pass · English Hub B2+ · Unit 1.2</span>
+      <div class="route">BCN <span class="plane">✈</span> EDI <span class="stamp">DELAYED</span></div>
+      <h1>Nightmare flights: air-travel vocabulary + past forms review</h1>
+      <div class="ticket-meta">
+        <div><span class="mono">Passenger</span><b>Student</b></div>
+        <div><span class="mono">Level</span><b>B2+</b></div>
+        <div><span class="mono">Duration</span><b>60–75 min</b></div>
+        <div><span class="mono">Cargo</span><b>8 words · 5 past forms</b></div>
+      </div>
+    </div>
+    <div class="stub">
+      <span class="mono" style="color:var(--ink-soft)">Status</span>
+      <span class="big">+5 h</span>
+      <span class="mono" style="color:var(--ink-soft)">Gate changed · B2+</span>
+    </div>
+  </div>
+
+  <!-- 1 LEAD-IN -->
+  <section class="stage" id="leadin">
+    <div class="stage-head">
+      <span class="mono">Stage 01 · Lead-in · 5 min</span>
+      <h2>How bad can a flight get?</h2>
+      <p>Tap each picture to give it a score from 1 (a bit annoying) to 6 (a total nightmare). Then explain your top two.</p>
+      <p class="aim"><b>Aim</b>to activate the topic and get her talking before any new language.</p>
+    </div>
+    <div class="photos" id="photos"></div>
+    <p class="note" style="margin-top:10px">Teacher: use “＋ photo” to swap in your own pictures.</p>
+    <div class="discuss" style="margin-top:18px">
+      <span class="mono">Talk about it</span>
+      <p>Has anything like this ever happened to you, or to someone you know? What happened?</p>
+    </div>
+  </section>
+
+  <!-- 2 VOCAB -->
+  <section class="stage" id="vocab">
+    <div class="stage-head">
+      <span class="mono">Stage 02 · Vocabulary · 12 min</span>
+      <h2>Airport words</h2>
+      <p>Meaning first, then pronunciation.</p>
+      <p class="aim"><b>Aim</b>to clarify the meaning and word stress of 8 air-travel words before she meets them in the story.</p>
+    </div>
+
+    <div class="block ex">
+      <div class="sub"><h3>A · Match the words to the definitions</h3><span class="score"></span></div>
+      <div class="wordbox"><span>aircraft</span><span>bumpy landing</span><span>cabin crew</span><span>cockpit</span><span>runway</span><span>security</span><span>stuck</span><span>Terminal</span></div>
+      <div class="defs" id="defs"></div>
+      <div class="btns"><button class="btn btn-main check">Check</button><button class="btn btn-ghost show">Show answers</button><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+
+    <div class="block ex">
+      <div class="sub"><h3>B · Check you understand</h3><span class="score"></span></div>
+      <div id="vccq"></div>
+      <div class="btns"><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+
+    <div class="block">
+      <div class="sub"><h3>C · Where’s the stress?</h3></div>
+      <p class="note">Say each word aloud, then tap the syllable with the main stress.</p>
+      <div class="stress" id="stress"></div>
+    </div>
+  </section>
+
+  <!-- 3 READING -->
+  <section class="stage" id="reading">
+    <div class="stage-head">
+      <span class="mono">Stage 03 · Story · 10 min</span>
+      <h2>The day I nearly missed the wedding</h2>
+      <p>Elena, from Barcelona, tells the story of her trip to Edinburgh. Read quickly for the two gist questions first. Then read again for the true/false questions.</p>
+      <p class="aim"><b>Aim</b>to show the vocabulary and the past forms working together in a real story.</p>
+    </div>
+    <article class="block story">
+      <div class="story-top"><div class="avatar">E</div><div><h3>The day I nearly missed the wedding</h3><span class="mono" style="color:var(--ink-soft)">Elena · travel stories</span></div></div>
+      <p>Last March, my best friend Iona was getting married in Edinburgh, and I was going to be her bridesmaid. I <span class="v"><sup>1</sup>had been looking forward</span> to the trip for months. What could possibly go wrong?</p>
+      <p>On the morning of the flight, I <span class="v"><sup>2</sup>got</span> to <span class="kw">Terminal</span> 1 three hours early. Luckily, I <span class="v"><sup>3</sup>had checked in</span> online the night before, so I went straight through <span class="kw">security</span>. Then I <span class="v"><sup>4</sup>saw</span> the departures board: DELAYED. Apparently a door in the <span class="kw">cockpit</span> was jammed, and engineers were trying to fix it.</p>
+      <p>Five hours later we finally boarded. It <span class="v"><sup>5</sup>was snowing</span> heavily as the <span class="kw">aircraft</span> moved slowly towards the <span class="kw">runway</span>, and even the <span class="kw">cabin crew</span> looked nervous. The flight itself was fine, but we had a really <span class="kw">bumpy landing</span> in Edinburgh, and the man behind me screamed.</p>
+      <p>And then we were <span class="kw">stuck</span>. The snow had closed the roads around the airport, and there wasn’t a single taxi. I phoned Iona in tears. “<span class="v"><sup>6</sup>I’ve been sitting</span> in this airport all day,” I told her, “and I’m going to miss everything!”</p>
+      <p>In the end, one of the pilots gave me a lift into the city on his way home, and I arrived at the church with ten minutes to spare. <span class="v"><sup>7</sup>I’ve flown</span> many times since then, but I still pack my bridesmaid dress in my hand luggage!</p>
+      <div class="legend"><span><span class="v"><sup>1</sup>verb</span> = past form for the grammar task</span><span><span class="kw">underlined</span> = today’s vocabulary</span></div>
+    </article>
+
+    <div class="block ex" style="margin-top:18px">
+      <div class="sub"><h3>Gist</h3><span class="score"></span></div>
+      <div class="q mcq" data-c="1"><p class="q-text">1. Why was Elena flying to Edinburgh?</p><div class="opts"><button class="opt">For a job interview</button><button class="opt">For her friend’s wedding</button><button class="opt">For a skiing holiday</button></div><p class="why">She was going to be Iona’s bridesmaid.</p></div>
+      <div class="q mcq" data-c="2"><p class="q-text">2. Did she get to the wedding on time?</p><div class="opts"><button class="opt">No, she missed it</button><button class="opt">Yes, hours early</button><button class="opt">Yes, but only just</button></div><p class="why">“I arrived at the church with ten minutes to spare.”</p></div>
+      <div class="btns"><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+
+    <div class="block ex">
+      <div class="sub"><h3>True or false?</h3><span class="score"></span></div>
+      <div id="tf"></div>
+      <div class="btns"><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+  </section>
+
+  <!-- 4 GRAMMAR -->
+  <section class="stage" id="grammar">
+    <div class="stage-head">
+      <span class="mono">Stage 04 · Grammar · 20 min</span>
+      <h2>Past forms review</h2>
+      <p>How do storytellers choose between past forms? Work out the rules from Elena’s story, then see each form on a timeline.</p>
+      <p class="aim"><b>Aim</b>to clarify the meaning and form of past simple, past continuous, past perfect simple and continuous, and when the present perfect appears in a story.</p>
+    </div>
+
+    <div class="block ex">
+      <div class="sub"><h3>Work it out</h3><span class="score"></span></div>
+      <p class="note">Look at the numbered verbs (1–7) in Elena’s story. Which number(s) match each rule?</p>
+      <div class="wio" id="wio"></div>
+      <div class="btns"><button class="btn btn-main check">Check</button><button class="btn btn-ghost show">Show answers</button><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+
+    <div class="stage-head" style="margin-top:40px">
+      <span class="mono">Timeline explorer</span>
+      <h3 style="font-size:1.5rem">See each form on a timeline</h3>
+      <p>The <span style="color:var(--coral)">dashed coral line</span> is NOW, the moment Elena tells the story. <span style="color:var(--sun)">Flag</span> = a main event in the story · <span style="color:var(--coral)">✕</span> = a completed action · <span style="color:var(--teal)">wavy line</span> = something in progress.</p>
+    </div>
+    <div class="tenses" id="tenses"></div>
+
+    <div class="stage-head" style="margin-top:40px">
+      <span class="mono">Same words, different story</span>
+      <h3 style="font-size:1.5rem">One form changes the meaning</h3>
+    </div>
+    <div class="pairs" id="pairs"></div>
+
+    <div class="block ex" style="margin-top:18px">
+      <div class="sub"><h3>Rule card: form</h3><span class="score"></span></div>
+      <p class="note">Complete the formulas.</p>
+      <div class="rule" id="rule"></div>
+      <div class="btns"><button class="btn btn-main check">Check</button><button class="btn btn-ghost show">Show answers</button><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+
+    <div class="mistakes" id="mistakes">
+      <span class="mono">Spot the mistake</span>
+      <p class="note" style="color:var(--ink)">Each sentence has one mistake. Fix it aloud first, then check.</p>
+    </div>
+  </section>
+
+  <!-- 5 PRACTICE -->
+  <section class="stage" id="practice">
+    <div class="stage-head">
+      <span class="mono">Stage 05 · Controlled practice · 15 min</span>
+      <h2>Practice</h2>
+      <p class="aim"><b>Aim</b>accurate practice of the target forms and vocabulary, with instant feedback.</p>
+    </div>
+
+    <div class="block ex">
+      <div class="sub"><h3>1 · The flight from hell</h3><span class="score"></span></div>
+      <p class="note">Marco tells the story of his holiday flight. Put the verbs in brackets into the best past form. Contractions (’d, ’ve) are fine.</p>
+      <div class="para" id="story2"></div>
+      <div class="btns"><button class="btn btn-main check">Check</button><button class="btn btn-ghost show">Show answers</button><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+
+    <div class="block ex">
+      <div class="sub"><h3>2 · What does it mean?</h3><span class="score"></span></div>
+      <p class="note">Read each sentence and choose what happened.</p>
+      <div id="meaning"></div>
+      <div class="btns"><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+
+    <div class="block ex">
+      <div class="sub"><h3>3 · Complete with today’s words</h3><span class="score"></span></div>
+      <div class="wordbox"><span>aircraft</span><span>bumpy landing</span><span>cabin crew</span><span>cockpit</span><span>runway</span><span>security</span><span>stuck</span><span>Terminal</span></div>
+      <div class="vlist" id="vgap"></div>
+      <div class="btns"><button class="btn btn-main check">Check</button><button class="btn btn-ghost show">Show answers</button><button class="btn btn-ghost reset">Reset</button></div>
+    </div>
+  </section>
+
+  <!-- 6 FREER -->
+  <section class="stage" id="freer">
+    <div class="stage-head">
+      <span class="mono">Stage 06 · Freer practice · 15 min</span>
+      <h2>At the airline help desk</h2>
+      <p>Choose a situation. You’re the angry passenger: explain exactly what happened, and get the airline to help you. I’m the airline agent.</p>
+      <p class="aim"><b>Aim</b>fluent, personalised use of past forms and air-travel vocabulary in a realistic situation.</p>
+    </div>
+    <div class="block">
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <div class="roleplay">
+        <div class="role a"><span class="mono" style="color:var(--teal)">You · the passenger</span><p id="scenario"></p><ul id="scenarioTips"></ul></div>
+        <div class="role b"><span class="mono" style="color:var(--coral)">Teacher · airline agent</span><p>Ask questions that push for detail:</p><ul><li>So what exactly happened?</li><li>What were you doing when you heard the announcement?</li><li>Had you checked in before the problem started?</li><li>How long had you been waiting by then?</li><li>And what would you like us to do about it?</li></ul></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="sub"><h3>Then write it: a one-star review <span class="stars" aria-hidden="true">★☆☆☆☆</span></h3></div>
+      <p class="note">Write 80–100 words for a travel review site about the same journey. The checklist ticks itself as you write.</p>
+      <label for="review" class="mono" style="color:var(--ink-soft)">Your review</label>
+      <textarea id="review" placeholder="I had been looking forward to this trip for weeks, but…"></textarea>
+      <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center"><ul class="check-list" id="checklist"></ul><span class="mono" id="wc" style="color:var(--ink-soft)">0 words</span></div>
+    </div>
+  </section>
+
+  <!-- 7 FEEDBACK -->
+  <section class="stage" id="wrap">
+    <div class="stage-head">
+      <span class="mono">Stage 07 · Feedback · 5–8 min</span>
+      <h2>What went well, what to fix</h2>
+      <p class="aim"><b>Aim</b>delayed feedback on language from the freer stage, and self-assessment.</p>
+    </div>
+    <div class="block">
+      <p class="note">Teacher: note language here during the role-play, then go through it together. She corrects the right-hand column herself first.</p>
+      <div class="board">
+        <label class="good" for="goodLang">✓ Great language I heard<textarea id="goodLang" placeholder="“The roads had been closed for hours, so…”"></textarea></label>
+        <label class="fixit" for="fixLang">✎ Let’s fix this<textarea id="fixLang" placeholder="“When I arrived, the plane already left.” → ?"></textarea></label>
+      </div>
+    </div>
+    <div class="block"><h3>How confident do you feel?</h3><div class="conf" id="conf"></div></div>
+    <div class="stage-head" style="margin-top:32px">
+      <span class="mono">Revision sheet</span>
+      <h3 style="font-size:1.5rem">All five forms on one page</h3>
+      <p>Take a screenshot to revise from.</p>
+    </div>
+    <div class="cheat" id="cheat"></div>
+  </section>
+
+  <footer>English Hub B2+ · Unit 1.2 · Air travel vocabulary · Past forms review</footer>
+</main>
+
+<script>
+(function(){
+  const root=document.documentElement;
+  document.getElementById('themeBtn').addEventListener('click',()=>{
+    const cur=root.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    root.setAttribute('data-theme',cur==='dark'?'light':'dark');
+  });
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  /* ---------- lead-in scenes ---------- */
+  const svgW=s=>`<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${s}</svg>`;
+  function grad(id,a,b){return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs>`}
+  const people=(x0,y,n,gap)=>{let s='';const c=['#E4633F','#2E6FA3','#F2B84B','#5C8D5A','#8B5E9C','#3E4A5C'];for(let i=0;i<n;i++){const x=x0+i*gap;s+=`<circle cx="${x}" cy="${y}" r="9" fill="#E9C9A8"/><rect x="${x-11}" y="${y+10}" width="22" height="40" rx="9" fill="${c[i%6]}"/>`}return s;};
+  const SC={
+    board(){const rows=[['EDI','10:15','DELAYED','#FF7B55'],['LHR','10:40','CANCELLED','#FF5A5A'],['PMI','11:05','BOARDING','#7FE0A8'],['CDG','11:20','DELAYED','#FF7B55'],['FCO','11:45','ON TIME','#CFE3F0']];
+      let t=''; rows.forEach((r,i)=>{const y=110+i*34; t+=`<text x="58" y="${y}" font-family="monospace" font-size="20" fill="#F4D58A">${r[0]}</text><text x="128" y="${y}" font-family="monospace" font-size="20" fill="#E8EEF3">${r[1]}</text><text x="218" y="${y}" font-family="monospace" font-size="20" font-weight="700" fill="${r[3]}">${r[2]}</text>`});
+      return svgW(`<rect width="400" height="300" fill="#2B3A4E"/><rect x="36" y="40" width="328" height="230" rx="10" fill="#0F1824"/><text x="58" y="76" font-family="monospace" font-size="14" letter-spacing="3" fill="#8FA3B5">DEPARTURES</text><line x1="58" y1="86" x2="342" y2="86" stroke="#2D3F55" stroke-width="2"/>${t}`)},
+    security(){return svgW(`<rect width="400" height="300" fill="#DCE3E8"/><rect y="215" width="400" height="85" fill="#B8C3CC"/><rect x="290" y="120" width="80" height="110" rx="6" fill="#5B6B7C"/><rect x="302" y="150" width="56" height="40" rx="4" fill="#1F2B38"/><rect x="230" y="190" width="140" height="14" fill="#7C8B99"/><rect x="246" y="178" width="34" height="12" rx="2" fill="#4E86B8"/>${people(30,150,8,30)}<path d="M20 230 h250" stroke="#E4633F" stroke-width="3" stroke-dasharray="8 6"/><text x="200" y="70" text-anchor="middle" font-family="sans-serif" font-size="20" font-weight="700" fill="#5B6B7C">WAIT TIME: 2 h 10 min</text>`)},
+    snow(){let f=''; for(let i=0;i<60;i++){f+=`<circle cx="${(i*67)%400}" cy="${(i*41)%300}" r="${i%3+1.2}" fill="#fff" opacity=".85"/>`}
+      return svgW(grad('sn','#7E8C9E','#C9D2DC')+`<rect width="400" height="300" fill="url(#sn)"/><polygon points="150,140 250,140 400,300 0,300" fill="#5B6370"/><polygon points="150,140 250,140 400,300 0,300" fill="#F4F7FA" opacity=".7"/><path d="M200 150 L200 300" stroke="#F2B84B" stroke-width="5" stroke-dasharray="14 12"/><g transform="translate(200 150)"><path d="M-46 0 L46 0 L40 6 L-40 6Z" fill="#E8EEF3"/><rect x="-6" y="-14" width="12" height="20" rx="5" fill="#E8EEF3"/><path d="M-6 -12 L0 -26 L6 -12Z" fill="#E4633F"/></g>${f}`)},
+    cockpit(){return svgW(grad('ck','#5FA8DB','#CDE7F5')+`<rect width="400" height="300" fill="#26303C"/><path d="M40 40 L360 40 L330 150 L70 150Z" fill="url(#ck)"/><path d="M200 40 L200 150" stroke="#26303C" stroke-width="8"/><ellipse cx="120" cy="80" rx="40" ry="10" fill="#fff" opacity=".8"/><rect x="30" y="165" width="340" height="80" rx="10" fill="#3A4656"/>${[70,120,170,230,280,330].map((x,i)=>`<circle cx="${x}" cy="200" r="16" fill="#111A24" stroke="#6E7E90" stroke-width="2"/><path d="M${x} 200 L${x+10*Math.cos(i)} ${200-10*Math.abs(Math.sin(i))}" stroke="#7FE0A8" stroke-width="2"/>`).join('')}<rect x="150" y="225" width="100" height="10" rx="3" fill="#E4633F"/><text x="200" y="285" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700" fill="#FF7B55">DOOR JAMMED</text>`)},
+    stuck(){let ch=''; for(let i=0;i<5;i++) ch+=`<rect x="${30+i*70}" y="180" width="62" height="18" rx="4" fill="#4E86B8"/><rect x="${30+i*70}" y="150" width="62" height="32" rx="6" fill="#5C93C4"/><rect x="${55+i*70}" y="198" width="6" height="40" fill="#7C8B99"/>`;
+      return svgW(`<rect width="400" height="300" fill="#1E2A3A"/><rect x="20" y="20" width="360" height="110" fill="#0D1520"/>${[60,140,220,300].map(x=>`<circle cx="${x}" cy="${40+(x%3)*20}" r="1.5" fill="#fff"/>`).join('')}<circle cx="330" cy="60" r="26" fill="#E8EEF3"/><path d="M330 60 L330 44 M330 60 L340 66" stroke="#1E2A3A" stroke-width="3" stroke-linecap="round"/><rect y="238" width="400" height="62" fill="#2C394B"/>${ch}<ellipse cx="160" cy="147" rx="70" ry="13" fill="#E4633F"/><circle cx="88" cy="140" r="11" fill="#E9C9A8"/><rect x="220" y="196" width="40" height="30" rx="5" fill="#F2B84B"/><text x="40" y="115" font-family="monospace" font-size="18" fill="#8FA3B5">03:12</text>`)},
+    storm(){return svgW(grad('st','#3B4656','#7D8A9C')+`<rect width="400" height="300" fill="url(#st)"/><ellipse cx="90" cy="60" rx="90" ry="34" fill="#2A3341"/><ellipse cx="300" cy="50" rx="110" ry="36" fill="#2A3341"/><path d="M250 70 L232 120 L250 118 L236 165" stroke="#F6E08A" stroke-width="5" fill="none" stroke-linejoin="round"/><g transform="translate(170 175) rotate(-14)"><path d="M-60 0 Q-55 -12 20 -12 Q55 -12 60 0 Q55 10 -50 10Z" fill="#E8EEF3"/><path d="M-10 -10 L10 -48 L22 -48 L14 -10Z" fill="#D7DEE6"/><path d="M-58 -2 L-70 -22 L-60 -22 L-46 -4Z" fill="#E4633F"/><line x1="62" y1="-16" x2="62" y2="16" stroke="#1E2A3A" stroke-width="3"/>${[-30,-15,0,15].map(x=>`<circle cx="${x}" cy="-2" r="3" fill="#3B4656"/>`).join('')}</g><path d="M0 260 Q100 230 200 262 T400 255 L400 300 L0 300Z" fill="#2A3341"/>`)}
+  };
+  const PHOTOS=[['board','The screen at the airport says this about your flight…'],['security','Two hours in a queue before you can even get to your gate'],['snow','Heavy snow, and you still haven’t taken off'],['cockpit','A broken door at the very front of the plane'],['stuck','3 am. The next flight is tomorrow morning.'],['storm','A tiny plane in a big storm']];
+  const ph=document.getElementById('photos');
+  PHOTOS.forEach(([k,cap],i)=>{
+    const d=document.createElement('div'); d.className='pcard'; d.tabIndex=0; d.setAttribute('role','button'); d.setAttribute('aria-label','Score picture '+(i+1));
+    d.innerHTML=`<div class="scene">${SC[k]()}<span class="rank">?</span><label class="upl" title="Replace with your own photo">＋ photo<input type="file" accept="image/*" id="up${i}"></label></div><p class="cap">${esc(cap)}</p>`;
+    let r=0; const badge=d.querySelector('.rank');
+    const bump=()=>{ r=r%6+1; badge.textContent=r; badge.classList.add('set'); };
+    d.addEventListener('click',e=>{ if(e.target.closest('.upl')) return; bump(); });
+    d.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); bump(); } });
+    const inp=d.querySelector('input');
+    inp.addEventListener('change',()=>{ const f=inp.files&&inp.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>{ const sc=d.querySelector('.scene'); const old=sc.querySelector('svg,img'); const img=document.createElement('img'); img.src=rd.result; img.alt=cap; old.replaceWith(img); }; rd.readAsDataURL(f); });
+    ph.appendChild(d);
+  });
+
+  /* ---------- vocab ---------- */
+  const gap=(ans,cls,lab)=>`<input class="gap ${cls||''}" data-ans="${esc(ans)}" autocomplete="off" spellcheck="false" aria-label="${lab||'answer'}">`;
+  const WORDS=['aircraft','bumpy landing','cabin crew','cockpit','runway','security','stuck','Terminal'];
+  const DEFS=[
+    ['the area at the front of a plane where the pilots sit','cockpit'],
+    ['the people who look after passengers during a flight','cabin crew'],
+    ['a large building at an airport where passengers arrive and leave','Terminal'],
+    ['the long, flat strip where planes take off and land','runway'],
+    ['a formal word for a plane, helicopter or anything that flies','aircraft'],
+    ['the place where your bags and body are checked before you fly','security'],
+    ['unable to move or leave a place','stuck'],
+    ['when a plane hits the ground hard and shakes as it arrives','bumpy landing']
+  ];
+  const wOpts='<option value="">choose…</option>'+WORDS.map(w=>`<option>${w}</option>`).join('');
+  document.getElementById('defs').innerHTML=DEFS.map((d,i)=>`<div class="def-row"><label for="d${i}">${i+1}. ${esc(d[0])}</label><select class="gap" id="d${i}" data-ans="${d[1]}">${wOpts}</select></div>`).join('');
+
+  const VCCQ=[
+    ['Do passengers usually sit in the cockpit?',['Yes','No'],1,'Only the pilots sit in the cockpit. Passengers sit in the cabin.'],
+    ['Cabin crew: is it one person or a team?',['One person','A team'],1,'A group noun. One person is a flight attendant or a member of the cabin crew.'],
+    ['Do planes take off from the Terminal or the runway?',['The Terminal','The runway'],1,'You wait in the Terminal. Planes take off from the runway.'],
+    ['If you’re stuck at the airport, can you easily leave?',['Yes','No'],1,'Stuck = you can’t leave, even if you want to. We often say stuck at / in / on.'],
+    ['Is a bumpy landing comfortable?',['Yes','No, but usually safe'],1,'Uncomfortable and scary, but usually not dangerous.']
+  ];
+  const mcqHTML=(q,i)=>`<div class="q mcq" data-c="${q[2]}"><p class="q-text">${i!==undefined?(i+1)+'. ':''}${esc(q[0])}</p><div class="opts">${q[1].map(o=>`<button class="opt" type="button">${esc(o)}</button>`).join('')}</div><p class="why">${esc(q[3])}</p></div>`;
+  document.getElementById('vccq').innerHTML=VCCQ.map((q,i)=>mcqHTML(q,i)).join('');
+
+  const STRESS=[['aircraft',['air','craft'],0],['cockpit',['cock','pit'],0],['runway',['run','way'],0],['security',['se','cu','ri','ty'],1,'/sɪˈkjʊərəti/'],['Terminal',['Ter','mi','nal'],0,'/ˈtɜːmɪnl/'],['cabin crew',['ca','bin','crew'],0],['bumpy landing',['bum','py','land','ing'],2,'The noun carries the main stress.']];
+  const stEl=document.getElementById('stress');
+  STRESS.forEach(s=>{
+    const d=document.createElement('div'); d.className='sw';
+    d.innerHTML=`<div class="syls">${s[1].map((x,i)=>`<button class="syl" type="button" data-i="${i}">${x}</button>`).join('')}</div><small>${s[3]?esc(s[3]):'&nbsp;'}</small>`;
+    d.querySelectorAll('.syl').forEach(b=>b.addEventListener('click',()=>{ if(+b.dataset.i===s[2]){ b.classList.add('right'); d.querySelectorAll('.syl').forEach(x=>x.classList.remove('wrong')); } else b.classList.add('wrong'); }));
+    stEl.appendChild(d);
+  });
+
+  /* ---------- reading T/F ---------- */
+  const TF=[
+    ['Elena checked in at the airport.',1,'She had checked in online the night before.'],
+    ['The delay was caused by a problem in the cockpit.',0,'A cockpit door was jammed.'],
+    ['The weather was fine when the plane took off.',1,'It was snowing heavily.'],
+    ['The landing in Edinburgh was smooth.',1,'It was a bumpy landing; a man screamed.'],
+    ['She took a taxi to the church.',1,'There were no taxis; a pilot gave her a lift.'],
+    ['She has travelled by plane since that day.',0,'“I’ve flown many times since then.”']
+  ];
+  document.getElementById('tf').innerHTML=TF.map((t,i)=>mcqHTML([t[0],['True','False'],t[1],t[2]],i)).join('');
+
+  /* ---------- work it out ---------- */
+  const WIO=[
+    ['a','We use the <b>past simple</b> for the main events of a story, in the order they happened.','2,4',2],
+    ['b','We use the <b>past continuous</b> for background situations in progress around the main events.','5',1],
+    ['c','We use the <b>past perfect simple</b> for completed actions that happened before the main events.','3',1],
+    ['d','We use the <b>past perfect continuous</b> for longer processes that started before the main events and were still going on.','1',1],
+    ['e','The <b>present perfect</b> appears in a story only (1) in a speaker’s actual words, and (2) to connect the story to now.','6,7',2]
+  ];
+  const nOpts='<option value="">#</option>'+[1,2,3,4,5,6,7].map(n=>`<option>${n}</option>`).join('');
+  document.getElementById('wio').innerHTML=WIO.map((w,i)=>{ const ans=w[2].split(','); return `<div class="wio-row"><span class="lt">${w[0]}</span><span>${w[1]}</span><span class="sel">${ans.map((a,j)=>`<select class="gap" id="w${i}_${j}" data-ans="${a}" aria-label="rule ${w[0]} answer ${j+1}">${nOpts}</select>`).join('')}</span></div>`; }).join('');
+
+  /* ---------- timelines ---------- */
+  const X=v=>30+v*5.4;
+  function wave(a,b,y){let d=`M${a.toFixed(1)} ${y}`; for(let x=a;x<=b;x+=2){d+=` L${x.toFixed(1)} ${(y+Math.sin((x-a)/14*2*Math.PI)*5).toFixed(1)}`} return d;}
+  function lab(x,y,t,cls){const cx=Math.max(125,Math.min(475,x)); return `<text x="${cx.toFixed(1)}" y="${y}" text-anchor="middle" class="${cls||'tl-lab'}">${esc(t)}</text>`}
+  function renderTL(rows,now){
+    now=now===undefined?92:now; const RH=80, top=30, axisY=top+rows.length*RH+4, nx=X(now);
+    let s=`<line x1="${nx}" y1="10" x2="${nx}" y2="${axisY}" class="tl-nowline"/>`;
+    rows.forEach((row,i)=>{ const y=top+i*RH+34;
+      row.forEach(e=>{
+        if(e.k==='span'){const a=X(e.a),b=X(e.b); s+= e.wavy?`<path d="${wave(a,b,y)}" class="tl-wave"/>`:`<line x1="${a}" y1="${y}" x2="${b}" y2="${y}" class="tl-span"/>`; if(e.label) s+=lab((a+b)/2,y-18,e.label);}
+        else if(e.k==='x'){const x=X(e.at); s+=`<path d="M${x-7} ${y-7} L${x+7} ${y+7} M${x+7} ${y-7} L${x-7} ${y+7}" class="tl-x"/>`; if(e.label) s+=lab(x,e.below?y+30:y-18,e.label);}
+        else if(e.k==='link'){const a=X(e.a)+9,b=X(e.b)-11; s+=`<line x1="${a}" y1="${y}" x2="${b}" y2="${y}" class="tl-link"/><path d="M${b-6} ${y-5} L${b+1} ${y} L${b-6} ${y+5}" class="tl-arrow"/>`;}
+        else if(e.k==='flag'){const x=X(e.at); s+=`<line x1="${x}" y1="${y-12}" x2="${x}" y2="${y+14}" class="tl-flag"/><path d="M${x} ${y-12} L${x+14} ${y-7} L${x} ${y-2}Z" class="tl-flagtri"/>`; if(e.label) s+=lab(x,y+32,e.label,'tl-lab tl-lab-sun');}
+        else if(e.k==='br'){const a=X(e.a),b=X(e.b); s+=`<path d="M${a} ${y+11} L${a} ${y+17} L${b} ${y+17} L${b} ${y+11}" class="tl-br"/>`; if(e.label) s+=lab((a+b)/2,y+36,e.label,'tl-lab tl-lab-soft');}
+      });
+    });
+    s+=`<line x1="18" y1="${axisY}" x2="580" y2="${axisY}" class="tl-axis"/><path d="M572 ${axisY-5} L580 ${axisY} L572 ${axisY+5}" class="tl-arrow"/>`;
+    s+=`<text x="20" y="${axisY+20}" class="tl-cap">PAST</text><text x="${nx}" y="${axisY+20}" text-anchor="middle" class="tl-cap tl-cap-now">NOW</text>`;
+    return `<svg viewBox="0 0 600 ${axisY+28}" class="tl" role="img" aria-label="Timeline">${s}</svg>`;
+  }
+
+  const TENSES=[
+    {key:'ps', name:'Past simple', f:'got · saw · boarded',
+      tl:[[{k:'x',at:20,label:'got to Terminal 1'},{k:'link',a:20,b:44},{k:'x',at:44,label:'saw the board',below:1},{k:'link',a:44,b:68},{k:'x',at:68,label:'boarded the plane'}]],
+      uses:[['a','Main events, in the order they happened','I <b>got</b> to Terminal 1… Then I <b>saw</b> the departures board.']],
+      ccq:[['“I got to the Terminal. Then I saw the board.” Which happened first?',['Getting to the Terminal','Seeing the board'],0,'With the past simple, the order of the sentences = the order of the events.']]},
+    {key:'pc', name:'Past continuous', f:'was snowing · were trying',
+      tl:[[{k:'span',a:14,b:66,wavy:1,label:'it was snowing'}],[{k:'x',at:40,label:'the plane moved to the runway'}]],
+      uses:[['b','Background: situations in progress around the main events','It <b>was snowing</b> heavily as the aircraft moved towards the runway.']],
+      ccq:[['When the plane moved to the runway, had the snow started?',['Yes, it was already falling','No, it started later'],0,'The past continuous shows a situation already in progress around the event.'],['Did the snow stop when the plane moved?',['Yes','We don’t know; probably not'],1,'The past continuous doesn’t tell us when it ended.']]},
+    {key:'pps', name:'Past perfect simple', f:'had checked in · had closed',
+      tl:[[{k:'x',at:20,label:'had checked in online'},{k:'link',a:20,b:52},{k:'flag',at:54,label:'got to the airport'}]],
+      uses:[['c','Completed actions before the main events (“the past before the past”)','Luckily, I <b>had checked in</b> online the night before.']],
+      warn:'If the order is already clear (<i>before, after, then</i>), the past simple is often fine: <i>I checked in online before I left.</i>',
+      ccq:[['When she got to the airport, was the check-in still to do?',['Yes','No, it was already done'],1,'Past perfect = finished before the main event.']]},
+    {key:'ppc', name:'Past perfect continuous', f:'had been looking forward',
+      tl:[[{k:'span',a:4,b:52,wavy:1,label:'had been looking forward to it for months'},{k:'flag',at:54,label:'the day of the flight'}]],
+      uses:[['d','A longer process that started before the main events and was still going on (or had only just stopped)','I <b>had been looking forward</b> to the trip for months.']],
+      ccq:[['Was it a short moment or a long process?',['A short moment','A long process, for months'],1,'Duration up to a past point → past perfect continuous (often with for / since / all day).']]},
+    {key:'pres', name:'Present perfect in stories', f:'I’ve been sitting · I’ve flown',
+      tl:[[{k:'span',a:28,b:56,wavy:1,label:'“I’ve been sitting here all day”'},{k:'flag',at:58,label:'her “now” on the phone'}],[{k:'x',at:20,label:'the wedding trip',below:1},{k:'x',at:50},{k:'x',at:63},{k:'x',at:76,label:'I’ve flown many times since'}]],
+      uses:[['e1','Inside a speaker’s actual words. The quote has its own “now”.','“<b>I’ve been sitting</b> in this airport all day,” I told her.'],['e2','To link the story to the moment of telling it','<b>I’ve flown</b> many times since then.']],
+      warn:'Never for the main events: ✗ <s>Last March I’ve flown to Edinburgh</s> → ✓ Last March I <b>flew</b> to Edinburgh.',
+      ccq:[['“I’ve flown many times since then.” Does this include today, the moment Elena is writing?',['Yes','No'],0,'Present perfect = from a past point up to now.']]}
+  ];
+  const tEl=document.getElementById('tenses');
+  TENSES.forEach(t=>{
+    const c=document.createElement('article'); c.className='tense';
+    c.innerHTML=`<div class="tense-head"><h3>${t.name}</h3><span class="mono">${esc(t.f)}</span></div>
+      <div class="tl-box">${renderTL(t.tl)}</div>
+      <ul class="uses">${t.uses.map(u=>`<li><span class="lt">(${u[0]})</span><span><b>${u[1]}</b><br><i>${u[2]}</i></span></li>`).join('')}</ul>
+      ${t.warn?`<p class="warn">${t.warn}</p>`:''}
+      <div class="ccq"><span class="mono">Check you understand</span>${t.ccq.map(q=>mcqHTML(q)).join('')}</div>`;
+    tEl.appendChild(c);
+  });
+
+  const PAIRS=[
+    ['When I got to the gate…',['past simple · one after the other','…the plane <b>left</b>. (I watched it go!)',[[{k:'x',at:44,label:'I got to the gate',below:1},{k:'link',a:44,b:62},{k:'x',at:62,label:'the plane left'}]]],['past perfect · already gone','…the plane <b>had left</b>. (It was gone.)',[[{k:'x',at:30,label:'the plane left'},{k:'link',a:30,b:56},{k:'x',at:56,label:'I got to the gate',below:1}]]]],
+    ['When we landed…',['past continuous · still happening','…it <b>was raining</b>.',[[{k:'span',a:24,b:80,wavy:1,label:'raining'},{k:'flag',at:54,label:'we landed'}]]],['past perfect continuous · just stopped','…it <b>had been raining</b>. (Everything was wet.)',[[{k:'span',a:16,b:50,wavy:1,label:'raining'},{k:'flag',at:56,label:'we landed'}]]]],
+    ['On the flight…',['past perfect simple · finished','I<b>’d read</b> the whole book by the time we landed.',[[{k:'x',at:40,label:'finished the book'},{k:'flag',at:62,label:'we landed'}]]],['past perfect continuous · activity','I<b>’d been reading</b> for hours, so my eyes hurt.',[[{k:'span',a:14,b:58,wavy:1,label:'reading… (finished? not important)'},{k:'flag',at:60,label:'we landed'}]]]],
+    ['Edinburgh visits',['present perfect · up to now','I<b>’ve been</b> to Edinburgh three times.',[[{k:'x',at:30},{k:'x',at:55},{k:'x',at:78,label:'3 visits so far'}]]],['past perfect · up to a past point','I<b>’d been</b> there three times before the wedding.',[[{k:'x',at:8},{k:'x',at:20},{k:'x',at:32,label:'3 visits'},{k:'flag',at:50,label:'the wedding'}]]]]
+  ];
+  document.getElementById('pairs').innerHTML=PAIRS.map(p=>`<div class="pair"><h3>${p[0]}</h3><div class="sides">${[p[1],p[2]].map(s=>`<div class="side"><span class="tag">${s[0]}</span><p>${s[1]}</p><div class="tl-box">${renderTL(s[2])}</div></div>`).join('')}</div></div>`).join('');
+
+  const RULE=[
+    ['Past simple','verb + '+gap('-ed,ed','w-s')+' / irregular past form (went, saw)'],
+    ['Past continuous',gap('was / were,was/were,was or were,was or were','w-l')+' + verb-ing'],
+    ['Past perfect simple',gap('had','w-s')+' + past participle'],
+    ['Past perfect continuous','had + '+gap('been','w-s')+' + verb-ing'],
+    ['Present perfect','have / has + '+gap('past participle,participle,v3,third form,3rd form')]
+  ];
+  document.getElementById('rule').innerHTML=RULE.map(r=>`<div class="rule-row"><b>${r[0]}</b><span class="f">${r[1]}</span></div>`).join('');
+
+  const MIS=[
+    ['When I arrived at the airport, I realised I forgot my passport.','…I realised I <b>had forgotten</b> my passport.','Forgetting happened before realising, so past perfect.'],
+    ['While I waited at security, my phone was ringing.','While I <b>was waiting</b> at security, my phone <b>rang</b>.','Background = past continuous; short main event = past simple.'],
+    ['Last summer I’ve been stuck in Terminal 2 for ten hours.','Last summer I <b>was stuck</b> in Terminal 2 for ten hours.','A finished time (last summer) needs the past simple.'],
+    ['The passengers were tired because they had been waited for hours.','…because they <b>had been waiting</b> for hours.','Past perfect continuous = had + been + -ing.']
+  ];
+  const misEl=document.getElementById('mistakes');
+  MIS.forEach(m=>{const d=document.createElement('div'); d.className='mis'; d.innerHTML=`<p class="wrongs">${m[0]}</p><p class="fix" hidden>✓ ${m[1]} <span class="note" style="font-weight:400">${m[2]}</span></p><button type="button" aria-expanded="false">Show correction</button>`;
+    const b=d.querySelector('button'),f=d.querySelector('.fix'); b.addEventListener('click',()=>{f.hidden=!f.hidden; b.textContent=f.hidden?'Show correction':'Hide correction'; b.setAttribute('aria-expanded',String(!f.hidden));}); misEl.appendChild(d);});
+
+  /* ---------- practice 1: story ---------- */
+  let n=0;
+  const V=(cue,ans,cls)=>`<span class="num">${++n}</span>${gap(ans,cls||'w-l','gap '+n)} <span class="cue">(${cue})</span>`;
+  document.getElementById('story2').innerHTML=
+    `<p>Last summer, my brother and I ${V('fly','flew','w-s')} to Tenerife. We ${V('save',"had been saving,'d been saving,had saved,'d saved")} for the holiday for a whole year, so we were really excited.</p>`+
+    `<p>Just after take-off, while the cabin crew ${V('serve','were serving')} drinks, the plane suddenly ${V('drop','dropped','w-s')} about fifty metres. Everyone screamed. A few minutes later the captain ${V('announce','announced')} that we ${V('fly','were flying')} through a storm and told us to keep our seatbelts on.</p>`+
+    `<p>When we finally ${V('land','landed','w-s')} (after the bumpiest landing of my life) we discovered that the airline ${V('lose',"had lost,'d lost")} our suitcases. We ${V('not / eat',"hadn't eaten,had not eaten,'d not eaten")} anything since breakfast, so we were starving and exhausted.</p>`+
+    `<p>My brother still talks about it. “I ${V('never / be',"'ve never been,have never been")} so scared in my life!” he always says.</p>`;
+
+  /* ---------- practice 2: meaning ---------- */
+  const MEAN=[
+    ['When we got to the gate, they had closed it.',['We arrived after it closed.','They closed it when they saw us.'],0,'Had closed = before we arrived.'],
+    ['When we got to the gate, they closed it.',['We arrived after it closed.','We arrived, then they closed it.'],1,'Two past simple verbs = one after the other.'],
+    ['When the plane landed, it was raining.',['It was raining during the landing.','The rain stopped before the landing.'],0,'Past continuous = in progress at that moment.'],
+    ['When the plane landed, it had been raining.',['It was raining hard during the landing.','The rain had (probably) just stopped; the runway was wet.'],1,'Past perfect continuous = an activity up to (or just before) that moment.'],
+    ['I’d been reading my book on the flight.',['We know the book is finished.','The activity matters, not whether it was finished.'],1,'The continuous focuses on the activity and its duration.'],
+    ['By the time we landed, I’d read my book.',['The book was finished before landing.','I started reading after we landed.'],0,'Past perfect simple = completed before a past point.']
+  ];
+  document.getElementById('meaning').innerHTML=MEAN.map((q,i)=>mcqHTML(q,i)).join('');
+
+  /* ---------- practice 3: vocab gaps ---------- */
+  const VG=[
+    ['The pilot invited my little brother into the',' to see all the controls.','cockpit'],
+    ['Passengers for Paris must go to',' 2, not 1. It’s a ten-minute walk.','terminal,terminal 2'],
+    ['The',' was covered in ice, so no planes could take off.','runway'],
+    ['The',' were brilliant: they calmed everyone down and brought us extra blankets.','cabin crew'],
+    ['I had to take off my shoes and belt at',', and the alarm still went off!','security'],
+    ['The',' was over forty years old. No wonder it was so noisy.','aircraft'],
+    ['Because of the strike, we were',' on the plane for two hours before we could get off.','stuck'],
+    ['After a very',', all the passengers clapped when the plane finally stopped.','bumpy landing']
+  ];
+  document.getElementById('vgap').innerHTML=VG.map((v,i)=>`<p>${esc(v[0])} ${gap(v[2],'','vocabulary gap '+(i+1))}${esc(v[1])}</p>`).join('');
+
+  /* ---------- generic checking ---------- */
+  const norm=s=>String(s).toLowerCase().replace(/[’‘`]/g,"'").replace(/\s+/g,' ').trim().replace(/^(an?|the)\s+/,'');
+  function score(ex,ok,total){const sc=ex.querySelector(':scope > .sub .score'); if(!sc) return; sc.textContent=total?`${ok} / ${total}`:''; sc.classList.toggle('full',!!total&&ok===total);}
+  document.querySelectorAll('.ex').forEach(ex=>{
+    const chk=ex.querySelector(':scope > .btns .check'), show=ex.querySelector(':scope > .btns .show'), rst=ex.querySelector(':scope > .btns .reset');
+    const fields=()=>[...ex.querySelectorAll('[data-ans]')];
+    if(chk) chk.addEventListener('click',()=>{ let ok=0; const fs=fields(); fs.forEach(f=>{ const alts=f.dataset.ans.split(',').map(norm); const v=norm(f.value); const good=!!v&&alts.includes(v); f.classList.toggle('ok',good); f.classList.toggle('bad',!good); if(good) ok++; }); score(ex,ok,fs.length); });
+    if(show) show.addEventListener('click',()=>{ fields().forEach(f=>{ if(f.classList.contains('ok')) return; const nx=f.nextElementSibling; if(nx&&nx.classList.contains('key')) return; const k=document.createElement('span'); k.className='key'; k.textContent='→ '+f.dataset.ans.split(',')[0]; f.after(k); }); });
+    if(rst) rst.addEventListener('click',()=>{ fields().forEach(f=>{ f.value=''; f.classList.remove('ok','bad'); }); ex.querySelectorAll('.key').forEach(k=>k.remove()); ex.querySelectorAll('.mcq').forEach(q=>{ q.classList.remove('done'); q.dataset.res=''; q.querySelectorAll('.opt').forEach(o=>o.classList.remove('right','wrong')); }); score(ex,0,0); });
+  });
+  document.querySelectorAll('.mcq').forEach(q=>{
+    q.querySelectorAll('.opt').forEach((o,i)=>o.addEventListener('click',()=>{
+      if(q.classList.contains('done')) return;
+      if(i===+q.dataset.c){ o.classList.add('right'); q.classList.add('done'); q.dataset.res=q.querySelector('.wrong')?'0':'1'; }
+      else o.classList.add('wrong');
+      const ex=q.closest('.block.ex'); if(ex){ const all=[...ex.querySelectorAll('.mcq')]; score(ex,all.filter(x=>x.dataset.res==='1').length,all.length); }
+    }));
+  });
+
+  /* ---------- freer: scenarios ---------- */
+  const SCEN=[
+    ['Snowed in','Your flight to Oslo was cancelled after a six-hour delay because of snow on the runway. You had to sleep on chairs in the Terminal, and you missed the first day of your new job.',['I’d been waiting for six hours when…','While I was trying to sleep on the chairs, …','I’ve never been treated like this before!']],
+    ['The lost suitcase','You flew to Milan for an important business meeting. After a bumpy landing, your suitcase never appeared. Your suit and laptop were inside. It’s now in Lisbon.',['I had packed everything I needed for…','When we landed, I was waiting at the carousel for…','Nobody from the cabin crew…']],
+    ['The missed connection','The security queue in Frankfurt took two hours, so you missed your connecting flight to Barcelona. Nobody helped you, and you were stuck at the airport overnight.',['By the time I got through security, my flight had already…','I had been queuing for two hours when…','I’ve been travelling for 24 hours now!']]
+  ];
+  const tabs=document.getElementById('tabs'), scen=document.getElementById('scenario'), tips=document.getElementById('scenarioTips');
+  function pick(i){ tabs.querySelectorAll('.tab').forEach((t,j)=>t.setAttribute('aria-selected',String(i===j))); scen.textContent=SCEN[i][1]; tips.innerHTML=SCEN[i][2].map(t=>`<li><i>${esc(t)}</i></li>`).join(''); }
+  tabs.innerHTML=SCEN.map((s,i)=>`<button type="button" class="tab" role="tab" id="tab${i}">${s[0]}</button>`).join('');
+  tabs.querySelectorAll('.tab').forEach((t,i)=>t.addEventListener('click',()=>pick(i)));
+  pick(0);
+
+  /* ---------- freer: review checklist ---------- */
+  const VOC=/\b(aircraft|bumpy landing|cabin crew|cockpit|runway|security|stuck|terminal)\b/gi;
+  const CHECKS=[
+    ['Past continuous',/\b(was|were)\s+\w+ing\b/i],
+    ['Past perfect simple',/\bhad\s+(never\s+|already\s+|just\s+)?(?!been\s+\w+ing\b)\w+/i],
+    ['Past perfect continuous',/\bhad\s+been\s+\w+ing\b/i],
+    ['Present perfect',/\b(have|has|i've|we've|they've|you've)\s+(never\s+|ever\s+|just\s+|already\s+)?\w+(ed|en|n|t|been)\b/i],
+    ['3 vocabulary items',null]
+  ];
+  const cl=document.getElementById('checklist'); cl.innerHTML=CHECKS.map((c,i)=>`<li id="ck${i}">${c[0]}</li>`).join('');
+  const rv=document.getElementById('review'), wc=document.getElementById('wc');
+  function runChecks(){
+    const t=rv.value.replace(/[’‘]/g,"'");
+    CHECKS.forEach((c,i)=>{ const li=document.getElementById('ck'+i); if(c[1]) li.classList.toggle('done',c[1].test(t)); else { const m=new Set((t.match(VOC)||[]).map(s=>s.toLowerCase())); li.textContent=`Vocabulary: ${m.size} / 3`; li.classList.toggle('done',m.size>=3); } });
+    const w=(rv.value.trim().match(/\S+/g)||[]).length; wc.textContent=w+' words'; wc.style.color=w>=80&&w<=100?'var(--ok)':'var(--ink-soft)';
+  }
+  rv.addEventListener('input',runChecks); runChecks();
+
+  /* ---------- confidence ---------- */
+  const LV=['needs practice','getting there','confident'];
+  const CONF=['Past simple','Past continuous','Past perfect simple','Past perfect continuous','Present perfect in stories','Air-travel vocabulary'];
+  document.getElementById('conf').innerHTML=CONF.map((c,i)=>`<div class="conf-row"><label for="c${i}">${c}</label><input type="range" id="c${i}" min="0" max="2" step="1" value="1"><output id="o${i}">${LV[1]}</output></div>`).join('');
+  CONF.forEach((_,i)=>{ const r=document.getElementById('c'+i), o=document.getElementById('o'+i); const upd=()=>{o.textContent=LV[r.value]; o.style.color=['var(--bad)','var(--sun)','var(--ok)'][r.value];}; r.addEventListener('input',upd); upd(); });
+
+  /* ---------- cheat sheet ---------- */
+  const FORMS={ps:'verb-ed / irregular',pc:'was/were + -ing',pps:'had + V3',ppc:'had + been + -ing',pres:'have/has + V3 (quotes, link to now)'};
+  document.getElementById('cheat').innerHTML=TENSES.map(t=>`<div class="cheat-card"><b>${t.name}</b><span class="f">${FORMS[t.key]}</span>${renderTL(t.tl)}</div>`).join('');
+})();
+</script>
