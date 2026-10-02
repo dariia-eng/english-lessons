@@ -1,0 +1,284 @@
+<title>Nightmare Flights Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF2F2; --surface:#FFFFFF; --surface-2:#E3EBEB; --ink:#13263A; --ink-soft:#4C5F70; --line:#C8D5D7;
+  --teal:#0B6E6A; --teal-soft:#D3ECE9; --coral:#D9502B; --coral-soft:#FBE3D9; --sun:#B67B06; --sun-soft:#F7EBCD;
+  --ok:#1E7F4F; --ok-soft:#DDF3E6; --bad:#B8362A; --bad-soft:#FBE1DD; --on-teal:#FFFFFF;
+  --f-display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0C1824; --surface:#132536; --surface-2:#1A3045; --ink:#E4EEF1; --ink-soft:#9DB2BF; --line:#294560;
+    --teal:#52C2B8; --teal-soft:#153E42; --coral:#FF7C57; --coral-soft:#48241A; --sun:#F2B84B; --sun-soft:#3B2F14;
+    --ok:#52C98E; --ok-soft:#143A29; --bad:#FF8373; --bad-soft:#452019; --on-teal:#0C1824;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0C1824; --surface:#132536; --surface-2:#1A3045; --ink:#E4EEF1; --ink-soft:#9DB2BF; --line:#294560;
+  --teal:#52C2B8; --teal-soft:#153E42; --coral:#FF7C57; --coral-soft:#48241A; --sun:#F2B84B; --sun-soft:#3B2F14;
+  --ok:#52C98E; --ok-soft:#143A29; --bad:#FF8373; --bad-soft:#452019; --on-teal:#0C1824;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg); color:var(--ink); font-family:var(--f-body); font-size:17px; line-height:1.55}
+h1,h2,h3{font-family:var(--f-display); line-height:1.15; margin:0; text-wrap:balance}
+p{margin:0}
+button{font:inherit; cursor:pointer}
+:focus-visible{outline:3px solid var(--coral); outline-offset:2px}
+.mono{font-family:var(--f-mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase}
+
+.hero{background:var(--teal); color:var(--on-teal)}
+.hero-in{max-width:820px; margin:0 auto; padding-inline:16px; padding-block:30px 26px; display:grid; gap:8px; position:relative}
+.hero h1{font-size:clamp(1.8rem,5vw,2.6rem); font-weight:800; letter-spacing:-.01em; padding-right:44px}
+.hero p{opacity:.9; max-width:60ch}
+.hero .mono{opacity:.85}
+.theme-btn{position:absolute; right:16px; top:24px; border:1.5px solid currentColor; background:transparent; color:inherit; border-radius:999px; width:36px; height:36px; display:grid; place-items:center}
+
+.name-bar{position:sticky; top:env(safe-area-inset-top,0px); z-index:10; background:color-mix(in srgb,var(--bg) 90%,transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--line)}
+.name-in{max-width:820px; margin:0 auto; padding-inline:16px; padding-block:10px; display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center}
+.name-in label{font-weight:700; font-size:.92rem}
+#nameInput{font:inherit; font-size:.95rem; color:var(--ink); background:var(--surface); border:1.5px solid var(--line); border-radius:999px; padding:6px 14px; width:min(240px,100%)}
+#nameInput:focus{outline:none; border-color:var(--teal)}
+.prog{display:flex; align-items:center; gap:10px; flex:1; min-width:180px}
+.ptrack{flex:1; height:8px; background:var(--surface-2); border-radius:999px; overflow:hidden}
+#pfill{height:100%; width:0; background:var(--coral); border-radius:999px; transition:width .4s ease}
+#plabel{font-family:var(--f-mono); font-size:.8rem; color:var(--ink-soft)}
+
+.wrap{max-width:820px; margin:0 auto; padding-inline:16px; padding-block:28px 64px; display:grid; gap:20px}
+.ex-card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px; display:grid; gap:14px}
+.ex-hd{display:flex; gap:12px; align-items:baseline; justify-content:space-between; flex-wrap:wrap}
+.ex-hd h2{font-size:1.35rem; font-weight:700}
+.ex-hd h2 span{font-family:var(--f-mono); font-size:.8rem; color:var(--coral); margin-right:8px; letter-spacing:.08em}
+.ex-instr{color:var(--ink-soft); font-size:.95rem}
+.score{font-family:var(--f-mono); font-size:.85rem; color:var(--ink-soft)}
+.score.full{color:var(--ok)}
+.btns{display:flex; gap:8px; flex-wrap:wrap}
+.btn{border:0; border-radius:999px; padding:9px 18px; font-weight:700; font-size:.92rem}
+.btn-main{background:var(--teal); color:var(--on-teal)}
+.btn-ghost{background:transparent; color:var(--ink-soft); border:1.5px solid var(--line)}
+.tagline{display:inline-block; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; padding:3px 8px; border-radius:6px; background:var(--teal-soft); color:var(--teal)}
+.tagline.g{background:var(--coral-soft); color:var(--coral)}
+
+.q{display:grid; gap:8px; padding-bottom:14px; border-bottom:1px dashed var(--line)}
+.q:last-child{border-bottom:0; padding-bottom:0}
+.q-text{font-weight:700}
+.opts{display:flex; flex-wrap:wrap; gap:8px}
+.opt{border:1.5px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px; padding:7px 14px; font-size:.95rem}
+.opt:hover{border-color:var(--teal)}
+.opt.sel{border-color:var(--teal); background:var(--teal-soft)}
+.opt.right{background:var(--ok-soft); border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft); border-color:var(--bad); text-decoration:line-through}
+.opt.reveal{border-color:var(--ok); border-style:dashed}
+
+.match{display:grid; grid-template-columns:1fr 1fr; gap:10px 18px}
+.col{display:grid; gap:8px; align-content:start}
+.col .mono{color:var(--ink-soft)}
+.mi{border:1.5px solid var(--line); background:var(--surface); color:var(--ink); border-radius:10px; padding:9px 12px; text-align:left; font-size:.93rem; display:flex; gap:10px; align-items:flex-start}
+.mi:hover{border-color:var(--teal)}
+.mi .tag{flex:none; font-family:var(--f-mono); font-size:.72rem; font-weight:700; min-width:1.8em; height:1.8em; border-radius:6px; display:grid; place-items:center; background:var(--surface-2); color:var(--ink-soft)}
+.mi.active{border-color:var(--coral); background:var(--coral-soft)}
+.mi.paired .tag{background:var(--teal); color:var(--on-teal)}
+.mi.right{border-color:var(--ok); background:var(--ok-soft)}
+.mi.wrong{border-color:var(--bad); background:var(--bad-soft)}
+@media (max-width:600px){ .match{grid-template-columns:1fr} }
+
+.story{background:var(--sun-soft); border-radius:12px; padding:20px 22px; line-height:2.15; max-width:70ch; display:grid; gap:8px}
+.story .ttl{font-family:var(--f-display); font-weight:700; font-size:1.15rem}
+.gap{font:inherit; font-size:.95rem; border:0; border-bottom:2px solid var(--line); background:var(--surface); color:var(--ink); padding:2px 8px; border-radius:6px 6px 0 0; width:10em; max-width:100%}
+.gap.w-s{width:6em} .gap.w-l{width:13em}
+.gap:focus{outline:none; border-bottom-color:var(--teal)}
+.gap.ok{border-bottom-color:var(--ok); background:var(--ok-soft)}
+.gap.bad{border-bottom-color:var(--bad); background:var(--bad-soft)}
+.cue{font-size:.8rem; color:var(--ink-soft); font-style:italic}
+.num{font-family:var(--f-mono); font-size:.7rem; color:var(--coral); vertical-align:super}
+.key{font-family:var(--f-mono); font-size:.76rem; margin-left:4px}
+
+.bonus textarea{font:inherit; font-size:.95rem; color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:10px 12px; min-height:130px; width:100%; resize:vertical}
+.bonus textarea:focus{outline:none; border-color:var(--teal)}
+.wc{font-family:var(--f-mono); font-size:.78rem; color:var(--ink-soft)}
+.done-card{background:var(--teal-soft); border-radius:14px; padding:20px 22px; display:grid; gap:6px}
+.done-card b{font-family:var(--f-display); font-size:1.4rem}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+
+<header class="hero">
+  <div class="hero-in">
+    <span class="mono">Homework · English Hub B2+ · Unit 1.2</span>
+    <h1>Nightmare flights</h1>
+    <p>Air-travel vocabulary and past forms. It takes about 20 minutes.</p>
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+  </div>
+</header>
+
+<div class="name-bar">
+  <div class="name-in">
+    <label for="nameInput">Your name:</label>
+    <input id="nameInput" type="text" placeholder="Type your name…" autocomplete="off">
+    <div class="prog" aria-label="Progress"><div class="ptrack"><div id="pfill"></div></div><span id="plabel">0 / 3</span></div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section class="ex-card" id="ex1">
+    <div class="ex-hd"><h2><span>01</span>Which word fits?</h2><span class="score" id="s1"></span></div>
+    <span class="tagline">Vocabulary</span>
+    <p class="ex-instr">Choose the best word for each sentence, then press Check.</p>
+    <div id="mcq"></div>
+    <div class="btns"><button class="btn btn-main" id="c1">Check</button><button class="btn btn-ghost" id="r1">Reset</button></div>
+  </section>
+
+  <section class="ex-card" id="ex2">
+    <div class="ex-hd"><h2><span>02</span>Match the halves</h2><span class="score" id="s2"></span></div>
+    <span class="tagline g">Grammar</span>
+    <p class="ex-instr">Click a beginning (A–H), then click the ending that completes it. Look carefully at the verb forms!</p>
+    <div class="match">
+      <div class="col" id="left"><span class="mono">Beginnings</span></div>
+      <div class="col" id="right"><span class="mono">Endings</span></div>
+    </div>
+    <div class="btns"><button class="btn btn-main" id="c2">Check</button><button class="btn btn-ghost" id="r2">Reset</button></div>
+  </section>
+
+  <section class="ex-card" id="ex3">
+    <div class="ex-hd"><h2><span>03</span>Stuck in Lisbon</h2><span class="score" id="s3"></span></div>
+    <span class="tagline g">Grammar + vocabulary</span>
+    <p class="ex-instr">Put the verbs in brackets into the best past form. For the other gaps, write a word from the lesson (the first letters are given). Contractions (’d, ’ve) are fine.</p>
+    <div class="story" id="story"></div>
+    <div class="btns"><button class="btn btn-main" id="c3">Check</button><button class="btn btn-ghost" id="r3">Reset</button></div>
+  </section>
+
+  <section class="ex-card bonus">
+    <div class="ex-hd"><h2><span>+</span>Bonus: your worst journey</h2><span class="wc" id="wc">0 words</span></div>
+    <p class="ex-instr">Write 80–100 words about a journey that went wrong (true or invented). Use at least four different past forms and three words from the lesson. Bring it to our next class.</p>
+    <label for="bonusText" class="mono" style="color:var(--ink-soft)">Your story</label>
+    <textarea id="bonusText" placeholder="A few years ago I was flying to… I had been looking forward to it for weeks, but…"></textarea>
+  </section>
+
+  <div class="done-card" id="doneCard" hidden>
+    <span class="mono" style="color:var(--teal)">All done</span>
+    <b id="doneText"></b>
+    <p>Take a screenshot of this page to show me in our next lesson.</p>
+  </div>
+</main>
+
+<script>
+(function(){
+  const root=document.documentElement;
+  document.getElementById('themeBtn').addEventListener('click',()=>{
+    const cur=root.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    root.setAttribute('data-theme',cur==='dark'?'light':'dark');
+  });
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  const done={ex1:false, ex2:false, ex3:false};
+  const scores={ex1:[0,0], ex2:[0,0], ex3:[0,0]};
+  function updateProgress(){
+    const n=Object.values(done).filter(Boolean).length, total=Object.keys(done).length;
+    document.getElementById('pfill').style.width=(n/total*100)+'%';
+    document.getElementById('plabel').textContent=n+' / '+total;
+    const card=document.getElementById('doneCard'); card.hidden=n<total;
+    if(n===total){
+      const got=scores.ex1[0]+scores.ex2[0]+scores.ex3[0], all=scores.ex1[1]+scores.ex2[1]+scores.ex3[1];
+      const name=document.getElementById('nameInput').value.trim();
+      document.getElementById('doneText').textContent=(name?name+', your':'Your')+' score: '+got+' / '+all;
+    }
+  }
+  function setScore(id,ok,total){ const el=document.getElementById(id); el.textContent=total?ok+' / '+total:''; el.classList.toggle('full',!!total&&ok===total); }
+
+  /* ---------- Ex 1: vocabulary MCQ ---------- */
+  const MCQ=[
+    ['Our flight was cancelled and every hotel was full, so we were ___ at the airport all night.',['stuck','security','aircraft'],0],
+    ['You can’t take liquids over 100 ml through ___.',['security','the runway','the cockpit'],0],
+    ['The ___ showed us how to put on the oxygen masks.',['cabin crew','cockpit','Terminal'],0],
+    ['Low-cost flights to Rome leave from ___ 2.',['Terminal','runway','aircraft'],0],
+    ['The plane sat on the ___ for forty minutes before it could take off.',['runway','Terminal','cabin crew'],0],
+    ['Only the pilots are allowed in the ___.',['cockpit','cabin crew','security'],0],
+    ['The airline uses a smaller ___ on this route, with just 70 seats.',['aircraft','cockpit','runway'],0],
+    ['My coffee went everywhere because of the ___.',['bumpy landing','security','Terminal'],0]
+  ];
+  const mcqEl=document.getElementById('mcq');
+  MCQ.forEach((q,i)=>{
+    const correct=q[1][q[2]]; const opts=q[1].slice().sort(()=>Math.random()-.5);
+    const d=document.createElement('div'); d.className='q'; d.dataset.correct=correct;
+    d.innerHTML=`<p class="q-text">${i+1}. ${esc(q[0]).replace('___','<span style="color:var(--coral)">_____</span>')}</p><div class="opts">${opts.map(o=>`<button class="opt" type="button" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>`;
+    d.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{ if(d.dataset.locked) return; d.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); }));
+    mcqEl.appendChild(d);
+  });
+  document.getElementById('c1').addEventListener('click',()=>{
+    let ok=0; const qs=[...mcqEl.querySelectorAll('.q')];
+    qs.forEach(q=>{ q.dataset.locked='1'; const sel=q.querySelector('.opt.sel');
+      q.querySelectorAll('.opt').forEach(o=>{ o.classList.remove('right','wrong','reveal'); if(o.dataset.v===q.dataset.correct) o.classList.add(sel===o?'right':'reveal'); });
+      if(sel){ if(sel.dataset.v===q.dataset.correct) ok++; else sel.classList.add('wrong'); }
+    });
+    setScore('s1',ok,qs.length); scores.ex1=[ok,qs.length]; done.ex1=true; updateProgress();
+  });
+  document.getElementById('r1').addEventListener('click',()=>{
+    mcqEl.querySelectorAll('.q').forEach(q=>{ delete q.dataset.locked; q.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel','right','wrong','reveal')); });
+    setScore('s1',0,0); done.ex1=false; updateProgress();
+  });
+
+  /* ---------- Ex 2: match the halves ---------- */
+  const PAIRS=[
+    ['By the time we reached the gate,','the plane had already left.'],
+    ['While the cabin crew were serving lunch,','the plane suddenly started to shake.'],
+    ['We were exhausted because','we had been travelling for nineteen hours.'],
+    ['I couldn’t get through security quickly because','I’d forgotten to take my laptop out of my bag.'],
+    ['When the pilot announced another delay,','everyone groaned.'],
+    ['“I’ve never had such a bumpy landing,”','my dad said as we got off.'],
+    ['The runway was completely white because','it had been snowing all night.'],
+    ['I’ve flown with that airline twice since then,','and luckily nothing has gone wrong.']
+  ];
+  const L='ABCDEFGH';
+  const leftEl=document.getElementById('left'), rightEl=document.getElementById('right');
+  PAIRS.forEach((p,i)=>leftEl.insertAdjacentHTML('beforeend',`<button type="button" class="mi" data-i="${i}"><span class="tag">${L[i]}</span><span>${esc(p[0])}</span></button>`));
+  PAIRS.map((_,i)=>i).sort(()=>Math.random()-.5).forEach(i=>rightEl.insertAdjacentHTML('beforeend',`<button type="button" class="mi" data-i="${i}"><span class="tag">–</span><span>${esc(PAIRS[i][1])}</span></button>`));
+  let active=null; const pairs={};
+  const lBtn=i=>leftEl.querySelector(`.mi[data-i="${i}"]`), rBtn=i=>rightEl.querySelector(`.mi[data-i="${i}"]`);
+  function paint(){
+    leftEl.querySelectorAll('.mi').forEach(b=>{ b.classList.toggle('paired',pairs[b.dataset.i]!==undefined); b.classList.toggle('active',active===b.dataset.i); });
+    rightEl.querySelectorAll('.mi').forEach(b=>{ const li=Object.keys(pairs).find(k=>String(pairs[k])===b.dataset.i); b.querySelector('.tag').textContent=li!==undefined?L[li]:'–'; b.classList.toggle('paired',li!==undefined); });
+  }
+  const clearMarks=()=>document.querySelectorAll('#ex2 .mi').forEach(b=>b.classList.remove('right','wrong'));
+  leftEl.addEventListener('click',e=>{ const b=e.target.closest('.mi'); if(!b) return; clearMarks(); active=active===b.dataset.i?null:b.dataset.i; paint(); });
+  rightEl.addEventListener('click',e=>{ const b=e.target.closest('.mi'); if(!b||active===null) return; clearMarks(); const ri=b.dataset.i; Object.keys(pairs).forEach(k=>{ if(String(pairs[k])===ri) delete pairs[k]; }); pairs[active]=ri; active=null; paint(); });
+  document.getElementById('c2').addEventListener('click',()=>{
+    let ok=0; clearMarks();
+    PAIRS.forEach((_,i)=>{ const r=pairs[i]; if(r===undefined){ lBtn(i).classList.add('wrong'); return; } const good=String(r)===String(i); lBtn(i).classList.add(good?'right':'wrong'); rBtn(r).classList.add(good?'right':'wrong'); if(good) ok++; });
+    setScore('s2',ok,PAIRS.length); scores.ex2=[ok,PAIRS.length]; done.ex2=true; updateProgress();
+  });
+  document.getElementById('r2').addEventListener('click',()=>{ Object.keys(pairs).forEach(k=>delete pairs[k]); active=null; clearMarks(); paint(); setScore('s2',0,0); done.ex2=false; updateProgress(); });
+
+  /* ---------- Ex 3: story ---------- */
+  let n=0;
+  const V=(cue,ans,cls)=>`<span class="num">${++n}</span><input class="gap ${cls||'w-l'}" data-ans="${esc(ans)}" autocomplete="off" spellcheck="false" aria-label="gap ${n}"> <span class="cue">(${cue})</span>`;
+  const W=(hint,ans,cls)=>`<span class="num">${++n}</span><input class="gap ${cls||''}" data-ans="${esc(ans)}" data-strip="1" placeholder="${hint}" autocomplete="off" spellcheck="false" aria-label="gap ${n}">`;
+  document.getElementById('story').innerHTML=
+    `<p class="ttl">Stuck in Lisbon</p>`+
+    `<p>Two years ago, I ${V('fly','flew','w-s')} to Lisbon for a work conference. I ${V('book',"had booked,'d booked")} my ticket months before, so I was sure everything would be fine.</p>`+
+    `<p>When I arrived at ${W('T_______','terminal,terminal 1')} 1, the queue at ${W('s_______','security')} was enormous. I ${V('queue',"had been queuing,'d been queuing,had been queueing,'d been queueing")} for over an hour when I ${V('hear','heard','w-s')} my name over the speakers: my gate was closing! I ran, but by the time I got there, the doors ${V('close',"had closed,'d closed")}.</p>`+
+    `<p>The next flight wasn’t until the evening, so I was ${W('s____','stuck','w-s')} at the airport for nine hours. When I finally boarded, I ${V('not / sleep',"hadn't slept,had not slept,'d not slept")} for almost a whole day. The flight was fine, but we had a very ${W('b____ l______','bumpy landing','w-l')}, and even the ${W('c____ c___','cabin crew','w-l')} looked scared.</p>`+
+    `<p>I ${V('be',"'ve been,have been")} back to Lisbon twice since then, and I always arrive at the airport three hours early!</p>`;
+  const norm=(s,strip)=>{ s=String(s).toLowerCase().replace(/[’‘`]/g,"'").replace(/\s+/g,' ').trim(); if(strip) s=s.replace(/^(an?|the)\s+/,''); return s; };
+  const gaps=()=>[...document.querySelectorAll('#story .gap')];
+  document.getElementById('c3').addEventListener('click',()=>{
+    let ok=0; document.querySelectorAll('#story .key').forEach(k=>k.remove());
+    gaps().forEach(g=>{ const strip=!!g.dataset.strip; const alts=g.dataset.ans.split(',').map(a=>norm(a,strip)); const v=norm(g.value,strip); const good=!!v&&alts.includes(v);
+      g.classList.toggle('ok',good); g.classList.toggle('bad',!good);
+      const k=document.createElement('span'); k.className='key'; k.style.color=good?'var(--ok)':'var(--bad)'; k.textContent=good?'✓':'✗ '+g.dataset.ans.split(',')[0]; g.after(k); if(good) ok++; });
+    setScore('s3',ok,gaps().length); scores.ex3=[ok,gaps().length]; done.ex3=true; updateProgress();
+  });
+  document.getElementById('r3').addEventListener('click',()=>{ gaps().forEach(g=>{ g.value=''; g.classList.remove('ok','bad'); }); document.querySelectorAll('#story .key').forEach(k=>k.remove()); setScore('s3',0,0); done.ex3=false; updateProgress(); });
+
+  const bt=document.getElementById('bonusText'), wc=document.getElementById('wc');
+  bt.addEventListener('input',()=>{ const w=(bt.value.trim().match(/\S+/g)||[]).length; wc.textContent=w+' words'; wc.style.color=w>=80&&w<=100?'var(--ok)':'var(--ink-soft)'; });
+  document.getElementById('nameInput').addEventListener('input',updateProgress);
+  updateProgress();
+})();
+</script>
