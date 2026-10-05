@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 3D Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap">
+<style>
+:root {
+  --teal: #0b727a;
+  --teal-d: #085c63;
+  --teal-light: #e0f2f3;
+  --orange: #f07440;
+  --bg: #f4f9fa;
+  --card: #ffffff;
+  --text: #1a2a2b;
+  --muted: #5a7071;
+  --border: #c8dfe0;
+  --green: #2e7d32;
+  --green-bg: #e8f5e9;
+  --red: #c62828;
+  --red-bg: #ffebee;
+  --amber-bg: #fff8e1;
+  --radius: 14px;
+  --shadow: 0 2px 10px rgba(11,114,122,0.10);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1c1d; --card: #162526; --text: #dff0f1;
+    --muted: #7eb5b8; --border: #1f3a3b; --teal-light: #0d2829;
+    --green-bg: #1a3a1c; --red-bg: #3a1414; --amber-bg: #2a1e00;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1c1d; --card: #162526; --text: #dff0f1;
+  --muted: #7eb5b8; --border: #1f3a3b; --teal-light: #0d2829;
+  --green-bg: #1a3a1c; --red-bg: #3a1414; --amber-bg: #2a1e00;
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+/* HEADER */
+.hw-header { background: var(--teal); color: #fff; padding: 36px 24px 28px; text-align: center; position: relative; }
+.hw-eyebrow { font-family: 'Poppins', sans-serif; font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+.hw-header h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.35rem, 4vw, 1.9rem); font-weight: 700; margin-bottom: 6px; text-wrap: balance; }
+.hw-sub { font-size: 0.92rem; opacity: 0.82; }
+.theme-btn { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.15); border: none; border-radius: 8px; color: #fff; cursor: pointer; font-size: 1.1rem; padding: 6px 10px; line-height: 1; }
+.theme-btn:focus-visible { outline: 2px solid #fff; }
+
+/* NAME BAR */
+.name-bar { position: sticky; top: 0; z-index: 10; background: var(--card); border-bottom: 2px solid var(--teal); display: flex; align-items: center; gap: 10px; padding: 10px 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.07); }
+.name-bar label { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.82rem; color: var(--teal); white-space: nowrap; }
+.name-bar input { flex: 1; max-width: 280px; border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 12px; font-family: 'Inter', sans-serif; font-size: 0.9rem; background: var(--bg); color: var(--text); outline: none; }
+.name-bar input:focus { border-color: var(--teal); }
+
+/* PROGRESS */
+.progress-wrap { background: var(--card); border-bottom: 1px solid var(--border); padding: 10px 20px; display: flex; align-items: center; gap: 12px; }
+.progress-track { flex: 1; height: 7px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--orange); border-radius: 99px; width: 0%; transition: width 0.4s ease; }
+.progress-label { font-family: 'Poppins', sans-serif; font-size: 0.78rem; font-weight: 700; color: var(--teal); min-width: 36px; text-align: right; }
+
+/* MAIN */
+main { max-width: 720px; margin: 0 auto; padding: 24px 16px 56px; display: flex; flex-direction: column; gap: 20px; }
+
+/* EXERCISE CARD */
+.ex-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.ex-hd { background: var(--teal); color: #fff; padding: 13px 20px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.92rem; display: flex; align-items: center; gap: 10px; }
+.ex-num { background: rgba(255,255,255,0.18); border-radius: 6px; padding: 2px 9px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; }
+.ex-body { padding: 20px; }
+.ex-instr { font-size: 0.88rem; color: var(--muted); margin-bottom: 16px; font-style: italic; }
+
+/* BUTTONS */
+.btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; align-items: center; }
+.check-btn { background: var(--teal); color: #fff; border: none; border-radius: 8px; padding: 9px 22px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.83rem; cursor: pointer; }
+.check-btn:hover { background: var(--teal-d); }
+.reset-btn { background: transparent; color: var(--muted); border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 18px; font-family: 'Poppins', sans-serif; font-size: 0.83rem; cursor: pointer; }
+.reset-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+/* SCORE TAG */
+.score-tag { font-family: 'Poppins', sans-serif; font-size: 0.82rem; font-weight: 700; padding: 5px 12px; border-radius: 20px; display: none; }
+.score-tag.show { display: inline-block; }
+.score-tag.great { background: var(--teal-light); color: var(--teal); }
+.score-tag.ok { background: var(--green-bg); color: var(--green); }
+.score-tag.err { background: var(--red-bg); color: var(--red); }
+
+/* HINTS */
+.ans-hint { margin-top: 12px; padding: 10px 14px; background: var(--amber-bg); border-radius: 8px; font-size: 0.83rem; color: var(--muted); display: none; line-height: 1.7; }
+.ans-hint.show { display: block; }
+
+/* DIALOGUE */
+.dialogue-block { display: flex; flex-direction: column; gap: 8px; }
+.d-line { display: flex; gap: 10px; align-items: flex-start; font-size: 0.91rem; }
+.d-sp { font-family: 'Poppins', sans-serif; font-weight: 700; color: var(--teal); min-width: 20px; flex-shrink: 0; padding-top: 1px; }
+.d-sp.b { color: var(--orange); }
+.d-text { flex: 1; line-height: 1.75; }
+
+/* INLINE CHOICE (Ex 1) */
+.alt-group { display: inline-flex; gap: 3px; border: 1.5px solid var(--border); border-radius: 6px; padding: 1px 3px; vertical-align: middle; background: var(--bg); }
+.alt-btn { background: none; border: none; border-radius: 4px; padding: 2px 9px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.87rem; color: var(--text); transition: background 0.12s; }
+.alt-btn:hover { background: var(--teal-light); }
+.alt-btn.selected { background: var(--teal); color: #fff; }
+.alt-btn.correct { background: var(--green-bg) !important; color: var(--green) !important; font-weight: 600; pointer-events: none; }
+.alt-btn.wrong { background: var(--red-bg) !important; color: var(--red) !important; pointer-events: none; }
+.alt-btn.reveal { background: var(--green-bg) !important; color: var(--green) !important; border: 1px dashed var(--green); pointer-events: none; }
+
+/* WORD BANK (Ex 2) */
+.word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; padding: 12px 14px; background: var(--teal-light); border-radius: 10px; }
+.wc { background: var(--card); border: 1.5px solid var(--teal); color: var(--teal); border-radius: 20px; padding: 5px 15px; font-size: 0.87rem; font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer; transition: background 0.13s, color 0.13s; user-select: none; }
+.wc:hover { background: var(--teal); color: #fff; }
+.wc.wb-on { background: var(--orange); color: #fff; border-color: var(--orange); }
+.wc.wb-used { opacity: 0.3; pointer-events: none; }
+
+/* GAP BUTTON (Ex 2) */
+.gap-btn { display: inline-block; min-width: 80px; border: none; border-bottom: 2px solid var(--teal); background: transparent; color: var(--teal); font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.89rem; text-align: center; cursor: pointer; padding: 0 5px 1px; vertical-align: bottom; border-radius: 0; transition: background 0.12s; }
+.gap-btn:hover { background: var(--teal-light); }
+.gap-btn.correct { color: var(--green); border-bottom-color: var(--green); cursor: default; }
+.gap-btn.wrong { color: var(--red); border-bottom-color: var(--red); cursor: default; }
+
+/* ORDERING (Ex 3) */
+.order-list { display: flex; flex-direction: column; gap: 8px; }
+.order-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--bg); border-radius: 8px; border: 1px solid var(--border); font-size: 0.91rem; }
+.order-lbl { font-family: 'Poppins', sans-serif; font-weight: 700; color: var(--teal); min-width: 18px; }
+.order-in { width: 54px; border: 1.5px solid var(--border); border-radius: 7px; padding: 5px 0; font-size: 0.9rem; font-family: 'Inter', sans-serif; text-align: center; background: var(--card); color: var(--text); outline: none; }
+.order-in:focus { border-color: var(--teal); }
+.order-in.correct { border-color: var(--green); background: var(--green-bg); color: var(--green); font-weight: 600; }
+.order-in.wrong { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+
+/* MULTIPLE CHOICE (Ex 4) */
+.mc-list { display: flex; flex-direction: column; gap: 10px; }
+.mc-row { padding: 12px 14px; background: var(--bg); border-radius: 8px; border: 1px solid var(--border); }
+.mc-q { font-size: 0.91rem; margin-bottom: 8px; line-height: 1.5; }
+.mc-opts { display: flex; gap: 8px; flex-wrap: wrap; }
+.mc-btn { background: var(--card); border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 18px; font-size: 0.87rem; font-family: 'Inter', sans-serif; color: var(--text); cursor: pointer; transition: border-color 0.12s, background 0.12s; }
+.mc-btn:hover { border-color: var(--teal); background: var(--teal-light); }
+.mc-btn.selected { border-color: var(--teal); background: var(--teal-light); font-weight: 500; }
+.mc-btn.correct { border-color: var(--green) !important; background: var(--green-bg) !important; color: var(--green) !important; font-weight: 600; pointer-events: none; }
+.mc-btn.wrong { border-color: var(--red) !important; background: var(--red-bg) !important; color: var(--red) !important; pointer-events: none; }
+.mc-btn.reveal { border-color: var(--green) !important; background: var(--green-bg) !important; color: var(--green) !important; border-style: dashed !important; pointer-events: none; }
+
+/* MATCHING (Ex 5) */
+.match-cols { display: grid; grid-template-columns: 1fr 1.6fr; gap: 14px; }
+.match-col-hd { font-family: 'Poppins', sans-serif; font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 8px; }
+.match-col { display: flex; flex-direction: column; gap: 8px; }
+.match-wcard, .match-dcard { padding: 11px 14px; background: var(--bg); border: 2px solid var(--border); border-radius: 9px; cursor: pointer; font-size: 0.88rem; line-height: 1.4; transition: border-color 0.13s, background 0.13s; user-select: none; }
+.match-wcard { font-family: 'Poppins', sans-serif; font-weight: 600; text-align: center; color: var(--teal); }
+.match-wcard:hover, .match-dcard:hover { border-color: var(--teal); background: var(--teal-light); }
+.match-wcard.selected, .match-dcard.selected { border-color: var(--orange); background: var(--amber-bg); }
+.match-wcard.paired, .match-dcard.paired { border-color: var(--teal); background: var(--teal-light); opacity: 0.75; cursor: default; }
+.match-wcard.correct, .match-dcard.correct { border-color: var(--green) !important; background: var(--green-bg) !important; color: var(--green) !important; pointer-events: none; opacity: 1; }
+.match-wcard.wrong, .match-dcard.wrong { border-color: var(--red) !important; background: var(--red-bg) !important; color: var(--red) !important; pointer-events: none; opacity: 1; }
+
+/* SEND CARD */
+.send-card { background: var(--teal); color: #fff; border-radius: var(--radius); padding: 28px 24px; text-align: center; }
+.send-card h3 { font-family: 'Poppins', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+.send-card p { font-size: 0.88rem; opacity: 0.85; margin-bottom: 18px; }
+.send-btn { background: #fff; color: var(--teal); border: none; border-radius: 8px; padding: 11px 30px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 0.92rem; cursor: pointer; }
+.send-btn:hover { opacity: 0.9; }
+
+@media (max-width: 480px) {
+  .match-cols { grid-template-columns: 1fr; }
+  .d-line { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<header class="hw-header">
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+  <div class="hw-eyebrow">Homework · Unit 3D</div>
+  <h1>Buying Tickets &amp; The Skiing Champion</h1>
+  <p class="hw-sub">Functional language &amp; listening comprehension</p>
+</header>
+
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+  <div class="progress-label" id="plabel">0 / 5</div>
+</div>
+
+<main>
+
+  <!-- ══ Ex 1 ══ -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">Ex 1</span> Functional Language — Choose the Correct Word</div>
+    <div class="ex-body">
+      <p class="ex-instr">Read the conversation. Click the correct word for each numbered gap.</p>
+      <div class="dialogue-block">
+        <div class="d-line"><span class="d-sp">A:</span><span class="d-text">How <span class="alt-group" id="e1g1"><button class="alt-btn" data-val="can" onclick="selectAlt(this,'e1g1')">can</button><button class="alt-btn" data-val="do" onclick="selectAlt(this,'e1g1')">do</button></span> I help you?</span></div>
+        <div class="d-line"><span class="d-sp b">B:</span><span class="d-text">I'd <span class="alt-group" id="e1g2"><button class="alt-btn" data-val="want" onclick="selectAlt(this,'e1g2')">want</button><button class="alt-btn" data-val="like" onclick="selectAlt(this,'e1g2')">like</button></span> two tickets for <em>Romeo and Juliet</em>, please.</span></div>
+        <div class="d-line"><span class="d-sp">A:</span><span class="d-text"><span class="alt-group" id="e1g3"><button class="alt-btn" data-val="Which" onclick="selectAlt(this,'e1g3')">Which</button><button class="alt-btn" data-val="When" onclick="selectAlt(this,'e1g3')">When</button></span> time would you like?</span></div>
+        <div class="d-line"><span class="d-sp b">B:</span><span class="d-text">2 p.m., please.</span></div>
+        <div class="d-line"><span class="d-sp">A:</span><span class="d-text">I'm sorry, the 2 p.m. is sold <span class="alt-group" id="e1g4"><button class="alt-btn" data-val="full" onclick="selectAlt(this,'e1g4')">full</button><button class="alt-btn" data-val="out" onclick="selectAlt(this,'e1g4')">out</button></span>.</span></div>
+        <div class="d-line"><span class="d-sp b">B:</span><span class="d-text">Oh, OK. What about the 7.30 p.m.?</span></div>
+        <div class="d-line"><span class="d-sp">A:</span><span class="d-text">Let me see … yes, there are still some <span class="alt-group" id="e1g5"><button class="alt-btn" data-val="available" onclick="selectAlt(this,'e1g5')">available</button><button class="alt-btn" data-val="sold" onclick="selectAlt(this,'e1g5')">sold</button></span>.</span></div>
+        <div class="d-line"><span class="d-sp b">B:</span><span class="d-text">Great!</span></div>
+        <div class="d-line"><span class="d-sp">A:</span><span class="d-text">Where do you want to <span class="alt-group" id="e1g6"><button class="alt-btn" data-val="play" onclick="selectAlt(this,'e1g6')">play</button><button class="alt-btn" data-val="sit" onclick="selectAlt(this,'e1g6')">sit</button></span>?</span></div>
+        <div class="d-line"><span class="d-sp b">B:</span><span class="d-text">Near <span class="alt-group" id="e1g7"><button class="alt-btn" data-val="the" onclick="selectAlt(this,'e1g7')">the</button><button class="alt-btn" data-val="a" onclick="selectAlt(this,'e1g7')">a</button></span> front, please.</span></div>
+        <div class="d-line"><span class="d-sp">A:</span><span class="d-text">OK, no problem. That's sixty pounds, please.</span></div>
+        <div class="d-line"><span class="d-sp b">B:</span><span class="d-text">OK.</span></div>
+        <div class="d-line"><span class="d-sp">A:</span><span class="d-text">Here you <span class="alt-group" id="e1g8"><button class="alt-btn" data-val="are" onclick="selectAlt(this,'e1g8')">are</button><button class="alt-btn" data-val="is" onclick="selectAlt(this,'e1g8')">is</button></span> – two tickets for <em>Romeo and Juliet</em> at 7.30 p.m. Enjoy the show.</span></div>
+        <div class="d-line"><span class="d-sp b">B:</span><span class="d-text">Thank you!</span></div>
+      </div>
+      <div class="btn-row">
+        <button class="check-btn" onclick="checkEx1()">Check ✓</button>
+        <button class="reset-btn" onclick="resetEx1()">Reset</button>
+        <span class="score-tag" id="ex1-score"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Ex 2 ══ -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">Ex 2</span> Functional Language — Complete the Conversation</div>
+    <div class="ex-body">
+      <p class="ex-instr">Click a word from the box, then click a blank (____) to fill it in.</p>
+      <div class="word-bank">
+        <button class="wc" data-w="aren't" onclick="pickChip(this)">aren't</button>
+        <button class="wc" data-w="Here" onclick="pickChip(this)">Here</button>
+        <button class="wc" data-w="much" onclick="pickChip(this)">much</button>
+        <button class="wc" data-w="that's" onclick="pickChip(this)">that's</button>
+        <button class="wc" data-w="tickets" onclick="pickChip(this)">tickets</button>
+        <button class="wc" data-w="together" onclick="pickChip(this)">together</button>
+      </div>
+      <div id="ex2-gaps" class="dialogue-block">
+        <div class="d-line"><span class="d-sp">A:</span><span class="d-text">Hi, how <span class="gap-btn" id="e2g1" data-val="" onclick="fillGap('e2g1')">____</span> is a ticket for the Manchester United game on Saturday?</span></div>
+        <div class="d-line"><span class="d-sp b">B:</span><span class="d-text">They're fifty pounds each.</span></div>
+        <div class="d-line"><span class="d-sp">A:</span><span class="d-text">OK, I'd like two <span class="gap-btn" id="e2g2" data-val="" onclick="fillGap('e2g2')">____</span> then, please.</span></div>
+        <div class="d-line"><span class="d-sp b">B:</span><span class="d-text">Do you want to sit <span class="gap-btn" id="e2g3" data-val="" onclick="fillGap('e2g3')">____</span>?</span></div>
+        <div class="d-line"><span class="d-sp">A:</span><span class="d-text">Yes, please.</span></div>
+        <div class="d-line"><span class="d-sp b">B:</span><span class="d-text">Oh, I'm sorry, there <span class="gap-btn" id="e2g4" data-val="" onclick="fillGap('e2g4')">____</span> any seats together. I can put you near each other though.</span></div>
+        <div class="d-line"><span class="d-sp">A:</span><span class="d-text">Um … OK then.</span></div>
+        <div class="d-line"><span class="d-sp b">B:</span><span class="d-text">OK, <span class="gap-btn" id="e2g5" data-val="" onclick="fillGap('e2g5')">____</span> a hundred pounds, please.</span></div>
+        <div class="d-line"><span class="d-sp">A:</span><span class="d-text">OK.</span></div>
+        <div class="d-line"><span class="d-sp b">B:</span><span class="d-text"><span class="gap-btn" id="e2g6" data-val="" onclick="fillGap('e2g6')">____</span> you are.</span></div>
+        <div class="d-line"><span class="d-sp">A:</span><span class="d-text">Thank you.</span></div>
+      </div>
+      <div class="ans-hint" id="ex2-hint"></div>
+      <div class="btn-row">
+        <button class="check-btn" onclick="checkEx2()">Check ✓</button>
+        <button class="reset-btn" onclick="resetEx2()">Reset</button>
+        <span class="score-tag" id="ex2-score"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Ex 3 ══ -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">Ex 3</span> Listening — Put the Activities in Order</div>
+    <div class="ex-body">
+      <p class="ex-instr">Think back to the skiing champion from class. Write the number (1–8) to show the order he usually does each activity (1 = first, 8 = last).</p>
+      <div class="order-list">
+        <div class="order-row"><span class="order-lbl">a</span><input class="order-in" id="e3a" type="number" min="1" max="8" placeholder="?"><span>He replies to emails.</span></div>
+        <div class="order-row"><span class="order-lbl">b</span><input class="order-in" id="e3b" type="number" min="1" max="8" placeholder="?"><span>He skis.</span></div>
+        <div class="order-row"><span class="order-lbl">c</span><input class="order-in" id="e3c" type="number" min="1" max="8" placeholder="?"><span>He gets up.</span></div>
+        <div class="order-row"><span class="order-lbl">d</span><input class="order-in" id="e3d" type="number" min="1" max="8" placeholder="?"><span>He goes to bed.</span></div>
+        <div class="order-row"><span class="order-lbl">e</span><input class="order-in" id="e3e" type="number" min="1" max="8" placeholder="?"><span>He has breakfast.</span></div>
+        <div class="order-row"><span class="order-lbl">f</span><input class="order-in" id="e3f" type="number" min="1" max="8" placeholder="?"><span>He watches TV.</span></div>
+        <div class="order-row"><span class="order-lbl">g</span><input class="order-in" id="e3g" type="number" min="1" max="8" placeholder="?"><span>He goes to the gym.</span></div>
+        <div class="order-row"><span class="order-lbl">h</span><input class="order-in" id="e3h" type="number" min="1" max="8" placeholder="?"><span>He has lunch.</span></div>
+      </div>
+      <div class="ans-hint" id="ex3-hint"></div>
+      <div class="btn-row">
+        <button class="check-btn" onclick="checkEx3()">Check ✓</button>
+        <button class="reset-btn" onclick="resetEx3()">Reset</button>
+        <span class="score-tag" id="ex3-score"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Ex 4 ══ -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">Ex 4</span> Listening — Choose the Correct Option</div>
+    <div class="ex-body">
+      <p class="ex-instr">Think back to the skiing champion interview. Choose <strong>a</strong> or <strong>b</strong> for each question.</p>
+      <div class="mc-list">
+        <div class="mc-row" id="e4q1">
+          <div class="mc-q">1. He's got ___ medals.</div>
+          <div class="mc-opts">
+            <button class="mc-btn" data-val="a" onclick="selectMC(this,'e4q1')">a &nbsp;two</button>
+            <button class="mc-btn" data-val="b" onclick="selectMC(this,'e4q1')">b &nbsp;five</button>
+          </div>
+        </div>
+        <div class="mc-row" id="e4q2">
+          <div class="mc-q">2. He does a few things at home ___ he goes to the gym.</div>
+          <div class="mc-opts">
+            <button class="mc-btn" data-val="a" onclick="selectMC(this,'e4q2')">a &nbsp;before</button>
+            <button class="mc-btn" data-val="b" onclick="selectMC(this,'e4q2')">b &nbsp;after</button>
+          </div>
+        </div>
+        <div class="mc-row" id="e4q3">
+          <div class="mc-q">3. He has chicken ___ fish for lunch.</div>
+          <div class="mc-opts">
+            <button class="mc-btn" data-val="a" onclick="selectMC(this,'e4q3')">a &nbsp;and</button>
+            <button class="mc-btn" data-val="b" onclick="selectMC(this,'e4q3')">b &nbsp;or</button>
+          </div>
+        </div>
+        <div class="mc-row" id="e4q4">
+          <div class="mc-q">4. He skis ___.</div>
+          <div class="mc-opts">
+            <button class="mc-btn" data-val="a" onclick="selectMC(this,'e4q4')">a &nbsp;in the week</button>
+            <button class="mc-btn" data-val="b" onclick="selectMC(this,'e4q4')">b &nbsp;at the weekend</button>
+          </div>
+        </div>
+        <div class="mc-row" id="e4q5">
+          <div class="mc-q">5. He watches TV ___.</div>
+          <div class="mc-opts">
+            <button class="mc-btn" data-val="a" onclick="selectMC(this,'e4q5')">a &nbsp;before he goes to bed</button>
+            <button class="mc-btn" data-val="b" onclick="selectMC(this,'e4q5')">b &nbsp;in bed</button>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="check-btn" onclick="checkEx4()">Check ✓</button>
+        <button class="reset-btn" onclick="resetEx4()">Reset</button>
+        <span class="score-tag" id="ex4-score"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Ex 5 ══ -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-num">Ex 5</span> Vocabulary — Match the Words</div>
+    <div class="ex-body">
+      <p class="ex-instr">Click a word on the left, then click its matching definition on the right.</p>
+      <div class="match-cols">
+        <div>
+          <div class="match-col-hd">Words</div>
+          <div class="match-col">
+            <div class="match-wcard" id="w1" onclick="matchClick5('word','w1')">medals</div>
+            <div class="match-wcard" id="w2" onclick="matchClick5('word','w2')">omelette</div>
+            <div class="match-wcard" id="w3" onclick="matchClick5('word','w3')">chores</div>
+            <div class="match-wcard" id="w4" onclick="matchClick5('word','w4')">recover</div>
+          </div>
+        </div>
+        <div>
+          <div class="match-col-hd">Meanings</div>
+          <div class="match-col">
+            <div class="match-dcard" id="d_a" onclick="matchClick5('def','d_a')">small jobs in the house</div>
+            <div class="match-dcard" id="d_b" onclick="matchClick5('def','d_b')">things you win in a sports competition</div>
+            <div class="match-dcard" id="d_c" onclick="matchClick5('def','d_c')">become well again</div>
+            <div class="match-dcard" id="d_d" onclick="matchClick5('def','d_d')">a dish made of eggs</div>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="check-btn" onclick="checkEx5()">Check ✓</button>
+        <button class="reset-btn" onclick="resetEx5()">Reset</button>
+        <span class="score-tag" id="ex5-score"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Send to Teacher ══ -->
+  <div class="send-card">
+    <h3>📬 Send to Your Teacher</h3>
+    <p>Finished? Send your answers directly to your teacher.</p>
+    <button class="send-btn" onclick="sendToTeacher()">Send to Teacher ✉️</button>
+  </div>
+
+</main>
+
+<script>
+// ── Progress tracking ──────────────────────────────────
+var DONE = {ex1:false, ex2:false, ex3:false, ex4:false, ex5:false};
+function updateProgress() {
+  var n = Object.values(DONE).filter(Boolean).length;
+  document.getElementById('pfill').style.width = (n/5*100)+'%';
+  document.getElementById('plabel').textContent = n+' / 5';
+}
+
+// ── Theme ─────────────────────────────────────────────
+function toggleTheme() {
+  var html = document.documentElement;
+  var isDark = html.dataset.theme === 'dark' ||
+    (!html.dataset.theme && window.matchMedia('(prefers-color-scheme:dark)').matches);
+  html.dataset.theme = isDark ? 'light' : 'dark';
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+}
+(function() {
+  var isDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+  document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
+})();
+
+// ── Score display ──────────────────────────────────────
+function showScore(id, score, total) {
+  var el = document.getElementById(id);
+  var pct = score / total;
+  el.className = 'score-tag show ' + (pct === 1 ? 'great' : pct >= 0.5 ? 'ok' : 'err');
+  el.textContent = score + ' / ' + total + (pct === 1 ? '  🎉' : '');
+}
+function hideScore(id) {
+  var el = document.getElementById(id);
+  el.className = 'score-tag';
+  el.textContent = '';
+}
+
+// ══ EX 1 ══════════════════════════════════════════════
+var EX1_ANS = {e1g1:'can',e1g2:'like',e1g3:'Which',e1g4:'out',e1g5:'available',e1g6:'sit',e1g7:'the',e1g8:'are'};
+var EX1_GIDS = ['e1g1','e1g2','e1g3','e1g4','e1g5','e1g6','e1g7','e1g8'];
+
+function selectAlt(btn, groupId) {
+  document.querySelectorAll('#'+groupId+' .alt-btn').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+}
+
+function checkEx1() {
+  var score = 0;
+  EX1_GIDS.forEach(function(gid) {
+    var btns = document.querySelectorAll('#'+gid+' .alt-btn');
+    var sel = document.querySelector('#'+gid+' .alt-btn.selected');
+    btns.forEach(function(b){ b.classList.remove('correct','wrong','reveal'); });
+    if (sel && sel.dataset.val === EX1_ANS[gid]) {
+      sel.classList.add('correct'); score++;
+    } else {
+      if (sel) sel.classList.add('wrong');
+      btns.forEach(function(b){
+        if (b.dataset.val === EX1_ANS[gid] && !b.classList.contains('correct')) b.classList.add('reveal');
+      });
+    }
+  });
+  showScore('ex1-score', score, 8);
+  DONE.ex1 = score === 8; updateProgress();
+}
+
+function resetEx1() {
+  document.querySelectorAll('.alt-btn').forEach(function(b){ b.classList.remove('selected','correct','wrong','reveal'); });
+  hideScore('ex1-score'); DONE.ex1 = false; updateProgress();
+}
+
+// ══ EX 2 ══════════════════════════════════════════════
+var EX2_ANS = {e2g1:'much', e2g2:'tickets', e2g3:'together', e2g4:"aren't", e2g5:"that's", e2g6:'Here'};
+var wb_sel = null;
+
+function pickChip(el) {
+  if (wb_sel === el) { el.classList.remove('wb-on'); wb_sel = null; return; }
+  if (wb_sel) wb_sel.classList.remove('wb-on');
+  wb_sel = el;
+  el.classList.add('wb-on');
+}
+
+function fillGap(gapId) {
+  if (!wb_sel) return;
+  var gap = document.getElementById(gapId);
+  var prev = gap.dataset.val || '';
+  if (prev) {
+    var prevChip = document.querySelector('.wc[data-w="'+prev+'"]');
+    if (prevChip) prevChip.classList.remove('wb-used');
+  }
+  gap.textContent = wb_sel.dataset.w;
+  gap.dataset.val = wb_sel.dataset.w;
+  gap.classList.remove('correct','wrong');
+  wb_sel.classList.add('wb-used');
+  wb_sel.classList.remove('wb-on');
+  wb_sel = null;
+}
+
+function checkEx2() {
+  var score = 0, hints = [];
+  var keys = Object.keys(EX2_ANS);
+  keys.forEach(function(gid) {
+    var gap = document.getElementById(gid);
+    var val = (gap.dataset.val || '').toLowerCase().trim();
+    var ans = EX2_ANS[gid].toLowerCase();
+    gap.classList.remove('correct','wrong');
+    if (val === ans) { gap.classList.add('correct'); score++; }
+    else {
+      if (val) { gap.classList.add('wrong'); }
+      hints.push('<strong>'+parseInt(gid.slice(2))+'</strong>: '+EX2_ANS[gid]);
+    }
+  });
+  var hintEl = document.getElementById('ex2-hint');
+  if (hints.length && score < 6) {
+    hintEl.innerHTML = '💡 Correct answers: ' + hints.join(' &nbsp;·&nbsp; ');
+    hintEl.classList.add('show');
+  } else { hintEl.classList.remove('show'); }
+  showScore('ex2-score', score, 6);
+  DONE.ex2 = score === 6; updateProgress();
+}
+
+function resetEx2() {
+  Object.keys(EX2_ANS).forEach(function(gid) {
+    var gap = document.getElementById(gid);
+    gap.textContent = '____'; gap.dataset.val = '';
+    gap.classList.remove('correct','wrong');
+  });
+  document.querySelectorAll('.wc').forEach(function(c){ c.classList.remove('wb-used','wb-on'); });
+  wb_sel = null;
+  document.getElementById('ex2-hint').classList.remove('show');
+  hideScore('ex2-score'); DONE.ex2 = false; updateProgress();
+}
+
+// ══ EX 3 ══════════════════════════════════════════════
+var EX3_ANS = {e3a:3, e3b:6, e3c:1, e3d:8, e3e:2, e3f:7, e3g:4, e3h:5};
+var EX3_TEXT = {e3a:'a (replies to emails)',e3b:'b (skis)',e3c:'c (gets up)',e3d:'d (goes to bed)',e3e:'e (has breakfast)',e3f:'f (watches TV)',e3g:'g (goes to gym)',e3h:'h (has lunch)'};
+
+function checkEx3() {
+  var score = 0, hints = [];
+  Object.keys(EX3_ANS).forEach(function(gid) {
+    var inp = document.getElementById(gid);
+    inp.classList.remove('correct','wrong');
+    var val = parseInt(inp.value);
+    if (!isNaN(val) && val === EX3_ANS[gid]) { inp.classList.add('correct'); score++; }
+    else {
+      if (inp.value) inp.classList.add('wrong');
+      hints.push(EX3_TEXT[gid]+' = <strong>'+EX3_ANS[gid]+'</strong>');
+    }
+  });
+  var hintEl = document.getElementById('ex3-hint');
+  if (hints.length && score < 8) {
+    hintEl.innerHTML = '💡 Correct order: ' + hints.join(' &nbsp;·&nbsp; ');
+    hintEl.classList.add('show');
+  } else { hintEl.classList.remove('show'); }
+  showScore('ex3-score', score, 8);
+  DONE.ex3 = score === 8; updateProgress();
+}
+
+function resetEx3() {
+  document.querySelectorAll('.order-in').forEach(function(i){ i.value=''; i.classList.remove('correct','wrong'); });
+  document.getElementById('ex3-hint').classList.remove('show');
+  hideScore('ex3-score'); DONE.ex3 = false; updateProgress();
+}
+
+// ══ EX 4 ══════════════════════════════════════════════
+var EX4_ANS = {e4q1:'b', e4q2:'a', e4q3:'b', e4q4:'a', e4q5:'a'};
+
+function selectMC(btn, groupId) {
+  document.querySelectorAll('#'+groupId+' .mc-btn').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+}
+
+function checkEx4() {
+  var score = 0;
+  Object.keys(EX4_ANS).forEach(function(qid) {
+    var btns = document.querySelectorAll('#'+qid+' .mc-btn');
+    var sel = document.querySelector('#'+qid+' .mc-btn.selected');
+    btns.forEach(function(b){ b.classList.remove('correct','wrong','reveal'); });
+    if (sel && sel.dataset.val === EX4_ANS[qid]) {
+      sel.classList.add('correct'); score++;
+    } else {
+      if (sel) sel.classList.add('wrong');
+      btns.forEach(function(b){
+        if (b.dataset.val === EX4_ANS[qid] && !b.classList.contains('correct')) b.classList.add('reveal');
+      });
+    }
+  });
+  showScore('ex4-score', score, 5);
+  DONE.ex4 = score === 5; updateProgress();
+}
+
+function resetEx4() {
+  document.querySelectorAll('.mc-btn').forEach(function(b){ b.classList.remove('selected','correct','wrong','reveal'); });
+  hideScore('ex4-score'); DONE.ex4 = false; updateProgress();
+}
+
+// ══ EX 5 ══════════════════════════════════════════════
+var EX5_ANS = {w1:'d_b', w2:'d_d', w3:'d_a', w4:'d_c'};
+var matchSel5 = {word:null, def:null};
+var matchPairs5 = {};
+
+function matchClick5(type, id) {
+  var card = document.getElementById(id);
+  if (type === 'word') {
+    if (matchSel5.word === id) { card.classList.remove('selected'); matchSel5.word = null; return; }
+    if (matchSel5.word) document.getElementById(matchSel5.word).classList.remove('selected');
+    matchSel5.word = id;
+    card.classList.add('selected');
+  } else {
+    if (matchSel5.def === id) { card.classList.remove('selected'); matchSel5.def = null; return; }
+    if (matchSel5.def) document.getElementById(matchSel5.def).classList.remove('selected');
+    matchSel5.def = id;
+    card.classList.add('selected');
+  }
+  if (matchSel5.word && matchSel5.def) {
+    var wc = document.getElementById(matchSel5.word);
+    var dc = document.getElementById(matchSel5.def);
+    // unpair previous connections
+    if (matchPairs5[matchSel5.word]) document.getElementById(matchPairs5[matchSel5.word]).classList.remove('paired');
+    Object.keys(matchPairs5).forEach(function(w) {
+      if (matchPairs5[w] === matchSel5.def && w !== matchSel5.word) {
+        document.getElementById(w).classList.remove('paired');
+        delete matchPairs5[w];
+      }
+    });
+    matchPairs5[matchSel5.word] = matchSel5.def;
+    wc.classList.remove('selected'); wc.classList.add('paired');
+    dc.classList.remove('selected'); dc.classList.add('paired');
+    matchSel5.word = null; matchSel5.def = null;
+  }
+}
+
+function checkEx5() {
+  var score = 0;
+  Object.keys(EX5_ANS).forEach(function(wid) {
+    var wcard = document.getElementById(wid);
+    var paired = matchPairs5[wid];
+    wcard.classList.remove('correct','wrong','paired');
+    if (paired) {
+      var dcard = document.getElementById(paired);
+      dcard.classList.remove('correct','wrong','paired');
+      if (paired === EX5_ANS[wid]) { wcard.classList.add('correct'); dcard.classList.add('correct'); score++; }
+      else { wcard.classList.add('wrong'); dcard.classList.add('wrong'); }
+    }
+  });
+  // mark unpaired correct defs after (in case of mismatches)
+  showScore('ex5-score', score, 4);
+  DONE.ex5 = score === 4; updateProgress();
+}
+
+function resetEx5() {
+  matchSel5 = {word:null, def:null}; matchPairs5 = {};
+  document.querySelectorAll('.match-wcard,.match-dcard').forEach(function(c){
+    c.classList.remove('paired','selected','correct','wrong');
+  });
+  hideScore('ex5-score'); DONE.ex5 = false; updateProgress();
+}
+
+// ══ SEND TO TEACHER ═══════════════════════════════════
+var WORD_NAMES5 = {w1:'medals', w2:'omelette', w3:'chores', w4:'recover'};
+var DEF_NAMES5 = {d_a:'a. small jobs in the house', d_b:'b. things you win in a sports competition', d_c:'c. become well again', d_d:'d. a dish made of eggs'};
+
+function sendToTeacher() {
+  var name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+  var lines = ['Student: '+name, 'Date: '+new Date().toLocaleDateString(), ''];
+
+  lines.push('=== Ex 1: Choose the Correct Word ===');
+  EX1_GIDS.forEach(function(gid, i) {
+    var sel = document.querySelector('#'+gid+' .alt-btn.selected');
+    var ans = sel ? sel.dataset.val : '(no answer)';
+    var ok = ans === EX1_ANS[gid];
+    lines.push((i+1)+'. '+ans+' '+(ok?'✓':'✗')+' (correct: '+EX1_ANS[gid]+')');
+  });
+
+  lines.push('', '=== Ex 2: Complete the Conversation ===');
+  Object.keys(EX2_ANS).forEach(function(gid, i) {
+    var gap = document.getElementById(gid);
+    var ans = gap.dataset.val || '(no answer)';
+    var ok = ans.toLowerCase() === EX2_ANS[gid].toLowerCase();
+    lines.push((i+1)+'. '+ans+' '+(ok?'✓':'✗')+' (correct: '+EX2_ANS[gid]+')');
+  });
+
+  lines.push('', '=== Ex 3: Put Activities in Order ===');
+  var labels3 = {e3a:'a',e3b:'b',e3c:'c',e3d:'d',e3e:'e',e3f:'f',e3g:'g',e3h:'h'};
+  Object.keys(EX3_ANS).forEach(function(gid) {
+    var inp = document.getElementById(gid);
+    var ans = inp.value || '(no answer)';
+    var ok = parseInt(ans) === EX3_ANS[gid];
+    lines.push(labels3[gid]+'. '+ans+' '+(ok?'✓':'✗')+' (correct: '+EX3_ANS[gid]+')');
+  });
+
+  lines.push('', '=== Ex 4: Multiple Choice ===');
+  Object.keys(EX4_ANS).forEach(function(qid, i) {
+    var sel = document.querySelector('#'+qid+' .mc-btn.selected');
+    var ans = sel ? sel.dataset.val : '(no answer)';
+    var ok = ans === EX4_ANS[qid];
+    lines.push((i+1)+'. '+ans+' '+(ok?'✓':'✗')+' (correct: '+EX4_ANS[qid]+')');
+  });
+
+  lines.push('', '=== Ex 5: Vocabulary Matching ===');
+  Object.keys(EX5_ANS).forEach(function(wid) {
+    var paired = matchPairs5[wid];
+    var ans = paired ? DEF_NAMES5[paired] : '(not matched)';
+    var ok = paired === EX5_ANS[wid];
+    lines.push(WORD_NAMES5[wid]+' → '+ans+' '+(ok?'✓':'✗'));
+  });
+
+  var body = encodeURIComponent(lines.join('\n'));
+  var subject = encodeURIComponent('Homework – '+name+' – Unit 3D Buying Tickets');
+  window.location.href = 'mailto:daryaaa2028@gmail.com?subject='+subject+'&body='+body;
+}
+</script>
+</body>
+</html>
