@@ -1,0 +1,767 @@
+<title>Why Do We Keep Postponing?</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap">
+<style>
+:root{
+  --bg:#FFFCF5;--surface:#fff;--surface2:#FEF3C7;--surface3:#EEF2FF;
+  --indigo:#4338CA;--indigo-dk:#3730A3;--indigo-lt:#EEF2FF;
+  --amber:#D97706;--amber-dk:#B45309;--amber-lt:#FEF3C7;
+  --rose:#BE185D;--rose-lt:#FCE7F3;
+  --ok:#059669;--ok-lt:#D1FAE5;
+  --red:#DC2626;--red-lt:#FEE2E2;
+  --text:#1C1917;--muted:#78716C;--border:#FDE68A;
+  --radius:14px;--shadow:0 2px 14px rgba(0,0,0,.07);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#1C1917;--surface:#292524;--surface2:#3D2B00;--surface3:#1E1B4B;
+  --text:#FDF8F0;--muted:#A8A29E;--border:#78350F;
+  --indigo-lt:#312E81;--amber-lt:#78350F;--rose-lt:#881337;
+  --ok-lt:#064E3B;--red-lt:#7F1D1D;
+}}
+:root[data-theme=dark]{
+  --bg:#1C1917;--surface:#292524;--surface2:#3D2B00;--surface3:#1E1B4B;
+  --text:#FDF8F0;--muted:#A8A29E;--border:#78350F;
+  --indigo-lt:#312E81;--amber-lt:#78350F;--rose-lt:#881337;
+  --ok-lt:#064E3B;--red-lt:#7F1D1D;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);padding-inline:16px;padding-block:0 64px;line-height:1.6}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;line-height:1.2;text-wrap:balance}
+
+/* HEADER */
+.site-header{background:linear-gradient(135deg,#3730A3 0%,#D97706 100%);color:#fff;padding:36px 20px 28px;margin-inline:-16px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.hdr-text .eyebrow{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;opacity:.8;margin-bottom:6px;font-family:'Syne',sans-serif}
+.hdr-text h1{font-size:clamp(1.6rem,5vw,2.4rem);font-weight:800;margin-bottom:4px}
+.hdr-text .subtitle{font-size:.85rem;opacity:.85;font-style:italic}
+.theme-btn{background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:.8rem;flex-shrink:0;margin-top:4px;font-family:inherit}
+.theme-btn:hover{background:rgba(255,255,255,.28)}
+
+/* NAV */
+.nav-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;margin-inline:-16px;display:flex;gap:6px;flex-wrap:wrap}
+.nav-btn{padding:5px 12px;border-radius:99px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:.72rem;font-weight:600;cursor:pointer;transition:background .15s,color .15s;white-space:nowrap;font-family:inherit}
+.nav-btn:hover,.nav-btn.active{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+
+/* PROGRESS */
+.progress-wrap{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;margin-inline:-16px;display:flex;align-items:center;gap:10px}
+.progress-track{flex:1;height:8px;background:var(--surface2);border-radius:99px;overflow:hidden}
+#pfill{height:100%;background:linear-gradient(90deg,var(--indigo),var(--amber));border-radius:99px;width:0%;transition:width .4s}
+#plabel{font-size:.72rem;font-weight:600;color:var(--muted);white-space:nowrap}
+
+/* LAYOUT */
+.section{max-width:820px;margin:0 auto;padding-top:36px}
+hr.divider{border:none;border-top:1px solid var(--border);margin:36px auto;max-width:820px}
+.sec-eyebrow{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--indigo);font-weight:700;margin-bottom:6px;font-family:'Syne',sans-serif}
+.sec-title{font-size:1.3rem;font-weight:800;margin-bottom:18px;color:var(--indigo-dk)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.instr{background:var(--indigo-lt);border-left:3px solid var(--indigo);border-radius:8px;padding:10px 14px;font-size:.85rem;margin-bottom:18px;color:var(--text)}
+
+/* BUTTONS */
+.btn{padding:8px 18px;border-radius:99px;font-size:.82rem;font-weight:700;cursor:pointer;border:none;transition:background .15s,transform .1s;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+.btn:active{transform:scale(.97)}
+.btn-indigo{background:var(--indigo);color:#fff}
+.btn-indigo:hover{background:var(--indigo-dk)}
+.btn-outline{background:var(--surface);color:var(--indigo);border:1.5px solid var(--indigo)}
+.btn-outline:hover{background:var(--indigo-lt)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+/* ── LEAD-IN CHIPS ── */
+.chips-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.chip{padding:9px 16px;border-radius:99px;border:2px solid var(--border);background:var(--surface);color:var(--text);font-size:.83rem;cursor:pointer;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:7px}
+.chip:hover{border-color:var(--amber);background:var(--amber-lt)}
+.chip.selected{border-color:var(--amber);background:var(--amber-lt);color:var(--amber-dk);font-weight:600}
+.verdict-box{display:none;margin-top:16px;padding:16px 18px;border-radius:12px;font-size:.92rem;font-weight:600;text-align:center}
+.verdict-box.show{display:block}
+.verdict-box.low{background:var(--ok-lt);color:var(--ok);border:1px solid var(--ok)}
+.verdict-box.mid{background:var(--amber-lt);color:var(--amber-dk);border:1px solid var(--amber)}
+.verdict-box.high{background:var(--rose-lt);color:var(--rose);border:1px solid var(--rose)}
+
+/* ── READING PANELS ── */
+.read-panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:20px}
+.read-panel{background:var(--surface3);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.panel-icon{font-size:1.5rem;margin-bottom:6px}
+.panel-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;color:var(--indigo);margin-bottom:8px}
+.panel-body{font-size:.83rem;line-height:1.65;color:var(--text)}
+.panel-tag{font-size:.72rem;background:var(--amber-lt);color:var(--amber-dk);border-radius:6px;padding:2px 8px;display:inline-block;margin-top:8px;font-weight:600}
+
+/* ── MC COMPREHENSION ── */
+.mc-q{margin-bottom:18px}
+.mc-q-text{font-size:.88rem;font-weight:600;margin-bottom:9px;line-height:1.5}
+.mc-opts{display:flex;flex-direction:column;gap:6px}
+.mc-opt{padding:9px 13px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface);font-size:.82rem;cursor:pointer;text-align:left;font-family:inherit;color:var(--text);transition:all .15s}
+.mc-opt:hover:not(:disabled){border-color:var(--indigo);background:var(--indigo-lt)}
+.mc-opt.checked{border-color:var(--indigo);background:var(--indigo-lt)}
+.mc-opt.mc-ok{background:var(--ok-lt);border-color:var(--ok);color:var(--ok);font-weight:700}
+.mc-opt.mc-bad{background:var(--red-lt);border-color:var(--red);color:var(--red)}
+.mc-fb{font-size:.78rem;font-weight:600;padding:4px 8px;border-radius:6px;margin-top:5px;display:none}
+.mc-fb.ok{display:block;color:var(--ok);background:var(--ok-lt)}
+.mc-fb.bad{display:block;color:var(--red);background:var(--red-lt)}
+
+/* ── VOCAB GAP-FILL ── */
+.gf-sentence{margin-bottom:14px;font-size:.88rem;line-height:2}
+.gf-input{border:none;border-bottom:2px solid var(--amber);background:transparent;color:var(--text);font-size:.86rem;font-family:inherit;padding:2px 6px;outline:none;width:130px;text-align:center;transition:border-color .2s}
+.gf-input:focus{border-color:var(--indigo)}
+.gf-input.gf-ok{border-color:var(--ok);background:var(--ok-lt);border-radius:5px;color:var(--ok);font-weight:700}
+.gf-input.gf-bad{border-color:var(--red);background:var(--red-lt);border-radius:5px;color:var(--red)}
+.gf-ans{font-size:.74rem;font-weight:700;color:var(--ok);margin-left:5px;display:none}
+.gf-ans.show{display:inline}
+
+/* ── BATTERY DIAGRAM ── */
+.battery-section{margin:22px 0}
+.battery-section h4{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;color:var(--indigo-dk);margin-bottom:12px;text-align:center}
+.battery-pair{display:flex;flex-direction:column;gap:12px;max-width:540px;margin:0 auto}
+.battery{display:flex;align-items:stretch;border-radius:12px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.12)}
+.batt-side{flex:1;padding:14px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center}
+.batt-side.pos{background:linear-gradient(135deg,#3730A3,#4338CA);color:#fff}
+.batt-side.neg{background:linear-gradient(135deg,#B45309,#D97706);color:#fff}
+.batt-pole{font-size:2rem;font-weight:900;line-height:1}
+.batt-label{font-size:.72rem;font-weight:600;opacity:.9;letter-spacing:.04em}
+.batt-example{font-size:.75rem;opacity:.85;font-style:italic;margin-top:2px}
+.batt-divider{width:4px;background:linear-gradient(180deg,#fff3,#fff1,#fff3);display:flex;align-items:center;justify-content:center}
+.batt-arrow{font-size:.85rem;color:#fff;opacity:.7;writing-mode:vertical-rl}
+.battery-caption{font-size:.75rem;color:var(--muted);text-align:center;margin-top:4px}
+
+/* ── GRAMMAR SELECT ── */
+.gram-sentence{margin-bottom:14px;font-size:.88rem;line-height:2;display:flex;align-items:baseline;flex-wrap:wrap;gap:6px}
+.gram-tag-badge{display:inline-block;font-size:.68rem;font-weight:700;border-radius:4px;padding:1px 7px;margin-left:4px;vertical-align:middle}
+.gram-tag-badge.pos{background:var(--indigo-lt);color:var(--indigo)}
+.gram-tag-badge.neg{background:var(--amber-lt);color:var(--amber-dk)}
+.gram-select{border:2px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.83rem;border-radius:8px;padding:4px 8px;cursor:pointer;outline:none;transition:border-color .2s}
+.gram-select:focus{border-color:var(--indigo)}
+.gram-select.g-ok{border-color:var(--ok);background:var(--ok-lt);color:var(--ok);font-weight:700}
+.gram-select.g-bad{border-color:var(--red);background:var(--red-lt);color:var(--red)}
+
+/* ── SPOT THE MISTAKE ── */
+.spot-card{background:var(--amber-lt);border:1px solid var(--amber);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
+.spot-q{margin-bottom:14px}
+.spot-q:last-child{margin-bottom:0}
+.spot-q p{font-size:.88rem;margin-bottom:7px;line-height:1.5}
+.spot-wrong{color:var(--red);font-weight:700;text-decoration:underline wavy var(--red)}
+.spot-reveal{font-size:.82rem;margin-top:7px;display:none;padding:8px 12px;background:var(--surface);border-radius:8px;border:1px solid var(--border)}
+.spot-reveal.show{display:block}
+.spot-fix{color:var(--ok);font-weight:700}
+.spot-toggle{padding:5px 13px;border-radius:99px;border:1.5px solid var(--amber-dk);background:transparent;color:var(--amber-dk);font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit}
+.spot-toggle:hover{background:var(--amber-dk);color:#fff}
+
+/* ── FLIP CARDS ── */
+.flip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:14px;margin-top:14px}
+.flip-card{height:190px;perspective:900px;cursor:pointer}
+.flip-card:focus{outline:2px solid var(--indigo);outline-offset:3px;border-radius:14px}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1);border-radius:14px}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.flip-front{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:18px 14px;color:#fff;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.18)}
+.f-icon{font-size:2rem}
+.f-topic{font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.04em}
+.f-hint{font-size:.68rem;opacity:.8;border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:3px 10px;margin-top:4px}
+.flip-back{transform:rotateY(180deg);background:var(--surface);border:2px solid var(--border);display:flex;flex-direction:column;padding:14px 13px;justify-content:space-between;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.b-q{font-size:.82rem;font-weight:400;line-height:1.5;color:var(--text);flex:1;display:flex;align-items:center}
+.b-follow{font-size:.72rem;color:var(--muted);border-top:1px solid var(--border);padding-top:7px;line-height:1.45;margin-top:7px}
+.flip-done-note{font-size:.78rem;color:var(--ok);font-weight:600;margin-top:12px;display:none;text-align:center}
+.flip-done-note.show{display:block}
+
+/* ── PLEDGE ── */
+.pledge-card{max-width:820px;margin:32px auto 0;background:linear-gradient(135deg,var(--indigo-lt),var(--amber-lt));border:1px solid var(--border);border-radius:var(--radius);padding:28px;text-align:center;box-shadow:var(--shadow)}
+.pledge-card h3{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:var(--indigo-dk);margin-bottom:8px}
+.pledge-card p{font-size:.84rem;color:var(--muted);margin-bottom:18px}
+.pledge-input{width:100%;max-width:420px;padding:12px 16px;border:2px solid var(--amber);border-radius:10px;font-size:.92rem;font-family:inherit;background:var(--surface);color:var(--text);text-align:center;outline:none;margin-bottom:14px;display:block;margin-inline:auto}
+.pledge-input:focus{border-color:var(--indigo)}
+.btn-pledge{background:linear-gradient(135deg,#3730A3,#D97706);color:#fff;padding:12px 28px;border-radius:99px;font-size:.9rem;font-weight:700;border:none;cursor:pointer;font-family:'Syne',sans-serif;box-shadow:0 4px 16px rgba(67,56,202,.3);transition:transform .15s,box-shadow .15s}
+.btn-pledge:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(67,56,202,.4)}
+.pledge-result{display:none;margin-top:16px;padding:14px 18px;border-radius:10px;font-size:.92rem;font-weight:600;background:var(--ok-lt);color:var(--ok);border:1px solid var(--ok)}
+.pledge-result.show{display:block}
+
+/* RESPONSIVE */
+@media(max-width:520px){
+  .battery-pair{gap:8px}
+  .battery{flex-direction:column}
+  .batt-divider{width:100%;height:4px}
+}
+@keyframes wrongf{0%,100%{background:var(--surface)}50%{background:var(--red-lt);border-color:var(--red)}}
+</style>
+
+<!-- ═══ HEADER ═══ -->
+<header class="site-header">
+  <div class="hdr-text">
+    <div class="eyebrow">✈️ Question Tags · B1–B2</div>
+    <h1>Why Do We Keep Postponing?</h1>
+    <div class="subtitle">Self-development · Travel · Grammar in Real Life</div>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
+</header>
+
+<!-- NAV -->
+<nav class="nav-bar">
+  <button class="nav-btn" onclick="scrollTo('s1')">1 · Check-in</button>
+  <button class="nav-btn" onclick="scrollTo('s2')">2 · Reading</button>
+  <button class="nav-btn" onclick="scrollTo('s3')">3 · Vocabulary</button>
+  <button class="nav-btn" onclick="scrollTo('s4')">4 · Grammar</button>
+  <button class="nav-btn" onclick="scrollTo('s5')">5 · Mistakes</button>
+  <button class="nav-btn" onclick="scrollTo('s6')">6 · Speaking</button>
+  <button class="nav-btn" onclick="scrollTo('s7')">7 · Pledge</button>
+</nav>
+<div class="progress-wrap">
+  <div class="progress-track"><div id="pfill"></div></div>
+  <span id="plabel">0 / 4 stages complete</span>
+</div>
+
+<!-- ═══ S1 · LEAD-IN ═══ -->
+<section class="section" id="s1">
+  <div class="sec-eyebrow">Stage 1 · Lead-in</div>
+  <h2 class="sec-title">The Procrastinator's Check-in ✋</h2>
+  <div class="card">
+    <div class="instr">Which of these sound like you? Click all that apply — be honest!</div>
+    <div class="chips-grid" id="chipsGrid">
+      <button class="chip" onclick="toggleChip(this)">✈️ "I'll book that trip when I have more money."</button>
+      <button class="chip" onclick="toggleChip(this)">🏋️ "I'll start the gym next Monday."</button>
+      <button class="chip" onclick="toggleChip(this)">📞 "I'll call them back… eventually."</button>
+      <button class="chip" onclick="toggleChip(this)">📚 "I'll read that book when things calm down."</button>
+      <button class="chip" onclick="toggleChip(this)">🌍 "I'll go solo travelling when I feel more ready."</button>
+      <button class="chip" onclick="toggleChip(this)">💼 "I'll apply for that job when I'm more qualified."</button>
+      <button class="chip" onclick="toggleChip(this)">✍️ "I'll start journaling tomorrow. Definitely."</button>
+      <button class="chip" onclick="toggleChip(this)">🤝 "I'll apologise… when the moment is right."</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-indigo" onclick="showVerdict()">See my result →</button>
+    </div>
+    <div class="verdict-box" id="verdictBox"></div>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:16px">💬 <strong>Discuss:</strong> Which one do your classmates also tick? Are any surprising?</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ S2 · READING + COMPREHENSION ═══ -->
+<section class="section" id="s2">
+  <div class="sec-eyebrow">Stage 2 · Reading</div>
+  <h2 class="sec-title">Why We Never Go</h2>
+
+  <div class="read-panels">
+    <div class="read-panel">
+      <div class="panel-icon">🧠</div>
+      <div class="panel-title">The Perfect Moment Myth</div>
+      <div class="panel-body">We wait for everything to be perfect — enough money, enough confidence, no problems. But studies show that we <strong>overestimate</strong> how hard things will be in the future. We also forget how good we are at dealing with change. The perfect moment never comes.</div>
+      <span class="panel-tag">Psychology 📖</span>
+    </div>
+    <div class="read-panel">
+      <div class="panel-icon">😨</div>
+      <div class="panel-title">The "What If" Fear</div>
+      <div class="panel-body">What if I get lonely? What if something goes wrong? This is called <strong>negative forecasting</strong> — thinking about the worst things that could happen, not the most likely ones. In fact, most people who just go for it say it was much better than they expected.</div>
+      <span class="panel-tag">Research 🔬</span>
+    </div>
+    <div class="read-panel">
+      <div class="panel-icon">🔑</div>
+      <div class="panel-title">The Permission Slip</div>
+      <div class="panel-body">Many people wait for someone else to say it's OK — a partner, a parent, a boss. But the best experiences start with one simple decision: you give yourself <strong>permission</strong> to do the thing you keep postponing. Nobody else needs to say yes.</div>
+      <span class="panel-tag">Self-development 🌱</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="instr">Check your understanding. Choose the correct answer and click Check.</div>
+
+    <div class="mc-q" id="mcQ1">
+      <div class="mc-q-text">1. According to the first text, why do we always wait for "later"?</div>
+      <div class="mc-opts">
+        <button class="mc-opt" data-qid="1" data-correct="false" onclick="markMC(this)">A &nbsp; Because we are lazy</button>
+        <button class="mc-opt" data-qid="1" data-correct="true"  onclick="markMC(this)">B &nbsp; Because we think future problems will be bigger than they are</button>
+        <button class="mc-opt" data-qid="1" data-correct="false" onclick="markMC(this)">C &nbsp; Because we need someone else to say it's OK</button>
+        <button class="mc-opt" data-qid="1" data-correct="false" onclick="markMC(this)">D &nbsp; Because we don't have enough money</button>
+      </div>
+      <div class="mc-fb" id="mcFb1"></div>
+    </div>
+
+    <div class="mc-q" id="mcQ2">
+      <div class="mc-q-text">2. What does "negative forecasting" mean?</div>
+      <div class="mc-opts">
+        <button class="mc-opt" data-qid="2" data-correct="false" onclick="markMC(this)">A &nbsp; Planning well for the future</button>
+        <button class="mc-opt" data-qid="2" data-correct="false" onclick="markMC(this)">B &nbsp; Thinking carefully about possible problems</button>
+        <button class="mc-opt" data-qid="2" data-correct="true"  onclick="markMC(this)">C &nbsp; Thinking about the worst things that could happen, not the most likely</button>
+        <button class="mc-opt" data-qid="2" data-correct="false" onclick="markMC(this)">D &nbsp; Saying that something bad will definitely happen</button>
+      </div>
+      <div class="mc-fb" id="mcFb2"></div>
+    </div>
+
+    <div class="mc-q" id="mcQ3">
+      <div class="mc-q-text">3. What do all three texts say?</div>
+      <div class="mc-opts">
+        <button class="mc-opt" data-qid="3" data-correct="false" onclick="markMC(this)">A &nbsp; Waiting is sometimes the right choice</button>
+        <button class="mc-opt" data-qid="3" data-correct="false" onclick="markMC(this)">B &nbsp; You need more money before you act</button>
+        <button class="mc-opt" data-qid="3" data-correct="true"  onclick="markMC(this)">C &nbsp; The reason we don't act is usually in our own heads</button>
+        <button class="mc-opt" data-qid="3" data-correct="false" onclick="markMC(this)">D &nbsp; It's good to ask other people for advice first</button>
+      </div>
+      <div class="mc-fb" id="mcFb3"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-indigo" onclick="checkComp()">Check answers</button>
+      <button class="btn btn-outline" onclick="resetComp()">↺ Reset</button>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ S3 · VOCABULARY ═══ -->
+<section class="section" id="s3">
+  <div class="sec-eyebrow">Stage 3 · Vocabulary</div>
+  <h2 class="sec-title">Words for Action (and Inaction)</h2>
+  <div class="card">
+    <div class="instr">Complete the sentences with the correct word from the box. Type it into the gap.</div>
+    <p style="background:var(--surface2);border-radius:8px;padding:10px 14px;font-size:.83rem;margin-bottom:18px;font-weight:600">
+      📦 Word box: &nbsp;<em>comfort zone &nbsp;·&nbsp; overestimate &nbsp;·&nbsp; spontaneous &nbsp;·&nbsp; postponing &nbsp;·&nbsp; commit</em>
+    </p>
+
+    <div class="gf-sentence">1. I keep <input class="gf-input" id="gv1" data-ans="postponing" placeholder="___"> my dentist appointment — it's been rescheduled three times now.<span class="gf-ans" id="gvA1">postponing</span></div>
+
+    <div class="gf-sentence">2. She finally decided to <input class="gf-input" id="gv2" data-ans="commit" placeholder="___"> to the trip and bought her flights that same afternoon.<span class="gf-ans" id="gvA2">commit</span></div>
+
+    <div class="gf-sentence">3. He's very <input class="gf-input" id="gv3" data-ans="spontaneous" placeholder="___"> — he booked a flight to Lisbon the same day he had the idea.<span class="gf-ans" id="gvA3">spontaneous</span></div>
+
+    <div class="gf-sentence">4. Trying something new takes you out of your <input class="gf-input" id="gv4" data-ans="comfort zone" placeholder="___">. It feels strange at first, but that's how you grow.<span class="gf-ans" id="gvA4">comfort zone</span></div>
+
+    <div class="gf-sentence">5. We often <input class="gf-input" id="gv5" data-ans="overestimate" placeholder="___"> future problems and think we can't handle them — but we usually can.<span class="gf-ans" id="gvA5">overestimate</span></div>
+
+    <div class="btn-row">
+      <button class="btn btn-indigo" onclick="checkVocab()">Check answers</button>
+      <button class="btn btn-outline" onclick="resetVocab()">↺ Reset</button>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ S4 · GRAMMAR ═══ -->
+<section class="section" id="s4">
+  <div class="sec-eyebrow">Stage 4 · Grammar</div>
+  <h2 class="sec-title">Question Tags</h2>
+
+  <!-- RULE BOX -->
+  <div class="card" style="margin-bottom:18px;background:var(--surface3);border-color:var(--indigo)">
+    <h4 style="font-family:'Syne',sans-serif;font-weight:800;color:var(--indigo-dk);margin-bottom:10px">📐 The Rule</h4>
+    <p style="font-size:.87rem;margin-bottom:8px">A question tag is a short question added to the end of a statement. It can check information, invite agreement, or start a conversation.</p>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:.85rem">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <span style="background:var(--indigo-lt);color:var(--indigo);border-radius:5px;padding:2px 9px;font-weight:700;white-space:nowrap;font-size:.75rem">+ → −</span>
+        <span><strong>Positive</strong> statement → <em>negative</em> tag: "You want to travel, <strong>don't you?</strong>"</span>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <span style="background:var(--amber-lt);color:var(--amber-dk);border-radius:5px;padding:2px 9px;font-weight:700;white-space:nowrap;font-size:.75rem">− → +</span>
+        <span><strong>Negative</strong> statement → <em>positive</em> tag: "You haven't booked it yet, <strong>have you?</strong>"</span>
+      </div>
+    </div>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:10px">💡 The auxiliary verb in the tag matches the auxiliary in the statement. The subject pronoun also matches.</p>
+  </div>
+
+  <!-- BATTERY DIAGRAM -->
+  <div class="card" style="margin-bottom:18px">
+    <div class="battery-section">
+      <h4>🔋 Think of it like a battery — opposite poles attract!</h4>
+      <div class="battery-pair">
+        <div>
+          <div class="battery">
+            <div class="batt-side pos">
+              <div class="batt-pole">＋</div>
+              <div class="batt-label">Positive statement</div>
+              <div class="batt-example">"You want to go…"</div>
+            </div>
+            <div class="batt-divider"><div class="batt-arrow">→</div></div>
+            <div class="batt-side neg">
+              <div class="batt-pole">−</div>
+              <div class="batt-label">Negative tag</div>
+              <div class="batt-example">"…don't you?"</div>
+            </div>
+          </div>
+          <div class="battery-caption">Positive charge needs a negative end ⚡</div>
+        </div>
+        <div>
+          <div class="battery">
+            <div class="batt-side neg">
+              <div class="batt-pole">−</div>
+              <div class="batt-label">Negative statement</div>
+              <div class="batt-example">"You haven't booked…"</div>
+            </div>
+            <div class="batt-divider"><div class="batt-arrow">→</div></div>
+            <div class="batt-side pos">
+              <div class="batt-pole">＋</div>
+              <div class="batt-label">Positive tag</div>
+              <div class="batt-example">"…have you?"</div>
+            </div>
+          </div>
+          <div class="battery-caption">Negative charge needs a positive end ⚡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GRAMMAR PRACTICE -->
+  <div class="card">
+    <div class="instr">Choose the correct question tag from the dropdown. Check your answers when done.</div>
+
+    <div class="gram-sentence">1. "You've always wanted to travel solo,
+      <select class="gram-select" id="gs1" data-ans="haven't you">
+        <option value="">— pick —</option>
+        <option>haven't you</option>
+        <option>have you</option>
+        <option>didn't you</option>
+        <option>do you</option>
+      </select>?" <span class="gram-tag-badge pos">+→−</span></div>
+
+    <div class="gram-sentence">2. "We can't wait for the perfect moment forever,
+      <select class="gram-select" id="gs2" data-ans="can we">
+        <option value="">— pick —</option>
+        <option>can't we</option>
+        <option>can we</option>
+        <option>do we</option>
+        <option>don't we</option>
+      </select>?" <span class="gram-tag-badge neg">−→+</span></div>
+
+    <div class="gram-sentence">3. "That flight won't book itself,
+      <select class="gram-select" id="gs3" data-ans="will it">
+        <option value="">— pick —</option>
+        <option>will it</option>
+        <option>won't it</option>
+        <option>does it</option>
+        <option>is it</option>
+      </select>?" <span class="gram-tag-badge neg">−→+</span></div>
+
+    <div class="gram-sentence">4. "People who travel solo become more confident,
+      <select class="gram-select" id="gs4" data-ans="don't they">
+        <option value="">— pick —</option>
+        <option>do they</option>
+        <option>don't they</option>
+        <option>aren't they</option>
+        <option>haven't they</option>
+      </select>?" <span class="gram-tag-badge pos">+→−</span></div>
+
+    <div class="gram-sentence">5. "You haven't actually looked at flights yet,
+      <select class="gram-select" id="gs5" data-ans="have you">
+        <option value="">— pick —</option>
+        <option>have you</option>
+        <option>haven't you</option>
+        <option>did you</option>
+        <option>didn't you</option>
+      </select>?" <span class="gram-tag-badge neg">−→+</span></div>
+
+    <div class="gram-sentence">6. "We should just book it and figure out the rest later,
+      <select class="gram-select" id="gs6" data-ans="shouldn't we">
+        <option value="">— pick —</option>
+        <option>should we</option>
+        <option>shouldn't we</option>
+        <option>wouldn't we</option>
+        <option>won't we</option>
+      </select>?" <span class="gram-tag-badge pos">+→−</span></div>
+
+    <div class="btn-row">
+      <button class="btn btn-indigo" onclick="checkGram()">Check answers</button>
+      <button class="btn btn-outline" onclick="resetGram()">↺ Reset</button>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ S5 · SPOT THE MISTAKE ═══ -->
+<section class="section" id="s5">
+  <div class="sec-eyebrow">Stage 5 · Accuracy</div>
+  <h2 class="sec-title">🔍 Spot the Mistake</h2>
+  <div class="spot-card">
+    <div class="instr" style="background:rgba(255,255,255,.6);border-left-color:var(--amber-dk)">Each sentence has a wrong question tag (underlined). Click to see the correction.</div>
+
+    <div class="spot-q">
+      <p>1. "Solo travel is scary at first, <span class="spot-wrong">is it</span>?"</p>
+      <button class="spot-toggle" onclick="toggleSpot(this)">Show answer</button>
+      <div class="spot-reveal">❌ <span class="spot-wrong">is it</span> → <span class="spot-fix">isn't it</span> &nbsp;(positive statement → negative tag)</div>
+    </div>
+    <div class="spot-q">
+      <p>2. "She doesn't have a passport yet, <span class="spot-wrong">doesn't she</span>?"</p>
+      <button class="spot-toggle" onclick="toggleSpot(this)">Show answer</button>
+      <div class="spot-reveal">❌ <span class="spot-wrong">doesn't she</span> → <span class="spot-fix">does she</span> &nbsp;(negative statement → positive tag)</div>
+    </div>
+    <div class="spot-q">
+      <p>3. "We can always change the date, <span class="spot-wrong">can we</span>?"</p>
+      <button class="spot-toggle" onclick="toggleSpot(this)">Show answer</button>
+      <div class="spot-reveal">❌ <span class="spot-wrong">can we</span> → <span class="spot-fix">can't we</span> &nbsp;(positive statement → negative tag)</div>
+    </div>
+    <div class="spot-q">
+      <p>4. "They hadn't planned anything in advance, <span class="spot-wrong">hadn't they</span>?"</p>
+      <button class="spot-toggle" onclick="toggleSpot(this)">Show answer</button>
+      <div class="spot-reveal">❌ <span class="spot-wrong">hadn't they</span> → <span class="spot-fix">had they</span> &nbsp;(negative statement → positive tag)</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ S6 · SPEAKING / FLIP CARDS ═══ -->
+<section class="section" id="s6">
+  <div class="sec-eyebrow">Stage 6 · Speaking</div>
+  <h2 class="sec-title">Let's Talk 💬</h2>
+  <div class="card">
+    <div class="instr">Flip a card to reveal a discussion question — it already contains a question tag! Take turns. Discuss for 2–3 minutes each.</div>
+    <p style="font-size:.79rem;color:var(--muted);margin-bottom:14px">Try to use question tags yourself when you respond. The follow-up tip will help.</p>
+
+    <div class="flip-grid" id="flipGrid">
+
+      <div class="flip-card" tabindex="0" onclick="flipCard(this)" onkeydown="if(event.key==='Enter'||event.key===' ')flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front" style="background:linear-gradient(135deg,#3730A3,#4338CA)">
+            <div class="f-icon">⏰</div>
+            <div class="f-topic">The Postponer</div>
+            <div class="f-hint">👆 flip for question</div>
+          </div>
+          <div class="flip-back">
+            <div class="b-q">"We all have something we keep postponing, don't we? What is yours — and why haven't you done it yet?"</div>
+            <div class="b-follow">💡 Try: "It's been on your list for a long time, hasn't it?"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card" tabindex="0" onclick="flipCard(this)" onkeydown="if(event.key==='Enter'||event.key===' ')flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front" style="background:linear-gradient(135deg,#B45309,#D97706)">
+            <div class="f-icon">✈️</div>
+            <div class="f-topic">Solo Travel</div>
+            <div class="f-hint">👆 flip for question</div>
+          </div>
+          <div class="flip-back">
+            <div class="b-q">"Travelling alone sounds scary but exciting, doesn't it? Have you ever been somewhere completely on your own?"</div>
+            <div class="b-follow">💡 Try: "You've been thinking about it for a while, haven't you?"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card" tabindex="0" onclick="flipCard(this)" onkeydown="if(event.key==='Enter'||event.key===' ')flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front" style="background:linear-gradient(135deg,#1D4ED8,#6366F1)">
+            <div class="f-icon">💰</div>
+            <div class="f-topic">The Money Excuse</div>
+            <div class="f-hint">👆 flip for question</div>
+          </div>
+          <div class="flip-back">
+            <div class="b-q">"Money is usually just an excuse, isn't it? What do you spend money on that you could save for the thing you keep postponing?"</div>
+            <div class="b-follow">💡 Try: "We always find the money for things we really want, don't we?"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card" tabindex="0" onclick="flipCard(this)" onkeydown="if(event.key==='Enter'||event.key===' ')flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front" style="background:linear-gradient(135deg,#BE185D,#E11D48)">
+            <div class="f-icon">🧠</div>
+            <div class="f-topic">Comfort Zone</div>
+            <div class="f-hint">👆 flip for question</div>
+          </div>
+          <div class="flip-back">
+            <div class="b-q">"Trying new things is the best way to grow, isn't it? Tell us about a time you did something that scared you — and how it went."</div>
+            <div class="b-follow">💡 Try: "It wasn't as bad as you expected, was it?"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card" tabindex="0" onclick="flipCard(this)" onkeydown="if(event.key==='Enter'||event.key===' ')flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front" style="background:linear-gradient(135deg,#065F46,#0F766E)">
+            <div class="f-icon">🌍</div>
+            <div class="f-topic">Dream Destination</div>
+            <div class="f-hint">👆 flip for question</div>
+          </div>
+          <div class="flip-back">
+            <div class="b-q">"We all have one place we really want to visit one day, don't we? Where is yours — and why haven't you gone yet?"</div>
+            <div class="b-follow">💡 Try: "The flights can't be that expensive, can they?"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-card" tabindex="0" onclick="flipCard(this)" onkeydown="if(event.key==='Enter'||event.key===' ')flipCard(this)">
+        <div class="flip-inner">
+          <div class="flip-front" style="background:linear-gradient(135deg,#4338CA,#D97706)">
+            <div class="f-icon">🔑</div>
+            <div class="f-topic">Permission to Go</div>
+            <div class="f-hint">👆 flip for question</div>
+          </div>
+          <div class="flip-back">
+            <div class="b-q">"We often wait for someone to say it's OK before we do something big, don't we? What are you waiting for right now?"</div>
+            <div class="b-follow">💡 Try: "Nobody is going to give us a sign, are they?"</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="flip-done-note" id="flipDone">🎉 All cards explored — great conversation! ✨</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ S7 · PLEDGE ═══ -->
+<section class="section" id="s7">
+  <div class="sec-eyebrow">Stage 7 · Wrap-up</div>
+  <h2 class="sec-title">Stop Postponing. Start.</h2>
+</section>
+
+<div class="pledge-card">
+  <h3>✍️ Your One Thing</h3>
+  <p>What's one thing you've been postponing that you're going to do this month? Write it below and make it official.</p>
+  <input class="pledge-input" id="pledgeInput" type="text" placeholder="I will stop postponing…" maxlength="80">
+  <button class="btn-pledge" onclick="makePledge()">🚀 Make My Pledge!</button>
+  <div class="pledge-result" id="pledgeResult"></div>
+  <p style="font-size:.75rem;color:var(--muted);margin-top:16px">💬 Share your pledge with the class! Use a question tag: <em>"I'm going to finally do X — I should, <strong>shouldn't I?</strong>"</em></p>
+</div>
+
+<script>
+/* ── THEME ── */
+var theme='light';
+try{theme=localStorage.getItem('qt_pst_theme')||'light';}catch(e){}
+document.documentElement.setAttribute('data-theme',theme);
+document.getElementById('themeBtn').textContent=theme==='dark'?'☀️ Light':'🌙 Dark';
+function toggleTheme(){
+  theme=theme==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',theme);
+  document.getElementById('themeBtn').textContent=theme==='dark'?'☀️ Light':'🌙 Dark';
+  try{localStorage.setItem('qt_pst_theme',theme);}catch(e){}
+}
+
+/* ── NAV SCROLL ── */
+function scrollTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'})}
+
+/* ── PROGRESS ── */
+var done={comp:false,vocab:false,gram:false,convo:false};
+function updateProgress(){
+  var n=Object.values(done).filter(Boolean).length;
+  document.getElementById('pfill').style.width=(n/4*100)+'%';
+  document.getElementById('plabel').textContent=n+' / 4 stages complete';
+}
+
+/* ── LEAD-IN CHECK-IN ── */
+function toggleChip(btn){btn.classList.toggle('selected')}
+function showVerdict(){
+  var n=document.querySelectorAll('.chip.selected').length;
+  var box=document.getElementById('verdictBox');
+  if(n===0){box.className='verdict-box show low';box.textContent='🏆 0 selected — either you\'re extremely together, or extremely in denial. Which is it, isn\'t it?';return;}
+  if(n<=2){box.className='verdict-box show low';box.textContent='🌱 '+n+' selected — you\'re a light postponer. You probably still have a Google Doc called "Things To Do Someday".';}
+  else if(n<=5){box.className='verdict-box show mid';box.textContent='⏰ '+n+' selected — a certified postponer. You\'re not alone — most of the class ticked the same ones, didn\'t they?';}
+  else{box.className='verdict-box show high';box.textContent='🌋 '+n+' selected — the Grand Master of Later™. The good news? You\'re in exactly the right lesson.';}
+}
+
+/* ── COMPREHENSION ── */
+var mcAnswers={};
+document.querySelectorAll('.mc-opt').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    if(btn.classList.contains('mc-ok')||btn.classList.contains('mc-bad'))return;
+    var group=btn.closest('.mc-opts');
+    if(group.querySelector('.mc-ok,.mc-bad'))return;
+    group.querySelectorAll('.mc-opt').forEach(function(b){b.classList.remove('checked');b.style.borderColor='';b.style.background='';});
+    btn.classList.add('checked');
+    btn.style.borderColor='var(--indigo)';
+    btn.style.background='var(--indigo-lt)';
+  });
+});
+function markMC(btn){/* handled by listener above */}
+function checkComp(){
+  var qs=['1','2','3'];
+  var allAnswered=qs.every(function(q){return document.querySelector('#mcQ'+q+' .mc-opt.checked');});
+  if(!allAnswered){alert('Please select an answer for every question.');return;}
+  var allOk=true;
+  qs.forEach(function(q){
+    var sel=document.querySelector('#mcQ'+q+' .mc-opt.checked');
+    var fb=document.getElementById('mcFb'+q);
+    var ok=sel&&sel.dataset.correct==='true';
+    if(!ok)allOk=false;
+    if(sel){
+      sel.classList.add(ok?'mc-ok':'mc-bad');
+      sel.style.borderColor='';sel.style.background='';
+      fb.className='mc-fb '+(ok?'ok':'bad');
+      fb.textContent=ok?'Correct!':'❌ Not quite — the correct answer is highlighted.';
+      if(!ok){var correctBtn=document.querySelector('#mcQ'+q+' [data-correct="true"]');if(correctBtn)correctBtn.classList.add('mc-ok');}
+    }
+    document.querySelectorAll('#mcQ'+q+' .mc-opt').forEach(function(b){b.disabled=true;});
+  });
+  done.comp=true;
+  updateProgress();
+}
+function resetComp(){
+  ['1','2','3'].forEach(function(q){
+    document.querySelectorAll('#mcQ'+q+' .mc-opt').forEach(function(b){
+      b.classList.remove('checked','mc-ok','mc-bad');b.disabled=false;b.style.borderColor='';b.style.background='';
+    });
+    var fb=document.getElementById('mcFb'+q);fb.className='mc-fb';fb.textContent='';
+  });
+  done.comp=false;updateProgress();
+}
+
+/* ── VOCABULARY GAP-FILL ── */
+var gvIds=['gv1','gv2','gv3','gv4','gv5'];
+function normalise(s){return s.toLowerCase().replace(/\s+/g,' ').trim();}
+function checkVocab(){
+  var allFilled=gvIds.every(function(id){return document.getElementById(id).value.trim()!=='';});
+  if(!allFilled){alert('Please fill in all the gaps first.');return;}
+  gvIds.forEach(function(id,i){
+    var inp=document.getElementById(id);
+    var ansEl=document.getElementById('gvA'+(i+1));
+    var ok=normalise(inp.value)===normalise(inp.dataset.ans);
+    inp.classList.remove('gf-ok','gf-bad');
+    if(ok){inp.classList.add('gf-ok');ansEl.className='gf-ans';}
+    else{inp.classList.add('gf-bad');ansEl.textContent='' +inp.dataset.ans;ansEl.className='gf-ans show';}
+    inp.disabled=true;
+  });
+  done.vocab=true;updateProgress();
+}
+function resetVocab(){
+  gvIds.forEach(function(id,i){
+    var inp=document.getElementById(id);
+    inp.value='';inp.disabled=false;inp.classList.remove('gf-ok','gf-bad');
+    var ansEl=document.getElementById('gvA'+(i+1));ansEl.className='gf-ans';
+  });
+  done.vocab=false;updateProgress();
+}
+
+/* ── GRAMMAR ── */
+function checkGram(){
+  var allPicked=(['gs1','gs2','gs3','gs4','gs5','gs6']).every(function(id){return document.getElementById(id).value!=='';});
+  if(!allPicked){alert('Please select a tag for every sentence.');return;}
+  ['gs1','gs2','gs3','gs4','gs5','gs6'].forEach(function(id){
+    var sel=document.getElementById(id);
+    var ok=sel.value===sel.dataset.ans;
+    sel.classList.remove('g-ok','g-bad');
+    sel.classList.add(ok?'g-ok':'g-bad');
+    sel.disabled=true;
+  });
+  done.gram=true;updateProgress();
+}
+function resetGram(){
+  ['gs1','gs2','gs3','gs4','gs5','gs6'].forEach(function(id){
+    var sel=document.getElementById(id);sel.value='';sel.classList.remove('g-ok','g-bad');sel.disabled=false;
+  });
+  done.gram=false;updateProgress();
+}
+
+/* ── SPOT THE MISTAKE ── */
+function toggleSpot(btn){
+  var reveal=btn.nextElementSibling;
+  var showing=reveal.classList.contains('show');
+  reveal.classList.toggle('show',!showing);
+  btn.textContent=showing?'Show answer':'Hide answer';
+}
+
+/* ── FLIP CARDS ── */
+var flippedCount=0;
+function flipCard(card){
+  var wasFlipped=card.classList.contains('flipped');
+  card.classList.toggle('flipped');
+  if(!wasFlipped){
+    flippedCount++;
+    if(flippedCount>=6){
+      document.getElementById('flipDone').classList.add('show');
+      done.convo=true;updateProgress();
+    }
+  }
+}
+
+/* ── PLEDGE ── */
+function makePledge(){
+  var val=document.getElementById('pledgeInput').value.trim();
+  var res=document.getElementById('pledgeResult');
+  if(!val){alert('Write your one thing first!');return;}
+  res.textContent='✨ "'+val+'" — it\'s official! The world knows. Now go do it — you\'ve got this, haven\'t you? 🚀';
+  res.className='pledge-result show';
+}
+</script>
