@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 4C Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --teal:#0D9488; --teal-d:#0f766e; --orange:#EA580C;
+  --bg:#f8fafc; --surface:#ffffff; --surface-2:#f1f5f9;
+  --border:#e2e8f0; --text:#0f172a; --text-2:#475569; --text-3:#94a3b8;
+  --green:#16a34a; --green-bg:#dcfce7; --red:#dc2626; --red-bg:#fee2e2;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f172a; --surface:#1e293b; --surface-2:#253347;
+    --border:#334155; --text:#f1f5f9; --text-2:#94a3b8; --text-3:#64748b;
+    --green-bg:#14532d; --red-bg:#450a0a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f172a; --surface:#1e293b; --surface-2:#253347;
+  --border:#334155; --text:#f1f5f9; --text-2:#94a3b8; --text-3:#64748b;
+  --green-bg:#14532d; --red-bg:#450a0a;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:15px;}
+.page{max-width:740px;margin:0 auto;padding:0 16px 80px;}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,var(--teal),var(--teal-d));color:#fff;padding:28px 20px 22px;text-align:center;position:relative;}
+.hdr-eyebrow{font-family:'Outfit',sans-serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase;opacity:.8;margin-bottom:4px;}
+.hdr h1{font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:3px;}
+.hdr-sub{font-size:13px;opacity:.85;}
+.theme-btn{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.2);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:15px;color:#fff;display:flex;align-items:center;justify-content:center;}
+
+/* NAME BAR */
+.name-bar{position:sticky;top:0;z-index:10;background:var(--teal);color:#fff;padding:9px 20px;display:flex;align-items:center;gap:10px;}
+.name-bar label{font-size:13px;font-weight:600;white-space:nowrap;}
+.name-bar input{flex:1;max-width:280px;padding:5px 10px;border-radius:6px;border:none;font-size:14px;font-family:inherit;}
+
+/* PROGRESS */
+.progress-wrap{padding:14px 0 0;}
+.progress-top{font-size:12px;color:var(--text-2);margin-bottom:5px;display:flex;justify-content:space-between;}
+.progress-track{height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--orange);border-radius:4px;transition:width .4s ease;width:0%;}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-top:18px;}
+.card-hd{display:flex;align-items:center;gap:9px;margin-bottom:6px;}
+.card-hd h3{font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;}
+.tag{background:var(--teal);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+.instr{font-size:13px;color:var(--text-2);margin-bottom:14px;}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+.btn{padding:8px 18px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+.btn:hover{opacity:.85;}
+.btn-check{background:var(--teal);color:#fff;}
+.btn-reset{background:var(--surface-2);color:var(--text-2);}
+.btn-send{background:var(--orange);color:#fff;font-size:15px;padding:10px 28px;}
+
+/* INPUTS */
+.ans-input{border:1.5px solid var(--border);border-radius:6px;padding:5px 9px;font-size:14px;background:var(--surface);color:var(--text);font-family:inherit;}
+.ans-input:focus{outline:none;border-color:var(--teal);}
+.ans-input.correct{border-color:var(--green)!important;background:var(--green-bg);}
+.ans-input.wrong{border-color:var(--red)!important;background:var(--red-bg);}
+.fb{font-size:14px;}
+
+/* ── EX 1: MATCH ── */
+.match-list{display:flex;flex-direction:column;gap:10px;}
+.match-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.match-word{font-weight:600;min-width:96px;}
+.match-sel{border:1.5px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;background:var(--surface);color:var(--text);font-family:inherit;cursor:pointer;flex:1;max-width:340px;}
+.match-sel:focus{outline:none;border-color:var(--teal);}
+.match-sel.correct{border-color:var(--green);background:var(--green-bg);}
+.match-sel.wrong{border-color:var(--red);background:var(--red-bg);}
+
+/* ── EX 2: SORT ── */
+.sort-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.sort-col-hd{background:var(--surface-2);padding:8px 12px;font-size:12px;font-weight:700;color:var(--teal);border-bottom:1.5px solid var(--border);}
+.sort-col-hd:first-child{border-right:1.5px solid var(--border);}
+.sort-col-body{padding:8px 10px;min-height:130px;border-right:1.5px solid var(--border);}
+.sort-col-body.right-col{border-right:none;}
+.sort-example{font-size:13px;color:var(--text-3);font-style:italic;padding:2px 0;}
+.sort-row-item{display:flex;align-items:center;gap:6px;padding:3px 0;flex-wrap:wrap;}
+.sort-word-label{font-size:13px;font-weight:500;min-width:96px;}
+.sort-btn{padding:3px 10px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text-2);font-family:inherit;transition:background .12s,border-color .12s;}
+.sort-btn:hover{background:var(--surface-2);}
+.sort-btn.active{border-color:var(--teal);background:#f0fdfa;color:var(--teal-d);}
+.sort-btn.correct{border-color:var(--green);background:var(--green-bg);color:var(--green);}
+.sort-btn.wrong{border-color:var(--red);background:var(--red-bg);color:var(--red);}
+
+/* ── EX 3: GAP-FILL ── */
+.gap-list{display:flex;flex-direction:column;gap:10px;}
+.gap-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.gap-num{font-weight:700;color:var(--teal);min-width:18px;}
+
+/* ── EX 4: WORD ORDER ── */
+.order-list{display:flex;flex-direction:column;gap:14px;}
+.order-item{}
+.order-prompt{font-size:12px;color:var(--text-3);font-style:italic;margin-bottom:5px;}
+.order-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.order-num{font-weight:700;color:var(--teal);min-width:18px;}
+.order-ans{min-width:260px;flex:1;}
+
+/* ── EX 5: CHOICE ── */
+.choice-list{display:flex;flex-direction:column;gap:10px;}
+.choice-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.choice-num{font-weight:700;color:var(--teal);min-width:18px;}
+.choice-btn{padding:4px 13px;border:1.5px solid var(--border);border-radius:6px;font-size:14px;cursor:pointer;background:var(--surface);color:var(--text);font-family:inherit;transition:background .12s;}
+.choice-btn:hover{background:var(--surface-2);}
+.choice-btn.selected{border-color:var(--teal);background:#f0fdfa;}
+.choice-btn.correct{border-color:var(--green)!important;background:var(--green-bg)!important;color:var(--green);}
+.choice-btn.wrong{border-color:var(--red)!important;background:var(--red-bg)!important;color:var(--red);}
+
+/* ── EX 6: FREE WRITE ── */
+.write-list{display:flex;flex-direction:column;gap:16px;}
+.write-item{}
+.write-sit{font-weight:600;margin-bottom:2px;}
+.write-prompt{font-size:12px;color:var(--text-2);font-style:italic;margin-bottom:5px;}
+.write-eg{font-size:13px;color:var(--text-3);text-decoration:underline;margin-bottom:4px;}
+.write-ta{width:100%;border:1.5px solid var(--border);border-radius:6px;padding:8px 10px;font-size:14px;font-family:inherit;background:var(--surface);color:var(--text);resize:vertical;min-height:46px;}
+.write-ta:focus{outline:none;border-color:var(--teal);}
+
+/* SEND */
+.send-card{background:var(--surface-2);border:2px solid var(--border);border-radius:14px;padding:22px;text-align:center;margin-top:24px;}
+.send-card h3{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:6px;}
+.send-card p{font-size:13px;color:var(--text-2);margin-bottom:14px;}
+
+@media(max-width:520px){
+  .sort-grid{grid-template-columns:1fr;}
+  .sort-col-body{border-right:none;border-bottom:1.5px solid var(--border);}
+  .sort-col-hd:first-child{border-right:none;border-bottom:1.5px solid var(--border);}
+  .order-ans{min-width:200px;}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+  <div class="hdr-eyebrow">homework</div>
+  <h1>Unit 4C — Be Prepared</h1>
+  <div class="hdr-sub">Equipment &nbsp;·&nbsp; <em>need</em> + noun &nbsp;/&nbsp; <em>need to</em> + infinitive</div>
+</div>
+
+<div class="page">
+
+  <div class="name-bar">
+    <label for="nameInput">Your name:</label>
+    <input id="nameInput" type="text" placeholder="Type your name…">
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-top"><span>Progress</span><span id="plabel">0 / 5</span></div>
+    <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       EXERCISE 1 — MATCH
+  ══════════════════════════════════ -->
+  <div class="card">
+    <div class="card-hd"><span class="tag">Exercise 1</span><h3>Match words 1–6 with meanings a–f</h3></div>
+    <p class="instr">Choose the correct meaning for each word from the drop-down.</p>
+    <div class="match-list" id="matchList"></div>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkMatch()">Check ✓</button>
+      <button class="btn btn-reset" onclick="resetMatch()">Reset</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       EXERCISE 2 — SORT TABLE
+  ══════════════════════════════════ -->
+  <div class="card">
+    <div class="card-hd"><span class="tag">Exercise 2</span><h3>Complete the table with the words in the box</h3></div>
+    <p class="instr">Click <strong>eat/drink</strong> or <strong>wear</strong> for each word. (<em>bowl</em> is done for you.)</p>
+    <div style="font-size:13px;color:var(--text-2);background:var(--surface-2);border-radius:8px;padding:8px 12px;margin-bottom:12px;">
+      boots &nbsp;·&nbsp; gloves &nbsp;·&nbsp; hat &nbsp;·&nbsp; knife &nbsp;·&nbsp; sunglasses &nbsp;·&nbsp; warm clothes &nbsp;·&nbsp; water bottle
+    </div>
+    <div class="sort-grid">
+      <div class="sort-col-hd">🍽️ Things you use to eat/drink</div>
+      <div class="sort-col-hd" style="border-right:none;">👕 Things you wear</div>
+      <div class="sort-col-body" id="eatCol">
+        <div class="sort-example">bowl (example)</div>
+      </div>
+      <div class="sort-col-body right-col" id="wearCol"></div>
+    </div>
+    <div id="sortRows"></div>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkSort()">Check ✓</button>
+      <button class="btn btn-reset" onclick="resetSort()">Reset</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       EXERCISE 3 — GAP-FILL
+  ══════════════════════════════════ -->
+  <div class="card">
+    <div class="card-hd"><span class="tag">Exercise 3</span><h3>Complete the sentences with words from Exercises 1 and 2</h3></div>
+    <p class="instr">Use the correct vocabulary word to fill each gap.</p>
+    <div class="gap-list" id="gapList"></div>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkGap()">Check ✓</button>
+      <button class="btn btn-reset" onclick="resetGap()">Reset</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       EXERCISE 4 — WORD ORDER
+  ══════════════════════════════════ -->
+  <div class="card">
+    <div class="card-hd"><span class="tag">Exercise 4</span><h3>Put the words in the correct order to make sentences</h3></div>
+    <p class="instr">Write the complete sentence. Use all the words. Don't forget capital letters and a full stop.</p>
+    <div class="order-list" id="orderList"></div>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkOrder()">Check ✓</button>
+      <button class="btn btn-reset" onclick="resetOrder()">Reset</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       EXERCISE 5 — CHOOSE ALTERNATIVES
+  ══════════════════════════════════ -->
+  <div class="card">
+    <div class="card-hd"><span class="tag">Exercise 5</span><h3>Choose the correct alternatives</h3></div>
+    <p class="instr">Click the correct word or phrase to complete each sentence.</p>
+    <div class="choice-list" id="choiceList"></div>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkChoice()">Check ✓</button>
+      <button class="btn btn-reset" onclick="resetChoice()">Reset</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       EXERCISE 6 — FREE WRITE
+  ══════════════════════════════════ -->
+  <div class="card">
+    <div class="card-hd"><span class="tag">Exercise 6</span><h3>Use the prompts to write sentences for each situation</h3></div>
+    <p class="instr">Use the words in the prompt to write a sentence with <em>need</em>.</p>
+    <div class="write-list" id="writeList"></div>
+  </div>
+
+  <!-- SEND -->
+  <div class="send-card">
+    <h3>📨 Send to Teacher</h3>
+    <p>When you have finished, send your work to your teacher.</p>
+    <button class="btn btn-send" onclick="sendToTeacher()">Send to Teacher</button>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+/* ── THEME ── */
+function toggleTheme(){
+  var t=document.documentElement.getAttribute('data-theme');
+  document.documentElement.setAttribute('data-theme',t==='dark'?'light':'dark');
+}
+
+/* ── PROGRESS ── */
+var DONE={ex1:false,ex2:false,ex3:false,ex4:false,ex5:false};
+var TOTAL=Object.keys(DONE).length;
+function updateProgress(){
+  var n=Object.values(DONE).filter(Boolean).length;
+  document.getElementById('pfill').style.width=(n/TOTAL*100)+'%';
+  document.getElementById('plabel').textContent=n+' / '+TOTAL;
+}
+function norm(s){return s.toLowerCase().trim();}
+
+/* ══════════════════════════════════════
+   EX 1 — MATCH
+══════════════════════════════════════ */
+var M1=[
+  {num:1,word:'backpack', ans:'b'},
+  {num:2,word:'batteries',ans:'c'},
+  {num:3,word:'mirror',   ans:'e'},
+  {num:4,word:'can',      ans:'a'},
+  {num:5,word:'blanket',  ans:'f'},
+  {num:6,word:'map',      ans:'d'}
+];
+var M1_DEFS={
+  a:'This has food inside.',
+  b:'Carry things in this.',
+  c:'These give you electricity.',
+  d:'This helps you find places.',
+  e:'You can see yourself in this.',
+  f:'You sleep under this.'
+};
+
+(function(){
+  var list=document.getElementById('matchList');
+  M1.forEach(function(item){
+    var row=document.createElement('div');
+    row.className='match-row';
+    var wordSpan=document.createElement('span');
+    wordSpan.className='match-word';
+    wordSpan.textContent=item.num+'. '+item.word;
+    var sel=document.createElement('select');
+    sel.className='match-sel'; sel.id='m1-'+item.num;
+    var opt0=document.createElement('option');
+    opt0.value=''; opt0.textContent='choose…';
+    sel.appendChild(opt0);
+    ['a','b','c','d','e','f'].forEach(function(letter){
+      var o=document.createElement('option');
+      o.value=letter; o.textContent=letter+' – '+M1_DEFS[letter];
+      sel.appendChild(o);
+    });
+    var fb=document.createElement('span'); fb.className='fb'; fb.id='m1-'+item.num+'-fb';
+    row.appendChild(wordSpan); row.appendChild(sel); row.appendChild(fb);
+    list.appendChild(row);
+  });
+})();
+
+function checkMatch(){
+  var allOk=true;
+  M1.forEach(function(item){
+    var sel=document.getElementById('m1-'+item.num);
+    var fb=document.getElementById('m1-'+item.num+'-fb');
+    if(!sel.value){allOk=false;return;}
+    var ok=sel.value===item.ans;
+    if(!ok)allOk=false;
+    sel.classList.toggle('correct',ok); sel.classList.toggle('wrong',!ok);
+    fb.textContent=ok?'✅':'❌';
+  });
+  DONE.ex1=allOk; updateProgress();
+}
+function resetMatch(){
+  M1.forEach(function(item){
+    var sel=document.getElementById('m1-'+item.num);
+    var fb=document.getElementById('m1-'+item.num+'-fb');
+    sel.value=''; sel.className='match-sel'; fb.textContent='';
+  });
+  DONE.ex1=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   EX 2 — SORT TABLE
+══════════════════════════════════════ */
+var EX2=[
+  {word:'boots',         ans:'wear'},
+  {word:'gloves',        ans:'wear'},
+  {word:'hat',           ans:'wear'},
+  {word:'knife',         ans:'eat'},
+  {word:'sunglasses',    ans:'wear'},
+  {word:'warm clothes',  ans:'wear'},
+  {word:'water bottle',  ans:'eat'}
+];
+var sortState={}; // word -> 'eat' | 'wear' | ''
+
+(function(){
+  var container=document.getElementById('sortRows');
+  EX2.forEach(function(item,i){
+    var row=document.createElement('div');
+    row.className='sort-row-item';
+    row.innerHTML=
+      '<span class="sort-word-label">'+item.word+'</span>'+
+      '<button class="sort-btn" id="s2e-'+i+'" onclick="sortPick('+i+',\'eat\')">eat / drink</button>'+
+      '<button class="sort-btn" id="s2w-'+i+'" onclick="sortPick('+i+',\'wear\')">wear</button>'+
+      '<span class="fb" id="s2-'+i+'-fb"></span>';
+    container.appendChild(row);
+  });
+})();
+
+function sortPick(idx,col){
+  var prev=sortState[idx];
+  if(prev===col){
+    // deselect
+    sortState[idx]='';
+    document.getElementById('s2e-'+idx).classList.remove('active','correct','wrong');
+    document.getElementById('s2w-'+idx).classList.remove('active','correct','wrong');
+    return;
+  }
+  sortState[idx]=col;
+  var eatBtn=document.getElementById('s2e-'+idx);
+  var wearBtn=document.getElementById('s2w-'+idx);
+  eatBtn.classList.remove('active','correct','wrong');
+  wearBtn.classList.remove('active','correct','wrong');
+  if(col==='eat') eatBtn.classList.add('active');
+  else wearBtn.classList.add('active');
+}
+
+function checkSort(){
+  var allOk=true;
+  EX2.forEach(function(item,i){
+    var fb=document.getElementById('s2-'+i+'-fb');
+    var sel=sortState[i];
+    var eatBtn=document.getElementById('s2e-'+i);
+    var wearBtn=document.getElementById('s2w-'+i);
+    eatBtn.classList.remove('active','correct','wrong');
+    wearBtn.classList.remove('active','correct','wrong');
+    if(!sel){allOk=false; fb.textContent=''; return;}
+    var ok=sel===item.ans;
+    if(!ok)allOk=false;
+    if(sel==='eat'){eatBtn.classList.add(ok?'correct':'wrong');}
+    else{wearBtn.classList.add(ok?'correct':'wrong');}
+    fb.textContent=ok?'✅':'❌';
+  });
+  DONE.ex2=allOk; updateProgress();
+}
+function resetSort(){
+  EX2.forEach(function(item,i){
+    sortState[i]='';
+    document.getElementById('s2e-'+i).className='sort-btn';
+    document.getElementById('s2w-'+i).className='sort-btn';
+    document.getElementById('s2-'+i+'-fb').textContent='';
+  });
+  DONE.ex2=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   EX 3 — GAP-FILL
+══════════════════════════════════════ */
+var EX3=[
+  {pre:'Always wear a',                          post:' in the desert to keep cool.',       ans:'hat'},
+  {pre:'I need my',                              post:' – it\'s really bright out here.',   ans:'sunglasses'},
+  {pre:'Can I see the',                          post:'? I think we\'re lost.',             ans:'map'},
+  {pre:'We need to wear',                        post:' today – it\'s cold.',               ans:'warm clothes,gloves'},
+  {pre:'Put the keys in your',                   post:' so they\'re safe.',                 ans:'backpack'},
+  {pre:'Is there any water left in the',         post:'? I\'m thirsty.',                    ans:'water bottle'},
+  {pre:'The radio\'s dead. Have we got any more',post:'?',                                  ans:'batteries'},
+  {pre:'Can I have the',                         post:' to sleep under?',                   ans:'blanket'},
+  {pre:'Cook the',                               post:' of beans on the fire.',             ans:'can'},
+  {pre:'Wear',                                   post:' to keep your hands warm.',          ans:'gloves'}
+];
+
+(function(){
+  var list=document.getElementById('gapList');
+  EX3.forEach(function(item,i){
+    var row=document.createElement('div');
+    row.className='gap-row';
+    row.innerHTML=
+      '<span class="gap-num">'+(i+1)+'</span>'+
+      '<span>'+item.pre+'</span>'+
+      '<input class="ans-input" id="gap-'+i+'" data-ans="'+item.ans+'" '+
+        'placeholder="…" style="min-width:120px" autocomplete="off" spellcheck="false">'+
+      '<span>'+item.post+'</span>'+
+      '<span class="fb" id="gap-'+i+'-fb"></span>';
+    list.appendChild(row);
+  });
+})();
+
+function checkGap(){
+  var allOk=true;
+  EX3.forEach(function(item,i){
+    var el=document.getElementById('gap-'+i);
+    var fb=document.getElementById('gap-'+i+'-fb');
+    var alts=item.ans.split(',');
+    var ok=alts.some(function(a){return norm(el.value)===norm(a);});
+    el.classList.toggle('correct',ok); el.classList.toggle('wrong',!ok);
+    fb.textContent=ok?'✅':'❌';
+    if(!ok)allOk=false;
+  });
+  DONE.ex3=allOk; updateProgress();
+}
+function resetGap(){
+  EX3.forEach(function(item,i){
+    var el=document.getElementById('gap-'+i);
+    var fb=document.getElementById('gap-'+i+'-fb');
+    el.value=''; el.className='ans-input'; fb.textContent='';
+  });
+  DONE.ex3=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   EX 4 — WORD ORDER
+══════════════════════════════════════ */
+var EX4=[
+  {prompt:'a / need / You / map / take / to',    ans:'You need to take a map.'},
+  {prompt:'some / eggs / We / need',             ans:'We need some eggs.'},
+  {prompt:'warm / I / clothes / some / need',    ans:'I need some warm clothes.'},
+  {prompt:'new / a / needs / She / laptop',      ans:'She needs a new laptop.'},
+  {prompt:'sleep / to / some / I / get / need',  ans:'I need to get some sleep.'},
+  {prompt:'to / a / We / fire / start / need',   ans:'We need to start a fire.'},
+  {prompt:'batteries / I / some / need',         ans:'I need some batteries.'},
+  {prompt:'blanket / a / need / You',            ans:'You need a blanket.'},
+  {prompt:'to / soon / We / leave / need',       ans:'We need to leave soon.'},
+  {prompt:'get / water / I / some / to / need',  ans:'I need to get some water.'}
+];
+
+(function(){
+  var list=document.getElementById('orderList');
+  EX4.forEach(function(item,i){
+    var div=document.createElement('div');
+    div.className='order-item';
+    div.innerHTML=
+      '<div class="order-prompt">'+(i+1)+'. '+item.prompt+'</div>'+
+      '<div class="order-row">'+
+        '<input class="ans-input order-ans" id="ord-'+i+'" placeholder="Write the sentence…" autocomplete="off" spellcheck="false">'+
+        '<span class="fb" id="ord-'+i+'-fb"></span>'+
+      '</div>';
+    list.appendChild(div);
+  });
+})();
+
+function normSent(s){return s.toLowerCase().trim().replace(/\.$/,'');}
+function checkOrder(){
+  var allOk=true;
+  EX4.forEach(function(item,i){
+    var el=document.getElementById('ord-'+i);
+    var fb=document.getElementById('ord-'+i+'-fb');
+    var ok=normSent(el.value)===normSent(item.ans);
+    el.classList.toggle('correct',ok); el.classList.toggle('wrong',!ok);
+    fb.textContent=ok?'✅':'❌';
+    if(!ok)allOk=false;
+  });
+  DONE.ex4=allOk; updateProgress();
+}
+function resetOrder(){
+  EX4.forEach(function(item,i){
+    var el=document.getElementById('ord-'+i);
+    var fb=document.getElementById('ord-'+i+'-fb');
+    el.value=''; el.className='ans-input order-ans'; fb.textContent='';
+  });
+  DONE.ex4=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   EX 5 — MULTIPLE CHOICE
+══════════════════════════════════════ */
+var EX5=[
+  {pre:'I need',        post:' new bag.',                 opts:['a','to buy'],      ans:'a'},
+  {pre:'We need',       post:' money.',                   opts:['some','to'],       ans:'some'},
+  {pre:'James',         post:' some water.',              opts:['need','needs'],    ans:'needs'},
+  {pre:"I don't need",  post:' leave yet.',               opts:['to','a'],          ans:'to'},
+  {pre:'I need',        post:' AAA batteries.',           opts:['a','some'],        ans:'some'},
+  {pre:'You need',      post:" her you're sorry.",        opts:['to tell','tell'],  ans:'to tell'},
+  {pre:'We need',       post:' map.',                     opts:['a','to check'],    ans:'a'},
+  {pre:'We need',       post:' ask someone for help.',   opts:['a','to'],          ans:'to'}
+];
+var choiceState={};
+
+(function(){
+  var list=document.getElementById('choiceList');
+  EX5.forEach(function(item,i){
+    var row=document.createElement('div');
+    row.className='choice-row';
+    var btns=item.opts.map(function(opt){
+      var safeId=opt.replace(/[^a-z0-9]/gi,'_');
+      return '<button class="choice-btn" id="ch-'+i+'-'+safeId+'" '+
+        'onclick="choicePick('+i+',\''+opt.replace(/'/g,"\\'")+'\')">'+ opt+'</button>';
+    }).join('');
+    row.innerHTML=
+      '<span class="choice-num">'+(i+1)+'</span>'+
+      '<span>'+item.pre+' </span>'+
+      btns+
+      '<span> '+item.post+'</span>'+
+      '<span class="fb" id="ch-'+i+'-fb"></span>';
+    list.appendChild(row);
+  });
+})();
+
+function safeId(s){return s.replace(/[^a-z0-9]/gi,'_');}
+function choicePick(idx,val){
+  var item=EX5[idx];
+  item.opts.forEach(function(opt){
+    var btn=document.getElementById('ch-'+idx+'-'+safeId(opt));
+    if(btn)btn.classList.remove('selected','correct','wrong');
+  });
+  choiceState[idx]=val;
+  var btn=document.getElementById('ch-'+idx+'-'+safeId(val));
+  if(btn)btn.classList.add('selected');
+}
+function checkChoice(){
+  var allOk=true;
+  EX5.forEach(function(item,i){
+    var fb=document.getElementById('ch-'+i+'-fb');
+    var sel=choiceState[i];
+    if(!sel){allOk=false;return;}
+    var ok=sel===item.ans;
+    if(!ok)allOk=false;
+    item.opts.forEach(function(opt){
+      var btn=document.getElementById('ch-'+i+'-'+safeId(opt));
+      if(!btn)return;
+      btn.classList.remove('selected');
+      if(opt===sel){btn.classList.toggle('correct',ok);btn.classList.toggle('wrong',!ok);}
+    });
+    fb.textContent=ok?'✅':'❌';
+  });
+  DONE.ex5=allOk; updateProgress();
+}
+function resetChoice(){
+  EX5.forEach(function(item,i){
+    item.opts.forEach(function(opt){
+      var btn=document.getElementById('ch-'+i+'-'+safeId(opt));
+      if(btn)btn.className='choice-btn';
+    });
+    document.getElementById('ch-'+i+'-fb').textContent='';
+    delete choiceState[i];
+  });
+  DONE.ex5=false; updateProgress();
+}
+
+/* ══════════════════════════════════════
+   EX 6 — FREE WRITE
+══════════════════════════════════════ */
+var EX6=[
+  {sit:"I'm late today.",         prompt:"I / need / call / my mother",      eg:"I need to call my mother."},
+  {sit:"Let's have a picnic.",    prompt:"We / need / buy / food",            eg:''},
+  {sit:"They have a new baby.",   prompt:"They / need / find / a new house",  eg:''},
+  {sit:"I start work at 6 a.m.", prompt:"I / need / get up / early",         eg:''},
+  {sit:"He has exams tomorrow.",  prompt:"He / need / study",                  eg:''},
+  {sit:"I'm rich.",               prompt:"I / not need / money",               eg:''}
+];
+
+(function(){
+  var list=document.getElementById('writeList');
+  EX6.forEach(function(item,i){
+    var div=document.createElement('div');
+    div.className='write-item';
+    div.innerHTML=
+      '<div class="write-sit">'+(i+1)+'. '+item.sit+'</div>'+
+      '<div class="write-prompt">'+item.prompt+'</div>'+
+      (item.eg?
+        '<div class="write-eg">'+item.eg+'</div>':
+        '<textarea class="write-ta" id="wt-'+i+'" placeholder="Write your sentence…" rows="2"></textarea>'
+      );
+    list.appendChild(div);
+  });
+})();
+
+/* ══════════════════════════════════════
+   SEND TO TEACHER
+══════════════════════════════════════ */
+function sendToTeacher(){
+  var name=document.getElementById('nameInput').value.trim()||'Anonymous';
+  var lines=['Student: '+name,''];
+
+  lines.push('=== Exercise 1: Match words to meanings ===');
+  M1.forEach(function(item){
+    var sel=document.getElementById('m1-'+item.num);
+    var chosen=sel.value?sel.value+' – '+M1_DEFS[sel.value]:'(no answer)';
+    lines.push(item.num+'. '+item.word+' → '+chosen);
+  });
+  lines.push('');
+
+  lines.push('=== Exercise 2: Sort words ===');
+  EX2.forEach(function(item,i){
+    var sel=sortState[i]||'(not answered)';
+    lines.push(item.word+' → '+sel);
+  });
+  lines.push('');
+
+  lines.push('=== Exercise 3: Gap-fill ===');
+  EX3.forEach(function(item,i){
+    var val=document.getElementById('gap-'+i).value||'(blank)';
+    lines.push((i+1)+'. '+item.pre+' ['+val+']'+item.post);
+  });
+  lines.push('');
+
+  lines.push('=== Exercise 4: Word order ===');
+  EX4.forEach(function(item,i){
+    var val=document.getElementById('ord-'+i).value||'(blank)';
+    lines.push((i+1)+'. '+val);
+  });
+  lines.push('');
+
+  lines.push('=== Exercise 5: Choose alternatives ===');
+  EX5.forEach(function(item,i){
+    var sel=choiceState[i]||'(no answer)';
+    lines.push((i+1)+'. '+item.pre+' ['+sel+']'+item.post);
+  });
+  lines.push('');
+
+  lines.push('=== Exercise 6: Writing ===');
+  EX6.forEach(function(item,i){
+    if(item.eg){
+      lines.push((i+1)+'. [example] '+item.eg);
+    } else {
+      var ta=document.getElementById('wt-'+i);
+      lines.push((i+1)+'. '+(ta&&ta.value.trim()||'(blank)'));
+    }
+  });
+
+  var body=encodeURIComponent(lines.join('\n'));
+  var subject=encodeURIComponent('Homework – '+name+' – Unit 4C Be Prepared');
+  window.location.href='mailto:dariia.mlnk@gmail.com?subject='+subject+'&body='+body;
+}
+</script>
+</body>
+</html>
