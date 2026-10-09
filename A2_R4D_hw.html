@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 4D Homework</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* ── TOKENS ─────────────────────────────────────────── */
+:root {
+  --teal:      #0D9488;
+  --teal-dk:   #0F766E;
+  --teal-lt:   #CCFBF1;
+  --orange:    #EA580C;
+  --orange-lt: #FFF7ED;
+  --bg:        #F8FAFC;
+  --surface:   #FFFFFF;
+  --border:    #E2E8F0;
+  --text:      #1E293B;
+  --text-2:    #475569;
+  --text-3:    #94A3B8;
+  --green:     #16A34A;
+  --green-lt:  #DCFCE7;
+  --red:       #DC2626;
+  --red-lt:    #FEE2E2;
+  --amber:     #D97706;
+  --amber-lt:  #FEF3C7;
+  --shadow:    0 1px 4px rgba(0,0,0,.08);
+  --radius:    12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:      #0F172A;
+    --surface: #1E293B;
+    --border:  #334155;
+    --text:    #F1F5F9;
+    --text-2:  #CBD5E1;
+    --text-3:  #64748B;
+    --teal-lt: #0F2E2B;
+    --orange-lt:#2C1810;
+    --green-lt: #052E16;
+    --red-lt:   #2A0A0A;
+    --amber-lt: #1C1408;
+    --shadow:   0 1px 4px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:      #0F172A;
+  --surface: #1E293B;
+  --border:  #334155;
+  --text:    #F1F5F9;
+  --text-2:  #CBD5E1;
+  --text-3:  #64748B;
+  --teal-lt: #0F2E2B;
+  --orange-lt:#2C1810;
+  --green-lt: #052E16;
+  --red-lt:   #2A0A0A;
+  --amber-lt: #1C1408;
+  --shadow:   0 1px 4px rgba(0,0,0,.4);
+}
+
+/* ── RESET ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+  padding-inline: 16px;
+  padding-block: 0 60px;
+}
+
+/* ── HEADER ──────────────────────────────────────────── */
+.site-header {
+  background: linear-gradient(135deg, var(--teal-dk) 0%, var(--teal) 100%);
+  color: #fff;
+  padding: 28px 24px 24px;
+  margin-inline: -16px;
+  margin-bottom: 0;
+  position: relative;
+}
+.site-header .eyebrow {
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .75;
+  margin-bottom: 6px;
+}
+.site-header h1 {
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(20px, 5vw, 28px);
+  font-weight: 800;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.site-header .subtitle {
+  margin-top: 6px;
+  font-size: 13px;
+  opacity: .8;
+}
+.theme-btn {
+  position: absolute;
+  top: 20px; right: 16px;
+  background: rgba(255,255,255,.15);
+  border: none; border-radius: 8px;
+  color: #fff;
+  width: 36px; height: 36px;
+  cursor: pointer; font-size: 16px;
+  display: grid; place-items: center;
+  transition: background .2s;
+}
+.theme-btn:hover { background: rgba(255,255,255,.25); }
+
+/* ── STICKY NAME BAR ─────────────────────────────────── */
+.name-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--surface);
+  border-bottom: 2px solid var(--teal);
+  padding: 10px 16px;
+  margin-inline: -16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow);
+}
+.name-bar label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.name-bar input {
+  flex: 1;
+  min-width: 0;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s;
+}
+.name-bar input:focus { border-color: var(--teal); }
+
+/* ── PROGRESS BAR ────────────────────────────────────── */
+.progress-wrap {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  margin-inline: -16px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.progress-track {
+  flex: 1;
+  height: 8px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--orange));
+  border-radius: 99px;
+  transition: width .4s cubic-bezier(.4,0,.2,1);
+  width: 0%;
+}
+.progress-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--teal);
+  white-space: nowrap;
+  min-width: 36px;
+  text-align: right;
+}
+
+/* ── EXERCISE CARDS ──────────────────────────────────── */
+.ex-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  margin-top: 18px;
+  box-shadow: var(--shadow);
+}
+.ex-hd {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.ex-num {
+  background: var(--orange);
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  padding: 2px 9px;
+  border-radius: 99px;
+}
+.ex-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+}
+.ex-instr {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.word-bank {
+  background: var(--teal-lt);
+  border: 1px solid var(--teal);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 16px;
+  line-height: 1.8;
+}
+.word-bank strong {
+  font-weight: 700;
+  color: var(--teal-dk);
+}
+
+/* ── SENTENCE ROW ────────────────────────────────────── */
+.sentence-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.sentence-row:last-of-type { border-bottom: none; }
+.sentence-num {
+  font-weight: 700;
+  color: var(--teal);
+  font-size: 13px;
+  min-width: 20px;
+  padding-top: 9px;
+}
+.sentence-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-top: 7px;
+}
+.sentence-text em {
+  font-style: italic;
+  color: var(--text-2);
+}
+
+/* ── INPUTS ──────────────────────────────────────────── */
+.ans-input {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--bg);
+  color: var(--text);
+  min-width: 140px;
+  outline: none;
+  transition: border-color .2s, background .2s;
+}
+.ans-input:focus { border-color: var(--teal); }
+.ans-input.correct {
+  background: var(--green-lt);
+  border-color: var(--green);
+  color: var(--green);
+  font-weight: 600;
+}
+.ans-input.wrong {
+  background: var(--red-lt);
+  border-color: var(--red);
+  color: var(--red);
+}
+.feedback-icon {
+  font-size: 16px;
+  padding-top: 9px;
+  min-width: 22px;
+}
+
+/* ── GAP-FILL INLINE ─────────────────────────────────── */
+.gap-row {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 8px 10px;
+  align-items: start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.gap-row:last-of-type { border-bottom: none; }
+.gap-row .num { font-weight: 700; color: var(--teal); font-size: 13px; padding-top: 8px; }
+.gap-content { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.gap-content .gap-label { font-size: 14px; line-height: 1.6; }
+
+/* ── ARTICLE BUTTON GROUPS ───────────────────────────── */
+.art-rows { display: flex; flex-direction: column; gap: 0; }
+.art-row {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 8px 10px;
+  align-items: start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.art-row:last-of-type { border-bottom: none; }
+.art-row .num { font-weight: 700; color: var(--teal); font-size: 13px; padding-top: 8px; }
+.art-content { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 14px; line-height: 1.8; }
+.art-content .word { padding-top: 2px; }
+
+.btn-group {
+  display: inline-flex;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.btn-group button {
+  border: none;
+  background: var(--bg);
+  color: var(--text);
+  padding: 4px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  border-right: 1.5px solid var(--border);
+}
+.btn-group button:last-child { border-right: none; }
+.btn-group button:hover { background: var(--teal-lt); color: var(--teal-dk); }
+.btn-group button.selected { background: var(--teal); color: #fff; }
+.btn-group button.correct-sel { background: var(--green); color: #fff; }
+.btn-group button.wrong-sel { background: var(--red); color: #fff; }
+.btn-group button.reveal-correct { background: var(--green-lt); color: var(--green); font-weight: 700; }
+
+/* ── ACTION BUTTONS ──────────────────────────────────── */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 9px 20px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+}
+.btn:active { transform: scale(.97); }
+.btn-check { background: var(--teal); color: #fff; }
+.btn-reset { background: var(--border); color: var(--text-2); }
+.btn-send  { background: var(--orange); color: #fff; }
+.btn:hover { opacity: .88; }
+
+/* ── SEND CARD ───────────────────────────────────────── */
+.send-card {
+  background: var(--surface);
+  border: 2px solid var(--orange);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  margin-top: 24px;
+  text-align: center;
+}
+.send-card h3 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--orange);
+  margin-bottom: 8px;
+}
+.send-card p {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 16px;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────── */
+@media (max-width: 440px) {
+  .ans-input { min-width: 110px; }
+  .sentence-row { flex-direction: column; gap: 6px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="eyebrow">Homework</div>
+  <h1>Unit 4D — Around the Home</h1>
+  <p class="subtitle">Vocabulary: things in a home · Articles <em>a</em>, <em>an</em>, <em>the</em>, –</p>
+  <button class="theme-btn" onclick="toggleTheme()" title="Toggle dark mode" aria-label="Toggle theme">🌙</button>
+</header>
+
+<!-- NAME BAR -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+  <div class="progress-label" id="plabel">0 / 4</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  EXERCISE 1 — Correct the Spelling Mistake         -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="ex-card" id="card1">
+  <div class="ex-hd">
+    <span class="ex-num">EXERCISE 1</span>
+    <span class="ex-title">Correct the Spelling Mistake</span>
+  </div>
+  <p class="ex-instr">Each sentence has one word with a spelling mistake. Type the correct spelling in the box.</p>
+
+  <div id="ex1-items">
+    <!-- row template: sentence-row with sentence-text + input -->
+    <div class="sentence-row">
+      <span class="sentence-num">1</span>
+      <span class="sentence-text">Open the <em>curtains</em>, it's dark in here.</span>
+      <input class="ans-input" id="sp1" data-ans="curtains" placeholder="correct word…" autocomplete="off" spellcheck="false">
+      <span class="feedback-icon" id="sp1-fb"></span>
+    </div>
+    <div class="sentence-row">
+      <span class="sentence-num">2</span>
+      <span class="sentence-text">There's a big spider in the <em>bathe</em>!</span>
+      <input class="ans-input" id="sp2" data-ans="bath" placeholder="correct word…" autocomplete="off" spellcheck="false">
+      <span class="feedback-icon" id="sp2-fb"></span>
+    </div>
+    <div class="sentence-row">
+      <span class="sentence-num">3</span>
+      <span class="sentence-text">We need to buy new <em>furnitur</em> for our house.</span>
+      <input class="ans-input" id="sp3" data-ans="furniture" placeholder="correct word…" autocomplete="off" spellcheck="false">
+      <span class="feedback-icon" id="sp3-fb"></span>
+    </div>
+    <div class="sentence-row">
+      <span class="sentence-num">4</span>
+      <span class="sentence-text">The glasses are in that <em>cuboard</em>.</span>
+      <input class="ans-input" id="sp4" data-ans="cupboard" placeholder="correct word…" autocomplete="off" spellcheck="false">
+      <span class="feedback-icon" id="sp4-fb"></span>
+    </div>
+    <div class="sentence-row">
+      <span class="sentence-num">5</span>
+      <span class="sentence-text">There's a bath, but there isn't a <em>shauwer</em>.</span>
+      <input class="ans-input" id="sp5" data-ans="shower" placeholder="correct word…" autocomplete="off" spellcheck="false">
+      <span class="feedback-icon" id="sp5-fb"></span>
+    </div>
+    <div class="sentence-row">
+      <span class="sentence-num">6</span>
+      <span class="sentence-text">I'm in the <em>gardin</em>.</span>
+      <input class="ans-input" id="sp6" data-ans="garden" placeholder="correct word…" autocomplete="off" spellcheck="false">
+      <span class="feedback-icon" id="sp6-fb"></span>
+    </div>
+    <div class="sentence-row">
+      <span class="sentence-num">7</span>
+      <span class="sentence-text">Put your clothes in the <em>wardorbe</em>.</span>
+      <input class="ans-input" id="sp7" data-ans="wardrobe" placeholder="correct word…" autocomplete="off" spellcheck="false">
+      <span class="feedback-icon" id="sp7-fb"></span>
+    </div>
+    <div class="sentence-row">
+      <span class="sentence-num">8</span>
+      <span class="sentence-text">The car is in the <em>gardge</em>.</span>
+      <input class="ans-input" id="sp8" data-ans="garage" placeholder="correct word…" autocomplete="off" spellcheck="false">
+      <span class="feedback-icon" id="sp8-fb"></span>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx1()">Check</button>
+    <button class="btn btn-reset" onclick="resetEx1()">Reset</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  EXERCISE 2 — Gap-fill with Word Bank              -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="ex-card" id="card2">
+  <div class="ex-hd">
+    <span class="ex-num">EXERCISE 2</span>
+    <span class="ex-title">Complete the Sentences</span>
+  </div>
+  <p class="ex-instr">Complete each sentence with a word from the box.</p>
+  <div class="word-bank">
+    <strong>Word bank:</strong> &nbsp; cupboard &nbsp;·&nbsp; curtains &nbsp;·&nbsp; garage &nbsp;·&nbsp; shower &nbsp;·&nbsp; upstairs &nbsp;·&nbsp; wardrobe
+  </div>
+
+  <div id="ex2-items">
+    <div class="gap-row">
+      <span class="num">1</span>
+      <div class="gap-content">
+        <span class="gap-label">There are some glasses in the</span>
+        <input class="ans-input" id="gf1" data-ans="cupboard" placeholder="…" autocomplete="off" spellcheck="false" style="min-width:120px">
+        <span class="gap-label">up there.</span>
+        <span class="feedback-icon" id="gf1-fb"></span>
+      </div>
+    </div>
+    <div class="gap-row">
+      <span class="num">2</span>
+      <div class="gap-content">
+        <span class="gap-label">Why don't you open the</span>
+        <input class="ans-input" id="gf2" data-ans="curtains" placeholder="…" autocomplete="off" spellcheck="false" style="min-width:120px">
+        <span class="gap-label">? It's really dark in here.</span>
+        <span class="feedback-icon" id="gf2-fb"></span>
+      </div>
+    </div>
+    <div class="gap-row">
+      <span class="num">3</span>
+      <div class="gap-content">
+        <span class="gap-label">There's a</span>
+        <input class="ans-input" id="gf3" data-ans="shower" placeholder="…" autocomplete="off" spellcheck="false" style="min-width:100px">
+        <span class="gap-label">in the bathroom upstairs.</span>
+        <span class="feedback-icon" id="gf3-fb"></span>
+      </div>
+    </div>
+    <div class="gap-row">
+      <span class="num">4</span>
+      <div class="gap-content">
+        <span class="gap-label">Come on! Let's go and look</span>
+        <input class="ans-input" id="gf4" data-ans="upstairs" placeholder="…" autocomplete="off" spellcheck="false" style="min-width:110px">
+        <span class="gap-label">.</span>
+        <span class="feedback-icon" id="gf4-fb"></span>
+      </div>
+    </div>
+    <div class="gap-row">
+      <span class="num">5</span>
+      <div class="gap-content">
+        <span class="gap-label">We keep our bikes in the</span>
+        <input class="ans-input" id="gf5" data-ans="garage" placeholder="…" autocomplete="off" spellcheck="false" style="min-width:100px">
+        <span class="gap-label">.</span>
+        <span class="feedback-icon" id="gf5-fb"></span>
+      </div>
+    </div>
+    <div class="gap-row">
+      <span class="num">6</span>
+      <div class="gap-content">
+        <span class="gap-label">My husband has his own</span>
+        <input class="ans-input" id="gf6" data-ans="wardrobe" placeholder="…" autocomplete="off" spellcheck="false" style="min-width:110px">
+        <span class="gap-label">for his clothes.</span>
+        <span class="feedback-icon" id="gf6-fb"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx2()">Check</button>
+    <button class="btn btn-reset" onclick="resetEx2()">Reset</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  EXERCISE 3 — Word Completion                      -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="ex-card" id="card3">
+  <div class="ex-hd">
+    <span class="ex-num">EXERCISE 3</span>
+    <span class="ex-title">Complete the Word</span>
+  </div>
+  <p class="ex-instr">Complete the missing word in each sentence. The first letter is given.</p>
+
+  <div id="ex3-items">
+    <div class="gap-row">
+      <span class="num">1</span>
+      <div class="gap-content">
+        <span class="gap-label">That shop sells really nice furniture for the</span>
+        <input class="ans-input" id="wc1" data-ans="garden" placeholder="g…" autocomplete="off" spellcheck="false" style="min-width:110px">
+        <span class="gap-label">.</span>
+        <span class="feedback-icon" id="wc1-fb"></span>
+      </div>
+    </div>
+    <div class="gap-row">
+      <span class="num">2</span>
+      <div class="gap-content">
+        <span class="gap-label">It's dark outside; close the</span>
+        <input class="ans-input" id="wc2" data-ans="curtains" placeholder="c…" autocomplete="off" spellcheck="false" style="min-width:110px">
+        <span class="gap-label">.</span>
+        <span class="feedback-icon" id="wc2-fb"></span>
+      </div>
+    </div>
+    <div class="gap-row">
+      <span class="num">3</span>
+      <div class="gap-content">
+        <span class="gap-label">Put the coffee away in the</span>
+        <input class="ans-input" id="wc3" data-ans="cupboard" placeholder="c…" autocomplete="off" spellcheck="false" style="min-width:110px">
+        <span class="gap-label">, please.</span>
+        <span class="feedback-icon" id="wc3-fb"></span>
+      </div>
+    </div>
+    <div class="gap-row">
+      <span class="num">4</span>
+      <div class="gap-content">
+        <span class="gap-label">Dad's in the</span>
+        <input class="ans-input" id="wc4" data-ans="garage" placeholder="g…" autocomplete="off" spellcheck="false" style="min-width:100px">
+        <span class="gap-label">with his car. He loves that car.</span>
+        <span class="feedback-icon" id="wc4-fb"></span>
+      </div>
+    </div>
+    <div class="gap-row">
+      <span class="num">5</span>
+      <div class="gap-content">
+        <span class="gap-label">This</span>
+        <input class="ans-input" id="wc5" data-ans="furniture" placeholder="f…" autocomplete="off" spellcheck="false" style="min-width:110px">
+        <span class="gap-label">is old. We need to buy a new sofa and chairs.</span>
+        <span class="feedback-icon" id="wc5-fb"></span>
+      </div>
+    </div>
+    <div class="gap-row">
+      <span class="num">6</span>
+      <div class="gap-content">
+        <span class="gap-label">The bathroom is</span>
+        <input class="ans-input" id="wc6" data-ans="downstairs" placeholder="d…" autocomplete="off" spellcheck="false" style="min-width:120px">
+        <span class="gap-label">, near the kitchen.</span>
+        <span class="feedback-icon" id="wc6-fb"></span>
+      </div>
+    </div>
+    <div class="gap-row">
+      <span class="num">7</span>
+      <div class="gap-content">
+        <span class="gap-label">I have lots of clothes in my</span>
+        <input class="ans-input" id="wc7" data-ans="wardrobe" placeholder="w…" autocomplete="off" spellcheck="false" style="min-width:110px">
+        <span class="gap-label">.</span>
+        <span class="feedback-icon" id="wc7-fb"></span>
+      </div>
+    </div>
+    <div class="gap-row">
+      <span class="num">8</span>
+      <div class="gap-content">
+        <span class="gap-label">There's some cola in the</span>
+        <input class="ans-input" id="wc8" data-ans="fridge" placeholder="f…" autocomplete="off" spellcheck="false" style="min-width:100px">
+        <span class="gap-label">.</span>
+        <span class="feedback-icon" id="wc8-fb"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx3()">Check</button>
+    <button class="btn btn-reset" onclick="resetEx3()">Reset</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  EXERCISE 4 — Choose the Correct Article           -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="ex-card" id="card4">
+  <div class="ex-hd">
+    <span class="ex-num">EXERCISE 4</span>
+    <span class="ex-title">Choose the Correct Article</span>
+  </div>
+  <p class="ex-instr">Choose <strong>a</strong>, <strong>an</strong>, <strong>the</strong>, or <strong>–</strong> (no article) to complete each sentence. Click your answer.</p>
+
+  <div class="art-rows" id="ex4-items">
+
+    <!-- 1: the / – -->
+    <div class="art-row">
+      <span class="num">1</span>
+      <div class="art-content">
+        <span class="word">I put the dishes in</span>
+        <span class="btn-group" id="bg4-1">
+          <button onclick="artClick('bg4-1','the','a4-1')">the</button>
+          <button onclick="artClick('bg4-1','–','a4-1')">–</button>
+        </span>
+        <span class="word">cupboard.</span>
+        <span class="feedback-icon" id="a4-1-fb"></span>
+        <input type="hidden" id="a4-1" data-ans="the">
+      </div>
+    </div>
+
+    <!-- 2: a / the -->
+    <div class="art-row">
+      <span class="num">2</span>
+      <div class="art-content">
+        <span class="word">There's</span>
+        <span class="btn-group" id="bg4-2">
+          <button onclick="artClick('bg4-2','a','a4-2')">a</button>
+          <button onclick="artClick('bg4-2','the','a4-2')">the</button>
+        </span>
+        <span class="word">TV in the kitchen.</span>
+        <span class="feedback-icon" id="a4-2-fb"></span>
+        <input type="hidden" id="a4-2" data-ans="a">
+      </div>
+    </div>
+
+    <!-- 3: two choices: a/the + A/The -->
+    <div class="art-row">
+      <span class="num">3</span>
+      <div class="art-content">
+        <span class="word">I've got</span>
+        <span class="btn-group" id="bg4-3a">
+          <button onclick="artClick('bg4-3a','a','a4-3a')">a</button>
+          <button onclick="artClick('bg4-3a','the','a4-3a')">the</button>
+        </span>
+        <span class="word">cat and a dog.</span>
+        <span class="btn-group" id="bg4-3b">
+          <button onclick="artClick('bg4-3b','A','a4-3b')">A</button>
+          <button onclick="artClick('bg4-3b','The','a4-3b')">The</button>
+        </span>
+        <span class="word">dog's name is Leo.</span>
+        <span class="feedback-icon" id="a4-3-fb"></span>
+        <input type="hidden" id="a4-3a" data-ans="a">
+        <input type="hidden" id="a4-3b" data-ans="The">
+      </div>
+    </div>
+
+    <!-- 4: a / an -->
+    <div class="art-row">
+      <span class="num">4</span>
+      <div class="art-content">
+        <span class="word">This is</span>
+        <span class="btn-group" id="bg4-4">
+          <button onclick="artClick('bg4-4','a','a4-4')">a</button>
+          <button onclick="artClick('bg4-4','an','a4-4')">an</button>
+        </span>
+        <span class="word">useful book.</span>
+        <span class="feedback-icon" id="a4-4-fb"></span>
+        <input type="hidden" id="a4-4" data-ans="a">
+      </div>
+    </div>
+
+    <!-- 5: the / – -->
+    <div class="art-row">
+      <span class="num">5</span>
+      <div class="art-content">
+        <span class="word">We often play tennis at</span>
+        <span class="btn-group" id="bg4-5">
+          <button onclick="artClick('bg4-5','the','a4-5')">the</button>
+          <button onclick="artClick('bg4-5','–','a4-5')">–</button>
+        </span>
+        <span class="word">weekend.</span>
+        <span class="feedback-icon" id="a4-5-fb"></span>
+        <input type="hidden" id="a4-5" data-ans="the">
+      </div>
+    </div>
+
+    <!-- 6: – / a -->
+    <div class="art-row">
+      <span class="num">6</span>
+      <div class="art-content">
+        <span class="word">This is</span>
+        <span class="btn-group" id="bg4-6">
+          <button onclick="artClick('bg4-6','–','a4-6')">–</button>
+          <button onclick="artClick('bg4-6','a','a4-6')">a</button>
+        </span>
+        <span class="word">lovely car.</span>
+        <span class="feedback-icon" id="a4-6-fb"></span>
+        <input type="hidden" id="a4-6" data-ans="a">
+      </div>
+    </div>
+
+    <!-- 7: two choices: a/the bed, a/the bedroom -->
+    <div class="art-row">
+      <span class="num">7</span>
+      <div class="art-content">
+        <span class="word">There's</span>
+        <span class="btn-group" id="bg4-7a">
+          <button onclick="artClick('bg4-7a','a','a4-7a')">a</button>
+          <button onclick="artClick('bg4-7a','the','a4-7a')">the</button>
+        </span>
+        <span class="word">really comfortable bed in</span>
+        <span class="btn-group" id="bg4-7b">
+          <button onclick="artClick('bg4-7b','a','a4-7b')">a</button>
+          <button onclick="artClick('bg4-7b','the','a4-7b')">the</button>
+        </span>
+        <span class="word">bedroom.</span>
+        <span class="feedback-icon" id="a4-7-fb"></span>
+        <input type="hidden" id="a4-7a" data-ans="a">
+        <input type="hidden" id="a4-7b" data-ans="the">
+      </div>
+    </div>
+
+    <!-- 8: a / the -->
+    <div class="art-row">
+      <span class="num">8</span>
+      <div class="art-content">
+        <span class="word">Can you open</span>
+        <span class="btn-group" id="bg4-8">
+          <button onclick="artClick('bg4-8','a','a4-8')">a</button>
+          <button onclick="artClick('bg4-8','the','a4-8')">the</button>
+        </span>
+        <span class="word">curtains, please?</span>
+        <span class="feedback-icon" id="a4-8-fb"></span>
+        <input type="hidden" id="a4-8" data-ans="the">
+      </div>
+    </div>
+
+    <!-- 9: – / the -->
+    <div class="art-row">
+      <span class="num">9</span>
+      <div class="art-content">
+        <span class="word">Jia works at</span>
+        <span class="btn-group" id="bg4-9">
+          <button onclick="artClick('bg4-9','–','a4-9')">–</button>
+          <button onclick="artClick('bg4-9','the','a4-9')">the</button>
+        </span>
+        <span class="word">night.</span>
+        <span class="feedback-icon" id="a4-9-fb"></span>
+        <input type="hidden" id="a4-9" data-ans="–">
+      </div>
+    </div>
+
+    <!-- 10: a/– nice room + a/the carpet -->
+    <div class="art-row">
+      <span class="num">10</span>
+      <div class="art-content">
+        <span class="word">It's</span>
+        <span class="btn-group" id="bg4-10a">
+          <button onclick="artClick('bg4-10a','a','a4-10a')">a</button>
+          <button onclick="artClick('bg4-10a','–','a4-10a')">–</button>
+        </span>
+        <span class="word">nice room, but I don't like</span>
+        <span class="btn-group" id="bg4-10b">
+          <button onclick="artClick('bg4-10b','a','a4-10b')">a</button>
+          <button onclick="artClick('bg4-10b','the','a4-10b')">the</button>
+        </span>
+        <span class="word">carpet.</span>
+        <span class="feedback-icon" id="a4-10-fb"></span>
+        <input type="hidden" id="a4-10a" data-ans="a">
+        <input type="hidden" id="a4-10b" data-ans="the">
+      </div>
+    </div>
+
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx4()">Check</button>
+    <button class="btn btn-reset" onclick="resetEx4()">Reset</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  SEND TO TEACHER                                    -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="send-card">
+  <h3>📬 Send to Teacher</h3>
+  <p>Click the button to email your completed homework directly to your teacher.</p>
+  <button class="btn btn-send" onclick="sendToTeacher()">Send to Teacher</button>
+</div>
+
+<script>
+/* ── THEME ────────────────────────────────────────────── */
+function toggleTheme() {
+  var html = document.documentElement;
+  var cur  = html.getAttribute('data-theme');
+  html.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+  document.querySelector('.theme-btn').textContent = (html.getAttribute('data-theme') === 'dark') ? '☀️' : '🌙';
+}
+
+/* ── PROGRESS ─────────────────────────────────────────── */
+var DONE  = { ex1: false, ex2: false, ex3: false, ex4: false };
+var TOTAL = Object.keys(DONE).length;
+
+function updateProgress() {
+  var n = Object.values(DONE).filter(Boolean).length;
+  document.getElementById('pfill').style.width = (n / TOTAL * 100) + '%';
+  document.getElementById('plabel').textContent = n + ' / ' + TOTAL;
+}
+updateProgress();
+
+/* ── HELPERS ──────────────────────────────────────────── */
+function norm(s) { return s.toLowerCase().trim(); }
+
+function setInputState(id, ok) {
+  var el = document.getElementById(id);
+  var fb = document.getElementById(id + '-fb');
+  if (ok) {
+    el.classList.add('correct'); el.classList.remove('wrong');
+    fb.textContent = '✅';
+  } else {
+    el.classList.add('wrong'); el.classList.remove('correct');
+    fb.textContent = '❌';
+  }
+}
+
+function clearInput(id) {
+  var el = document.getElementById(id);
+  var fb = document.getElementById(id + '-fb');
+  el.value = '';
+  el.classList.remove('correct','wrong');
+  fb.textContent = '';
+}
+
+/* ── EXERCISE 1 ────────────────────────────────────────── */
+function checkEx1() {
+  var ids = ['sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8'];
+  var allOk = true;
+  ids.forEach(function(id) {
+    var el  = document.getElementById(id);
+    var ans = el.getAttribute('data-ans');
+    var ok  = norm(el.value) === norm(ans);
+    setInputState(id, ok);
+    if (!ok) allOk = false;
+  });
+  DONE.ex1 = allOk;
+  updateProgress();
+}
+function resetEx1() {
+  ['sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8'].forEach(clearInput);
+  DONE.ex1 = false; updateProgress();
+}
+
+/* ── EXERCISE 2 ────────────────────────────────────────── */
+function checkEx2() {
+  var ids = ['gf1','gf2','gf3','gf4','gf5','gf6'];
+  var allOk = true;
+  ids.forEach(function(id) {
+    var el  = document.getElementById(id);
+    var alts = el.getAttribute('data-ans').split(',');
+    var ok  = alts.some(function(a){ return norm(el.value) === norm(a); });
+    setInputState(id, ok);
+    if (!ok) allOk = false;
+  });
+  DONE.ex2 = allOk;
+  updateProgress();
+}
+function resetEx2() {
+  ['gf1','gf2','gf3','gf4','gf5','gf6'].forEach(clearInput);
+  DONE.ex2 = false; updateProgress();
+}
+
+/* ── EXERCISE 3 ────────────────────────────────────────── */
+function checkEx3() {
+  var ids = ['wc1','wc2','wc3','wc4','wc5','wc6','wc7','wc8'];
+  var allOk = true;
+  ids.forEach(function(id) {
+    var el  = document.getElementById(id);
+    var ans = el.getAttribute('data-ans');
+    var ok  = norm(el.value) === norm(ans);
+    setInputState(id, ok);
+    if (!ok) allOk = false;
+  });
+  DONE.ex3 = allOk;
+  updateProgress();
+}
+function resetEx3() {
+  ['wc1','wc2','wc3','wc4','wc5','wc6','wc7','wc8'].forEach(clearInput);
+  DONE.ex3 = false; updateProgress();
+}
+
+/* ── EXERCISE 4 — article buttons ─────────────────────── */
+var artSel = {};  // bgId → chosen value
+
+function artClick(bgId, val, hidId) {
+  artSel[bgId] = val;
+  var grp = document.getElementById(bgId);
+  grp.querySelectorAll('button').forEach(function(b){
+    b.classList.toggle('selected', b.textContent === val);
+  });
+  document.getElementById(hidId).value = val;
+}
+
+function checkEx4() {
+  // Groups mapped to hidden field + feedback span
+  var singles = [
+    ['bg4-1', 'a4-1', 'a4-1-fb'],
+    ['bg4-2', 'a4-2', 'a4-2-fb'],
+    ['bg4-4', 'a4-4', 'a4-4-fb'],
+    ['bg4-5', 'a4-5', 'a4-5-fb'],
+    ['bg4-6', 'a4-6', 'a4-6-fb'],
+    ['bg4-8', 'a4-8', 'a4-8-fb'],
+    ['bg4-9', 'a4-9', 'a4-9-fb'],
+  ];
+  var doubles = [
+    // [bgId1, hidId1, bgId2, hidId2, fbId]
+    ['bg4-3a','a4-3a','bg4-3b','a4-3b','a4-3-fb'],
+    ['bg4-7a','a4-7a','bg4-7b','a4-7b','a4-7-fb'],
+    ['bg4-10a','a4-10a','bg4-10b','a4-10b','a4-10-fb'],
+  ];
+
+  var allOk = true;
+
+  singles.forEach(function(r) {
+    var bgId = r[0], hidId = r[1], fbId = r[2];
+    var hid = document.getElementById(hidId);
+    var ans = hid.getAttribute('data-ans');
+    var sel = hid.value;
+    var ok  = (sel && sel === ans);
+    markGroup(bgId, sel, ans, ok);
+    document.getElementById(fbId).textContent = ok ? '✅' : (sel ? '❌' : '');
+    if (!ok) allOk = false;
+  });
+
+  doubles.forEach(function(r) {
+    var bgId1 = r[0], hidId1 = r[1], bgId2 = r[2], hidId2 = r[3], fbId = r[4];
+    var hid1 = document.getElementById(hidId1);
+    var hid2 = document.getElementById(hidId2);
+    var ok1 = hid1.value && hid1.value === hid1.getAttribute('data-ans');
+    var ok2 = hid2.value && hid2.value === hid2.getAttribute('data-ans');
+    markGroup(bgId1, hid1.value, hid1.getAttribute('data-ans'), ok1);
+    markGroup(bgId2, hid2.value, hid2.getAttribute('data-ans'), ok2);
+    var ok = ok1 && ok2;
+    document.getElementById(fbId).textContent = (hid1.value && hid2.value) ? (ok ? '✅' : '❌') : '';
+    if (!ok) allOk = false;
+  });
+
+  DONE.ex4 = allOk;
+  updateProgress();
+}
+
+function markGroup(bgId, sel, ans, ok) {
+  var grp = document.getElementById(bgId);
+  if (!grp) return;
+  grp.querySelectorAll('button').forEach(function(b) {
+    b.classList.remove('selected','correct-sel','wrong-sel','reveal-correct');
+    var bv = b.textContent.trim();
+    if (bv === sel && ok)   b.classList.add('correct-sel');
+    if (bv === sel && !ok)  b.classList.add('wrong-sel');
+    if (!ok && bv === ans)  b.classList.add('reveal-correct');
+  });
+}
+
+function resetEx4() {
+  artSel = {};
+  var allBgs = ['bg4-1','bg4-2','bg4-3a','bg4-3b','bg4-4','bg4-5','bg4-6',
+                'bg4-7a','bg4-7b','bg4-8','bg4-9','bg4-10a','bg4-10b'];
+  allBgs.forEach(function(bgId) {
+    var grp = document.getElementById(bgId);
+    if (grp) grp.querySelectorAll('button').forEach(function(b){
+      b.classList.remove('selected','correct-sel','wrong-sel','reveal-correct');
+    });
+  });
+  var allHids = ['a4-1','a4-2','a4-3a','a4-3b','a4-4','a4-5','a4-6',
+                 'a4-7a','a4-7b','a4-8','a4-9','a4-10a','a4-10b'];
+  allHids.forEach(function(id){ document.getElementById(id).value = ''; });
+  var fbs = ['a4-1-fb','a4-2-fb','a4-3-fb','a4-4-fb','a4-5-fb','a4-6-fb',
+             'a4-7-fb','a4-8-fb','a4-9-fb','a4-10-fb'];
+  fbs.forEach(function(id){ document.getElementById(id).textContent = ''; });
+  DONE.ex4 = false; updateProgress();
+}
+
+/* ── SEND TO TEACHER ──────────────────────────────────── */
+function sendToTeacher() {
+  var name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+  // --- Ex 1 ---
+  var sp_ids = ['sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8'];
+  var ex1Lines = sp_ids.map(function(id,i){
+    var el = document.getElementById(id);
+    var ok = el.classList.contains('correct') ? '✓' : (el.classList.contains('wrong') ? '✗' : '-');
+    return (i+1) + '. ' + (el.value || '(blank)') + ' [' + ok + ']';
+  }).join('\n');
+
+  // --- Ex 2 ---
+  var gf_ids = ['gf1','gf2','gf3','gf4','gf5','gf6'];
+  var ex2Lines = gf_ids.map(function(id,i){
+    var el = document.getElementById(id);
+    var ok = el.classList.contains('correct') ? '✓' : (el.classList.contains('wrong') ? '✗' : '-');
+    return (i+1) + '. ' + (el.value || '(blank)') + ' [' + ok + ']';
+  }).join('\n');
+
+  // --- Ex 3 ---
+  var wc_ids = ['wc1','wc2','wc3','wc4','wc5','wc6','wc7','wc8'];
+  var ex3Lines = wc_ids.map(function(id,i){
+    var el = document.getElementById(id);
+    var ok = el.classList.contains('correct') ? '✓' : (el.classList.contains('wrong') ? '✗' : '-');
+    return (i+1) + '. ' + (el.value || '(blank)') + ' [' + ok + ']';
+  }).join('\n');
+
+  // --- Ex 4 ---
+  var artData = [
+    {n:1, ids:['a4-1'],    fbs:['a4-1-fb']},
+    {n:2, ids:['a4-2'],    fbs:['a4-2-fb']},
+    {n:3, ids:['a4-3a','a4-3b'], fbs:['a4-3-fb']},
+    {n:4, ids:['a4-4'],    fbs:['a4-4-fb']},
+    {n:5, ids:['a4-5'],    fbs:['a4-5-fb']},
+    {n:6, ids:['a4-6'],    fbs:['a4-6-fb']},
+    {n:7, ids:['a4-7a','a4-7b'], fbs:['a4-7-fb']},
+    {n:8, ids:['a4-8'],    fbs:['a4-8-fb']},
+    {n:9, ids:['a4-9'],    fbs:['a4-9-fb']},
+    {n:10,ids:['a4-10a','a4-10b'],fbs:['a4-10-fb']},
+  ];
+  var ex4Lines = artData.map(function(d){
+    var vals = d.ids.map(function(id){ return document.getElementById(id).value || '(blank)'; }).join(' / ');
+    var fbEl = document.getElementById(d.fbs[0]);
+    var ok = fbEl ? (fbEl.textContent.indexOf('✅') >= 0 ? '✓' : (fbEl.textContent.indexOf('❌') >= 0 ? '✗' : '-')) : '-';
+    return d.n + '. ' + vals + ' [' + ok + ']';
+  }).join('\n');
+
+  var body = 'Student: ' + name + '\n\n'
+    + '=== Exercise 1: Spelling ===\n' + ex1Lines + '\n\n'
+    + '=== Exercise 2: Gap-fill ===\n' + ex2Lines + '\n\n'
+    + '=== Exercise 3: Word Completion ===\n' + ex3Lines + '\n\n'
+    + '=== Exercise 4: Articles ===\n' + ex4Lines;
+
+  var sub = 'Unit 4D Homework – ' + name;
+  window.location.href = 'mailto:dariia.mlnk@gmail.com?subject=' + encodeURIComponent(sub) + '&body=' + encodeURIComponent(body);
+}
+</script>
+</body>
+</html>
