@@ -1,0 +1,522 @@
+<title>Scent &amp; Mood Lesson</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,600&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one calm column, sticky stage bar; lavender marks interaction, sage marks structure */
+:root{
+  --bg:#eef0e8; --surface:#f9faf5; --ink:#24302a; --muted:#5b685f;
+  --sage:#5f8263; --sage-soft:#dfe7da; --lav:#7c67ad; --lav-soft:#e9e3f4;
+  --amber:#f4e8cc; --amber-ink:#6b4f17; --ok:#2e7a4e; --ok-soft:#dcefe2; --bad:#b3463e; --bad-soft:#f6dfdc;
+  --line:#cfd8ca;
+  --display:"Fraunces", Georgia, "Times New Roman", serif;
+  --body:"Figtree", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#141a16; --surface:#1d2520; --ink:#e5ebe3; --muted:#a2afa5;
+  --sage:#9dbf9f; --sage-soft:#273429; --lav:#b8a7e3; --lav-soft:#2c2740;
+  --amber:#3a3120; --amber-ink:#ecd398; --ok:#80d19d; --ok-soft:#1f3527; --bad:#ec8a80; --bad-soft:#3d2321;
+  --line:#33403a; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#141a16; --surface:#1d2520; --ink:#e5ebe3; --muted:#a2afa5;
+  --sage:#9dbf9f; --sage-soft:#273429; --lav:#b8a7e3; --lav-soft:#2c2740;
+  --amber:#3a3120; --amber-ink:#ecd398; --ok:#80d19d; --ok-soft:#1f3527; --bad:#ec8a80; --bad-soft:#3d2321;
+  --line:#33403a; color-scheme:dark }
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 64px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:880px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);font-weight:600;text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(2.2rem,6vw,3.4rem);letter-spacing:-.01em}
+h1 em, h2 em{font-style:italic;color:var(--lav);font-weight:400}
+h2{font-size:clamp(1.6rem,4vw,2.1rem)}
+h3{font-size:1.25rem}
+p{margin:0}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--sage)}
+
+nav.stages{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
+  margin:0 calc(-1 * max(16px, env(safe-area-inset-left, 0px)));padding:10px max(16px, env(safe-area-inset-left, 0px))}
+nav.stages .row{max-width:880px;margin:0 auto;display:flex;gap:6px;align-items:center;overflow-x:auto;scrollbar-width:none}
+nav.stages a{flex:none;text-decoration:none;color:var(--muted);font-size:.85rem;font-weight:600;padding:6px 12px;border-radius:999px;white-space:nowrap}
+nav.stages a:hover,nav.stages a:focus-visible{background:var(--sage-soft);color:var(--ink);outline:none}
+nav.stages a span{font-weight:400;opacity:.75;margin-left:4px;font-variant-numeric:tabular-nums}
+#themeBtn{margin-left:auto;flex:none;background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:.85rem;cursor:pointer}
+
+header.hero{padding-block:48px 28px;display:grid;gap:16px}
+header.hero .lede{font-size:1.15rem;color:var(--muted);max-width:60ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:999px;background:var(--sage-soft);color:var(--ink)}
+
+section.stage{padding-block:40px;border-top:1px solid var(--line);display:grid;gap:20px;scroll-margin-top:70px}
+.stage-head{display:grid;gap:6px}
+.stage-head .eyebrow span{color:var(--muted);font-weight:500}
+.intro{color:var(--muted);max-width:65ch}
+
+details.tnote{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:10px 14px;font-size:.92rem;color:var(--muted)}
+details.tnote summary{cursor:pointer;font-weight:600;color:var(--sage)}
+details.tnote ul{margin:8px 0 0;padding-left:18px}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:grid;gap:16px}
+
+.btn{font:inherit;font-weight:600;font-size:.92rem;border-radius:999px;padding:8px 18px;cursor:pointer;border:1px solid transparent}
+.btn.primary{background:var(--lav);color:var(--surface)}
+.btn.ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+.btn:focus-visible,.opt:focus-visible,.card:focus-visible,.mi:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--lav);outline-offset:2px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.score{font-weight:600;color:var(--sage);font-variant-numeric:tabular-nums}
+
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{font:inherit;font-size:.92rem;background:var(--bg);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:6px 14px;cursor:pointer}
+.opt.sel{border-color:var(--lav);background:var(--lav-soft)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+
+input.gap{font:inherit;font-size:.95rem;background:var(--bg);color:var(--ink);border:none;border-bottom:2px solid var(--lav);border-radius:4px 4px 0 0;padding:2px 8px;width:8.5em;min-width:0}
+input.gap.right{border-color:var(--ok);background:var(--ok-soft)}
+input.gap.wrong{border-color:var(--bad);background:var(--bad-soft)}
+textarea{font:inherit;font-size:.95rem;width:100%;min-height:84px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;resize:vertical}
+
+/* flip/reveal cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 16px;cursor:pointer;display:grid;gap:8px;align-content:start;text-align:left;font:inherit;color:var(--ink);min-height:160px}
+.card .emo{font-size:2.2rem;line-height:1}
+.card .front{font-family:var(--display);font-size:1.15rem;line-height:1.3}
+.card .hint{font-size:.82rem;color:var(--muted)}
+.card .reveal{max-height:0;opacity:0;overflow:hidden;transition:max-height .35s ease,opacity .35s ease;font-size:.95rem}
+.card .reveal b{font-family:var(--display);font-size:1.1rem;display:block;color:var(--lav)}
+.card.open{border-color:var(--lav)}
+.card.open .reveal{max-height:240px;opacity:1}
+.card.open .hint{display:none}
+.card.claim .reveal{color:var(--ok)}
+
+.discuss{display:grid;gap:10px;margin:0;padding-left:20px}
+.discuss li::marker{color:var(--lav)}
+
+/* pyramid */
+.pyr{display:grid;gap:6px;justify-items:center}
+.tier{display:grid;gap:2px;justify-items:center;text-align:center;padding:12px 16px;border-radius:10px;color:var(--ink)}
+.tier b{font-family:var(--display);font-size:1.1rem}
+.tier small{color:var(--muted);font-size:.82rem}
+.tier.top{width:min(100%,46%);background:var(--lav-soft)}
+.tier.heart{width:min(100%,70%);background:var(--sage-soft)}
+.tier.base{width:100%;background:var(--amber)}
+.tier.base small{color:var(--amber-ink)}
+.sortlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.sortrow{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;background:var(--bg);border-radius:10px;padding:8px 12px}
+.sortrow b{font-weight:600}
+.sortrow .opt{background:var(--surface);padding:4px 10px;font-size:.85rem}
+
+/* click matching */
+.matchboard{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:14px}
+.mcol{display:grid;gap:8px;align-content:start}
+.mi{font:inherit;text-align:left;background:var(--bg);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 14px;cursor:pointer;transition:background .2s,border-color .2s}
+.mi.word{font-family:var(--display);font-size:1.1rem;font-weight:600}
+.mi.def{font-size:.93rem;line-height:1.4}
+.mi.sel{border-color:var(--lav);background:var(--lav-soft)}
+.mi.done{border-color:var(--ok);background:var(--ok-soft);cursor:default}
+.mi.done .tag{color:var(--ok)}
+.mi.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.mi .tag{font-size:.75rem;font-weight:700;letter-spacing:.06em;margin-right:6px;color:var(--muted)}
+
+/* trend snapshots */
+.snaps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.snap{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:10px;align-content:start}
+.snap .num{font-family:var(--display);font-style:italic;color:var(--lav);font-size:1rem}
+.snap h3{font-size:1.15rem}
+.snap p{font-size:.93rem;color:var(--muted)}
+.snap .ask{color:var(--ink);font-weight:600;font-size:.95rem;border-left:3px solid var(--sage);padding-left:10px}
+
+.phrases{display:flex;flex-wrap:wrap;gap:8px}
+.phrases span{font-size:.88rem;background:var(--lav-soft);border-radius:999px;padding:4px 12px}
+
+.rule{background:var(--lav-soft);border-radius:14px;padding:22px;display:grid;gap:12px}
+.rule .line{display:flex;flex-wrap:wrap;gap:6px;align-items:baseline}
+.rule .ex{color:var(--muted);font-style:italic;font-size:.92rem;width:100%}
+.mistakes{background:var(--amber);border-radius:14px;padding:22px;display:grid;gap:12px;color:var(--ink)}
+.mistakes h3{color:var(--amber-ink)}
+.mrow2{display:grid;gap:6px}
+.mrow2 .fix{color:var(--ok);font-weight:600}
+.linkbtn{font:inherit;font-size:.85rem;background:none;border:none;color:var(--amber-ink);text-decoration:underline;cursor:pointer;padding:0;justify-self:start}
+
+.moodbox{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.big{font-family:var(--display);font-style:italic;font-size:1.4rem;color:var(--lav);line-height:1.3}
+.blend{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.blend label{display:grid;gap:4px;font-size:.85rem;font-weight:600;color:var(--muted)}
+.blend input{font:inherit;font-size:.95rem;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+.objection{background:var(--bg);border-radius:12px;padding:18px;display:grid;gap:6px}
+.objection small{color:var(--muted);font-variant-numeric:tabular-nums}
+
+footer{padding-block:32px 0;color:var(--muted);font-size:.85rem;text-align:center}
+
+@media (max-width:560px){
+  .matchboard{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px}
+  .mi{padding:8px 10px}
+  .mi.def{font-size:.85rem}
+  .panel,.rule,.mistakes{padding:16px}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important;scroll-behavior:auto!important} }
+</style>
+
+<nav class="stages" aria-label="Lesson stages">
+  <div class="row">
+    <a href="#s1">Lead-in<span>10′</span></a>
+    <a href="#s2">Scent words<span>15′</span></a>
+    <a href="#s3">Trends<span>15′</span></a>
+    <a href="#s4">Language<span>8′</span></a>
+    <a href="#s5">Say it softer<span>7′</span></a>
+    <a href="#s6">Role-play<span>20′</span></a>
+    <a href="#s7">Wrap-up<span>5′</span></a>
+    <button id="themeBtn" type="button" aria-label="Switch light or dark theme">◐ Theme</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<header class="hero">
+  <p class="eyebrow">English for beauty professionals · B2–C1</p>
+  <h1>Scent, mood <em>&amp; memory</em></h1>
+  <p class="lede">A speaking lesson about mood fragrance, scent layering and nostalgic gourmands. We'll describe smells precisely, discuss what's trending, and practise talking about benefits without over-promising.</p>
+  <div class="meta"><span class="chip">80 minutes</span><span class="chip">Mostly speaking</span><span class="chip">Language focus: hedging</span></div>
+</header>
+
+<!-- STAGE 1 -->
+<section class="stage" id="s1">
+  <div class="stage-head">
+    <p class="eyebrow">Stage 1 · Lead-in <span>· 10 min</span></p>
+    <h2>Which smell takes you <em>back?</em></h2>
+    <p class="intro">Tap a card to reveal the smell. Choose two and tell the story behind them.</p>
+  </div>
+  <details class="tnote"><summary>Teacher note</summary><ul>
+    <li>Open cards one by one and let her react freely. Push for detail: <i>where, when, who were you with?</i></li>
+    <li>Note any nice descriptive words she uses for Stage 2.</li>
+  </ul></details>
+  <div class="cards">
+    <button class="card" type="button"><span class="emo">🌧️</span><span class="hint">Tap to reveal</span><span class="reveal"><b>Petrichor</b>The smell of rain on dry ground. When did you last notice it?</span></button>
+    <button class="card" type="button"><span class="emo">☀️</span><span class="hint">Tap to reveal</span><span class="reveal"><b>Sunscreen</b>Which summer, which beach, which year does it bring back?</span></button>
+    <button class="card" type="button"><span class="emo">📚</span><span class="hint">Tap to reveal</span><span class="reveal"><b>Old books</b>Comforting or dusty? Describe it in three words.</span></button>
+    <button class="card" type="button"><span class="emo">☕</span><span class="hint">Tap to reveal</span><span class="reveal"><b>Freshly ground coffee</b>Does the smell wake you up more than the coffee itself?</span></button>
+    <button class="card" type="button"><span class="emo">🍊</span><span class="hint">Tap to reveal</span><span class="reveal"><b>Orange peel</b>Bright, sharp, sweet? What does it make you feel like doing?</span></button>
+    <button class="card" type="button"><span class="emo">🌲</span><span class="hint">Tap to reveal</span><span class="reveal"><b>Pine forest</b>A place, a holiday, a person? Where does it take you?</span></button>
+  </div>
+  <div class="panel">
+    <h3>Quick chat</h3>
+    <ol class="discuss">
+      <li>What smell instantly puts you in a good mood? Is there one you can't stand?</li>
+      <li>Do you wear one signature scent, or does it change with your mood, the season or the day?</li>
+      <li>Have clients started asking you for scents for a specific <i>feeling</i>: calm, focus, energy?</li>
+    </ol>
+  </div>
+</section>
+
+<!-- STAGE 2 -->
+<section class="stage" id="s2">
+  <div class="stage-head">
+    <p class="eyebrow">Stage 2 · Vocabulary <span>· 15 min</span></p>
+    <h2>Talking about scent <em>precisely</em></h2>
+    <p class="intro">Sort the ingredients into the fragrance pyramid, then match each adjective to its meaning.</p>
+  </div>
+  <details class="tnote"><summary>Teacher note</summary><ul>
+    <li>The pyramid is her home ground: let her explain it to you in English first (evaporation, how notes unfold).</li>
+    <li>Some oils sit between layers (lavender, for example). If she disagrees with the key, let her argue it.</li>
+    <li>Matching: she clicks a word on the left, then its meaning on the right.</li>
+  </ul></details>
+
+  <div class="panel">
+    <h3>The fragrance pyramid</h3>
+    <div class="pyr" aria-hidden="true">
+      <div class="tier top"><b>Top notes</b><small>first impression · evaporate in 5–30 min</small></div>
+      <div class="tier heart"><b>Heart notes</b><small>the character · last 2–4 hours</small></div>
+      <div class="tier base"><b>Base notes</b><small>depth &amp; staying power · linger 6+ hours</small></div>
+    </div>
+    <div class="sortlist" data-ex="pyr"></div>
+    <div class="actions"><button class="btn primary" type="button" data-check="pyr">Check</button><button class="btn ghost" type="button" data-reset="pyr">Reset</button><span class="score" data-score="pyr"></span></div>
+  </div>
+
+  <div class="panel">
+    <h3>Match the adjective to its meaning</h3>
+    <div class="matchboard" id="matchboard">
+      <div class="mcol" id="mWords"></div>
+      <div class="mcol" id="mDefs"></div>
+    </div>
+    <div class="actions"><button class="btn ghost" type="button" id="matchReset">Reset</button><span class="score" id="matchScore">0 / 8 matched</span></div>
+  </div>
+
+  <div class="panel">
+    <h3>Choose the right adjective</h3>
+    <p class="intro">Read each sentence aloud and pick the adjective that fits best.</p>
+    <ol class="discuss" data-ex="adj" style="gap:16px">
+      <li><span>Bergamot gives the blend a bright, ____ opening.</span><div class="opts" data-correct="a" style="margin-top:6px"><button class="opt" type="button" data-v="b">powdery</button><button class="opt" type="button" data-v="a">zesty</button><button class="opt" type="button" data-v="c">musky</button></div></li>
+      <li><span>Vetiver smells deep and ____, like wet roots after rain.</span><div class="opts" data-correct="a" style="margin-top:6px"><button class="opt" type="button" data-v="a">earthy</button><button class="opt" type="button" data-v="b">zesty</button><button class="opt" type="button" data-v="c">gourmand</button></div></li>
+      <li><span>Frankincense is ____ because it comes from tree sap.</span><div class="opts" data-correct="a" style="margin-top:6px"><button class="opt" type="button" data-v="b">powdery</button><button class="opt" type="button" data-v="c">zesty</button><button class="opt" type="button" data-v="a">resinous</button></div></li>
+      <li><span>Jasmine can be quite ____ in a small room; one drop is enough.</span><div class="opts" data-correct="a" style="margin-top:6px"><button class="opt" type="button" data-v="b">earthy</button><button class="opt" type="button" data-v="a">heady</button><button class="opt" type="button" data-v="c">resinous</button></div></li>
+      <li><span>This vanilla and caramel body butter smells good enough to eat. It's very ____.</span><div class="opts" data-correct="a" style="margin-top:6px"><button class="opt" type="button" data-v="a">gourmand</button><button class="opt" type="button" data-v="b">resinous</button><button class="opt" type="button" data-v="c">earthy</button></div></li>
+      <li><span>I love a ____ scent. I can still smell it on my scarf the next day.</span><div class="opts" data-correct="a" style="margin-top:6px"><button class="opt" type="button" data-v="b">zesty</button><button class="opt" type="button" data-v="c">heady</button><button class="opt" type="button" data-v="a">lingering</button></div></li>
+      <li><span>Iris and violet often smell soft and ____, like old-fashioned make-up.</span><div class="opts" data-correct="a" style="margin-top:6px"><button class="opt" type="button" data-v="a">powdery</button><button class="opt" type="button" data-v="b">resinous</button><button class="opt" type="button" data-v="c">zesty</button></div></li>
+      <li><span>A clean, ____ skin scent feels warm and close to the body.</span><div class="opts" data-correct="a" style="margin-top:6px"><button class="opt" type="button" data-v="b">zesty</button><button class="opt" type="button" data-v="a">musky</button><button class="opt" type="button" data-v="c">resinous</button></div></li>
+    </ol>
+    <div class="actions"><button class="btn primary" type="button" data-check="adj">Check</button><button class="btn ghost" type="button" data-reset="adj">Reset</button><span class="score" data-score="adj"></span></div>
+  </div>
+
+  <div class="panel">
+    <h3>Now use them</h3>
+    <ol class="discuss">
+      <li>Describe your favourite essential oil to someone who has never smelled it. Use at least two of the adjectives.</li>
+      <li>Which words describe the products you make? Give an example for three of them.</li>
+      <li>Which word would you <i>never</i> use in a product description, and why?</li>
+    </ol>
+  </div>
+</section>
+
+<!-- STAGE 3 -->
+<section class="stage" id="s3">
+  <div class="stage-head">
+    <p class="eyebrow">Stage 3 · Trend snapshots <span>· 15 min</span></p>
+    <h2>Hype or <em>helpful?</em></h2>
+    <p class="intro">Read each snapshot aloud, answer the question, then give your verdict. Use the phrases to give your opinion.</p>
+  </div>
+  <details class="tnote"><summary>Teacher note</summary><ul>
+    <li>She reads one card aloud (pronunciation check), answers the question, then picks a verdict and justifies it.</li>
+    <li>Play devil's advocate to extend each answer. Aim for 2 minutes per card.</li>
+    <li>Note the cautious phrases she uses naturally; they lead into Stage 4.</li>
+  </ul></details>
+  <div class="phrases"><span>I'd say it's mostly…</span><span>It seems to me that…</span><span>It might just be a phase.</span><span>I suspect it's here to stay.</span><span>In my experience, clients tend to…</span><span>I'm not entirely convinced…</span></div>
+  <div class="snaps">
+    <div class="snap"><span class="num">i.</span><h3>Mood fragrance</h3><p>Big brands now sell scents named <i>Calm</i> or <i>Focus</i>. Critics say the effect may come more from ritual and expectation than from chemistry.</p><p class="ask">Aromatherapists have known this for generations. Is it new, or just new marketing?</p><div class="opts"><button class="opt" type="button">Hype</button><button class="opt" type="button">Helpful</button><button class="opt" type="button">Not sure</button></div></div>
+    <div class="snap"><span class="num">ii.</span><h3>Scent layering</h3><p>Instead of one signature perfume, people build a "scent wardrobe": a body oil, a mist and a perfume worn together.</p><p class="ask">Would you recommend layering to clients? Which combinations work?</p><div class="opts"><button class="opt" type="button">Hype</button><button class="opt" type="button">Helpful</button><button class="opt" type="button">Not sure</button></div></div>
+    <div class="snap"><span class="num">iii.</span><h3>Gourmand nostalgia</h3><p>Pistachio, toasted sugar and warm milk are everywhere. Sweet, edible scents have become hugely popular.</p><p class="ask">Why do you think people want to smell like dessert right now?</p><div class="opts"><button class="opt" type="button">Hype</button><button class="opt" type="button">Helpful</button><button class="opt" type="button">Not sure</button></div></div>
+    <div class="snap"><span class="num">iv.</span><h3>Skin scents</h3><p>Soft, musky fragrances that sit close to the body and smell "like you, but better".</p><p class="ask">Is a scent other people can barely smell still worth paying for?</p><div class="opts"><button class="opt" type="button">Hype</button><button class="opt" type="button">Helpful</button><button class="opt" type="button">Not sure</button></div></div>
+    <div class="snap"><span class="num">v.</span><h3>Upcycled ingredients</h3><p>Some makers extract oils from what the food industry throws away, like citrus peel or coffee grounds.</p><p class="ask">Would "made from waste" make you more or less likely to buy?</p><div class="opts"><button class="opt" type="button">Hype</button><button class="opt" type="button">Helpful</button><button class="opt" type="button">Not sure</button></div></div>
+    <div class="snap"><span class="num">vi.</span><h3>AI-designed blends</h3><p>A few brands use algorithms to suggest new formulas. Most perfumers say a trained nose can't be replaced.</p><p class="ask">Could AI ever do your job? Which part could it never do?</p><div class="opts"><button class="opt" type="button">Hype</button><button class="opt" type="button">Helpful</button><button class="opt" type="button">Not sure</button></div></div>
+  </div>
+</section>
+
+<!-- STAGE 4 -->
+<section class="stage" id="s4">
+  <div class="stage-head">
+    <p class="eyebrow">Stage 4 · Language focus <span>· 8 min</span></p>
+    <h2>Promising <em>honestly</em>: hedging</h2>
+    <p class="intro">Makers should promise only what a scent can really deliver. In English we do this with <b>hedging</b>: language that makes a claim softer and more careful. It's essential for labels, websites and consultations.</p>
+  </div>
+  <details class="tnote"><summary>Teacher note</summary><ul>
+    <li>Start with the cautious phrases she used in Stage 3, then complete the rule card together.</li>
+    <li>She probably knows the meaning, so focus on form and the typical errors below.</li>
+  </ul></details>
+
+  <div class="rule" data-ex="rule">
+    <h3>Rule card: complete the patterns</h3>
+    <div class="line">may / might / <input class="gap" id="r1" data-ans="could" aria-label="modal verb"> + infinitive <span class="ex">This blend may ease tension.</span></div>
+    <div class="line">is said / thought / believed <input class="gap" id="r2" data-ans="to" aria-label="missing word"> + infinitive <span class="ex">Neroli is thought to be calming.</span></div>
+    <div class="line">It is believed <input class="gap" id="r3" data-ans="that" aria-label="missing word"> + clause <span class="ex">It is believed that scent and memory are closely linked.</span></div>
+    <div class="line">There is some <input class="gap" id="r4" data-ans="evidence" aria-label="missing noun"> that + clause <span class="ex">There is some evidence that peppermint helps alertness.</span></div>
+    <div class="line"><input class="gap" id="r5" data-ans="tend,tends" aria-label="missing verb"> to + infinitive <span class="ex">Woody notes tend to last longer on the skin.</span></div>
+    <div class="line">It <input class="gap" id="r6" data-ans="seems,appears" aria-label="missing verb"> that + clause <span class="ex">It seems that gourmand scents are here to stay.</span></div>
+    <div class="actions"><button class="btn primary" type="button" data-check="rule">Check</button><button class="btn ghost" type="button" data-reset="rule">Reset</button><span class="score" data-score="rule"></span></div>
+  </div>
+
+  <div class="mistakes">
+    <h3>Spot the mistake</h3>
+    <div class="mrow2"><span>1. Lavender is said help with sleep.</span><button class="linkbtn" type="button">Show correction</button><span class="fix" hidden>Lavender is said <u>to help</u> with sleep.</span></div>
+    <div class="mrow2"><span>2. This oil may to reduce stress.</span><button class="linkbtn" type="button">Show correction</button><span class="fix" hidden>This oil may <u>reduce</u> stress. (no "to" after modals)</span></div>
+    <div class="mrow2"><span>3. It is believed what peppermint helps concentration.</span><button class="linkbtn" type="button">Show correction</button><span class="fix" hidden>It is believed <u>that</u> peppermint helps concentration.</span></div>
+    <div class="mrow2"><span>4. Neroli is thought being calming.</span><button class="linkbtn" type="button">Show correction</button><span class="fix" hidden>Neroli is thought <u>to be</u> calming.</span></div>
+  </div>
+</section>
+
+<!-- STAGE 5 -->
+<section class="stage" id="s5">
+  <div class="stage-head">
+    <p class="eyebrow">Stage 5 · Controlled practice <span>· 7 min</span></p>
+    <h2>Say it <em>softer</em></h2>
+    <p class="intro">Read the bold claim. Say an honest version out loud, then tap the card to see one possible answer.</p>
+  </div>
+  <details class="tnote"><summary>Teacher note</summary><ul>
+    <li>Fast and oral. Accept any accurate hedge; the card shows just one option.</li>
+    <li>Extra challenge: ask for two different hedges for the same claim.</li>
+  </ul></details>
+  <div class="cards">
+    <button class="card claim" type="button"><span class="front">"Peppermint improves concentration."</span><span class="hint">Say it softer, then tap</span><span class="reveal">Peppermint is thought to help with concentration.</span></button>
+    <button class="card claim" type="button"><span class="front">"This oil cures headaches."</span><span class="hint">Say it softer, then tap</span><span class="reveal">Many people find this oil soothing when they have a headache.</span></button>
+    <button class="card claim" type="button"><span class="front">"Everyone loves vanilla."</span><span class="hint">Say it softer, then tap</span><span class="reveal">Vanilla tends to be a real crowd-pleaser.</span></button>
+    <button class="card claim" type="button"><span class="front">"Our mist will make you happy all day."</span><span class="hint">Say it softer, then tap</span><span class="reveal">Our mist may give you a bright lift whenever you need one.</span></button>
+    <button class="card claim" type="button"><span class="front">"Lavender guarantees a good night's sleep."</span><span class="hint">Say it softer, then tap</span><span class="reveal">Lavender is said to support a more restful night.</span></button>
+    <button class="card claim" type="button"><span class="front">"Natural products are always safe."</span><span class="hint">Say it softer, then tap</span><span class="reveal">Natural products are generally gentle, but some people may still react to them.</span></button>
+  </div>
+</section>
+
+<!-- STAGE 6 -->
+<section class="stage" id="s6">
+  <div class="stage-head">
+    <p class="eyebrow">Stage 6 · Freer speaking <span>· 20 min</span></p>
+    <h2>Create a blend, then <em>sell it</em></h2>
+  </div>
+  <details class="tnote"><summary>Teacher note</summary><ul>
+    <li>Part A (7 min): she gets a random mood and designs a blend. She can fill in the boxes or just talk it through.</li>
+    <li>Part B (13 min): you play a tricky client. Reveal one objection at a time; she answers professionally, with hedges. Swap roles for the last few minutes if she enjoys it.</li>
+    <li>Note errors quietly for the wrap-up instead of interrupting.</li>
+  </ul></details>
+
+  <div class="panel">
+    <h3>A. Design a mood blend</h3>
+    <div class="moodbox"><span>Your brief:</span><span class="big" id="mood">A rainy Sunday in Barcelona</span><button class="btn ghost" type="button" id="moodBtn">New mood</button></div>
+    <div class="blend">
+      <label>Name of the blend<input id="bName" placeholder="e.g. Slow Sunday"></label>
+      <label>Top notes<input id="bTop" placeholder="e.g. bergamot"></label>
+      <label>Heart notes<input id="bHeart" placeholder="e.g. neroli"></label>
+      <label>Base notes<input id="bBase" placeholder="e.g. cedarwood"></label>
+    </div>
+    <p class="intro">Pitch it in one minute: describe the scent (3 adjectives) and say what it may do for the client (2 hedges).</p>
+  </div>
+
+  <div class="panel">
+    <h3>B. The tricky client</h3>
+    <p class="intro">Your teacher is a client who isn't sure about buying. Answer each objection politely and honestly.</p>
+    <div class="objection"><small id="objCount">Objection 1 of 8</small><span class="big" id="objText">"Isn't this just perfume with a fancy name?"</span></div>
+    <div class="actions"><button class="btn primary" type="button" id="objBtn">Next objection</button></div>
+    <div class="phrases"><span>That's a fair question.</span><span>I completely understand.</span><span>What I can say is…</span><span>Many of my clients find…</span><span>I'd always recommend a patch test.</span><span>It's not a miracle, but…</span></div>
+  </div>
+</section>
+
+<!-- STAGE 7 -->
+<section class="stage" id="s7">
+  <div class="stage-head">
+    <p class="eyebrow">Stage 7 · Wrap-up <span>· 5 min</span></p>
+    <h2>What will you <em>keep?</em></h2>
+  </div>
+  <details class="tnote"><summary>Teacher note</summary><ul>
+    <li>Go through 2–3 errors you noted in Stage 6 and let her self-correct.</li>
+    <li>Homework idea: rewrite the description of one of her real products using today's adjectives and hedges.</li>
+  </ul></details>
+  <div class="panel">
+    <ol class="discuss">
+      <li>Which three scent words will you start using?</li>
+      <li>Which sentence on your own labels or website would you now rewrite?</li>
+      <li>Which objection was the hardest to answer? How would you answer it next time?</li>
+    </ol>
+  </div>
+</section>
+
+<footer>Lesson by @dariia.eng</footer>
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  document.getElementById('themeBtn').addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme');
+    var dark=cur? cur==='dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.setAttribute('data-theme', dark?'light':'dark');
+  });
+
+  document.querySelectorAll('.card').forEach(function(c){c.addEventListener('click',function(){c.classList.toggle('open')})});
+
+  function bindOpts(scope){
+    scope.querySelectorAll('.opts').forEach(function(g){
+      g.querySelectorAll('.opt').forEach(function(b){b.addEventListener('click',function(){
+        g.querySelectorAll('.opt').forEach(function(x){x.classList.remove('sel','right','wrong')});
+        b.classList.add('sel');
+      })});
+    });
+  }
+
+  // pyramid sort (buttons, visible on screen share)
+  var pyr=[["Bergamot","top"],["Sandalwood","base"],["Rose","heart"],["Grapefruit","top"],["Vanilla","base"],["Jasmine","heart"],["Eucalyptus","top"],["Vetiver","base"],["Geranium","heart"]];
+  var pl=document.querySelector('[data-ex="pyr"]');
+  pyr.forEach(function(p){
+    var row=document.createElement('div');row.className='sortrow';
+    row.innerHTML='<b>'+p[0]+'</b><div class="opts" data-correct="'+p[1]+'"><button class="opt" type="button" data-v="top">top</button><button class="opt" type="button" data-v="heart">heart</button><button class="opt" type="button" data-v="base">base</button></div>';
+    pl.appendChild(row);
+  });
+  bindOpts(document);
+
+  function check(id){
+    var ex=document.querySelector('[data-ex="'+id+'"]'); if(!ex) return;
+    var total=0, ok=0;
+    ex.querySelectorAll('.gap').forEach(function(el){
+      total++;
+      var v=(el.value||'').toLowerCase().trim();
+      var ans=el.getAttribute('data-ans').split(',').map(function(a){return a.trim()});
+      el.classList.remove('right','wrong');
+      if(ans.indexOf(v)>-1){el.classList.add('right');ok++} else el.classList.add('wrong');
+    });
+    ex.querySelectorAll('.opts[data-correct]').forEach(function(g){
+      total++;
+      var c=g.getAttribute('data-correct');
+      var sel=g.querySelector('.opt.sel');
+      g.querySelectorAll('.opt').forEach(function(b){b.classList.remove('right','wrong')});
+      if(sel){ if(sel.getAttribute('data-v')===c){sel.classList.add('right');ok++} else {sel.classList.add('wrong'); var r=g.querySelector('.opt[data-v="'+c+'"]'); if(r) r.classList.add('right')} }
+    });
+    var sc=document.querySelector('[data-score="'+id+'"]'); if(sc) sc.textContent=ok+' / '+total;
+  }
+  function reset(id){
+    var ex=document.querySelector('[data-ex="'+id+'"]'); if(!ex) return;
+    ex.querySelectorAll('.gap').forEach(function(el){el.value='';el.classList.remove('right','wrong')});
+    ex.querySelectorAll('.opt').forEach(function(b){b.classList.remove('sel','right','wrong')});
+    var sc=document.querySelector('[data-score="'+id+'"]'); if(sc) sc.textContent='';
+  }
+  document.querySelectorAll('[data-check]').forEach(function(b){b.addEventListener('click',function(){check(b.getAttribute('data-check'))})});
+  document.querySelectorAll('[data-reset]').forEach(function(b){b.addEventListener('click',function(){reset(b.getAttribute('data-reset'))})});
+
+  // click matching: word left, definition right
+  var pairs=[["zesty","fresh, sharp and lively, like citrus peel"],["earthy","like soil, roots or a forest floor"],["musky","warm, soft and slightly animal-like, close to the skin"],["powdery","soft and dry, like face powder or iris"],["resinous","like tree sap or incense, e.g. frankincense"],["gourmand","sweet and edible-smelling, like vanilla or caramel"],["heady","strong and intense, almost intoxicating"],["lingering","staying in the air or on the skin for a long time"]];
+  var defOrder=[5,2,0,7,4,1,6,3];
+  var wCol=document.getElementById('mWords'), dCol=document.getElementById('mDefs'), mScore=document.getElementById('matchScore');
+  var selWord=null, matched=0;
+  function buildMatch(){
+    wCol.innerHTML='';dCol.innerHTML='';selWord=null;matched=0;mScore.textContent='0 / 8 matched';
+    pairs.forEach(function(p,i){
+      var b=document.createElement('button');b.type='button';b.className='mi word';b.dataset.k=i;b.textContent=p[0];
+      b.addEventListener('click',function(){
+        if(b.classList.contains('done')) return;
+        wCol.querySelectorAll('.mi').forEach(function(x){x.classList.remove('sel')});
+        b.classList.add('sel');selWord=b;
+      });
+      wCol.appendChild(b);
+    });
+    defOrder.forEach(function(i){
+      var d=document.createElement('button');d.type='button';d.className='mi def';d.dataset.k=i;d.textContent=pairs[i][1];
+      d.addEventListener('click',function(){
+        if(d.classList.contains('done')||!selWord) return;
+        if(selWord.dataset.k===d.dataset.k){
+          selWord.classList.remove('sel');selWord.classList.add('done');d.classList.add('done');
+          d.innerHTML='<span class="tag">'+pairs[i][0].toUpperCase()+'</span>'+pairs[i][1];
+          selWord=null;matched++;mScore.textContent=matched+' / 8 matched'+(matched===8?' · well done!':'');
+        } else {
+          d.classList.add('wrong');var w=selWord;w.classList.add('wrong');
+          setTimeout(function(){d.classList.remove('wrong');w.classList.remove('wrong')},650);
+        }
+      });
+      dCol.appendChild(d);
+    });
+  }
+  buildMatch();
+  document.getElementById('matchReset').addEventListener('click',buildMatch);
+
+  // reveal toggles
+  document.querySelectorAll('.linkbtn').forEach(function(b){b.addEventListener('click',function(){
+    var t=b.nextElementSibling; if(!t) return;
+    t.hidden=!t.hidden;
+    b.textContent=t.hidden? b.textContent.replace('Hide','Show') : b.textContent.replace('Show','Hide');
+  })});
+
+  // random mood
+  var moods=["A rainy Sunday in Barcelona","Before an important presentation","Winding down after a long day with clients","A first date","Monday morning, no coffee yet","A summer evening on the terrace","Studying for an exam"];
+  var mi=0;
+  document.getElementById('moodBtn').addEventListener('click',function(){
+    var n; do{n=Math.floor(Math.random()*moods.length)}while(n===mi);
+    mi=n; document.getElementById('mood').textContent=moods[n];
+  });
+
+  // objections
+  var objs=["“Isn't this just perfume with a fancy name?”","“It's twice the price of the one at the supermarket.”","“Can you prove it actually works?”","“I have really sensitive skin. Is it safe for me?”","“A friend told me essential oils can be dangerous.”","“I don't like strong smells. Won't it give me a headache?”","“I'll just buy something similar online.”","“OK, I'm interested. Which one would you choose for me, and why?”"];
+  var oi=0;
+  document.getElementById('objBtn').addEventListener('click',function(){
+    oi=(oi+1)%objs.length;
+    document.getElementById('objText').textContent=objs[oi];
+    document.getElementById('objCount').textContent='Objection '+(oi+1)+' of '+objs.length;
+  });
+})();
+</script>
