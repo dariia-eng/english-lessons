@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Blue Cat Mystery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Lexend:wght@400;500;600&display=swap">
+<style>
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+
+:root{
+  color-scheme:dark;
+  --ground:#14161B; --paper:#1E2129; --paper2:#272B35; --ink:#ECE8DF; --muted:#A3A7B1; --line:#363B48;
+  --tape:#F2C230; --tape-ink:#14161B; --tape-soft:#3A3220;
+  --red:#EF5F55; --red-soft:#3C2020; --cyan:#6CC4D1; --cyan-soft:#1C3338;
+  --violet:#B9A2F2; --violet-soft:#2C2540;
+  --ok:#7CCB85; --ok-soft:#1E3523; --bad:#F08A7E; --bad-soft:#3E2220;
+  --type:"Special Elite","Courier New",Courier,monospace;
+  --body:"Lexend","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:860px;margin:0 auto}
+h1,h2,h3{font-family:var(--type);font-weight:400;text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(2.4rem,8vw,4rem)}
+h2{font-size:clamp(1.6rem,4.6vw,2.1rem)}
+h3{font-size:1.25rem;color:var(--tape)}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--tape);outline-offset:2px}
+
+.tapeband{margin-inline:-16px;background:var(--tape);color:var(--tape-ink);font-family:var(--type);font-size:1rem;letter-spacing:.18em;white-space:nowrap;overflow:hidden;padding:6px 0;transform:rotate(-1.2deg);margin-top:22px;box-shadow:0 4px 0 rgba(0,0,0,.35)}
+.tapeband span{display:inline-block;padding-right:1.4em}
+header.hero{padding-block:30px 22px;display:grid;gap:10px}
+header.hero .case{font-family:var(--type);color:var(--muted);letter-spacing:.12em;font-size:.9rem}
+header.hero h1 em{font-style:normal;color:var(--cyan)}
+
+nav.stages{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);padding-block:10px;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+nav.stages a{display:inline-block;margin-right:6px;padding:5px 12px;border-radius:999px;color:var(--ink);text-decoration:none;font-size:.86rem;font-weight:500;background:var(--paper);border:1px solid var(--line)}
+nav.stages a:hover{border-color:var(--tape);color:var(--tape)}
+
+section.stage{margin-top:46px;display:grid;gap:18px;scroll-margin-top:70px}
+.stage-head{display:grid;gap:6px}
+.stage-head .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.step-no{font-family:var(--type);font-size:1rem;color:var(--cyan);letter-spacing:.06em}
+.chip{font-size:.76rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 10px;border-radius:999px;background:var(--tape-soft);color:var(--tape)}
+.chip.game{background:var(--red-soft);color:var(--red)}
+.instr{color:var(--muted);max-width:65ch}
+
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:14px}
+details.tnote{border-left:3px solid var(--tape);background:var(--tape-soft);border-radius:0 10px 10px 0;padding:8px 14px;font-size:.92rem}
+details.tnote summary{cursor:pointer;font-weight:600;color:var(--tape)}
+details.tnote ul{margin:8px 0 4px;padding-left:20px}
+
+.talk{display:grid;gap:8px;padding:0;margin:0;list-style:none}
+.talk li{padding:10px 14px;border-radius:10px;background:var(--paper2)}
+
+/* observation game */
+.scene{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:420px}
+.scene div{aspect-ratio:1;max-width:100%;display:grid;place-items:center;font-size:2.2rem;background:var(--paper2);border-radius:10px}
+.scene.hidden div{font-size:0;background:repeating-linear-gradient(45deg,var(--paper2) 0 8px,var(--paper) 8px 16px)}
+.count{font-family:var(--type);font-size:2rem;color:var(--tape);line-height:1;font-variant-numeric:tabular-nums}
+
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:none;border-radius:8px;padding:9px 18px;font-weight:600;background:var(--tape);color:var(--tape-ink)}
+.btn.red{background:var(--red);color:#1A0E0E}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+.score{font-weight:600;color:var(--ok);font-variant-numeric:tabular-nums}
+.small-btn{justify-self:start;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;padding:3px 12px;font-size:.85rem}
+
+.list{display:grid;gap:16px}
+.q{display:grid;gap:8px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:8px;padding:6px 14px;text-align:left}
+.opts button:hover{border-color:var(--tape)}
+.opts button.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:600}
+.opts button.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.fb{font-size:.9rem;color:var(--muted);min-height:1.2em}
+
+.bank{display:flex;flex-wrap:wrap;gap:8px;padding:14px;border:2px dashed var(--tape);border-radius:12px}
+.bank .lbl{width:100%;font-size:.76rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tape)}
+.bank button{border:1.5px solid var(--tape);background:var(--tape-soft);color:var(--ink);border-radius:999px;padding:3px 14px;font-weight:500}
+.bank button:hover{background:var(--tape);color:var(--tape-ink)}
+.bank button.used{opacity:.3;text-decoration:line-through}
+.defs{display:grid;gap:8px}
+.def{display:grid;grid-template-columns:2em 1fr minmax(9em,12em);gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+@media (max-width:560px){.def{grid-template-columns:2em 1fr}.def input{grid-column:2}}
+.def .n{color:var(--muted);font-variant-numeric:tabular-nums}
+input.gap{font:inherit;font-size:.95rem;border:none;border-bottom:2px solid var(--tape);background:var(--tape-soft);color:var(--ink);border-radius:6px 6px 0 0;padding:2px 8px;width:10em;max-width:100%}
+input.gap.s{width:6em} input.gap.l{width:13em} input.gap.full{width:100%}
+.def input.gap{width:100%}
+input.gap.right{border-color:var(--ok);background:var(--ok-soft)}
+input.gap.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.key{font-size:.85rem;color:var(--ok);margin-left:6px;font-weight:500}
+
+/* case file */
+.file{background:#EDE6D3;color:#2A2620;border-radius:4px;padding:26px 24px 22px;display:grid;gap:12px;max-width:68ch;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.file::before{content:"CASE FILE 047";position:absolute;top:-12px;left:18px;background:var(--red);color:#fff;font-family:var(--type);font-size:.8rem;letter-spacing:.12em;padding:2px 10px;border-radius:3px;transform:rotate(-2deg)}
+.file h3{color:#2A2620;font-size:1.4rem}
+.file p{line-height:1.7}
+.file mark{background:#F6D86B;color:inherit;padding:0 2px;border-radius:2px}
+.file mark.pp{background:#CDBBF7}
+.file.hl-off mark,.file.hl-off mark.pp{background:transparent}
+.paper-head{font-family:var(--type);font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;border-bottom:2px solid #2A2620;padding-bottom:6px}
+.file .gl{line-height:2.4}
+.file input.gap{background:#F4E7B9;color:#2A2620;border-bottom-color:#8A6A10}
+.file input.gap.right{background:#CFE8CF;border-color:#2F7D3B}
+.file input.gap.wrong{background:#F3CFC9;border-color:#B23A2E}
+.file .key{color:#2F7D3B}
+
+/* timeline */
+.tlsvg{width:100%;max-width:680px;height:auto}
+.tlsvg text{font-family:var(--body);font-size:13px;fill:var(--ink)}
+.legend3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.legend3 div{border-radius:10px;padding:10px 12px;font-size:.9rem;line-height:1.45;background:var(--paper2);border-left:4px solid}
+.legend3 b{display:block;font-family:var(--type);font-weight:400;font-size:1.05rem}
+.legend3 .pc{border-color:var(--cyan)} .legend3 .pc b{color:var(--cyan)}
+.legend3 .ps{border-color:var(--red)} .legend3 .ps b{color:var(--red)}
+.legend3 .pp{border-color:var(--violet)} .legend3 .pp b{color:var(--violet)}
+.rule{display:grid;gap:10px}
+.rule .r{display:grid;grid-template-columns:minmax(150px,190px) 1fr;gap:10px;align-items:baseline;padding-bottom:8px;border-bottom:1px dashed var(--line)}
+.rule .r:last-child{border-bottom:none}
+.rule .r>span:first-child{font-weight:600;color:var(--cyan)}
+@media (max-width:560px){.rule .r{grid-template-columns:1fr;gap:2px}}
+.amber{background:var(--tape-soft);border:1px solid var(--tape);border-radius:12px;padding:18px 20px;display:grid;gap:12px}
+.mist{display:grid;gap:6px}
+.mist .fix{color:var(--ok);font-weight:600}
+.mist .de{font-size:.8rem;font-weight:700;color:var(--tape);letter-spacing:.06em}
+.gl{line-height:2.3}
+.gl .n{font-weight:600;color:var(--cyan);margin-right:6px;font-variant-numeric:tabular-nums}
+
+/* case board */
+.suspects{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.sus{background:var(--paper2);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:8px;align-content:start}
+.sus .face{font-size:2.4rem;line-height:1}
+.sus b{font-family:var(--type);font-size:1.2rem;font-weight:400}
+.sus small{color:var(--muted)}
+.sus .qs{display:grid;gap:6px}
+.sus .qs button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:5px 10px;font-size:.84rem;text-align:left}
+.sus .qs button.asked{border-color:var(--cyan);color:var(--cyan)}
+.ans{background:var(--paper);border-left:3px solid var(--cyan);border-radius:0 8px 8px 0;padding:8px 10px;font-size:.9rem;font-style:italic}
+.evid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.ev{text-align:left;border-radius:10px;padding:14px;display:grid;gap:6px;align-content:start;background:var(--paper2);color:var(--ink);border:1px dashed var(--muted);min-height:120px}
+.ev .no{font-family:var(--type);font-size:.85rem;letter-spacing:.1em;color:var(--red)}
+.ev .ic{font-size:1.8rem;line-height:1}
+.ev .txt{font-size:.9rem;color:var(--muted)}
+.ev.open{border-style:solid;border-color:var(--red);background:var(--red-soft)}
+.ev.open .txt{color:var(--ink)}
+.accuse{display:flex;flex-wrap:wrap;gap:10px}
+.accuse button{border:2px solid var(--red);background:transparent;color:var(--ink);border-radius:8px;padding:8px 16px;font-weight:600}
+.accuse button:hover{background:var(--red);color:#1A0E0E}
+.verdict{border-radius:12px;padding:16px;display:grid;gap:8px}
+.verdict.win{background:var(--ok-soft);border:2px solid var(--ok)}
+.verdict.lose{background:var(--bad-soft);border:2px solid var(--bad)}
+.verdict b{font-family:var(--type);font-size:1.4rem;font-weight:400}
+textarea{width:100%;min-height:110px;font:inherit;font-size:1rem;line-height:1.6;padding:12px;border-radius:10px;border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);resize:vertical}
+
+/* interrupted */
+.reels{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+@media (max-width:600px){.reels{grid-template-columns:1fr}.reels .join{justify-self:center}}
+.reel{border-radius:12px;padding:18px;text-align:center;font-family:var(--type);font-size:1.3rem;line-height:1.25;min-height:96px;display:grid;place-items:center}
+.reel.a{background:var(--cyan-soft);color:var(--cyan);border:2px solid var(--cyan)}
+.reel.b{background:var(--red-soft);color:var(--red);border:2px solid var(--red)}
+.join{font-family:var(--type);font-size:1.3rem;color:var(--tape)}
+.twist{border-radius:10px;padding:10px 14px;background:var(--violet-soft);color:var(--violet);font-weight:500}
+
+/* alibi */
+.prep{display:grid;gap:10px}
+.prep label{display:grid;gap:4px;font-weight:500}
+.prep input{font:inherit;padding:8px 12px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);width:100%}
+.qbank{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px}
+.qbank button{border:1px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:8px;padding:8px 12px;text-align:left;font-size:.92rem;display:grid;gap:2px}
+.qbank button small{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.qbank button.asked{border-color:var(--ok);color:var(--ok)}
+.counter{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+.counter b{font-family:var(--type);font-size:2.2rem;font-weight:400;color:var(--red);line-height:1;font-variant-numeric:tabular-nums}
+.timer{font-family:var(--type);font-size:2rem;color:var(--tape);line-height:1;font-variant-numeric:tabular-nums}
+.break{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;background:var(--tape-soft);font-weight:600;margin-top:36px}
+.break span{font-size:1.8rem}
+footer{margin-top:48px;color:var(--muted);font-size:.85rem;text-align:center;font-family:var(--type)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<div class="tapeband" aria-hidden="true"><span>TATORT FREIBURG · DO NOT CROSS ·</span><span>TATORT FREIBURG · DO NOT CROSS ·</span><span>TATORT FREIBURG · DO NOT CROSS ·</span><span>TATORT FREIBURG · DO NOT CROSS ·</span></div>
+<header class="hero">
+  <span class="case">CASE 047 · SCHWARZWALD ART MUSEUM · FREIBURG IM BREISGAU</span>
+  <h1>The <em>Blue Cat</em> Mystery</h1>
+</header>
+
+<nav class="stages" aria-label="Lesson stages">
+  <a href="#s1">1 · Detective eyes</a><a href="#s2">2 · Crime words</a><a href="#s3">3 · The story</a><a href="#s4">4 · Grammar</a><a href="#s5">5 · Practice</a><a href="#s6">6 · Solve the case</a><a href="#s7">7 · Interrupted!</a><a href="#s8">8 · Alibi</a><a href="#s9">9 · Case closed</a>
+</nav>
+
+<!-- 1 WARM-UP -->
+<section class="stage" id="s1">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 1 · Warm-up</span><span class="chip">10 min</span><span class="chip game">Game</span></div>
+    <h2>Have you got detective eyes?</h2>
+    <p class="instr">Look at the picture for 20 seconds. Remember everything! Then answer the questions without looking.</p>
+  </div>
+  <div class="panel">
+    <div class="actions"><button class="btn" type="button" id="obsStart">Start · 20 seconds</button><span class="count" id="obsCount">20</span></div>
+    <div class="scene hidden" id="scene"></div>
+    <div class="list" id="obsQ" hidden></div>
+  </div>
+  <div class="panel">
+    <h3>Let's talk</h3>
+    <ul class="talk">
+      <li>In Germany, lots of families watch <b>Tatort</b> on Sunday evening. Do you or your parents watch it? What happens in a typical episode?</li>
+      <li>Which other mystery films, series or games do you know? (<i>Wednesday, Sherlock, Enola Holmes, Among Us, Cluedo…</i>)</li>
+      <li>Freiburg is a city of bikes. Has anyone you know ever lost a bike, or had one stolen? What happened?</li>
+      <li>Would you be a good detective? Why? Why not?</li>
+    </ul>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Play the picture game once, then let her test <i>you</i> with "Show again". Asking you the questions is good practice for her.</li>
+      <li>Listen to how she tells the bike story. German speakers often say <i>"I have lost it last year"</i> (German Perfekt). Note it now and fix it in Stage 4.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 2 VOCAB -->
+<section class="stage" id="s2">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 2 · Vocabulary</span><span class="chip">10 min</span></div>
+    <h2>Crime words</h2>
+    <p class="instr">Read each definition. Click the box, then tap the right word in the bank (or type it). Say the word out loud each time!</p>
+  </div>
+  <div class="panel" id="voc">
+    <div class="bank" id="bank"><span class="lbl">Word bank</span></div>
+    <div class="defs" id="defs"></div>
+    <div class="actions"><button class="btn" type="button" id="vocCheck">Check</button><button class="btn ghost" type="button" id="vocReset">Reset</button><span class="score" id="vocScore"></span></div>
+  </div>
+  <div class="panel">
+    <h3>Quick questions</h3>
+    <ul class="talk">
+      <li>What is a good <b>alibi</b>? Give an example from your week.</li>
+      <li>What's the difference between a <b>witness</b> and a <b>suspect</b>?</li>
+      <li>Where can you find <b>CCTV cameras</b> in Freiburg? (the Hauptbahnhof, trams, shops…)</li>
+      <li>In Tatort, how do the detectives <b>solve</b> the case?</li>
+    </ul>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Drill: <i>suspect</i> (noun: SUS-pect), <i>evidence</i>, <i>guilty</i> /ˈɡɪlti/, <i>alibi</i> /ˈæləbaɪ/ (not like German "Alibi").</li>
+      <li>False friend: <i>Kommissar</i> = detective / inspector, not "commissar".</li>
+      <li>Irregular verbs: <i>steal → stole → stolen</i>, <i>hide → hid → hidden</i>. She'll need these for the past perfect.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 3 STORY -->
+<section class="stage" id="s3">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 3 · Reading</span><span class="chip">15 min</span></div>
+    <h2>The night the painting disappeared</h2>
+    <p class="instr">Read the case file. Then answer the questions.</p>
+  </div>
+  <article class="file hl-off" id="story">
+    <h3>Friday, 9:15 p.m. · Freiburg</h3>
+    <p>It was a cold, rainy Friday night in Freiburg. The Schwarzwald Art Museum, just around the corner from the Münster, was closing, but four people were still inside.</p>
+    <p>In the main hall, Petra, the cleaner, <mark>was mopping</mark> the floor. Max, the night guard, <mark>was sitting</mark> in his little room next to the entrance. Upstairs, Professor Bauer <mark>was working</mark> in his office, and Leo, a young artist, <mark>was taking</mark> photos of the paintings for his Instagram.</p>
+    <p>Outside, it <mark>was raining</mark> heavily and the Bächle in the street were full of water. At 9:15 there was a huge flash of lightning over the Schlossberg, and suddenly all the lights went out. While everyone <mark>was looking</mark> for a torch, somebody screamed. Five minutes later, when the lights came back on, Petra <mark>was pointing</mark> at the wall. Somebody <mark class="pp">had taken</mark> the museum's most famous painting, <i>The Blue Cat</i>!</p>
+    <p>Max called the police. Detective Lena Fischer arrived at ten o'clock. Nobody <mark class="pp">had left</mark> the building, so she knew one thing: the thief was still inside. "Nobody goes home," she said. "I want to know exactly what everyone was doing at 9:15."</p>
+  </article>
+  <div class="panel">
+    <h3>Did you understand?</h3>
+    <div class="list" id="readQ"></div>
+    <div class="actions"><button class="btn ghost" type="button" data-reset="readQ">Reset</button></div>
+  </div>
+  <div class="panel">
+    <h3>Grammar hunt 🔍</h3>
+    <p class="instr">Find <b>7 verbs</b> with <b>was / were + -ing</b> and <b>2 verbs</b> with <b>had + past participle</b> in the story. Then press the button to check.</p>
+    <div class="actions"><button class="btn" type="button" id="hlBtn">Highlight them</button></div>
+    <ul class="talk">
+      <li>Who do you think stole the painting? Why? (Just guess!)</li>
+    </ul>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Read the first paragraph aloud with lots of drama, then she reads the rest.</li>
+      <li>Ask about Freiburg details: "What are the Bächle? Have you ever stepped into one?" (Legend: if you step into a Bächle, you'll marry someone from Freiburg!)</li>
+      <li>Highlights: yellow = past continuous, violet = past perfect. Ask her to guess the thief now and remember the guess for Stage 6.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 4 GRAMMAR -->
+<section class="stage" id="s4">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 4 · Grammar</span><span class="chip">20 min</span></div>
+    <h2>Three past tenses for telling a story</h2>
+    <p class="instr">"Petra <b>was mopping</b> when the lights <b>went out</b>. When the detective <b>arrived</b>, the thief <b>had</b> already <b>hidden</b> the painting."</p>
+  </div>
+  <div class="panel">
+    <svg class="tlsvg" viewBox="0 0 680 200" role="img" aria-label="Timeline of Friday night: it was raining from 9:00, the lights went out at 9:15, the thief had hidden the painting at about 9:20, the detective arrived at 10:00.">
+      <line x1="20" y1="130" x2="650" y2="130" stroke="var(--muted)" stroke-width="2"/>
+      <polygon points="650,124 662,130 650,136" fill="var(--muted)"/>
+      <text x="60" y="160">9:00</text><text x="190" y="160">9:15</text><text x="250" y="160">9:20</text><text x="545" y="160">10:00</text>
+      <rect x="70" y="106" width="520" height="20" rx="10" fill="var(--cyan)" opacity=".8"/>
+      <text x="80" y="98" style="fill:var(--cyan);font-weight:600">it was raining · Petra was mopping (background)</text>
+      <circle cx="205" cy="130" r="9" fill="var(--red)"/>
+      <text x="120" y="190" style="fill:var(--red);font-weight:600">⚡ the lights went out</text>
+      <circle cx="265" cy="130" r="9" fill="var(--violet)"/>
+      <circle cx="560" cy="130" r="11" fill="var(--red)"/>
+      <text x="470" y="190" style="fill:var(--red);font-weight:600">the detective arrived</text>
+      <path d="M555 66 Q 410 18 272 112" fill="none" stroke="var(--violet)" stroke-width="2.5" stroke-dasharray="6 5"/>
+      <polygon points="266,104 274,118 280,104" fill="var(--violet)"/>
+      <text x="300" y="40" style="fill:var(--violet);font-weight:600">had already hidden the painting</text>
+      <text x="300" y="56" style="fill:var(--violet)">(earlier than the arrival)</text>
+    </svg>
+    <div class="legend3">
+      <div class="pc"><b>Past continuous</b>was / were + -ing<br>the background, a long action in progress</div>
+      <div class="ps"><b>Past simple</b>went, arrived, screamed<br>the main events, one after another</div>
+      <div class="pp"><b>Past perfect</b>had + past participle<br>"the past before the past": it happened earlier</div>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Check the meaning</h3>
+    <div class="list" id="ccq"></div>
+    <div class="actions"><button class="btn ghost" type="button" data-reset="ccq">Reset</button></div>
+  </div>
+  <div class="panel" id="ruleCard">
+    <h3>Rule card · complete it</h3>
+    <div class="rule">
+      <div class="r"><span>Past continuous</span><span>I / he / she / it + <input class="gap s" data-ans="was" aria-label="was"> + verb-ing · you / we / they + <input class="gap s" data-ans="were" aria-label="were"> + verb-ing</span></div>
+      <div class="r"><span>Question</span><span><input class="gap s" data-ans="what" aria-label="what"> were you doing at 9:15?</span></div>
+      <div class="r"><span>when / while</span><span>when + past <input class="gap" data-ans="simple" aria-label="when + past"> (short action) · while + past <input class="gap" data-ans="continuous" aria-label="while + past"> (long action)</span></div>
+      <div class="r"><span>Past perfect</span><span><input class="gap s" data-ans="had" aria-label="had"> + past participle (taken, left, hidden) · for ALL persons: I had, she had, they had</span></div>
+      <div class="r"><span>Past perfect negative</span><span>Leo said he <input class="gap" data-ans="hadn't been|had not been" aria-label="hadn't been"> (not / be) downstairs. But he had!</span></div>
+    </div>
+    <div class="actions"><button class="btn" type="button" data-check="ruleCard">Check</button><button class="btn ghost" type="button" data-resetgap="ruleCard">Reset</button><span class="score"></span></div>
+  </div>
+  <div class="amber">
+    <h3>Spot the mistake 🔍</h3>
+    <div class="list" id="mistakes"></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li><b>German trap #1:</b> German uses Perfekt for finished past (<i>Ich habe ihn gestern gesehen</i>). In English, a finished time word (yesterday, last week, at 9:15) means <b>past simple</b>: <i>I saw him yesterday.</i></li>
+      <li><b>German trap #2:</b> German has no continuous form, so she may say <i>"At 9:15 I watched TV"</i> for an action in progress. Push for <i>was watching</i>.</li>
+      <li>German <i>als</i> = when (past single event), <i>während</i> = while. This helps a lot with when/while.</li>
+      <li>Past perfect: only use it when the order of events matters. Don't let her overuse it.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 5 PRACTICE -->
+<section class="stage" id="s5">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 5 · Practice</span><span class="chip">25 min</span></div>
+    <h2>Detective training</h2>
+  </div>
+  <div class="panel" id="exA">
+    <h3>A · The next morning: put the verbs in the correct form</h3>
+    <div class="gl"><span class="n">1</span>While Detective Fischer <input class="gap l" data-ans="was riding" aria-label="A1a"> (ride) her bike to the museum, her phone <input class="gap" data-ans="rang" aria-label="A1b"> (ring).</div>
+    <div class="gl"><span class="n">2</span>When she <input class="gap" data-ans="arrived" aria-label="A2a"> (arrive), it <input class="gap l" data-ans="was still raining" aria-label="A2b"> (still / rain).</div>
+    <div class="gl"><span class="n">3</span>Max <input class="gap l" data-ans="was drinking" aria-label="A3a"> (drink) coffee when she <input class="gap" data-ans="knocked" aria-label="A3b"> (knock) on the door.</div>
+    <div class="gl"><span class="n">4</span>When she got to the main hall, Petra <input class="gap s" data-ans="had" aria-label="A4a"> already <input class="gap" data-ans="cleaned" aria-label="A4b"> (clean) the floor. All the footprints were gone!</div>
+    <div class="gl"><span class="n">5</span>Leo <input class="gap l" data-ans="wasn't smiling|was not smiling" aria-label="A5"> (not / smile). He looked nervous.</div>
+    <div class="gl"><span class="n">6</span>"What <input class="gap s" data-ans="were" aria-label="A6a"> you <input class="gap" data-ans="doing" aria-label="A6b"> (do) at 9:15 last night?" she asked.</div>
+    <div class="gl"><span class="n">7</span>She realised that somebody <input class="gap l" data-ans="had opened" aria-label="A7"> (open) the back door before the storm.</div>
+    <div class="gl"><span class="n">8</span>The thief <input class="gap" data-ans="stole" aria-label="A8a"> (steal) the painting while the lights <input class="gap s" data-ans="were" aria-label="A8b"> out.</div>
+    <div class="actions"><button class="btn" type="button" data-check="exA">Check</button><button class="btn ghost" type="button" data-resetgap="exA">Reset</button><span class="score"></span></div>
+  </div>
+  <div class="panel">
+    <h3>B · when, while or had?</h3>
+    <div class="list" id="exB"></div>
+    <div class="actions"><button class="btn ghost" type="button" data-reset="exB">Reset</button></div>
+  </div>
+  <div class="panel" id="exC">
+    <h3>C · Join the sentences</h3>
+    <p class="instr">Use the word in brackets. Write one sentence.</p>
+    <div class="gl"><span class="n">1</span><i>I was cycling along the Dreisam. I saw a fox. (when)</i><br><input class="gap full" data-ans="i was cycling along the dreisam when i saw a fox" aria-label="C1"></div>
+    <div class="gl"><span class="n">2</span><i>They were waiting for the tram. It started to snow. (while)</i><br><input class="gap full" data-ans="while they were waiting for the tram it started to snow|it started to snow while they were waiting for the tram" aria-label="C2"></div>
+    <div class="gl"><span class="n">3</span><i>She was taking a selfie on the Schlossberg. She dropped her phone. (when)</i><br><input class="gap full" data-ans="she was taking a selfie on the schlossberg when she dropped her phone" aria-label="C3"></div>
+    <div class="gl"><span class="n">4</span><i>The film started. Then we arrived at the cinema. (already)</i><br><input class="gap full" data-ans="when we arrived at the cinema the film had already started|the film had already started when we arrived at the cinema" aria-label="C4"></div>
+    <div class="actions"><button class="btn" type="button" data-check="exC">Check</button><button class="btn ghost" type="button" data-resetgap="exC">Reset</button><span class="score"></span></div>
+  </div>
+  <div class="panel" id="exD">
+    <h3>D · Tense mix: the newspaper article</h3>
+    <p class="instr">All our tenses together! Read the clues (now, yesterday, tomorrow, never…) and write the correct form.</p>
+    <article class="file" style="max-width:none">
+      <span class="paper-head">Freiburg Daily News · Saturday</span>
+      <h3>Blue Cat found in bike trailer!</h3>
+      <div class="gl">Freiburg police <input class="gap l" data-ans="have found|'ve found" aria-label="D1"> (find) the famous painting <i>The Blue Cat</i>! Detective Lena Fischer <input class="gap" data-ans="arrested" aria-label="D2"> (arrest) the thief late last night.
+      "When we <input class="gap" data-ans="arrived" aria-label="D3"> (arrive) at the museum, the thief <input class="gap l" data-ans="had already hidden" aria-label="D4"> (already / hide) the painting in his bike trailer," she said. "And while we <input class="gap l" data-ans="were talking" aria-label="D5"> (talk) to the suspects, the rain <input class="gap" data-ans="stopped" aria-label="D6"> (stop)."
+      The museum usually <input class="gap" data-ans="opens" aria-label="D7"> (open) at 10 a.m. Tomorrow, <i>The Blue Cat</i> <input class="gap" data-ans="will be|'ll be" aria-label="D8"> (be) back on the wall, and next Saturday the museum <input class="gap l" data-ans="is going to have|'s going to have" aria-label="D9"> (have) a big party. The plans are ready!
+      Max, the night guard, says: "I <input class="gap l" data-ans="have never been|'ve never been" aria-label="D10"> (never / be) so tired in my life. Right now I <input class="gap l" data-ans="am drinking|'m drinking" aria-label="D11"> (drink) my fifth coffee!"</div>
+    </article>
+    <div class="actions"><button class="btn" type="button" data-check="exD">Check</button><button class="btn ghost" type="button" data-resetgap="exD">Reset</button><span class="score"></span></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>A: after checking, she reads the whole text aloud. Listen for weak <i>was</i> /wəz/ and <i>had</i> → <i>'d</i>.</li>
+      <li>D: for each gap ask "Which word told you?" (found → news/now result; last night → past simple; tomorrow → will; plans are ready → going to; never → present perfect).</li>
+      <li>D1 is a nice German contrast: news + no finished time → present perfect is correct here!</li>
+    </ul>
+  </details>
+</section>
+
+<div class="break"><span>☕</span>5-minute break: Black Forest cake time? Next, you are the detective!</div>
+
+<!-- 6 SOLVE -->
+<section class="stage" id="s6">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 6 · Solve the case</span><span class="chip">25 min</span><span class="chip game">Game</span></div>
+    <h2>Who stole <i>The Blue Cat</i>?</h2>
+    <p class="instr">You are Detective Fischer's assistant. <b>1.</b> Interview the four suspects: ask the questions out loud, and your teacher answers. <b>2.</b> Open the evidence. <b>3.</b> Write your notes. <b>4.</b> Accuse the thief and explain why!</p>
+  </div>
+  <div class="panel">
+    <h3>Step 1 · Interview the suspects</h3>
+    <div class="suspects" id="suspects"></div>
+  </div>
+  <div class="panel">
+    <h3>Step 2 · Evidence board</h3>
+    <p class="instr">Click a card to open it. Read it aloud.</p>
+    <div class="evid" id="evid"></div>
+  </div>
+  <div class="panel">
+    <h3>Step 3 · Detective's notebook</h3>
+    <textarea id="notes" placeholder="Leo said he had been upstairs all evening, but … / Max was lying because … / The footprints were …" aria-label="Detective's notebook"></textarea>
+  </div>
+  <div class="panel">
+    <h3>Step 4 · Who did it?</h3>
+    <p class="instr">Before you click, explain your answer out loud: <i>"I think ___ is the thief. He/She said he/she was ___ at 9:15, but ___. And when the police arrived, he/she had already ___."</i></p>
+    <div class="accuse" id="accuse"></div>
+    <div id="verdict" aria-live="polite"></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes · spoiler!</summary>
+    <ul>
+      <li><b>Solution:</b> Leo. He says he was upstairs all evening, but his Instagram selfie at 9:10 is in the main hall downstairs. His trainers are wet and size 42 like the footprints, his "Bächle" excuse doesn't work (12 hours ago!), the paintbrush says L.M., and his bike trailer is in the courtyard.</li>
+      <li>Red herring: Max lies about the SC Freiburg match because he was sleeping. If she accuses Max, push her to find the stronger evidence.</li>
+      <li>Read the suspects' answers in character with different voices. She must ask each question herself, out loud, before clicking.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 7 INTERRUPTED -->
+<section class="stage" id="s7">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 7 · Speaking game</span><span class="chip">10 min</span><span class="chip game">Story chain</span></div>
+    <h2>Interrupted!</h2>
+    <p class="instr">Spin to get a long action, an interruption and a twist. Say the full sentence, then continue the story with 3 more sentences. Use the tense in the twist!</p>
+  </div>
+  <div class="panel">
+    <div class="reels">
+      <div class="reel a" id="reelA">I was…</div>
+      <span class="join">when</span>
+      <div class="reel b" id="reelB">…</div>
+    </div>
+    <div class="twist" id="twist">Twist: press Spin!</div>
+    <div class="actions"><button class="btn red" type="button" id="spinBtn">Spin!</button><span class="score">Stories: <span id="spinN">0</span></span></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Model one first: <i>"I was eating a Lange Rote at the Münstermarkt when a cuckoo clock started to shout my name. I had never heard a talking clock before…"</i></li>
+      <li>Take turns. You add the next twist to her story, and she adds one to yours.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 8 ALIBI -->
+<section class="stage" id="s8">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 8 · Role-play</span><span class="chip">20 min</span></div>
+    <h2>The alibi game</h2>
+    <p class="instr">Last Saturday, between 7 and 9 p.m., somebody ate the whole <b>Schwarzwälder Kirschtorte</b> (Black Forest cake) at your class party. Everybody is a suspect! 🍒</p>
+  </div>
+  <div class="panel">
+    <h3>Round 1 · You are the suspect</h3>
+    <p class="instr">Prepare your alibi (5 min). Make notes, then your teacher interrogates you. Remember your details! If you change your story, your teacher gets a point.</p>
+    <div class="prep">
+      <label for="al1">Where were you between 7 and 9 p.m.? (in town, at home, at the Europa-Park Stadion…)<input id="al1" type="text"></label>
+      <label for="al2">Who were you with?<input id="al2" type="text"></label>
+      <label for="al3">How did you get there? (bike, tram, on foot…)<input id="al3" type="text"></label>
+      <label for="al4">What were you wearing?<input id="al4" type="text"></label>
+      <label for="al5">What was the weather like? Was it raining?<input id="al5" type="text"></label>
+      <label for="al6">What were you doing at 8 o'clock exactly?<input id="al6" type="text"></label>
+      <label for="al7">What had you eaten before you went out?<input id="al7" type="text"></label>
+      <label for="al8">What happened while you were there? (something surprising)<input id="al8" type="text"></label>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Round 2 · You are the detective</h3>
+    <p class="instr">Now your teacher is the suspect. Use the questions (in different tenses!) to interrogate them. Your teacher will change their story <b>twice</b>. Can you catch them?</p>
+    <div class="qbank" id="qbank"></div>
+    <div class="counter"><span>Contradictions found:</span><b id="cnt">0</b><button class="btn red" type="button" id="cntBtn">Caught you! +1</button><button class="btn ghost" type="button" id="cntReset">Reset</button></div>
+    <div class="actions"><button class="btn" type="button" id="intBtn">Start interrogation 3:00</button><span class="timer" id="intTimer">3:00</span></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Round 1: ask in random order and come back to details ("So, which tram did you take again?").</li>
+      <li>Round 2: plant 2 contradictions (e.g. "I went by bike" → later "I was reading on the tram"). She must say <i>"But you said you were…!"</i></li>
+      <li>The question bank labels each tense, so make sure she uses at least 5 different ones.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 9 WRAP -->
+<section class="stage" id="s9">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 9 · Wrap-up</span><span class="chip">10 min</span></div>
+    <h2>Case closed</h2>
+    <p class="instr">Final test for new detectives.</p>
+  </div>
+  <div class="panel">
+    <div class="list" id="exitQ"></div>
+    <div class="actions"><button class="btn ghost" type="button" data-reset="exitQ">Reset</button></div>
+  </div>
+  <div class="panel">
+    <h3>Last questions</h3>
+    <ul class="talk">
+      <li>Tell me the story of the Blue Cat in 1 minute. Use <b>when</b>, <b>while</b> and <b>had already</b>!</li>
+      <li>What were you doing yesterday at 6 p.m.? What had you done before school this morning?</li>
+      <li>Where is the best place to hide something in Freiburg? Why?</li>
+    </ul>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Delayed correction: show 3 errors from the role-plays (especially Perfekt-style errors) and let her fix them.</li>
+      <li>Homework idea: write a Freiburg Daily News article about a different crime in Freiburg (80–100 words) using past simple, past continuous and past perfect.</li>
+    </ul>
+  </details>
+</section>
+
+<footer>The Blue Cat Mystery · Freiburg edition · Narrative tenses + tense review · 150 min</footer>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const norm = s => s.toLowerCase().replace(/[’‘`]/g, "'").replace(/[?.!,]/g, "").replace(/\s+/g, " ").trim();
+  const fmt = n => Math.floor(n / 60) + ":" + String(n % 60).padStart(2, "0");
+
+  // ---------- MC builder ----------
+  const MC = {};
+  function buildMC(id) {
+    const items = MC[id], box = $(id); box.innerHTML = "";
+    items.forEach((it, i) => {
+      const q = document.createElement("div"); q.className = "q";
+      q.innerHTML = `<span>${i + 1}. ${it[0]}</span><div class="opts"></div><span class="fb"></span>`;
+      const o = q.querySelector(".opts"), fb = q.querySelector(".fb");
+      it[1].forEach((t, j) => {
+        const b = document.createElement("button"); b.type = "button"; b.textContent = t;
+        b.addEventListener("click", () => {
+          if (q.dataset.done) return;
+          if (j === it[2]) { b.classList.add("right"); q.dataset.done = 1; fb.textContent = it[3] ? "✓ " + it[3] : "✓ Correct!"; }
+          else { b.classList.add("wrong"); fb.textContent = "Try again!"; }
+        });
+        o.appendChild(b);
+      });
+      box.appendChild(q);
+    });
+  }
+  document.querySelectorAll("[data-reset]").forEach(b => b.addEventListener("click", () => buildMC(b.dataset.reset)));
+
+  // ---------- gap check ----------
+  function checkSec(sec) {
+    let ok = 0, n = 0;
+    sec.querySelectorAll(".key").forEach(k => k.remove());
+    sec.querySelectorAll("input.gap").forEach(inp => {
+      n++;
+      const good = inp.dataset.ans.split("|").map(norm).includes(norm(inp.value));
+      inp.classList.toggle("right", good); inp.classList.toggle("wrong", !good);
+      if (good) ok++;
+      else { const k = document.createElement("span"); k.className = "key"; k.textContent = "→ " + inp.dataset.ans.split("|")[0]; if (inp.classList.contains("full")) k.style.display = "block"; inp.after(k); }
+    });
+    const sc = sec.querySelector(".score"); if (sc) sc.textContent = ok + " / " + n + (ok === n ? " 🎉" : "");
+  }
+  function resetSec(sec) {
+    sec.querySelectorAll("input.gap").forEach(i => { i.value = ""; i.classList.remove("right", "wrong"); });
+    sec.querySelectorAll(".key").forEach(k => k.remove());
+    const sc = sec.querySelector(".score"); if (sc) sc.textContent = "";
+  }
+  document.querySelectorAll("[data-check]").forEach(b => b.addEventListener("click", () => checkSec($(b.dataset.check))));
+  document.querySelectorAll("[data-resetgap]").forEach(b => b.addEventListener("click", () => resetSec($(b.dataset.resetgap))));
+
+  // ---------- 1 observation ----------
+  const SCENE = ["🚲", "☂️", "🔑", "🕰️", "📱", "🚲", "🎨", "🥨", "👟", "🍰", "🚲", "🔦"];
+  const sc = $("scene");
+  SCENE.forEach(e => { const d = document.createElement("div"); d.textContent = e; sc.appendChild(d); });
+  MC.obsQ = [
+    ["How many bikes were there?", ["2", "3", "4"], 1],
+    ["Was there an umbrella?", ["Yes, there was.", "No, there wasn't."], 0],
+    ["What was in the bottom left corner?", ["a torch", "a cake", "a trainer"], 2],
+    ["Which thing was NOT in the picture?", ["a key", "glasses", "a cuckoo clock"], 1],
+    ["What was next to the paint palette, on the right?", ["a pretzel", "a phone", "a key"], 0]
+  ];
+  let obsIv = null;
+  $("obsStart").addEventListener("click", () => {
+    clearInterval(obsIv);
+    let t = 20; $("obsCount").textContent = t;
+    sc.classList.remove("hidden"); $("obsQ").hidden = true; $("obsStart").textContent = "Show again · 20 seconds";
+    obsIv = setInterval(() => {
+      t--; $("obsCount").textContent = t;
+      if (t <= 0) { clearInterval(obsIv); sc.classList.add("hidden"); buildMC("obsQ"); $("obsQ").hidden = false; $("obsCount").textContent = "?"; }
+    }, 1000);
+  });
+
+  // ---------- 2 vocab ----------
+  const VOC = [
+    ["detective", "a person whose job is to find out who did a crime"],
+    ["suspect", "a person who maybe did the crime"],
+    ["witness", "a person who saw the crime happen"],
+    ["thief", "a person who steals things"],
+    ["clue", "a small thing that helps you find the answer to a mystery"],
+    ["evidence", "things (photos, fingerprints…) that show what really happened"],
+    ["alibi", "proof that you were in a different place when the crime happened"],
+    ["footprint", "the mark your shoe or foot leaves on the floor"],
+    ["fingerprint", "the mark your finger leaves on glass or a door"],
+    ["CCTV", "a camera that films a shop, street or building all the time"],
+    ["guilty", "the person really did the crime"],
+    ["innocent", "the person did NOT do the crime"],
+    ["steal", "to take something that isn't yours (past: stole, stolen)"],
+    ["hide", "to put something where nobody can see it (past: hid, hidden)"],
+    ["solve", "to find the answer to a problem or a mystery"]
+  ];
+  const defs = $("defs");
+  VOC.forEach((v, i) => {
+    const d = document.createElement("div"); d.className = "def";
+    d.innerHTML = `<span class="n">${i + 1}</span><span>${v[1]}</span><input class="gap" id="vd${i}" aria-label="Word for definition ${i + 1}">`;
+    defs.appendChild(d);
+  });
+  let lastInp = $("vd0");
+  VOC.forEach((_, i) => $("vd" + i).addEventListener("focus", e => { lastInp = e.target; }));
+  shuffle(VOC.map(v => v[0])).forEach(w => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = w; b.dataset.word = w;
+    b.addEventListener("click", () => {
+      lastInp.value = w; lastInp.classList.remove("right", "wrong");
+      const k = lastInp.parentNode.querySelector(".key"); if (k) k.remove();
+      const idx = +lastInp.id.slice(2);
+      const next = VOC.findIndex((_, j) => j > idx && !$("vd" + j).value.trim());
+      if (next !== -1) { lastInp = $("vd" + next); lastInp.focus(); }
+    });
+    $("bank").appendChild(b);
+  });
+  $("vocCheck").addEventListener("click", () => {
+    let ok = 0;
+    document.querySelectorAll("#bank button").forEach(b => b.classList.remove("used"));
+    document.querySelectorAll("#defs .key").forEach(k => k.remove());
+    VOC.forEach((v, i) => {
+      const inp = $("vd" + i), good = norm(inp.value) === norm(v[0]);
+      inp.classList.toggle("right", good); inp.classList.toggle("wrong", !good);
+      if (good) { ok++; const bb = document.querySelector(`#bank button[data-word="${v[0]}"]`); if (bb) bb.classList.add("used"); }
+      else { const k = document.createElement("span"); k.className = "key"; k.textContent = "→ " + v[0]; inp.after(k); }
+    });
+    $("vocScore").textContent = ok + " / " + VOC.length + (ok === VOC.length ? " 🎉" : "");
+  });
+  $("vocReset").addEventListener("click", () => {
+    VOC.forEach((_, i) => { const inp = $("vd" + i); inp.value = ""; inp.classList.remove("right", "wrong"); });
+    document.querySelectorAll("#defs .key").forEach(k => k.remove());
+    document.querySelectorAll("#bank button").forEach(b => b.classList.remove("used"));
+    lastInp = $("vd0"); $("vocScore").textContent = "";
+  });
+
+  // ---------- 3 reading ----------
+  MC.readQ = [
+    ["Where is the museum?", ["next to the Hauptbahnhof", "near the Münster in Freiburg", "on the Feldberg"], 1],
+    ["What was Petra doing at nine o'clock?", ["She was mopping the floor.", "She was taking photos.", "She was sleeping."], 0],
+    ["Why did the lights go out?", ["Somebody switched them off.", "There was a flash of lightning.", "Max was playing with them."], 1],
+    ["What happened while everyone was looking for a torch?", ["Somebody screamed.", "The police arrived.", "Max called his mum."], 0],
+    ["What had happened when the lights came back on?", ["Somebody had taken the painting.", "Somebody had cleaned the floor.", "The police had arrived."], 0],
+    ["Why did the detective think the thief was still inside?", ["Because of the CCTV.", "Because nobody had left the building.", "Because Petra told her."], 1]
+  ];
+  buildMC("readQ");
+  $("hlBtn").addEventListener("click", () => {
+    const f = $("story"); f.classList.toggle("hl-off");
+    $("hlBtn").textContent = f.classList.contains("hl-off") ? "Highlight them" : "Hide highlights";
+  });
+
+  // ---------- 4 grammar ----------
+  MC.ccq = [
+    ["\"Petra was mopping when the lights went out.\" What started first?", ["Petra was mopping.", "The lights went out."], 0, "The mopping was already in progress: past continuous."],
+    ["Which action was short and sudden?", ["was mopping", "went out"], 1, "Past simple = the short, sudden action."],
+    ["\"When the police arrived, the thief had left.\" Was the thief there when the police came?", ["Yes", "No, he left before."], 1, "had left = before the police arrived."],
+    ["\"When the police arrived, the thief left.\" What happened?", ["He left before they arrived.", "He saw the police and THEN left."], 1, "Two past simple verbs = one after the other."],
+    ["\"I saw the thief yesterday.\" Can we say \"I have seen the thief yesterday\"?", ["Yes, both are OK.", "No! yesterday = finished time → past simple."], 1, "In German it's OK (Ich habe … gesehen), in English it's not!"]
+  ];
+  buildMC("ccq");
+  const MIST = [
+    ["While I walked home, it started to rain.", "While I was walking home, it started to rain.", ""],
+    ["They was playing football when I arrived.", "They were playing football when I arrived.", ""],
+    ["I have seen the thief yesterday.", "I saw the thief yesterday.", "GERMAN TRAP"],
+    ["At 9:15 I watched TV, so I didn't hear anything.", "At 9:15 I was watching TV, so I didn't hear anything.", "GERMAN TRAP"],
+    ["When I arrived at the cinema, the film already started.", "When I arrived at the cinema, the film had already started.", ""],
+    ["What did you doing at 8 o'clock?", "What were you doing at 8 o'clock?", ""]
+  ];
+  MIST.forEach(([w, f, tag], i) => {
+    const d = document.createElement("div"); d.className = "mist";
+    d.innerHTML = `${tag ? `<span class="de">🇩🇪 ${tag}</span>` : ""}<span>${i + 1}. ✗ ${w}</span><span class="fix" hidden>✓ ${f}</span><button type="button" class="small-btn">Show correction</button>`;
+    const b = d.querySelector("button"), fx = d.querySelector(".fix");
+    b.addEventListener("click", () => { fx.hidden = !fx.hidden; b.textContent = fx.hidden ? "Show correction" : "Hide correction"; });
+    $("mistakes").appendChild(d);
+  });
+
+  // ---------- 5 practice ----------
+  MC.exB = [
+    ["I was having a shower ___ the doorbell rang.", ["when", "while"], 0],
+    ["___ we were waiting for the tram at Bertoldsbrunnen, we saw our teacher.", ["When", "While"], 1],
+    ["She hurt her leg ___ she was skiing on the Feldberg.", ["when", "while"], 1],
+    ["When we got to Europa-Park, the rollercoaster ___ already closed.", ["was", "had", "has"], 1, "had + past participle: it closed before we arrived."],
+    ["___ I opened my backpack, a squirrel jumped out!", ["When", "While"], 0],
+    ["I couldn't pay at the Münstermarkt because I ___ my wallet at home.", ["left", "had left", "was leaving"], 1, "He left it at home earlier → past perfect."],
+    ["My brother was sleeping ___ I was doing my homework.", ["when", "while"], 1, "Two long actions at the same time → while."]
+  ];
+  buildMC("exB");
+
+  // ---------- 6 case ----------
+  const SUS = [
+    ["🧹", "Petra", "the cleaner", [
+      ["What were you doing at 9:15?", "\"I was mopping the floor in the main hall, near The Blue Cat.\""],
+      ["What happened when the lights went out?", "\"I was looking for my phone torch when somebody ran past me. Then I screamed. Yes, that was me!\""],
+      ["Had you noticed anything strange before?", "\"No. But when the lights came back on, somebody had walked on my clean floor with wet shoes. Big footprints! I wear small boots.\""],
+      ["What are you going to do now?", "\"I'm going to clean that floor again. AGAIN!\""]
+    ]],
+    ["💂", "Max", "the night guard", [
+      ["What were you doing at 9:15?", "\"I was sitting in my room. I was watching the SC Freiburg match on my phone.\""],
+      ["What happened when the lights went out?", "\"I was looking for my big torch. I found it after two minutes and ran to the hall.\""],
+      ["Had you noticed anything strange before?", "\"No. Nothing. I hadn't seen anything strange all evening. Really.\""],
+      ["What are you going to do now?", "\"I'm going to drink a very strong coffee.\""]
+    ]],
+    ["👨‍🏫", "Prof. Bauer", "the museum expert", [
+      ["What were you doing at 9:15?", "\"I was working in my office upstairs. I was writing an important email to the museum director.\""],
+      ["What happened when the lights went out?", "\"I stayed in my office. I was waiting for the lights to come back on.\""],
+      ["Had you noticed anything strange before?", "\"Yes! Just before the lights went out, I had heard somebody running down the stairs. At about 9:10.\""],
+      ["What are you going to do now?", "\"I'm going to call the director. I think she will be very angry.\""]
+    ]],
+    ["📸", "Leo", "the young artist", [
+      ["What were you doing at 9:15?", "\"I was taking photos of the paintings upstairs. I was upstairs all evening, I promise!\""],
+      ["What happened when the lights went out?", "\"I was standing next to a painting upstairs. I didn't move at all.\""],
+      ["Had you noticed anything strange before?", "\"No… I hadn't seen anything. It was dark!\""],
+      ["What are you going to do now?", "\"I'm going to ride my bike home. It's in the courtyard, with my bike trailer. Can I go now? Please?\""]
+    ]]
+  ];
+  SUS.forEach(s => {
+    const d = document.createElement("div"); d.className = "sus";
+    d.innerHTML = `<span class="face" aria-hidden="true">${s[0]}</span><b>${s[1]}</b><small>${s[2]}</small><div class="qs"></div>`;
+    const qs = d.querySelector(".qs");
+    s[3].forEach(([q, a]) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = "❓ " + q;
+      const ans = document.createElement("div"); ans.className = "ans"; ans.textContent = a; ans.hidden = true;
+      b.addEventListener("click", () => { ans.hidden = !ans.hidden; b.classList.add("asked"); });
+      qs.append(b, ans);
+    });
+    $("suspects").appendChild(d);
+  });
+  const EV = [
+    ["👣", "Wet footprints", "Big wet footprints from a trainer, <b>size 42</b>. It had started raining at 9:00, so this person had been <b>outside</b> after 9:00."],
+    ["🖌️", "A paintbrush", "A small paintbrush on the floor under the empty wall. Somebody wrote two letters on it: <b>L.M.</b>"],
+    ["📱", "Leo's Instagram", "Last post: <b>9:10 p.m.</b> A selfie with <i>The Blue Cat</i>, in the <b>main hall downstairs</b>. Caption: \"My favourite painting 😍 see you soon…\""],
+    ["⚽", "Max's phone", "SC Freiburg played on <b>Saturday</b>, not Friday! Max says: \"OK, OK… I was <b>sleeping</b> in my chair when the lights went out. Please don't tell my boss!\""],
+    ["💻", "The professor's computer", "Email to the director sent at <b>9:16 p.m.</b> from the computer in his office <b>upstairs</b>."],
+    ["👟", "Everyone's shoes", "Petra: rubber boots, size 37, dry. Max: black shoes, size 45, dry. Prof. Bauer: slippers, dry. Leo: white trainers, <b>size 42, WET!</b> Leo says: \"I stepped into a Bächle this morning!\" But that was 12 hours ago…"],
+    ["🚲", "The courtyard", "A cargo bike with a <b>trailer</b>. The rain cover is wet, so somebody had opened it after 9:00. The trailer is <b>locked</b>. Whose bike is it?"]
+  ];
+  EV.forEach((e, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "ev";
+    b.innerHTML = `<span class="no">EVIDENCE #${i + 1}</span><span class="ic" aria-hidden="true">${e[0]}</span><b>${e[1]}</b><span class="txt">Click to open</span>`;
+    b.addEventListener("click", () => { b.classList.add("open"); b.querySelector(".txt").innerHTML = e[2]; });
+    $("evid").appendChild(b);
+  });
+  const VERD = {
+    Petra: ["lose", "Not Petra!", "Her boots are small (size 37) and dry. The footprints were size 42. Look at the evidence again."],
+    Max: ["lose", "Max lied, but he isn't the thief!", "He lied because he was sleeping when the lights went out. His shoes are size 45 and dry. Who else lied?"],
+    "Prof. Bauer": ["lose", "Not the professor!", "He was sending an email from his office upstairs at 9:16. He couldn't be in the main hall. Try again!"],
+    Leo: ["win", "Case solved! 🎉 It was Leo!", "Leo said he had been upstairs all evening, but at 9:10 he was taking a selfie with The Blue Cat downstairs. While the lights were out, he took the painting and ran outside to hide it in his bike trailer. That's why his trainers were wet, not because of a Bächle! When he came back in, he had dropped his paintbrush (L.M. = Leo Maier). Max wasn't the thief. He was just sleeping!"]
+  };
+  Object.keys(VERD).forEach(n => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = "Accuse " + n;
+    b.addEventListener("click", () => {
+      const v = VERD[n];
+      $("verdict").innerHTML = `<div class="verdict ${v[0]}"><b>${v[1]}</b><p>${v[2]}</p></div>`;
+    });
+    $("accuse").appendChild(b);
+  });
+
+  // ---------- 7 interrupted ----------
+  const RA = ["I was riding my bike along the Dreisam", "I was eating a Lange Rote at the Münstermarkt", "I was taking the tram to school", "I was walking up the Schlossberg", "I was watching SC Freiburg at the stadium", "I was skiing on the Feldberg", "I was riding a rollercoaster at Europa-Park", "I was eating Black Forest cake at my grandma's", "I was doing my homework", "I was having a shower", "My friends and I were having a picnic in the Seepark", "I was taking a selfie in front of the Münster", "I was sleeping", "I was singing in my room"];
+  const RB = ["the lights went out", "a cuckoo clock started to shout my name", "I stepped into a Bächle", "a deer ran across the street", "my phone rang", "someone knocked on the door", "it started to snow", "a famous footballer walked in", "my dog started to talk", "I saw a ghost in the old town", "a message arrived from an unknown number", "my teacher appeared", "I found a secret door", "a bird stole my pretzel"];
+  const TW = ["Next sentence: use the PAST PERFECT (… had already …)", "Next sentence: use WHILE + past continuous", "Next sentence: what happened next? PAST SIMPLE ×3", "End with: \"I have never…\" (present perfect)", "End with a plan: \"Tomorrow I'm going to…\"", "End with a prediction: \"I think … will …\""];
+  let spinning = false, stories = 0;
+  $("spinBtn").addEventListener("click", () => {
+    if (spinning) return; spinning = true;
+    let k = 0;
+    const iv = setInterval(() => {
+      $("reelA").textContent = RA[Math.floor(Math.random() * RA.length)] + "…";
+      $("reelB").textContent = "…" + RB[Math.floor(Math.random() * RB.length)];
+      $("twist").textContent = "Twist: " + TW[Math.floor(Math.random() * TW.length)];
+      if (++k >= 14) { clearInterval(iv); spinning = false; stories++; $("spinN").textContent = stories; }
+    }, 80);
+  });
+
+  // ---------- 8 alibi ----------
+  const QB = [
+    ["past continuous", "What were you doing between 7 and 9 p.m.?"],
+    ["past simple", "Who did you go with? How did you get there?"],
+    ["past continuous", "What were you wearing?"],
+    ["past simple", "What was the weather like? Did it rain?"],
+    ["past perfect", "What had you eaten before you went out?"],
+    ["past continuous", "What was playing on the radio or TV while you were there?"],
+    ["present simple", "Do you usually go there on Saturdays?"],
+    ["present perfect", "Have you ever eaten a whole cake alone? 🍒"],
+    ["present continuous", "Why are you smiling right now?"],
+    ["present perfect", "Have you washed your jacket since Saturday?"],
+    ["going to", "What are you going to tell your class?"],
+    ["will", "Will you pay for a new Black Forest cake?"]
+  ];
+  QB.forEach(([t, q]) => {
+    const b = document.createElement("button"); b.type = "button";
+    b.innerHTML = `<small>${t}</small><span>${q}</span>`;
+    b.addEventListener("click", () => b.classList.toggle("asked"));
+    $("qbank").appendChild(b);
+  });
+  let cnt = 0;
+  $("cntBtn").addEventListener("click", () => { cnt++; $("cnt").textContent = cnt; });
+  $("cntReset").addEventListener("click", () => { cnt = 0; $("cnt").textContent = 0; document.querySelectorAll("#qbank button").forEach(b => b.classList.remove("asked")); });
+  let iIv = null, iLeft = 180;
+  $("intBtn").addEventListener("click", () => {
+    const t = $("intTimer");
+    if (iIv) { clearInterval(iIv); iIv = null; iLeft = 180; t.textContent = "3:00"; $("intBtn").textContent = "Start interrogation 3:00"; return; }
+    $("intBtn").textContent = "Stop";
+    iIv = setInterval(() => { iLeft--; t.textContent = fmt(iLeft); if (iLeft <= 0) { clearInterval(iIv); iIv = null; iLeft = 180; t.textContent = "Time!"; $("intBtn").textContent = "Start interrogation 3:00"; } }, 1000);
+  });
+
+  // ---------- 9 exit ----------
+  MC.exitQ = [
+    ["I ___ TV when the phone rang.", ["watched", "was watching", "have watched"], 1],
+    ["While they ___ in the Black Forest, it started to snow.", ["were hiking", "hiked", "had hiked"], 0],
+    ["When the police arrived, the thief ___.", ["already left", "had already left", "was already leaving"], 1],
+    ["I ___ the thief yesterday.", ["have seen", "saw", "had seen"], 1, "yesterday = finished time → past simple (not German Perfekt!)"],
+    ["I ___ never ___ to Europa-Park.", ["have … been", "was … being", "did … go"], 0],
+    ["Look at those clouds over the Schlossberg! It ___ rain.", ["is going to", "was", "had"], 0],
+    ["A person who saw the crime is a ___.", ["suspect", "witness", "thief"], 1],
+    ["\"I was at the Münstermarkt with Lena at 8 p.m.\" This is my ___.", ["clue", "evidence", "alibi"], 2]
+  ];
+  buildMC("exitQ");
+})();
+</script>
+
+</body>
+</html>
