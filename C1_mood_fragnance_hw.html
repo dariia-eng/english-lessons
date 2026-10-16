@@ -1,0 +1,316 @@
+<title>Scent &amp; Mood Homework</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,600&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: matches the lesson — one calm column, sticky name bar with progress, one card per exercise */
+:root{
+  --bg:#eef0e8; --surface:#f9faf5; --ink:#24302a; --muted:#5b685f;
+  --sage:#5f8263; --sage-soft:#dfe7da; --lav:#7c67ad; --lav-soft:#e9e3f4;
+  --ok:#2e7a4e; --ok-soft:#dcefe2; --bad:#b3463e; --bad-soft:#f6dfdc;
+  --line:#cfd8ca;
+  --display:"Fraunces", Georgia, "Times New Roman", serif;
+  --body:"Figtree", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#141a16; --surface:#1d2520; --ink:#e5ebe3; --muted:#a2afa5;
+  --sage:#9dbf9f; --sage-soft:#273429; --lav:#b8a7e3; --lav-soft:#2c2740;
+  --ok:#80d19d; --ok-soft:#1f3527; --bad:#ec8a80; --bad-soft:#3d2321;
+  --line:#33403a; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#141a16; --surface:#1d2520; --ink:#e5ebe3; --muted:#a2afa5;
+  --sage:#9dbf9f; --sage-soft:#273429; --lav:#b8a7e3; --lav-soft:#2c2740;
+  --ok:#80d19d; --ok-soft:#1f3527; --bad:#ec8a80; --bad-soft:#3d2321;
+  --line:#33403a; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 64px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--bg)}
+.wrap{max-width:820px;margin:0 auto;display:grid;gap:22px}
+h1,h2,h3{font-family:var(--display);font-weight:600;text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(2rem,6vw,3rem)}
+h1 em{font-style:italic;color:var(--lav);font-weight:400}
+p{margin:0}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--sage)}
+
+header.hero{padding-block:40px 8px;display:grid;gap:12px;position:relative}
+header.hero .lede{color:var(--muted);max-width:60ch}
+#themeBtn{position:absolute;top:40px;right:0;background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:.85rem;cursor:pointer}
+
+.name-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line);
+  margin:0 calc(-1 * max(16px, env(safe-area-inset-left, 0px)));padding:10px max(16px, env(safe-area-inset-left, 0px))}
+.name-bar .row{max-width:820px;margin:0 auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.name-bar label{font-weight:600;font-size:.9rem}
+.name-bar input{font:inherit;font-size:.95rem;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 14px;flex:1 1 180px;min-width:0}
+.progress{display:flex;align-items:center;gap:8px;flex:1 1 160px}
+.ptrack{flex:1;height:8px;border-radius:999px;background:var(--sage-soft);overflow:hidden}
+#pfill{height:100%;width:0;background:var(--lav);transition:width .4s ease}
+#plabel{font-size:.85rem;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.ex-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:grid;gap:16px}
+.ex-hd{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.ex-hd .n{font-family:var(--display);font-style:italic;color:var(--lav);font-size:1.3rem}
+.ex-hd h2{font-size:1.35rem}
+.ex-hd .time{margin-left:auto;font-size:.8rem;color:var(--muted)}
+.ex-instr{color:var(--muted)}
+
+.btn{font:inherit;font-weight:600;font-size:.92rem;border-radius:999px;padding:8px 18px;cursor:pointer;border:1px solid transparent}
+.btn.primary{background:var(--lav);color:var(--surface)}
+.btn.ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+.btn:focus-visible,.opt:focus-visible,.mi:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--lav);outline-offset:2px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.score{font-weight:600;color:var(--sage);font-variant-numeric:tabular-nums}
+
+/* matching */
+.matchboard{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:12px}
+.mcol{display:grid;gap:8px;align-content:start}
+.mi{font:inherit;text-align:left;background:var(--bg);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 14px;cursor:pointer}
+.mi.word{font-family:var(--display);font-size:1.08rem;font-weight:600}
+.mi.ex{font-size:.93rem;line-height:1.4}
+.mi.sel{border-color:var(--lav);background:var(--lav-soft)}
+.mi.paired{border-style:dashed;border-color:var(--lav)}
+.mi .tag{font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--lav);margin-right:6px}
+.mi.right{border:1px solid var(--ok);background:var(--ok-soft)}
+.mi.wrong{border:1px solid var(--bad);background:var(--bad-soft)}
+
+/* gap fill */
+.gaps{display:grid;gap:14px;margin:0;padding-left:22px}
+.gaps li::marker{color:var(--sage);font-weight:700}
+input.gap{font:inherit;font-size:.95rem;background:var(--bg);color:var(--ink);border:none;border-bottom:2px solid var(--lav);border-radius:4px 4px 0 0;padding:2px 8px;width:7.5em;min-width:0}
+input.gap.right{border-color:var(--ok);background:var(--ok-soft)}
+input.gap.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.fb{font-size:.88rem;font-weight:600;margin-left:6px}
+.fb.ok{color:var(--ok)} .fb.no{color:var(--bad)}
+
+/* multiple choice */
+.mcq{display:grid;gap:18px;margin:0;padding:0;list-style:none}
+.mcq li{display:grid;gap:8px}
+.mcq .q{font-weight:600}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{font:inherit;font-size:.93rem;background:var(--bg);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:7px 14px;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--lav);background:var(--lav-soft)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+
+/* writing */
+textarea{font:inherit;font-size:.98rem;width:100%;min-height:170px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px 14px;resize:vertical}
+.checklist{display:grid;gap:6px;margin:0;padding:0;list-style:none;font-size:.93rem}
+.checklist li{display:flex;gap:8px;align-items:baseline}
+.checklist .dot{width:1.2em;flex:none;text-align:center;color:var(--muted)}
+.checklist li.met .dot{color:var(--ok)}
+.checklist li.met{color:var(--ink)}
+.checklist li{color:var(--muted)}
+.found{font-size:.85rem;color:var(--muted)}
+.found b{color:var(--lav)}
+.bank{display:flex;flex-wrap:wrap;gap:6px}
+.bank span{font-size:.85rem;background:var(--lav-soft);border-radius:999px;padding:3px 11px}
+
+.send{background:var(--lav-soft);border:none}
+.send .addr{font-family:var(--body);font-weight:600;user-select:all}
+.note{font-size:.85rem;color:var(--muted)}
+
+footer{color:var(--muted);font-size:.85rem;text-align:center;padding-top:8px}
+@media (max-width:540px){ .ex-card{padding:16px} .matchboard{gap:8px} .mi{padding:8px 10px} .mi.ex{font-size:.86rem} #themeBtn{position:static;justify-self:start} }
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">Homework · 15–20 min</p>
+  <h1>Scent, mood <em>&amp; memory</em></h1>
+  <p class="lede">Scent adjectives and hedging: describing a product precisely and promising only what it can deliver.</p>
+  <button id="themeBtn" type="button" aria-label="Switch light or dark theme">◐ Theme</button>
+</header>
+</div>
+
+<div class="name-bar">
+  <div class="row">
+    <label for="nameInput">Your name:</label>
+    <input id="nameInput" type="text" placeholder="Type your name…">
+    <div class="progress"><div class="ptrack"><div id="pfill"></div></div><span id="plabel">0 / 3</span></div>
+  </div>
+</div>
+
+<div class="wrap" style="padding-top:22px">
+
+<!-- EX 1 -->
+<div class="ex-card" id="ex1">
+  <div class="ex-hd"><span class="n">1</span><h2>Adjective meets ingredient</h2><span class="time">≈ 3 min</span></div>
+  <p class="ex-instr">Click an adjective on the left, then the example that it describes best on the right. Click a pair again to change it. Then press Check.</p>
+  <div class="matchboard">
+    <div class="mcol" id="m1Words"></div>
+    <div class="mcol" id="m1Ex"></div>
+  </div>
+  <div class="actions"><button class="btn primary" type="button" onclick="check1()">Check</button><button class="btn ghost" type="button" onclick="reset1()">Reset</button><span class="score" id="s1"></span></div>
+</div>
+
+<!-- EX 2 -->
+<div class="ex-card" id="ex2">
+  <div class="ex-hd"><span class="n">2</span><h2>Complete the hedges</h2><span class="time">≈ 4 min</span></div>
+  <p class="ex-instr">Write <b>one word</b> in each gap. Use the words below; one word is used twice.</p>
+  <div class="bank"><span>evidence</span><span>seems</span><span>that</span><span>to (×2)</span><span>tend</span><span>may</span></div>
+  <ol class="gaps">
+    <li>Rosemary is thought <input class="gap" id="g1" data-ans="to" aria-label="gap 1"> improve focus.<span class="fb"></span></li>
+    <li>This balm <input class="gap" id="g2" data-ans="may,might,could,can" aria-label="gap 2"> help you relax before bed.<span class="fb"></span></li>
+    <li>It is believed <input class="gap" id="g3" data-ans="that" aria-label="gap 3"> smell is closely linked to memory.<span class="fb"></span></li>
+    <li>Clients <input class="gap" id="g4" data-ans="tend" aria-label="gap 4"> to prefer lighter scents in summer.<span class="fb"></span></li>
+    <li>There is some <input class="gap" id="g5" data-ans="evidence,research" aria-label="gap 5"> that citrus oils can lift your mood.<span class="fb"></span></li>
+    <li>It <input class="gap" id="g6" data-ans="seems,appears" aria-label="gap 6"> that gourmand scents are here to stay.<span class="fb"></span></li>
+    <li>Neroli is said <input class="gap" id="g7" data-ans="to" aria-label="gap 7"> be calming.<span class="fb"></span></li>
+  </ol>
+  <div class="actions"><button class="btn primary" type="button" onclick="check2()">Check</button><button class="btn ghost" type="button" onclick="reset2()">Reset</button><span class="score" id="s2"></span></div>
+</div>
+
+<!-- EX 3 -->
+<div class="ex-card" id="ex4">
+  <div class="ex-hd"><span class="n">3</span><h2>Rewrite one of your products</h2><span class="time">≈ 8–10 min</span></div>
+  <p class="ex-instr">Choose one product you really make. Write a new description for your website or label (60–90 words). Describe the scent precisely and promise only what it can honestly deliver.</p>
+  <div class="bank"><span>zesty</span><span>earthy</span><span>musky</span><span>powdery</span><span>resinous</span><span>gourmand</span><span>heady</span><span>lingering</span><span>may</span><span>is thought to</span><span>tends to</span><span>many people find</span></div>
+  <textarea id="writing" placeholder="Slow Sunday is a body oil that opens with a zesty burst of bergamot…"></textarea>
+  <ul class="checklist">
+    <li id="c1"><span class="dot">○</span><span>60–90 words <span class="found" id="wc">(0 words)</span></span></li>
+    <li id="c2"><span class="dot">○</span><span>At least 3 scent adjectives <span class="found" id="adjFound"></span></span></li>
+    <li id="c3"><span class="dot">○</span><span>At least 2 hedges <span class="found" id="hedgeFound"></span></span></li>
+  </ul>
+</div>
+
+<!-- SEND -->
+<div class="ex-card send">
+  <div class="ex-hd"><span class="n">✉</span><h2>Send to your teacher</h2></div>
+  <p class="ex-instr">Press <b>Send</b> to open an email with all your answers. If no email opens, press <b>Copy answers</b> and paste them into a message to <span class="addr">dariia.mlnk@gmail.com</span>.</p>
+  <div class="actions"><button class="btn primary" type="button" onclick="sendToTeacher()">Send to teacher</button><button class="btn ghost" type="button" onclick="copyAnswers()">Copy answers</button><span class="score" id="copyMsg"></span></div>
+</div>
+
+<footer>Homework by @dariia.eng</footer>
+</div>
+
+<script>
+var TEACHER='dariia.mlnk@gmail.com', TITLE='Scent, mood & memory';
+var done={ex1:false,ex2:false,ex4:false};
+function updateProgress(){
+  var n=Object.values(done).filter(Boolean).length, t=Object.keys(done).length;
+  document.getElementById('pfill').style.width=(n/t*100)+'%';
+  document.getElementById('plabel').textContent=n+' / '+t;
+}
+
+document.getElementById('themeBtn').addEventListener('click',function(){
+  var r=document.documentElement, cur=r.getAttribute('data-theme');
+  var dark=cur? cur==='dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  r.setAttribute('data-theme', dark?'light':'dark');
+});
+
+/* EX 1: click-to-pair */
+var p1=[["zesty","lemon peel and grapefruit"],["earthy","vetiver and patchouli"],["musky","a soft white-musk skin scent"],["powdery","iris and violet"],["resinous","frankincense and myrrh"],["gourmand","tonka bean and caramel"],["heady","tuberose in a warm room"],["lingering","still on your scarf the next morning"]];
+var exOrder=[3,6,0,5,1,7,2,4];
+var pairs1={}, sel1=null, res1=[];
+function build1(){
+  var w=document.getElementById('m1Words'), e=document.getElementById('m1Ex');
+  w.innerHTML='';e.innerHTML='';pairs1={};sel1=null;
+  p1.forEach(function(p,i){
+    var b=document.createElement('button');b.type='button';b.className='mi word';b.dataset.k=i;b.textContent=p[0];
+    b.onclick=function(){
+      if(pairs1[i]!==undefined){ delete pairs1[i]; render1(); }
+      w.querySelectorAll('.mi').forEach(function(x){x.classList.remove('sel')});
+      b.classList.add('sel');sel1=i;
+    };
+    w.appendChild(b);
+  });
+  exOrder.forEach(function(i){
+    var d=document.createElement('button');d.type='button';d.className='mi ex';d.dataset.k=i;
+    d.onclick=function(){
+      if(sel1===null) return;
+      for(var k in pairs1){ if(pairs1[k]===i) delete pairs1[k]; }
+      pairs1[sel1]=i; sel1=null; render1();
+    };
+    e.appendChild(d);
+  });
+  render1();
+}
+function render1(){
+  var w=document.getElementById('m1Words'), e=document.getElementById('m1Ex');
+  w.querySelectorAll('.mi').forEach(function(b){b.classList.remove('sel','right','wrong');b.classList.toggle('paired',pairs1[b.dataset.k]!==undefined)});
+  e.querySelectorAll('.mi').forEach(function(d){
+    var i=+d.dataset.k, owner=null;
+    for(var k in pairs1){ if(pairs1[k]===i) owner=k; }
+    d.classList.remove('right','wrong');
+    d.classList.toggle('paired',owner!==null);
+    d.innerHTML=(owner!==null?'<span class="tag">'+p1[owner][0].toUpperCase()+'</span>':'')+p1[i][1];
+  });
+}
+function check1(){
+  var ok=0; res1=[];
+  var w=document.getElementById('m1Words'), e=document.getElementById('m1Ex');
+  p1.forEach(function(p,i){
+    var wb=w.querySelector('[data-k="'+i+'"]'), chosen=pairs1[i];
+    var good=chosen===i;
+    wb.classList.remove('sel','paired');wb.classList.add(good?'right':'wrong');
+    if(chosen!==undefined){ var db=e.querySelector('[data-k="'+chosen+'"]'); db.classList.remove('paired'); db.classList.add(good?'right':'wrong'); }
+    if(good) ok++;
+    res1.push(p[0]+' → '+(chosen!==undefined?p1[chosen][1]:'(no answer)')+(good?' ✓':' ✗ (correct: '+p[1]+')'));
+  });
+  document.getElementById('s1').textContent=ok+' / 8';
+  done.ex1=true;updateProgress();
+}
+function reset1(){ build1(); document.getElementById('s1').textContent=''; res1=[]; done.ex1=false; updateProgress(); }
+build1();
+
+/* EX 2: gap fill */
+var res2=[];
+function check2(){
+  var ok=0; res2=[];
+  document.querySelectorAll('#ex2 .gaps li').forEach(function(li,idx){
+    var inp=li.querySelector('.gap'), fb=li.querySelector('.fb');
+    var v=inp.value.toLowerCase().trim(), ans=inp.dataset.ans.split(',').map(function(a){return a.trim()});
+    inp.classList.remove('right','wrong');
+    if(ans.indexOf(v)>-1){inp.classList.add('right');fb.className='fb ok';fb.textContent='✓';ok++;res2.push((idx+1)+'. '+v+' ✓')}
+    else{inp.classList.add('wrong');fb.className='fb no';fb.textContent='✗ '+ans[0];res2.push((idx+1)+'. '+(v||'(blank)')+' ✗ (correct: '+ans[0]+')')}
+  });
+  document.getElementById('s2').textContent=ok+' / 7';
+  done.ex2=true;updateProgress();
+}
+function reset2(){
+  document.querySelectorAll('#ex2 .gap').forEach(function(i){i.value='';i.classList.remove('right','wrong')});
+  document.querySelectorAll('#ex2 .fb').forEach(function(f){f.textContent='';f.className='fb'});
+  document.getElementById('s2').textContent='';res2=[];done.ex2=false;updateProgress();
+}
+
+/* EX 4: writing with live checklist */
+var ADJ=['zesty','earthy','musky','powdery','resinous','gourmand','heady','lingering','fresh','warm','woody','floral','sweet','soft','bright','green','spicy','citrusy','smoky','creamy'];
+var HEDGE=['may','might','could','is thought to','are thought to','is said to','are said to','is believed to','tends to','tend to','many people find','some people find','it seems','seems to','appears to','can help','designed to','generally','often'];
+function mark(id,ok){var li=document.getElementById(id);li.classList.toggle('met',ok);li.querySelector('.dot').textContent=ok?'✓':'○'}
+function analyse(){
+  var t=document.getElementById('writing').value, low=' '+t.toLowerCase().replace(/[^a-z\s']/g,' ').replace(/\s+/g,' ')+' ';
+  var words=t.trim()?t.trim().split(/\s+/).length:0;
+  var adj=ADJ.filter(function(a){return low.indexOf(' '+a+' ')>-1});
+  var hed=HEDGE.filter(function(h){return low.indexOf(' '+h+' ')>-1});
+  document.getElementById('wc').textContent='('+words+' words)';
+  document.getElementById('adjFound').innerHTML=adj.length?'· found: <b>'+adj.join(', ')+'</b>':'';
+  document.getElementById('hedgeFound').innerHTML=hed.length?'· found: <b>'+hed.join(', ')+'</b>':'';
+  mark('c1',words>=60&&words<=90);mark('c2',adj.length>=3);mark('c3',hed.length>=2);
+  done.ex4=words>=40;updateProgress();
+}
+document.getElementById('writing').addEventListener('input',analyse);
+
+/* SEND */
+function buildBody(){
+  var name=document.getElementById('nameInput').value.trim()||'Anonymous';
+  var b='Student: '+name+'\nHomework: '+TITLE+'\n\n';
+  b+='1. ADJECTIVE MEETS INGREDIENT ('+(document.getElementById('s1').textContent||'not checked')+')\n'+(res1.join('\n')||'(not checked)')+'\n\n';
+  b+='2. COMPLETE THE HEDGES ('+(document.getElementById('s2').textContent||'not checked')+')\n'+(res2.join('\n')||'(not checked)')+'\n\n';
+  b+='3. PRODUCT DESCRIPTION\n'+(document.getElementById('writing').value.trim()||'(not written)')+'\n';
+  return {name:name,body:b};
+}
+function sendToTeacher(){
+  var d=buildBody();
+  var body=encodeURIComponent(d.body), subject=encodeURIComponent('Homework – '+d.name+' – '+TITLE);
+  window.location.href='mailto:'+TEACHER+'?subject='+subject+'&body='+body;
+}
+function copyAnswers(){
+  var txt=buildBody().body, msg=document.getElementById('copyMsg');
+  function fallback(){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');msg.textContent='Copied'}catch(e){msg.textContent='Select and copy the text manually'}ta.remove()}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){msg.textContent='Copied'},fallback)}else fallback();
+}
+updateProgress();
+</script>
