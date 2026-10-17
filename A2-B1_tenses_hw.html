@@ -1,0 +1,412 @@
+<title>Tense Timeline 2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column; every tense is colour-coded by its place on the timeline (past · present · future) */
+:root{
+  --bg:#f2f4f8; --surface:#ffffff; --ink:#18202f; --muted:#596377; --line:#d8dde7;
+  --head:#18202f; --head-ink:#f2f4f8;
+  --past:#7a3fb0; --pres:#11785f; --fut:#bd5f10;
+  --good:#1a7f44; --bad:#c03636; --good-bg:#e2f3e9; --bad-bg:#fae5e5;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", Verdana, system-ui, sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10141b; --surface:#19202a; --ink:#e7ebf2; --muted:#9ba5b6; --line:#2b3341;
+  --head:#080b10; --head-ink:#e7ebf2;
+  --past:#b892e2; --pres:#52c6a3; --fut:#f0a55e;
+  --good:#63d494; --bad:#f08585; --good-bg:#16301f; --bad-bg:#3a1c1e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10141b; --surface:#19202a; --ink:#e7ebf2; --muted:#9ba5b6; --line:#2b3341;
+  --head:#080b10; --head-ink:#e7ebf2;
+  --past:#b892e2; --pres:#52c6a3; --fut:#f0a55e;
+  --good:#63d494; --bad:#f08585; --good-bg:#16301f; --bad-bg:#3a1c1e; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:780px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--fut);outline-offset:2px}
+
+/* header */
+header{background:var(--head);color:var(--head-ink)}
+header .wrap{padding-block:28px 26px;display:grid;gap:14px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;opacity:.75}
+header h1{font-size:clamp(30px,6vw,44px);font-weight:800}
+header p{margin:0;opacity:.85;max-width:60ch}
+.theme-btn{background:transparent;border:1px solid color-mix(in srgb,var(--head-ink) 35%,transparent);border-radius:999px;padding:6px 12px;font-size:13px;color:var(--head-ink)}
+.bigline{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-top:6px;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
+.bigline .seg{height:6px;border-radius:3px}
+.bigline .now{padding:4px 12px;border-radius:999px;background:var(--pres);color:var(--head)}
+.bl-past{display:flex;align-items:center;gap:8px;color:var(--past)} .bl-past .seg{flex:1;background:var(--past)}
+.bl-fut{display:flex;align-items:center;gap:8px;color:var(--fut)} .bl-fut .seg{flex:1;background:var(--fut)}
+
+/* name bar */
+.name-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--line)}
+.name-bar .wrap{padding-block:10px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.name-bar label{font-weight:700;font-size:15px}
+.name-bar input{flex:1 1 180px;min-width:0;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px}
+.prog{display:flex;align-items:center;gap:10px;flex:1 1 200px}
+.ptrack{flex:1;height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+#pfill{height:100%;width:0;background:linear-gradient(90deg,var(--past),var(--pres),var(--fut));transition:width .4s}
+#plabel{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+main .wrap{padding-block:26px 60px;display:grid;gap:26px}
+
+/* family colours */
+.f-past{--fam:var(--past)} .f-pres{--fam:var(--pres)} .f-fut{--fam:var(--fut)}
+
+/* cheat sheet */
+details.cheat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+details.cheat summary{padding:16px 18px;font-family:var(--display);font-weight:700;font-size:19px;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.cheat summary::-webkit-details-marker{display:none}
+details.cheat summary::after{content:"Show";font-family:var(--body);font-size:14px;font-weight:400;color:var(--muted)}
+details.cheat[open] summary::after{content:"Hide"}
+.cheat-list{display:grid;gap:0;border-top:1px solid var(--line)}
+.crow{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.crow:last-child{border-bottom:0}
+.crow h3{font-size:17px;color:var(--fam)}
+.crow .form{font-weight:700}
+.crow .use{color:var(--muted);font-size:15px}
+.crow .sig{font-size:15px;margin-top:2px}
+.crow .sig em{font-style:normal;background:color-mix(in srgb,var(--fam) 13%,transparent);padding:1px 6px;border-radius:5px;margin-right:4px;white-space:nowrap}
+.tl{width:96px;height:34px;color:var(--fam)}
+.tl .axis{stroke:var(--line);stroke-width:2}
+.tl .nowt{stroke:var(--muted);stroke-width:2}
+.note{font-size:15px;color:var(--muted);padding:12px 18px 16px;margin:0}
+
+/* exercise card */
+.ex-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:grid;gap:14px;min-width:0}
+.ex-hd{display:flex;align-items:baseline;gap:12px}
+.ex-num{font-family:var(--display);font-weight:800;font-size:15px;color:var(--muted);letter-spacing:.06em}
+.ex-hd h2{font-size:22px}
+.ex-instr{margin:0;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:0;border-radius:8px;padding:10px 18px;font-weight:700}
+.btn.primary{background:var(--ink);color:var(--surface)}
+.btn.ghost{background:transparent;border:1px solid var(--line)}
+.score{font-weight:700;font-variant-numeric:tabular-nums}
+
+/* chips */
+.chip{border:1.5px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 13px;font-size:15px;line-height:1.3;transition:transform .1s}
+.chip:hover{border-color:var(--muted)}
+.chip.sel{background:var(--ink);color:var(--surface);border-color:var(--ink);transform:translateY(-2px)}
+.chip.ok{background:var(--good-bg);border-color:var(--good);color:var(--ink)}
+.chip.no{background:var(--bad-bg);border-color:var(--bad);color:var(--ink)}
+.chip .fix{display:block;font-size:12px;color:var(--bad)}
+.bank{display:flex;flex-wrap:wrap;gap:8px;padding:14px;border:1.5px dashed var(--line);border-radius:10px;min-height:60px}
+.bank:empty::before{content:"All words placed. Press Check.";color:var(--muted);font-size:15px}
+.zones{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px}
+.zone{border:1.5px solid color-mix(in srgb,var(--fam) 45%,var(--line));background:color-mix(in srgb,var(--fam) 7%,var(--surface));border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:150px;text-align:left}
+.zone.armed{border-style:dashed;border-color:var(--fam)}
+.zone .zname{font-family:var(--display);font-weight:700;color:var(--fam);font-size:16px;line-height:1.2}
+.zone .zbody{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+
+/* match */
+.match{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px 14px}
+.mcol{display:grid;gap:8px;align-content:start}
+.mitem{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 12px;text-align:left;display:flex;gap:10px;align-items:center;min-height:48px}
+.mitem.name{font-family:var(--display);font-weight:700;color:var(--fam)}
+.mitem .badge{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-family:var(--body);font-weight:700;background:var(--line);color:var(--ink)}
+.mitem.paired .badge{background:var(--ink);color:var(--surface)}
+.mitem.sel{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
+.mitem.ok{border-color:var(--good);background:var(--good-bg)}
+.mitem.no{border-color:var(--bad);background:var(--bad-bg)}
+.mitem .ex{display:block;font-size:13px;color:var(--muted);font-weight:400}
+
+/* MC */
+.q{display:grid;gap:8px;padding-top:14px;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0;padding-top:0}
+.q .s{font-size:18px}
+.q .s b{font-weight:700}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{border:1.5px solid var(--line);background:var(--bg);border-radius:8px;padding:5px 10px;font-size:14px}
+.opt .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--fam);margin-right:6px;vertical-align:1px}
+.opt.sel{border-color:var(--ink);background:var(--ink);color:var(--surface)}
+.opt.ok{border-color:var(--good);background:var(--good-bg);color:var(--ink)}
+.opt.no{border-color:var(--bad);background:var(--bad-bg);color:var(--ink)}
+.feedback{font-size:14px;min-height:0}
+.feedback.bad{color:var(--bad)} .feedback.good{color:var(--good)}
+
+/* gap fill */
+.gap-list{display:grid;gap:14px;margin:0;padding-left:22px}
+.gap-list li{padding-left:4px}
+.gap-list input{font:inherit;width:12ch;max-width:100%;padding:3px 8px;border:none;border-bottom:2px solid var(--muted);background:color-mix(in srgb,var(--fut) 6%,transparent);color:var(--ink);border-radius:4px 4px 0 0}
+.gap-list input.ok{border-color:var(--good);background:var(--good-bg)}
+.gap-list input.no{border-color:var(--bad);background:var(--bad-bg)}
+.hint{color:var(--muted);font-size:15px}
+.ans{display:block;font-size:14px}
+.ans.bad{color:var(--bad)} .ans.good{color:var(--good)}
+
+/* send */
+.send textarea{width:100%;min-height:160px;font:14px/1.5 ui-monospace,Menlo,monospace;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.mailline{font-size:15px;color:var(--muted);margin:0}
+.mailline code{color:var(--ink);user-select:all}
+
+@media (max-width:520px){
+  .crow{grid-template-columns:1fr;gap:6px}
+  .match{grid-template-columns:1fr}
+  .ex-card{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<style>
+.why{font-size:14px;color:var(--muted);display:block;margin-top:2px}
+.wrongv{text-decoration:line-through;text-decoration-color:var(--bad);text-decoration-thickness:2px;font-weight:700}
+.fixline{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:15px;color:var(--muted);margin-top:4px}
+.fixline input,.story input,.tlrows input,.recall input{font:inherit;padding:3px 8px;border:none;border-bottom:2px solid var(--muted);background:color-mix(in srgb,var(--fut) 6%,transparent);color:var(--ink);border-radius:4px 4px 0 0;max-width:100%}
+.fixline input{width:16ch}
+.nsel{font:inherit;font-size:15px;padding:5px 8px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);max-width:100%}
+input.ok,select.ok{border-color:var(--good)!important;background:var(--good-bg)!important}
+input.no,select.no{border-color:var(--bad)!important;background:var(--bad-bg)!important}
+.story{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:18px 20px;line-height:2.1;max-width:65ch}
+.story p{margin:0 0 10px} .story p:last-child{margin:0}
+.story input{width:14ch}
+.story .n{font-size:12px;font-weight:700;color:var(--muted);vertical-align:super;margin-right:2px}
+.story .hint{font-size:14px}
+.subhead{font-family:var(--display);font-weight:700;font-size:17px;margin:4px 0 0}
+.namelist{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px 16px}
+.namelist .row{display:flex;align-items:center;gap:8px;font-size:15px;flex-wrap:wrap}
+.namelist .row b{min-width:2ch;font-variant-numeric:tabular-nums}
+.namelist .row .ans{flex-basis:100%}
+.tlset{display:grid;gap:8px}
+.tlset h3{font-size:17px}
+.tlrows{display:grid;gap:4px}
+.tlrow{display:grid;grid-template-columns:190px minmax(0,1fr);gap:12px;align-items:baseline;padding:8px 0;border-top:1px solid var(--line)}
+.tlrow .cue{font-family:var(--display);font-size:15px;font-weight:700;color:var(--fam);background:color-mix(in srgb,var(--fam) 12%,transparent);border-radius:6px;padding:2px 8px;justify-self:start}
+.tlrows input{width:17ch}
+/* name system grid */
+.ngwrap{overflow-x:auto}
+.namegrid{border-collapse:separate;border-spacing:6px;font-size:15px;min-width:460px}
+.namegrid th{font-family:var(--display);font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:2px 6px;font-weight:700}
+.namegrid td{padding:8px 10px;border-radius:8px;background:color-mix(in srgb,var(--fam) 11%,var(--surface));color:var(--ink);font-weight:700}
+.namegrid td span{color:var(--fam)}
+.namegrid td.off{background:transparent;border:1.5px dashed var(--line);color:var(--muted);font-weight:400}
+.rulebox{display:grid;gap:4px;font-size:15px;padding:12px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+.rulebox p{margin:0}
+.builder{display:grid;gap:6px}
+.brow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.brow .lab{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);width:56px}
+.built{font-family:var(--display);font-weight:700;font-size:16px;min-height:1.3em}
+.recall input{width:22ch}
+.recall li{display:grid;gap:4px}
+@media (max-width:520px){.tlrow{grid-template-columns:1fr;gap:4px}}
+</style>
+
+<header>
+  <div class="wrap">
+    <div class="top"><span class="eyebrow">Homework · Level 2 · B1 · Focus: tense names</span><button class="theme-btn" id="themeBtn" type="button">Light / Dark</button></div>
+    <h1>Tense Timeline 2</h1>
+    <p>Every exercise asks you to name the tense. Learn how the names work, then use them in every answer until they stick.</p>
+    <div class="bigline" aria-hidden="true">
+      <div class="bl-past">Past <span class="seg"></span></div>
+      <span class="now">Now</span>
+      <div class="bl-fut"><span class="seg"></span> Future</div>
+    </div>
+  </div>
+</header>
+
+<div class="name-bar">
+  <div class="wrap">
+    <label for="nameInput">Your name:</label>
+    <input id="nameInput" type="text" placeholder="Type your name…" autocomplete="name">
+    <div class="prog"><div class="ptrack"><div id="pfill"></div></div><span id="plabel">0 / 3</span></div>
+  </div>
+</div>
+
+<main><div class="wrap">
+
+  <details class="cheat">
+    <summary>Tense map: names, forms, time words</summary>
+    <div class="cheat-list" id="cheatList"></div>
+    <p class="note"><b>Watch out:</b> state verbs (<i>know, like, want, believe, taste, need</i>) are not usually used in the progressive. Use <b>Past Simple</b> with a finished time (<i>yesterday, in 2020</i>) and <b>Present Perfect</b> with <i>ever, yet, already, just, since</i>.</p>
+  </details>
+
+  <section class="ex-card" id="ex1">
+    <div class="ex-hd"><span class="ex-num">01</span><h2>Build the name</h2></div>
+    <div class="rulebox">
+      <p>A tense name has two parts.</p>
+      <p><b>1st word = WHEN:</b> Present, Past or Future.</p>
+      <p><b>2nd word = HOW:</b> <b>Simple</b> = the basic form (<i>work, worked, will work</i>) · <b>Progressive</b> = be + -ing (<i>is working</i>) · <b>Perfect</b> = have + 3rd form (<i>have worked</i>).</p>
+    </div>
+    <div class="ngwrap"><table class="namegrid">
+      <thead><tr><th></th><th>Simple</th><th>Progressive</th><th>Perfect</th></tr></thead>
+      <tbody>
+        <tr><th>Present</th><td class="f-pres"><span>Present</span> Simple</td><td class="f-pres"><span>Present</span> Progressive</td><td class="f-pres"><span>Present</span> Perfect</td></tr>
+        <tr><th>Past</th><td class="f-past"><span>Past</span> Simple</td><td class="f-past"><span>Past</span> Progressive</td><td class="off">Past Perfect (later!)</td></tr>
+        <tr><th>Future</th><td class="f-fut"><span>Future</span> Simple (will)</td><td class="off">—</td><td class="off">—</td></tr>
+      </tbody>
+    </table></div>
+    <p class="ex-instr">The extra one is the <b>going-to future</b>. For each sentence, tap the WHEN word and the HOW word to build the name of the bold verb.</p>
+    <div id="build"></div>
+    <div class="btns"><button class="btn primary" type="button" onclick="check1()">Check</button><button class="btn ghost" type="button" onclick="reset1()">Reset</button><span class="score" id="s1"></span></div>
+  </section>
+
+  <section class="ex-card" id="ex2">
+    <div class="ex-hd"><span class="ex-num">02</span><h2>Tricky pairs</h2></div>
+    <p class="ex-instr">Choose the correct form. Then choose the name of the tense you used. You get one point for the form and one for the name.</p>
+    <div id="mc"></div>
+    <div class="btns"><button class="btn primary" type="button" onclick="check2()">Check</button><button class="btn ghost" type="button" onclick="reset2()">Reset</button><span class="score" id="s2"></span></div>
+  </section>
+
+  <section class="ex-card" id="ex3">
+    <div class="ex-hd"><span class="ex-num">03</span><h2>Find, fix and name</h2></div>
+    <p class="ex-instr">Each sentence has one mistake in the crossed-out verb. Write the correct form and name the tense it should be.</p>
+    <ol class="gap-list" id="fix"></ol>
+    <div class="btns"><button class="btn primary" type="button" onclick="check3()">Check</button><button class="btn ghost" type="button" onclick="reset3()">Reset</button><span class="score" id="s3"></span></div>
+  </section>
+
+  <section class="ex-card send">
+    <div class="ex-hd"><span class="ex-num">✓</span><h2>Send to your teacher</h2></div>
+    <p class="ex-instr">Press Check on every exercise first. Then send your answers.</p>
+    <div class="btns"><button class="btn primary" type="button" onclick="sendToTeacher()">Send to teacher</button><button class="btn ghost" type="button" onclick="copyAnswers()">Copy my answers</button><span class="score" id="sendMsg"></span></div>
+    <p class="mailline">If your email app doesn't open, copy your answers and email them to <code>dariia.mlnk@gmail.com</code>.</p>
+    <textarea id="copyBox" hidden readonly aria-label="Your answers"></textarea>
+  </section>
+
+</div></main>
+
+<script>
+const TEACHER='dariia.mlnk@gmail.com', TITLE='Tense Timeline 2';
+const T={
+  ps:{name:'Present Simple',fam:'pres',form:'I work · she works',ex:'She plays tennis.',use:'habits, routines, facts, state verbs',words:['every day','usually','on Mondays'],parts:['Present','Simple']},
+  pp:{name:'Present Progressive',fam:'pres',form:'am / is / are + verb-ing',ex:'They are eating.',use:'happening now, at this moment',words:['now','at the moment','Listen!'],parts:['Present','Progressive']},
+  pf:{name:'Present Perfect',fam:'pres',form:'have / has + 3rd form',ex:'I have seen it.',use:'past action with a result now; life experience',words:['already','yet','ever','just','since'],parts:['Present','Perfect']},
+  pa:{name:'Past Simple',fam:'past',form:'verb-ed / 2nd form',ex:'We went home.',use:'finished action at a finished time',words:['yesterday','last week','ago'],parts:['Past','Simple']},
+  pg:{name:'Past Progressive',fam:'past',form:'was / were + verb-ing',ex:'He was sleeping.',use:'long action in progress; often interrupted by a short Past Simple action',words:['while …','when …','at 7 pm yesterday'],parts:['Past','Progressive']},
+  gt:{name:'going-to future',fam:'fut',form:'am / is / are + going to + verb',ex:'I am going to travel.',use:'plans made before; predictions from what you can see',words:['Look at those clouds!',"I've decided …"],parts:['Future','going-to']},
+  wf:{name:'Future Simple (will-future)',fam:'fut',form:'will + verb',ex:'I will help you.',use:'decisions made now, promises, offers, opinions',words:['probably','I think …','I promise …'],parts:['Future','Simple']}
+};
+const KEYS=Object.keys(T);
+const done={ex1:false,ex2:false,ex3:false};
+const results={ex1:'',ex2:'',ex3:''};
+function updateProgress(){const n=Object.values(done).filter(Boolean).length,t=Object.keys(done).length;document.getElementById('pfill').style.width=(n/t*100)+'%';document.getElementById('plabel').textContent=n+' / '+t;}
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const strip=s=>s.replace(/<[^>]+>/g,'');
+const norm=s=>s.toLowerCase().replace(/[’‘`]/g,"'").replace(/[.!?]+$/,'').replace(/\s+/g,' ').trim();
+function matches(v,alts){ v=norm(v).replace(/^(i|it|he|she|we|they|you)(?=[\s'])\s*/,''); return alts.map(norm).includes(v); }
+const first=a=>a[0];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const nameOf=k=>k?T[k].name:'(no name)';
+function nameSel(id,label){return `<select id="${id}" class="nsel" aria-label="${label}"><option value="">Tense name…</option>${KEYS.map(k=>`<option value="${k}">${T[k].name}</option>`).join('')}</select>`;}
+
+document.getElementById('themeBtn').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark';};
+
+function glyph(k){
+  const ax='<line class="axis" x1="4" y1="17" x2="92" y2="17"/><line class="nowt" x1="48" y1="8" x2="48" y2="26"/>';
+  const g={ps:'<circle cx="18" cy="17" r="4"/><circle cx="48" cy="17" r="4"/><circle cx="78" cy="17" r="4"/>',pp:'<rect x="38" y="12" width="20" height="10" rx="5"/>',pf:'<line x1="16" y1="17" x2="44" y2="17" stroke="currentColor" stroke-width="3"/><path d="M40 11 L48 17 L40 23 Z"/><circle cx="16" cy="17" r="4"/>',pa:'<circle cx="20" cy="17" r="5"/>',pg:'<rect x="10" y="12" width="24" height="10" rx="5"/>',gt:'<line x1="48" y1="17" x2="72" y2="17" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/><circle cx="76" cy="17" r="5"/>',wf:'<circle cx="76" cy="17" r="5"/>'}[k];
+  return '<svg class="tl" viewBox="0 0 96 34" aria-hidden="true">'+ax+'<g fill="currentColor">'+g+'</g></svg>';
+}
+document.getElementById('cheatList').innerHTML=KEYS.map(k=>{const t=T[k];return `<div class="crow f-${t.fam}">${glyph(k)}<div><h3>${t.name}</h3><div class="form">${esc(t.form)} <span class="use">(${esc(t.ex)})</span></div><div class="use">${t.use}</div><div class="sig">${t.words.map(w=>'<em>'+esc(w)+'</em>').join(' ')}</div></div></div>`;}).join('');
+
+/* ---------- Ex 1: build the name ---------- */
+const B1=[
+  ['My cat <b>sleeps</b> 16 hours a day.','ps'],
+  ['We <b>were playing</b> cards when the storm started.','pg'],
+  ['I <b>have</b> never <b>tried</b> skiing.','pf'],
+  ['Look, Anna <b>is wearing</b> her new dress!','pp'],
+  ['They <b>bought</b> a new car last month.','pa'],
+  ["I'm hungry. I<b>'ll make</b> a sandwich.",'wf'],
+  ['My sister <b>is going to study</b> in Ireland next year.','gt'],
+  ['<b>Has</b> the film <b>started</b> yet?','pf'],
+  ['What <b>were</b> you <b>doing</b> at midnight?','pg'],
+  ['<b>Do</b> you <b>live</b> near here?','ps'],
+  ['Maybe it <b>will be</b> sunny tomorrow.','wf'],
+  ["He <b>didn't call</b> me yesterday.",'pa']
+];
+const W1=['Present','Past','Future'], H1=['Simple','Progressive','Perfect','going-to'];
+let b1={};
+const builtName=s=>!s||!s.a||!s.b?'':(s.b==='going-to'?(s.a==='Future'?'going-to future':s.a+' going-to'):(s.a==='Future'&&s.b==='Simple'?'Future Simple (will)':s.a+' '+s.b));
+function render1(){
+  document.getElementById('build').innerHTML=B1.map((q,i)=>{const s=b1[i]||{};return `<div class="q" data-q="${i}"><div class="s">${i+1}. ${q[0]}</div><div class="builder"><div class="brow"><span class="lab">When</span>${W1.map(w=>`<button type="button" class="opt${s.a===w?' sel':''}" data-p="a" data-v="${w}">${w}</button>`).join('')}</div><div class="brow"><span class="lab">How</span>${H1.map(w=>`<button type="button" class="opt${s.b===w?' sel':''}" data-p="b" data-v="${w}">${w}</button>`).join('')}</div><div class="built">${builtName(s)?'→ '+builtName(s):''}</div></div><div class="feedback"></div></div>`;}).join('');
+  document.querySelectorAll('#build .q').forEach(qd=>{const i=+qd.dataset.q;qd.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{b1[i]=Object.assign({},b1[i],{[b.dataset.p]:b.dataset.v});render1();});});
+}
+function check1(){
+  render1();let ok=0;const lines=[];
+  B1.forEach((q,i)=>{const s=b1[i]||{},[a,b]=T[q[1]].parts,qd=document.querySelector(`#build .q[data-q="${i}"]`),fb=qd.querySelector('.feedback');
+    qd.querySelectorAll('.opt').forEach(o=>{const want=o.dataset.p==='a'?a:b,got=s[o.dataset.p];if(o.dataset.v===got)o.classList.add(got===want?'ok':'no');});
+    const r=s.a===a&&s.b===b;if(r)ok++;
+    fb.className='feedback '+(r?'good':'bad');fb.textContent=r?'✓ '+T[q[1]].name:(s.a&&s.b?'✗ It is '+T[q[1]].name+'.':'Choose both parts.');
+    lines.push(`${r?'✓':'✗'} ${strip(q[0])} → ${builtName(s)||'(no answer)'}${r?'':' (correct: '+T[q[1]].name+')'}`);});
+  document.getElementById('s1').textContent=ok+' / '+B1.length;
+  results.ex1=`1. Build the name: ${ok}/${B1.length}\n`+lines.join('\n');done.ex1=true;updateProgress();
+}
+function reset1(){b1={};render1();document.getElementById('s1').textContent='';done.ex1=false;results.ex1='';updateProgress();}
+render1();
+
+/* ---------- Ex 2: tricky pairs + name ---------- */
+const Q2=[
+  ['I ___ to the gym three times a week.',['go','am going','have gone'],0,'ps','A regular habit (three times a week).'],
+  ["Sorry, I can't talk now. I ___ a bath.",['have','am having','had'],1,'pp','Happening at this moment.'],
+  ['___ to London?',['Did you ever go','Have you ever been','Were you ever going'],1,'pf','Life experience with <i>ever</i>.'],
+  ["I ___ my keys! I can't open the door.",['lost','have lost','was losing'],1,'pf','Past action, result now (no keys now).'],
+  ['She ___ her leg in 2023.',['broke','was breaking','has broken'],0,'pa','Finished time (in 2023).'],
+  ['When I arrived, they ___ dinner, so I sat down and joined them.',['had','were having','have had'],1,'pg','Dinner was in progress when I arrived.'],
+  ['"The phone\'s ringing!" "OK, I ___ it."',["'m going to answer","'ll answer",'answer'],1,'wf','A decision made at the moment of speaking.'],
+  ["We ___ a party on Saturday. We've already sent the invitations.",['will have','are going to have','have had'],1,'gt','A plan made before (invitations sent).'],
+  ['Mmm, this soup ___ delicious!',['tastes','is tasting','has tasted'],0,'ps','<i>Taste</i> here is a state verb, so no -ing.'],
+  ['Be careful with that glass! You ___ it!',['will drop','are going to drop','drop'],1,'gt','A prediction from what you can see now.'],
+  ['While she ___ the news, the lights went out.',['watched','was watching','has watched'],1,'pg','Long action (while) interrupted by a short one.'],
+  ["I ___ this book yet, so don't tell me the ending!",["didn't finish","haven't finished","am not finishing"],1,'pf','<i>Yet</i> goes with this tense.'],
+  ['I think robots ___ a lot of our jobs in the future.',['are doing','will do','do'],1,'wf','An opinion about the future (I think …).'],
+  ['Our train ___ at 6:15 this morning, so we got up at 5.',['left','was leaving','has left'],0,'pa','Finished time (this morning, and it is over).']
+];
+let a2={};
+function render2(){
+  document.getElementById('mc').innerHTML=Q2.map((q,i)=>`<div class="q" data-q="${i}"><div class="s">${i+1}. ${q[0].replace('___','<b>_____</b>')}</div><div class="opts">${q[1].map((o,j)=>`<button type="button" class="opt${a2[i]===j?' sel':''}" data-j="${j}">${esc(o)}</button>`).join('')}</div><div class="fixline">Tense name: ${nameSel('n2_'+i,'Tense name for sentence '+(i+1))}</div><div class="feedback"></div></div>`).join('');
+  document.querySelectorAll('#mc .q').forEach(qd=>{const i=+qd.dataset.q;qd.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{a2[i]=+b.dataset.j;qd.querySelectorAll('.opt').forEach(o=>o.className='opt'+(o===b?' sel':''));qd.querySelector('.feedback').innerHTML='';});});
+}
+function check2(){
+  let ok=0;const lines=[];
+  Q2.forEach((q,i)=>{
+    const qd=document.querySelector(`#mc .q[data-q="${i}"]`),fb=qd.querySelector('.feedback'),sel=document.getElementById('n2_'+i);
+    qd.querySelectorAll('.opt').forEach(o=>{const j=+o.dataset.j;o.className='opt';if(a2[i]!==undefined&&j===q[2])o.classList.add('ok');if(a2[i]===j&&j!==q[2])o.classList.add('no');});
+    const fr=a2[i]===q[2],nr=sel.value===q[3];if(fr)ok++;if(nr)ok++;sel.className='nsel '+(nr?'ok':'no');
+    fb.className='feedback '+(fr&&nr?'good':'bad');
+    fb.innerHTML=(fr?'✓ Form':'✗ Form: '+esc(q[1][q[2]]))+' · '+(nr?'✓ Name':'✗ Name: '+T[q[3]].name)+'<span class="why">'+T[q[3]].name+': '+q[4]+'</span>';
+    lines.push(`${fr?'✓':'✗'}${nr?'✓':'✗'} ${q[0]} → ${a2[i]===undefined?'(no form)':q[1][a2[i]]} / ${nameOf(sel.value)}${fr&&nr?'':' (correct: '+q[1][q[2]]+' / '+T[q[3]].name+')'}`);
+  });
+  document.getElementById('s2').textContent=ok+' / '+Q2.length*2;
+  results.ex2=`2. Tricky pairs (form + name): ${ok}/${Q2.length*2}\n`+lines.join('\n');done.ex2=true;updateProgress();
+}
+function reset2(){a2={};render2();document.getElementById('s2').textContent='';done.ex2=false;results.ex2='';updateProgress();}
+render2();
+
+/* ---------- Ex 3: find, fix and name ---------- */
+const F3=[
+  ['I','have seen','that film last night.',['saw'],'pa','<i>Last night</i> is a finished time.'],
+  ['Listen! Somebody','sings','in the garden.',['is singing'],'pp','<i>Listen!</i> means it is happening now.'],
+  ['I','am knowing','the answer to question 5.',['know'],'ps','<i>Know</i> is a state verb: no -ing.'],
+  ['She','lives','in Barcelona since 2020.',["has lived","'s lived"],'pf','<i>Since</i> + a starting point.'],
+  ['I','cooked','dinner when the doorbell rang.',['was cooking'],'pg','A long action interrupted by a short one.'],
+  ['I','will visit',"my aunt next week. I've already bought the ticket.",['am going to visit',"'m going to visit",'am visiting',"'m visiting"],'gt','A plan made before (ticket bought).'],
+  ['"It\'s cold in here." "Oh, I','am going to close','the window."',['will close',"'ll close"],'wf','A decision made right now.'],
+  ['My dad','don\'t drink','coffee.',["doesn't drink",'does not drink'],'ps','He / she / it → <i>doesn\'t</i>.'],
+  ['We','were','in Paris three times in our lives.',['have been',"'ve been"],'pf','Life experience (in our lives).'],
+  ['They','are watching','TV every evening after dinner.',['watch'],'ps','<i>Every evening</i> is a habit.'],
+  ['Last year I','have travelled','to Italy with my sister.',['travelled','traveled'],'pa','<i>Last year</i> is a finished time.']
+];
+document.getElementById('fix').innerHTML=F3.map((f,i)=>`<li>${esc(f[0])} <span class="wrongv">${esc(f[1])}</span> ${esc(f[2])}<div class="fixline">Correct form: <input id="f${i}" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Correct form for sentence ${i+1}"> ${nameSel('n3_'+i,'Tense name for sentence '+(i+1))}</div><span class="ans" id="fa${i}"></span></li>`).join('');
+function check3(){
+  let ok=0;const lines=[];
+  F3.forEach((f,i)=>{const inp=document.getElementById('f'+i),sel=document.getElementById('n3_'+i),out=document.getElementById('fa'+i),fr=matches(inp.value,f[3]),nr=sel.value===f[4];
+    if(fr)ok++;if(nr)ok++;inp.className=fr?'ok':'no';sel.className='nsel '+(nr?'ok':'no');
+    out.className='ans '+(fr&&nr?'good':'bad');
+    out.innerHTML=(fr?'✓ Form':'✗ Form: '+esc(first(f[3])))+' · '+(nr?'✓ Name':'✗ Name: '+T[f[4]].name)+'<span class="why">'+T[f[4]].name+': '+f[5]+'</span>';
+    lines.push(`${fr?'✓':'✗'}${nr?'✓':'✗'} ${f[0]} [${f[1]}] ${f[2]} → ${inp.value.trim()||'(empty)'} / ${nameOf(sel.value)}${fr&&nr?'':' (correct: '+first(f[3])+' / '+T[f[4]].name+')'}`);});
+  document.getElementById('s3').textContent=ok+' / '+F3.length*2;
+  results.ex3=`3. Find, fix and name: ${ok}/${F3.length*2}\n`+lines.join('\n');done.ex3=true;updateProgress();
+}
+function reset3(){F3.forEach((f,i)=>{const inp=document.getElementById('f'+i),sel=document.getElementById('n3_'+i);inp.value='';inp.className='';sel.value='';sel.className='nsel';document.getElementById('fa'+i).innerHTML='';});document.getElementById('s3').textContent='';done.ex3=false;results.ex3='';updateProgress();}
+
+/* ---------- Send ---------- */
+function buildBody(){const name=document.getElementById('nameInput').value.trim()||'Anonymous';const parts=Object.keys(results).map((k,i)=>results[k]||`${i+1}. (not checked)`);return{name,text:`Student: ${name}\nHomework: ${TITLE}\n\n`+parts.join('\n\n')};}
+function sendToTeacher(){const{name,text}=buildBody();const subject=encodeURIComponent(`Homework – ${name} – ${TITLE}`);const body=encodeURIComponent(text);document.getElementById('sendMsg').textContent='Opening your email app…';window.location.href=`mailto:${TEACHER}?subject=${subject}&body=${body}`;}
+function copyAnswers(){const{text}=buildBody(),box=document.getElementById('copyBox'),msg=document.getElementById('sendMsg');box.value=text;const fb=()=>{box.hidden=false;box.focus();box.select();msg.textContent='Select all and copy the text below.';};try{navigator.clipboard.writeText(text).then(()=>{msg.textContent='Copied ✓';},fb);}catch(e){fb();}}
+</script>
