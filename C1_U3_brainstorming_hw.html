@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 3A · Ideas — Homework 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+  <style>
+    :root {
+      --bg:#f7f6f3;--surface:#ffffff;--border:#e4e2da;--text:#1c1a17;--muted:#6b6860;
+      --accent:#5B21B6;--accent-l:#EDE9FE;--radius:14px;--shadow:0 2px 14px rgba(0,0,0,.07);
+      --stc:#7C3AED;
+    }
+    @media (prefers-color-scheme:dark) {
+      :root:not([data-theme="light"]) {
+        --bg:#18171b;--surface:#232129;--border:#353040;--text:#f0edf6;--muted:#9e99ab;
+        --accent:#9061F9;--accent-l:#2D1B69;--stc:#9061F9;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg:#18171b;--surface:#232129;--border:#353040;--text:#f0edf6;--muted:#9e99ab;
+      --accent:#9061F9;--accent-l:#2D1B69;--stc:#9061F9;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);line-height:1.65;min-height:100vh}
+
+    /* HEADER */
+    .hw-header{background:linear-gradient(135deg,#3B0764 0%,#6D28D9 55%,#7C3AED 100%);color:#fff;padding:2.5rem 2rem 2rem;position:relative;overflow:hidden}
+    .header-dots{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.08) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+    .header-inner{max-width:760px;margin:0 auto;position:relative}
+    .hw-eyebrow{font-family:"Outfit",sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:.35rem}
+    .hw-header h1{font-family:"Outfit",sans-serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;line-height:1.1;margin-bottom:.5rem}
+    .hw-sub{font-size:.88rem;color:rgba(255,255,255,.72)}
+    .theme-btn{position:absolute;top:0;right:0;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:8px;padding:.35rem .7rem;color:#fff;cursor:pointer;font-size:.78rem;font-family:"DM Sans",sans-serif}
+    .theme-btn:hover{background:rgba(255,255,255,.25)}
+
+    /* NAME BAR */
+    .name-bar{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1.25rem;display:flex;align-items:center;gap:.75rem;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+    .name-bar label{font-size:.83rem;font-weight:600;color:var(--muted);white-space:nowrap}
+    .name-bar input{flex:1;max-width:300px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;font-size:.88rem;padding:.38rem .75rem;outline:none;transition:border-color .15s}
+    .name-bar input:focus{border-color:var(--stc)}
+
+    /* PROGRESS */
+    .progress-wrap{max-width:760px;margin:.9rem auto 0;padding:0 1.25rem}
+    .prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem;font-size:.8rem;color:var(--muted)}
+    .prog-track{height:6px;background:var(--border);border-radius:99px;overflow:hidden}
+    .prog-fill{height:100%;background:var(--stc);border-radius:99px;transition:width .4s ease;width:0%}
+
+    /* MAIN */
+    main{max-width:760px;margin:0 auto;padding:1.5rem 1.25rem 5rem}
+
+    /* EXERCISE CARDS */
+    .ex-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem 1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow)}
+    .ex-hd{display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem}
+    .ex-num{font-family:"Outfit",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--stc);background:color-mix(in srgb,var(--stc) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--stc) 25%,var(--border));border-radius:100px;padding:.15rem .65rem}
+    .ex-title{font-family:"Outfit",sans-serif;font-size:1rem;font-weight:700;color:var(--text)}
+    .ex-instr{font-size:.88rem;color:var(--muted);margin-bottom:1.1rem;line-height:1.55}
+
+    /* MCQ */
+    .mcq-item{margin-bottom:1.3rem;padding-bottom:1.3rem;border-bottom:1px solid var(--border)}
+    .mcq-item:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}
+    .mcq-q{font-size:.92rem;font-weight:500;margin-bottom:.55rem;line-height:1.5}
+    .mcq-opts{display:flex;flex-direction:column;gap:.38rem}
+    .mcq-btn{display:flex;align-items:flex-start;gap:.55rem;padding:.5rem .85rem;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-family:"DM Sans",sans-serif;font-size:.87rem;text-align:left;transition:all .15s;width:100%}
+    .mcq-btn:hover:not([disabled]){border-color:var(--stc);background:color-mix(in srgb,var(--stc) 7%,var(--surface))}
+    .mcq-btn.correct{background:#dcfce7;border-color:#16a34a;color:#15803d}
+    .mcq-btn.wrong{background:#fee2e2;border-color:#dc2626;color:#b91c1c}
+    .mcq-btn[disabled]{cursor:default}
+    :root[data-theme="dark"] .mcq-btn.correct,:root:not([data-theme="light"]) .mcq-btn.correct{background:#14532d;border-color:#16a34a;color:#86efac}
+    :root[data-theme="dark"] .mcq-btn.wrong,:root:not([data-theme="light"]) .mcq-btn.wrong{background:#450a0a;border-color:#dc2626;color:#fca5a5}
+    @media(prefers-color-scheme:dark){
+      :root:not([data-theme="light"]) .mcq-btn.correct{background:#14532d;border-color:#16a34a;color:#86efac}
+      :root:not([data-theme="light"]) .mcq-btn.wrong{background:#450a0a;border-color:#dc2626;color:#fca5a5}
+    }
+    .mcq-fb{display:none;margin-top:.5rem;font-size:.82rem;padding:.45rem .75rem;border-radius:8px;line-height:1.5}
+    .mcq-fb.show-fb{display:block}
+    .fb-correct{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
+    .fb-wrong{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca}
+    :root[data-theme="dark"] .fb-correct,:root:not([data-theme="light"]) .fb-correct{background:#14532d;color:#86efac;border-color:#166534}
+    :root[data-theme="dark"] .fb-wrong,:root:not([data-theme="light"]) .fb-wrong{background:#450a0a;color:#fca5a5;border-color:#991b1b}
+    @media(prefers-color-scheme:dark){
+      :root:not([data-theme="light"]) .fb-correct{background:#14532d;color:#86efac;border-color:#166534}
+      :root:not([data-theme="light"]) .fb-wrong{background:#450a0a;color:#fca5a5;border-color:#991b1b}
+    }
+
+    /* GAP-FILL */
+    .gf-item{margin-bottom:.9rem;padding:.75rem .9rem;background:color-mix(in srgb,var(--stc) 5%,var(--surface));border:1px solid var(--border);border-radius:10px;font-size:.91rem;line-height:1.7}
+    .gf-label{font-family:"Outfit",sans-serif;font-size:.72rem;font-weight:700;color:var(--stc);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+    .gf-input{border:none;border-bottom:2px solid var(--stc);background:transparent;color:var(--text);font-family:"DM Sans",sans-serif;font-size:.91rem;padding:.1rem .3rem;outline:none;width:130px;transition:border-color .2s}
+    .gf-input:focus{border-bottom-color:var(--accent)}
+    .gf-input.gf-correct{border-bottom-color:#16a34a;background:color-mix(in srgb,#16a34a 10%,transparent)}
+    .gf-input.gf-wrong{border-bottom-color:#dc2626;background:color-mix(in srgb,#dc2626 10%,transparent)}
+    .gf-answer{display:none;font-size:.79rem;color:#16a34a;font-weight:600;margin-left:.3rem}
+    .gf-input.gf-wrong ~ .gf-answer{display:inline}
+
+    /* MATCH */
+    .match-row{display:grid;grid-template-columns:1fr 1.3fr;gap:.75rem;align-items:center;padding:.6rem .75rem;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;margin-bottom:.5rem;font-size:.89rem;transition:border-color .2s}
+    .match-row.mc{border-color:#16a34a}
+    .match-row.mw{border-color:#dc2626}
+    .match-term{font-weight:600;color:var(--stc)}
+    .match-sel{border:1.5px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;font-size:.83rem;padding:.32rem .5rem;width:100%}
+    .match-sel:disabled{opacity:.8;cursor:default}
+
+    /* BUTTONS */
+    .btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.1rem}
+    .btn{padding:.5rem 1.1rem;border-radius:8px;font-family:"DM Sans",sans-serif;font-size:.86rem;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+    .btn-check{background:var(--stc);color:#fff}
+    .btn-check:hover{filter:brightness(1.1)}
+    .btn-check:disabled{opacity:.45;cursor:default}
+    .btn-reset{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
+    .btn-reset:hover{border-color:var(--text);color:var(--text)}
+
+    /* STATUS */
+    .ex-status{font-size:.84rem;min-height:1.3rem;margin-top:.5rem;font-weight:500}
+    .s-done{color:#16a34a}
+    .s-partial{color:#b45309}
+
+    /* SEND CARD */
+    .send-card{background:color-mix(in srgb,var(--stc) 8%,var(--surface));border:1.5px dashed color-mix(in srgb,var(--stc) 35%,var(--border));border-radius:var(--radius);padding:1.4rem 1.5rem;margin-top:2rem;text-align:center}
+    .send-title{font-family:"Outfit",sans-serif;font-size:1rem;font-weight:700;color:var(--stc);margin-bottom:.35rem}
+    .send-sub{font-size:.85rem;color:var(--muted);margin-bottom:1rem}
+    .btn-send{background:var(--stc);color:#fff;padding:.6rem 1.6rem;border-radius:10px;font-family:"DM Sans",sans-serif;font-size:.9rem;font-weight:700;border:none;cursor:pointer;transition:all .15s}
+    .btn-send:hover{filter:brightness(1.1)}
+  </style>
+</head>
+<body>
+
+<header class="hw-header">
+  <div class="header-dots"></div>
+  <div class="header-inner">
+    <button class="theme-btn" onclick="toggleTheme()">&#9788; / &#9790;</button>
+    <div class="hw-eyebrow">Homework &mdash; Unit 3A &middot; B2&ndash;C1</div>
+    <h1>Ideas 💡</h1>
+    <div class="hw-sub">Lesson 1: Question Forms &amp; Brainstorming Techniques &nbsp;·&nbsp; ≈ 20–30 min</div>
+  </div>
+</header>
+
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<div class="progress-wrap">
+  <div class="prog-row">
+    <span>Progress</span>
+    <span id="plabel">0 / 3</span>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="pfill"></div></div>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════════════
+     EXERCISE 1 — Which technique fits?
+     ══════════════════════════════════════ -->
+<div class="ex-card" id="ex1-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 1</span>
+    <span class="ex-title">Which technique fits?</span>
+  </div>
+  <div class="ex-instr">Choose the best brainstorming technique for each situation. Tap your answer — you'll see instant feedback.</div>
+
+  <!-- Q1 -->
+  <div class="mcq-item" id="mcq1">
+    <div class="mcq-q">1. A UX team wants to understand the experience of elderly users who struggle with technology. Which technique would be most useful?</div>
+    <div class="mcq-opts">
+      <button class="mcq-btn" data-item="mcq1" data-letter="A" data-correct="false" data-explain="Role Storming is the best fit — it lets team members take on specific personas and generate ideas from that perspective, which is perfect for building empathy." onclick="mcqPick(this)">A &nbsp; Round Robin</button>
+      <button class="mcq-btn" data-correct="true" data-item="mcq1" data-letter="B" data-correct="true" data-explain="Exactly! Role Storming means taking on a persona — here, acting as an elderly user — to see challenges through their eyes." onclick="mcqPick(this)">B &nbsp; Role Storming</button>
+      <button class="mcq-btn" data-item="mcq1" data-letter="C" data-correct="false" data-explain="Quiet Brainstorming reduces social pressure but doesn\'t help the team think from a different perspective." onclick="mcqPick(this)">C &nbsp; Quiet Brainstorming</button>
+      <button class="mcq-btn" data-item="mcq1" data-letter="D" data-correct="false" data-explain="Reverse Brainstorming is useful for escaping creative ruts, not specifically for building empathy with a user group." onclick="mcqPick(this)">D &nbsp; Reverse Brainstorming</button>
+    </div>
+    <div class="mcq-fb" id="mcq1-fb"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="mcq-item" id="mcq2">
+    <div class="mcq-q">2. Every brainstorming session produces the same five ideas. The team feels completely stuck. Which technique would break this pattern?</div>
+    <div class="mcq-opts">
+      <button class="mcq-btn" data-item="mcq2" data-letter="A" data-correct="false" data-explain="Round Robin gives everyone a voice but doesn\'t fundamentally change the type of thinking the team uses." onclick="mcqPick(this)">A &nbsp; Round Robin</button>
+      <button class="mcq-btn" data-item="mcq2" data-letter="B" data-correct="false" data-explain="Quiet Brainstorming helps introverts contribute but won\'t necessarily break a team out of a creative rut." onclick="mcqPick(this)">B &nbsp; Quiet Brainstorming</button>
+      <button class="mcq-btn" data-item="mcq2" data-letter="C" data-correct="false" data-explain="Role Storming would add perspective-taking but isn\'t the primary technique for breaking repetitive thinking patterns." onclick="mcqPick(this)">C &nbsp; Role Storming</button>
+      <button class="mcq-btn" data-item="mcq2" data-letter="D" data-correct="true" data-explain="Correct! Reverse Brainstorming asks how we could make this WORSE — inverting the problem forces genuinely new thinking and breaks the cycle." onclick="mcqPick(this)">D &nbsp; Reverse Brainstorming</button>
+    </div>
+    <div class="mcq-fb" id="mcq2-fb"></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="mcq-item" id="mcq3">
+    <div class="mcq-q">3. In team meetings, one or two people always dominate. You want to ensure every voice is heard in a fair, structured way. Which technique is best?</div>
+    <div class="mcq-opts">
+      <button class="mcq-btn" data-correct="true" data-item="mcq3" data-letter="A" data-correct="true" data-explain="Exactly! Round Robin gives each person exactly one turn at a time, going around in order — no one can dominate or be left out." onclick="mcqPick(this)">A &nbsp; Round Robin</button>
+      <button class="mcq-btn" data-item="mcq3" data-letter="B" data-correct="false" data-explain="Reverse Brainstorming reframes the problem but doesn\'t inherently change who speaks or how much." onclick="mcqPick(this)">B &nbsp; Reverse Brainstorming</button>
+      <button class="mcq-btn" data-item="mcq3" data-letter="C" data-correct="false" data-explain="Role Storming adds personas but doesn\'t prevent some voices being heard more than others." onclick="mcqPick(this)">C &nbsp; Role Storming</button>
+      <button class="mcq-btn" data-item="mcq3" data-letter="D" data-correct="false" data-explain="Quiet Brainstorming reduces social pressure, but it\'s primarily about writing silently — not about structuring turn-taking." onclick="mcqPick(this)">D &nbsp; Quiet Brainstorming</button>
+    </div>
+    <div class="mcq-fb" id="mcq3-fb"></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="mcq-item" id="mcq4">
+    <div class="mcq-q">4. Several team members say they freeze up when generating ideas in front of colleagues. Which technique reduces this pressure?</div>
+    <div class="mcq-opts">
+      <button class="mcq-btn" data-item="mcq4" data-letter="A" data-correct="false" data-explain="Role Storming adds a layer of persona, which can help slightly, but it doesn\'t remove the pressure of being watched." onclick="mcqPick(this)">A &nbsp; Role Storming</button>
+      <button class="mcq-btn" data-item="mcq4" data-letter="B" data-correct="false" data-explain="Round Robin means taking turns aloud, which can still feel pressurising for anxious team members." onclick="mcqPick(this)">B &nbsp; Round Robin</button>
+      <button class="mcq-btn" data-correct="true" data-item="mcq4" data-letter="C" data-correct="true" data-explain="Correct! Quiet Brainstorming has everyone write ideas silently, so there\'s no performance pressure or fear of judgement in the moment." onclick="mcqPick(this)">C &nbsp; Quiet Brainstorming</button>
+      <button class="mcq-btn" data-item="mcq4" data-letter="D" data-correct="false" data-explain="Reverse Brainstorming reframes the task but doesn\'t address the social anxiety of generating ideas in public." onclick="mcqPick(this)">D &nbsp; Reverse Brainstorming</button>
+    </div>
+    <div class="mcq-fb" id="mcq4-fb"></div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="mcq-item" id="mcq5">
+    <div class="mcq-q">5. A startup needs to find gaps in a competitor's product. They want to think like that competitor's frustrated customers. Which technique fits?</div>
+    <div class="mcq-opts">
+      <button class="mcq-btn" data-item="mcq5" data-letter="A" data-correct="false" data-explain="Round Robin ensures equal participation but doesn\'t guide the team to think from a specific external perspective." onclick="mcqPick(this)">A &nbsp; Round Robin</button>
+      <button class="mcq-btn" data-item="mcq5" data-letter="B" data-correct="false" data-explain="Quiet Brainstorming reduces social pressure but doesn\'t shift the team\'s perspective towards a specific user persona." onclick="mcqPick(this)">B &nbsp; Quiet Brainstorming</button>
+      <button class="mcq-btn" data-item="mcq5" data-letter="C" data-correct="false" data-explain="Reverse Brainstorming asks how we could make this worse — useful for creativity, but not specifically for adopting a customer persona." onclick="mcqPick(this)">C &nbsp; Reverse Brainstorming</button>
+      <button class="mcq-btn" data-correct="true" data-item="mcq5" data-letter="D" data-correct="true" data-explain="Exactly! Role Storming means acting as a specific persona — here, a frustrated competitor customer — to generate ideas from that point of view." onclick="mcqPick(this)">D &nbsp; Role Storming</button>
+    </div>
+    <div class="mcq-fb" id="mcq5-fb"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" id="ex1-check-btn" onclick="markEx1Done()">Mark as complete ✓</button>
+    <button class="btn btn-reset" onclick="resetEx1()">Reset</button>
+  </div>
+  <div class="ex-status" id="ex1-status"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     EXERCISE 2 — Question forms gap-fill
+     ══════════════════════════════════════ -->
+<div class="ex-card" id="ex2-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 2</span>
+    <span class="ex-title">Complete the questions</span>
+  </div>
+  <div class="ex-instr">Fill each gap with the missing word(s) to form the correct question type. Each item tells you which type to use.</div>
+
+  <div class="gf-item" id="gf1">
+    <div class="gf-label">Question tag</div>
+    The new technique worked really well in that session,
+    <input class="gf-input" id="gi1" data-ans="didn't it,didn't it?" placeholder="…" autocomplete="off">
+    <span class="gf-answer" id="ga1">→ didn't it?</span>
+  </div>
+
+  <div class="gf-item" id="gf2">
+    <div class="gf-label">Negative question</div>
+    <input class="gf-input" id="gi2" data-ans="shouldn't,shouldn't we,couldn't,couldn't we,wouldn't,wouldn't we" placeholder="…" autocomplete="off">
+    we try Quiet Brainstorming instead of talking it through?
+    <span class="gf-answer" id="ga2">→ Shouldn't / Couldn't / Wouldn't</span>
+  </div>
+
+  <div class="gf-item" id="gf3">
+    <div class="gf-label">Echo question (wh-)</div>
+    A: "We completely changed the format last time."
+    &nbsp;&nbsp;B: "Changed
+    <input class="gf-input" id="gi3" data-ans="what,what?" placeholder="…" autocomplete="off">
+    I missed that."
+    <span class="gf-answer" id="ga3">→ what?</span>
+  </div>
+
+  <div class="gf-item" id="gf4">
+    <div class="gf-label">You mean… (clarification)</div>
+    <input class="gf-input" id="gi4" data-ans="so you're saying,so you're saying,do you mean,you mean" placeholder="…" autocomplete="off">
+    the team felt less pressure because nobody had to speak first?
+    <span class="gf-answer" id="ga4">→ So you're saying / Do you mean</span>
+  </div>
+
+  <div class="gf-item" id="gf5">
+    <div class="gf-label">Indirect question</div>
+    Could you explain
+    <input class="gf-input" id="gi5" data-ans="how,why,what" placeholder="…" autocomplete="off">
+    the Round Robin technique is different from a regular brainstorm?
+    <span class="gf-answer" id="ga5">→ how / why / what</span>
+  </div>
+
+  <div class="gf-item" id="gf6">
+    <div class="gf-label">Cleft question</div>
+    <input class="gf-input" id="gi6" data-ans="what is it,what is it that" placeholder="…" autocomplete="off">
+    that you find most challenging about running these sessions?
+    <span class="gf-answer" id="ga6">→ What is it</span>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx2()">Check ✓</button>
+    <button class="btn btn-reset" onclick="resetEx2()">Reset</button>
+  </div>
+  <div class="ex-status" id="ex2-status"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     EXERCISE 3 — Match question types
+     ══════════════════════════════════════ -->
+<div class="ex-card" id="ex3-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 3</span>
+    <span class="ex-title">Match the question type</span>
+  </div>
+  <div class="ex-instr">Match each question type (left) to its key feature (right). Select from the dropdown.</div>
+
+  <div class="match-row" id="mr1">
+    <span class="match-term">Question tag</span>
+    <select class="match-sel" id="ms1" data-correct="A">
+      <option value="">— select —</option>
+      <option value="A">A – Added to the end of a statement to check or invite agreement</option>
+      <option value="B">B – Begins with a negative auxiliary to suggest or express surprise</option>
+      <option value="C">C – Repeats a key word from what was just said, with rising intonation or a wh-word</option>
+      <option value="D">D – Uses "So you're saying…" or "You mean…" to check understanding</option>
+      <option value="E">E – Intro phrase + subject + verb (no inversion)</option>
+      <option value="F">F – "What is it that…" — highlights one specific part of the message</option>
+    </select>
+  </div>
+
+  <div class="match-row" id="mr2">
+    <span class="match-term">Negative question</span>
+    <select class="match-sel" id="ms2" data-correct="B">
+      <option value="">— select —</option>
+      <option value="A">A – Added to the end of a statement to check or invite agreement</option>
+      <option value="B">B – Begins with a negative auxiliary to suggest or express surprise</option>
+      <option value="C">C – Repeats a key word from what was just said, with rising intonation or a wh-word</option>
+      <option value="D">D – Uses "So you're saying…" or "You mean…" to check understanding</option>
+      <option value="E">E – Intro phrase + subject + verb (no inversion)</option>
+      <option value="F">F – "What is it that…" — highlights one specific part of the message</option>
+    </select>
+  </div>
+
+  <div class="match-row" id="mr3">
+    <span class="match-term">Echo question</span>
+    <select class="match-sel" id="ms3" data-correct="C">
+      <option value="">— select —</option>
+      <option value="A">A – Added to the end of a statement to check or invite agreement</option>
+      <option value="B">B – Begins with a negative auxiliary to suggest or express surprise</option>
+      <option value="C">C – Repeats a key word from what was just said, with rising intonation or a wh-word</option>
+      <option value="D">D – Uses "So you're saying…" or "You mean…" to check understanding</option>
+      <option value="E">E – Intro phrase + subject + verb (no inversion)</option>
+      <option value="F">F – "What is it that…" — highlights one specific part of the message</option>
+    </select>
+  </div>
+
+  <div class="match-row" id="mr4">
+    <span class="match-term">You mean…</span>
+    <select class="match-sel" id="ms4" data-correct="D">
+      <option value="">— select —</option>
+      <option value="A">A – Added to the end of a statement to check or invite agreement</option>
+      <option value="B">B – Begins with a negative auxiliary to suggest or express surprise</option>
+      <option value="C">C – Repeats a key word from what was just said, with rising intonation or a wh-word</option>
+      <option value="D">D – Uses "So you're saying…" or "You mean…" to check understanding</option>
+      <option value="E">E – Intro phrase + subject + verb (no inversion)</option>
+      <option value="F">F – "What is it that…" — highlights one specific part of the message</option>
+    </select>
+  </div>
+
+  <div class="match-row" id="mr5">
+    <span class="match-term">Indirect question</span>
+    <select class="match-sel" id="ms5" data-correct="E">
+      <option value="">— select —</option>
+      <option value="A">A – Added to the end of a statement to check or invite agreement</option>
+      <option value="B">B – Begins with a negative auxiliary to suggest or express surprise</option>
+      <option value="C">C – Repeats a key word from what was just said, with rising intonation or a wh-word</option>
+      <option value="D">D – Uses "So you're saying…" or "You mean…" to check understanding</option>
+      <option value="E">E – Intro phrase + subject + verb (no inversion)</option>
+      <option value="F">F – "What is it that…" — highlights one specific part of the message</option>
+    </select>
+  </div>
+
+  <div class="match-row" id="mr6">
+    <span class="match-term">Cleft question</span>
+    <select class="match-sel" id="ms6" data-correct="F">
+      <option value="">— select —</option>
+      <option value="A">A – Added to the end of a statement to check or invite agreement</option>
+      <option value="B">B – Begins with a negative auxiliary to suggest or express surprise</option>
+      <option value="C">C – Repeats a key word from what was just said, with rising intonation or a wh-word</option>
+      <option value="D">D – Uses "So you're saying…" or "You mean…" to check understanding</option>
+      <option value="E">E – Intro phrase + subject + verb (no inversion)</option>
+      <option value="F">F – "What is it that…" — highlights one specific part of the message</option>
+    </select>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx3()">Check ✓</button>
+    <button class="btn btn-reset" onclick="resetEx3()">Reset</button>
+  </div>
+  <div class="ex-status" id="ex3-status"></div>
+</div>
+
+
+<!-- SEND TO TEACHER -->
+<div class="send-card">
+  <div class="send-title">📨 Send to your teacher</div>
+  <div class="send-sub">When you've finished all three exercises, send your answers to your teacher.</div>
+  <button class="btn-send" onclick="sendToTeacher()">Send to Teacher</button>
+</div>
+
+</main>
+
+<script>
+// ── PROGRESS ──────────────────────────────────────────────
+const done = { ex1: false, ex2: false, ex3: false };
+function updateProgress() {
+  var n = Object.values(done).filter(Boolean).length;
+  var total = Object.keys(done).length;
+  document.getElementById('pfill').style.width = (n / total * 100) + '%';
+  document.getElementById('plabel').textContent = n + ' / ' + total;
+}
+
+// ── THEME ─────────────────────────────────────────────────
+function toggleTheme() {
+  var r = document.documentElement;
+  var cur = r.getAttribute('data-theme');
+  r.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+}
+
+// ── EXERCISE 1: MCQ ───────────────────────────────────────
+var ex1Answered = { mcq1:false, mcq2:false, mcq3:false, mcq4:false, mcq5:false };
+
+function mcqPick(btn) {
+  var itemId = btn.dataset.item;
+  var isCorrect = btn.dataset.correct === 'true';
+  var explanation = btn.dataset.explain;
+  var item = document.getElementById(itemId);
+  if (item.querySelector('.mcq-btn[disabled]')) return;
+  var allBtns = item.querySelectorAll('.mcq-btn');
+  allBtns.forEach(function(b) { b.disabled = true; });
+  var fb = document.getElementById(itemId + '-fb');
+  if (isCorrect) {
+    btn.classList.add('correct');
+    fb.textContent = '✓ ' + explanation;
+    fb.className = 'mcq-fb show-fb fb-correct';
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(function(b) { if (b.dataset.correct === 'true') b.classList.add('correct'); });
+    fb.textContent = '✗ ' + explanation;
+    fb.className = 'mcq-fb show-fb fb-wrong';
+  }
+  ex1Answered[itemId] = true;
+}
+
+function markEx1Done() {
+  done.ex1 = true;
+  document.getElementById('ex1-check-btn').disabled = true;
+  document.getElementById('ex1-status').innerHTML = '<span class="s-done">✓ Exercise 1 complete</span>';
+  updateProgress();
+}
+
+function resetEx1() {
+  ['mcq1','mcq2','mcq3','mcq4','mcq5'].forEach(function(id) {
+    var item = document.getElementById(id);
+    item.querySelectorAll('.mcq-btn').forEach(function(b) {
+      b.disabled = false;
+      b.classList.remove('correct','wrong');
+    });
+    var fb = document.getElementById(id + '-fb');
+    fb.textContent = '';
+    fb.className = 'mcq-fb';
+    ex1Answered[id] = false;
+  });
+  done.ex1 = false;
+  document.getElementById('ex1-check-btn').disabled = false;
+  document.getElementById('ex1-status').textContent = '';
+  updateProgress();
+}
+
+// ── EXERCISE 2: GAP-FILL ──────────────────────────────────
+function checkEx2() {
+  var total = 6; var correct = 0;
+  for (var i = 1; i <= 6; i++) {
+    var inp = document.getElementById('gi' + i);
+    var ans = document.getElementById('ga' + i);
+    var val = inp.value.trim().toLowerCase();
+    var accepted = inp.dataset.ans.split(',').map(function(a){return a.trim().toLowerCase();});
+    inp.classList.remove('gf-correct','gf-wrong');
+    ans.style.display = 'none';
+    if (val === '') continue;
+    if (accepted.indexOf(val) !== -1) {
+      inp.classList.add('gf-correct');
+      correct++;
+    } else {
+      inp.classList.add('gf-wrong');
+      ans.style.display = 'inline';
+    }
+  }
+  var status = document.getElementById('ex2-status');
+  if (correct === total) {
+    status.innerHTML = '<span class="s-done">✓ All correct! Exercise 2 complete.</span>';
+    done.ex2 = true;
+  } else {
+    status.innerHTML = '<span class="s-partial">' + correct + ' / ' + total + ' correct — check the highlighted gaps</span>';
+    done.ex2 = false;
+  }
+  updateProgress();
+}
+
+function resetEx2() {
+  for (var i = 1; i <= 6; i++) {
+    var inp = document.getElementById('gi' + i);
+    inp.value = '';
+    inp.classList.remove('gf-correct','gf-wrong');
+    document.getElementById('ga' + i).style.display = 'none';
+  }
+  done.ex2 = false;
+  document.getElementById('ex2-status').textContent = '';
+  updateProgress();
+}
+
+// ── EXERCISE 3: MATCH ─────────────────────────────────────
+function checkEx3() {
+  var total = 6; var correct = 0;
+  for (var i = 1; i <= 6; i++) {
+    var sel = document.getElementById('ms' + i);
+    var row = document.getElementById('mr' + i);
+    row.classList.remove('mc','mw');
+    if (!sel.value) continue;
+    if (sel.value === sel.dataset.correct) {
+      row.classList.add('mc');
+      correct++;
+    } else {
+      row.classList.add('mw');
+    }
+  }
+  var status = document.getElementById('ex3-status');
+  if (correct === total) {
+    status.innerHTML = '<span class="s-done">✓ Perfect! Exercise 3 complete.</span>';
+    done.ex3 = true;
+  } else {
+    status.innerHTML = '<span class="s-partial">' + correct + ' / ' + total + ' correct — review the highlighted rows</span>';
+    done.ex3 = false;
+  }
+  updateProgress();
+}
+
+function resetEx3() {
+  for (var i = 1; i <= 6; i++) {
+    document.getElementById('ms' + i).value = '';
+    document.getElementById('mr' + i).classList.remove('mc','mw');
+  }
+  done.ex3 = false;
+  document.getElementById('ex3-status').textContent = '';
+  updateProgress();
+}
+
+// ── SEND TO TEACHER ───────────────────────────────────────
+function sendToTeacher() {
+  var name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+  // Ex1 answers
+  var ex1Lines = '';
+  var mcqLabels = [
+    '1. UX team + elderly users',
+    '2. Team stuck in a rut',
+    '3. Dominated by one voice',
+    '4. Team freezes up',
+    '5. Competitor\'s customers'
+  ];
+  ['mcq1','mcq2','mcq3','mcq4','mcq5'].forEach(function(id, idx) {
+    var item = document.getElementById(id);
+    var chosen = item.querySelector('.mcq-btn[disabled].correct, .mcq-btn[disabled].wrong');
+    if (chosen) {
+      var letter = chosen.textContent.trim().charAt(0);
+      var status = chosen.classList.contains('correct') ? '✓' : '✗';
+      ex1Lines += (idx+1) + '. ' + mcqLabels[idx] + ' → ' + letter + ' ' + status + '\n';
+    } else {
+      ex1Lines += (idx+1) + '. ' + mcqLabels[idx] + ' → not answered\n';
+    }
+  });
+
+  // Ex2 answers
+  var gfLabels = ['Q-tag','Negative Q','Echo Q','You mean…','Indirect Q','Cleft Q'];
+  var ex2Lines = '';
+  for (var i = 1; i <= 6; i++) {
+    var inp = document.getElementById('gi' + i);
+    var val = inp.value.trim() || '(blank)';
+    var status2 = inp.classList.contains('gf-correct') ? '✓' : inp.classList.contains('gf-wrong') ? '✗' : '–';
+    ex2Lines += i + '. [' + gfLabels[i-1] + '] "' + val + '" ' + status2 + '\n';
+  }
+
+  // Ex3 answers
+  var matchLabels = ['Question tag','Negative question','Echo question','You mean…','Indirect question','Cleft question'];
+  var ex3Lines = '';
+  for (var j = 1; j <= 6; j++) {
+    var sel = document.getElementById('ms' + j);
+    var selVal = sel.value || '(not selected)';
+    var mRow = document.getElementById('mr' + j);
+    var mStatus = mRow.classList.contains('mc') ? '✓' : mRow.classList.contains('mw') ? '✗' : '–';
+    ex3Lines += j + '. ' + matchLabels[j-1] + ' → ' + selVal + ' ' + mStatus + '\n';
+  }
+
+  var body = 'Student: ' + name + '\nUnit 3A · Ideas — Homework 1\n\n'
+    + '── Exercise 1: Which technique fits? ──\n' + ex1Lines
+    + '\n── Exercise 2: Question form gap-fill ──\n' + ex2Lines
+    + '\n── Exercise 3: Match the question type ──\n' + ex3Lines
+    + '\nProgress: '
+    + (done.ex1 ? 'Ex1 ✓' : 'Ex1 ✗') + ' | '
+    + (done.ex2 ? 'Ex2 ✓' : 'Ex2 ✗') + ' | '
+    + (done.ex3 ? 'Ex3 ✓' : 'Ex3 ✗');
+
+  var subject = 'Homework – ' + name + ' – Unit 3A Ideas L1';
+  window.location.href = 'mailto:dariia.mlnk@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+}
+</script>
+</body>
+</html>
