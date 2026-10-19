@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 5A Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --ind:     #4338CA;
+  --ind-dk:  #312E81;
+  --ind-lt:  #EEF2FF;
+  --ind-mid: #6366F1;
+  --sky:     #0EA5E9;
+  --bg:      #F8F9FF;
+  --surface: #FFFFFF;
+  --border:  #E0E7FF;
+  --text:    #1E1B4B;
+  --muted:   #6B7280;
+  --shadow:  0 2px 8px rgba(67,56,202,.10);
+  --radius:  14px;
+  --correct: #059669;
+  --correct-bg: #ECFDF5;
+  --wrong:   #DC2626;
+  --wrong-bg:#FEF2F2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:      #0F0E1A;
+    --surface: #1A1830;
+    --border:  #2E2B52;
+    --text:    #E8E6FF;
+    --muted:   #9CA3AF;
+    --ind-lt:  #1E1B4B;
+    --shadow:  0 2px 8px rgba(0,0,0,.4);
+    --correct-bg: #064E3B;
+    --wrong-bg:   #450A0A;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:      #0F0E1A;
+  --surface: #1A1830;
+  --border:  #2E2B52;
+  --text:    #E8E6FF;
+  --muted:   #9CA3AF;
+  --ind-lt:  #1E1B4B;
+  --shadow:  0 2px 8px rgba(0,0,0,.4);
+  --correct-bg: #064E3B;
+  --wrong-bg:   #450A0A;
+}
+
+/* ── RESET + BASE ────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding-inline: 16px;
+  padding-block: 0 48px;
+  min-height: 100vh;
+}
+h1, h2, h3 { font-family: 'Nunito', sans-serif; text-wrap: balance; }
+
+/* ── HEADER ──────────────────────────────────────────────── */
+.page-header {
+  background: linear-gradient(135deg, var(--ind-dk) 0%, var(--ind) 60%, var(--ind-mid) 100%);
+  color: #fff;
+  padding: 32px 20px 28px;
+  margin-inline: -16px;
+  position: relative;
+}
+.eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .75;
+  margin-bottom: 6px;
+}
+.page-header h1 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 900;
+  line-height: 1.1;
+}
+.page-header .subtitle {
+  font-size: .88rem;
+  opacity: .8;
+  margin-top: 6px;
+  font-weight: 500;
+}
+.theme-btn {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: rgba(255,255,255,.2);
+  border: 1.5px solid rgba(255,255,255,.3);
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: .85rem;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+.theme-btn:hover { background: rgba(255,255,255,.3); }
+
+/* ── NAME BAR ────────────────────────────────────────────── */
+.name-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--ind-dk);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  margin-inline: -16px;
+  font-family: 'Inter', sans-serif;
+  font-size: .85rem;
+  font-weight: 600;
+}
+.name-bar label { white-space: nowrap; opacity: .85; }
+.name-bar input {
+  flex: 1;
+  max-width: 280px;
+  background: rgba(255,255,255,.15);
+  border: 1.5px solid rgba(255,255,255,.3);
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: .85rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+}
+.name-bar input::placeholder { color: rgba(255,255,255,.5); }
+.name-bar input:focus { border-color: rgba(255,255,255,.7); }
+
+/* ── PROGRESS BAR ────────────────────────────────────────── */
+.progress-wrap {
+  margin: 18px 0 10px;
+}
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.progress-track {
+  height: 8px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ind), var(--sky));
+  border-radius: 99px;
+  width: 0%;
+  transition: width .4s ease;
+}
+
+/* ── EXERCISE CARD ───────────────────────────────────────── */
+.ex-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.ex-hd {
+  background: var(--ind-lt);
+  border-bottom: 1.5px solid var(--border);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ex-num {
+  background: var(--ind);
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: .78rem;
+  padding: 2px 9px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.ex-hd h3 {
+  font-size: .95rem;
+  font-weight: 800;
+  color: var(--ind-dk);
+  line-height: 1.2;
+}
+[data-theme="dark"] .ex-hd h3,
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ex-hd h3 { color: var(--ind-mid); }
+}
+.ex-body { padding: 16px 18px; }
+.ex-instr {
+  font-size: .84rem;
+  color: var(--muted);
+  margin-bottom: 14px;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ── CROSS-OUT EXERCISE (Ex 1) ───────────────────────────── */
+.cross-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.cross-num {
+  font-weight: 700;
+  color: var(--ind);
+  font-size: .85rem;
+  min-width: 18px;
+}
+.cross-chip {
+  background: var(--ind-lt);
+  border: 1.5px solid var(--ind-mid);
+  color: var(--ind-dk);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: .84rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all .12s;
+  user-select: none;
+}
+.cross-chip:hover { background: var(--ind); color: #fff; border-color: var(--ind); }
+.cross-chip.sel { background: var(--ind-dk); color: #fff; border-color: var(--ind-dk); text-decoration: line-through; }
+.cross-chip.correct { background: var(--correct-bg); color: var(--correct); border-color: var(--correct); text-decoration: line-through; }
+.cross-chip.wrong { background: var(--wrong-bg); color: var(--wrong); border-color: var(--wrong); text-decoration: line-through; }
+.cross-chip.reveal { background: var(--correct-bg); color: var(--correct); border-color: var(--correct); font-style: italic; }
+.cross-chip.dimmed { opacity: .45; pointer-events: none; }
+
+/* ── MULTIPLE CHOICE (Ex 2) ──────────────────────────────── */
+.mc-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.mc-num {
+  font-weight: 700;
+  color: var(--ind);
+  font-size: .85rem;
+  min-width: 18px;
+  padding-top: 6px;
+}
+.mc-sentence {
+  font-size: .88rem;
+  line-height: 1.6;
+  color: var(--text);
+  flex: 1;
+  min-width: 200px;
+}
+.mc-btns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 4px;
+}
+.mc-btn {
+  background: var(--ind-lt);
+  border: 1.5px solid var(--ind-mid);
+  color: var(--ind-dk);
+  border-radius: 20px;
+  padding: 4px 13px;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all .12s;
+}
+.mc-btn:hover { background: var(--ind); color: #fff; border-color: var(--ind); }
+.mc-btn.sel { background: var(--ind); color: #fff; border-color: var(--ind); }
+.mc-btn.correct { background: var(--correct-bg); color: var(--correct); border-color: var(--correct); }
+.mc-btn.wrong { background: var(--wrong-bg); color: var(--wrong); border-color: var(--wrong); }
+.mc-btn.dimmed { opacity: .4; pointer-events: none; }
+
+/* ── CORRECTION EXERCISE (Ex 5) ──────────────────────────── */
+.corr-row {
+  margin-bottom: 14px;
+}
+.corr-q {
+  font-size: .86rem;
+  color: var(--muted);
+  margin-bottom: 5px;
+  line-height: 1.5;
+}
+.corr-q strong { color: var(--wrong); }
+.corr-input-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.corr-input {
+  flex: 1;
+  min-width: 180px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-size: .86rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color .15s;
+}
+.corr-input:focus { border-color: var(--ind-mid); }
+.corr-input.correct { border-color: var(--correct); background: var(--correct-bg); }
+.corr-input.wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+.corr-feedback {
+  font-size: .78rem;
+  font-weight: 600;
+  margin-top: 3px;
+  min-height: 16px;
+}
+.corr-feedback.ok { color: var(--correct); }
+.corr-feedback.err { color: var(--wrong); }
+
+/* ── BUTTONS ─────────────────────────────────────────────── */
+.btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.btn-check {
+  background: var(--ind);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  padding: 9px 20px;
+  font-size: .85rem;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+  cursor: pointer;
+  transition: background .12s;
+}
+.btn-check:hover { background: var(--ind-dk); }
+.btn-reset {
+  background: transparent;
+  color: var(--muted);
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  padding: 9px 18px;
+  font-size: .85rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all .12s;
+}
+.btn-reset:hover { border-color: var(--ind-mid); color: var(--ind); }
+
+/* ── SEND TO TEACHER ─────────────────────────────────────── */
+.send-card {
+  background: linear-gradient(135deg, var(--ind-dk) 0%, var(--ind) 100%);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  text-align: center;
+  margin-top: 28px;
+  color: #fff;
+}
+.send-card h3 {
+  font-size: 1.1rem;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+.send-card p {
+  font-size: .83rem;
+  opacity: .8;
+  margin-bottom: 18px;
+  line-height: 1.4;
+}
+.btn-send {
+  background: #fff;
+  color: var(--ind-dk);
+  border: none;
+  border-radius: 10px;
+  padding: 11px 28px;
+  font-size: .9rem;
+  font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  cursor: pointer;
+  transition: opacity .12s;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.btn-send:hover { opacity: .9; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="page-header">
+  <button class="theme-btn" onclick="toggleTheme()">🌙 Theme</button>
+  <div class="eyebrow">Homework · Unit 5A</div>
+  <h1>What does he look like?</h1>
+  <p class="subtitle">Appearance vocabulary &amp; adjective position</p>
+</header>
+
+<!-- STICKY NAME BAR -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-wrap">
+  <div class="progress-top">
+    <span>Progress</span>
+    <span id="pLbl">0 / 3</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="pFill"></div>
+  </div>
+</div>
+
+<!-- ══ EXERCISE 1 ══ Cross out the NOT correct word ════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Ex 1</span>
+    <h3>Cross out the word that is NOT correct</h3>
+  </div>
+  <div class="ex-body">
+    <p class="ex-instr">Click on the word that does NOT fit in the sentence.</p>
+
+    <!-- Row 1: blonde / dark / old / short hair -->
+    <div class="cross-row" data-ans="old">
+      <span class="cross-num">1</span>
+      <span style="font-size:.86rem;color:var(--muted);margin-right:2px">She's got</span>
+      <button class="cross-chip" data-row="1" onclick="pickCross(this)">blonde</button>
+      <button class="cross-chip" data-row="1" onclick="pickCross(this)">dark</button>
+      <button class="cross-chip" data-row="1" onclick="pickCross(this)">old</button>
+      <button class="cross-chip" data-row="1" onclick="pickCross(this)">short</button>
+      <span style="font-size:.86rem;color:var(--muted);margin-left:2px">hair.</span>
+    </div>
+
+    <!-- Row 2: short / blue / brown eyes -->
+    <div class="cross-row" data-ans="short">
+      <span class="cross-num">2</span>
+      <span style="font-size:.86rem;color:var(--muted);margin-right:2px">He's got</span>
+      <button class="cross-chip" data-row="2" onclick="pickCross(this)">short</button>
+      <button class="cross-chip" data-row="2" onclick="pickCross(this)">blue</button>
+      <button class="cross-chip" data-row="2" onclick="pickCross(this)">brown</button>
+      <span style="font-size:.86rem;color:var(--muted);margin-left:2px">eyes.</span>
+    </div>
+
+    <!-- Row 3: tall / young / long man -->
+    <div class="cross-row" data-ans="long">
+      <span class="cross-num">3</span>
+      <span style="font-size:.86rem;color:var(--muted);margin-right:2px">He's quite a</span>
+      <button class="cross-chip" data-row="3" onclick="pickCross(this)">tall</button>
+      <button class="cross-chip" data-row="3" onclick="pickCross(this)">young</button>
+      <button class="cross-chip" data-row="3" onclick="pickCross(this)">long</button>
+      <span style="font-size:.86rem;color:var(--muted);margin-left:2px">man.</span>
+    </div>
+
+    <!-- Row 4: long / black / thin / short hair -->
+    <div class="cross-row" data-ans="thin">
+      <span class="cross-num">4</span>
+      <span style="font-size:.86rem;color:var(--muted);margin-right:2px">My wife's got</span>
+      <button class="cross-chip" data-row="4" onclick="pickCross(this)">long</button>
+      <button class="cross-chip" data-row="4" onclick="pickCross(this)">black</button>
+      <button class="cross-chip" data-row="4" onclick="pickCross(this)">thin</button>
+      <button class="cross-chip" data-row="4" onclick="pickCross(this)">short</button>
+      <span style="font-size:.86rem;color:var(--muted);margin-left:2px">hair.</span>
+    </div>
+
+    <!-- Row 5: tall / thin / grey man -->
+    <div class="cross-row" data-ans="grey">
+      <span class="cross-num">5</span>
+      <span style="font-size:.86rem;color:var(--muted);margin-right:2px">Your brother is quite a</span>
+      <button class="cross-chip" data-row="5" onclick="pickCross(this)">tall</button>
+      <button class="cross-chip" data-row="5" onclick="pickCross(this)">thin</button>
+      <button class="cross-chip" data-row="5" onclick="pickCross(this)">grey</button>
+      <span style="font-size:.86rem;color:var(--muted);margin-left:2px">man.</span>
+    </div>
+
+    <!-- Row 6: tall / brown / blue eyes -->
+    <div class="cross-row" data-ans="tall">
+      <span class="cross-num">6</span>
+      <span style="font-size:.86rem;color:var(--muted);margin-right:2px">You've got beautiful</span>
+      <button class="cross-chip" data-row="6" onclick="pickCross(this)">tall</button>
+      <button class="cross-chip" data-row="6" onclick="pickCross(this)">brown</button>
+      <button class="cross-chip" data-row="6" onclick="pickCross(this)">blue</button>
+      <span style="font-size:.86rem;color:var(--muted);margin-left:2px">eyes.</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkEx1()">✓ Check</button>
+      <button class="btn-reset" onclick="resetEx1()">↺ Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EXERCISE 2 ══ Choose the correct alternative ════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Ex 2</span>
+    <h3>Choose the correct alternative</h3>
+  </div>
+  <div class="ex-body">
+    <p class="ex-instr">Click the correct word to complete each sentence.</p>
+
+    <!-- 1 -->
+    <div class="mc-row">
+      <span class="mc-num">1</span>
+      <div class="mc-sentence">
+        My sister's got long <span style="color:var(--ind);font-weight:700">___</span>. It's brown.
+        <div class="mc-btns">
+          <button class="mc-btn" data-q="1" data-ans="hair" onclick="pickMC(this)">hair</button>
+          <button class="mc-btn" data-q="1" data-ans="hair" onclick="pickMC(this)">eyes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="mc-row">
+      <span class="mc-num">2</span>
+      <div class="mc-sentence">
+        He's a very <span style="color:var(--ind);font-weight:700">___</span> man — about 1.90 m.
+        <div class="mc-btns">
+          <button class="mc-btn" data-q="2" data-ans="tall" onclick="pickMC(this)">tall</button>
+          <button class="mc-btn" data-q="2" data-ans="tall" onclick="pickMC(this)">long</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="mc-row">
+      <span class="mc-num">3</span>
+      <div class="mc-sentence">
+        She's got <span style="color:var(--ind);font-weight:700">___</span> blue eyes.
+        <div class="mc-btns">
+          <button class="mc-btn" data-q="3" data-ans="big" onclick="pickMC(this)">big</button>
+          <button class="mc-btn" data-q="3" data-ans="big" onclick="pickMC(this)">thin</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="mc-row">
+      <span class="mc-num">4</span>
+      <div class="mc-sentence">
+        He's quite <span style="color:var(--ind);font-weight:700">___</span> — not heavy at all.
+        <div class="mc-btns">
+          <button class="mc-btn" data-q="4" data-ans="thin" onclick="pickMC(this)">thin</button>
+          <button class="mc-btn" data-q="4" data-ans="thin" onclick="pickMC(this)">short</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="mc-row">
+      <span class="mc-num">5</span>
+      <div class="mc-sentence">
+        Her hair is <span style="color:var(--ind);font-weight:700">___</span> — not blonde.
+        <div class="mc-btns">
+          <button class="mc-btn" data-q="5" data-ans="brown" onclick="pickMC(this)">brown</button>
+          <button class="mc-btn" data-q="5" data-ans="brown" onclick="pickMC(this)">blonde</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="mc-row">
+      <span class="mc-num">6</span>
+      <div class="mc-sentence">
+        She's got beautiful <span style="color:var(--ind);font-weight:700">___</span> eyes — like the sky.
+        <div class="mc-btns">
+          <button class="mc-btn" data-q="6" data-ans="blue" onclick="pickMC(this)">blue</button>
+          <button class="mc-btn" data-q="6" data-ans="blue" onclick="pickMC(this)">thin</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="mc-row">
+      <span class="mc-num">7</span>
+      <div class="mc-sentence">
+        He's got <span style="color:var(--ind);font-weight:700">___</span> dark hair — past his shoulders.
+        <div class="mc-btns">
+          <button class="mc-btn" data-q="7" data-ans="long" onclick="pickMC(this)">long</button>
+          <button class="mc-btn" data-q="7" data-ans="long" onclick="pickMC(this)">tall</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="mc-row">
+      <span class="mc-num">8</span>
+      <div class="mc-sentence">
+        My niece is very <span style="color:var(--ind);font-weight:700">___</span> — she's only 4.
+        <div class="mc-btns">
+          <button class="mc-btn" data-q="8" data-ans="young" onclick="pickMC(this)">young</button>
+          <button class="mc-btn" data-q="8" data-ans="young" onclick="pickMC(this)">old</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkEx2()">✓ Check</button>
+      <button class="btn-reset" onclick="resetEx2()">↺ Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EXERCISE 5 ══ Correct the mistake ═══════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Ex 5</span>
+    <h3>Correct the mistake in each sentence</h3>
+  </div>
+  <div class="ex-body">
+    <p class="ex-instr">Each sentence has one mistake. Type the correct sentence in full.</p>
+
+    <div id="corrRows">
+      <!-- Rows inserted by JS -->
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkEx5()">✓ Check</button>
+      <button class="btn-reset" onclick="resetEx5()">↺ Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- SEND TO TEACHER -->
+<div class="send-card">
+  <h3>📧 Send to Teacher</h3>
+  <p>When you finish, send your answers to your teacher.</p>
+  <button class="btn-send" onclick="sendToTeacher()">✉ Send my answers</button>
+</div>
+
+<script>
+/* ── THEME TOGGLE ─────────────────────────────────────────── */
+function toggleTheme() {
+  var root = document.documentElement;
+  var cur = root.getAttribute('data-theme');
+  root.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+}
+
+/* ── PROGRESS ─────────────────────────────────────────────── */
+var DONE = { d1: false, d2: false, d3: false };
+function updateProgress() {
+  var n = Object.values(DONE).filter(Boolean).length;
+  var total = Object.keys(DONE).length;
+  document.getElementById('pFill').style.width = (n / total * 100) + '%';
+  document.getElementById('pLbl').textContent = n + ' / ' + total;
+}
+
+/* ══ EX 1 — CROSS OUT ════════════════════════════════════════ */
+function pickCross(btn) {
+  var row = btn.dataset.row;
+  document.querySelectorAll('.cross-chip[data-row="' + row + '"]').forEach(function(b) {
+    b.classList.remove('sel');
+  });
+  btn.classList.add('sel');
+}
+
+function checkEx1() {
+  var rows = document.querySelectorAll('.cross-row');
+  var allCorrect = true;
+  rows.forEach(function(row) {
+    var ans = row.dataset.ans;
+    var chips = row.querySelectorAll('.cross-chip');
+    var selected = null;
+    chips.forEach(function(c) { if (c.classList.contains('sel')) selected = c; });
+    chips.forEach(function(c) {
+      c.classList.remove('correct', 'wrong', 'reveal', 'dimmed');
+    });
+    if (!selected) { allCorrect = false; return; }
+    if (selected.textContent.trim() === ans) {
+      selected.classList.add('correct');
+      chips.forEach(function(c) {
+        if (c !== selected) c.classList.add('dimmed');
+      });
+    } else {
+      selected.classList.add('wrong');
+      allCorrect = false;
+      chips.forEach(function(c) {
+        if (c.textContent.trim() === ans) c.classList.add('reveal');
+        else if (c !== selected) c.classList.add('dimmed');
+      });
+    }
+  });
+  DONE.d1 = allCorrect;
+  updateProgress();
+}
+
+function resetEx1() {
+  document.querySelectorAll('.cross-chip').forEach(function(c) {
+    c.classList.remove('sel', 'correct', 'wrong', 'reveal', 'dimmed');
+  });
+  DONE.d1 = false;
+  updateProgress();
+}
+
+/* ══ EX 2 — MULTIPLE CHOICE ══════════════════════════════════ */
+// MC answer key: 1=hair, 2=tall, 3=big, 4=thin, 5=brown, 6=blue, 7=long, 8=old
+var MC_ANS = { '1':'hair','2':'tall','3':'big','4':'thin','5':'brown','6':'blue','7':'long','8':'young' };
+
+function pickMC(btn) {
+  var q = btn.dataset.q;
+  document.querySelectorAll('.mc-btn[data-q="' + q + '"]').forEach(function(b) {
+    b.classList.remove('sel');
+  });
+  btn.classList.add('sel');
+}
+
+function checkEx2() {
+  var allCorrect = true;
+  for (var q in MC_ANS) {
+    var correct = MC_ANS[q];
+    var btns = document.querySelectorAll('.mc-btn[data-q="' + q + '"]');
+    var selected = null;
+    btns.forEach(function(b) { if (b.classList.contains('sel')) selected = b; });
+    btns.forEach(function(b) { b.classList.remove('correct', 'wrong', 'dimmed'); });
+    if (!selected) { allCorrect = false; continue; }
+    if (selected.textContent.trim() === correct) {
+      selected.classList.add('correct');
+      btns.forEach(function(b) { if (b !== selected) b.classList.add('dimmed'); });
+    } else {
+      selected.classList.add('wrong');
+      allCorrect = false;
+      btns.forEach(function(b) {
+        if (b.textContent.trim() === correct) b.classList.add('correct');
+        else if (b !== selected) b.classList.add('dimmed');
+      });
+    }
+  }
+  DONE.d2 = allCorrect;
+  updateProgress();
+}
+
+function resetEx2() {
+  document.querySelectorAll('.mc-btn').forEach(function(b) {
+    b.classList.remove('sel', 'correct', 'wrong', 'dimmed');
+  });
+  DONE.d2 = false;
+  updateProgress();
+}
+
+/* ══ EX 5 — CORRECT THE MISTAKE ══════════════════════════════ */
+var CORR_DATA = [
+  { q: "She's a woman beautiful.", ans: ["she's a beautiful woman"] },
+  { q: "Mike looks like tired today.", ans: ["mike looks tired today"] },
+  { q: "Janice has got blue beautiful eyes.", ans: ["janice has got beautiful blue eyes"] },
+  { q: "My brother's a man very tall.", ans: ["my brother's a very tall man","my brother is a very tall man"] },
+  { q: "She's got long hair blonde.", ans: ["she's got long blonde hair"] },
+  { q: "My dad's a man tall.", ans: ["my dad's a tall man","my dad is a tall man"] },
+  { q: "What does he looks like?", ans: ["what does he look like"] },
+  { q: "My neighbour is thin and tall.", ans: ["my neighbour is tall and thin"] },
+  { q: "He's got really hair long.", ans: ["he's got really long hair"] },
+  { q: "He's a man very good-looking.", ans: ["he's a very good-looking man"] }
+];
+
+(function buildEx5() {
+  var wrap = document.getElementById('corrRows');
+  CORR_DATA.forEach(function(item, i) {
+    var div = document.createElement('div');
+    div.className = 'corr-row';
+    div.innerHTML =
+      '<p class="corr-q"><strong>' + (i+1) + '.</strong> &nbsp;' + item.q + '</p>' +
+      '<div class="corr-input-wrap">' +
+        '<input class="corr-input" id="corr' + i + '" type="text" placeholder="Type the correct sentence…" autocomplete="off" autocorrect="off" spellcheck="false">' +
+      '</div>' +
+      '<div class="corr-feedback" id="corrFb' + i + '"></div>';
+    wrap.appendChild(div);
+  });
+})();
+
+function normalise(s) {
+  return s.toLowerCase().trim().replace(/['']/g, "'").replace(/\s+/g,' ');
+}
+
+function checkEx5() {
+  var allCorrect = true;
+  CORR_DATA.forEach(function(item, i) {
+    var inp = document.getElementById('corr' + i);
+    var fb  = document.getElementById('corrFb' + i);
+    var val = normalise(inp.value);
+    inp.classList.remove('correct', 'wrong');
+    fb.textContent = '';
+    fb.className = 'corr-feedback';
+    if (!val) { allCorrect = false; return; }
+    var ok = item.ans.some(function(a) { return val === normalise(a); });
+    if (ok) {
+      inp.classList.add('correct');
+      fb.textContent = '✓ Correct!';
+      fb.classList.add('ok');
+    } else {
+      inp.classList.add('wrong');
+      allCorrect = false;
+      fb.textContent = '✗  Correct: ' + item.ans[0];
+      fb.classList.add('err');
+    }
+  });
+  DONE.d3 = allCorrect;
+  updateProgress();
+}
+
+function resetEx5() {
+  CORR_DATA.forEach(function(_, i) {
+    var inp = document.getElementById('corr' + i);
+    var fb  = document.getElementById('corrFb' + i);
+    inp.value = '';
+    inp.classList.remove('correct', 'wrong');
+    fb.textContent = '';
+    fb.className = 'corr-feedback';
+  });
+  DONE.d3 = false;
+  updateProgress();
+}
+
+/* ══ SEND TO TEACHER ══════════════════════════════════════════ */
+function sendToTeacher() {
+  var name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+  var lines = [];
+  lines.push('Student: ' + name);
+  lines.push('Lesson: Unit 5A — What does he look like?');
+  lines.push('');
+
+  // Ex 1
+  lines.push('=== Exercise 1: Cross out the wrong word ===');
+  document.querySelectorAll('.cross-row').forEach(function(row, i) {
+    var sel = row.querySelector('.cross-chip.sel');
+    var ans = row.dataset.ans;
+    var val = sel ? sel.textContent.trim() : '(no answer)';
+    var ok  = val === ans ? '✓' : '✗';
+    lines.push((i+1) + '. Selected: ' + val + '  ' + ok);
+  });
+  lines.push('');
+
+  // Ex 2
+  lines.push('=== Exercise 2: Choose the correct alternative ===');
+  for (var q in MC_ANS) {
+    var sel2 = document.querySelector('.mc-btn[data-q="' + q + '"].sel');
+    var val2 = sel2 ? sel2.textContent.trim() : '(no answer)';
+    var ok2 = val2 === MC_ANS[q] ? '✓' : '✗';
+    lines.push(q + '. Selected: ' + val2 + '  ' + ok2);
+  }
+  lines.push('');
+
+  // Ex 5
+  lines.push('=== Exercise 5: Correct the mistake ===');
+  CORR_DATA.forEach(function(item, i) {
+    var val3 = (document.getElementById('corr' + i).value || '(no answer)').trim();
+    var ok3 = item.ans.some(function(a) { return normalise(val3) === normalise(a); }) ? '✓' : '✗';
+    lines.push((i+1) + '. ' + item.q + '\n   Answer: ' + val3 + '  ' + ok3);
+  });
+
+  var body    = encodeURIComponent(lines.join('\n'));
+  var subject = encodeURIComponent('Homework – Unit 5A – ' + name);
+  window.location.href = 'mailto:dariia.mlnk@gmail.com?subject=' + subject + '&body=' + body;
+}
+</script>
+</body>
+</html>
