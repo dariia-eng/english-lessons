@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 3A · Ideas — Lesson 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+  <style>
+    :root{--bg:#f7f6f3;--surface:#ffffff;--border:#e4e2da;--text:#1c1a17;--muted:#6b6860;--accent:#5B21B6;--accent-l:#EDE9FE;--radius:14px;--shadow:0 2px 14px rgba(0,0,0,.07);}
+    @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#18171b;--surface:#232129;--border:#353040;--text:#f0edf6;--muted:#9e99ab;--accent:#9061F9;--accent-l:#2D1B69;}}
+    :root[data-theme="dark"]{--bg:#18171b;--surface:#232129;--border:#353040;--text:#f0edf6;--muted:#9e99ab;--accent:#9061F9;--accent-l:#2D1B69;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);line-height:1.65;min-height:100vh}
+    .lesson-header{background:linear-gradient(135deg,#064E3B 0%,#047857 55%,#059669 100%);color:#fff;padding:3rem 2rem 2.5rem;position:relative;overflow:hidden}
+    .header-dots{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.08) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+    .header-inner{max-width:860px;margin:0 auto;position:relative}
+    .header-eyebrow{font-family:"Outfit",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.4rem}
+    .lesson-header h1{font-family:"Outfit",sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:800;line-height:1.1;text-wrap:balance;margin-bottom:.7rem}
+    .header-meta{display:flex;flex-wrap:wrap;gap:.45rem .65rem}
+    .header-chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:100px;padding:.22rem .75rem;font-size:.8rem;color:rgba(255,255,255,.9)}
+    .theme-toggle{position:absolute;top:0;right:0;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:8px;padding:.38rem .75rem;color:#fff;cursor:pointer;font-size:.8rem;font-family:"DM Sans",sans-serif}
+    .theme-toggle:hover{background:rgba(255,255,255,.25)}
+    .stage-nav{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border);padding:.45rem 1rem;overflow-x:auto;scrollbar-width:none}
+    .stage-nav::-webkit-scrollbar{display:none}
+    .nav-inner{display:flex;gap:.35rem;max-width:860px;margin:0 auto;width:max-content}
+    .nav-pill{white-space:nowrap;font-family:"DM Sans",sans-serif;font-size:.77rem;font-weight:500;padding:.28rem .8rem;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;text-decoration:none;transition:all .15s}
+    .nav-pill:hover{background:var(--accent-l);color:var(--accent);border-color:var(--accent)}
+    .nav-pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    main{max-width:860px;margin:0 auto;padding:2rem 1.25rem 5rem}
+    .stage{margin-bottom:3.5rem;scroll-margin-top:50px}
+    .stage-hd{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;padding-bottom:.7rem;border-bottom:2px solid var(--stc,var(--accent))}
+    .stage-icon{width:2.4rem;height:2.4rem;border-radius:50%;background:color-mix(in srgb,var(--stc,var(--accent)) 15%,transparent);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .stage-title{font-family:"Outfit",sans-serif;font-size:1.25rem;font-weight:700;color:var(--stc,var(--accent))}
+    .stage-sub{font-size:.8rem;color:var(--muted);margin-top:.1rem}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem 1.5rem;margin-bottom:1.2rem;box-shadow:var(--shadow)}
+    .card-hd{font-family:"Outfit",sans-serif;font-size:1rem;font-weight:700;color:var(--stc,var(--accent));margin-bottom:.3rem}
+    .card-instr{font-size:.9rem;color:var(--muted);margin-bottom:1rem}
+    .disc-item{display:flex;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--border);font-size:.95rem}
+    .disc-item:last-child{border-bottom:none}
+    .disc-num{font-family:"Outfit",sans-serif;font-weight:700;color:var(--stc,var(--accent));min-width:1.4rem}
+    .mcq-item{margin-bottom:1.2rem}
+    .mcq-q{font-size:.93rem;margin-bottom:.5rem;font-weight:500}
+    .mcq-opts{display:flex;flex-direction:column;gap:.4rem}
+    .mcq-btn{display:flex;align-items:flex-start;gap:.55rem;padding:.55rem .85rem;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-family:"DM Sans",sans-serif;font-size:.89rem;text-align:left;transition:all .15s}
+    .mcq-btn:hover:not(:disabled){border-color:var(--stc,var(--accent));background:color-mix(in srgb,var(--stc,var(--accent)) 8%,var(--surface))}
+    .mcq-btn.correct{background:#dcfce7;border-color:#16a34a;color:#15803d}
+    .mcq-btn.wrong{background:#fee2e2;border-color:#dc2626;color:#b91c1c}
+    .mcq-btn:disabled{cursor:default}
+    :root[data-theme="dark"] .mcq-btn.correct{background:#14532d;border-color:#16a34a;color:#86efac}
+    :root[data-theme="dark"] .mcq-btn.wrong{background:#450a0a;border-color:#dc2626;color:#fca5a5}
+    @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .mcq-btn.correct{background:#14532d;border-color:#16a34a;color:#86efac}:root:not([data-theme="light"]) .mcq-btn.wrong{background:#450a0a;border-color:#dc2626;color:#fca5a5}}
+    .gap-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:.3rem .4rem;margin-bottom:.85rem;font-size:.94rem}
+    .gap-num{font-family:"Outfit",sans-serif;font-weight:700;color:var(--stc,var(--accent));min-width:1.4rem}
+    .gap-inp{border:none;border-bottom:2px solid var(--border);background:transparent;color:var(--text);font-family:"DM Sans",sans-serif;font-size:.94rem;padding:.2rem .3rem;min-width:110px;outline:none;transition:border-color .15s}
+    .gap-inp:focus{border-bottom-color:var(--stc,var(--accent))}
+    .gap-inp.correct{border-color:#16a34a;color:#16a34a}
+    .gap-inp.wrong{border-color:#dc2626;color:#dc2626}
+    .gap-fb{font-size:.82rem}
+    .gap-fb.c{color:#16a34a}
+    .gap-fb.w{color:#dc2626}
+    .word-bank{display:flex;flex-wrap:wrap;gap:.38rem;padding:.7rem 1rem;background:color-mix(in srgb,var(--stc,var(--accent)) 6%,var(--surface));border:1px solid color-mix(in srgb,var(--stc,var(--accent)) 18%,var(--border));border-radius:8px;margin-bottom:1.1rem}
+    .word-chip{padding:.18rem .6rem;border-radius:100px;background:var(--surface);border:1px solid var(--border);font-size:.83rem;font-weight:500}
+    .ccq-wrap{margin-top:.7rem}
+    .ccq-btn{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;font-weight:600;color:var(--stc,var(--accent));background:color-mix(in srgb,var(--stc,var(--accent)) 10%,transparent);border:1px solid color-mix(in srgb,var(--stc,var(--accent)) 28%,transparent);border-radius:6px;padding:.23rem .6rem;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .15s}
+    .ccq-btn:hover{background:color-mix(in srgb,var(--stc,var(--accent)) 18%,transparent)}
+    .ccq-body{display:none;margin-top:.55rem;padding:.7rem 1rem;background:color-mix(in srgb,var(--stc,var(--accent)) 5%,var(--surface));border-left:3px solid var(--stc,var(--accent));border-radius:0 8px 8px 0;font-size:.87rem}
+    .ccq-body.open{display:block}
+    .ccq-q{margin-bottom:.3rem;font-weight:500}
+    .ccq-q:last-child{margin-bottom:0}
+    .ccq-q span{color:var(--stc,var(--accent));font-weight:700}
+    .vocab-item{padding:.9rem 1.1rem;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;margin-bottom:.6rem;transition:border-color .15s}
+    .vocab-item:hover{border-color:var(--stc,var(--accent))}
+    .vocab-phrase{font-family:"Outfit",sans-serif;font-weight:700;font-size:1rem;color:var(--stc,var(--accent));margin-bottom:.15rem}
+    .vocab-context{font-size:.87rem;font-style:italic;color:var(--muted)}
+    .btn-row{display:flex;gap:.55rem;flex-wrap:wrap;margin-top:1rem}
+    .btn{padding:.52rem 1.15rem;border-radius:8px;font-family:"DM Sans",sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+    .btn-primary{background:var(--stc,var(--accent));color:#fff}
+    .btn-primary:hover{filter:brightness(1.12)}
+    .btn-reset{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
+    .btn-reset:hover{border-color:var(--text);color:var(--text)}
+    .show-btn{padding:.48rem .95rem;border-radius:8px;background:transparent;color:var(--stc,var(--accent));border:1.5px solid var(--stc,var(--accent));font-family:"DM Sans",sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s}
+    .show-btn:hover{background:color-mix(in srgb,var(--stc,var(--accent)) 10%,transparent)}
+    .show-btn:disabled{opacity:.4;cursor:default}
+    .status-bar{font-size:.87rem;min-height:1.3rem;margin-top:.5rem;font-weight:500}
+    .speaking-card{background:color-mix(in srgb,var(--stc,var(--accent)) 7%,var(--surface));border:1.5px dashed color-mix(in srgb,var(--stc,var(--accent)) 38%,var(--border));border-radius:var(--radius);padding:1.2rem 1.35rem;margin-bottom:1rem}
+    .speaking-step{display:flex;gap:.7rem;align-items:flex-start;margin-bottom:.75rem}
+    .speaking-step:last-child{margin-bottom:0}
+    .step-badge{background:var(--stc,var(--accent));color:#fff;font-family:"Outfit",sans-serif;font-size:.73rem;font-weight:700;padding:.18rem .55rem;border-radius:100px;flex-shrink:0}
+    .step-text{font-size:.9rem}
+    .scenario-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:.7rem;margin-bottom:1rem}
+    .scenario-card{border:1.5px solid var(--border);border-radius:10px;padding:.85rem 1rem;cursor:pointer;transition:all .15s;background:var(--surface);text-align:center}
+    .scenario-card:hover{border-color:var(--stc,var(--accent));background:color-mix(in srgb,var(--stc,var(--accent)) 6%,var(--surface))}
+    .scenario-card.selected{border-color:var(--stc,var(--accent));background:color-mix(in srgb,var(--stc,var(--accent)) 11%,var(--surface))}
+    .mcq-btn.selected{border-color:var(--stc,var(--accent));background:color-mix(in srgb,var(--stc,var(--accent)) 12%,var(--surface));font-weight:600}
+    .scenario-icon{font-size:1.6rem;margin-bottom:.3rem}
+    .scenario-text{font-size:.84rem;font-weight:500}
+    .lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;font-size:.87rem}
+    @media(max-width:480px){.lang-grid{grid-template-columns:1fr}}
+    .lang-cell{padding:.55rem .8rem;background:var(--bg);border-radius:8px;border:1px solid var(--border);line-height:1.6}
+    .lang-cat{font-weight:700;font-size:.75rem;color:var(--stc,var(--accent));letter-spacing:.05em;text-transform:uppercase;margin-bottom:.25rem}
+    .speak-prompt-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+    @media(max-width:540px){.speak-prompt-grid{grid-template-columns:1fr}}
+    .speak-prompt{border:1.5px solid var(--border);border-radius:10px;padding:.85rem 1rem;background:var(--surface);font-size:.88rem;cursor:pointer;transition:all .15s;text-align:left;width:100%;font-family:"DM Sans",sans-serif;color:var(--text)}
+    .speak-prompt:hover{border-color:var(--stc,var(--accent));background:color-mix(in srgb,var(--stc,var(--accent)) 5%,var(--surface))}
+    .speak-prompt.revealed .sp-ans{display:block}
+    .sp-q{font-weight:600;margin-bottom:.4rem;font-size:.87rem}
+    .sp-ans{display:none;margin-top:.45rem;padding-top:.45rem;border-top:1px solid var(--border);color:var(--muted);font-size:.84rem}
+    .find-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+    @media(max-width:520px){.find-grid{grid-template-columns:1fr}}
+    .find-card{border:1.5px solid var(--border);border-radius:10px;padding:.8rem 1rem;background:var(--surface);font-size:.88rem}
+    .find-card.found{border-color:#16a34a;background:rgba(22,163,74,.05)}
+    .find-prompt{font-weight:500;margin-bottom:.3rem}
+    .find-name-inp{border:none;border-bottom:2px solid var(--border);background:transparent;color:var(--text);font-family:"DM Sans",sans-serif;font-size:.88rem;padding:.15rem .25rem;width:100%;outline:none;transition:border-color .15s;margin-top:.3rem}
+    .find-name-inp:focus{border-bottom-color:var(--stc,var(--accent))}
+    .lesson-link{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.2rem;border-radius:10px;background:var(--accent-l);color:var(--accent);font-weight:600;font-size:.9rem;text-decoration:none;border:1.5px solid var(--accent);font-family:"DM Sans",sans-serif;transition:all .15s}
+    .lesson-link:hover{background:var(--accent);color:#fff}
+
+    /* ── Flip cards ── */
+    .flip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-top:.2rem}
+    @media(max-width:540px){.flip-grid{grid-template-columns:repeat(2,1fr)}}
+    .flip-card{perspective:900px;height:148px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .52s cubic-bezier(.4,0,.2,1)}
+    .flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+    .flip-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.85rem;text-align:center}
+    .flip-front{background:linear-gradient(135deg,var(--stc,var(--accent)),color-mix(in srgb,var(--stc,var(--accent)) 65%,#000));color:#fff}
+    .flip-num{font-family:"Outfit",sans-serif;font-size:2.6rem;font-weight:800;line-height:1}
+    .flip-hint{font-size:.62rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;opacity:.6;margin-top:.35rem}
+    .flip-back{background:var(--surface);border:2px solid var(--stc,var(--accent));transform:rotateY(180deg);color:var(--text);font-size:.83rem;font-weight:500;line-height:1.45;gap:.3rem}
+    .flip-back-q{font-size:.84rem;font-weight:600}
+    .flip-back-hint{font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:.4rem}
+    /* ── Game cards ── */
+    .game-card{background:color-mix(in srgb,var(--stc,var(--accent)) 5%,var(--surface));border:2px dashed color-mix(in srgb,var(--stc,var(--accent)) 32%,var(--border));border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem}
+    .game-hd{display:flex;align-items:center;gap:.55rem;margin-bottom:.35rem}
+    .game-emoji{font-size:1.25rem}
+    .game-title{font-family:"Outfit",sans-serif;font-size:.95rem;font-weight:700;color:var(--stc,var(--accent))}
+    .game-badge{background:var(--stc,var(--accent));color:#fff;font-family:"Outfit",sans-serif;font-size:.65rem;font-weight:800;padding:.15rem .5rem;border-radius:4px;letter-spacing:.04em;text-transform:uppercase;margin-left:.3rem}
+    .game-instr{font-size:.87rem;color:var(--muted);margin-bottom:.8rem}
+    .game-steps{display:flex;flex-direction:column;gap:.38rem}
+    .game-step{display:flex;gap:.5rem;font-size:.87rem;align-items:flex-start}
+    .gs-num{background:var(--stc,var(--accent));color:#fff;font-family:"Outfit",sans-serif;font-size:.68rem;font-weight:700;min-width:1.25rem;height:1.25rem;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.15rem}
+    .reveal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin-top:.8rem}
+    @media(max-width:500px){.reveal-grid{grid-template-columns:1fr}}
+    .reveal-btn{border:1.5px solid var(--border);border-radius:8px;padding:.55rem .8rem;background:var(--surface);cursor:pointer;text-align:left;font-size:.83rem;font-family:"DM Sans",sans-serif;color:var(--text);transition:all .15s}
+    .reveal-btn:hover{border-color:var(--stc,var(--accent));background:color-mix(in srgb,var(--stc,var(--accent)) 5%,var(--surface))}
+    .reveal-btn.open{border-color:var(--stc,var(--accent));background:color-mix(in srgb,var(--stc,var(--accent)) 8%,var(--surface))}
+    .rb-q{font-weight:600}
+    .rb-a{display:none;margin-top:.35rem;padding-top:.35rem;border-top:1px solid var(--border);color:var(--muted);font-style:italic;font-size:.8rem}
+    .reveal-btn.open .rb-a{display:block}
+    .flip-shuffle-row{display:flex;justify-content:flex-end;margin-bottom:.5rem}
+    .flip-shuffle-btn{padding:.3rem .75rem;border-radius:6px;background:transparent;border:1.5px solid var(--stc,var(--accent));color:var(--stc,var(--accent));font-family:"DM Sans",sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s}
+    .flip-shuffle-btn:hover{background:color-mix(in srgb,var(--stc,var(--accent)) 10%,transparent)}
+  </style>
+</head>
+<body>
+<header class="lesson-header">
+  <div class="header-dots"></div>
+  <div class="header-inner">
+    <button class="theme-toggle" onclick="toggleTheme()">&#9788; / &#9790;</button>
+    <div class="header-eyebrow">Unit 3A &middot; B2&ndash;C1 &middot; Lesson 2 of 2</div>
+    <h1>Ideas &#128161;</h1>
+    <div class="header-meta">
+      <span class="header-chip">&#9999;&#65039; Practice: Question Forms</span>
+      <span class="header-chip">&#128218; Vocabulary: Ideas</span>
+      <span class="header-chip">&#128483;&#65039; Speaking 2: Brainstorm!</span>
+    </div>
+  </div>
+</header>
+
+<nav class="stage-nav">
+  <div class="nav-inner">
+    <a class="nav-pill" href="#practice"   data-stage="practice">&#9999;&#65039; Practice</a>
+    <a class="nav-pill" href="#vocabulary" data-stage="vocabulary">&#128218; Vocabulary</a>
+    <a class="nav-pill" href="#speaking2" data-stage="speaking2">&#128483;&#65039; Speaking 2</a>
+      <a class="nav-pill" href="#speak4" data-stage="speak4">&#128483;&#65039; Speaking 4</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ═══ STAGE 1: PRACTICE ═══ -->
+<section class="stage" id="practice" style="--stc:#1D4ED8">
+  <div class="stage-hd">
+    <div class="stage-icon">&#9999;&#65039;</div>
+    <div><div class="stage-title">Practice</div><div class="stage-sub">Question forms in context</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">Exercise 6 &mdash; Compare the questions</div>
+    <div class="card-instr">How does the meaning change in the second version (B)? Discuss with your teacher.</div>
+    <div class="mcq-item">
+      <div class="mcq-q"><strong>Pair 1</strong><br>A: &ldquo;Did you enjoy the meeting?&rdquo;<br>B: &ldquo;You enjoyed the meeting, <em>didn&rsquo;t you?</em>&rdquo;</div>
+    </div>
+    <div class="mcq-item">
+      <div class="mcq-q"><strong>Pair 2</strong><br>A: &ldquo;What does she do?&rdquo;<br>B: &ldquo;What exactly is it that <em>she does?</em>&rdquo;</div>
+    </div>
+    <div class="mcq-item">
+      <div class="mcq-q"><strong>Pair 3</strong><br>A: &ldquo;When does the session start?&rdquo;<br>B: &ldquo;Could you tell me when the session starts?&rdquo;</div>
+    </div>
+    <div class="mcq-item">
+      <div class="mcq-q"><strong>Pair 4</strong><br>A: &ldquo;Why don&rsquo;t we try a different approach?&rdquo;<br>B: &ldquo;Why is it that we always use the same approach?&rdquo;</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">Exercise 7a &mdash; Complete the questions</div>
+    <div class="card-instr">Write the correct question opener for each sentence.</div>
+    <div class="gap-row"><span class="gap-num">1.</span><span>&ldquo;<input class="gap-inp" data-ans="isn't it,isn't it true that,isn't it true" id="pq1" oninput="checkPrompt(1)" placeholder="Isn&rsquo;t it&hellip;?"> the best way to start a brainstorm is to define the problem first?&rdquo;</span><span class="gap-fb" id="pfb1"></span></div>
+    <div class="gap-row"><span class="gap-num">2.</span><span>&ldquo;<input class="gap-inp" data-ans="don't you,don't you ever,don't you sometimes" id="pq2" oninput="checkPrompt(2)" placeholder="Don&rsquo;t you&hellip;?"> find it hard to come up with ideas under pressure?&rdquo;</span><span class="gap-fb" id="pfb2"></span></div>
+    <div class="gap-row"><span class="gap-num">3.</span><span>&ldquo;<input class="gap-inp" data-ans="you don't,you don't actually,you don't really" id="pq3" oninput="checkPrompt(3)" placeholder="You don&rsquo;t&hellip;"> have any experience with reverse brainstorming, do you?&rdquo;</span><span class="gap-fb" id="pfb3"></span></div>
+    <div class="gap-row"><span class="gap-num">4.</span><span>&ldquo;<input class="gap-inp" data-ans="why is it that,why is it" id="pq4" oninput="checkPrompt(4)" placeholder="Why is it that&hellip;?"> some people feel blocked when sharing ideas in a group?&rdquo;</span><span class="gap-fb" id="pfb4"></span></div>
+    <div class="gap-row"><span class="gap-num">5.</span><span>&ldquo;You&rsquo;ve been teaching brainstorming for <input class="gap-inp" data-ans="how long,how many years,how many" id="pq5" oninput="checkPrompt(5)" placeholder="how long&hellip;?"> now?&rdquo;</span><span class="gap-fb" id="pfb5"></span></div>
+    <div class="gap-row"><span class="gap-num">6.</span><span>&ldquo;<input class="gap-inp" data-ans="could you tell me,could you explain" id="pq6" oninput="checkPrompt(6)" placeholder="Could you tell me&hellip;?"> how role storming works in practice?&rdquo;</span><span class="gap-fb" id="pfb6"></span></div>
+    <div class="btn-row">
+      <button class="show-btn" id="showPromptBtn" onclick="showPromptAns()">Show answers</button>
+      <button class="btn btn-reset" onclick="resetPrompts()">Reset</button>
+    </div>
+    <div class="status-bar" id="promptStatus"></div>
+    <p style="font-size:.82rem;color:var(--muted);margin-top:.7rem">Exercise 7b &mdash; Ask your teacher the questions you just completed.</p>
+  </div>
+</section>
+
+<!-- ═══ STAGE 2: VOCABULARY ═══ -->
+<section class="stage" id="vocabulary" style="--stc:#047857">
+  <div class="stage-hd">
+    <div class="stage-icon">&#128218;</div>
+    <div><div class="stage-title">Vocabulary</div><div class="stage-sub">Phrases about ideas</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">Exercise 8 &mdash; Phrases about ideas</div>
+    <div class="card-instr">Study the nine phrases. Click <strong>CCQ</strong> on each to check your understanding.</div>
+
+    <div class="vocab-item">
+      <div class="vocab-phrase">it occurs to me</div>
+      <div class="vocab-context">&ldquo;It suddenly occurs to me that we haven&rsquo;t tried role storming yet.&rdquo;</div>
+      <div class="ccq-wrap"><button class="ccq-btn" onclick="toggleCCQ('ccq1')">CCQ &#9660;</button>
+        <div class="ccq-body" id="ccq1">
+          <div class="ccq-q">Is this a sudden thought or a planned one? <span>&#8594; Sudden &mdash; it just comes to you</span></div>
+          <div class="ccq-q">Does the person choose to think of it? <span>&#8594; No &mdash; it arrives on its own</span></div>
+        </div></div>
+    </div>
+    <div class="vocab-item">
+      <div class="vocab-phrase">springs to mind</div>
+      <div class="vocab-context">&ldquo;When I think of creative companies, Google springs to mind immediately.&rdquo;</div>
+      <div class="ccq-wrap"><button class="ccq-btn" onclick="toggleCCQ('ccq2')">CCQ &#9660;</button>
+        <div class="ccq-body" id="ccq2">
+          <div class="ccq-q">Is it fast or slow? <span>&#8594; Fast and automatic</span></div>
+          <div class="ccq-q">Is it triggered by something? <span>&#8594; Yes &mdash; usually a topic or context</span></div>
+        </div></div>
+    </div>
+    <div class="vocab-item">
+      <div class="vocab-phrase">it dawned on me</div>
+      <div class="vocab-context">&ldquo;It suddenly dawned on me that we were solving the wrong problem.&rdquo;</div>
+      <div class="ccq-wrap"><button class="ccq-btn" onclick="toggleCCQ('ccq3')">CCQ &#9660;</button>
+        <div class="ccq-body" id="ccq3">
+          <div class="ccq-q">Is this a realisation or a plan? <span>&#8594; A realisation &mdash; new understanding</span></div>
+          <div class="ccq-q">Did they know this before? <span>&#8594; No &mdash; it&rsquo;s new to them</span></div>
+        </div></div>
+    </div>
+    <div class="vocab-item">
+      <div class="vocab-phrase">bounce ideas around</div>
+      <div class="vocab-context">&ldquo;Let&rsquo;s bounce a few ideas around and see what comes up.&rdquo;</div>
+      <div class="ccq-wrap"><button class="ccq-btn" onclick="toggleCCQ('ccq4')">CCQ &#9660;</button>
+        <div class="ccq-body" id="ccq4">
+          <div class="ccq-q">Alone or with others? <span>&#8594; With others &mdash; it&rsquo;s collaborative</span></div>
+          <div class="ccq-q">Fixed goal or exploratory? <span>&#8594; Exploratory &mdash; you don&rsquo;t know where it leads</span></div>
+        </div></div>
+    </div>
+    <div class="vocab-item">
+      <div class="vocab-phrase">a bright idea</div>
+      <div class="vocab-context">&ldquo;It was her bright idea to try reverse brainstorming.&rdquo;</div>
+      <div class="ccq-wrap"><button class="ccq-btn" onclick="toggleCCQ('ccq5')">CCQ &#9660;</button>
+        <div class="ccq-body" id="ccq5">
+          <div class="ccq-q">Good or bad idea? <span>&#8594; Good / clever &mdash; but can be sarcastic</span></div>
+          <div class="ccq-q">Sarcasm example: <span>&#8594; &ldquo;Oh, that was a bright idea&hellip;&rdquo; (meaning it was NOT)</span></div>
+        </div></div>
+    </div>
+    <div class="vocab-item">
+      <div class="vocab-phrase">just a passing thought</div>
+      <div class="vocab-context">&ldquo;It&rsquo;s just a passing thought, but what if we asked the customers directly?&rdquo;</div>
+      <div class="ccq-wrap"><button class="ccq-btn" onclick="toggleCCQ('ccq6')">CCQ &#9660;</button>
+        <div class="ccq-body" id="ccq6">
+          <div class="ccq-q">Is the speaker confident? <span>&#8594; No &mdash; tentative, not pushy</span></div>
+          <div class="ccq-q">Why use this phrase? <span>&#8594; To soften a suggestion or test the reaction</span></div>
+        </div></div>
+    </div>
+    <div class="vocab-item">
+      <div class="vocab-phrase">out of ideas</div>
+      <div class="vocab-context">&ldquo;We&rsquo;ve been brainstorming for an hour and I&rsquo;m completely out of ideas.&rdquo;</div>
+      <div class="ccq-wrap"><button class="ccq-btn" onclick="toggleCCQ('ccq7')">CCQ &#9660;</button>
+        <div class="ccq-body" id="ccq7">
+          <div class="ccq-q">Does the person have ideas? <span>&#8594; No &mdash; they&rsquo;ve run out</span></div>
+          <div class="ccq-q">Permanent or temporary? <span>&#8594; Usually temporary</span></div>
+        </div></div>
+    </div>
+    <div class="vocab-item">
+      <div class="vocab-phrase">give someone an idea</div>
+      <div class="vocab-context">&ldquo;Watching children play gave me an idea for the whole campaign.&rdquo;</div>
+      <div class="ccq-wrap"><button class="ccq-btn" onclick="toggleCCQ('ccq8')">CCQ &#9660;</button>
+        <div class="ccq-body" id="ccq8">
+          <div class="ccq-q">Source of the idea? <span>&#8594; Something external triggers it</span></div>
+          <div class="ccq-q">Planned? <span>&#8594; No &mdash; it happens naturally</span></div>
+        </div></div>
+    </div>
+    <div class="vocab-item">
+      <div class="vocab-phrase">a brainwave</div>
+      <div class="vocab-context">&ldquo;I had a brainwave in the shower &mdash; what if we reversed the whole process?&rdquo;</div>
+      <div class="ccq-wrap"><button class="ccq-btn" onclick="toggleCCQ('ccq9')">CCQ &#9660;</button>
+        <div class="ccq-body" id="ccq9">
+          <div class="ccq-q">Ordinary or special? <span>&#8594; A sudden, particularly good idea</span></div>
+          <div class="ccq-q">Planned? <span>&#8594; No &mdash; comes unexpectedly</span></div>
+        </div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">Exercise 9a &mdash; Gap fill</div>
+    <div class="card-instr">Complete each sentence with ONE word from the phrases above.</div>
+    <div class="word-bank">
+      <span class="word-chip">bright</span><span class="word-chip">dawned</span><span class="word-chip">passing</span>
+      <span class="word-chip">out</span><span class="word-chip">springs</span><span class="word-chip">gave</span>
+      <span class="word-chip">bounce</span><span class="word-chip">brainwave</span><span class="word-chip">occurs</span>
+    </div>
+    <div class="gap-row"><span class="gap-num">1.</span><span>The solution suddenly <input class="gap-inp" data-ans="dawned" id="g1" oninput="checkGap(1)"> on me while I was making coffee.</span><span class="gap-fb" id="gfb1"></span></div>
+    <div class="gap-row"><span class="gap-num">2.</span><span>When I think of creative problem-solving, reverse brainstorming <input class="gap-inp" data-ans="springs" id="g2" oninput="checkGap(2)"> to mind immediately.</span><span class="gap-fb" id="gfb2"></span></div>
+    <div class="gap-row"><span class="gap-num">3.</span><span>It <input class="gap-inp" data-ans="occurs" id="g3" oninput="checkGap(3)"> to me that we haven&rsquo;t heard from the design team yet.</span><span class="gap-fb" id="gfb3"></span></div>
+    <div class="gap-row"><span class="gap-num">4.</span><span>Let&rsquo;s <input class="gap-inp" data-ans="bounce" id="g4" oninput="checkGap(4)"> a few ideas around and see what sticks.</span><span class="gap-fb" id="gfb4"></span></div>
+    <div class="gap-row"><span class="gap-num">5.</span><span>I&rsquo;m completely <input class="gap-inp" data-ans="out" id="g5" oninput="checkGap(5)"> of ideas &mdash; let&rsquo;s try role storming.</span><span class="gap-fb" id="gfb5"></span></div>
+    <div class="gap-row"><span class="gap-num">6.</span><span>It&rsquo;s just a <input class="gap-inp" data-ans="passing" id="g6" oninput="checkGap(6)"> thought, but what if we asked each person independently?</span><span class="gap-fb" id="gfb6"></span></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="checkAllGaps()">Check all</button>
+      <button class="show-btn" id="showGapBtn" onclick="showGapAns()">Show answers</button>
+      <button class="btn btn-reset" onclick="resetGaps()">Reset</button>
+    </div>
+    <div class="status-bar" id="gapStatus"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">Exercise 9b &mdash; Discussion</div>
+    <div class="card-instr">Which sentences from 9a are true for you? Tell your teacher using the vocabulary naturally.</div>
+  </div>
+</section>
+
+<!-- ═══ STAGE 3: SPEAKING 2 ═══ -->
+<section class="stage" id="speaking2" style="--stc:#BE185D">
+  <div class="stage-hd">
+    <div class="stage-icon">&#128483;&#65039;</div>
+    <div><div class="stage-title">Speaking 2</div><div class="stage-sub">Brainstorming in action</div></div>
+  </div>
+
+  <!-- Question flip cards -->
+  <div class="card">
+    <div class="card-hd">Exercise 10 &mdash; Question cards</div>
+    <div class="card-instr">Tap a card to flip it and reveal the question. Ask your teacher — give a full answer and ask a follow-up. Then swap: your teacher picks a card for you. Use the vocabulary from Exercise 8!</div>
+    <div class="flip-shuffle-row"><button class="flip-shuffle-btn" onclick="shuffleFlip()">&#128257; Shuffle</button></div>
+    <div class="flip-grid" id="flipGrid">
+      <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="flip-num">1</div><div class="flip-hint">tap to flip</div></div>
+        <div class="flip-face flip-back"><div class="flip-back-q">Have you recently had a <strong>brainwave</strong> about something? &#128161;</div><div class="flip-back-hint">tap to close</div></div>
+      </div></div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="flip-num">2</div><div class="flip-hint">tap to flip</div></div>
+        <div class="flip-face flip-back"><div class="flip-back-q">Do you often <strong>bounce ideas around</strong> with colleagues or friends? &#127775;</div><div class="flip-back-hint">tap to close</div></div>
+      </div></div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="flip-num">3</div><div class="flip-hint">tap to flip</div></div>
+        <div class="flip-face flip-back"><div class="flip-back-q">Do you ever go completely <strong>out of ideas</strong> at work or school? &#128203;</div><div class="flip-back-hint">tap to close</div></div>
+      </div></div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="flip-num">4</div><div class="flip-hint">tap to flip</div></div>
+        <div class="flip-face flip-back"><div class="flip-back-q">Has anything ever <strong>given you an idea</strong> in an unexpected place? &#128640;</div><div class="flip-back-hint">tap to close</div></div>
+      </div></div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="flip-num">5</div><div class="flip-hint">tap to flip</div></div>
+        <div class="flip-face flip-back"><div class="flip-back-q">Do you sometimes say &ldquo;it&rsquo;s just a <strong>passing thought</strong>&rdquo; when sharing an idea? &#128218;</div><div class="flip-back-hint">tap to close</div></div>
+      </div></div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+        <div class="flip-face flip-front"><div class="flip-num">6</div><div class="flip-hint">tap to flip</div></div>
+        <div class="flip-face flip-back"><div class="flip-back-q">Has it ever <strong>dawned on you</strong> that you were solving the wrong problem? &#9889;</div><div class="flip-back-hint">tap to close</div></div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ── GAMES ── -->
+  <div class="game-card">
+    <div class="game-hd"><span class="game-emoji">&#128081;</span><span class="game-title">Game A &mdash; Hot Seat</span><span class="game-badge">5&ndash;10 min</span></div>
+    <div class="game-instr">Student faces away or closes eyes. Teacher reveals a phrase and gives clues using <em>question forms only</em>. Then swap roles.</div>
+    <div class="game-steps">
+      <div class="game-step"><span class="gs-num">1</span><span>Student faces away or covers the screen. Teacher taps to reveal a phrase.</span></div>
+      <div class="game-step"><span class="gs-num">2</span><span>Teacher gives clues as questions only: <em>&ldquo;Is it something that happens suddenly?&rdquo; &ldquo;Don&rsquo;t you think it sounds like a sunrise?&rdquo;</em></span></div>
+      <div class="game-step"><span class="gs-num">3</span><span>Student guesses the phrase. Then swap &mdash; teacher faces away, student gives clues.</span></div>
+    </div>
+    <div class="reveal-grid">
+      <button class="reveal-btn" onclick="this.classList.toggle('open')"><div class="rb-q">Phrase 1</div><div class="rb-a">it dawned on me</div></button>
+      <button class="reveal-btn" onclick="this.classList.toggle('open')"><div class="rb-q">Phrase 2</div><div class="rb-a">a brainwave</div></button>
+      <button class="reveal-btn" onclick="this.classList.toggle('open')"><div class="rb-q">Phrase 3</div><div class="rb-a">springs to mind</div></button>
+      <button class="reveal-btn" onclick="this.classList.toggle('open')"><div class="rb-q">Phrase 4</div><div class="rb-a">bounce ideas around</div></button>
+      <button class="reveal-btn" onclick="this.classList.toggle('open')"><div class="rb-q">Phrase 5</div><div class="rb-a">just a passing thought</div></button>
+      <button class="reveal-btn" onclick="this.classList.toggle('open')"><div class="rb-q">Phrase 6</div><div class="rb-a">out of ideas</div></button>
+    </div>
+  </div>
+
+  <div class="game-card">
+    <div class="game-hd"><span class="game-emoji">&#128483;&#65039;</span><span class="game-title">Game B &mdash; Two Truths &amp; a Brainwave</span><span class="game-badge">8&ndash;12 min</span></div>
+    <div class="game-instr">Use the vocabulary to tell <strong>two true statements and one invented one</strong> about yourself. Your teacher listens and guesses the lie.</div>
+    <div class="game-steps">
+      <div class="game-step"><span class="gs-num">1</span><span>Write 3 sentences using <em>different</em> vocabulary phrases from Exercise 8. Two are true; one is invented.</span></div>
+      <div class="game-step"><span class="gs-num">2</span><span>Read them aloud. Your teacher asks follow-up questions using the question forms from today&rsquo;s lesson to probe each statement.</span></div>
+      <div class="game-step"><span class="gs-num">3</span><span>Teacher guesses which is invented. Then swap &mdash; your teacher tells three, you guess.</span></div>
+    </div>
+    <div style="margin-top:.75rem;padding:.55rem .9rem;border-radius:8px;background:color-mix(in srgb,var(--stc,var(--accent)) 8%,var(--surface));font-size:.82rem;color:var(--muted)">
+      <strong style="color:var(--text)">Example:</strong> <em>&ldquo;It once dawned on me during a flight that I was applying to the wrong job. / I had a brainwave in the shower that turned into an actual project. / It often occurs to me that I&rsquo;m the only one who bounces ideas around at work.&rdquo;</em>
+    </div>
+  </div>
+
+  <div class="game-card">
+    <div class="game-hd"><span class="game-emoji">&#9201;&#65039;</span><span class="game-title">Game C &mdash; Question Transformer</span><span class="game-badge">6&ndash;8 min</span></div>
+    <div class="game-instr">Teacher reveals a plain question. You have 60 seconds to rewrite it in <strong>3 different question forms</strong>. Compare your versions with your teacher &mdash; discuss which sounds most natural.</div>
+    <div class="game-steps">
+      <div class="game-step"><span class="gs-num">1</span><span>Tap a prompt below to reveal the plain question.</span></div>
+      <div class="game-step"><span class="gs-num">2</span><span>Students write 3 rewrites in 60 seconds — each must use a <em>different</em> question form (question tag, cleft, indirect, negative, echo, etc.).</span></div>
+      <div class="game-step"><span class="gs-num">3</span><span>Read aloud. Vote on which version sounds most natural in a real conversation.</span></div>
+    </div>
+    <div class="reveal-grid">
+      <button class="reveal-btn" onclick="this.classList.toggle('open')"><div class="rb-q">Round 1</div><div class="rb-a">&ldquo;Do you like working in teams?&rdquo;</div></button>
+      <button class="reveal-btn" onclick="this.classList.toggle('open')"><div class="rb-q">Round 2</div><div class="rb-a">&ldquo;When did you last have a good idea?&rdquo;</div></button>
+      <button class="reveal-btn" onclick="this.classList.toggle('open')"><div class="rb-q">Round 3</div><div class="rb-a">&ldquo;Why do people feel nervous sharing ideas?&rdquo;</div></button>
+      <button class="reveal-btn" onclick="this.classList.toggle('open')"><div class="rb-q">Round 4</div><div class="rb-a">&ldquo;Did the brainstorm session go well?&rdquo;</div></button>
+    </div>
+  </div>
+
+  <!-- Brainstorming activity -->
+  <div class="card">
+    <div class="card-hd">Exercise 11a &mdash; Choose a scenario</div>
+    <div class="card-instr">Choose a situation to brainstorm together. Click to select.</div>
+    <div class="scenario-grid">
+      <div class="scenario-card" onclick="selectScenario(this)"><div class="scenario-icon">&#127979;</div><div class="scenario-text">How to make your school or workplace more fun</div></div>
+      <div class="scenario-card" onclick="selectScenario(this)"><div class="scenario-icon">&#127758;</div><div class="scenario-text">How to get people to reduce their screen time</div></div>
+      <div class="scenario-card" onclick="selectScenario(this)"><div class="scenario-icon">&#128652;</div><div class="scenario-text">How to improve public transport in your city</div></div>
+      <div class="scenario-card" onclick="selectScenario(this)"><div class="scenario-icon">&#127939;</div><div class="scenario-text">How to keep people motivated when learning a new skill</div></div>
+    </div>
+  </div>
+
+  <div class="speaking-card">
+    <div style="font-family:'Outfit',sans-serif;font-weight:700;color:var(--stc);margin-bottom:.9rem;font-size:1rem">Exercises 11b &ndash; 12b &middot; Brainstorm instructions</div>
+    <div class="speaking-step"><span class="step-badge">11b</span><span class="step-text">Think individually for 2 minutes. Write down your ideas &mdash; use the vocabulary: <em>It occurs to me that&hellip;, Here&rsquo;s a brainwave&hellip;, Just a passing thought&hellip;</em></span></div>
+    <div class="speaking-step"><span class="step-badge">12a</span><span class="step-text">Choose a brainstorming technique (A, B, C or D from Lesson 1) and carry out the brainstorm together. Use question forms to build on each other&rsquo;s ideas naturally.</span></div>
+    <div class="speaking-step"><span class="step-badge">12b</span><span class="step-text">Report back: which solution(s) did you come up with? Which technique did you use &mdash; and how well did it work? Would a different technique have been better?</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">Language support</div>
+    <div class="lang-grid">
+      <div class="lang-cell"><div class="lang-cat">Adding ideas</div>It occurs to me that&hellip;<br>Here&rsquo;s just a passing thought&hellip;<br>I&rsquo;ve just had a brainwave!</div>
+      <div class="lang-cell"><div class="lang-cat">Checking / clarifying</div>You mean&hellip;?<br>So you&rsquo;re saying&hellip;?<br>Could you tell me more about&hellip;?</div>
+      <div class="lang-cell"><div class="lang-cat">Building on ideas</div>That&rsquo;s given me an idea&hellip;<br>Isn&rsquo;t it possible that&hellip;?<br>What is it that makes this work?</div>
+      <div class="lang-cell"><div class="lang-cat">When stuck</div>I&rsquo;m completely out of ideas.<br>Let&rsquo;s bounce some more around.<br>You&rsquo;ve thought about this, haven&rsquo;t you?</div>
+    </div>
+  </div>
+
+  <!-- Reflection: end of unit -->
+  <div class="card">
+    <div class="card-hd">End of Unit Reflection</div>
+    <div class="card-instr">Click a card and discuss with your teacher.</div>
+    <div class="speak-prompt-grid">
+      <button class="speak-prompt" onclick="this.classList.toggle('revealed')">
+        <div class="sp-q">&#127775; Which of the 6 question forms will you use most in real life?</div>
+        <div class="sp-ans">Think of a specific situation &mdash; a meeting, an interview, a social event. Which form would help you sound more natural and engaged?</div>
+      </button>
+      <button class="speak-prompt" onclick="this.classList.toggle('revealed')">
+        <div class="sp-q">&#128218; Which vocabulary phrase from Exercise 8 felt most new or useful to you?</div>
+        <div class="sp-ans">Try to use it in a sentence about your own life right now, without looking at the lesson.</div>
+      </button>
+      <button class="speak-prompt" onclick="this.classList.toggle('revealed')">
+        <div class="sp-q">&#128203; Would you actually use any of these brainstorming techniques at work or school?</div>
+        <div class="sp-ans">Which one? In what situation? What would you need to persuade your colleagues to try it?</div>
+      </button>
+      <button class="speak-prompt" onclick="this.classList.toggle('revealed')">
+        <div class="sp-q">&#128172; Did you change your opinion about any of the brainstorming techniques during this unit?</div>
+        <div class="sp-ans">Which one and why? What changed your mind?</div>
+      </button>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:1rem 0">
+    <a class="lesson-link" href="U3A_Ideas_L1.html">&larr; Back to Lesson 1</a>
+  </div>
+</section>
+
+<!-- ══════════ SPEAKING 4 — Fluency & Extended Output ══════════ -->
+<section class="stage" id="speak4" style="--stc:#047857">
+  <div class="stage-hd">
+    <div class="stage-badge">6</div>
+    <div><div class="stage-title">Speaking 4</div><div class="stage-sub">Extended output &amp; fluency</div></div>
+  </div>
+
+  <!-- Ex 12 — Advice column -->
+  <div class="card">
+    <div class="card-hd">Exercise 12 — Advice column</div>
+    <div class="card-instr">Your teacher reads a problem out loud. You give practical advice — recommend a brainstorming technique and explain how to run it step by step. Use vocabulary from Stage 4 where you can.</div>
+    <div style="display:grid;gap:.65rem;margin:.65rem 0">
+      <div style="padding:.8rem 1rem;background:color-mix(in srgb,#047857 7%,var(--surface));border-left:3px solid #047857;border-radius:0 9px 9px 0;font-size:.87rem;line-height:1.55">
+        📩 <em>&ldquo;Our weekly team meetings always feel like a waste of time. We talk for an hour and leave with no clear ideas. Help!&rdquo;</em>
+      </div>
+      <div style="padding:.8rem 1rem;background:color-mix(in srgb,#047857 7%,var(--surface));border-left:3px solid #047857;border-radius:0 9px 9px 0;font-size:.87rem;line-height:1.55">
+        📩 <em>&ldquo;I&rsquo;m the only extrovert on my team. Every time I suggest something, nobody responds. What should I do?&rdquo;</em>
+      </div>
+      <div style="padding:.8rem 1rem;background:color-mix(in srgb,#047857 7%,var(--surface));border-left:3px solid #047857;border-radius:0 9px 9px 0;font-size:.87rem;line-height:1.55">
+        📩 <em>&ldquo;We&rsquo;ve been trying to fix the same customer complaint for six months. We&rsquo;ve run out of ideas. Any suggestions?&rdquo;</em>
+      </div>
+      <div style="padding:.8rem 1rem;background:color-mix(in srgb,#047857 7%,var(--surface));border-left:3px solid #047857;border-radius:0 9px 9px 0;font-size:.87rem;line-height:1.55">
+        📩 <em>&ldquo;I need to write a marketing campaign for a product I don&rsquo;t really believe in. I can&rsquo;t think creatively about it at all.&rdquo;</em>
+      </div>
+    </div>
+    <div style="padding:.65rem 1rem;background:color-mix(in srgb,#047857 4%,var(--surface));border-radius:8px;font-size:.82rem;color:var(--muted)">
+      <strong style="color:var(--text)">Structure your advice:</strong>
+      <em>What I&rsquo;d recommend in your situation is&hellip;</em> &nbsp;&middot;&nbsp;
+      <em>The first step would be to&hellip;</em> &nbsp;&middot;&nbsp;
+      <em>One thing to watch out for is&hellip;</em>
+    </div>
+  </div>
+
+  <!-- Ex 13 — 2-minute pitch -->
+  <div class="card">
+    <div class="card-hd">Exercise 13 — 2-minute pitch</div>
+    <div class="card-instr">You are pitching a brainstorming initiative to your manager (your teacher). Choose one technique and convince them to adopt it. Your teacher will challenge you with tough questions.</div>
+    <div class="speaking-steps" style="margin:.5rem 0">
+      <div class="speaking-step"><span class="step-badge">Prepare (2 min)</span><span class="step-text">Choose your technique. Note: what problem does it solve? What are its advantages? What might go wrong?</span></div>
+      <div class="speaking-step"><span class="step-badge">Pitch (2 min)</span><span class="step-text">Deliver your pitch. Signpost your ideas clearly and use vocabulary from Stage 4.</span></div>
+      <div class="speaking-step"><span class="step-badge">Q&amp;A (2 min)</span><span class="step-text">Your teacher (the manager) asks tough questions. Hold your ground — but concede where they have a point.</span></div>
+      <div class="speaking-step"><span class="step-badge">Swap</span><span class="step-text">Your teacher pitches a different technique. You play the sceptical manager.</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.75rem">
+      <div style="padding:.65rem .85rem;background:color-mix(in srgb,#047857 5%,var(--surface));border-radius:8px;font-size:.82rem;color:var(--muted)">
+        <strong style="color:var(--text)">Signposting</strong><br>
+        <em>The reason I&rsquo;m recommending this is&hellip;</em><br>
+        <em>The key advantage is&hellip;</em><br>
+        <em>I admit there are challenges, but&hellip;</em>
+      </div>
+      <div style="padding:.65rem .85rem;background:color-mix(in srgb,#047857 5%,var(--surface));border-radius:8px;font-size:.82rem;color:var(--muted)">
+        <strong style="color:var(--text)">Manager challenges</strong><br>
+        <em>Isn&rsquo;t this just a waste of time?</em><br>
+        <em>What evidence do you have that it works?</em><br>
+        <em>Why not just use email?</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 14 — Brainstorming story -->
+  <div class="card">
+    <div class="card-hd">Exercise 14 — Tell the story</div>
+    <div class="card-instr">Think of a real (or imagined) situation where a group needed to generate ideas — a work project, a study task, a team decision. Tell your teacher the story and use at least <strong>5 vocabulary items</strong> from Stage 4.</div>
+    <div class="speaking-steps" style="margin:.5rem 0">
+      <div class="speaking-step"><span class="step-badge">Set the scene</span><span class="step-text">Who was involved? What was the goal? What constraints did you have?</span></div>
+      <div class="speaking-step"><span class="step-badge">What happened</span><span class="step-text">What technique was used (if any)? What ideas came up? What went wrong or right?</span></div>
+      <div class="speaking-step"><span class="step-badge">What you&rsquo;d do now</span><span class="step-text">Knowing what you know now — which technique would you recommend? What would be different?</span></div>
+    </div>
+    <div style="margin-top:.75rem;padding:.7rem 1rem;background:color-mix(in srgb,#047857 5%,var(--surface));border-radius:8px;font-size:.82rem;color:var(--muted)">
+      <strong style="color:var(--text)">Vocabulary checklist — tick as you use each:</strong>
+      <div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.4rem">
+        <span style="border:1px solid var(--border);border-radius:4px;padding:.1rem .5rem;cursor:pointer" onclick="this.style.background=this.style.background?'':'rgba(4,120,87,.15)'">bounce ideas off</span>
+        <span style="border:1px solid var(--border);border-radius:4px;padding:.1rem .5rem;cursor:pointer" onclick="this.style.background=this.style.background?'':'rgba(4,120,87,.15)'">out of the blue</span>
+        <span style="border:1px solid var(--border);border-radius:4px;padding:.1rem .5rem;cursor:pointer" onclick="this.style.background=this.style.background?'':'rgba(4,120,87,.15)'">it occurs to me</span>
+        <span style="border:1px solid var(--border);border-radius:4px;padding:.1rem .5rem;cursor:pointer" onclick="this.style.background=this.style.background?'':'rgba(4,120,87,.15)'">passing thought</span>
+        <span style="border:1px solid var(--border);border-radius:4px;padding:.1rem .5rem;cursor:pointer" onclick="this.style.background=this.style.background?'':'rgba(4,120,87,.15)'">it dawned on me</span>
+        <span style="border:1px solid var(--border);border-radius:4px;padding:.1rem .5rem;cursor:pointer" onclick="this.style.background=this.style.background?'':'rgba(4,120,87,.15)'">springs from</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 15 — Agree or challenge -->
+  <div class="card">
+    <div class="card-hd">Exercise 15 — Agree or challenge</div>
+    <div class="card-instr">Pick a statement and give your opinion. Your teacher challenges or agrees — keep the exchange going for at least 2 minutes. Then swap.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.75rem 0">
+      <div style="padding:.8rem;background:color-mix(in srgb,#047857 7%,var(--surface));border:1.5px solid color-mix(in srgb,#047857 22%,var(--border));border-radius:10px;font-size:.85rem;line-height:1.5">
+        💡 <em>&ldquo;Creative people don&rsquo;t need structured techniques — good ideas come naturally to them.&rdquo;</em>
+      </div>
+      <div style="padding:.8rem;background:color-mix(in srgb,#047857 7%,var(--surface));border:1.5px solid color-mix(in srgb,#047857 22%,var(--border));border-radius:10px;font-size:.85rem;line-height:1.5">
+        💡 <em>&ldquo;The best breakthroughs always come from one brilliant individual, not a group process.&rdquo;</em>
+      </div>
+      <div style="padding:.8rem;background:color-mix(in srgb,#047857 7%,var(--surface));border:1.5px solid color-mix(in srgb,#047857 22%,var(--border));border-radius:10px;font-size:.85rem;line-height:1.5">
+        💡 <em>&ldquo;Remote work has made collaborative brainstorming almost impossible to do well.&rdquo;</em>
+      </div>
+      <div style="padding:.8rem;background:color-mix(in srgb,#047857 7%,var(--surface));border:1.5px solid color-mix(in srgb,#047857 22%,var(--border));border-radius:10px;font-size:.85rem;line-height:1.5">
+        💡 <em>&ldquo;Companies that invest in structured creativity consistently outperform those that don&rsquo;t.&rdquo;</em>
+      </div>
+      <div style="padding:.8rem;background:color-mix(in srgb,#047857 7%,var(--surface));border:1.5px solid color-mix(in srgb,#047857 22%,var(--border));border-radius:10px;font-size:.85rem;line-height:1.5">
+        💡 <em>&ldquo;Brainstorming techniques are more useful in some industries than others — they don&rsquo;t work everywhere.&rdquo;</em>
+      </div>
+      <div style="padding:.8rem;background:color-mix(in srgb,#047857 7%,var(--surface));border:1.5px solid color-mix(in srgb,#047857 22%,var(--border));border-radius:10px;font-size:.85rem;line-height:1.5">
+        💡 <em>&ldquo;The most important skill in a brainstorm is knowing when to stop talking and start writing things down.&rdquo;</em>
+      </div>
+    </div>
+    <div style="padding:.65rem 1rem;background:color-mix(in srgb,#047857 4%,var(--surface));border-radius:8px;font-size:.8rem;color:var(--muted)">
+      <strong style="color:var(--text)">Response frames:</strong>
+      <em>That springs from the assumption that&hellip;</em> &nbsp;&middot;&nbsp;
+      <em>It dawned on me when I read this that&hellip;</em> &nbsp;&middot;&nbsp;
+      <em>I&rsquo;d push back — out of the blue, I thought&hellip;</em> &nbsp;&middot;&nbsp;
+      <em>Actually, bouncing ideas off others does&hellip;</em>
+    </div>
+  </div>
+
+  <!-- Ex 16 — Mini-presentation -->
+  <div class="card">
+    <div class="card-hd">Exercise 16 — Mini-presentation</div>
+    <div class="card-instr">Prepare a 3-minute spoken summary of what you learned in these two lessons. Cover: which technique you find most interesting, a situation you&rsquo;d use it in, and one thing that surprised you. Your teacher listens and then asks two follow-up questions.</div>
+    <div style="margin:.65rem 0;padding:.75rem 1rem;background:color-mix(in srgb,#047857 6%,var(--surface));border-radius:9px;font-size:.85rem;line-height:1.6">
+      <strong>Structure suggestion:</strong><br>
+      <span style="color:var(--muted)">1.</span> <em>The technique I found most interesting was&hellip; because&hellip;</em><br>
+      <span style="color:var(--muted)">2.</span> <em>I&rsquo;d use it in a situation where&hellip;</em><br>
+      <span style="color:var(--muted)">3.</span> <em>Something I hadn&rsquo;t considered before was&hellip;</em><br>
+      <span style="color:var(--muted)">4.</span> <em>If I were to try one technique this week, it would be&hellip; because&hellip;</em>
+    </div>
+    <div style="padding:.65rem 1rem;background:color-mix(in srgb,#047857 4%,var(--surface));border-radius:8px;font-size:.8rem;color:var(--muted)">
+      <strong style="color:var(--text)">Teacher follow-up prompts:</strong>
+      <em>Why that technique over the others?</em> &nbsp;&middot;&nbsp;
+      <em>What might prevent you from actually using it?</em> &nbsp;&middot;&nbsp;
+      <em>Is there a vocabulary item from today you think you&rsquo;ll use outside the classroom?</em>
+    </div>
+  </div>
+
+</section>
+
+
+</main>
+<script>
+function toggleTheme(){var r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');}
+(function(){var pills=document.querySelectorAll('.nav-pill'),stages=document.querySelectorAll('.stage');var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){pills.forEach(function(p){p.classList.remove('active')});var a=document.querySelector('.nav-pill[data-stage="'+e.target.id+'"]');if(a)a.classList.add('active');}});},{rootMargin:'-35% 0px -60% 0px'});stages.forEach(function(s){obs.observe(s)});pills.forEach(function(p){p.addEventListener('click',function(e){e.preventDefault();document.querySelector(p.getAttribute('href')).scrollIntoView({behavior:'smooth'});});});})();
+function toggleCCQ(id){var b=document.getElementById(id);b.classList.toggle('open');b.previousElementSibling.textContent=b.classList.contains('open')?'CCQ ▴':'CCQ ▾';}
+function selectScenario(el){document.querySelectorAll('.scenario-card').forEach(function(c){c.classList.remove('selected')});el.classList.add('selected');}
+var PROMPT_ANS={pq1:"isn't it,isn't it true that,isn't it true",pq2:"don't you,don't you ever,don't you sometimes",pq3:"you don't,you don't actually,you don't really",pq4:"why is it that,why is it",pq5:"how long,how many years,how many",pq6:"could you tell me,could you explain"};
+function checkPrompt(n){var id='pq'+n,inp=document.getElementById(id),fb=document.getElementById('pfb'+n),val=inp.value.toLowerCase().trim();inp.classList.remove('correct','wrong');fb.textContent='';fb.className='gap-fb';if(!val)return;var alts=PROMPT_ANS[id].split(',').map(function(a){return a.trim();});if(alts.indexOf(val)!==-1){inp.classList.add('correct');fb.textContent='✓';fb.classList.add('c');}else{inp.classList.add('wrong');fb.textContent='✗';fb.classList.add('w');}}
+function showPromptAns(){Object.keys(PROMPT_ANS).forEach(function(id){var inp=document.getElementById(id),n=id.replace('pq',''),fb=document.getElementById('pfb'+n);inp.value=PROMPT_ANS[id].split(',')[0];inp.disabled=true;inp.classList.remove('correct','wrong');inp.classList.add('correct');fb.textContent='✓';fb.className='gap-fb c';});var st=document.getElementById('promptStatus');st.textContent='Answers shown.';st.style.color='var(--muted)';document.getElementById('showPromptBtn').disabled=true;}
+function resetPrompts(){Object.keys(PROMPT_ANS).forEach(function(id){var inp=document.getElementById(id),n=id.replace('pq',''),fb=document.getElementById('pfb'+n);inp.value='';inp.disabled=false;inp.classList.remove('correct','wrong');fb.textContent='';fb.className='gap-fb';});document.getElementById('promptStatus').textContent='';document.getElementById('showPromptBtn').disabled=false;}
+var GAP_ANS={g1:'dawned',g2:'springs',g3:'occurs',g4:'bounce',g5:'out',g6:'passing'};
+function checkGap(n){var inp=document.getElementById('g'+n),fb=document.getElementById('gfb'+n),val=inp.value.toLowerCase().trim();inp.classList.remove('correct','wrong');fb.textContent='';fb.className='gap-fb';if(!val)return;if(val===GAP_ANS['g'+n]){inp.classList.add('correct');fb.textContent='✓';fb.classList.add('c');}else{inp.classList.add('wrong');fb.textContent='✗';fb.classList.add('w');}}
+function checkAllGaps(){var correct=0;Object.keys(GAP_ANS).forEach(function(id){var n=id.slice(1),inp=document.getElementById(id),fb=document.getElementById('gfb'+n),val=inp.value.toLowerCase().trim();inp.classList.remove('correct','wrong');fb.textContent='';fb.className='gap-fb';if(val===GAP_ANS[id]){inp.classList.add('correct');fb.textContent='✓';fb.classList.add('c');correct++;}else if(val){inp.classList.add('wrong');fb.textContent='✗';fb.classList.add('w');}});var filled=Object.keys(GAP_ANS).filter(function(id){return document.getElementById(id).value.trim();}).length;var st=document.getElementById('gapStatus');if(filled>0){st.textContent=correct+' / '+filled+' correct.';st.style.color=correct===Object.keys(GAP_ANS).length?'#16a34a':'#dc2626';}}
+function showGapAns(){Object.keys(GAP_ANS).forEach(function(id){var n=id.slice(1),inp=document.getElementById(id),fb=document.getElementById('gfb'+n);inp.value=GAP_ANS[id];inp.disabled=true;inp.classList.remove('correct','wrong');inp.classList.add('correct');fb.textContent='✓';fb.className='gap-fb c';});var st=document.getElementById('gapStatus');st.textContent='Answers shown.';st.style.color='var(--muted)';document.getElementById('showGapBtn').disabled=true;}
+function resetGaps(){Object.keys(GAP_ANS).forEach(function(id){var n=id.slice(1),inp=document.getElementById(id),fb=document.getElementById('gfb'+n);inp.value='';inp.disabled=false;inp.classList.remove('correct','wrong');fb.textContent='';fb.className='gap-fb';});document.getElementById('gapStatus').textContent='';document.getElementById('showGapBtn').disabled=false;}
+
+function shuffleFlip(){
+  var grid=document.getElementById('flipGrid');
+  var cards=Array.from(grid.children);
+  cards.forEach(function(c){c.classList.remove('flipped');});
+  cards.sort(function(){return Math.random()-.5;});
+  // renumber fronts
+  cards.forEach(function(c,i){
+    var numEl=c.querySelector('.flip-num');
+    if(numEl) numEl.textContent=i+1;
+    grid.appendChild(c);
+  });
+}
+</script>
+</body>
+</html>
