@@ -1,0 +1,430 @@
+<title>Everyday Activities Cards</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: study-set app. Header band, sticky mode tabs (Flashcards / Learn / Write / Match / Test), one panel per mode, term list under Flashcards */
+:root{
+  --bg:#f7f8ff; --surface:#ffffff; --surface-2:#eef0fb;
+  --ink:#1d1b3a; --muted:#5f5d7e; --line:#dcdff2;
+  --red:#e8364f; --red-soft:#ffdfe4;
+  --teal:#11a39a; --teal-soft:#cdf3ef; --teal-d:#0b7f78;
+  --navy:#2b3a8f; --navy-soft:#dde3ff;
+  --sun:#f2a900; --sun-soft:#fff0c4;
+  --good:#0f9d6e; --bad:#d92d4a; --good-bg:#dcf8ec; --bad-bg:#ffe1e7;
+  --on-accent:#ffffff; --band:#1d1b3a; --on-band:#f7f8ff;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Nunito", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#12132a; --surface:#1c1e3a; --surface-2:#262947; --ink:#eef0ff; --muted:#aeb1d6; --line:#363a63;
+  --red:#ff6b80; --red-soft:#4a1f2c; --teal:#3fd6c9; --teal-soft:#123f3c; --teal-d:#0e5f5a; --navy:#93a4ff; --navy-soft:#2a3166;
+  --sun:#ffcf5c; --sun-soft:#433a1b; --good:#4fe0aa; --bad:#ff7b95; --good-bg:#173f31; --bad-bg:#4a1d2a;
+  --on-accent:#12132a; --band:#262947; --on-band:#eef0ff; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#12132a; --surface:#1c1e3a; --surface-2:#262947; --ink:#eef0ff; --muted:#aeb1d6; --line:#363a63;
+  --red:#ff6b80; --red-soft:#4a1f2c; --teal:#3fd6c9; --teal-soft:#123f3c; --teal-d:#0e5f5a; --navy:#93a4ff; --navy-soft:#2a3166;
+  --sun:#ffcf5c; --sun-soft:#433a1b; --good:#4fe0aa; --bad:#ff7b95; --good-bg:#173f31; --bad-bg:#4a1d2a;
+  --on-accent:#12132a; --band:#262947; --on-band:#eef0ff; color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--band)}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+button:disabled{cursor:default;opacity:.5}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.inner{max-width:860px;margin:0 auto}
+
+header{background:var(--band);color:var(--on-band)}
+header .inner{padding-block:26px 22px;display:flex;flex-direction:column;gap:6px;position:relative}
+.eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--sun)}
+header h1{font-size:clamp(32px,7vw,54px);font-weight:800;text-transform:uppercase}
+header p{opacity:.85;font-weight:600}
+.theme-btn{position:absolute;top:24px;right:0;border:2px solid currentColor;background:transparent;color:var(--on-band);border-radius:999px;padding:5px 12px;font-weight:700;font-size:14px}
+
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:2px solid var(--line)}
+.tabs .inner{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-block:10px}
+.tab{flex:0 0 auto;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:8px 14px;font-weight:800;display:flex;align-items:center;gap:6px}
+.tab .ic{font-size:18px}
+.tab.on{background:var(--navy);border-color:var(--navy);color:var(--on-accent)}
+
+main .inner{padding-top:22px;display:flex;flex-direction:column;gap:20px}
+.panel{display:flex;flex-direction:column;gap:18px}
+.panel[hidden]{display:none!important}
+.bar-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:flex;border:2px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.seg button{border:none;background:transparent;color:var(--ink);padding:6px 12px;font-weight:800;font-size:14px}
+.seg button.on{background:var(--teal);color:var(--on-accent)}
+.btn{border:none;border-radius:999px;padding:9px 18px;font-weight:800;background:var(--red);color:var(--on-accent)}
+.btn.navy{background:var(--navy)} .btn.teal{background:var(--teal)}
+.btn.ghost{background:var(--surface);color:var(--ink);border:2px solid var(--line)}
+.icon-btn{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:50%;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;font-size:18px;font-weight:800}
+.muted{color:var(--muted);font-weight:700}
+.right{margin-left:auto}
+
+/* big flashcard */
+.fc-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+.fc{width:100%;max-width:640px;height:300px;perspective:1200px;border:none;background:none;padding:0;color:inherit;cursor:pointer}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s}
+.fc.flipped .fc-inner{transform:rotateX(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;background:var(--surface);border:2px solid var(--line);box-shadow:0 10px 30px -18px rgba(29,27,58,.45)}
+.fc-back{transform:rotateX(180deg);background:var(--teal-d);color:#ffffff;border-color:var(--teal-d)}
+.fc .emo{font-size:64px;line-height:1}
+.fc .term{font-family:var(--display);font-weight:800;font-size:clamp(26px,5.5vw,38px);line-height:1.15}
+.fc .term small{display:block;font-family:var(--body);font-size:15px;font-weight:700;opacity:.8;margin-top:6px}
+.fc .ex{font-style:italic;font-weight:600;opacity:.9}
+.fc .side{position:absolute;top:14px;left:18px;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.6}
+.fc-nav{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center}
+.fc-nav .pos{font-weight:800;font-variant-numeric:tabular-nums;min-width:70px;text-align:center}
+.sort{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.sort .btn{min-width:150px}
+.tally{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.tally span{border-radius:999px;padding:3px 12px;font-weight:800;font-size:14px}
+.tally .k{background:var(--good-bg);color:var(--good)} .tally .l{background:var(--sun-soft);color:var(--ink)}
+
+.terms{display:flex;flex-direction:column;gap:8px}
+.term-row{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:10px 14px}
+.term-row .e{font-size:26px}
+.term-row .en{font-family:var(--display);font-weight:800}
+.term-row .ua{font-weight:700;border-left:2px solid var(--line);padding-left:12px}
+.term-row.known{border-color:var(--good)}
+@media (max-width:560px){ .term-row{grid-template-columns:auto 1fr auto} .term-row .ua{grid-column:2/3;border-left:none;padding-left:0;color:var(--muted)} }
+
+/* learn / write / test question card */
+.qcard{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:16px}
+.qhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qtype{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.prompt{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.prompt .emo{font-size:46px;line-height:1}
+.prompt .t{font-family:var(--display);font-weight:800;font-size:clamp(24px,5vw,32px);line-height:1.15;min-width:0}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:16px;padding:14px;text-align:left;font-weight:700;display:flex;gap:10px;align-items:center;min-width:0}
+.choice .n{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
+.choice:hover{border-color:var(--navy)}
+.choice.right{border-color:var(--good);background:var(--good-bg)}
+.choice.wrong{border-color:var(--bad);background:var(--bad-bg)}
+@media (max-width:560px){ .choices{grid-template-columns:1fr} }
+.answer-row{display:flex;gap:10px;flex-wrap:wrap}
+.answer-row input{font:inherit;font-weight:700;font-size:20px;color:var(--ink);background:var(--surface-2);border:2px solid var(--line);border-bottom:4px solid var(--navy);border-radius:14px;padding:10px 14px;flex:1 1 260px;min-width:0}
+.answer-row input.right{border-color:var(--good);background:var(--good-bg)}
+.answer-row input.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.feedback{border-radius:16px;padding:12px 16px;font-weight:700;display:flex;flex-direction:column;gap:4px}
+.feedback:empty{display:none}
+.feedback.good{background:var(--good-bg);color:var(--good)}
+.feedback.bad{background:var(--bad-bg);color:var(--ink)}
+.feedback .corr{font-family:var(--display);font-weight:800;font-size:20px;color:var(--good)}
+.feedback .link{background:none;border:none;color:var(--navy);font-weight:800;text-decoration:underline;padding:0;align-self:flex-start}
+.progress{display:flex;align-items:center;gap:10px}
+.pbar{flex:1;height:12px;border-radius:999px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line)}
+.pfill{height:100%;width:0;background:var(--teal);transition:width .3s}
+.pfill.sun{background:var(--sun)}
+.ptxt{font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.levels{display:flex;gap:8px;flex-wrap:wrap}
+.levels span{border-radius:999px;padding:3px 12px;font-weight:800;font-size:14px;background:var(--surface-2)}
+.levels .l2{background:var(--good-bg);color:var(--good)} .levels .l1{background:var(--sun-soft)}
+.done-box{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.done-box .emo{font-size:64px}
+.done-box h2{font-size:30px}
+
+/* match */
+.match-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.timer{font-family:var(--display);font-weight:800;font-size:30px;font-variant-numeric:tabular-nums}
+.mgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tile{min-height:96px;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:16px;padding:10px;font-weight:800;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.2;transition:opacity .25s,transform .25s}
+.tile.en{font-family:var(--display);font-size:17px}
+.tile.sel{border-color:var(--navy);background:var(--navy-soft)}
+.tile.no{border-color:var(--bad);background:var(--bad-bg);animation:shake .3s}
+.tile.gone{opacity:0;transform:scale(.85);pointer-events:none}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@media (max-width:620px){ .mgrid{grid-template-columns:repeat(3,minmax(0,1fr))} .tile{min-height:84px;font-size:15px} }
+
+/* test */
+.tq{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.tq .num{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tq .t{font-family:var(--display);font-weight:800;font-size:22px}
+.tq.right{border-color:var(--good)} .tq.wrong{border-color:var(--bad)}
+.tq .opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:2px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 16px;border-radius:999px;font-weight:700}
+.opt.sel{border-color:var(--navy);background:var(--navy-soft)}
+.opt.right{border-color:var(--good);background:var(--good-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.tq input{font:inherit;font-weight:700;color:var(--ink);background:var(--surface-2);border:2px solid var(--line);border-radius:12px;padding:8px 12px;width:100%;max-width:420px}
+.tq input.right{border-color:var(--good);background:var(--good-bg)} .tq input.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.tq .fix{font-weight:800;color:var(--good)}
+.tq .fix:empty{display:none}
+.tf-pair{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--display);font-weight:800;font-size:20px}
+.tf-pair .eq{color:var(--muted)}
+.score-box{background:var(--navy-soft);border-radius:20px;padding:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.score-box .big{font-family:var(--display);font-weight:800;font-size:42px}
+
+@media (max-width:520px){ .theme-btn{position:static;align-self:flex-start} .fc{height:260px} }
+@media (prefers-reduced-motion:reduce){ .fc-inner,.pfill,.tile{transition:none} .tile.no{animation:none} }
+</style>
+
+<header class="gut">
+  <div class="inner">
+    <button class="theme-btn" id="themeBtn" type="button">🌙 Dark</button>
+    <span class="eyebrow">Study set · English ↔ Українська · 17 terms</span>
+    <h1>Everyday activities</h1>
+    <p>Learn the words with flashcards, then practise them in five different ways.</p>
+  </div>
+</header>
+
+<nav class="tabs gut" aria-label="Study modes">
+  <div class="inner">
+    <button class="tab on" type="button" data-mode="cards"><span class="ic">🃏</span>Flashcards</button>
+    <button class="tab" type="button" data-mode="learn"><span class="ic">🎯</span>Learn</button>
+    <button class="tab" type="button" data-mode="write"><span class="ic">✍️</span>Write</button>
+    <button class="tab" type="button" data-mode="match"><span class="ic">⚡</span>Match</button>
+    <button class="tab" type="button" data-mode="test"><span class="ic">📝</span>Test</button>
+  </div>
+</nav>
+
+<main class="gut"><div class="inner">
+
+<!-- FLASHCARDS -->
+<section class="panel" id="p-cards">
+  <div class="bar-row">
+    <div class="seg" role="group" aria-label="Front of card"><button type="button" class="on" data-front="en">Front: English</button><button type="button" data-front="ua">Front: Українська</button></div>
+    <button class="btn ghost" type="button" id="fcShuffle">🔀 Shuffle</button>
+    <span class="muted right">Tap the card or press Space to flip</span>
+  </div>
+  <div class="fc-wrap">
+    <button class="fc" type="button" id="fc" aria-label="Flashcard. Tap to flip.">
+      <div class="fc-inner">
+        <div class="fc-face fc-front"><span class="side" id="fcSideF">English</span><span class="emo" id="fcE"></span><span class="term" id="fcF"></span></div>
+        <div class="fc-face fc-back"><span class="side" id="fcSideB">Українська</span><span class="term" id="fcB"></span><span class="ex" id="fcX"></span></div>
+      </div>
+    </button>
+    <div class="fc-nav">
+      <button class="icon-btn" type="button" id="fcPrev" aria-label="Previous card">←</button>
+      <span class="pos" id="fcPos">1 / 17</span>
+      <button class="icon-btn" type="button" id="fcNext" aria-label="Next card">→</button>
+      <button class="icon-btn" type="button" id="fcSay" aria-label="Listen to the English">🔊</button>
+    </div>
+    <div class="sort"><button class="btn" type="button" id="fcLearning">Still learning</button><button class="btn teal" type="button" id="fcKnow">I know it ✓</button></div>
+    <div class="tally"><span class="k" id="tK">Know: 0</span><span class="l" id="tL">Still learning: 0</span></div>
+  </div>
+  <h2>Terms in this set (17)</h2>
+  <div class="terms" id="terms"></div>
+</section>
+
+<!-- LEARN -->
+<section class="panel" id="p-learn" hidden>
+  <div class="progress"><div class="pbar"><div class="pfill" id="lFill"></div></div><span class="ptxt" id="lTxt">0 / 17 mastered</span></div>
+  <div class="levels"><span>Not started: <b id="lv0">17</b></span><span class="l1">Familiar: <b id="lv1">0</b></span><span class="l2">Mastered: <b id="lv2">0</b></span></div>
+  <div id="lBody"></div>
+  <p class="muted">Each word needs two correct answers: first choose it, then write it.</p>
+</section>
+
+<!-- WRITE -->
+<section class="panel" id="p-write" hidden>
+  <div class="progress"><div class="pbar"><div class="pfill sun" id="wFill"></div></div><span class="ptxt" id="wTxt">0 / 17</span></div>
+  <div id="wBody"></div>
+</section>
+
+<!-- MATCH -->
+<section class="panel" id="p-match" hidden>
+  <div class="match-top">
+    <span class="timer" id="mTime">0.0 s</span>
+    <span class="muted" id="mBest">Best: –</span>
+    <button class="btn navy right" type="button" id="mStart">New game</button>
+  </div>
+  <p class="muted">Tap an English phrase and its Ukrainian translation. Clear the board as fast as you can! A wrong pair adds 1 second.</p>
+  <div class="mgrid" id="mGrid"></div>
+</section>
+
+<!-- TEST -->
+<section class="panel" id="p-test" hidden>
+  <div class="bar-row"><span class="muted">10 questions: choose, true or false, and write.</span><button class="btn navy right" type="button" id="tNew">New test</button></div>
+  <div id="tBody" style="display:flex;flex-direction:column;gap:12px"></div>
+  <div class="bar-row"><button class="btn" type="button" id="tSubmit">Check my test</button></div>
+  <div id="tScore"></div>
+</section>
+
+</div></main>
+
+<script>
+(function(){
+const W=[
+  {e:'🪥',en:'brush your teeth',ua:'чистити зуби',x:'I brush my teeth after breakfast.',acc:['brush your teeth','brush my teeth','brush teeth']},
+  {e:'📝',en:'do homework',ua:'робити домашнє завдання',x:'I do my homework before dinner.',acc:['do homework','do my homework','do your homework']},
+  {e:'🔔',en:'finish school',ua:'закінчувати уроки',x:'I finish school at 2 pm.',acc:['finish school']},
+  {e:'👕',en:'get dressed',ua:'одягатися',x:'I get dressed after my shower.',acc:['get dressed']},
+  {e:'🧍‍♀️',en:'get up',ua:'вставати (з ліжка)',x:"I get up at 7 o'clock.",acc:['get up']},
+  {e:'🏠',en:'go home',ua:'іти додому',x:'I go home at half past two.',acc:['go home']},
+  {e:'📱',en:'go on social media',ua:'заходити в соцмережі',x:'I go on social media in the evening.',acc:['go on social media']},
+  {e:'😴',en:'go to bed',ua:'лягати спати',x:'I go to bed at 10 pm.',acc:['go to bed']},
+  {e:'🚌',en:'go to school',sub:'by bike / bus / car / train / on foot',ua:'ходити / їздити до школи',subua:'на велосипеді / автобусі / машині / поїзді / пішки',x:'I go to school by bus.',acc:['go to school']},
+  {e:'🚿',en:'have a shower',ua:'приймати душ',x:'I have a shower in the morning.',acc:['have a shower','take a shower']},
+  {e:'🥣',en:'have breakfast',ua:'снідати',x:'I have breakfast at half past seven.',acc:['have breakfast']},
+  {e:'🍝',en:'have dinner',ua:'вечеряти',x:'We have dinner at 9 pm.',acc:['have dinner']},
+  {e:'🥪',en:'have lunch',ua:'обідати',x:'I have lunch at school.',acc:['have lunch']},
+  {e:'🚪',en:'leave home',ua:'виходити з дому',x:'I leave home at quarter past eight.',acc:['leave home','leave the house']},
+  {e:'🎒',en:'pack your school bag',ua:'збирати шкільний рюкзак',x:'I pack my school bag in the evening.',acc:['pack your school bag','pack my school bag','pack your schoolbag','pack my schoolbag']},
+  {e:'🏫',en:'start school',ua:'починати уроки',x:"I start school at 9 o'clock.",acc:['start school']},
+  {e:'⏰',en:'wake up',ua:'прокидатися',x:'I wake up at half past six.',acc:['wake up']}
+];
+const N=W.length;
+const $=id=>document.getElementById(id);
+const shuffle=a=>{ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; };
+const norm=s=>s.toLowerCase().replace(/[’‘`]/g,"'").replace(/[.,!?]/g,'').replace(/\s+/g,' ').trim();
+const store={ get(k,d){ try{ const v=localStorage.getItem('eac_'+k); return v===null?d:JSON.parse(v); }catch(e){ return d; } }, set(k,v){ try{ localStorage.setItem('eac_'+k,JSON.stringify(v)); }catch(e){} } };
+function say(text){ try{ if(!('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='en-GB'; u.rate=.9; speechSynthesis.speak(u); }catch(e){} }
+const isRight=(w,ans)=>w.acc.map(norm).includes(norm(ans));
+
+// theme
+(function(){ const root=document.documentElement, tb=$('themeBtn');
+  const isDark=()=> root.dataset.theme ? root.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const label=()=>{ tb.textContent = isDark() ? '☀️ Light' : '🌙 Dark'; };
+  tb.addEventListener('click',()=>{ root.dataset.theme = isDark()?'light':'dark'; label(); }); label(); })();
+
+// tabs
+let mode='cards';
+const starters={};
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{ mode=t.dataset.mode;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+  document.querySelectorAll('.panel').forEach(p=>p.hidden= p.id!=='p-'+mode);
+  if(starters[mode]) starters[mode](); });
+
+/* ---------- FLASHCARDS ---------- */
+let fcOrder=W.map((_,i)=>i), fcI=0, front='en';
+const status=store.get('status',{}); // i -> 'k' | 'l'
+const fc=$('fc');
+function enHTML(w){ return w.en+(w.sub?`<small>${w.sub}</small>`:''); }
+function uaHTML(w){ return w.ua+(w.subua?`<small>${w.subua}</small>`:''); }
+function fcShow(){ const w=W[fcOrder[fcI]]; fc.classList.remove('flipped');
+  $('fcE').textContent=w.e;
+  if(front==='en'){ $('fcF').innerHTML=enHTML(w); $('fcB').innerHTML=uaHTML(w); $('fcSideF').textContent='English'; $('fcSideB').textContent='Українська'; }
+  else { $('fcF').innerHTML=uaHTML(w); $('fcB').innerHTML=enHTML(w); $('fcSideF').textContent='Українська'; $('fcSideB').textContent='English'; }
+  $('fcX').textContent='"'+w.x+'"'; $('fcPos').textContent=`${fcI+1} / ${N}`; }
+function tally(){ const v=Object.values(status); $('tK').textContent='Know: '+v.filter(x=>x==='k').length; $('tL').textContent='Still learning: '+v.filter(x=>x==='l').length;
+  document.querySelectorAll('.term-row').forEach(r=>r.classList.toggle('known',status[r.dataset.i]==='k')); }
+fc.onclick=()=>fc.classList.toggle('flipped');
+$('fcPrev').onclick=()=>{ fcI=(fcI-1+N)%N; fcShow(); };
+$('fcNext').onclick=()=>{ fcI=(fcI+1)%N; fcShow(); };
+$('fcSay').onclick=()=>say(W[fcOrder[fcI]].en);
+$('fcShuffle').onclick=()=>{ fcOrder=shuffle(fcOrder); fcI=0; fcShow(); };
+function sortCard(v){ status[fcOrder[fcI]]=v; store.set('status',status); tally(); fcI=(fcI+1)%N; fcShow(); }
+$('fcKnow').onclick=()=>sortCard('k'); $('fcLearning').onclick=()=>sortCard('l');
+document.querySelectorAll('[data-front]').forEach(b=>b.onclick=()=>{ front=b.dataset.front; document.querySelectorAll('[data-front]').forEach(x=>x.classList.toggle('on',x===b)); fcShow(); });
+document.addEventListener('keydown',e=>{ if(mode!=='cards'||e.target.tagName==='INPUT') return;
+  if(e.key===' '){ e.preventDefault(); fc.classList.toggle('flipped'); } else if(e.key==='ArrowRight') $('fcNext').click(); else if(e.key==='ArrowLeft') $('fcPrev').click(); });
+const tl=$('terms');
+W.forEach((w,i)=>{ const r=document.createElement('div'); r.className='term-row'; r.dataset.i=i;
+  r.innerHTML=`<span class="e" aria-hidden="true">${w.e}</span><span class="en">${enHTML(w).replace('<small>',' <small style="display:block;font-family:var(--body);font-weight:700;color:var(--muted);font-size:13px">')}</span><span class="ua">${w.ua}</span><button class="icon-btn" type="button" aria-label="Listen: ${w.en}">🔊</button>`;
+  r.querySelector('button').onclick=()=>say(w.en); tl.appendChild(r); });
+fcShow(); tally();
+
+/* ---------- LEARN ---------- */
+let lv=W.map(()=>0), lQueue=[], lCur=null, lLocked=false;
+function lCounts(){ const c=[0,0,0]; lv.forEach(v=>c[v]++); $('lv0').textContent=c[0]; $('lv1').textContent=c[1]; $('lv2').textContent=c[2];
+  $('lFill').style.width=(c[2]/N*100)+'%'; $('lTxt').textContent=`${c[2]} / ${N} mastered`; return c; }
+function lRefill(){ const pending=W.map((_,i)=>i).filter(i=>lv[i]<2); lQueue=shuffle(pending).slice(0,7); }
+function lNext(){ lLocked=false; lCounts();
+  if(lv.every(v=>v===2)){ $('lBody').innerHTML=`<div class="done-box"><span class="emo">🏆</span><h2>You mastered all ${N} words!</h2><p class="muted">Try Match or Test next.</p><button class="btn navy" type="button" id="lAgain">Start again</button></div>`; $('lAgain').onclick=()=>{ lv=W.map(()=>0); lRefill(); lNext(); }; return; }
+  if(!lQueue.length) lRefill();
+  lCur=lQueue.shift(); const w=W[lCur];
+  if(lv[lCur]===0) lMC(w); else lWrite(w); }
+function lMC(w){ const dirUA=Math.random()<.5;
+  const opts=shuffle([w].concat(shuffle(W.filter(x=>x!==w)).slice(0,3)));
+  $('lBody').innerHTML=`<div class="qcard"><div class="qhead"><span class="qtype">Choose the ${dirUA?'English':'Ukrainian'}</span><button class="icon-btn right" type="button" id="lSay" aria-label="Listen">🔊</button></div>
+    <div class="prompt"><span class="emo">${w.e}</span><span class="t">${dirUA?w.ua:w.en}</span></div>
+    <div class="choices">${opts.map((o,k)=>`<button class="choice" type="button" data-k="${W.indexOf(o)}"><span class="n">${k+1}</span><span>${dirUA?o.en:o.ua}</span></button>`).join('')}</div>
+    <div class="feedback" id="lFb"></div></div>`;
+  $('lSay').onclick=()=>say(w.en);
+  $('lBody').querySelectorAll('.choice').forEach(c=>c.onclick=()=>{ if(lLocked) return; lLocked=true;
+    const ok=+c.dataset.k===lCur; c.classList.add(ok?'right':'wrong');
+    $('lBody').querySelectorAll('.choice').forEach(x=>{ if(+x.dataset.k===lCur) x.classList.add('right'); });
+    if(ok){ lv[lCur]=1; $('lFb').className='feedback good'; $('lFb').innerHTML='Great! ✓'; setTimeout(lNext,900); }
+    else { lQueue.splice(2,0,lCur); $('lFb').className='feedback bad'; $('lFb').innerHTML=`<span>Not quite. The answer is:</span><span class="corr">${dirUA?w.en:w.ua}</span><button class="btn navy" type="button" id="lCont" style="align-self:flex-start;margin-top:6px">Continue</button>`; $('lCont').onclick=lNext; $('lCont').focus(); } }); }
+function lWrite(w){
+  $('lBody').innerHTML=`<div class="qcard"><div class="qhead"><span class="qtype">Write it in English</span></div>
+    <div class="prompt"><span class="emo">${w.e}</span><span class="t">${uaHTML(w).replace('<small>','<small style="display:block;font-size:14px;font-family:var(--body);opacity:.75">')}</span></div>
+    <form class="answer-row" id="lForm"><input id="lIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the English…" aria-label="Your answer"><button class="btn navy" type="submit">Answer</button></form>
+    <button class="btn ghost" type="button" id="lDont" style="align-self:flex-start">Don't know?</button>
+    <div class="feedback" id="lFb"></div></div>`;
+  const inp=$('lIn'); inp.focus();
+  const wrong=(txt)=>{ lv[lCur]=0; lQueue.splice(2,0,lCur); inp.classList.add('wrong'); $('lFb').className='feedback bad';
+    $('lFb').innerHTML=`<span>${txt}</span><span class="corr">${w.en}</span><button class="link" type="button" id="lOver">I was right</button><button class="btn navy" type="button" id="lCont" style="align-self:flex-start;margin-top:6px">Continue</button>`;
+    $('lOver').onclick=()=>{ lv[lCur]=2; lQueue=lQueue.filter(x=>x!==lCur); lNext(); }; $('lCont').onclick=lNext; $('lCont').focus(); };
+  $('lForm').onsubmit=e=>{ e.preventDefault(); if(lLocked) return; lLocked=true;
+    if(isRight(w,inp.value)){ inp.classList.add('right'); lv[lCur]=2; say(w.en); $('lFb').className='feedback good'; $('lFb').innerHTML='Mastered! ✓'; setTimeout(lNext,900); }
+    else wrong(inp.value.trim()?`You wrote "${inp.value.trim()}". Correct answer:`:'Correct answer:'); };
+  $('lDont').onclick=()=>{ if(lLocked) return; lLocked=true; wrong("That's OK! The answer is:"); }; }
+starters.learn=()=>{ if(!lCur && lCur!==0){ lRefill(); lNext(); } };
+
+/* ---------- WRITE ---------- */
+let wOrder=[], wI=0, wOk=0, wMissed=[], wLocked=false;
+function wStart(list){ wOrder=shuffle(list||W.map((_,i)=>i)); wI=0; wOk=0; wMissed=[]; wNext(); }
+function wNext(){ wLocked=false; $('wFill').style.width=(wI/wOrder.length*100)+'%'; $('wTxt').textContent=`${wI} / ${wOrder.length}`;
+  if(wI>=wOrder.length){ $('wBody').innerHTML=`<div class="done-box"><span class="emo">${wOk===wOrder.length?'🌟':'💪'}</span><h2>${wOk} / ${wOrder.length} correct</h2>${wMissed.length?`<p class="muted">Practise again: ${wMissed.map(i=>W[i].en).join(', ')}</p>`:'<p class="muted">Perfect round!</p>'}<div class="bar-row" style="justify-content:center">${wMissed.length?'<button class="btn" type="button" id="wMiss">Practise missed words</button>':''}<button class="btn navy" type="button" id="wAll">All words again</button></div></div>`;
+    if($('wMiss')) $('wMiss').onclick=()=>wStart(wMissed.slice()); $('wAll').onclick=()=>wStart(); return; }
+  const w=W[wOrder[wI]];
+  $('wBody').innerHTML=`<div class="qcard"><div class="qhead"><span class="qtype">Write the English</span></div>
+    <div class="prompt"><span class="emo">${w.e}</span><span class="t">${uaHTML(w).replace('<small>','<small style="display:block;font-size:14px;font-family:var(--body);opacity:.75">')}</span></div>
+    <form class="answer-row" id="wForm"><input id="wIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the English…" aria-label="Your answer"><button class="btn navy" type="submit">Answer</button></form>
+    <div class="feedback" id="wFb"></div></div>`;
+  const inp=$('wIn'); inp.focus();
+  $('wForm').onsubmit=e=>{ e.preventDefault();
+    if(wLocked){ wI++; wNext(); return; } wLocked=true;
+    if(isRight(w,inp.value)){ wOk++; inp.classList.add('right'); say(w.en); $('wFb').className='feedback good'; $('wFb').innerHTML='Correct! ✓'; setTimeout(()=>{ wI++; wNext(); },800); }
+    else { wMissed.push(wOrder[wI]); inp.classList.add('wrong'); $('wFb').className='feedback bad';
+      $('wFb').innerHTML=`<span>Correct answer:</span><span class="corr">${w.en}</span><span class="muted">"${w.x}"</span><button class="link" type="button" id="wOver">I was right</button><span class="muted">Press Enter to continue.</span>`;
+      $('wOver').onclick=()=>{ wOk++; wMissed.pop(); wI++; wNext(); }; } }; }
+starters.write=()=>{ if(!wOrder.length) wStart(); };
+
+/* ---------- MATCH ---------- */
+let mSel=null, mLeft=0, mT0=0, mTimer=null, mPen=0;
+const mBestS=()=>{ const b=store.get('best',null); $('mBest').textContent= b? `Best: ${b.toFixed(1)} s` : 'Best: –'; };
+function mNew(){ clearInterval(mTimer); mPen=0; mSel=null;
+  const six=shuffle(W.map((_,i)=>i)).slice(0,6); mLeft=6;
+  const tiles=shuffle(six.flatMap(i=>[{i,t:W[i].en,c:'en'},{i,t:W[i].ua,c:'ua'}]));
+  const g=$('mGrid'); g.innerHTML='';
+  tiles.forEach(o=>{ const b=document.createElement('button'); b.type='button'; b.className='tile '+o.c; b.textContent=o.t; b.dataset.i=o.i;
+    b.onclick=()=>{ if(b.classList.contains('gone')) return;
+      if(!mSel){ mSel=b; b.classList.add('sel'); return; }
+      if(mSel===b){ b.classList.remove('sel'); mSel=null; return; }
+      if(mSel.dataset.i===b.dataset.i && mSel.classList.contains('en')!==b.classList.contains('en')){
+        [mSel,b].forEach(x=>{ x.classList.remove('sel'); x.classList.add('gone'); }); mSel=null; mLeft--;
+        if(!mLeft){ clearInterval(mTimer); const t=(performance.now()-mT0)/1000+mPen; $('mTime').textContent=t.toFixed(1)+' s 🎉';
+          const best=store.get('best',null); if(!best||t<best){ store.set('best',t); $('mTime').textContent+=' New record!'; } mBestS(); } }
+      else { const a=mSel; [a,b].forEach(x=>{ x.classList.remove('sel'); x.classList.remove('no'); void x.offsetWidth; x.classList.add('no'); }); mSel=null; mPen+=1; setTimeout(()=>{ a.classList.remove('no'); b.classList.remove('no'); },400); } };
+    g.appendChild(b); });
+  mT0=performance.now(); mTimer=setInterval(()=>{ $('mTime').textContent=((performance.now()-mT0)/1000+mPen).toFixed(1)+' s'; },100); }
+$('mStart').onclick=mNew;
+starters.match=()=>{ mBestS(); if(!$('mGrid').children.length) mNew(); };
+
+/* ---------- TEST ---------- */
+let tQs=[];
+function tNew(){ $('tScore').innerHTML=''; $('tSubmit').disabled=false;
+  const pick=shuffle(W.map((_,i)=>i)).slice(0,10);
+  tQs=pick.map((i,k)=>{ const type= k<4?'mc': k<7?'tf':'wr'; const q={i,type};
+    if(type==='mc'){ q.opts=shuffle([i].concat(shuffle(W.map((_,j)=>j).filter(j=>j!==i)).slice(0,3))); }
+    if(type==='tf'){ q.truth=Math.random()<.5; q.shown= q.truth? i : shuffle(W.map((_,j)=>j).filter(j=>j!==i))[0]; }
+    return q; });
+  const body=$('tBody'); body.innerHTML='';
+  tQs.forEach((q,k)=>{ const w=W[q.i]; const d=document.createElement('div'); d.className='tq'; d.dataset.k=k;
+    if(q.type==='mc') d.innerHTML=`<span class="num">${k+1} · Choose the Ukrainian</span><span class="t">${w.e} ${w.en}</span><div class="opts">${q.opts.map(j=>`<button class="opt" type="button" data-j="${j}">${W[j].ua}</button>`).join('')}</div><span class="fix"></span>`;
+    if(q.type==='tf') d.innerHTML=`<span class="num">${k+1} · True or false?</span><div class="tf-pair"><span>${w.en}</span><span class="eq">=</span><span>${W[q.shown].ua}</span></div><div class="opts"><button class="opt" type="button" data-j="t">True</button><button class="opt" type="button" data-j="f">False</button></div><span class="fix"></span>`;
+    if(q.type==='wr') d.innerHTML=`<span class="num">${k+1} · Write the English</span><span class="t">${w.e} ${w.ua}</span><input type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Answer ${k+1}" placeholder="Type the English…"><span class="fix"></span>`;
+    d.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{ if(d.classList.contains('right')||d.classList.contains('wrong')) return; d.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel')); o.classList.add('sel'); });
+    body.appendChild(d); }); }
+$('tSubmit').onclick=()=>{ let ok=0;
+  $('tBody').querySelectorAll('.tq').forEach(d=>{ const q=tQs[+d.dataset.k], w=W[q.i]; let good=false; const fix=d.querySelector('.fix');
+    if(q.type==='mc'){ const s=d.querySelector('.opt.sel'); good= s && +s.dataset.j===q.i; d.querySelectorAll('.opt').forEach(o=>{ if(+o.dataset.j===q.i) o.classList.add('right'); else if(o===s) o.classList.add('wrong'); }); if(!good) fix.textContent='✓ '+w.ua; }
+    if(q.type==='tf'){ const s=d.querySelector('.opt.sel'); const want=q.truth?'t':'f'; good= s && s.dataset.j===want; if(s) s.classList.add(good?'right':'wrong'); if(!good) fix.textContent= q.truth? '✓ True' : `✓ False: ${w.en} = ${w.ua}`; }
+    if(q.type==='wr'){ const inp=d.querySelector('input'); good=isRight(w,inp.value); inp.classList.add(good?'right':'wrong'); inp.readOnly=true; if(!good) fix.textContent='✓ '+w.en; }
+    d.classList.add(good?'right':'wrong'); if(good) ok++; });
+  $('tSubmit').disabled=true;
+  const msg= ok===10?'Perfect! 🌟': ok>=8?'Great job! 💪': ok>=5?'Good! Keep practising.':'Go back to Flashcards and Learn, then try again.';
+  $('tScore').innerHTML=`<div class="score-box"><span class="big">${ok} / 10</span><span style="font-weight:800">${msg}</span><button class="btn navy right" type="button" id="tAgain">New test</button></div>`;
+  $('tAgain').onclick=()=>{ tNew(); window.scrollTo({top:0,behavior:'smooth'}); }; };
+$('tNew').onclick=tNew;
+starters.test=()=>{ if(!tQs.length) tNew(); };
+})();
+</script>
