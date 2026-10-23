@@ -1,0 +1,653 @@
+<title>Zoe's Day</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: same palette as "My day, my free time"; one column of stage panels, sticky stage bar; the -s ending is the hero colour (red) everywhere */
+:root{
+  --bg:#f7f8ff; --surface:#ffffff; --surface-2:#eef0fb;
+  --ink:#1d1b3a; --muted:#5f5d7e; --line:#dcdff2;
+  --red:#e8364f; --red-soft:#ffdfe4;
+  --teal:#11a39a; --teal-soft:#cdf3ef;
+  --navy:#2b3a8f; --navy-soft:#dde3ff;
+  --sun:#f2a900; --sun-soft:#fff0c4;
+  --good:#0f9d6e; --bad:#d92d4a; --good-bg:#dcf8ec; --bad-bg:#ffe1e7;
+  --on-accent:#ffffff;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Nunito", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#12132a; --surface:#1c1e3a; --surface-2:#262947; --ink:#eef0ff; --muted:#aeb1d6; --line:#363a63;
+  --red:#ff6b80; --red-soft:#4a1f2c; --teal:#3fd6c9; --teal-soft:#123f3c; --navy:#93a4ff; --navy-soft:#2a3166;
+  --sun:#ffcf5c; --sun-soft:#433a1b; --good:#4fe0aa; --bad:#ff7b95; --good-bg:#173f31; --bad-bg:#4a1d2a; --on-accent:#12132a; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#12132a; --surface:#1c1e3a; --surface-2:#262947; --ink:#eef0ff; --muted:#aeb1d6; --line:#363a63;
+  --red:#ff6b80; --red-soft:#4a1f2c; --teal:#3fd6c9; --teal-soft:#123f3c; --navy:#93a4ff; --navy-soft:#2a3166;
+  --sun:#ffcf5c; --sun-soft:#433a1b; --good:#4fe0aa; --bad:#ff7b95; --good-bg:#173f31; --bad-bg:#4a1d2a; --on-accent:#12132a; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3,h4{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+button:disabled{cursor:default;opacity:.45}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.s{color:var(--red);font-weight:800}
+
+.hero{padding-top:28px;display:flex;flex-direction:column;gap:12px;position:relative}
+.hero h1{font-size:clamp(48px,11vw,100px);font-weight:800;letter-spacing:-.02em;text-transform:uppercase;line-height:.92}
+.hero h1 span{display:inline-block;background:var(--ink);color:var(--bg);padding:0 .12em;margin-top:.06em}
+.hero h1 .s{background:var(--red);color:var(--on-accent);padding:0 .08em}
+.hero p.lede{font-size:19px;color:var(--muted);max-width:62ch}
+.theme-btn{position:absolute;top:24px;right:0;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px}
+details summary{cursor:pointer;font-weight:800}
+.tnote{font-size:15px;background:var(--surface-2);border-radius:14px;padding:10px 14px;color:var(--muted)}
+.tnote b{color:var(--ink)}
+.plan{width:100%;border-collapse:collapse;font-size:15px}
+.plan td,.plan th{text-align:left;padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.plan th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.plan td:first-child{font-variant-numeric:tabular-nums;font-weight:800;white-space:nowrap}
+.table-wrap{overflow-x:auto}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.bar a{flex:0 0 auto;text-decoration:none;color:var(--ink);font-weight:800;font-size:14px;padding:6px 12px;border-radius:999px;border:2px solid var(--line);background:var(--surface);white-space:nowrap}
+.bar a span{color:var(--muted);font-weight:600;margin-left:4px}
+.bar a:hover{border-color:var(--red)}
+
+.stage{background:var(--surface);border:2px solid var(--line);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:24px;scroll-margin-top:70px}
+.stage-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.stage-head h2{font-size:clamp(26px,5vw,34px);font-weight:800}
+.stage-head .num{font-family:var(--display);color:var(--red);margin-right:8px}
+.time{font-weight:800;font-size:14px;background:var(--sun-soft);color:var(--ink);padding:4px 12px;border-radius:999px;font-variant-numeric:tabular-nums}
+.task{display:flex;flex-direction:column;gap:12px}
+.task h3{font-size:21px;font-weight:600;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.tag{font-family:var(--body);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--navy-soft);color:var(--navy)}
+.tag.talk{background:var(--teal-soft);color:var(--teal)}
+.tag.game{background:var(--sun-soft);color:var(--ink)}
+.instr{color:var(--muted);font-weight:600}
+.say{display:flex;flex-wrap:wrap;gap:8px}
+.say .pill{background:var(--surface-2);border-radius:12px;padding:6px 12px;font-weight:800}
+.say .pill.a{background:var(--teal-soft)} .say .pill.q{background:var(--navy-soft)}
+
+.big{border-radius:24px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;background:var(--sun-soft)}
+.big.navy{background:var(--navy-soft)} .big.red{background:var(--red-soft)} .big.teal{background:var(--teal-soft)}
+.big .line{font-family:var(--display);font-weight:800;font-size:clamp(26px,6vw,42px);min-height:1.2em}
+.big .sub{font-weight:700;color:var(--muted)}
+.big .emo{font-size:64px;line-height:1}
+.hidden-word{filter:blur(12px);user-select:none;transition:filter .2s}
+.hidden-word.show{filter:none;user-select:auto}
+
+.btns{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:inherit}
+.btn{border:none;border-radius:999px;padding:9px 20px;font-weight:800;background:var(--red);color:var(--on-accent)}
+.btn.navy{background:var(--navy)} .btn.teal{background:var(--teal)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.small-btn{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;font-weight:700;font-size:14px}
+.score{font-weight:800;color:var(--muted)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:2px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 14px;border-radius:999px;font-weight:700}
+.opt.sel{border-color:var(--navy);background:var(--navy-soft)}
+.opt.right{border-color:var(--good);background:var(--good-bg);color:var(--good)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+
+/* lead-in timeline */
+.timeline{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.tl{background:var(--surface-2);border-radius:16px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.tl .e{font-size:34px;line-height:1}
+.tl .t{font-family:var(--display);font-weight:800;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* reading */
+.story{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;background:var(--pink,var(--red-soft));border-radius:22px;padding:18px}
+.story .ava{font-size:64px;line-height:1}
+.story .txt{font-size:19px;line-height:1.75;min-width:0}
+.story .w{cursor:pointer;border-radius:6px;padding:0 1px}
+.story .w:hover{background:var(--surface)}
+.story .w.found{background:var(--teal);color:var(--on-accent);padding:0 4px}
+.story .w.found .end{color:var(--sun)}
+.story .w.miss{animation:shake .3s;background:var(--bad-bg)}
+@keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.q{display:flex;flex-direction:column;gap:8px;padding:10px 0;border-top:2px dashed var(--line)}
+.q:first-of-type{border-top:none}
+.q .prompt{font-weight:700}
+
+/* sort */
+.chips{display:flex;flex-wrap:wrap;gap:6px;min-height:40px;padding:10px;border:2px dashed var(--line);border-radius:16px}
+.chip{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;font-weight:800}
+.chip.sel{border-color:var(--navy);background:var(--navy-soft)}
+.chip.right{border-color:var(--good);background:var(--good-bg)}
+.chip.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.cols4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.col{border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:6px;min-height:150px;min-width:0;border:3px solid transparent;cursor:pointer;background:var(--surface-2);text-align:left;color:var(--ink)}
+.col:hover{border-color:var(--navy)}
+.col h4{font-size:22px} .col h4 .s{font-size:24px}
+.col .hint{font-size:13px;font-weight:700;color:var(--muted)}
+.col .in{display:flex;flex-wrap:wrap;gap:4px}
+@media (max-width:640px){ .cols4{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+.rule{background:var(--teal-soft);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.rrow{display:grid;grid-template-columns:minmax(0,1.1fr) auto minmax(0,1fr);gap:10px;align-items:center;background:var(--surface);border-radius:14px;padding:8px 12px;font-weight:700}
+.rrow .ex{font-family:var(--display);font-weight:800}
+@media (max-width:600px){ .rrow{grid-template-columns:1fr} }
+input.gap{font:inherit;font-weight:800;color:var(--ink);background:var(--surface-2);border:none;border-bottom:3px solid var(--navy);border-radius:8px 8px 0 0;padding:2px 8px;width:5.2em;max-width:100%}
+input.gap.long{width:7.5em}
+input.gap.right{border-color:var(--good);background:var(--good-bg)}
+input.gap.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.who{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.who .pill{border-radius:12px;padding:6px 12px;font-weight:800}
+.who .yes{background:var(--red-soft)} .who .no{background:var(--surface)}
+
+.mistakes{background:var(--sun-soft);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.mist{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--surface);border-radius:14px;padding:10px 14px}
+.mist .bad{text-decoration:line-through;text-decoration-color:var(--bad);text-decoration-thickness:2px;font-weight:700}
+.mist .good{font-weight:800;color:var(--good)}
+
+/* speed game */
+.endings{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;width:100%;max-width:560px}
+.endings button{border:3px solid var(--ink);background:var(--surface);color:var(--ink);border-radius:16px;padding:12px 4px;font-family:var(--display);font-weight:800;font-size:20px}
+.endings button.no{animation:shake .3s;border-color:var(--bad);background:var(--bad-bg)}
+.endings button.yes{border-color:var(--good);background:var(--good-bg)}
+@media (max-width:480px){ .endings{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+/* gap list */
+.glist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;counter-reset:g}
+.glist li{counter-increment:g;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;background:var(--surface-2);border-radius:14px;padding:8px 12px;font-weight:700}
+.glist li::before{content:counter(g);font-family:var(--display);font-weight:800;color:var(--red);min-width:1.3em}
+.glist .fix{font-size:14px;font-weight:800;color:var(--good)}
+.glist .fix:empty{display:none}
+
+/* board game */
+.board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;width:100%}
+.sq{position:relative;min-height:84px;border-radius:14px;background:var(--surface-2);border:2px solid var(--line);padding:6px;display:flex;flex-direction:column;gap:2px;font-size:13px;font-weight:700;line-height:1.2;min-width:0}
+.sq .n{font-family:var(--display);font-weight:800;color:var(--muted);font-size:13px}
+.sq .p{word-break:break-word}
+.sq.ladder{background:var(--good-bg)} .sq.snake{background:var(--bad-bg)}
+.sq.start{background:var(--navy-soft)} .sq.finish{background:var(--sun-soft)}
+.sq.cur{border-color:var(--ink);box-shadow:0 0 0 3px var(--sun)}
+.sq .tokens{position:absolute;right:4px;bottom:2px;font-size:22px;line-height:1}
+@media (max-width:560px){ .sq{min-height:70px;font-size:11px} .sq .tokens{font-size:18px} }
+.die{width:76px;height:76px;border-radius:18px;background:var(--surface);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:800;font-size:40px;color:var(--ink)}
+.die.roll{animation:spin .5s}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.prompt-card{background:var(--surface);border:3px solid var(--ink);border-radius:18px;padding:12px 18px;font-family:var(--display);font-weight:800;font-size:clamp(20px,4.5vw,28px);min-height:60px;display:flex;align-items:center;justify-content:center;width:100%;max-width:560px}
+.players{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.player{border-radius:14px;padding:6px 14px;font-weight:800;background:var(--surface);border:2px solid transparent}
+.player.turn{border-color:var(--ink)}
+
+/* mystery */
+.wordbank{background:var(--teal-soft);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.wb-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.wb-head h3{font-size:21px}
+.wb-group{display:flex;flex-direction:column;gap:6px}
+.wb-group h4{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.wb{display:flex;flex-wrap:wrap;gap:6px}
+.wb span{background:var(--surface);border-radius:999px;padding:4px 12px;font-weight:700;font-size:15px}
+.wb span .she{display:none}
+.wordbank.she .wb span .base{display:none}
+.wordbank.she .wb span .she{display:inline}
+.clues{display:flex;flex-direction:column;gap:8px;width:100%;max-width:520px}
+.clue{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:14px;padding:8px 14px;font-weight:800;font-size:19px;text-align:left}
+.clue .e{font-size:30px;line-height:1}
+.clue .base{color:var(--muted)}
+.clue .full{color:var(--good)}
+.clue .full[hidden]{display:none}
+.mcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;width:100%}
+.mcard{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:800;font-size:14px;color:var(--ink)}
+.mcard .e{font-size:30px}
+.mcard.out{opacity:.3;text-decoration:line-through}
+
+/* me vs */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vs .side{border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.vs .me{background:var(--navy-soft)} .vs .her{background:var(--red-soft)}
+.vs h4{font-size:20px}
+.vs textarea{font:inherit;font-weight:700;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:8px 10px;width:100%;min-height:150px;resize:vertical}
+@media (max-width:600px){ .vs{grid-template-columns:1fr} }
+.checklist{display:flex;flex-direction:column;gap:6px;font-weight:700}
+.checklist .ok{color:var(--good)} .checklist .warn{color:var(--bad)}
+
+.faces{display:flex;gap:8px}
+.face{font-size:34px;background:transparent;border:2px solid transparent;border-radius:14px;padding:2px 8px}
+.face.sel{border-color:var(--red);background:var(--red-soft)}
+
+@media (max-width:620px){ .stage{padding:18px} .theme-btn{position:static;align-self:flex-start} .story{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
+</style>
+<style>
+/* beginner additions */
+.contrast{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.contrast .c{border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0;font-weight:700;font-size:18px}
+.contrast .me{background:var(--navy-soft)} .contrast .zo{background:var(--red-soft)}
+.contrast h4{font-size:20px}
+@media (max-width:560px){ .contrast{grid-template-columns:1fr} }
+.pron{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.pcard{background:var(--surface-2);border-radius:16px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:8px;border:2px solid transparent;min-width:0}
+.pcard .who{font-family:var(--display);font-weight:800;font-size:20px}
+.pcard .opts .opt{padding:4px 10px;font-size:14px}
+.pcard.right{border-color:var(--good);background:var(--good-bg)} .pcard.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:560px){ .cols3{grid-template-columns:1fr} }
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{background:var(--surface);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.step h4{font-size:19px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.step h4 .k{font-family:var(--display);background:var(--red);color:var(--on-accent);border-radius:999px;padding:0 10px;font-size:15px}
+.step .ex{font-weight:700}
+.bonus{background:var(--sun-soft);border:2px dashed var(--sun);border-radius:16px;padding:12px 14px;font-weight:700}
+.itoshe{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;counter-reset:g}
+.itoshe li{counter-increment:g;display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1.3fr) auto;gap:10px;align-items:center;background:var(--surface-2);border-radius:14px;padding:8px 12px;font-weight:700}
+.itoshe li::before{content:counter(g);font-family:var(--display);font-weight:800;color:var(--red);min-width:1.3em}
+.itoshe .i{color:var(--muted)}
+.itoshe .fix{font-size:14px;font-weight:800;color:var(--good)}
+@media (max-width:620px){ .itoshe li{grid-template-columns:auto 1fr} .itoshe .i,.itoshe .sh,.itoshe .fix{grid-column:2} }
+.endings.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+</style>
+
+<div class="wrap">
+
+<header class="hero">
+  <button class="theme-btn" id="themeBtn" type="button">🌙 Dark</button>
+  <h1><span>She wake<b class="s">s</b></span><br><span>up!</span></h1>
+  <p class="lede">A day with Zoe, a teen YouTuber. Today we learn something new: when we talk about <b>he</b> or <b>she</b>, the verb gets a little <span class="s">-s</span>!</p>
+  <details class="tnote">
+    <summary>Teacher plan · 70 minutes, 1-to-1 · first time with -s</summary>
+    <div class="table-wrap"><table class="plan">
+      <tr><th>Time</th><th>Stage</th><th>Activity</th></tr>
+      <tr><td>0–6</td><td>Lead-in</td><td>My day (revision) → Zoe's day: what's different?</td></tr>
+      <tr><td>6–15</td><td>Context</td><td>Read about Zoe, true/false, 🎮 verb hunt</td></tr>
+      <tr><td>15–30</td><td>Clarify</td><td>Step 1: who gets -s? 🎮 · Step 2: three rules · 🎮 sort the verbs · fix the mistakes</td></tr>
+      <tr><td>30–50</td><td>Controlled practice</td><td>I → Zoe sentences, 🎮 Ending rush, 🎮 Snakes &amp; ladders</td></tr>
+      <tr><td>50–64</td><td>Freer practice</td><td>🎮 Mystery person, Me vs my best friend</td></tr>
+      <tr><td>64–70</td><td>Wrap-up</td><td>Exit quiz, rate the lesson</td></tr>
+    </table></div>
+    <p><b>First time with -s:</b> the main rules are <b>+s</b>, <b>+es</b> and <b>have → has</b>. y → ies is only a bonus box: show it, don't practise it yet. No negatives or questions today.</p>
+  </details>
+</header>
+
+<nav class="bar" aria-label="Lesson stages">
+  <a href="#lead">1 My day, Zoe's day <span>6′</span></a>
+  <a href="#context">2 Read <span>9′</span></a>
+  <a href="#clarify">3 The -s rules <span>15′</span></a>
+  <a href="#practice">4 Practise <span>20′</span></a>
+  <a href="#freer">5 Speak <span>14′</span></a>
+  <a href="#wrap">6 Wrap-up <span>6′</span></a>
+</nav>
+
+<!-- 1 LEAD-IN -->
+<section class="stage" id="lead">
+  <div class="stage-head"><h2><span class="num">1</span>My day, Zoe's day</h2><span class="time">6 min</span></div>
+  <div class="task">
+    <h3>Your day <span class="tag talk">Speaking</span></h3>
+    <p class="instr">Remember last lesson? Tell the teacher about your morning. Use <b>I</b>.</p>
+    <div class="say"><span class="pill">I wake up at…</span><span class="pill">I have breakfast at…</span><span class="pill">I go to school by…</span><span class="pill">I start school at…</span></div>
+  </div>
+  <div class="task">
+    <h3>Now meet Zoe!</h3>
+    <p class="instr">This is Zoe's day. Listen to the teacher. What's different when we talk about Zoe?</p>
+    <div class="timeline" id="timeline"></div>
+    <div class="contrast">
+      <div class="c me"><h4>👤 Me</h4><span>I wake up at 7.</span><span>I go to school by bus.</span></div>
+      <div class="c zo"><h4>👧🏻 Zoe</h4><span>She wake<span class="s">s</span> up at 7.</span><span>She go<span class="s">es</span> to school by bike.</span></div>
+    </div>
+    <p class="tnote"><b>Teacher:</b> say 3–4 sentences about Zoe from the timeline and stress the -s: "She wake<b>S</b> up at seven." Ask: "What's different? Listen!" Let her find the -s herself.</p>
+  </div>
+</section>
+
+<!-- 2 CONTEXT -->
+<section class="stage" id="context">
+  <div class="stage-head"><h2><span class="num">2</span>Meet Zoe</h2><span class="time">9 min</span></div>
+  <div class="task">
+    <h3>Read about Zoe</h3>
+    <div class="story">
+      <span class="ava" aria-hidden="true">👧🏻</span>
+      <div class="txt" id="story"></div>
+    </div>
+  </div>
+  <div class="task" id="tf">
+    <h3>True or false?</h3>
+    <div class="q" data-ans="F"><p class="prompt">1. Zoe gets up at 7 o'clock.</p><div class="opts"><button class="opt" type="button" data-v="T">True</button><button class="opt" type="button" data-v="F">False</button></div></div>
+    <div class="q" data-ans="T"><p class="prompt">2. She goes to school by bike.</p><div class="opts"><button class="opt" type="button" data-v="T">True</button><button class="opt" type="button" data-v="F">False</button></div></div>
+    <div class="q" data-ans="T"><p class="prompt">3. Leo watches cartoons at breakfast.</p><div class="opts"><button class="opt" type="button" data-v="T">True</button><button class="opt" type="button" data-v="F">False</button></div></div>
+    <div class="q" data-ans="F"><p class="prompt">4. Zoe films a video in the morning.</p><div class="opts"><button class="opt" type="button" data-v="T">True</button><button class="opt" type="button" data-v="F">False</button></div></div>
+    <div class="q" data-ans="T"><p class="prompt">5. She goes to bed at half past ten.</p><div class="opts"><button class="opt" type="button" data-v="T">True</button><button class="opt" type="button" data-v="F">False</button></div></div>
+    <div class="btns"><button class="btn" type="button" data-check-mc="tf">Check</button><span class="score" id="tf-score"></span></div>
+    <p class="tnote"><b>False ones:</b> she corrects them aloud. "No! She gets up at ten past seven."</p>
+  </div>
+  <div class="task">
+    <h3>Verb hunt <span class="tag game">Game</span></h3>
+    <p class="instr">Find all the verbs about Zoe and Leo in the text. Tap them! (<i>Meet</i> and <i>She's</i> don't count.)</p>
+    <div class="big teal">
+      <div class="line" id="huntCount">0 / 18</div>
+      <div class="sub" id="huntMsg">Look at the end of each verb. What do you notice?</div>
+      <div class="btns"><button class="btn ghost" type="button" id="huntShow">Show all</button><button class="btn ghost" type="button" id="huntReset">Reset</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 CLARIFY -->
+<section class="stage" id="clarify">
+  <div class="stage-head"><h2><span class="num">3</span>The -s rules</h2><span class="time">15 min</span></div>
+
+  <div class="task" id="pronTask">
+    <h3>Step 1: Who gets the -s? <span class="tag game">Game</span></h3>
+    <div class="who"><span class="pill yes">he / she / it → <span class="s">-s</span> ✓</span><span class="pill no">I / you / we / they → no -s</span></div>
+    <p class="instr">Look at each person. Do we add -s to the verb? Say a sentence: "My mum wake<b>s</b> up at 7."</p>
+    <div class="pron" id="pron"></div>
+    <div class="btns"><button class="btn" type="button" id="pronCheck">Check</button><button class="btn ghost" type="button" id="pronReset">Reset</button><span class="score" id="pronScore"></span></div>
+    <p class="tnote"><b>Help:</b> my mum = she, Zoe = she, my cat = it, my friends = they, Sam and Leo = they.</p>
+  </div>
+
+  <div class="rule" id="rule">
+    <h3>Step 2: How do we add it? Three rules ✏️</h3>
+    <div class="steps">
+      <div class="step"><h4><span class="k">Rule 1</span> Most verbs: + <input class="gap" data-ans="s,-s" aria-label="Rule 1 ending" id="g1"></h4><span class="ex">wake → wake<span class="s">s</span> · get → get<span class="s">s</span> · play → play<span class="s">s</span> · love → love<span class="s">s</span></span></div>
+      <div class="step"><h4><span class="k">Rule 2</span> Verbs ending in <b>-sh, -ch, -o</b>: + <input class="gap" data-ans="es,-es" aria-label="Rule 2 ending" id="g2"></h4><span class="ex">brush → brush<span class="s">es</span> · watch → watch<span class="s">es</span> · go → go<span class="s">es</span> · do → do<span class="s">es</span></span></div>
+      <div class="step"><h4><span class="k">Rule 3</span> <b>have</b> is crazy! → <input class="gap" data-ans="has" aria-label="have becomes" id="g3"></h4><span class="ex">I have breakfast. → She <span class="s">???</span> breakfast. (Look at Zoe's text!)</span></div>
+    </div>
+    <div class="btns"><button class="btn" type="button" data-check-gap="rule">Check</button><button class="btn ghost" type="button" data-reset-gap="rule">Reset</button><span class="score" id="rule-score"></span></div>
+    <div class="bonus">⭐ Bonus, just look: some verbs end in <b>consonant + y</b>. Then y → <span class="s">ies</span>: study → stud<span class="s">ies</span>, tidy → tid<span class="s">ies</span>. We practise this next time!</div>
+    <p class="tnote"><b>Elicit</b> each rule from the verb hunt: "Look: watch<b>es</b>, go<b>es</b>, brush<b>es</b>. Why -es?" <b>Pronunciation:</b> watch<b>es</b>, brush<b>es</b> have an extra syllable /ɪz/.</p>
+  </div>
+
+  <div class="task">
+    <h3>Sort the verbs <span class="tag game">Game</span></h3>
+    <p class="instr">These verbs are from Zoe's text. Tap a verb, then tap its rule.</p>
+    <div class="chips" id="sortBank"></div>
+    <div class="cols3" id="sortCols">
+      <button class="col" type="button" data-c="s"><h4>Rule 1: +<span class="s">s</span></h4><span class="hint">wake → wakes</span><span class="in"></span></button>
+      <button class="col" type="button" data-c="es"><h4>Rule 2: +<span class="s">es</span></h4><span class="hint">watch → watches</span><span class="in"></span></button>
+      <button class="col" type="button" data-c="irr"><h4>Rule 3: crazy!</h4><span class="hint">have → ???</span><span class="in"></span></button>
+    </div>
+    <div class="btns"><button class="btn" type="button" id="sortCheck">Check</button><button class="btn ghost" type="button" id="sortReset">Reset</button><span class="score" id="sortScore"></span></div>
+  </div>
+
+  <div class="mistakes">
+    <h3>Fix the mistakes 🔍</h3>
+    <p class="instr">Say the correct sentence first, then tap to check.</p>
+    <div class="mist"><span class="txt"><span class="bad">Zoe wake up at 7.</span></span><button class="small-btn" type="button" data-fix="Zoe wakes up at 7.">Show correction</button></div>
+    <div class="mist"><span class="txt"><span class="bad">Leo watchs cartoons.</span></span><button class="small-btn" type="button" data-fix="Leo watches cartoons.">Show correction</button></div>
+    <div class="mist"><span class="txt"><span class="bad">I gets up at 8.</span></span><button class="small-btn" type="button" data-fix="I get up at 8.">Show correction</button></div>
+    <div class="mist"><span class="txt"><span class="bad">My mum haves a shower.</span></span><button class="small-btn" type="button" data-fix="My mum has a shower.">Show correction</button></div>
+    <div class="mist"><span class="txt"><span class="bad">He go to school by bus.</span></span><button class="small-btn" type="button" data-fix="He goes to school by bus.">Show correction</button></div>
+  </div>
+</section>
+
+<!-- 4 PRACTICE -->
+<section class="stage" id="practice">
+  <div class="stage-head"><h2><span class="num">4</span>Practise</h2><span class="time">20 min</span></div>
+  <div class="task" id="i2s">
+    <h3>I → Zoe</h3>
+    <p class="instr">Read the sentence about you. Now write the verb for Zoe or her family.</p>
+    <ol class="itoshe">
+      <li><span class="i">I wake up at 7.</span><span class="sh">Zoe <input class="gap long" data-ans="wakes" aria-label="1"> up at 7.</span><span class="fix"></span></li>
+      <li><span class="i">I have breakfast at 7.30.</span><span class="sh">She <input class="gap long" data-ans="has" aria-label="2"> breakfast at 7.30.</span><span class="fix"></span></li>
+      <li><span class="i">I listen to music.</span><span class="sh">Her mum <input class="gap long" data-ans="listens" aria-label="3"> to music in the car.</span><span class="fix"></span></li>
+      <li><span class="i">I go to school by bus.</span><span class="sh">Zoe <input class="gap long" data-ans="goes" aria-label="4"> to school by bike.</span><span class="fix"></span></li>
+      <li><span class="i">I start school at 9.</span><span class="sh">She <input class="gap long" data-ans="starts" aria-label="5"> school at 8.30.</span><span class="fix"></span></li>
+      <li><span class="i">I watch films on Friday.</span><span class="sh">Leo <input class="gap long" data-ans="watches" aria-label="6"> cartoons every day.</span><span class="fix"></span></li>
+      <li><span class="i">I play computer games.</span><span class="sh">Her dad <input class="gap long" data-ans="plays" aria-label="7"> the guitar.</span><span class="fix"></span></li>
+      <li><span class="i">I do my homework after dinner.</span><span class="sh">Zoe <input class="gap long" data-ans="does" aria-label="8"> her homework after school.</span><span class="fix"></span></li>
+      <li><span class="i">I brush my teeth after breakfast.</span><span class="sh">She <input class="gap long" data-ans="brushes" aria-label="9"> her teeth before bed.</span><span class="fix"></span></li>
+      <li><span class="i">I chat online with my friends.</span><span class="sh">Zoe <input class="gap long" data-ans="chats" aria-label="10"> online with her fans.</span><span class="fix"></span></li>
+    </ol>
+    <div class="btns"><button class="btn" type="button" id="i2sCheck">Check</button><button class="btn ghost" type="button" id="i2sReset">Reset</button><span class="score" id="i2sScore"></span></div>
+    <p class="tnote"><b>Then speaking:</b> she reads both columns aloud, "I wake up at 7, and Zoe wakes up at 7 too."</p>
+  </div>
+  <div class="task">
+    <h3>Ending rush <span class="tag game">Game</span></h3>
+    <p class="instr">90 seconds! Which rule does the verb need? Say "she…" + the verb aloud each time.</p>
+    <div class="big red">
+      <div class="line" id="erVerb">Tap Start</div>
+      <div class="endings three" id="erBtns">
+        <button type="button" data-e="s">+s</button><button type="button" data-e="es">+es</button><button type="button" data-e="irr">has!</button>
+      </div>
+      <div class="sub" id="erInfo">Time: 1:30 · Score: 0</div>
+      <div class="btns"><button class="btn" type="button" id="erStart">Start</button></div>
+      <div class="sub" id="erBest">Best score: 0</div>
+    </div>
+    <p class="tnote">Play 2–3 rounds. Can she beat her best score?</p>
+  </div>
+  <div class="task">
+    <h3>Snakes &amp; ladders <span class="tag game">Game</span></h3>
+    <p class="instr">Roll the die and move. Make a sentence with the words on your square: "My cat + sleep all day" → "My cat sleeps all day." Wrong? Go back 2! 🪜 climb up, 🐍 slide down. First to 20 wins!</p>
+    <div class="big navy">
+      <div class="board" id="board"></div>
+      <div class="players"><span class="player turn" id="plS">🦄 Student: <b id="posS">1</b></span><span class="player" id="plT">🐸 Teacher: <b id="posT">1</b></span></div>
+      <div class="die" id="die">🎲</div>
+      <div class="prompt-card" id="sqPrompt">Roll the die to start!</div>
+      <div class="btns"><button class="btn navy" type="button" id="roll">Roll</button><button class="btn teal" type="button" id="sqOk" disabled>✅ Correct</button><button class="btn" type="button" id="sqNo" disabled>❌ Wrong: back 2</button><button class="btn ghost" type="button" id="sqNew">New game</button></div>
+    </div>
+    <p class="tnote"><b>On your turn,</b> make a mistake now and then. If she catches it, she gets an extra roll!</p>
+  </div>
+</section>
+
+<!-- 5 FREER -->
+<section class="stage" id="freer">
+  <div class="stage-head"><h2><span class="num">5</span>Speak!</h2><span class="time">14 min</span></div>
+  <div class="wordbank">
+    <div class="wb-head"><h3>📚 Word bank: use these!</h3><button class="btn ghost" type="button" id="wbToggle">Show she-form</button></div>
+    <div class="wb-group"><h4>Everyday</h4><div class="wb" id="wbDay"></div></div>
+    <div class="wb-group"><h4>Free time</h4><div class="wb" id="wbFree"></div></div>
+    <div class="wb-group"><h4>Feelings</h4><div class="wb" id="wbFeel"></div></div>
+    <div class="wb-group"><h4>When?</h4><div class="wb time-wb"><span>in the morning</span><span>in the afternoon</span><span>in the evening</span><span>at night</span><span>after school</span><span>every day</span><span>at the weekend</span><span>at 7 o'clock</span><span>at half past eight</span></div></div>
+    <div class="wb-group"><h4>Joining words</h4><div class="wb time-wb"><span>and</span><span>then</span><span>but</span><span>too</span><span>after that</span></div></div>
+  </div>
+  <div class="task">
+    <h3>Mystery person <span class="tag game">Game</span></h3>
+    <p class="instr">Tap <b>Secret card</b> and look at it alone. Use the 4 clues: add the <span class="s">-s</span> and say the sentences. Don't say who it is! The teacher guesses.</p>
+    <div class="big">
+      <div class="emo hidden-word" id="myEmo">❔</div>
+      <div class="line hidden-word" id="myWho">Who is it?</div>
+      <div class="clues hidden-word" id="myClues"></div>
+      <div class="btns"><button class="btn" type="button" id="myNew">Secret card</button><button class="btn ghost" type="button" id="myShow">Show / hide</button><button class="btn teal" type="button" id="myAns">Check sentences</button></div>
+      <div class="sub">Who could it be?</div>
+      <div class="mcards" id="mcards"></div>
+    </div>
+    <div class="say"><span class="pill">He / She / It + verb<span class="s">-s</span></span><span class="pill">get up → He get<span class="s">s</span> up at 8 pm.</span><span class="pill">have → It <span class="s">has</span>…</span></div>
+    <p class="tnote"><b>You go first</b> as the one describing, so she hears the model. Then she describes and you guess. The cat and the dog are <i>it</i>! <b>Check sentences</b> shows the correct -s forms if she needs help. Tap the small cards to cross them out while guessing.</p>
+  </div>
+  <div class="task">
+    <h3>Me vs my best friend <span class="tag talk">Speaking + writing</span></h3>
+    <p class="instr">Tell the teacher about your day and your best friend's day. Then write 3 sentences on each side. The checker looks at your -s!</p>
+    <div class="vs">
+      <div class="side me"><h4>👤 Me (I…)</h4><textarea id="vsMe" placeholder="I get up at 7.30.&#10;I go to school on foot.&#10;I love music." aria-label="Sentences about me"></textarea></div>
+      <div class="side her"><h4>👯 My best friend (She/He…)</h4><textarea id="vsHer" placeholder="She gets up at 7.&#10;She goes to school by bus.&#10;She loves dancing." aria-label="Sentences about my best friend"></textarea></div>
+    </div>
+    <div class="btns"><button class="btn teal" type="button" id="vsCheck">Check my -s</button></div>
+    <div class="checklist" id="vsOut"></div>
+    <p class="tnote">The checker only looks at the first verb after I/she/he, so read the sentences together too.</p>
+  </div>
+</section>
+
+<!-- 6 WRAP -->
+<section class="stage" id="wrap">
+  <div class="stage-head"><h2><span class="num">6</span>Wrap-up</h2><span class="time">6 min</span></div>
+  <div class="task" id="exit">
+    <h3>Exit quiz: 5 quick ones</h3>
+    <div class="q" data-ans="b"><p class="prompt">1. My mum ___ coffee every morning.</p><div class="opts"><button class="opt" type="button" data-v="a">drink</button><button class="opt" type="button" data-v="b">drinks</button><button class="opt" type="button" data-v="c">drinkes</button></div></div>
+    <div class="q" data-ans="a"><p class="prompt">2. Zoe ___ a YouTube channel.</p><div class="opts"><button class="opt" type="button" data-v="a">has</button><button class="opt" type="button" data-v="b">haves</button><button class="opt" type="button" data-v="c">have</button></div></div>
+    <div class="q" data-ans="c"><p class="prompt">3. Leo ___ TV after school.</p><div class="opts"><button class="opt" type="button" data-v="a">watchs</button><button class="opt" type="button" data-v="b">watch</button><button class="opt" type="button" data-v="c">watches</button></div></div>
+    <div class="q" data-ans="a"><p class="prompt">4. My friends ___ online every day.</p><div class="opts"><button class="opt" type="button" data-v="a">chat</button><button class="opt" type="button" data-v="b">chats</button><button class="opt" type="button" data-v="c">chates</button></div></div>
+    <div class="q" data-ans="b"><p class="prompt">5. Dad ___ to work by car.</p><div class="opts"><button class="opt" type="button" data-v="a">gos</button><button class="opt" type="button" data-v="b">goes</button><button class="opt" type="button" data-v="c">go</button></div></div>
+    <div class="btns"><button class="btn" type="button" data-check-mc="exit">Check</button><span class="score" id="exit-score"></span></div>
+  </div>
+  <div class="task">
+    <h3>Today's lesson was…</h3>
+    <div class="faces" id="faces"><button class="face" type="button" aria-label="great">🤩</button><button class="face" type="button" aria-label="good">🙂</button><button class="face" type="button" aria-label="okay">😐</button></div>
+  </div>
+  <p class="tnote"><b>Homework idea:</b> write 5 sentences about a family member's day: at least one +es verb and one <i>has</i>.</p>
+</section>
+
+</div>
+
+<script>
+(function(){
+  const root=document.documentElement, tb=document.getElementById('themeBtn');
+  const isDark=()=> root.dataset.theme ? root.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const label=()=>{ tb.textContent = isDark() ? '☀️ Light' : '🌙 Dark'; };
+  tb.addEventListener('click',()=>{ root.dataset.theme = isDark()?'light':'dark'; label(); });
+  label();
+  const $=id=>document.getElementById(id);
+  const shuffle=a=>{ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; };
+  const pick=(arr,avoid)=>{ let x; do{ x=arr[Math.floor(Math.random()*arr.length)]; }while(arr.length>1&&x===avoid); return x; };
+  const norm=s=>s.toLowerCase().replace(/[’‘]/g,"'").replace(/\s+/g,' ').trim();
+  const fmt=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+
+  // 1 timeline
+  const tl=[['⏰','7:00'],['🧍‍♀️','7:10'],['🚿','7:15'],['👕','7:25'],['🥣','7:30'],['🚲','8:00'],['🏫','8:30'],['🔔','3:00'],['📝','4:00'],['💃','5:00'],['🎬','6:00'],['💬','8:00'],['🪥','10:20'],['😴','10:30']];
+  $('timeline').innerHTML=tl.map(([e,t])=>`<div class="tl"><span class="e" aria-hidden="true">${e}</span><span class="t">${t}</span></div>`).join('');
+
+  // 2 story + verb hunt
+  const raw="Meet Zoe! She's 14 and she *live|s in Valencia. She *ha|s a YouTube channel about dance. Zoe *wake|s up at 7 o'clock and *get|s up at 7.10. She *ha|s a shower and *get|s dressed. Then she *ha|s breakfast with her little brother, Leo. Leo *watch|es cartoons at breakfast. Zoe *go|es to school by bike. She *start|s school at 8.30 and *finish|es at 3 pm. After school, she *do|es her homework. Then she *dance|s and *film|s a video. In the evening, she *chat|s online with her fans. She *brush|es her teeth and *go|es to bed at half past ten. She *love|s her life!";
+  let total=0;
+  $('story').innerHTML=raw.split(' ').map(tok=>{
+    if(tok.startsWith('*')){ total++; const m=tok.slice(1).match(/^([^|]+)\|([a-z]+)(.*)$/); return `<span class="w" data-v="1">${m[1]}<span class="end">${m[2]}</span></span>${m[3]}`; }
+    const m=tok.match(/^([A-Za-z']+)(.*)$/); return m? `<span class="w">${m[1]}</span>${m[2]}` : tok; }).join(' ');
+  let found=0;
+  const huntDraw=()=>{ $('huntCount').textContent=`${found} / ${total}`; if(found===total) $('huntMsg').innerHTML='🎉 All found! Look at the yellow endings: <b>-s</b> and <b>-es</b>. And <i>have</i>? It\'s <b>has</b>!'; };
+  $('story').querySelectorAll('.w').forEach(w=>w.onclick=()=>{ if(w.classList.contains('found')) return;
+    if(w.dataset.v){ w.classList.add('found'); found++; huntDraw(); }
+    else { w.classList.remove('miss'); void w.offsetWidth; w.classList.add('miss'); } });
+  $('huntShow').onclick=()=>{ $('story').querySelectorAll('.w[data-v]').forEach(w=>w.classList.add('found')); found=total; huntDraw(); };
+  $('huntReset').onclick=()=>{ $('story').querySelectorAll('.w').forEach(w=>w.classList.remove('found','miss')); found=0; $('huntMsg').textContent='Look at the end of each verb. What do you notice?'; huntDraw(); };
+  huntDraw();
+
+  // multiple choice
+  document.querySelectorAll('.q').forEach(q=>q.querySelectorAll('.opt').forEach(o=>o.addEventListener('click',()=>{
+    q.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel','right','wrong')); o.classList.add('sel'); })));
+  document.querySelectorAll('[data-check-mc]').forEach(btn=>btn.onclick=()=>{ const id=btn.dataset.checkMc; let ok=0,n=0;
+    $(id).querySelectorAll('.q').forEach(q=>{ n++; const s=q.querySelector('.opt.sel'); q.querySelectorAll('.opt').forEach(x=>x.classList.remove('right','wrong'));
+      if(s){ if(s.dataset.v===q.dataset.ans){ s.classList.add('right'); ok++; } else s.classList.add('wrong'); } });
+    $(id+'-score').textContent=`${ok} / ${n}`+(ok===n?' 🎉':''); });
+
+  // 3 step 1: who gets -s
+  const pronItems=[['I',false],['she',true],['my mum',true],['we',false],['Zoe',true],['they',false],['he',true],['you',false],['my cat',true],['my friends',false],['it',true],['Sam and Leo',false]];
+  function pronBuild(){ const el=$('pron'); el.innerHTML=''; $('pronScore').textContent='';
+    shuffle(pronItems).forEach(([w,s])=>{ const d=document.createElement('div'); d.className='pcard'; d.dataset.s=s?'1':'0';
+      d.innerHTML=`<span class="who">${w}</span><div class="opts"><button class="opt" type="button" data-v="1">+ s ✓</button><button class="opt" type="button" data-v="0">no -s</button></div>`;
+      d.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{ d.classList.remove('right','wrong'); d.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel')); o.classList.add('sel'); });
+      el.appendChild(d); }); }
+  $('pronCheck').onclick=()=>{ let ok=0; $('pron').querySelectorAll('.pcard').forEach(d=>{ const s=d.querySelector('.opt.sel'); d.classList.remove('right','wrong');
+    if(s){ const g=s.dataset.v===d.dataset.s; d.classList.add(g?'right':'wrong'); if(g) ok++; } });
+    $('pronScore').textContent=`${ok} / ${pronItems.length}`+(ok===pronItems.length?' 🎉':''); };
+  $('pronReset').onclick=pronBuild; pronBuild();
+
+  // gap fill (rule card)
+  document.querySelectorAll('[data-check-gap]').forEach(btn=>btn.onclick=()=>{ const id=btn.dataset.checkGap; let ok=0,n=0;
+    $(id).querySelectorAll('input.gap').forEach(i=>{ n++; const alts=i.dataset.ans.split(',').map(norm); i.classList.remove('right','wrong');
+      if(alts.includes(norm(i.value))){ i.classList.add('right'); ok++; } else i.classList.add('wrong'); });
+    $(id+'-score').textContent=`${ok} / ${n}`+(ok===n?' 🎉':''); });
+  document.querySelectorAll('[data-reset-gap]').forEach(btn=>btn.onclick=()=>{ const id=btn.dataset.resetGap;
+    $(id).querySelectorAll('input.gap').forEach(i=>{ i.value=''; i.classList.remove('right','wrong'); }); $(id+'-score').textContent=''; });
+
+  // sort
+  const sortItems=[['lives','s'],['wakes','s'],['gets','s'],['starts','s'],['dances','s'],['films','s'],['chats','s'],['loves','s'],['watches','es'],['goes','es'],['finishes','es'],['does','es'],['brushes','es'],['has','irr']];
+  let sortSel=null;
+  function sortBuild(){ $('sortBank').innerHTML=''; $('sortCols').querySelectorAll('.in').forEach(x=>x.innerHTML=''); $('sortScore').textContent=''; sortSel=null;
+    shuffle(sortItems).forEach(([w,c])=>{ const b=document.createElement('button'); b.type='button'; b.className='chip'; b.textContent=w; b.dataset.c=c;
+      b.onclick=e=>{ e.stopPropagation(); if(b.parentElement.id!=='sortBank'){ $('sortBank').appendChild(b); b.classList.remove('right','wrong'); return; }
+        $('sortBank').querySelectorAll('.chip').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); sortSel=b; };
+      $('sortBank').appendChild(b); }); }
+  $('sortCols').querySelectorAll('.col').forEach(col=>col.onclick=()=>{ if(!sortSel) return; sortSel.classList.remove('sel'); col.querySelector('.in').appendChild(sortSel); sortSel=null; });
+  $('sortCheck').onclick=()=>{ let ok=0; $('sortCols').querySelectorAll('.col').forEach(col=>col.querySelectorAll('.chip').forEach(ch=>{ ch.classList.remove('right','wrong'); const g=ch.dataset.c===col.dataset.c; ch.classList.add(g?'right':'wrong'); if(g) ok++; }));
+    const left=$('sortBank').children.length; $('sortScore').textContent=`${ok} / ${sortItems.length}`+(left?` · ${left} left to sort`:'')+(ok===sortItems.length?' 🎉':''); };
+  $('sortReset').onclick=sortBuild; sortBuild();
+
+  // mistakes
+  document.querySelectorAll('[data-fix]').forEach(b=>b.onclick=()=>{ const txt=b.parentElement.querySelector('.txt'); let g=txt.querySelector('.good');
+    if(g){ g.remove(); b.textContent='Show correction'; } else { g=document.createElement('span'); g.className='good'; g.textContent=' → '+b.dataset.fix; txt.appendChild(g); b.textContent='Hide'; } });
+
+  // 4 I -> Zoe
+  $('i2sCheck').onclick=()=>{ let ok=0,n=0; $('i2s').querySelectorAll('li').forEach(li=>{ const i=li.querySelector('input'), f=li.querySelector('.fix'); n++;
+    i.classList.remove('right','wrong'); if(norm(i.value)===i.dataset.ans){ i.classList.add('right'); ok++; f.textContent=''; } else { i.classList.add('wrong'); f.textContent='✓ '+i.dataset.ans; } });
+    $('i2sScore').textContent=`${ok} / ${n}`+(ok===n?' 🎉':''); };
+  $('i2sReset').onclick=()=>{ $('i2s').querySelectorAll('li').forEach(li=>{ const i=li.querySelector('input'); i.value=''; i.classList.remove('right','wrong'); li.querySelector('.fix').textContent=''; }); $('i2sScore').textContent=''; };
+
+  // ending rush (+s, +es, has only)
+  const erVerbs=[['wake','s'],['get','s'],['start','s'],['leave','s'],['pack','s'],['read','s'],['draw','s'],['dance','s'],['chat','s'],['listen','s'],['take','s'],['play','s'],['cook','s'],['love','s'],['live','s'],['film','s'],['walk','s'],['sleep','s'],['drink','s'],['ride','s'],['brush','es'],['watch','es'],['go','es'],['do','es'],['finish','es'],['wash','es'],['catch','es'],['teach','es'],['have','irr']];
+  let erCur=null, erScore=0, erLeft=90, erT=null, erBest=0;
+  const erDraw=()=>{ $('erInfo').textContent=`Time: ${fmt(erLeft)} · Score: ${erScore}`; };
+  const form=(v,e)=> e==='s'? v+'s' : e==='es'? v+'es' : 'has';
+  $('erBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{ if(!erT||!erCur) return;
+    if(b.dataset.e===erCur[1]){ erScore++; b.classList.remove('yes'); void b.offsetWidth; b.classList.add('yes'); $('erVerb').innerHTML=`she <span class="s">${form(erCur[0],erCur[1])}</span>`;
+      const was=erCur; erCur=null;
+      setTimeout(()=>{ b.classList.remove('yes'); if(!erT) return; erCur=pick(erVerbs,was); $('erVerb').textContent=erCur[0]; },600); erDraw(); }
+    else { b.classList.remove('no'); void b.offsetWidth; b.classList.add('no'); } });
+  $('erStart').onclick=()=>{ if(erT) return; erScore=0; erLeft=90; erCur=pick(erVerbs); $('erVerb').textContent=erCur[0]; erDraw();
+    erT=setInterval(()=>{ erLeft--; erDraw(); if(!erLeft){ clearInterval(erT); erT=null; erCur=null; $('erVerb').textContent=`Time's up! ${erScore} points`; if(erScore>erBest){ erBest=erScore; $('erBest').textContent=`Best score: ${erBest} 🏆`; } } },1000); };
+
+  // snakes & ladders
+  const squares=['START','Mum · wake up','Zoe · go to school','My cat · sleep all day','🪜 Dad · wash the car','Leo · watch cartoons','My teacher · drink coffee','My friend · chat online','🐍 My dad · have a shower','Grandpa · read the newspaper','🪜 My sister · brush her teeth','Sam · do homework','My dog · play in the garden','🐍 My brother · get up late','Mum · have lunch at work','Dad · go to bed late','My best friend · listen to music','Zoe · finish school at 3','🐍 Our teacher · start work at 9','FINISH 🏆'];
+  const jumps={5:10,11:16,9:3,14:8,19:12};
+  const pos={S:1,T:1}; let turn='S', waiting=false;
+  const tokens={S:'🦄',T:'🐸'};
+  function boardDraw(){ const b=$('board'); b.innerHTML='';
+    squares.forEach((s,k)=>{ const n=k+1; const d=document.createElement('div');
+      d.className='sq'+(n===1?' start':'')+(n===20?' finish':'')+(jumps[n]>n?' ladder':'')+(jumps[n]<n?' snake':'')+(pos[turn]===n?' cur':'');
+      d.innerHTML=`<span class="n">${n}${jumps[n]?' → '+jumps[n]:''}</span><span class="p">${s}</span><span class="tokens">${pos.S===n?tokens.S:''}${pos.T===n?tokens.T:''}</span>`; b.appendChild(d); });
+    $('posS').textContent=pos.S; $('posT').textContent=pos.T;
+    $('plS').classList.toggle('turn',turn==='S'); $('plT').classList.toggle('turn',turn==='T'); }
+  const who=t=> t==='S'?'Student':'Teacher';
+  $('roll').onclick=()=>{ if(waiting||pos.S===20||pos.T===20) return;
+    const r=1+Math.floor(Math.random()*6); const die=$('die'); die.classList.remove('roll'); void die.offsetWidth; die.classList.add('roll'); die.textContent=r;
+    pos[turn]=Math.min(20,pos[turn]+r);
+    if(pos[turn]===20){ boardDraw(); $('sqPrompt').textContent=`🏆 ${who(turn)} wins!`; return; }
+    const p=squares[pos[turn]-1].replace(/^[🪜🐍]\s*/u,'');
+    $('sqPrompt').innerHTML=`${tokens[turn]} ${p.replace(' · ',' + ')}`;
+    waiting=true; $('sqOk').disabled=false; $('sqNo').disabled=false; $('roll').disabled=true; boardDraw(); };
+  function endTurn(msg){ waiting=false; $('sqOk').disabled=true; $('sqNo').disabled=true; $('roll').disabled=false;
+    turn= turn==='S'?'T':'S'; boardDraw(); $('sqPrompt').textContent=msg+` ${who(turn)}'s turn: roll!`; }
+  $('sqOk').onclick=()=>{ if(!waiting) return; let msg='Correct! ✓';
+    const j=jumps[pos[turn]]; if(j){ msg= j>pos[turn]? `Ladder! 🪜 Up to ${j}.` : `Snake! 🐍 Down to ${j}.`; pos[turn]=j; }
+    endTurn(msg); };
+  $('sqNo').onclick=()=>{ if(!waiting) return; pos[turn]=Math.max(1,pos[turn]-2); endTurn('Oops! Back 2.'); };
+  $('sqNew').onclick=()=>{ pos.S=1; pos.T=1; turn='S'; waiting=false; $('sqOk').disabled=true; $('sqNo').disabled=true; $('roll').disabled=false; $('die').textContent='🎲'; $('sqPrompt').textContent='Roll the die to start!'; boardDraw(); };
+  boardDraw();
+
+  // mystery person (with clues)
+  const people=[
+    {e:'🧛',w:'a vampire',p:'He',c:[['🌙','get up','at 8 pm','gets up'],['🧃','drink','red juice','drinks'],['📦','sleep','in a box','sleeps'],['☀️','hate','the sun','hates']]},
+    {e:'🐱',w:'a cat',p:'It',c:[['😴','sleep','16 hours a day','sleeps'],['🥛','drink','milk','drinks'],['🧶','play','with a ball','plays'],['🐦','watch','birds','watches']]},
+    {e:'⚽',w:'a footballer',p:'He',c:[['⏰','get up','at 7','gets up'],['🏃','go','to training every day','goes'],['🏟️','play','matches at the weekend','plays'],['🍝','have','a big lunch','has']]},
+    {e:'👩‍🍳',w:'a chef',p:'She',c:[['🍳','cook','all day','cooks'],['🛒','go','to the market','goes'],['🌙','finish','work at midnight','finishes'],['😋','love','food','loves']]},
+    {e:'👩‍🚀',w:'an astronaut',p:'She',c:[['🚀','live','in space','lives'],['🥫','eat','food from a bag','eats'],['🌍','watch','the Earth','watches'],['🛌','sleep','in a sleeping bag','sleeps']]},
+    {e:'🎤',w:'a pop star',p:'She',c:[['🎵','sing','every day','sings'],['💃','dance','on stage','dances'],['😴','go','to bed at 3 am','goes'],['👯','have','millions of fans','has']]},
+    {e:'🐶',w:'a dog',p:'It',c:[['⏰','wake up','at 6','wakes up'],['🌳','play','in the park','plays'],['🦴','eat','bones','eats'],['🦮','love','walks','loves']]},
+    {e:'👨‍🏫',w:'a teacher',p:'He',c:[['🏫','start','school at 8','starts'],['☕','drink','lots of coffee','drinks'],['📝','check','homework','checks'],['🔔','finish','school at 3','finishes']]}
+  ];
+  let myCur=null;
+  $('mcards').innerHTML=people.map(x=>`<button type="button" class="mcard"><span class="e" aria-hidden="true">${x.e}</span>${x.w}</button>`).join('');
+  $('mcards').querySelectorAll('.mcard').forEach(c=>c.onclick=()=>c.classList.toggle('out'));
+  const myHide=()=>['myEmo','myWho','myClues'].forEach(id=>$(id).classList.remove('show'));
+  $('myNew').onclick=()=>{ myCur=pick(people,myCur); $('myEmo').textContent=myCur.e; $('myWho').textContent=myCur.w;
+    $('myClues').innerHTML=myCur.c.map(([e,v,rest,f])=>`<div class="clue"><span class="e" aria-hidden="true">${e}</span><span><span class="base">${myCur.p} + ${v} · ${rest}</span><span class="full" hidden>${myCur.p} ${f} ${rest}.</span></span></div>`).join('');
+    myHide(); $('mcards').querySelectorAll('.mcard').forEach(c=>c.classList.remove('out')); };
+  $('myShow').onclick=()=>{ if(!myCur) return; const on=!$('myWho').classList.contains('show'); ['myEmo','myWho','myClues'].forEach(id=>$(id).classList.toggle('show',on)); };
+  $('myAns').onclick=()=>{ if(!myCur) return; $('myClues').classList.add('show'); $('myClues').querySelectorAll('.clue').forEach(c=>{ const f=c.querySelector('.full'), b=c.querySelector('.base'); const on=f.hidden; f.hidden=!on; b.hidden=on; }); };
+
+  // word bank
+  const wb=(list)=>list.map(([e,base,she])=>`<span>${e} <span class="base">${base}</span><span class="she">${she}</span></span>`).join('');
+  $('wbDay').innerHTML=wb([['⏰','wake up','wake<b class="s">s</b> up'],['🧍‍♀️','get up','get<b class="s">s</b> up'],['🚿','have a shower','<b class="s">has</b> a shower'],['👕','get dressed','get<b class="s">s</b> dressed'],['🥣','have breakfast','<b class="s">has</b> breakfast'],['🪥','brush your teeth','brush<b class="s">es</b> her teeth'],['🚪','leave home','leave<b class="s">s</b> home'],['🚌','go to school / work','go<b class="s">es</b> to school / work'],['🏫','start school','start<b class="s">s</b> school'],['🥪','have lunch','<b class="s">has</b> lunch'],['🔔','finish school','finish<b class="s">es</b> school'],['🏠','go home','go<b class="s">es</b> home'],['📝','do homework','do<b class="s">es</b> homework'],['🍝','have dinner','<b class="s">has</b> dinner'],['😴','go to bed','go<b class="s">es</b> to bed']]);
+  $('wbFree').innerHTML=wb([['💬','chat online','chat<b class="s">s</b> online'],['💃','dance','dance<b class="s">s</b>'],['🏅','do sport','do<b class="s">es</b> sport'],['🎨','draw','draw<b class="s">s</b>'],['🛍️','go shopping','go<b class="s">es</b> shopping'],['👯','hang out with friends','hang<b class="s">s</b> out with friends'],['🎧','listen to music','listen<b class="s">s</b> to music'],['🎸','play an instrument','play<b class="s">s</b> an instrument'],['🎮','play computer games','play<b class="s">s</b> computer games'],['📚','read','read<b class="s">s</b>'],['📸','take photos','take<b class="s">s</b> photos'],['🎬','watch films','watch<b class="s">es</b> films'],['🍳','cook','cook<b class="s">s</b>'],['🥤','drink','drink<b class="s">s</b>'],['🍕','eat','eat<b class="s">s</b>'],['🛌','sleep','sleep<b class="s">s</b>']]);
+  $('wbFeel').innerHTML=wb([['😍','love','love<b class="s">s</b>'],['😀','like','like<b class="s">s</b>'],['😤','hate','hate<b class="s">s</b>']]);
+  $('wbToggle').onclick=()=>{ const on=document.querySelector('.wordbank').classList.toggle('she'); $('wbToggle').textContent= on? 'Show base form' : 'Show she-form'; };
+
+  // me vs best friend checker
+  const adv=/^(always|usually|often|sometimes|never|really|also|normally|then)$/i;
+  function checkLines(txt,isMe){ const out=[];
+    txt.split(/\n+/).map(l=>l.trim()).filter(Boolean).forEach(l=>{
+      const words=l.replace(/[.!?,]/g,'').split(/\s+/); let subjEnd=1; if(/^(my|our|his|her)$/i.test(words[0])) subjEnd= /^best$/i.test(words[1]||'')?3:2; while(adv.test(words[subjEnd]||'')) subjEnd++;
+      const verb=(words[subjEnd]||'').toLowerCase(); if(!verb) return;
+      const hasS= verb==='has' || (/s$/.test(verb) && !/ss$/.test(verb));
+      if(isMe){ out.push(verb==='has' ? {ok:false,t:`"${l}": with I, say have.`} : hasS ? {ok:false,t:`"${l}": with I, no -s! (${verb.replace(/(sh|ch|o)es$/,'$1').replace(/s$/,'')})`} : {ok:true,t:`"${l}"`}); }
+      else out.push(hasS ? {ok:true,t:`"${l}"`} : {ok:false,t:`"${l}": she/he needs -s on "${verb}"!`}); });
+    return out; }
+  $('vsCheck').onclick=()=>{ const all=checkLines($('vsMe').value,true).concat(checkLines($('vsHer').value,false));
+    if(!all.length){ $('vsOut').innerHTML='<span class="warn">Write some sentences first!</span>'; return; }
+    const ok=all.filter(x=>x.ok).length;
+    $('vsOut').innerHTML=all.map(x=>`<span class="${x.ok?'ok':'warn'}">${x.ok?'✓':'⚠️'} ${x.t.replace(/</g,'&lt;')}</span>`).join('')+`<b>${ok} / ${all.length} sentences look right${ok===all.length?' 🎉':''}</b>`; };
+
+  document.querySelectorAll('#faces .face').forEach(f=>f.addEventListener('click',()=>{
+    document.querySelectorAll('#faces .face').forEach(x=>x.classList.remove('sel')); f.classList.add('sel'); }));
+})();
+</script>
