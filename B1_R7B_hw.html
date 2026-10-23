@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Life Events Homework</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#edf0f7;--surface:#f8f9fd;--surface2:#dde3f0;
+  --navy:#1e2d4a;--navy-dk:#111d30;--navy-lt:#dde3f0;
+  --gold:#c9953a;--gold-dk:#a07625;--gold-lt:#fdf4e3;
+  --ok:#2a6e42;--ok-lt:#d4ead9;
+  --red:#b3463e;--red-lt:#f6dfdc;
+  --text:#1a2235;--text2:#4a5568;--muted:#718096;
+  --border:#c8d0e0;
+  --r:14px;--sh:0 2px 14px rgba(30,45,74,.10);
+  --display:"Fraunces",Georgia,serif;
+  --body:"Figtree","Segoe UI",system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#111d30;--surface:#1a2a45;--surface2:#1e3055;
+    --text:#e8edf5;--text2:#a8b4c8;--muted:#6b7a96;
+    --border:#2a3d5a;--gold-lt:#2a2010;
+    --ok-lt:#0e2418;--red-lt:#2a100e;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111d30;--surface:#1a2a45;--surface2:#1e3055;
+  --text:#e8edf5;--text2:#a8b4c8;--muted:#6b7a96;
+  --border:#2a3d5a;--gold-lt:#2a2010;
+  --ok-lt:#0e2418;--red-lt:#2a100e;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:48px;}
+
+/* ── HEADER ── */
+.hw-header{background:var(--navy);color:#fff;padding:32px 20px 26px;text-align:center;position:relative;}
+.hw-eyebrow{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600;}
+.hw-title{font-family:var(--display);font-size:2.1rem;font-weight:700;margin-bottom:6px;text-wrap:balance;}
+.hw-sub{font-size:.9rem;color:rgba(255,255,255,.65);}
+.theme-btn{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.12);border:none;color:#fff;border-radius:20px;padding:5px 12px;font-size:.78rem;cursor:pointer;font-family:var(--body);}
+.theme-btn:hover{background:rgba(255,255,255,.22);}
+
+/* ── STICKY NAME BAR ── */
+.name-bar{position:sticky;top:0;z-index:20;background:var(--navy-dk);padding:10px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 10px rgba(0,0,0,.35);}
+.name-bar label{color:rgba(255,255,255,.75);font-size:.84rem;white-space:nowrap;}
+#nameInput{flex:1;max-width:300px;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-size:.9rem;font-family:var(--body);}
+#nameInput::placeholder{color:rgba(255,255,255,.35);}
+
+/* ── PROGRESS ── */
+.progress-wrap{max-width:680px;margin:22px auto 0;padding:0 20px;}
+.progress-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:.82rem;color:var(--muted);}
+.progress-bar{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;}
+#pfill{height:100%;width:0%;background:var(--gold);border-radius:4px;transition:width .4s;}
+
+/* ── MAIN ── */
+.main{max-width:680px;margin:0 auto;padding:20px;}
+
+/* ── CARDS ── */
+.ex-card{background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);padding:24px;margin-bottom:20px;border:1px solid var(--border);}
+.ex-hd{font-family:var(--display);font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:4px;}
+:root[data-theme="dark"] .ex-hd,:root:not([data-theme="light"]) .ex-hd{color:var(--gold);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .ex-hd{color:var(--gold);}}
+.ex-instr{font-size:.87rem;color:var(--text2);margin-bottom:18px;line-height:1.55;}
+
+/* ── GAP-FILL (Ex 1) ── */
+.gf-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:5px 6px;font-size:.93rem;line-height:1.7;margin-bottom:14px;}
+.gf-num{font-weight:700;color:var(--gold);min-width:18px;}
+.gf-verb{font-size:.78rem;color:var(--muted);font-style:italic;white-space:nowrap;}
+.gf-inp{border:1.5px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.88rem;font-family:var(--body);background:var(--surface2);color:var(--text);width:200px;transition:border-color .2s,background .2s;}
+.gf-inp:focus{outline:none;border-color:var(--gold);}
+.gf-inp.correct{border-color:var(--ok);background:var(--ok-lt);color:var(--ok);}
+.gf-inp.wrong{border-color:var(--red);background:var(--red-lt);color:var(--red);}
+
+/* ── MULTIPLE CHOICE (Ex 2) ── */
+.mc-item{margin-bottom:20px;}
+.mc-sent{font-size:.93rem;margin-bottom:9px;line-height:1.55;}
+.mc-blank{color:var(--gold);font-weight:700;font-style:italic;}
+.mc-opts{display:flex;flex-wrap:wrap;gap:8px;}
+.mc-btn{border:1.5px solid var(--border);border-radius:8px;padding:7px 16px;font-size:.86rem;cursor:pointer;background:var(--surface2);color:var(--text);font-family:var(--body);transition:all .15s;}
+.mc-btn:hover:not(:disabled){border-color:var(--navy);background:var(--navy-lt);}
+.mc-btn.chosen{border-color:var(--navy);background:var(--navy);color:#fff;}
+.mc-btn.correct{border-color:var(--ok)!important;background:var(--ok-lt)!important;color:var(--ok)!important;}
+.mc-btn.wrong{border-color:var(--red)!important;background:var(--red-lt)!important;color:var(--red)!important;}
+
+/* ── MATCH (Ex 3) ── */
+.match-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.match-col-hd{font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px;}
+.match-item{border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:.87rem;line-height:1.45;cursor:pointer;background:var(--surface2);color:var(--text);transition:all .17s;user-select:none;}
+.match-item:hover:not(.matched){border-color:var(--gold);}
+.match-item.sel{border-color:var(--gold);background:var(--gold-lt);}
+.match-item.matched{border-color:var(--ok);background:var(--ok-lt);color:var(--ok);cursor:default;}
+.match-item.bad{border-color:var(--red);background:var(--red-lt);}
+.match-key{font-weight:700;color:var(--navy);margin-right:5px;}
+:root[data-theme="dark"] .match-key,:root:not([data-theme="light"]) .match-key{color:var(--gold);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .match-key{color:var(--gold);}}
+
+/* ── BUTTONS ── */
+.btn-row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+.btn{border:none;border-radius:9px;padding:9px 22px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:var(--body);transition:all .15s;}
+.btn-navy{background:var(--navy);color:#fff;}
+.btn-navy:hover{background:var(--navy-dk);}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--text2);}
+.btn-ghost:hover{border-color:var(--navy);color:var(--navy);}
+.feedback{font-size:.85rem;margin-top:10px;min-height:1.2em;font-weight:600;}
+.fb-ok{color:var(--ok);}
+.fb-err{color:var(--red);}
+
+/* ── SEND CARD ── */
+.send-card{background:var(--navy);border-radius:var(--r);padding:28px;text-align:center;margin-bottom:20px;}
+.send-card h3{font-family:var(--display);color:#fff;font-size:1.2rem;margin-bottom:8px;}
+.send-card p{color:rgba(255,255,255,.65);font-size:.87rem;margin-bottom:18px;line-height:1.5;}
+.btn-gold{background:var(--gold);color:#fff;font-size:.95rem;padding:11px 30px;}
+.btn-gold:hover{background:var(--gold-dk);}
+
+@media(max-width:500px){
+  .match-cols{grid-template-columns:1fr;}
+  .hw-title{font-size:1.6rem;}
+  .gf-inp{width:100%;max-width:260px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hw-header">
+  <button class="theme-btn" onclick="toggleTheme()">☀︎ / ☾</button>
+  <div class="hw-eyebrow">Homework · Unit 7B</div>
+  <h1 class="hw-title">Life Events</h1>
+  <p class="hw-sub">Past perfect — <em>had</em> + past participle</p>
+</header>
+
+<!-- STICKY NAME BAR -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-hd">
+    <span>Exercises completed</span>
+    <span id="plabel">0 / 3</span>
+  </div>
+  <div class="progress-bar"><div id="pfill"></div></div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ══ EXERCISE 1 — GAP-FILL ══════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">Exercise 1 — Complete the sentences</div>
+  <div class="ex-instr">Write the correct <strong>past perfect</strong> form of the verb in brackets. Use <em>had</em> + past participle.</div>
+
+  <div class="gf-row">
+    <span class="gf-num">1.</span>
+    <span>I felt confident because I</span>
+    <input class="gf-inp" id="g1" data-ans="had prepared,had already prepared" placeholder="…">
+    <span>for the exam all week.</span>
+    <span class="gf-verb">(prepare)</span>
+  </div>
+  <div class="gf-row">
+    <span class="gf-num">2.</span>
+    <span>By the time we arrived, our friends</span>
+    <input class="gf-inp" id="g2" data-ans="had already ordered,had ordered" placeholder="…">
+    <span>their food.</span>
+    <span class="gf-verb">(already / order)</span>
+  </div>
+  <div class="gf-row">
+    <span class="gf-num">3.</span>
+    <span>She</span>
+    <input class="gf-inp" id="g3" data-ans="had never lived,had never lived alone" placeholder="…">
+    <span>alone before she moved to Barcelona.</span>
+    <span class="gf-verb">(never / live)</span>
+  </div>
+  <div class="gf-row">
+    <span class="gf-num">4.</span>
+    <span>Before he started his own business, he</span>
+    <input class="gf-inp" id="g4" data-ans="had worked" placeholder="…">
+    <span>for the same company for eight years.</span>
+    <span class="gf-verb">(work)</span>
+  </div>
+  <div class="gf-row">
+    <span class="gf-num">5.</span>
+    <span>They</span>
+    <input class="gf-inp" id="g5" data-ans="had just had,had just had dinner,had just finished" placeholder="…">
+    <span>dinner when someone knocked at the door.</span>
+    <span class="gf-verb">(just / have)</span>
+  </div>
+  <div class="gf-row">
+    <span class="gf-num">6.</span>
+    <span>By the age of 25, she</span>
+    <input class="gf-inp" id="g6" data-ans="had saved,had already saved" placeholder="…">
+    <span>enough money to travel around South America.</span>
+    <span class="gf-verb">(save)</span>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-navy" onclick="checkGF()">Check</button>
+    <button class="btn btn-ghost" onclick="resetGF()">Reset</button>
+  </div>
+  <div class="feedback" id="fb-gf"></div>
+</div>
+
+<!-- ══ EXERCISE 2 — MULTIPLE CHOICE ══════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">Exercise 2 — Choose the right connector</div>
+  <div class="ex-instr">Choose <strong>after</strong>, <strong>before</strong> or <strong>by the time</strong> to complete each sentence.</div>
+
+  <!-- Item 1 — answer: c) by the time -->
+  <div class="mc-item" id="mc1" data-ans="By the time">
+    <div class="mc-sent">1. <span class="mc-blank">______</span> he got the job offer, he had already sent out thirty applications.</div>
+    <div class="mc-opts">
+      <button class="mc-btn" onclick="mcPick(this,'mc1')">After</button>
+      <button class="mc-btn" onclick="mcPick(this,'mc1')">Before</button>
+      <button class="mc-btn" onclick="mcPick(this,'mc1')">By the time</button>
+    </div>
+  </div>
+
+  <!-- Item 2 — answer: a) after -->
+  <div class="mc-item" id="mc2" data-ans="After">
+    <div class="mc-sent">2. <span class="mc-blank">______</span> she had packed everything, she realised she had forgotten her passport.</div>
+    <div class="mc-opts">
+      <button class="mc-btn" onclick="mcPick(this,'mc2')">After</button>
+      <button class="mc-btn" onclick="mcPick(this,'mc2')">Before</button>
+      <button class="mc-btn" onclick="mcPick(this,'mc2')">By the time</button>
+    </div>
+  </div>
+
+  <!-- Item 3 — answer: b) after (in the middle) -->
+  <div class="mc-item" id="mc3" data-ans="after">
+    <div class="mc-sent">3. He finally moved out <span class="mc-blank">______</span> he had saved enough money to rent his own flat.</div>
+    <div class="mc-opts">
+      <button class="mc-btn" onclick="mcPick(this,'mc3')">before</button>
+      <button class="mc-btn" onclick="mcPick(this,'mc3')">after</button>
+      <button class="mc-btn" onclick="mcPick(this,'mc3')">by the time</button>
+    </div>
+  </div>
+
+  <!-- Item 4 — answer: c) before (3rd option) -->
+  <div class="mc-item" id="mc4" data-ans="Before">
+    <div class="mc-sent">4. <span class="mc-blank">______</span> she started university, she had never cooked a proper meal for herself.</div>
+    <div class="mc-opts">
+      <button class="mc-btn" onclick="mcPick(this,'mc4')">After</button>
+      <button class="mc-btn" onclick="mcPick(this,'mc4')">By the time</button>
+      <button class="mc-btn" onclick="mcPick(this,'mc4')">Before</button>
+    </div>
+  </div>
+
+  <!-- Item 5 — answer: a) after -->
+  <div class="mc-item" id="mc5" data-ans="After">
+    <div class="mc-sent">5. <span class="mc-blank">______</span> they had been together for two years, they decided to get married.</div>
+    <div class="mc-opts">
+      <button class="mc-btn" onclick="mcPick(this,'mc5')">After</button>
+      <button class="mc-btn" onclick="mcPick(this,'mc5')">By the time</button>
+      <button class="mc-btn" onclick="mcPick(this,'mc5')">Before</button>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-navy" onclick="checkMC()">Check</button>
+    <button class="btn btn-ghost" onclick="resetMC()">Reset</button>
+  </div>
+  <div class="feedback" id="fb-mc"></div>
+</div>
+
+<!-- ══ EXERCISE 3 — MATCH THE HALVES ══════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">Exercise 3 — Match the halves</div>
+  <div class="ex-instr">Click a sentence beginning on the left, then click the ending on the right that matches it.</div>
+
+  <div class="match-cols">
+    <div>
+      <div class="match-col-hd">Sentence beginnings</div>
+      <div class="match-item" id="ms1" data-key="1" onclick="matchClick(this,'start')">
+        <span class="match-key">1.</span>After she had passed all her exams,
+      </div>
+      <div class="match-item" id="ms2" data-key="2" onclick="matchClick(this,'start')">
+        <span class="match-key">2.</span>Before they got married,
+      </div>
+      <div class="match-item" id="ms3" data-key="3" onclick="matchClick(this,'start')">
+        <span class="match-key">3.</span>By the time he started his new job,
+      </div>
+      <div class="match-item" id="ms4" data-key="4" onclick="matchClick(this,'start')">
+        <span class="match-key">4.</span>She had never tried sushi
+      </div>
+      <div class="match-item" id="ms5" data-key="5" onclick="matchClick(this,'start')">
+        <span class="match-key">5.</span>After he had lost his job,
+      </div>
+      <div class="match-item" id="ms6" data-key="6" onclick="matchClick(this,'start')">
+        <span class="match-key">6.</span>By the time the plane landed,
+      </div>
+    </div>
+    <div>
+      <div class="match-col-hd">Sentence endings</div>
+      <div class="match-item" id="me-c" data-val="c" onclick="matchClick(this,'end')">
+        <span class="match-key">a.</span>she celebrated with a big family dinner.
+      </div>
+      <div class="match-item" id="me-a" data-val="a" onclick="matchClick(this,'end')">
+        <span class="match-key">b.</span>they had already known each other for five years.
+      </div>
+      <div class="match-item" id="me-e" data-val="e" onclick="matchClick(this,'end')">
+        <span class="match-key">c.</span>he had updated his CV and practised for interviews.
+      </div>
+      <div class="match-item" id="me-b" data-val="b" onclick="matchClick(this,'end')">
+        <span class="match-key">d.</span>until she visited Japan for the first time.
+      </div>
+      <div class="match-item" id="me-f" data-val="f" onclick="matchClick(this,'end')">
+        <span class="match-key">e.</span>he decided to start his own business.
+      </div>
+      <div class="match-item" id="me-d" data-val="d" onclick="matchClick(this,'end')">
+        <span class="match-key">f.</span>most passengers had already fallen asleep.
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-navy" onclick="checkMatch()">Check</button>
+    <button class="btn btn-ghost" onclick="resetMatch()">Reset</button>
+  </div>
+  <div class="feedback" id="fb-match"></div>
+</div>
+
+<!-- ══ SEND TO TEACHER ═══════════════════════════════════════ -->
+<div class="send-card">
+  <h3>📬 Send to your teacher</h3>
+  <p>When you have finished, click the button below to email your answers.</p>
+  <button class="btn btn-gold" onclick="sendToTeacher()">Send to Teacher</button>
+</div>
+
+</main>
+
+<script>
+/* ── THEME ── */
+function toggleTheme(){
+  const r=document.documentElement,c=r.getAttribute('data-theme');
+  if(!c){r.setAttribute('data-theme',window.matchMedia('(prefers-color-scheme:dark)').matches?'light':'dark');}
+  else if(c==='dark'){r.setAttribute('data-theme','light');}
+  else{r.removeAttribute('data-theme');}
+}
+
+/* ── PROGRESS ── */
+const done={ex1:false,ex2:false,ex3:false};
+function updateProgress(){
+  const n=Object.values(done).filter(Boolean).length;
+  const total=Object.keys(done).length;
+  document.getElementById('pfill').style.width=(n/total*100)+'%';
+  document.getElementById('plabel').textContent=n+' / '+total;
+}
+
+/* ── EX 1 — GAP-FILL ── */
+function norm(s){return s.toLowerCase().trim().replace(/\s+/g,' ');}
+function checkGF(){
+  let ok=0,tot=0;
+  document.querySelectorAll('.gf-inp').forEach(inp=>{
+    const alts=inp.dataset.ans.split(',').map(a=>a.trim().toLowerCase());
+    inp.classList.remove('correct','wrong');tot++;
+    if(alts.some(a=>norm(inp.value)===a)){inp.classList.add('correct');ok++;}
+    else{inp.classList.add('wrong');}
+  });
+  const fb=document.getElementById('fb-gf');
+  if(ok===tot){fb.className='feedback fb-ok';fb.textContent='✓ All correct — great work!';done.ex1=true;}
+  else{fb.className='feedback fb-err';fb.textContent=ok+' / '+tot+' correct. Check the highlighted answers.';}
+  updateProgress();
+}
+function resetGF(){
+  document.querySelectorAll('.gf-inp').forEach(inp=>{inp.value='';inp.classList.remove('correct','wrong');});
+  document.getElementById('fb-gf').textContent='';
+  done.ex1=false;updateProgress();
+}
+
+/* ── EX 2 — MULTIPLE CHOICE ── */
+function mcPick(btn,id){
+  const item=document.getElementById(id);
+  item.querySelectorAll('.mc-btn').forEach(b=>b.classList.remove('chosen'));
+  btn.classList.add('chosen');
+}
+function checkMC(){
+  let ok=0,tot=0;
+  document.querySelectorAll('.mc-item').forEach(item=>{
+    const ans=item.dataset.ans.toLowerCase().trim();
+    const chosen=item.querySelector('.mc-btn.chosen');
+    item.querySelectorAll('.mc-btn').forEach(b=>b.classList.remove('correct','wrong'));
+    tot++;
+    if(chosen){
+      if(chosen.textContent.toLowerCase().trim()===ans){chosen.classList.add('correct');ok++;}
+      else{
+        chosen.classList.add('wrong');
+        item.querySelectorAll('.mc-btn').forEach(b=>{if(b.textContent.toLowerCase().trim()===ans)b.classList.add('correct');});
+      }
+    }
+  });
+  const fb=document.getElementById('fb-mc');
+  if(ok===tot){fb.className='feedback fb-ok';fb.textContent='✓ Perfect — all connectors correct!';done.ex2=true;}
+  else{fb.className='feedback fb-err';fb.textContent=ok+' / '+tot+' correct.';}
+  updateProgress();
+}
+function resetMC(){
+  document.querySelectorAll('.mc-btn').forEach(b=>b.classList.remove('chosen','correct','wrong'));
+  document.getElementById('fb-mc').textContent='';
+  done.ex2=false;updateProgress();
+}
+
+/* ── EX 3 — MATCH ── */
+/* Correct pairs: start-key → end-val  (1→c, 2→a, 3→e, 4→b, 5→f, 6→d) */
+const matchKey={1:'c',2:'a',3:'e',4:'b',5:'f',6:'d'};
+let matchSel={start:null,end:null};
+const matchedPairs={};
+
+function matchClick(el,side){
+  if(el.classList.contains('matched'))return;
+  if(matchSel[side]){matchSel[side].classList.remove('sel');}
+  matchSel[side]=el;
+  el.classList.add('sel');
+  if(matchSel.start&&matchSel.end){
+    const sk=matchSel.start.dataset.key;
+    const ev=matchSel.end.dataset.val;
+    const correct=matchKey[sk]===ev;
+    if(correct){
+      matchSel.start.classList.replace('sel','matched');
+      matchSel.end.classList.replace('sel','matched');
+      matchedPairs[sk]=ev;
+    } else {
+      matchSel.start.classList.add('bad');matchSel.end.classList.add('bad');
+      setTimeout(()=>{
+        matchSel.start&&matchSel.start.classList.remove('sel','bad');
+        matchSel.end&&matchSel.end.classList.remove('sel','bad');
+      },700);
+    }
+    matchSel={start:null,end:null};
+    if(Object.keys(matchedPairs).length===6){
+      const fb=document.getElementById('fb-match');
+      fb.className='feedback fb-ok';fb.textContent='✓ All matched — excellent!';done.ex3=true;updateProgress();
+    }
+  }
+}
+function checkMatch(){
+  const n=Object.keys(matchedPairs).length;
+  const fb=document.getElementById('fb-match');
+  if(n===6){fb.className='feedback fb-ok';fb.textContent='✓ All matched — excellent!';done.ex3=true;}
+  else{fb.className='feedback fb-err';fb.textContent=n+' / 6 matched. Keep going!';}
+  updateProgress();
+}
+function resetMatch(){
+  Object.keys(matchedPairs).forEach(k=>delete matchedPairs[k]);
+  matchSel={start:null,end:null};
+  document.querySelectorAll('.match-item').forEach(el=>el.classList.remove('sel','matched','bad'));
+  document.getElementById('fb-match').textContent='';
+  done.ex3=false;updateProgress();
+}
+
+/* ── SEND TO TEACHER ── */
+function sendToTeacher(){
+  const name=document.getElementById('nameInput').value.trim()||'Student';
+
+  // Collect Ex 1 answers
+  let ex1='';
+  document.querySelectorAll('.gf-inp').forEach((inp,i)=>{
+    const mark=inp.classList.contains('correct')?'✓':inp.classList.contains('wrong')?'✗':'—';
+    ex1+=`  ${i+1}. "${inp.value||'(blank)'}" ${mark}\n`;
+  });
+
+  // Collect Ex 2 answers
+  let ex2='';
+  document.querySelectorAll('.mc-item').forEach((item,i)=>{
+    const chosen=item.querySelector('.mc-btn.chosen');
+    const mark=chosen&&chosen.classList.contains('correct')?'✓':chosen&&chosen.classList.contains('wrong')?'✗':'—';
+    ex2+=`  ${i+1}. "${chosen?chosen.textContent:'(no answer)'}" ${mark}\n`;
+  });
+
+  // Collect Ex 3 pairs
+  let ex3='';
+  Object.entries(matchedPairs).forEach(([k,v])=>{ex3+=`  ${k} → ${v} ✓\n`;});
+  if(!ex3)ex3='  (not completed)\n';
+
+  const body=`Student: ${name}\n\nExercise 1 — Gap-fill (past perfect):\n${ex1}\nExercise 2 — Multiple choice (connectors):\n${ex2}\nExercise 3 — Match the halves:\n${ex3}`;
+  const subject=`Homework – Life Events (Unit 7B) – ${name}`;
+  window.location.href=`mailto:teacher@example.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+</script>
+</body>
+</html>
