@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unit 5B Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --coral:#E8694A; --coral-light:#F5A58E; --coral-dark:#C04B2F;
+  --teal:#3A9EA5;
+  --amber:#F59E0B; --amber-light:#FEF3C7;
+  --green:#22C55E; --green-light:#DCFCE7;
+  --red:#EF4444; --red-light:#FEE2E2;
+  --bg:#FFF8F5; --surface:#FFFFFF; --surface2:#FFF0EB;
+  --border:#F0D5CC; --text:#2D2016; --text2:#7A5545; --text3:#B08070;
+  --header-bg:linear-gradient(135deg,#E8694A 0%,#C04B2F 100%);
+  --shadow:0 2px 12px rgba(200,80,40,.10);
+  --radius:14px;
+  --font-head:'Nunito',sans-serif; --font-body:'Inter',sans-serif;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#1A110D; --surface:#241810; --surface2:#2E1E14;
+    --border:#4A2E20; --text:#F5E8E0; --text2:#D4A090; --text3:#8A6055;
+    --amber-light:#2E2000; --green-light:#0D2E1A; --red-light:#2E0D0D;
+    --shadow:0 2px 12px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1A110D; --surface:#241810; --surface2:#2E1E14;
+  --border:#4A2E20; --text:#F5E8E0; --text2:#D4A090; --text3:#8A6055;
+  --amber-light:#2E2000; --green-light:#0D2E1A; --red-light:#2E0D0D;
+  --shadow:0 2px 12px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+.site-header{background:var(--header-bg);color:#fff;padding:28px 24px 22px;position:relative;}
+.site-header .eyebrow{font-family:var(--font-head);font-size:.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;opacity:.75;margin-bottom:4px;}
+.site-header h1{font-family:var(--font-head);font-size:clamp(1.4rem,5vw,2rem);font-weight:900;}
+.site-header .sub{font-size:.9rem;opacity:.8;margin-top:4px;}
+.theme-btn{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:50%;width:36px;height:36px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+
+/* NAME BAR */
+.name-bar{
+  position:sticky;top:0;z-index:10;
+  background:var(--surface);border-bottom:2px solid var(--border);
+  padding:10px 20px;display:flex;align-items:center;gap:10px;
+  box-shadow:0 2px 8px rgba(200,80,40,.08);
+}
+.name-bar label{font-family:var(--font-head);font-weight:800;font-size:.85rem;color:var(--coral);white-space:nowrap;}
+.name-bar input{
+  border:none;border-bottom:2px solid var(--coral-light);
+  background:transparent;color:var(--text);font-family:var(--font-body);
+  font-size:.93rem;padding:3px 6px;outline:none;flex:1;min-width:0;
+}
+.name-bar input:focus{border-bottom-color:var(--coral);}
+
+/* PROGRESS */
+.progress-wrap{padding:14px 20px 0;max-width:780px;margin:0 auto;}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.progress-lbl{font-family:var(--font-head);font-weight:800;font-size:.78rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;}
+.progress-count{font-family:var(--font-head);font-weight:800;font-size:.85rem;color:var(--coral);}
+.progress-bar{background:var(--border);border-radius:20px;height:8px;overflow:hidden;}
+.progress-fill{background:var(--coral);height:100%;border-radius:20px;transition:width .4s ease;width:0%;}
+
+/* MAIN */
+main{max-width:780px;margin:0 auto;padding:20px 16px 60px;display:flex;flex-direction:column;gap:20px;}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow);}
+.card-hd{font-family:var(--font-head);font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--coral);margin-bottom:6px;}
+.card-title{font-family:var(--font-head);font-size:1.05rem;font-weight:800;color:var(--text);margin-bottom:6px;}
+.instr{font-size:.9rem;color:var(--text2);margin-bottom:16px;line-height:1.5;}
+
+/* ANAGRAM */
+.anagram-list{display:flex;flex-direction:column;gap:10px;}
+.anagram-item{
+  display:grid;grid-template-columns:2fr 1fr;align-items:center;gap:10px;
+  background:var(--surface2);border-radius:10px;padding:11px 14px;
+}
+.anagram-jumbled{font-family:var(--font-head);font-weight:800;font-size:1rem;color:var(--coral-dark);letter-spacing:1px;}
+.anagram-input{
+  border:none;border-bottom:2px solid var(--coral-light);
+  background:transparent;color:var(--text);
+  font-family:var(--font-body);font-size:.93rem;
+  padding:3px 6px;outline:none;width:100%;
+}
+.anagram-input:focus{border-bottom-color:var(--coral);}
+.anagram-input.correct{border-bottom-color:var(--green);color:var(--green);}
+.anagram-input.wrong{border-bottom-color:var(--red);color:var(--red);}
+
+/* CHOOSE */
+.choose-list{display:flex;flex-direction:column;gap:10px;}
+.choose-item{background:var(--surface2);border-radius:10px;padding:12px 14px;font-size:.93rem;line-height:1.6;}
+.item-num{font-family:var(--font-head);font-weight:800;color:var(--coral);margin-right:6px;}
+.mc-btn{
+  padding:4px 12px;border-radius:14px;
+  border:2px solid var(--coral-light);background:var(--surface);
+  color:var(--coral-dark);font-size:.88rem;font-weight:600;
+  cursor:pointer;margin:0 3px;transition:all .2s;
+}
+.mc-btn.selected{background:var(--coral);border-color:var(--coral);color:#fff;}
+.mc-btn.correct{background:var(--green);border-color:var(--green);color:#fff;}
+.mc-btn.wrong{background:var(--red);border-color:var(--red);color:#fff;}
+
+/* GAP-FILL */
+.gap-list{display:flex;flex-direction:column;gap:10px;}
+.gap-item{background:var(--surface2);border-radius:10px;padding:12px 14px;font-size:.93rem;line-height:1.8;}
+.gap-input{
+  border:none;border-bottom:2px solid var(--coral-light);
+  background:transparent;color:var(--text);
+  font-family:var(--font-body);font-size:.93rem;
+  padding:2px 6px;outline:none;min-width:90px;
+}
+.gap-input:focus{border-bottom-color:var(--coral);}
+.gap-input.correct{border-bottom-color:var(--green);color:var(--green);}
+.gap-input.wrong{border-bottom-color:var(--red);}
+
+/* TEXT PASSAGE */
+.passage{
+  background:var(--surface2);border-radius:12px;
+  border-left:4px solid var(--coral-light);
+  padding:16px 18px;font-size:.93rem;line-height:2.1;
+}
+.txt-input{
+  border:none;border-bottom:2px solid var(--coral-light);
+  background:transparent;color:var(--text);
+  font-family:var(--font-body);font-size:.93rem;
+  padding:1px 5px;outline:none;min-width:80px;width:90px;
+}
+.txt-input:focus{border-bottom-color:var(--coral);}
+.txt-input.correct{border-bottom-color:var(--green);color:var(--green);}
+.txt-input.wrong{border-bottom-color:var(--red);}
+.gap-num{font-family:var(--font-head);font-weight:800;font-size:.75rem;color:var(--coral);vertical-align:super;margin-right:1px;}
+
+/* RESULT MSG */
+.result-msg{font-size:.85rem;font-weight:600;margin-top:12px;min-height:20px;color:var(--text2);}
+.result-msg.good{color:var(--green);}
+.result-msg.try{color:var(--red);}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.btn-check{
+  padding:9px 22px;border-radius:10px;
+  background:var(--coral);border:none;color:#fff;
+  font-family:var(--font-head);font-weight:800;font-size:.88rem;
+  cursor:pointer;transition:background .2s;
+}
+.btn-check:hover{background:var(--coral-dark);}
+.btn-reset{
+  padding:9px 18px;border-radius:10px;
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text2);font-family:var(--font-head);font-weight:700;font-size:.88rem;
+  cursor:pointer;transition:background .2s;
+}
+.btn-reset:hover{background:var(--border);}
+
+/* SEND CARD */
+.send-card{
+  background:var(--surface);border:2px solid var(--coral-light);
+  border-radius:var(--radius);padding:22px;text-align:center;
+  box-shadow:var(--shadow);
+}
+.send-card h3{font-family:var(--font-head);font-weight:900;font-size:1.1rem;margin-bottom:6px;}
+.send-card p{font-size:.88rem;color:var(--text2);margin-bottom:16px;}
+.btn-send{
+  padding:12px 32px;border-radius:12px;
+  background:var(--coral);border:none;color:#fff;
+  font-family:var(--font-head);font-weight:800;font-size:.95rem;
+  cursor:pointer;transition:background .2s;
+}
+.btn-send:hover{background:var(--coral-dark);}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+  <div class="eyebrow">Unit 5B · Homework</div>
+  <h1>Experiences</h1>
+  <div class="sub">Adjectives · was / were</div>
+</header>
+
+<div class="name-bar">
+  <label>Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-top">
+    <span class="progress-lbl">Progress</span>
+    <span class="progress-count" id="plabel">0 / 4</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+</div>
+
+<main>
+
+<!-- ====== EX 1: ANAGRAM ====== -->
+<div class="card">
+  <div class="card-hd">Exercise 1 — Vocabulary</div>
+  <div class="card-title">Unscramble the adjectives</div>
+  <p class="instr">Put the letters in the correct order to make adjectives.</p>
+  <div class="anagram-list" id="ex1">
+    <div class="anagram-item"><span class="anagram-jumbled">fawlu</span><input class="anagram-input" data-ans="awful" type="text" autocomplete="off" spellcheck="false"></div>
+    <div class="anagram-item"><span class="anagram-jumbled">freptec</span><input class="anagram-input" data-ans="perfect" type="text" autocomplete="off" spellcheck="false"></div>
+    <div class="anagram-item"><span class="anagram-jumbled">rongib</span><input class="anagram-input" data-ans="boring" type="text" autocomplete="off" spellcheck="false"></div>
+    <div class="anagram-item"><span class="anagram-jumbled">gritnestine</span><input class="anagram-input" data-ans="interesting" type="text" autocomplete="off" spellcheck="false"></div>
+    <div class="anagram-item"><span class="anagram-jumbled">ritlebre</span><input class="anagram-input" data-ans="terrible" type="text" autocomplete="off" spellcheck="false"></div>
+    <div class="anagram-item"><span class="anagram-jumbled">voleyl</span><input class="anagram-input" data-ans="lovely" type="text" autocomplete="off" spellcheck="false"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-check" onclick="checkAnagram()">Check</button>
+    <button class="btn-reset" onclick="resetAnagram()">Reset</button>
+  </div>
+  <div class="result-msg" id="ex1msg"></div>
+</div>
+
+<!-- ====== EX 2: CHOOSE ====== -->
+<div class="card">
+  <div class="card-hd">Exercise 2 — Vocabulary</div>
+  <div class="card-title">Choose the correct alternative</div>
+  <p class="instr">Tap the right word in each sentence.</p>
+  <div class="choose-list" id="ex2">
+    <div class="choose-item" data-ans="0"><span class="item-num">1</span>That movie was <button class="mc-btn" onclick="pickMC(this)">boring</button> / <button class="mc-btn" onclick="pickMC(this)">cool</button>. Nothing happened until the end!</div>
+    <div class="choose-item" data-ans="1"><span class="item-num">2</span>This meal is <button class="mc-btn" onclick="pickMC(this)">horrible</button> / <button class="mc-btn" onclick="pickMC(this)">lovely</button>. I definitely want to eat here again.</div>
+    <div class="choose-item" data-ans="1"><span class="item-num">3</span>Our holiday was <button class="mc-btn" onclick="pickMC(this)">awful</button> / <button class="mc-btn" onclick="pickMC(this)">brilliant</button>. We had an amazing time!</div>
+    <div class="choose-item" data-ans="0"><span class="item-num">4</span>This book is really <button class="mc-btn" onclick="pickMC(this)">interesting</button> / <button class="mc-btn" onclick="pickMC(this)">terrible</button>. You should read it.</div>
+    <div class="choose-item" data-ans="1"><span class="item-num">5</span>There were lots of <button class="mc-btn" onclick="pickMC(this)">boring</button> / <button class="mc-btn" onclick="pickMC(this)">cool</button> people at the party. It was great.</div>
+    <div class="choose-item" data-ans="1"><span class="item-num">6</span>Oh, this food is <button class="mc-btn" onclick="pickMC(this)">amazing</button> / <button class="mc-btn" onclick="pickMC(this)">terrible</button>! I can't eat it.</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-check" onclick="checkChoose()">Check</button>
+    <button class="btn-reset" onclick="resetChoose()">Reset</button>
+  </div>
+  <div class="result-msg" id="ex2msg"></div>
+</div>
+
+<!-- ====== EX 3: WAS/WERE CHOOSE ====== -->
+<div class="card">
+  <div class="card-hd">Exercise 3 — Grammar</div>
+  <div class="card-title">was or were?</div>
+  <p class="instr">Choose the correct form in each sentence.</p>
+  <div class="choose-list" id="ex3">
+    <div class="choose-item" data-ans="1"><span class="item-num">1</span>My parents <button class="mc-btn" onclick="pickMC(this)">was</button> / <button class="mc-btn" onclick="pickMC(this)">were</button> very kind to us.</div>
+    <div class="choose-item" data-ans="0"><span class="item-num">2</span><button class="mc-btn" onclick="pickMC(this)">Was</button> / <button class="mc-btn" onclick="pickMC(this)">Were</button> you hard-working at school?</div>
+    <div class="choose-item" data-ans="0"><span class="item-num">3</span>That book <button class="mc-btn" onclick="pickMC(this)">was</button> / <button class="mc-btn" onclick="pickMC(this)">were</button> very interesting.</div>
+    <div class="choose-item" data-ans="0"><span class="item-num">4</span>The lesson <button class="mc-btn" onclick="pickMC(this)">wasn't</button> / <button class="mc-btn" onclick="pickMC(this)">weren't</button> boring at all.</div>
+    <div class="choose-item" data-ans="0"><span class="item-num">5</span>I <button class="mc-btn" onclick="pickMC(this)">was</button> / <button class="mc-btn" onclick="pickMC(this)">were</button> very happy at school.</div>
+    <div class="choose-item" data-ans="1"><span class="item-num">6</span>Wow, they <button class="mc-btn" onclick="pickMC(this)">wasn't</button> / <button class="mc-btn" onclick="pickMC(this)">weren't</button> very friendly!</div>
+    <div class="choose-item" data-ans="1"><span class="item-num">7</span>You <button class="mc-btn" onclick="pickMC(this)">was</button> / <button class="mc-btn" onclick="pickMC(this)">were</button> very kind to me last week.</div>
+    <div class="choose-item" data-ans="0"><span class="item-num">8</span>Alicia <button class="mc-btn" onclick="pickMC(this)">wasn't</button> / <button class="mc-btn" onclick="pickMC(this)">weren't</button> here yesterday.</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-check" onclick="checkEx3()">Check</button>
+    <button class="btn-reset" onclick="resetEx3()">Reset</button>
+  </div>
+  <div class="result-msg" id="ex3msg"></div>
+</div>
+
+<!-- ====== EX 4: TEXT GAP-FILL ====== -->
+<div class="card">
+  <div class="card-hd">Exercise 4 — Grammar</div>
+  <div class="card-title">Complete the text</div>
+  <p class="instr">Complete with <strong>was</strong>, <strong>wasn't</strong>, <strong>were</strong> or <strong>weren't</strong>.</p>
+  <div class="passage">
+    I loved school – it <span class="gap-num">1</span><input class="txt-input" id="t1" data-ans="was" type="text" autocomplete="off" spellcheck="false">
+    great! My teachers <span class="gap-num">2</span><input class="txt-input" id="t2" data-ans="were" type="text" autocomplete="off" spellcheck="false">
+    really kind and the other students <span class="gap-num">3</span><input class="txt-input" id="t3" data-ans="were" type="text" autocomplete="off" spellcheck="false">
+    friendly. There <span class="gap-num">4</span><input class="txt-input" id="t4" data-ans="was" type="text" autocomplete="off" spellcheck="false">
+    a lot of work to do and the lessons <span class="gap-num">5</span><input class="txt-input" id="t5" data-ans="weren't" type="text" autocomplete="off" spellcheck="false">
+    boring because the teachers <span class="gap-num">6</span><input class="txt-input" id="t6" data-ans="were" type="text" autocomplete="off" spellcheck="false">
+    interesting and funny, too. I miss my school days – they <span class="gap-num">7</span><input class="txt-input" id="t7" data-ans="were" type="text" autocomplete="off" spellcheck="false">
+    fantastic!
+  </div>
+  <div class="btn-row">
+    <button class="btn-check" onclick="checkText()">Check</button>
+    <button class="btn-reset" onclick="resetText()">Reset</button>
+  </div>
+  <div class="result-msg" id="ex4msg"></div>
+</div>
+
+<!-- ====== SEND ====== -->
+<div class="send-card">
+  <h3>📩 Send to your teacher</h3>
+  <p>When you finish all four exercises, send your answers!</p>
+  <button class="btn-send" onclick="sendToTeacher()">Send to Teacher</button>
+</div>
+
+</main>
+
+<script>
+// ── PROGRESS ──────────────────────────────────
+const done = {ex1:false, ex2:false, ex3:false, ex4:false};
+function updateProgress() {
+  const n = Object.values(done).filter(Boolean).length;
+  document.getElementById('pfill').style.width = (n / 4 * 100) + '%';
+  document.getElementById('plabel').textContent = n + ' / 4';
+}
+
+function norm(s){ return s.toLowerCase().trim().replace(/['']/g,"'"); }
+function score(correct, total){ return correct + ' / ' + total + (correct===total ? ' — Great job! 🎉' : ' — Keep trying!'); }
+
+// ── THEME ──────────────────────────────────────
+function toggleTheme(){
+  const h = document.documentElement;
+  h.dataset.theme = h.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.querySelector('.theme-btn').textContent = h.dataset.theme === 'dark' ? '☀️' : '🌙';
+}
+
+// ── EX 1: ANAGRAM ──────────────────────────────
+function checkAnagram(){
+  const inputs = document.querySelectorAll('#ex1 .anagram-input');
+  let c = 0;
+  inputs.forEach(inp => {
+    inp.classList.remove('correct','wrong');
+    if(norm(inp.value) === inp.dataset.ans){ inp.classList.add('correct'); c++; }
+    else if(inp.value.trim()) inp.classList.add('wrong');
+  });
+  const msg = document.getElementById('ex1msg');
+  msg.textContent = score(c, inputs.length);
+  msg.className = 'result-msg ' + (c === inputs.length ? 'good' : 'try');
+  if(c === inputs.length){ done.ex1 = true; updateProgress(); }
+}
+function resetAnagram(){
+  document.querySelectorAll('#ex1 .anagram-input').forEach(i => { i.value=''; i.className='anagram-input'; });
+  document.getElementById('ex1msg').textContent='';
+  done.ex1=false; updateProgress();
+}
+
+// ── MC HELPER ──────────────────────────────────
+function pickMC(btn){
+  const parent = btn.closest('.choose-item');
+  parent.querySelectorAll('.mc-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+// ── EX 2: CHOOSE ───────────────────────────────
+function checkChoose(){
+  const items = document.querySelectorAll('#ex2 .choose-item');
+  let c = 0;
+  items.forEach(item => {
+    const btns = item.querySelectorAll('.mc-btn');
+    const ans = parseInt(item.dataset.ans);
+    btns.forEach((b,i) => {
+      b.classList.remove('correct','wrong');
+      if(b.classList.contains('selected')){
+        if(i===ans){ b.classList.add('correct'); c++; }
+        else b.classList.add('wrong');
+      }
+    });
+    if(!item.querySelector('.selected')) btns[ans].classList.add('correct');
+  });
+  const msg = document.getElementById('ex2msg');
+  msg.textContent = score(c, items.length);
+  msg.className = 'result-msg ' + (c === items.length ? 'good' : 'try');
+  if(c === items.length){ done.ex2 = true; updateProgress(); }
+}
+function resetChoose(){
+  document.querySelectorAll('#ex2 .mc-btn').forEach(b => b.className='mc-btn');
+  document.getElementById('ex2msg').textContent='';
+  done.ex2=false; updateProgress();
+}
+
+// ── EX 3: WAS/WERE ─────────────────────────────
+function checkEx3(){
+  const items = document.querySelectorAll('#ex3 .choose-item');
+  let c = 0;
+  items.forEach(item => {
+    const btns = item.querySelectorAll('.mc-btn');
+    const ans = parseInt(item.dataset.ans);
+    btns.forEach((b,i) => {
+      b.classList.remove('correct','wrong');
+      if(b.classList.contains('selected')){
+        if(i===ans){ b.classList.add('correct'); c++; }
+        else b.classList.add('wrong');
+      }
+    });
+    if(!item.querySelector('.selected')) btns[ans].classList.add('correct');
+  });
+  const msg = document.getElementById('ex3msg');
+  msg.textContent = score(c, items.length);
+  msg.className = 'result-msg ' + (c === items.length ? 'good' : 'try');
+  if(c === items.length){ done.ex3 = true; updateProgress(); }
+}
+function resetEx3(){
+  document.querySelectorAll('#ex3 .mc-btn').forEach(b => b.className='mc-btn');
+  document.getElementById('ex3msg').textContent='';
+  done.ex3=false; updateProgress();
+}
+
+// ── EX 4: TEXT GAP ─────────────────────────────
+function checkText(){
+  const ids = ['t1','t2','t3','t4','t5','t6','t7'];
+  let c = 0;
+  ids.forEach(id => {
+    const inp = document.getElementById(id);
+    inp.classList.remove('correct','wrong');
+    if(norm(inp.value) === inp.dataset.ans){ inp.classList.add('correct'); c++; }
+    else if(inp.value.trim()) inp.classList.add('wrong');
+  });
+  const msg = document.getElementById('ex4msg');
+  msg.textContent = score(c, ids.length);
+  msg.className = 'result-msg ' + (c === ids.length ? 'good' : 'try');
+  if(c === ids.length){ done.ex4 = true; updateProgress(); }
+}
+function resetText(){
+  ['t1','t2','t3','t4','t5','t6','t7'].forEach(id => {
+    const inp = document.getElementById(id);
+    inp.value=''; inp.className='txt-input';
+  });
+  document.getElementById('ex4msg').textContent='';
+  done.ex4=false; updateProgress();
+}
+
+// ── SEND TO TEACHER ─────────────────────────────
+function sendToTeacher(){
+  const name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+  // Ex 1
+  const anInputs = document.querySelectorAll('#ex1 .anagram-input');
+  const anWords = ['fawlu','freptec','rongib','gritnestine','ritlebre','voleyl'];
+  let ex1text = 'EXERCISE 1 — Unscramble\n';
+  anInputs.forEach((inp,i) => { ex1text += `  ${i+1}. ${anWords[i]} → ${inp.value||'(blank)'}\n`; });
+
+  // Ex 2
+  const chItems2 = document.querySelectorAll('#ex2 .choose-item');
+  let ex2text = 'EXERCISE 2 — Choose\n';
+  chItems2.forEach((item,i) => {
+    const sel = item.querySelector('.mc-btn.selected,.mc-btn.correct,.mc-btn.wrong');
+    ex2text += `  ${i+1}. ${sel ? sel.textContent : '(not answered)'}\n`;
+  });
+
+  // Ex 3
+  const chItems3 = document.querySelectorAll('#ex3 .choose-item');
+  let ex3text = 'EXERCISE 3 — was/were\n';
+  chItems3.forEach((item,i) => {
+    const sel = item.querySelector('.mc-btn.selected,.mc-btn.correct,.mc-btn.wrong');
+    ex3text += `  ${i+1}. ${sel ? sel.textContent : '(not answered)'}\n`;
+  });
+
+  // Ex 4
+  const tIds = ['t1','t2','t3','t4','t5','t6','t7'];
+  let ex4text = 'EXERCISE 4 — Complete the text\n';
+  tIds.forEach((id,i) => {
+    ex4text += `  ${i+1}. ${document.getElementById(id).value||'(blank)'}\n`;
+  });
+
+  const body = encodeURIComponent(`Student: ${name}\n\n${ex1text}\n${ex2text}\n${ex3text}\n${ex4text}`);
+  const subject = encodeURIComponent(`Unit 5B Homework – ${name}`);
+  window.location.href = `mailto:dariia.mlnk@gmail.com?subject=${subject}&body=${body}`;
+}
+</script>
+</body>
+</html>
