@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Long Have You…?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Lexend:wght@400;500;600&display=swap">
+<style>
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+
+:root{
+  --ground:#F1F3EF; --paper:#FFFFFF; --paper2:#F6F8F5; --ink:#141A17; --muted:#56615B; --line:#D6DCD6;
+  --for:#D9472B; --for-soft:#FBE1DA; --since:#0F7F64; --since-soft:#D3EDE4;
+  --sun:#B98400; --sun-soft:#FCEFC9;
+  --uk:#C8102E; --uk-soft:#F9DEE2; --us:#2851A3; --us-soft:#DDE6F8;
+  --ok:#2F7D3B; --ok-soft:#D6EDD6; --bad:#B23A2E; --bad-soft:#F6D8D3;
+  --on:#FFFFFF;
+  --display:"Bricolage Grotesque","Trebuchet MS","Segoe UI",sans-serif;
+  --body:"Lexend","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#121614; --paper:#1B201D; --paper2:#222824; --ink:#EAF0EC; --muted:#9FAAA4; --line:#2F3833;
+    --for:#FF7B5E; --for-soft:#3D211B; --since:#3CCB9F; --since-soft:#17352C;
+    --sun:#F6C850; --sun-soft:#3A321C;
+    --uk:#FF6B7F; --uk-soft:#3E1F27; --us:#7FA5F5; --us-soft:#1F2C4A;
+    --ok:#7CCB85; --ok-soft:#1F3822; --bad:#F08A7E; --bad-soft:#40221E;
+    --on:#121614;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#121614; --paper:#1B201D; --paper2:#222824; --ink:#EAF0EC; --muted:#9FAAA4; --line:#2F3833;
+  --for:#FF7B5E; --for-soft:#3D211B; --since:#3CCB9F; --since-soft:#17352C;
+  --sun:#F6C850; --sun-soft:#3A321C;
+  --uk:#FF6B7F; --uk-soft:#3E1F27; --us:#7FA5F5; --us-soft:#1F2C4A;
+  --ok:#7CCB85; --ok-soft:#1F3822; --bad:#F08A7E; --bad-soft:#40221E;
+  --on:#121614;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:860px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);font-weight:800;text-wrap:balance;line-height:1.05;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(2.8rem,9vw,5rem)}
+h2{font-size:clamp(1.7rem,4.8vw,2.3rem)}
+h3{font-size:1.25rem;font-weight:600}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.for{color:var(--for)} .since{color:var(--since)}
+.pill{display:inline-block;font-family:var(--display);font-weight:800;font-size:.8em;padding:0 .5em;border-radius:999px;line-height:1.5}
+.pill.for{background:var(--for);color:var(--on)} .pill.since{background:var(--since);color:var(--on)}
+.tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.08em;padding:1px 7px;border-radius:6px;vertical-align:middle}
+.tag.uk{background:var(--uk);color:var(--on)} .tag.us{background:var(--us);color:var(--on)}
+
+header.hero{padding-block:36px 18px;display:grid;gap:12px}
+header.hero .chips{display:flex;gap:10px;flex-wrap:wrap;font-size:1.3rem}
+header.hero .plan{color:var(--muted);font-size:.95rem}
+.theme-btn{justify-self:start;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:4px 14px;font-size:.85rem}
+
+nav.stages{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);padding-block:10px;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+nav.stages a{display:inline-block;margin-right:6px;padding:5px 12px;border-radius:999px;color:var(--ink);text-decoration:none;font-size:.86rem;font-weight:500;background:var(--paper);border:1px solid var(--line)}
+nav.stages a.ext{border-style:dashed;color:var(--muted)}
+nav.stages a:hover{border-color:var(--since);color:var(--since)}
+
+section.stage{margin-top:46px;display:grid;gap:18px;scroll-margin-top:70px}
+.stage-head{display:grid;gap:6px}
+.stage-head .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.step-no{font-family:var(--display);font-weight:600;font-size:1.05rem;color:var(--since)}
+.chip{font-size:.76rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 10px;border-radius:999px;background:var(--sun-soft);color:var(--sun)}
+.chip.game{background:var(--for-soft);color:var(--for)}
+.chip.ext{background:transparent;border:1.5px dashed var(--muted);color:var(--muted)}
+.chip.vocab{background:var(--us-soft);color:var(--us)}
+.instr{color:var(--muted);max-width:65ch}
+.ext-band{margin-top:52px;padding:14px 18px;border:2px dashed var(--line);border-radius:14px;color:var(--muted);display:grid;gap:4px}
+.ext-band b{font-family:var(--display);font-size:1.3rem;color:var(--ink)}
+
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px}
+details.tnote{border-left:3px solid var(--sun);background:var(--sun-soft);border-radius:0 10px 10px 0;padding:8px 14px;font-size:.92rem}
+details.tnote summary{cursor:pointer;font-weight:600;color:var(--sun)}
+details.tnote ul{margin:8px 0 4px;padding-left:20px}
+.talk{display:grid;gap:8px;padding:0;margin:0;list-style:none}
+.talk li{padding:10px 14px;border-radius:12px;background:var(--paper2);border:1px solid var(--line)}
+
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:none;border-radius:999px;padding:9px 20px;font-weight:600;background:var(--ink);color:var(--ground)}
+.btn.for{background:var(--for);color:var(--on)} .btn.since{background:var(--since);color:var(--on)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+.score{font-weight:600;color:var(--ok);font-variant-numeric:tabular-nums}
+.small-btn{justify-self:start;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:3px 12px;font-size:.85rem}
+
+.list{display:grid;gap:16px}
+.q{display:grid;gap:8px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:10px;padding:6px 14px;text-align:left}
+.opts button:hover{border-color:var(--since)}
+.opts button.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:600}
+.opts button.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.fb{font-size:.9rem;color:var(--muted);min-height:1.2em}
+
+input.gap{font:inherit;font-size:.95rem;border:none;border-bottom:2px solid var(--since);background:var(--since-soft);color:var(--ink);border-radius:6px 6px 0 0;padding:2px 8px;width:10em;max-width:100%}
+input.gap.s{width:5.5em} input.gap.l{width:13em} input.gap.full{width:100%}
+input.gap.uk{border-bottom-color:var(--uk);background:var(--uk-soft);width:8em}
+input.gap.right{border-color:var(--ok);background:var(--ok-soft)}
+input.gap.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.key{font-size:.85rem;color:var(--ok);margin-left:6px;font-weight:500}
+.gl{line-height:2.3}
+.gl .n{font-weight:600;color:var(--since);margin-right:6px;font-variant-numeric:tabular-nums}
+
+/* profile */
+.profile{background:var(--paper);border:1px solid var(--line);border-radius:22px;overflow:hidden;max-width:620px}
+.profile .top{display:flex;gap:14px;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
+.profile .avatar{width:56px;height:56px;border-radius:50%;background:conic-gradient(var(--for),var(--sun),var(--since),var(--for));display:grid;place-items:center;font-size:1.6rem;flex:none}
+.profile .avatar span{width:48px;height:48px;border-radius:50%;background:var(--paper);display:grid;place-items:center}
+.profile .name{font-family:var(--display);font-weight:800;font-size:1.2rem;line-height:1.1}
+.profile .handle{color:var(--muted);font-size:.85rem}
+.profile .body{padding:18px;display:grid;gap:12px;line-height:1.7}
+.profile mark{border-radius:4px;padding:0 3px;color:inherit;background:transparent}
+.profile.hl mark.f{background:var(--for-soft);color:var(--for);font-weight:600}
+.profile.hl mark.s{background:var(--since-soft);color:var(--since);font-weight:600}
+.profile.uk mark.b{background:var(--uk-soft);color:var(--uk);font-weight:600}
+.swaps{display:flex;flex-wrap:wrap;gap:8px}
+.swaps span{padding:4px 12px;border-radius:999px;background:var(--paper2);border:1px solid var(--line);font-size:.92rem}
+
+/* message (Jake) */
+.msg{max-width:640px;display:grid;gap:10px}
+.bubble{background:var(--us-soft);border-radius:18px 18px 18px 4px;padding:16px 18px;line-height:2.4}
+.bubble .who{display:block;font-weight:600;color:var(--us);line-height:1.5;margin-bottom:4px}
+.bubble b.usw{color:var(--us)}
+
+/* timeline */
+.tlsvg{width:100%;max-width:680px;height:auto}
+.tlsvg text{font-family:var(--body);font-size:13px;fill:var(--ink)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.big-card{border-radius:16px;padding:18px;display:grid;gap:8px}
+.big-card.for{background:var(--for-soft);color:var(--ink);border:2px solid var(--for)}
+.big-card.since{background:var(--since-soft);color:var(--ink);border:2px solid var(--since)}
+.big-card h3{font-family:var(--display);font-weight:800;font-size:1.6rem}
+.big-card.for h3{color:var(--for)} .big-card.since h3{color:var(--since)}
+
+/* sorter */
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;padding:12px;border:2px dashed var(--line);border-radius:14px}
+.pool button,.bucket button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:999px;padding:5px 14px;font-weight:500}
+.pool button.picked{border-color:var(--sun);background:var(--sun-soft)}
+.buckets{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bucket{border-radius:14px;padding:12px;min-height:130px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;cursor:pointer}
+.bucket .lbl{width:100%;font-family:var(--display);font-weight:800;font-size:1.3rem}
+.bucket.for{background:var(--for-soft);border:2px solid var(--for)} .bucket.for .lbl{color:var(--for)}
+.bucket.since{background:var(--since-soft);border:2px solid var(--since)} .bucket.since .lbl{color:var(--since)}
+.bucket button.right{border-color:var(--ok);color:var(--ok);font-weight:600}
+.bucket button.wrong{border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+
+.rule{display:grid;gap:10px}
+.rule .r{display:grid;grid-template-columns:minmax(150px,190px) 1fr;gap:10px;align-items:baseline;padding-bottom:8px;border-bottom:1px dashed var(--line)}
+.rule .r:last-child{border-bottom:none}
+.rule .r>span:first-child{font-weight:600}
+@media (max-width:560px){.rule .r{grid-template-columns:1fr;gap:2px}}
+.de{background:var(--sun-soft);border:2px solid var(--sun);border-radius:16px;padding:18px 20px;display:grid;gap:12px}
+.de h3{font-family:var(--display);font-weight:800}
+.mist{display:grid;gap:6px}
+.mist .fix{color:var(--ok);font-weight:600}
+
+/* quick fire */
+.qf{display:grid;gap:16px;justify-items:center;text-align:center}
+.qf .expr{font-family:var(--display);font-weight:800;font-size:clamp(2rem,7vw,3.2rem);line-height:1.05;min-height:1.2em}
+.qf .btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.qf .big{font-family:var(--display);font-weight:800;font-size:1.6rem;padding:10px 34px;border-radius:999px;border:none;color:var(--on)}
+.qf .big.for{background:var(--for)} .qf .big.since{background:var(--since)}
+.qf .stats{display:flex;gap:18px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--muted)}
+.qf .stats b{color:var(--ink)}
+.timer{font-family:var(--display);font-weight:800;font-size:2.2rem;color:var(--for);line-height:1;font-variant-numeric:tabular-nums}
+.timer.done{color:var(--ok)}
+
+/* board game */
+.players{display:flex;flex-wrap:wrap;gap:10px}
+.player{display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:999px;border:2px solid var(--line);background:var(--paper);font-weight:600}
+.player.active{border-color:var(--sun);background:var(--sun-soft)}
+.board{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.sq{position:relative;aspect-ratio:1;max-width:100%;border-radius:12px;background:var(--paper2);border:1.5px solid var(--line);display:grid;place-items:center;align-content:center;gap:0;padding:4px;text-align:center}
+.sq .no{position:absolute;top:3px;left:6px;font-size:.68rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.sq .ic{font-size:1.4rem;line-height:1}
+.sq .w{font-size:.68rem;line-height:1.15;color:var(--muted);word-break:break-word}
+.sq.special{background:var(--sun-soft);border-color:var(--sun)}
+.sq.start,.sq.finish{background:var(--ink);border-color:var(--ink)} .sq.start .w,.sq.finish .w{color:var(--ground)}
+.sq .tok{position:absolute;bottom:2px;right:4px;font-size:1.05rem;line-height:1;display:flex;gap:1px}
+.sq.here{outline:3px solid var(--sun);outline-offset:1px}
+@media (max-width:520px){.sq .w{display:none}.sq .ic{font-size:1.2rem}}
+.die{font-size:3rem;line-height:1;min-width:1.2em;text-align:center}
+.card{border-radius:16px;padding:18px;display:grid;gap:8px;border:2px dashed var(--since);background:var(--paper2);min-height:120px;align-content:center}
+.card .pair{font-weight:600}
+.card .qq{font-family:var(--display);font-weight:800;font-size:clamp(1.2rem,3.8vw,1.6rem);line-height:1.2}
+.card .note{color:var(--muted);font-size:.92rem}
+
+/* tic tac toe */
+.ttt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:480px}
+.cell{aspect-ratio:1;max-width:100%;border-radius:14px;border:2px solid var(--line);background:var(--paper2);color:var(--ink);display:grid;place-items:center;align-content:center;gap:2px;padding:6px;text-align:center}
+.cell .vw{font-weight:600;font-size:.95rem;line-height:1.15}
+.cell .vt{font-size:.85rem;color:var(--muted)}
+.cell.X{background:var(--for);border-color:var(--for);color:var(--on)} .cell.O{background:var(--since);border-color:var(--since);color:var(--on)}
+.cell.X .vt,.cell.O .vt{color:var(--on);opacity:.85}
+.cell .mark{font-family:var(--display);font-weight:800;font-size:2.4rem;line-height:1}
+.cell.win{outline:4px solid var(--sun);outline-offset:2px}
+.turn{font-weight:600}
+
+/* wrapped */
+.wform{display:grid;gap:10px}
+.wrow{display:grid;grid-template-columns:1fr 7em;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.wrow span{line-height:1.8}
+.wrow input{font:inherit;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);width:100%;font-variant-numeric:tabular-nums}
+.wrow input.word{display:inline-block;width:9em;padding:2px 8px}
+.wrapped{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.wcard{border-radius:20px;padding:20px;display:grid;gap:4px;min-height:170px;align-content:space-between;color:var(--on)}
+.wcard:nth-child(3n+1){background:var(--for)} .wcard:nth-child(3n+2){background:var(--since)} .wcard:nth-child(3n){background:var(--ink);color:var(--ground)}
+.wcard .num{font-family:var(--display);font-weight:800;font-size:3.4rem;line-height:.95}
+.wcard .unit{font-family:var(--display);font-weight:600;font-size:1.2rem}
+.wcard p{font-size:.92rem;opacity:.95}
+
+/* spinner */
+.spin-card{border-radius:20px;padding:22px;display:grid;gap:10px;background:var(--paper2);border:2px dashed var(--since);text-align:center;justify-items:center}
+.spin-card .qq{font-family:var(--display);font-weight:800;font-size:clamp(1.4rem,4.5vw,2rem);line-height:1.15}
+.spin-card .fu{color:var(--muted)}
+
+/* stars */
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs button{border:2px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 16px;font-weight:600}
+.tabs button.on{border-color:var(--since);background:var(--since-soft);color:var(--since)}
+.celeb{border-radius:18px;padding:18px;background:var(--paper2);border:1px solid var(--line);display:grid;gap:8px}
+.celeb .who{display:flex;gap:12px;align-items:center}
+.celeb .who span{font-size:2.4rem}
+.celeb .who b{font-family:var(--display);font-weight:800;font-size:1.4rem;line-height:1.1;display:block}
+.celeb .who small{color:var(--muted)}
+.celeb ul{margin:0;padding-left:20px;display:grid;gap:4px}
+.qbank{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px}
+.qbank button{border:1px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:10px;padding:8px 12px;text-align:left;font-size:.92rem}
+.qbank button.asked{border-color:var(--ok);color:var(--ok)}
+.break{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:14px;background:var(--sun-soft);font-weight:600;margin-top:36px}
+.break span{font-size:1.8rem}
+footer{margin-top:48px;color:var(--muted);font-size:.85rem;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="hero">
+  <h1>How long have you…?</h1>
+  <div class="chips"><span class="pill for">FOR three years</span><span class="pill since">SINCE 2023</span></div>
+  <p class="plan">Core lesson: 120 min · Extensions: +30 min (up to 150) · with British &amp; American words <span class="tag uk">UK</span> <span class="tag us">US</span></p>
+  <button class="theme-btn" id="themeBtn" type="button">◐ Light / dark</button>
+</header>
+
+<nav class="stages" aria-label="Lesson stages">
+  <a href="#s1">1 · Freiburg quiz</a><a href="#s2">2 · Lina</a><a href="#s3">3 · Grammar</a><a href="#s4">4 · Practice</a><a href="#s5">5 · Jake's message</a><a href="#s6">6 · Board race</a><a href="#s7">7 · Noughts &amp; crosses</a><a class="ext" href="#x1">+ Spin</a><a class="ext" href="#x2">+ Life Wrapped</a><a class="ext" href="#x3">+ Star interview</a><a href="#s8">8 · Wrap-up</a>
+</nav>
+
+<!-- 1 WARM-UP -->
+<section class="stage" id="s1">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 1 · Warm-up</span><span class="chip">10 min</span><span class="chip game">Quiz</span></div>
+    <h2>Freiburg: how long?</h2>
+    <p class="instr">Guess the answer! Then read the full sentence out loud.</p>
+  </div>
+  <div class="panel"><div class="list" id="fq"></div></div>
+  <div class="panel">
+    <h3>Let's talk</h3>
+    <ul class="talk">
+      <li>How long have you lived in Freiburg? Where did you live before?</li>
+      <li>How long have you known your best friend?</li>
+      <li>Remember our lift / elevator lesson? Which British or American words do you still know?</li>
+    </ul>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Don't correct yet. Note how she answers "How long have you lived…?" (typical: <i>"I live here since…"</i>, <i>"since three years"</i>).</li>
+      <li>Facts: University of Freiburg founded 1457 · trams since 1901 · Europa-Park opened 1975 · Europa-Park Stadion opened 2021.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 2 LINA -->
+<section class="stage" id="s2">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 2 · Reading</span><span class="chip">15 min</span><span class="chip vocab">UK / US words</span></div>
+    <h2>Meet Lina</h2>
+    <p class="instr">Lina is 14 and lives in Freiburg. Read her "About me" post, then answer the questions.</p>
+  </div>
+  <article class="profile" id="profile">
+    <div class="top"><div class="avatar"><span>🧗‍♀️</span></div><div><div class="name">Lina 🌲</div><div class="handle">@lina.climbs.fr · Freiburg</div></div></div>
+    <div class="body">
+      <p>Hi! I'm Lina, I'm 14 and I live in Freiburg. I've lived in a <mark class="b">flat</mark> in Vauban, the eco district, <mark class="s">since I was six</mark>. Before that, we lived in Stuttgart. I've been at my school in the city centre <mark class="f">for three years</mark>.</p>
+      <p>My big hobby is climbing 🧗‍♀️. I've climbed at the climbing hall <mark class="f">for two years</mark>, and <mark class="s">since last summer</mark> I've also climbed outdoors in the Black Forest. I've had my climbing <mark class="b">trainers</mark> <mark class="f">for ages</mark>, and they smell terrible! My best friend is Emma. We've known each other <mark class="s">since kindergarten</mark>, so <mark class="f">for more than nine years</mark>!</p>
+      <p>I've only had my <mark class="b">mobile</mark> <mark class="f">for six months</mark> (my old one fell into a Bächle 😅). I haven't eaten <mark class="b">sweets</mark> <mark class="s">since January</mark>, and I've been an SC Freiburg <mark class="b">football</mark> fan <mark class="f">for as long as I can remember</mark>. One problem: I've wanted a dog <mark class="f">for ages</mark>, but my parents always say no! We haven't been on <mark class="b">holiday</mark> <mark class="s">since last <span>autumn</span></mark>, so maybe the dog can come next time 🐶</p>
+    </div>
+  </article>
+  <div class="panel">
+    <h3>Did you understand?</h3>
+    <div class="list" id="readQ"></div>
+    <div class="actions"><button class="btn ghost" type="button" data-reset="readQ">New order</button></div>
+  </div>
+  <div class="panel">
+    <h3>Grammar hunt 🔍 + word hunt 🇬🇧</h3>
+    <p class="instr"><b>1.</b> Find all the phrases with <b class="for">for</b> and <b class="since">since</b>. <b>2.</b> Lina writes British English. Find 6 British words. What do Americans say?</p>
+    <div class="actions"><button class="btn" type="button" id="hlBtn">Show for / since</button><button class="btn ghost" type="button" id="ukBtn">Show British words</button></div>
+    <div class="swaps" id="swaps" hidden>
+      <span>flat → apartment</span><span>trainers → sneakers</span><span>mobile → cell phone</span><span>sweets → candy</span><span>football → soccer</span><span>holiday → vacation</span><span>(autumn → fall)</span>
+    </div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Ask: "Does Lina still live in Vauban? Does she still climb?" Yes, so the action started in the past and continues now.</li>
+      <li>Contrast: "Before that, we lived in Stuttgart." That's past simple, because it's finished.</li>
+      <li>Bonus: "Autumn" is hidden in the last line. Can she find the 7th British word?</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 3 GRAMMAR -->
+<section class="stage" id="s3">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 3 · Grammar</span><span class="chip">20 min</span></div>
+    <h2>Present perfect + for / since</h2>
+    <p class="instr">"I've lived in Vauban <b class="since">since 2018</b>." = "I've lived in Vauban <b class="for">for eight years</b>." Same meaning, different view!</p>
+  </div>
+  <div class="panel">
+    <svg class="tlsvg" viewBox="0 0 680 190" role="img" aria-label="Timeline: Lina started living in Vauban in 2018 and still lives there now. Since points to 2018; for covers the whole period of eight years.">
+      <line x1="20" y1="110" x2="650" y2="110" stroke="var(--muted)" stroke-width="2"/>
+      <polygon points="650,104 662,110 650,116" fill="var(--muted)"/>
+      <rect x="140" y="98" width="420" height="24" rx="12" fill="var(--for)" opacity=".85"/>
+      <circle cx="140" cy="110" r="12" fill="var(--since)"/>
+      <line x1="560" y1="70" x2="560" y2="150" stroke="var(--ink)" stroke-width="3"/>
+      <text x="540" y="168" style="font-weight:600">NOW</text>
+      <text x="120" y="168" style="fill:var(--since);font-weight:700">2018</text>
+      <text x="96" y="62" style="fill:var(--since);font-weight:700">SINCE + start point</text>
+      <path d="M140 70 L140 92" stroke="var(--since)" stroke-width="2"/>
+      <text x="270" y="62" style="fill:var(--for);font-weight:700">FOR + length of time (8 years)</text>
+      <path d="M150 76 L550 76" stroke="var(--for)" stroke-width="2"/>
+      <polygon points="150,71 140,76 150,81" fill="var(--for)"/><polygon points="550,71 560,76 550,81" fill="var(--for)"/>
+      <text x="200" y="188">She started in the past… and it's still true now.</text>
+    </svg>
+    <div class="two">
+      <div class="big-card for"><h3>FOR</h3><p>+ a <b>length</b> of time<br><i>for three years · for ages · for ten minutes · for a long time</i></p></div>
+      <div class="big-card since"><h3>SINCE</h3><p>+ the <b>start point</b><br><i>since 2018 · since Monday · since Christmas · since I was six</i></p></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Sort them: for or since?</h3>
+    <p class="instr">Click a time expression, then click the right box. Then check.</p>
+    <div class="pool" id="pool"></div>
+    <div class="buckets">
+      <div class="bucket for" id="bFor" role="button" tabindex="0"><span class="lbl">FOR</span></div>
+      <div class="bucket since" id="bSince" role="button" tabindex="0"><span class="lbl">SINCE</span></div>
+    </div>
+    <div class="actions"><button class="btn" type="button" id="sortCheck">Check</button><button class="btn ghost" type="button" id="sortReset">Reset</button><span class="score" id="sortScore"></span></div>
+  </div>
+  <div class="panel">
+    <h3>Check the meaning</h3>
+    <div class="list" id="ccq"></div>
+  </div>
+  <div class="panel" id="ruleCard">
+    <h3>Rule card · complete it</h3>
+    <div class="rule">
+      <div class="r"><span>Positive</span><span>I / you / we / they + <input class="gap s" data-ans="have|'ve" aria-label="have"> + past participle · he / she / it + <input class="gap s" data-ans="has|'s" aria-label="has"> + past participle</span></div>
+      <div class="r"><span>Negative</span><span>I <input class="gap s" data-ans="haven't|have not" aria-label="haven't"> eaten sweets since January.</span></div>
+      <div class="r"><span>Question</span><span><input class="gap l" data-ans="how long" aria-label="how long"> have you known Emma?</span></div>
+      <div class="r"><span>Finished past?</span><span>Use the past <input class="gap" data-ans="simple" aria-label="past simple"> → <i>We lived in Stuttgart for two years.</i> (we don't live there now)</span></div>
+    </div>
+    <div class="actions"><button class="btn" type="button" data-check="ruleCard">Check</button><button class="btn ghost" type="button" data-resetgap="ruleCard">Reset</button><span class="score"></span></div>
+  </div>
+  <div class="de">
+    <h3>🇩🇪 German traps: "seit" is tricky!</h3>
+    <p class="instr" style="color:var(--ink)">German: <i>Ich wohne <b>seit</b> 2018 hier. Ich wohne <b>seit</b> acht Jahren hier.</i> → English needs the <b>present perfect</b>, and <i>seit</i> can be <b class="since">since</b> OR <b class="for">for</b>!</p>
+    <div class="list" id="mistakes"></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Key German interference: <b>seit + Präsens</b> → ✗ <i>I live here since 2018</i>; <b>seit + Zeitraum</b> → ✗ <i>since three years</i>.</li>
+      <li>Quick rule for her: <i>seit + amount</i> (drei Jahren, zwei Wochen) → <b>for</b>; <i>seit + point</i> (2018, Montag, Weihnachten) → <b>since</b>.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 4 PRACTICE -->
+<section class="stage" id="s4">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 4 · Practice</span><span class="chip">20 min</span></div>
+    <h2>Practice time</h2>
+  </div>
+  <div class="panel qf" id="qf">
+    <h3>A · Quick-fire: FOR or SINCE? ⚡</h3>
+    <div class="timer" id="qfTimer">1:00</div>
+    <div class="stats"><span>Score <b id="qfScore">0</b></span><span>Streak <b id="qfStreak">0</b> 🔥</span><span>Best <b id="qfBest">0</b></span></div>
+    <div class="expr" id="qfExpr">Ready?</div>
+    <div class="btns"><button class="big for" type="button" data-v="for" disabled>FOR</button><button class="big since" type="button" data-v="since" disabled>SINCE</button></div>
+    <p class="fb" id="qfFb" aria-live="polite"></p>
+    <button class="btn since" type="button" id="qfStart">Start 60 seconds</button>
+  </div>
+  <div class="panel" id="exB">
+    <h3>B · Complete the sentences</h3>
+    <p class="instr">Write the verb in the present perfect and choose <b class="for">for</b> or <b class="since">since</b>. Contractions are OK.</p>
+    <div class="gl"><span class="n">1</span>I <input class="gap l" data-ans="have known|'ve known" aria-label="B1 verb"> (know) my best friend <input class="gap s" data-ans="since" aria-label="B1 for/since"> we were five.</div>
+    <div class="gl"><span class="n">2</span>We <input class="gap l" data-ans="have had|'ve had" aria-label="B2 verb"> (have) our cat <input class="gap s" data-ans="for" aria-label="B2 for/since"> three years.</div>
+    <div class="gl"><span class="n">3</span>My dad <input class="gap l" data-ans="has worked|'s worked" aria-label="B3 verb"> (work) in a sports shop <input class="gap s" data-ans="since" aria-label="B3 for/since"> 2018.</div>
+    <div class="gl"><span class="n">4</span>She <input class="gap l" data-ans="hasn't seen|has not seen" aria-label="B4 verb"> (not / see) her cousins <input class="gap s" data-ans="since" aria-label="B4 for/since"> Christmas.</div>
+    <div class="gl"><span class="n">5</span>Tom <input class="gap l" data-ans="has played|'s played" aria-label="B5 verb"> (play) football <input class="gap s" data-ans="for" aria-label="B5 for/since"> six years.</div>
+    <div class="gl"><span class="n">6</span>They <input class="gap l" data-ans="have lived|'ve lived" aria-label="B6 verb"> (live) in a flat near the Münster <input class="gap s" data-ans="for" aria-label="B6 for/since"> a long time.</div>
+    <div class="gl"><span class="n">7</span>I <input class="gap l" data-ans="have been|'ve been" aria-label="B7 verb"> (be) in the climbing club <input class="gap s" data-ans="since" aria-label="B7 for/since"> last September.</div>
+    <div class="gl"><span class="n">8</span>We <input class="gap l" data-ans="haven't eaten|have not eaten" aria-label="B8 verb"> (not / eat) Black Forest cake <input class="gap s" data-ans="for" aria-label="B8 for/since"> ages!</div>
+    <div class="actions"><button class="btn" type="button" data-check="exB">Check</button><button class="btn ghost" type="button" data-resetgap="exB">Reset</button><span class="score"></span></div>
+  </div>
+  <div class="panel" id="exC">
+    <h3>C · Make the questions</h3>
+    <p class="instr">Start with <b>How long…?</b> Then ask your teacher the questions!</p>
+    <div class="gl"><span class="n">1</span><i>you / live / in your flat</i><br><input class="gap full" data-ans="how long have you lived in your flat" aria-label="C1"></div>
+    <div class="gl"><span class="n">2</span><i>your sister / have / her mobile</i><br><input class="gap full" data-ans="how long has your sister had her mobile" aria-label="C2"></div>
+    <div class="gl"><span class="n">3</span><i>you / know / your English teacher</i><br><input class="gap full" data-ans="how long have you known your english teacher" aria-label="C3"></div>
+    <div class="gl"><span class="n">4</span><i>Max / support / SC Freiburg</i><br><input class="gap full" data-ans="how long has max supported sc freiburg" aria-label="C4"></div>
+    <div class="actions"><button class="btn" type="button" data-check="exC">Check</button><button class="btn ghost" type="button" data-resetgap="exC">Reset</button><span class="score"></span></div>
+  </div>
+  <div class="panel">
+    <h3>D · Present perfect or past simple?</h3>
+    <p class="instr">Is it still true now, or is it finished?</p>
+    <div class="list" id="exD"></div>
+    <div class="actions"><button class="btn ghost" type="button" data-reset="exD">New order</button></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>A: play 2–3 rounds and try to beat her best score. You can play too!</li>
+      <li>If time is short (120-min version), do A, B and D, and do C orally.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 5 JAKE -->
+<section class="stage" id="s5">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 5 · Vocabulary + grammar</span><span class="chip">10 min</span><span class="chip vocab">UK / US words</span></div>
+    <h2>Jake's message 🇺🇸</h2>
+    <p class="instr">Jake from Chicago is Lina's pen pal. He writes American English. <b>1.</b> Write <b class="for">for</b> or <b class="since">since</b> in the green gaps. <b>2.</b> Write the <b style="color:var(--uk)">British</b> word for each <b style="color:var(--us)">blue American word</b> in the red gaps.</p>
+  </div>
+  <div class="panel" id="jake">
+    <div class="msg">
+      <div class="bubble"><span class="who">Jake 🇺🇸</span>
+        Hey Lina! Guess what? We've lived in our new <b class="usw">apartment</b> <input class="gap uk" data-ans="flat" aria-label="apartment in British"> <input class="gap s" data-ans="since" aria-label="J1 for/since"> June. I love it, but the <b class="usw">elevator</b> <input class="gap uk" data-ans="lift" aria-label="elevator in British"> hasn't worked <input class="gap s" data-ans="for" aria-label="J2 for/since"> three weeks, so I walk up eight floors every day 😩.
+        I've played <b class="usw">soccer</b> <input class="gap uk" data-ans="football" aria-label="soccer in British"> <input class="gap s" data-ans="since" aria-label="J3 for/since"> I was seven, and I've wanted new <b class="usw">sneakers</b> <input class="gap uk" data-ans="trainers" aria-label="sneakers in British"> <input class="gap s" data-ans="for" aria-label="J4 for/since"> months.
+        My mom has worked at the same <b class="usw">store</b> <input class="gap uk" data-ans="shop" aria-label="store in British"> <input class="gap s" data-ans="for" aria-label="J5 for/since"> ten years. We haven't had a <b class="usw">vacation</b> <input class="gap uk" data-ans="holiday" aria-label="vacation in British"> <input class="gap s" data-ans="since" aria-label="J6 for/since"> 2024!
+        Oh, and I haven't eaten any <b class="usw">candy</b> <input class="gap uk" data-ans="sweets" aria-label="candy in British"> <input class="gap s" data-ans="since" aria-label="J7 for/since"> Monday. It's so hard! It's <b class="usw">fall</b> <input class="gap uk" data-ans="autumn" aria-label="fall in British"> here and it's cold. How long have you had your new <b class="usw">cell phone</b> <input class="gap uk" data-ans="mobile|mobile phone" aria-label="cell phone in British">? Text me! 📱
+      </div>
+    </div>
+    <div class="actions"><button class="btn" type="button" data-check="jake">Check</button><button class="btn ghost" type="button" data-resetgap="jake">Reset</button><span class="score"></span></div>
+  </div>
+  <div class="panel">
+    <h3>Now reply to Jake (speaking)</h3>
+    <p class="instr">Answer Jake out loud, in British English: tell him 3 things you've done <b class="for">for</b> a long time and 2 things you haven't done <b class="since">since</b>…</p>
+  </div>
+</section>
+
+<div class="break"><span>🥨</span>5-minute break. Next: games!</div>
+
+<!-- 6 BOARD -->
+<section class="stage" id="s6">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 6 · Board game</span><span class="chip">20 min</span><span class="chip game">Student vs teacher</span><span class="chip vocab">UK / US words</span></div>
+    <h2>The "How long?" race 🎲</h2>
+    <p class="instr">Roll the dice and move. Answer the question on your square with <b class="for">for</b> AND <b class="since">since</b>, and say the British AND American word. Correct? Stay there. Wrong? Go back! First to the finish wins.</p>
+  </div>
+  <div class="panel">
+    <div class="players"><div class="player active" id="pl0">🧑‍🎓 Student</div><div class="player" id="pl1">👩‍🏫 Teacher</div></div>
+    <div class="board" id="board"></div>
+    <div class="actions"><span class="die" id="die" aria-live="polite">🎲</span><button class="btn for" type="button" id="rollBtn">Roll the dice</button><button class="btn ghost" type="button" id="boardReset">New game</button></div>
+    <div class="card" id="bCard" aria-live="polite"><span class="note">Student starts. Roll the dice!</span></div>
+    <div class="actions"><button class="btn since" type="button" id="okBtn" disabled>✓ Correct, stay</button><button class="btn ghost" type="button" id="noBtn" disabled>✗ Wrong, go back</button></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>The teacher judges the answer. Be strict about <i>for/since</i> and the present perfect, and generous with everything else.</li>
+      <li>⭐ squares: the player tells a for/since sentence that may be a lie, and the other player guesses. 🇺🇸 squares: answer using only American words.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 7 TTT -->
+<section class="stage" id="s7">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 7 · Game</span><span class="chip">10 min</span><span class="chip game">Noughts &amp; crosses</span></div>
+    <h2>For / since noughts &amp; crosses</h2>
+    <p class="instr">Choose a square. Make a present perfect sentence with the word and the time. Correct? Take the square! Three in a row wins. <b class="for">Student = X</b>, <b class="since">Teacher = O</b>.</p>
+  </div>
+  <div class="panel">
+    <p class="turn" id="tttTurn">Student's turn (X)</p>
+    <div class="ttt" id="ttt"></div>
+    <div class="actions"><button class="btn ghost" type="button" id="tttSkip">Wrong answer: next player</button><button class="btn" type="button" id="tttNew">New board</button><span class="score">Student <b id="tx">0</b> · Teacher <b id="to">0</b></span></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Example: <i>trainers · 2022</i> → "I've had my trainers since 2022." <i>mobile · two years</i> → "I've had my mobile for two years."</li>
+      <li>Click a square only after a correct sentence. If the answer is wrong, press "next player".</li>
+    </ul>
+  </details>
+</section>
+
+<div class="ext-band"><b>Extensions (+30 min)</b><span>Use these if you have 150 minutes or the student finishes early. Each one works on its own.</span></div>
+
+<!-- X1 SPIN -->
+<section class="stage" id="x1">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Extension · Speaking game</span><span class="chip ext">+10 min</span><span class="chip game">Spin</span></div>
+    <h2>Spin &amp; speak</h2>
+    <p class="instr">Spin to get a question. Answer with <b class="for">for</b> AND <b class="since">since</b>, then answer the follow-up in the <b>past simple</b>. Then ask your teacher!</p>
+  </div>
+  <div class="panel">
+    <div class="spin-card" aria-live="polite"><span class="qq" id="spQ">Press Spin!</span><span class="fu" id="spF"></span></div>
+    <div class="actions"><button class="btn for" type="button" id="spBtn">Spin!</button><span class="score">Questions: <span id="spN">0</span></span></div>
+  </div>
+</section>
+
+<!-- X2 WRAPPED -->
+<section class="stage" id="x2">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Extension · Personalised speaking</span><span class="chip ext">+10 min</span></div>
+    <h2>My Life Wrapped 🎁</h2>
+    <p class="instr">Like Spotify Wrapped, but for your life! Fill in the start years, press the button, then present your Wrapped. Use <b class="for">for</b> AND <b class="since">since</b> for each one.</p>
+  </div>
+  <div class="panel">
+    <div class="wform" id="wform"></div>
+    <div class="actions"><button class="btn since" type="button" id="wBtn">Make my Wrapped</button><button class="btn ghost" type="button" id="wEx">Fill example</button></div>
+    <div class="wrapped" id="wrapped" aria-live="polite"></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul><li>For every card, ask a past simple follow-up: <i>"When did you start? Who did you go with?"</i> Then make your own Wrapped for her to ask about.</li></ul>
+  </details>
+</section>
+
+<!-- X3 STAR -->
+<section class="stage" id="x3">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Extension · Role-play</span><span class="chip ext">+10 min</span></div>
+    <h2>Star interview 🎤</h2>
+    <p class="instr">You are a journalist and your teacher is a star. Choose a card and interview them. Then swap!</p>
+  </div>
+  <div class="panel">
+    <div class="tabs" id="tabs"></div>
+    <div class="celeb" id="celeb"></div>
+    <h3>Journalist's questions</h3>
+    <div class="qbank" id="qbank"></div>
+  </div>
+</section>
+
+<!-- 8 WRAP -->
+<section class="stage" id="s8">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 8 · Wrap-up</span><span class="chip">10 min</span></div>
+    <h2>Final check</h2>
+  </div>
+  <div class="panel">
+    <div class="list" id="exitQ"></div>
+    <div class="actions"><button class="btn ghost" type="button" data-reset="exitQ">New order</button></div>
+  </div>
+  <div class="panel">
+    <h3>Last questions</h3>
+    <ul class="talk">
+      <li>Translate quickly: <i>Ich kenne sie seit fünf Jahren. · Ich wohne seit 2018 in dieser Wohnung. · Ich habe mein Handy seit Montag.</i></li>
+      <li>Say it in American English: <i>"I've had my mobile and my trainers for a year."</i></li>
+    </ul>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Answers: I've known her for five years. · I've lived in this flat (apartment) since 2018. · I've had my mobile (cell phone) since Monday.</li>
+      <li>US version: "I've had my cell phone and my sneakers for a year."</li>
+    </ul>
+  </details>
+</section>
+
+<footer>How long have you…? · Present perfect with for &amp; since · 120–150 min</footer>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const norm = s => s.toLowerCase().replace(/[’‘`]/g, "'").replace(/[?.!,]/g, "").replace(/\s+/g, " ").trim();
+  const fmt = n => Math.floor(n / 60) + ":" + String(n % 60).padStart(2, "0");
+  const YEAR = new Date().getFullYear();
+
+  $("themeBtn").addEventListener("click", () => {
+    const r = document.documentElement;
+    const cur = r.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    r.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+  });
+
+  // ---------- MC builder (options shuffled every build, so no answer pattern) ----------
+  const MC = {};
+  function buildMC(id) {
+    const box = $(id); box.innerHTML = "";
+    MC[id].forEach((it, i) => {
+      const q = document.createElement("div"); q.className = "q";
+      q.innerHTML = `<span>${i + 1}. ${it[0]}</span><div class="opts"></div><span class="fb"></span>`;
+      const o = q.querySelector(".opts"), fb = q.querySelector(".fb");
+      shuffle(it[1].map((t, j) => [t, j])).forEach(([t, j]) => {
+        const b = document.createElement("button"); b.type = "button"; b.textContent = t;
+        b.addEventListener("click", () => {
+          if (q.dataset.done) return;
+          if (j === it[2]) { b.classList.add("right"); q.dataset.done = 1; fb.textContent = it[3] ? "✓ " + it[3] : "✓ Correct!"; }
+          else { b.classList.add("wrong"); fb.textContent = "Try again!"; }
+        });
+        o.appendChild(b);
+      });
+      box.appendChild(q);
+    });
+  }
+  document.querySelectorAll("[data-reset]").forEach(b => b.addEventListener("click", () => buildMC(b.dataset.reset)));
+
+  // ---------- gaps ----------
+  function checkSec(sec) {
+    let ok = 0, n = 0;
+    sec.querySelectorAll(".key").forEach(k => k.remove());
+    sec.querySelectorAll("input.gap").forEach(inp => {
+      n++;
+      const good = inp.dataset.ans.split("|").map(norm).includes(norm(inp.value));
+      inp.classList.toggle("right", good); inp.classList.toggle("wrong", !good);
+      if (good) ok++;
+      else { const k = document.createElement("span"); k.className = "key"; k.textContent = "→ " + inp.dataset.ans.split("|")[0]; if (inp.classList.contains("full")) k.style.display = "block"; inp.after(k); }
+    });
+    const sc = sec.querySelector(".score"); if (sc) sc.textContent = ok + " / " + n + (ok === n ? " 🎉" : "");
+  }
+  function resetSec(sec) {
+    sec.querySelectorAll("input.gap").forEach(i => { i.value = ""; i.classList.remove("right", "wrong"); });
+    sec.querySelectorAll(".key").forEach(k => k.remove());
+    const sc = sec.querySelector(".score"); if (sc) sc.textContent = "";
+  }
+  document.querySelectorAll("[data-check]").forEach(b => b.addEventListener("click", () => checkSec($(b.dataset.check))));
+  document.querySelectorAll("[data-resetgap]").forEach(b => b.addEventListener("click", () => resetSec($(b.dataset.resetgap))));
+
+  // ---------- 1 quiz ----------
+  MC.fq = [
+    ["The University of Freiburg has existed since ___.", ["1457", "1857", "1957"], 0, "Since 1457, so for more than 560 years!"],
+    ["Freiburg has had trams since ___.", ["1951", "1901", "1991"], 1, "Trams have run in Freiburg since 1901."],
+    ["Europa-Park has been open since ___.", ["1955", "1995", "1975"], 2, "Since 1975, so for more than 50 years."],
+    ["SC Freiburg has played at the Europa-Park Stadion since ___.", ["2016", "2021", "2011"], 1, "Since 2021. Before that, they played at the Dreisamstadion."]
+  ];
+  buildMC("fq");
+
+  // ---------- 2 reading ----------
+  MC.readQ = [
+    ["How long has Lina lived in Vauban?", ["for six years", "since she was six", "since six months"], 1],
+    ["Where did she live before?", ["in Stuttgart", "in Berlin", "in the Black Forest"], 0, "Past simple: it's finished."],
+    ["How long has she climbed outdoors?", ["for nine years", "since kindergarten", "since last summer"], 2],
+    ["How long have Lina and Emma known each other?", ["for two years", "for more than nine years", "since January"], 1],
+    ["Why does Lina have a new mobile?", ["It was a present.", "Her old one was too slow.", "Her old one fell into a Bächle."], 2],
+    ["What has Lina wanted for ages?", ["a dog", "a new mobile", "a holiday in Stuttgart"], 0]
+  ];
+  buildMC("readQ");
+  $("hlBtn").addEventListener("click", () => { const p = $("profile"); p.classList.toggle("hl"); $("hlBtn").textContent = p.classList.contains("hl") ? "Hide for / since" : "Show for / since"; });
+  $("ukBtn").addEventListener("click", () => { const p = $("profile"); p.classList.toggle("uk"); $("swaps").hidden = !p.classList.contains("uk"); $("ukBtn").textContent = p.classList.contains("uk") ? "Hide British words" : "Show British words"; });
+
+  // ---------- 3 sorter ----------
+  const SORT = [["2019","since"],["three weeks","for"],["Monday","since"],["ages","for"],["I was born","since"],["ten minutes","for"],["last summer","since"],["a long time","for"],["Christmas","since"],["half an hour","for"],["8 o'clock","since"],["two years","for"],["my birthday","since"],["a few days","for"]];
+  let picked = null;
+  function buildSort() {
+    picked = null; $("sortScore").textContent = "";
+    const pool = $("pool"); pool.innerHTML = "";
+    ["bFor", "bSince"].forEach(id => $(id).querySelectorAll("button").forEach(b => b.remove()));
+    shuffle(SORT).forEach(([t, a]) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.dataset.a = a;
+      b.addEventListener("click", e => {
+        e.stopPropagation();
+        if (b.parentElement.id !== "pool") { pool.appendChild(b); b.classList.remove("right", "wrong"); return; }
+        pool.querySelectorAll("button").forEach(x => x.classList.remove("picked"));
+        picked = b; b.classList.add("picked");
+      });
+      pool.appendChild(b);
+    });
+  }
+  ["bFor", "bSince"].forEach(id => {
+    const drop = () => { if (!picked) return; picked.classList.remove("picked"); $(id).appendChild(picked); picked = null; };
+    $(id).addEventListener("click", drop);
+    $(id).addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); drop(); } });
+  });
+  $("sortCheck").addEventListener("click", () => {
+    let ok = 0;
+    [["bFor", "for"], ["bSince", "since"]].forEach(([id, v]) => $(id).querySelectorAll("button").forEach(b => {
+      const good = b.dataset.a === v; b.classList.toggle("right", good); b.classList.toggle("wrong", !good); if (good) ok++;
+    }));
+    const left = $("pool").querySelectorAll("button").length;
+    $("sortScore").textContent = ok + " / " + SORT.length + (left ? ` · ${left} still to sort` : "") + (ok === SORT.length ? " 🎉" : "");
+  });
+  $("sortReset").addEventListener("click", buildSort);
+  buildSort();
+
+  MC.ccq = [
+    ["\"I've lived in Freiburg for five years.\" Do I live in Freiburg now?", ["Yes", "No"], 0, "Present perfect + for/since = still true now."],
+    ["\"I lived in Stuttgart for two years.\" Do I live in Stuttgart now?", ["Yes", "No"], 1, "Past simple = finished."],
+    ["\"since 2018\": is 2018 a length of time or a start point?", ["a length of time", "a start point"], 1],
+    ["\"for ages\": is it a length of time or a start point?", ["a start point", "a length of time"], 1]
+  ];
+  buildMC("ccq");
+  const MIST = [
+    ["I live in this flat since 2018.", "I've lived in this flat since 2018."],
+    ["I have had my trainers since three years.", "I've had my trainers for three years."],
+    ["How long do you know Emma?", "How long have you known Emma?"],
+    ["I've known her for 2015.", "I've known her since 2015."],
+    ["I have been on holiday in Paris last summer.", "I was on holiday in Paris last summer."]
+  ];
+  MIST.forEach(([w, f], i) => {
+    const d = document.createElement("div"); d.className = "mist";
+    d.innerHTML = `<span>${i + 1}. ✗ ${w}</span><span class="fix" hidden>✓ ${f}</span><button type="button" class="small-btn">Show correction</button>`;
+    const b = d.querySelector("button"), fx = d.querySelector(".fix");
+    b.addEventListener("click", () => { fx.hidden = !fx.hidden; b.textContent = fx.hidden ? "Show correction" : "Hide correction"; });
+    $("mistakes").appendChild(d);
+  });
+
+  // ---------- 4A quick-fire ----------
+  const QF = [["three weeks","for"],["ages","for"],["ten minutes","for"],["a long time","for"],["half an hour","for"],["two years","for"],["a month","for"],["a few days","for"],["five years","for"],["a century","for"],["six months","for"],["an hour","for"],
+    ["2019","since"],["Monday","since"],["I was born","since"],["last summer","since"],["Christmas","since"],["8 o'clock","since"],["my birthday","since"],["the summer holidays","since"],["I started school","since"],["yesterday","since"],["1457","since"],["kindergarten","since"],["last weekend","since"],["this morning","since"]];
+  let qfDeck = [], qfI = 0, qfS = 0, qfK = 0, qfBest = 0, qfLeft = 60, qfIv = null;
+  const qfBtns = document.querySelectorAll("#qf .big");
+  function qfNext() { if (qfI >= qfDeck.length) { qfDeck = shuffle(QF); qfI = 0; } $("qfExpr").textContent = qfDeck[qfI][0]; }
+  $("qfStart").addEventListener("click", () => {
+    clearInterval(qfIv); qfDeck = shuffle(QF); qfI = 0; qfS = 0; qfK = 0; qfLeft = 60;
+    $("qfScore").textContent = 0; $("qfStreak").textContent = 0; $("qfFb").textContent = ""; $("qfTimer").textContent = "1:00"; $("qfTimer").classList.remove("done");
+    qfBtns.forEach(b => b.disabled = false); $("qfStart").disabled = true; qfNext();
+    qfIv = setInterval(() => {
+      qfLeft--; $("qfTimer").textContent = fmt(qfLeft);
+      if (qfLeft <= 0) {
+        clearInterval(qfIv); qfBtns.forEach(b => b.disabled = true); $("qfStart").disabled = false; $("qfStart").textContent = "Play again";
+        $("qfTimer").textContent = "Time!"; $("qfTimer").classList.add("done"); $("qfExpr").textContent = qfS + " points";
+        if (qfS > qfBest) { qfBest = qfS; $("qfBest").textContent = qfBest; $("qfFb").textContent = "New best score! 🏆"; }
+      }
+    }, 1000);
+  });
+  qfBtns.forEach(b => b.addEventListener("click", () => {
+    const it = qfDeck[qfI], good = b.dataset.v === it[1];
+    if (good) { qfS++; qfK++; $("qfFb").textContent = "✓ " + it[1] + " " + it[0]; }
+    else { qfK = 0; $("qfFb").textContent = "✗ It's " + it[1].toUpperCase() + " " + it[0]; }
+    $("qfScore").textContent = qfS; $("qfStreak").textContent = qfK; qfI++; qfNext();
+  }));
+
+  MC.exD = [
+    ["I ___ in Freiburg since 2018.", ["lived", "have lived"], 1],
+    ["We ___ in Stuttgart for two years, then we moved.", ["have lived", "lived"], 1, "Finished, because we don't live there now."],
+    ["My family ___ on holiday to Italy last summer.", ["went", "has gone"], 0, "last summer = finished time → past simple."],
+    ["She ___ her trainers for six months.", ["has had", "had"], 0],
+    ["When ___ you start climbing?", ["have", "did"], 1, "When…? asks about a finished moment → past simple."],
+    ["How long ___ you known Emma?", ["did", "have"], 1]
+  ];
+  buildMC("exD");
+
+  // ---------- 6 board game ----------
+  const SQ = [
+    ["🏁", "START", "start"],
+    ["🏢", "flat / apartment", "q", "How long have you lived in your flat or house?"],
+    ["👟", "trainers / sneakers", "q", "How long have you had your favourite trainers?"],
+    ["📱", "mobile / cell phone", "q", "How long have you had your mobile?"],
+    ["⚽", "football / soccer", "q", "How long have you supported your football team?"],
+    ["🚀", "Forward 2!", "fwd"],
+    ["🏖️", "holiday / vacation", "q", "Where have you wanted to go on holiday for a long time?"],
+    ["🍬", "sweets / candy", "q", "What are your favourite sweets? How long have you liked them?"],
+    ["🌳", "garden / yard", "q", "Does your family have a garden? How long have you had it?"],
+    ["🍂", "autumn / fall", "q", "What have you done since autumn started?"],
+    ["⭐", "Lie square", "lie", "Tell a for/since sentence. It can be true or a lie. The other player guesses!"],
+    ["🧍", "queue / line", "q", "What's the longest you've ever waited in a queue? (I waited for…)"],
+    ["🚇", "underground / subway", "q", "Which cities with an underground have you visited? How long ago?"],
+    ["🍪", "biscuits / cookies", "q", "How long have you known how to bake biscuits?"],
+    ["⏪", "Back 2!", "back"],
+    ["👖", "trousers / pants", "q", "How long have you had the trousers you're wearing now?"],
+    ["🏪", "shop / store", "q", "What's your favourite shop in Freiburg? How long have you gone there?"],
+    ["🇺🇸", "American square", "us", "Answer in AMERICAN English: How long have you had your mobile and your trainers?"],
+    ["🛗", "lift / elevator", "q", "How long have you been at your school? Has it got a lift?"],
+    ["🥔", "crisps / chips", "q", "When did you last eat crisps? How long haven't you eaten them?"],
+    ["🔦", "torch / flashlight", "q", "Have you got a torch at home? How long have you had it?"],
+    ["🍓", "jam / jelly", "q", "How long have you liked your favourite jam?"],
+    ["🍟", "chips / fries", "q", "Where do you get the best chips in Freiburg? How long have you known that place?"],
+    ["🏆", "FINISH", "finish"]
+  ];
+  const LAST = SQ.length - 1;
+  let bPos = [0, 0], bTurn = 0, bPrev = 0, bWait = false, bOver = false;
+  const TOK = ["🧑‍🎓", "👩‍🏫"];
+  function drawBoard() {
+    const b = $("board"); b.innerHTML = "";
+    SQ.forEach((s, i) => {
+      const row = Math.floor(i / 6), col = row % 2 === 0 ? i % 6 : 5 - (i % 6);
+      const d = document.createElement("div");
+      d.className = "sq" + (s[2] === "start" ? " start" : s[2] === "finish" ? " finish" : ["q"].includes(s[2]) ? "" : " special");
+      d.style.gridRow = row + 1; d.style.gridColumn = col + 1;
+      const here = [0, 1].filter(p => bPos[p] === i);
+      if (here.includes(bTurn)) d.classList.add("here");
+      d.innerHTML = `<span class="no">${i === 0 ? "" : i}</span><span class="ic" aria-hidden="true">${s[0]}</span><span class="w">${s[1]}</span><span class="tok">${here.map(p => TOK[p]).join("")}</span>`;
+      b.appendChild(d);
+    });
+    $("pl0").classList.toggle("active", bTurn === 0); $("pl1").classList.toggle("active", bTurn === 1);
+  }
+  function showCard(html) { $("bCard").innerHTML = html; }
+  function endTurn() { bWait = false; $("okBtn").disabled = true; $("noBtn").disabled = true; $("rollBtn").disabled = false; bTurn = 1 - bTurn; drawBoard(); }
+  $("rollBtn").addEventListener("click", () => {
+    if (bWait || bOver) return;
+    $("rollBtn").disabled = true;
+    const faces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"]; let k = 0;
+    const iv = setInterval(() => {
+      $("die").textContent = faces[Math.floor(Math.random() * 6)];
+      if (++k >= 10) {
+        clearInterval(iv);
+        const r = 1 + Math.floor(Math.random() * 6); $("die").textContent = faces[r - 1];
+        bPrev = bPos[bTurn]; bPos[bTurn] = Math.min(LAST, bPos[bTurn] + r);
+        let s = SQ[bPos[bTurn]], moveNote = "";
+        if (s[2] === "fwd") { bPos[bTurn] = Math.min(LAST, bPos[bTurn] + 2); moveNote = "🚀 Forward 2! "; s = SQ[bPos[bTurn]]; }
+        else if (s[2] === "back") { bPos[bTurn] = Math.max(0, bPos[bTurn] - 2); moveNote = "⏪ Back 2! "; s = SQ[bPos[bTurn]]; }
+        drawBoard();
+        if (bPos[bTurn] === LAST) {
+          bOver = true;
+          showCard(`<span class="qq">🏆 ${bTurn === 0 ? "Student" : "Teacher"} wins!</span><span class="note">Press "New game" to play again.</span>`);
+          return;
+        }
+        if (s[2] === "fwd" || s[2] === "back" || s[2] === "start") { showCard(`<span class="qq">${moveNote || "Back at START!"}</span><span class="note">Next player: roll the dice.</span>`); setTimeout(endTurn, 600); return; }
+        const who = bTurn === 0 ? "Student" : "Teacher";
+        const pair = s[2] === "q" ? `<span class="pair">${s[0]} <span class="tag uk">UK</span> ${s[1].split(" / ")[0]} · <span class="tag us">US</span> ${s[1].split(" / ")[1]}</span>` : `<span class="pair">${s[0]} ${s[1]}</span>`;
+        showCard(`<span class="note">${moveNote}${who} · square ${bPos[bTurn]}</span>${pair}<span class="qq">${s[3]}</span><span class="note">Use for AND since. Say the UK and the US word!</span>`);
+        bWait = true; $("okBtn").disabled = false; $("noBtn").disabled = false;
+      }
+    }, 70);
+  });
+  $("okBtn").addEventListener("click", () => { if (!bWait) return; showCard(`<span class="qq">✓ Great! Stay on square ${bPos[bTurn]}.</span><span class="note">Next player: roll the dice.</span>`); endTurn(); });
+  $("noBtn").addEventListener("click", () => { if (!bWait) return; bPos[bTurn] = bPrev; showCard(`<span class="qq">✗ Back to square ${bPrev || "START"}.</span><span class="note">Next player: roll the dice.</span>`); endTurn(); });
+  $("boardReset").addEventListener("click", () => { bPos = [0, 0]; bTurn = 0; bWait = false; bOver = false; $("okBtn").disabled = true; $("noBtn").disabled = true; $("rollBtn").disabled = false; $("die").textContent = "🎲"; showCard(`<span class="note">Student starts. Roll the dice!</span>`); drawBoard(); });
+  drawBoard();
+
+  // ---------- 7 noughts & crosses ----------
+  const TW = ["trainers", "mobile", "flat", "football", "holiday", "sweets", "biscuits", "garden", "trousers", "crisps", "torch", "the underground", "jam", "shop", "chips"];
+  const TT = ["2022", "two years", "I was born", "ages", "last summer", "Monday", "a week", "ten minutes", "September", "a long time", "Christmas", "six months", "this morning", "three days", "2019"];
+  let grid = [], tTurn = "X", tOver = false, wins = { X: 0, O: 0 };
+  const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  function tttLabel() { $("tttTurn").textContent = tOver ? $("tttTurn").textContent : (tTurn === "X" ? "Student's turn (X)" : "Teacher's turn (O)"); }
+  function newTTT() {
+    const w = shuffle(TW).slice(0, 9), t = shuffle(TT).slice(0, 9);
+    grid = w.map((x, i) => ({ w: x, t: t[i], m: "" })); tTurn = "X"; tOver = false;
+    const box = $("ttt"); box.innerHTML = "";
+    grid.forEach((c, i) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "cell";
+      b.innerHTML = `<span class="vw">${c.w}</span><span class="vt">${c.t}</span>`;
+      b.addEventListener("click", () => {
+        if (tOver || c.m) return;
+        c.m = tTurn; b.classList.add(tTurn); b.innerHTML = `<span class="mark">${tTurn}</span><span class="vt">${c.w} · ${c.t}</span>`;
+        const line = LINES.find(l => l.every(k => grid[k].m === tTurn));
+        if (line) {
+          tOver = true; wins[tTurn]++; $("tx").textContent = wins.X; $("to").textContent = wins.O;
+          line.forEach(k => box.children[k].classList.add("win"));
+          $("tttTurn").textContent = (tTurn === "X" ? "Student" : "Teacher") + " wins! 🎉 Press New board.";
+          return;
+        }
+        if (grid.every(g => g.m)) { tOver = true; $("tttTurn").textContent = "It's a draw! Press New board."; return; }
+        tTurn = tTurn === "X" ? "O" : "X"; tttLabel();
+      });
+      box.appendChild(b);
+    });
+    tttLabel();
+  }
+  $("tttSkip").addEventListener("click", () => { if (tOver) return; tTurn = tTurn === "X" ? "O" : "X"; tttLabel(); });
+  $("tttNew").addEventListener("click", newTTT);
+  newTTT();
+
+  // ---------- X1 spinner ----------
+  const SP = [
+    ["How long have you lived in your flat or house?", "Where did you live before?"],
+    ["How long have you known your best friend?", "Where did you meet for the first time?"],
+    ["How long have you had your mobile?", "What mobile did you have before?"],
+    ["How long have you been at your school?", "What was your first day like?"],
+    ["How long have you played your sport or instrument?", "Who taught you?"],
+    ["How long have you liked your favourite singer or band?", "What was the first song you heard?"],
+    ["How long have you had your bike?", "Where did you get it?"],
+    ["How long have you supported your football team?", "When did you first go to the stadium?"],
+    ["How long have you known your English teacher?", "What did you think in our first lesson?"],
+    ["How long have you had your favourite trainers?", "Where did you buy them?"],
+    ["What have you wanted for a long time?", "When did you first want it?"],
+    ["Who haven't you seen for a long time?", "When did you last see them?"]
+  ];
+  let spDeck = [], spI = 0, spN = 0, spinning = false;
+  $("spBtn").addEventListener("click", () => {
+    if (spinning) return; spinning = true;
+    if (spI >= spDeck.length) { spDeck = shuffle(SP); spI = 0; }
+    let k = 0;
+    const iv = setInterval(() => {
+      $("spQ").textContent = SP[Math.floor(Math.random() * SP.length)][0]; $("spF").textContent = "";
+      if (++k >= 12) { clearInterval(iv); spinning = false; const it = spDeck[spI++]; $("spQ").textContent = it[0]; $("spF").textContent = "Follow-up (past simple): " + it[1]; spN++; $("spN").textContent = spN; }
+    }, 70);
+  });
+
+  // ---------- X2 wrapped ----------
+  const WR = [
+    ["🏠", "I've lived in my flat / house since", null, "lived in my flat / house"],
+    ["🤝", "I've known my best friend", "name", "known {x}"],
+    ["📱", "I've had my mobile since", null, "had my mobile"],
+    ["⭐", "I've done my hobby", "hobby", "done {x}"],
+    ["🏫", "I've been at my school since", null, "been at my school"],
+    ["❤️", "I've been a fan of", "team / singer", "been a fan of {x}"]
+  ];
+  const EX = [["", 2018], ["Emma", 2017], ["", 2024], ["climbing", 2023], ["", 2022], ["SC Freiburg", 2019]];
+  WR.forEach((w, i) => {
+    const row = document.createElement("div"); row.className = "wrow";
+    const label = w[2] ? `${w[0]} ${w[1]} <input class="word" id="ww${i}" type="text" placeholder="${w[2]}" aria-label="${w[2]}"> since` : `${w[0]} ${w[1]}`;
+    row.innerHTML = `<span>${label}</span><input id="wy${i}" type="number" min="1990" max="${YEAR}" placeholder="year" aria-label="Start year ${i + 1}">`;
+    $("wform").appendChild(row);
+  });
+  $("wEx").addEventListener("click", () => { EX.forEach((e, i) => { if ($("ww" + i)) $("ww" + i).value = e[0]; $("wy" + i).value = e[1]; }); });
+  $("wBtn").addEventListener("click", () => {
+    const out = $("wrapped"); out.innerHTML = "";
+    WR.forEach((w, i) => {
+      const y = parseInt($("wy" + i).value, 10);
+      if (!y || y > YEAR || y < 1900) return;
+      const word = $("ww" + i) ? ($("ww" + i).value.trim() || w[2]) : "";
+      const n = YEAR - y, len = n === 0 ? "less than a year" : n === 1 ? "one year" : n + " years";
+      const c = document.createElement("div"); c.className = "wcard";
+      c.innerHTML = `<span style="font-size:1.6rem">${w[0]}</span><div><div class="num">${n === 0 ? "<1" : n}</div><div class="unit">${n === 1 ? "year" : "years"}</div></div><p>I've ${w[3].replace("{x}", word)} <b>for ${len}</b>, <b>since ${y}</b>.</p>`;
+      out.appendChild(c);
+    });
+    if (!out.children.length) out.innerHTML = '<p class="instr">Write at least one start year first (for example 2019).</p>';
+  });
+
+  // ---------- X3 stars ----------
+  const STARS = [
+    ["📹", "Mila Brandt", "YouTuber, 17, from Freiburg", ["started her channel in 2021", "has had 2 million followers since last year", "has lived in a flat in Berlin since 2024", "has had her dog Pixel for three years", "has never been on holiday in the USA"]],
+    ["⚽", "Jonas Keller", "footballer, 20", ["started playing football when he was five", "has played for SC Freiburg since 2025", "has worn number 17 since his first game", "has had the same lucky trainers for four years", "is going to play in the national team next year"]],
+    ["⛷️", "Lea Schwarz", "ski champion, 22, from the Black Forest", ["has skied since she was three", "has lived in Hinterzarten all her life", "won a big medal in 2026", "hasn't eaten sweets for six months (training!)", "has had the same lucky hat since 2019"]],
+    ["🎧", "DJ Bächle", "music producer, 25", ["has made music since 2018", "has had a number 1 song for six weeks", "has known his manager since school", "hasn't been on holiday since January", "is going to play a concert at the Münsterplatz"]]
+  ];
+  const QB = ["How long have you been famous?", "When did you start?", "How long have you lived in…?", "How long have you known…?", "How long have you had…?", "Have you ever…?", "What was the best moment of your career?", "What haven't you done since…?", "What are you going to do next?"];
+  function showStar(i) {
+    document.querySelectorAll("#tabs button").forEach((b, j) => b.classList.toggle("on", i === j));
+    const s = STARS[i];
+    $("celeb").innerHTML = `<div class="who"><span aria-hidden="true">${s[0]}</span><div><b>${s[1]}</b><small>${s[2]}</small></div></div><ul>${s[3].map(f => `<li>${f}</li>`).join("")}</ul>`;
+  }
+  STARS.forEach((s, i) => { const b = document.createElement("button"); b.type = "button"; b.textContent = s[0] + " " + s[1]; b.addEventListener("click", () => showStar(i)); $("tabs").appendChild(b); });
+  showStar(0);
+  QB.forEach(q => { const b = document.createElement("button"); b.type = "button"; b.textContent = q; b.addEventListener("click", () => b.classList.toggle("asked")); $("qbank").appendChild(b); });
+
+  // ---------- 8 exit ----------
+  MC.exitQ = [
+    ["I've known Emma ___ 2017.", ["for", "since"], 1],
+    ["We've had our flat ___ four years.", ["since", "for"], 1],
+    ["She ___ in Freiburg since she was born.", ["has lived", "lives", "lived"], 0],
+    ["How long ___ your brother had his trainers?", ["did", "have", "has"], 2],
+    ["An American says: \"I've had my ___ for a year.\" (= mobile)", ["cell phone", "torch", "lift"], 0],
+    ["We ___ on holiday in Italy last summer.", ["have been", "were"], 1],
+    ["Which is correct?", ["I live here since three years.", "I've lived here since three years.", "I've lived here for three years."], 2],
+    ["\"Ich kenne ihn seit Montag.\"", ["I've known him since Monday.", "I know him since Monday.", "I've known him for Monday."], 0]
+  ];
+  buildMC("exitQ");
+})();
+</script>
+
+</body>
+</html>
