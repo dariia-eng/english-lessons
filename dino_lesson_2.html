@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dinosaur Museum 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4FBF6; --card:#FFFFFF; --ink:#24324A; --muted:#5F6E84; --line:#DCE8E1;
+  --green:#2FA566; --green-soft:#E3F6EA; --teal:#1E9C96; --teal-soft:#DDF4F2;
+  --coral:#F25C5C; --coral-soft:#FFE6E6; --sun:#FFC93C; --sun-soft:#FFF4D4;
+  --purple:#7B5CFF; --purple-soft:#ECE7FF; --blue:#3D8BFD; --blue-soft:#E2EEFF;
+  --sand:#F2D39B; --sand-deep:#DDAE5E; --dig-bg:#FFF6E2;
+  --shadow:0 6px 0 rgba(36,50,74,.08), 0 10px 24px rgba(36,50,74,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141B26; --card:#1E2836; --ink:#EEF3FA; --muted:#9AA8BC; --line:#2E3B4E;
+    --green-soft:#1D3A2B; --teal-soft:#16393A; --coral-soft:#432428; --sun-soft:#42391C;
+    --purple-soft:#2E2650; --blue-soft:#1C2F4E; --sand:#8A6E3E; --sand-deep:#6A532B; --dig-bg:#2A2418;
+    --shadow:0 6px 0 rgba(0,0,0,.25); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141B26; --card:#1E2836; --ink:#EEF3FA; --muted:#9AA8BC; --line:#2E3B4E;
+  --green-soft:#1D3A2B; --teal-soft:#16393A; --coral-soft:#432428; --sun-soft:#42391C;
+  --purple-soft:#2E2650; --blue-soft:#1C2F4E; --sand:#8A6E3E; --sand-deep:#6A532B; --dig-bg:#2A2418;
+  --shadow:0 6px 0 rgba(0,0,0,.25); color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,sans-serif;font-size:17px;line-height:1.5}
+h1,h2,h3,h4{font-family:'Fredoka','Nunito',sans-serif;text-wrap:balance}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 80px}
+header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:2px solid var(--line)}
+.top{max-width:980px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top h1{margin:0;font-size:1.35rem;flex:1;min-width:180px}
+.top h1 small{display:block;font-family:'Nunito',sans-serif;font-size:.75rem;color:var(--muted);font-weight:700}
+.starbox{background:var(--sun-soft);border:2px solid var(--sun);border-radius:999px;padding:4px 14px;font-weight:800;font-size:1.1rem}
+.starbox.bump{animation:bump .4s}
+@keyframes bump{50%{transform:scale(1.25)}}
+.iconbtn{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:6px 10px}
+nav{max-width:980px;margin:0 auto;padding:0 16px 10px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:0 0 auto;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 12px;font-weight:700;font-size:.85rem;white-space:nowrap}
+nav button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+nav button.done:not(.on){border-color:var(--green)}
+.stage{display:none;animation:fade .35s}
+.stage.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}}
+.stagehead{display:flex;align-items:center;gap:12px;margin:22px 0 6px;flex-wrap:wrap}
+.stagehead h2{margin:0;font-size:1.8rem}
+.chip{border-radius:999px;padding:3px 12px;font-weight:800;font-size:.8rem;background:var(--purple-soft);color:var(--purple)}
+.lead{color:var(--muted);margin:0 0 14px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+.card h3{margin:0 0 6px;font-size:1.25rem}
+details.tn{background:var(--sun-soft);border:2px dashed var(--sun);border-radius:14px;padding:8px 14px;margin:10px 0;font-size:.92rem}
+details.tn summary{font-weight:800;cursor:pointer}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:none;border-radius:14px;padding:10px 18px;font-weight:800;background:var(--teal);color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.15);transition:transform .1s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.15)}
+.btn.alt{background:var(--card);color:var(--ink);border:2px solid var(--line)}
+.btn.coral{background:var(--coral)}
+.btn.purple{background:var(--purple)}
+.btn.sun{background:var(--sun);color:#3a2c00}
+.stagenav{display:flex;justify-content:space-between;margin-top:26px}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.bigplay{width:120px;height:120px;border-radius:50%;border:none;background:var(--coral);color:#fff;font-size:3rem;box-shadow:0 8px 0 #c94a4a;margin:6px auto;display:block}
+.bigplay:active{transform:translateY(5px);box-shadow:0 3px 0 #c94a4a}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:14px}
+.choice{border:3px solid var(--line);background:var(--card);color:var(--ink);border-radius:18px;padding:12px 6px;font-weight:800;font-size:1.05rem}
+.choice .em{font-size:2.2rem;display:block}
+.choice.ok{border-color:var(--green);background:var(--green-soft)}
+.choice.bad{border-color:var(--coral);background:var(--coral-soft)}
+.progress{font-weight:800;color:var(--muted);text-align:center;margin:4px 0}
+.prompt{font-family:'Fredoka',sans-serif;font-size:1.6rem;text-align:center;margin:8px 0;color:var(--purple)}
+.bigword{font-family:'Fredoka',sans-serif;font-size:3rem;text-align:center;margin:6px 0}
+/* flip */
+.flipgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.flip{perspective:800px;height:170px}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .55s;transform-style:preserve-3d;cursor:pointer}
+.flip.turned .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;text-align:center;border:3px solid var(--line)}
+.front{background:var(--teal-soft)}
+.front .em{font-size:3.4rem;line-height:1.1}
+.front .em.sm{font-size:2rem}
+.front .tap{font-size:.8rem;color:var(--muted);font-weight:800}
+.back{background:var(--coral-soft);transform:rotateY(180deg)}
+.back b{font-family:'Fredoka',sans-serif;font-size:1.3rem}
+.back span{font-size:.85rem}
+.say{border:none;background:var(--card);color:var(--ink);border-radius:999px;padding:3px 10px;margin-top:6px;font-size:.9rem}
+/* memory */
+.memgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:560px;margin:0 auto}
+.mem{aspect-ratio:1/1;max-width:100%;border-radius:16px;border:3px solid var(--line);background:var(--purple);color:#fff;font-family:'Fredoka',sans-serif;font-size:1.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;text-align:center;padding:4px;user-select:none;transition:transform .2s;cursor:pointer}
+.mem.open{background:var(--card);color:var(--ink);transform:scale(1.03)}
+.mem.open.word,.mem.word.gone{font-size:clamp(.7rem,2.6vw,1.05rem)}
+.mem.gone{background:var(--green-soft);color:var(--green);border-color:var(--green)}
+/* story */
+.panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.panel{background:var(--blue-soft);border-radius:18px;padding:14px;border:2px solid var(--line)}
+.panel .num{display:inline-block;background:var(--blue);color:#fff;border-radius:8px;padding:0 8px;font-weight:800}
+.panel .em{font-size:2.2rem;display:block;margin:4px 0}
+.tf{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:2px dashed var(--line);flex-wrap:wrap}
+.tf p{flex:1;margin:0;min-width:200px;font-weight:700}
+.tfb{border:3px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:6px 16px;font-weight:800}
+.tfb.ok{background:var(--green);border-color:var(--green);color:#fff}
+.tfb.bad{background:var(--coral-soft);border-color:var(--coral)}
+/* grammar */
+.rule{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.rulebox{border-radius:16px;padding:12px;background:var(--green-soft);font-weight:700}
+.rulebox.r2{background:var(--sun-soft)}
+.rulebox.r3{background:var(--blue-soft)}
+.gap{width:110px;max-width:100%;border:none;border-bottom:3px solid var(--teal);background:transparent;color:var(--ink);font:inherit;font-weight:800;text-align:center;padding:2px}
+.gap.w{width:140px}
+.gap.ok{border-color:var(--green);color:var(--green)}
+.gap.bad{border-color:var(--coral);color:var(--coral)}
+.mcq{padding:12px 0;border-bottom:2px dashed var(--line)}
+.mcq p{margin:0 0 8px;font-weight:700;font-size:1.05rem}
+.opt{border:3px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:6px 14px;margin:3px 4px 3px 0;font-weight:800}
+.opt.ok{background:var(--green);border-color:var(--green);color:#fff}
+.opt.bad{background:var(--coral-soft);border-color:var(--coral)}
+.opt:disabled{opacity:.55;cursor:default}
+.story{font-size:1.12rem;line-height:2.2}
+.ruletext{background:var(--blue-soft);border-radius:14px;padding:10px 14px;font-weight:700;margin-top:10px}
+/* sorter */
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:50px;padding:10px;border-radius:16px;background:var(--bg);border:2px dashed var(--line)}
+.chipw{border:3px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px;font-weight:800;font-size:1rem}
+.chipw.sel{border-color:var(--purple);background:var(--purple-soft);transform:scale(1.08)}
+.chipw.used{opacity:.3;pointer-events:none}
+.buckets{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.bucket{border-radius:18px;border:3px solid var(--line);padding:10px;min-height:110px;cursor:pointer;transition:transform .15s}
+.bucket:hover{transform:translateY(-2px)}
+.bucket h4{margin:0 0 6px;font-size:1.15rem;text-align:center}
+.bucket .in{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.bucket .in span{background:var(--card);border-radius:999px;padding:2px 10px;font-weight:700;font-size:.9rem}
+.b-green{background:var(--green-soft);border-color:var(--green)}
+.b-blue{background:var(--blue-soft);border-color:var(--blue)}
+.b-purple{background:var(--purple-soft);border-color:var(--purple)}
+.b-coral{background:var(--coral-soft);border-color:var(--coral)}
+.b-sun{background:var(--sun-soft);border-color:var(--sun)}
+/* match */
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mcol{display:flex;flex-direction:column;gap:8px;min-width:0}
+.mi{border:3px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px;font-weight:700;text-align:left}
+.mi.sel{border-color:var(--purple);background:var(--purple-soft)}
+.mi.ok{border-color:var(--green);background:var(--green-soft)}
+/* race */
+.tbar{height:12px;background:var(--line);border-radius:99px;overflow:hidden;max-width:420px;margin:6px auto}
+.tbar i{display:block;height:100%;background:var(--coral);width:100%}
+/* builder */
+.ansline{min-height:58px;border:3px dashed var(--teal);border-radius:16px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center;font-weight:800;font-size:1.1rem}
+.ansline.ok{border-style:solid;border-color:var(--green);background:var(--green-soft)}
+.hintline{text-align:center;font-size:1.5rem;margin:4px 0}
+/* dig */
+.dig{position:relative;aspect-ratio:4/3;max-width:min(560px,100%);margin:0 auto;border-radius:18px;overflow:hidden;background:var(--dig-bg)}
+.digbig{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:min(13rem,42vw)}
+.diggrid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr)}
+.dtile{border:2px solid var(--sand-deep);background:var(--sand);font-size:1.5rem;transition:opacity .6s,transform .6s}
+.dtile.gone{opacity:0;transform:scale(.6);pointer-events:none}
+/* hangman */
+.hmtrack{position:relative;height:66px;background:var(--green-soft);border-radius:16px;margin:10px 0;overflow:hidden}
+.hmdino,.hmman{position:absolute;top:50%;transform:translateY(-50%);font-size:2.6rem;transition:left .5s}
+.hmdino{left:0}.hmman{right:4%}
+.hmhint{text-align:center;font-size:2.6rem}
+.hmword{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:10px 0}
+.hmword span{width:32px;height:44px;border-bottom:4px solid var(--teal);font-family:'Fredoka',sans-serif;font-size:1.8rem;text-align:center}
+.hmword.lost span{color:var(--coral)}
+.keys{display:grid;grid-template-columns:repeat(9,1fr);gap:5px;max-width:520px;margin:0 auto}
+.key{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 0;font-weight:800}
+.key.ok{background:var(--green);color:#fff;border-color:var(--green)}
+.key.bad{background:var(--coral-soft);opacity:.6}
+/* trip */
+.tripavatar{display:flex;align-items:center;gap:12px;font-size:3rem;margin-bottom:10px}
+.bubble{font-size:1.05rem;background:var(--blue-soft);border-radius:18px;padding:10px 14px;flex:1;min-width:0;line-height:1.45}
+.tripcats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.tripcat{border:2px solid var(--line);border-radius:16px;padding:10px;background:var(--bg);min-width:0}
+.tripcat h4{margin:0 0 6px}
+/* fossils */
+.beach{display:grid;gap:5px;max-width:min(560px,100%);margin:0 auto;background:var(--dig-bg);padding:8px;border-radius:18px}
+.sandc{aspect-ratio:1/1;max-width:100%;border:none;border-radius:10px;background:var(--sand);font-size:1.6rem;box-shadow:inset 0 -4px 0 var(--sand-deep);padding:0}
+.sandc.dug{background:var(--dig-bg);box-shadow:inset 0 3px 6px rgba(0,0,0,.15)}
+.sandc.fossil{background:var(--sun-soft)}
+.ffacts{display:grid;gap:8px;margin:10px 0}
+.fact{display:flex;gap:10px;align-items:center;background:var(--sun-soft);border-radius:14px;padding:8px 12px}
+.fact span{font-size:2rem}
+.timeline{margin:0 0 10px;padding-left:28px;min-height:20px}
+.timeline li{background:var(--green-soft);border-radius:12px;padding:8px 12px;margin:6px 0;font-weight:700}
+.olist{display:grid;gap:8px}
+.oitem{border:3px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px;font-weight:700;text-align:left}
+.factfile{display:grid;gap:10px}
+.fitem{display:flex;gap:12px;align-items:flex-start;background:var(--sun-soft);border-radius:16px;padding:12px}
+.fitem .em{font-size:2rem;line-height:1.1}
+.fitem p{margin:0;font-size:1.08rem;min-width:0}
+.hl{background:var(--sun);color:#3a2c00;padding:0 4px;border-radius:5px;font-weight:800}
+.slot{display:inline-block;min-width:90px;border-bottom:3px solid var(--teal);text-align:center;font-weight:800;cursor:pointer;padding:0 4px;color:var(--teal);line-height:1.4}
+.slot.ok{border-color:var(--green);color:var(--green);cursor:default}
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+textarea,.line{width:100%;border:2px solid var(--line);border-radius:14px;padding:10px;font:inherit;background:var(--bg);color:var(--ink)}
+textarea{min-height:90px}
+.lines{display:grid;gap:8px}
+table.survey{width:100%;border-collapse:collapse;min-width:480px}
+.tablewrap{overflow-x:auto}
+table.survey td,table.survey th{border:2px solid var(--line);padding:6px;text-align:left}
+table.survey input{width:100%;border:none;background:transparent;color:var(--ink);font:inherit}
+/* quiz show */
+.players{display:flex;gap:10px;justify-content:center;margin-bottom:12px}
+.player{flex:1;max-width:240px;border-radius:18px;padding:10px;text-align:center;border:3px solid var(--line);background:var(--card)}
+.player.turn{border-color:var(--purple);background:var(--purple-soft);transform:scale(1.04)}
+.player .sc{font-family:'Fredoka',sans-serif;font-size:2rem}
+.board{display:grid;gap:8px}
+.board .cat{text-align:center;font-family:'Fredoka',sans-serif;font-weight:700;background:var(--teal);color:#fff;border-radius:12px;padding:8px 4px;font-size:.95rem}
+.tile{border:none;border-radius:14px;padding:18px 4px;background:var(--purple);color:#fff;font-family:'Fredoka',sans-serif;font-size:1.5rem;font-weight:700;box-shadow:0 5px 0 rgba(0,0,0,.2)}
+.tile.used{background:var(--line);color:var(--muted);box-shadow:none;pointer-events:none}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal.on{display:flex}
+.modal .box{background:var(--card);border-radius:22px;padding:22px;max-width:480px;width:100%;text-align:center;animation:fade .25s}
+.modal .q{font-family:'Fredoka',sans-serif;font-size:1.45rem;margin:6px 0 14px}
+.cando{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:2px dashed var(--line)}
+.cando p{flex:1;margin:0;font-weight:700}
+.stars3 button{border:none;background:none;font-size:1.6rem;filter:grayscale(1);opacity:.4;padding:0 2px}
+.stars3 button.on{filter:none;opacity:1}
+.burst{position:fixed;pointer-events:none;z-index:99;font-size:1.6rem;animation:fly 1.1s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:560px){
+  .stagehead h2{font-size:1.4rem}
+  .memgrid{gap:6px}
+  .mem{font-size:1.4rem}
+  .tile{font-size:1.2rem;padding:14px 2px}
+  .bigword{font-size:2.3rem}
+  .match{gap:6px}
+  .mi{padding:8px;font-size:.92rem}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1>🦕 The Dinosaur Museum · Lesson 2 <small>Family and Friends 4 · Unit 3 · pp.22–25 · Did you…?, f/ph, Dinosaur data · 80 min</small></h1>
+    <div class="starbox" id="starbox">⭐ <span id="stars">0</span></div>
+    <button class="iconbtn" id="themeBtn" title="Light / dark" aria-label="Switch light or dark">🌓</button>
+  </div>
+  <nav id="nav"></nav>
+</header>
+<div class="wrap">
+<section class="stage" data-title="🏁 Warm-up">
+  <div class="stagehead"><h2>Verb Race Rematch</h2><span class="chip">5 min</span></div>
+  <p class="lead">Do you remember the irregular verbs? Beat your last score!</p>
+  <details class="tn"><summary>Teacher tip</summary>Ask: "What was your score last time?" Then race. For every answer the student says a sentence: "go… went. I went to school yesterday."</details>
+  <div class="card"><div id="race"></div></div>
+</section>
+
+<section class="stage" data-title="❓ Questions">
+  <div class="stagehead"><h2>Did you…?</h2><span class="chip">15 min</span></div>
+  <p class="lead">Book p.22. We make past questions with <b>Did</b>.</p>
+  <details class="tn"><summary>Teacher tip</summary>Show the pattern on fingers: <b>Did + you + go</b>? The verb goes back to the base form, just like with didn't. Short answers: Yes, I did. / No, I didn't. (NOT "Yes, I went.") For Wh- questions, the question word comes first: <b>What did</b> you see? In the builder, the student reads each finished question aloud and you answer it.</details>
+  <div class="card">
+    <h3>🔧 Rule card</h3>
+    <div class="rule" id="rule2">
+      <div class="rulebox"><input class="gap" data-ans="did" aria-label="question word"> you go to the zoo?</div>
+      <div class="rulebox">✅ Yes, I <input class="gap" data-ans="did" aria-label="short answer yes">.</div>
+      <div class="rulebox">❌ No, I <input class="gap" data-ans="didn't|didnt|did not" aria-label="short answer no">.</div>
+      <div class="rulebox r3">What did you <input class="gap" data-ans="see" aria-label="base verb"> ?</div>
+      <div class="rulebox r3">I <input class="gap" data-ans="saw" aria-label="past verb"> a giraffe.</div>
+    </div>
+    <p class="ruletext">Did + person + <b>base verb</b>?   Did you <s>went</s> → Did you <b>go</b>?</p>
+    <div class="row" style="margin-top:12px"><button class="btn" data-check="#rule2">Check ✔</button><button class="btn alt" data-reset="#rule2">Reset</button></div>
+  </div>
+  <div class="card">
+    <h3>🧱 Question Builder</h3>
+    <p class="lead" style="margin:0 0 8px">Tap the words in the right order. Tap a word again to send it back.</p>
+    <div id="build"></div>
+  </div>
+  <div class="card">
+    <h3>🔗 Match the question and answer</h3>
+    <p class="lead" style="margin:0 0 8px">Tap a question, then tap its answer.</p>
+    <div id="qa"></div>
+  </div>
+</section>
+
+<section class="stage" data-title="🕵️ Secret Trip">
+  <div class="stagehead"><h2>Guess My Secret Trip</h2><span class="chip">12 min</span></div>
+  <p class="lead">I went somewhere yesterday. Ask me <b>Did you…?</b> questions to find out where, what I saw, what I ate and what I bought.</p>
+  <details class="tn"><summary>Teacher tip</summary>Rule: the student must SAY the full question before tapping ("Did you go to the zoo?"). Try to find the whole trip in as few questions as possible. Then swap: the student imagines a secret trip and you ask the questions. Finish with the interview table (Book p.22 ex.2).</details>
+  <div class="card"><div id="trip"></div></div>
+  <div class="card">
+    <h3>📋 Interview</h3>
+    <p class="lead" style="margin:0 0 8px">Ask and answer. Write short notes.</p>
+    <div class="tablewrap"><table class="survey">
+      <tr><th>Question</th><th>You</th><th>Your teacher</th></tr>
+      <tr><td>Where did you go on Saturday?</td><td><input id="i1a" aria-label="you"></td><td><input id="i1b" aria-label="teacher"></td></tr>
+      <tr><td>What did you see?</td><td><input id="i2a" aria-label="you"></td><td><input id="i2b" aria-label="teacher"></td></tr>
+      <tr><td>What did you eat?</td><td><input id="i3a" aria-label="you"></td><td><input id="i3b" aria-label="teacher"></td></tr>
+      <tr><td>Who did you see?</td><td><input id="i4a" aria-label="you"></td><td><input id="i4b" aria-label="teacher"></td></tr>
+      <tr><td>Did you buy anything?</td><td><input id="i5a" aria-label="you"></td><td><input id="i5b" aria-label="teacher"></td></tr>
+      <tr><td>Did you have a good day?</td><td><input id="i6a" aria-label="you"></td><td><input id="i6b" aria-label="teacher"></td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section class="stage" data-title="🔤 f / ph">
+  <div class="stagehead"><h2>F or PH?</h2><span class="chip">10 min</span></div>
+  <p class="lead">Book p.23. <b>f</b> and <b>ph</b> make the same sound: /f/ like in <b>f</b>ish and <b>ph</b>one!</p>
+  <details class="tn"><summary>Teacher tip</summary>Say each word together and listen: the sound is the same, only the spelling changes. Fun fact for the student: <b>ph</b> often comes from Greek words (phone, photo, alphabet, elephant). After the sorting game, do Book p.23 ex.4.</details>
+  <div class="card"><h3>🪣 Sort the words</h3><div id="fph"></div></div>
+  <div class="card"><h3>✏️ Missing letters</h3><p class="lead" style="margin:0 0 6px">Choose <b>f</b> or <b>ph</b>.</p><div id="fill"></div></div>
+</section>
+
+<section class="stage" data-title="🦕 Reading">
+  <div class="stagehead"><h2>Dinosaur Fact File</h2><span class="chip">20 min</span></div>
+  <p class="lead">Book p.24. First guess, then read and find out!</p>
+  <details class="tn"><summary>Teacher tip</summary>1) Do "Guess first!" before reading. Don't correct yet. 2) Read the fact file together (or the book text with the audio). The highlighted words are the key words from p.24. 3) Check the guesses: "Were you right?" 4) Do the vocabulary and sentence matching. Make the numbers real: 14 metres is about 3 cars in a row, and 5.5 metres is taller than a house!</details>
+  <div class="card"><h3>🤔 Guess first!</h3><div id="guess"></div></div>
+  <div class="card">
+    <h3>📂 Dinosaur Fact File</h3>
+    <div class="factfile">
+      <div class="fitem"><span class="em">🌍</span><p>Dinosaurs lived on <span class="hl">Earth</span> for millions of years. <span class="hl">Scientists</span> study dinosaur bones to learn how they lived.</p></div>
+      <div class="fitem"><span class="em">🥬🍖</span><p>There were more than 700 types of dinosaur. Some ate plants and some ate meat. Some walked on two legs and some walked on four.</p></div>
+      <div class="fitem"><span class="em">🎨</span><p>Nobody knows what colour dinosaurs were or what <span class="hl">pattern</span> they had, because there is no dinosaur <span class="hl">skin</span> left today.</p></div>
+      <div class="fitem"><span class="em">☄️</span><p>About 65 million years ago, dinosaurs <span class="hl">disappeared</span>. Many scientists think a big <span class="hl">rock</span> from space, an <span class="hl">asteroid</span>, <span class="hl">fell</span> to Earth. The Earth became very cold and there wasn't enough food.</p></div>
+      <div class="fitem"><span class="em">🦖</span><p>The most famous dinosaur is the T-Rex. It was 14 metres long and 5.5 metres tall: bigger than a house! It ate meat and had long, sharp teeth. You can see T-Rex skeletons in some museums.</p></div>
+    </div>
+    <div class="row" style="margin-top:10px"><button class="btn alt" id="readAloud">🔊 Read it to me</button></div>
+  </div>
+  <div class="card"><h3>🔗 Word match</h3><p class="lead" style="margin:0 0 8px">Tap a word, then tap its meaning.</p><div id="vm"></div></div>
+  <div class="card"><h3>🧩 Sentence halves</h3><div id="halves"></div></div>
+  <div class="card"><h3>🔢 Number quiz</h3><div id="nums"></div></div>
+</section>
+
+<section class="stage" data-title="📮 Postcards">
+  <div class="stagehead"><h2>Holiday Postcards</h2><span class="chip">6 min</span></div>
+  <p class="lead">Book p.25. Look at the pictures. Where did they go? What did they see? What did they like?</p>
+  <details class="tn"><summary>Teacher tip</summary>Do the book listening (p.25 ex.1–2) with the audio first. Then use these cards for speaking (they are practice cards, not the answer key). Ask "Where did Jane go?" and the student answers from the pictures: "She went to the beach. She saw crabs. She liked the boat." Flip the card to check. Then swap roles.</details>
+  <div class="card"><div id="cards"></div></div>
+</section>
+
+<section class="stage" data-title="❗ Writing">
+  <div class="stagehead"><h2>Exclamation Marks!</h2><span class="chip">7 min</span></div>
+  <div class="card" style="background:var(--green-soft)">We use <b>!</b> to show <b>strong feelings</b> (surprise, excitement): <i>Wow, it's huge!</i> We also use it for <b>instructions</b>: <i>Don't touch the bones!</i></div>
+  <details class="tn"><summary>Teacher tip</summary>Read each sentence with a big feeling voice or a bossy teacher voice. The student decides: <b>F</b> (feelings) or <b>I</b> (instructions). Then they write a museum sign (instruction) and a postcard sentence (feeling).</details>
+  <div class="card"><h3>F or I?</h3><div id="fi"></div></div>
+  <div class="card">
+    <h3>✏️ Your turn</h3>
+    <div class="lines">
+      <input class="line" id="w1" placeholder="Museum sign (instruction): Don't …!">
+      <input class="line" id="w2" placeholder="Postcard (feeling): Wow, …!">
+    </div>
+  </div>
+</section>
+
+<section class="stage" data-title="🌟 Wrap-up">
+  <div class="stagehead"><h2>What Can I Do Now?</h2><span class="chip">5 min</span></div>
+  <div class="card">
+    <div id="cando"></div>
+    <details class="tn" open><summary>Homework</summary>Workbook 4: Grammar Time p.109 ex.2 and writing pp.24–25. Ask someone at home 3 "Did you…?" questions about their weekend.</details>
+  </div>
+</section>
+
+<div class="stagenav"><button class="btn alt" id="prevBtn">⬅ Back</button><button class="btn" id="nextBtn">Next ➜</button></div>
+</div>
+<div class="modal" id="modal"><div class="box">
+  <div class="chip" id="mPts"></div>
+  <div class="q" id="mQ"></div>
+  <div class="choices" id="mOpts" style="grid-template-columns:1fr"></div>
+  <div style="margin-top:14px"><button class="btn" id="mClose" style="display:none">OK ➜</button></div>
+</div></div>
+<script>
+/* ===== helpers ===== */
+const $=s=>typeof s==='string'?document.querySelector(s):s, $$=s=>[...document.querySelectorAll(s)];
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let stars=0;
+function win(n=1,el){stars+=n;$('#stars').textContent=stars;const b=$('#starbox');b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');burst(el,n>1?14:6);ding(true)}
+function burst(el,n=6){const r=el&&el.getBoundingClientRect?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};
+  const em=['⭐','🦴','🎉','✨','🦕'];for(let i=0;i<n;i++){const s=document.createElement('span');s.className='burst';s.textContent=em[i%em.length];
+  s.style.left=(r.left+r.width/2)+'px';s.style.top=(r.top+r.height/2)+'px';s.style.setProperty('--x',(Math.random()*240-120)+'px');s.style.setProperty('--y',(Math.random()*-200-40)+'px');s.style.setProperty('--r',(Math.random()*360)+'deg');
+  document.body.appendChild(s);setTimeout(()=>s.remove(),1200)}}
+function shake(el){if(!el)return;el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');ding(false)}
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,''));u.lang='en-GB';u.rate=.85;const v=speechSynthesis.getVoices().find(v=>v.lang==='en-GB');if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
+
+/* ===== audio ===== */
+let AC;function ac(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}
+function note(type,f,t,d,vol=.2,o={}){const c=ac(),osc=c.createOscillator(),g=c.createGain();osc.type=type;osc.frequency.value=f;let n=osc;
+  if(o.lp){const fl=c.createBiquadFilter();fl.type='lowpass';fl.frequency.value=o.lp;osc.connect(fl);n=fl}
+  n.connect(g);g.connect(c.destination);const s=c.currentTime+t,a=o.a||.02;
+  g.gain.setValueAtTime(.0001,s);g.gain.exponentialRampToValueAtTime(vol,s+a);g.gain.setValueAtTime(vol,s+d*.75);g.gain.exponentialRampToValueAtTime(.0001,s+d);
+  if(o.vib){const l=c.createOscillator(),lg=c.createGain();l.frequency.value=o.vib;lg.gain.value=f*(o.vd||.012);l.connect(lg);lg.connect(osc.frequency);l.start(s);l.stop(s+d)}
+  osc.start(s);osc.stop(s+d+.05)}
+function sweep(type,f1,f2,t,d,vol,lp){const c=ac(),o=c.createOscillator(),g=c.createGain();o.type=type;const s=c.currentTime+t;o.frequency.setValueAtTime(f1,s);o.frequency.exponentialRampToValueAtTime(f2,s+d);
+  let n=o;if(lp){const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=lp;o.connect(f);n=f}n.connect(g);g.connect(c.destination);
+  g.gain.setValueAtTime(.0001,s);g.gain.exponentialRampToValueAtTime(vol,s+.08);g.gain.setValueAtTime(vol,s+d*.7);g.gain.exponentialRampToValueAtTime(.0001,s+d);o.start(s);o.stop(s+d+.05)}
+function noise(t,d,vol,freq=1000,type='highpass'){const c=ac(),b=c.createBuffer(1,Math.max(1,Math.floor(c.sampleRate*d)),c.sampleRate),x=b.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=Math.random()*2-1;
+  const src=c.createBufferSource();src.buffer=b;const f=c.createBiquadFilter();f.type=type;f.frequency.value=freq;const g=c.createGain(),s=c.currentTime+t;
+  g.gain.setValueAtTime(vol,s);g.gain.exponentialRampToValueAtTime(.0001,s+d);src.connect(f);f.connect(g);g.connect(c.destination);src.start(s);src.stop(s+d)}
+function kick(t){const c=ac(),o=c.createOscillator(),g=c.createGain(),s=c.currentTime+t;o.frequency.setValueAtTime(120,s);o.frequency.exponentialRampToValueAtTime(35,s+.35);
+  g.gain.setValueAtTime(.9,s);g.gain.exponentialRampToValueAtTime(.001,s+.4);o.connect(g);g.connect(c.destination);o.start(s);o.stop(s+.45)}
+const SFX={
+  roar(){sweep('sawtooth',95,55,0,1.7,.35,700);sweep('sawtooth',140,70,0,1.7,.22,900);noise(0,1.7,.5,500,'lowpass')},
+  scream(){note('sawtooth',950,0,1.3,.12,{lp:3200,a:.06,vib:9,vd:.04})},
+  robot(){[[440,0],[660,.18],[330,.36],[880,.54],[550,.72]].forEach(([f,t])=>note('square',f,t,.14,.08))},
+  stomp(){[0,.7,1.4].forEach(t=>{kick(t);noise(t,.4,.6,300,'lowpass')})},
+  cheer(){for(let i=0;i<45;i++)noise(Math.random()*2,.04,.25+Math.random()*.35,1500);note('sawtooth',300,.2,1.2,.04,{lp:900,a:.3,vib:4})}
+};
+function ding(ok){try{ok?(note('sine',880,0,.12,.12),note('sine',1320,.1,.18,.12)):note('square',180,0,.2,.06)}catch(e){}}
+
+/* ===== navigation + theme ===== */
+const stages=$$('.stage');let cur=0;
+stages.forEach((s,i)=>{const b=document.createElement('button');b.textContent=s.dataset.title;b.onclick=()=>go(i);$('#nav').appendChild(b)});
+function go(i){cur=Math.max(0,Math.min(stages.length-1,i));stages.forEach((s,j)=>s.classList.toggle('on',j===cur));
+  $$('#nav button').forEach((b,j)=>{b.classList.toggle('on',j===cur);if(j<cur)b.classList.add('done')});
+  $$('#nav button')[cur].scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+  $('#prevBtn').style.visibility=cur?'visible':'hidden';$('#nextBtn').style.visibility=cur<stages.length-1?'visible':'hidden';scrollTo({top:0,behavior:'smooth'})}
+$('#prevBtn').onclick=()=>go(cur-1);$('#nextBtn').onclick=()=>go(cur+1);
+$('#themeBtn').onclick=()=>{const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark'};
+
+/* ===== modal question ===== */
+function ask(title,q,opts,a,cb){$('#mPts').textContent=title;$('#mQ').textContent=q;const o=$('#mOpts');o.innerHTML='';$('#mClose').style.display='none';let done=false;
+  shuffle(opts).forEach(x=>{const b=document.createElement('button');b.className='choice';b.textContent=x;b.onclick=()=>{if(done)return;done=true;const ok=x===a;
+    if(ok)b.classList.add('ok');else{b.classList.add('bad');[...o.children].find(y=>y.textContent===a).classList.add('ok')}ding(ok);
+    $('#mClose').style.display='';$('#mClose').onclick=()=>{$('#modal').classList.remove('on');cb(ok)}};o.appendChild(b)});
+  $('#modal').classList.add('on')}
+
+/* ===== activities ===== */
+function soundGame(el,list){el=$(el);el.innerHTML='<div class="progress sgp"></div><button class="bigplay sgplay" aria-label="Play the sound">▶</button><div class="choices sgc"></div><div class="row" style="justify-content:center;margin-top:14px"><button class="btn sgn" style="display:none">Next sound ➜</button></div>';
+  const P=el.querySelector('.sgp'),Pl=el.querySelector('.sgplay'),C=el.querySelector('.sgc'),N=el.querySelector('.sgn');let order=shuffle(list),i=0,done;
+  function render(){C.innerHTML='';N.style.display='none';done=false;
+    if(i>=order.length){P.textContent='🎉 You found them all!';Pl.style.display='none';N.style.display='';N.textContent='Play again 🔁';return}
+    P.textContent=`Sound ${i+1} of ${order.length}`;Pl.style.display='';
+    list.forEach(m=>{const b=document.createElement('button');b.className='choice';b.innerHTML=`<span class="em">${m.e}</span>${m.w}`;
+      b.onclick=()=>{if(done)return;if(m.k===order[i].k){b.classList.add('ok');done=true;win(1,b);speak(m.w);N.style.display='';N.textContent=i<order.length-1?'Next sound ➜':'Finish 🎉'}else{b.classList.add('bad');shake(b)}};C.appendChild(b)})}
+  Pl.onclick=()=>SFX[order[i].k]();N.onclick=()=>{if(i>=order.length){order=shuffle(list);i=0}else i++;render()};render()}
+
+function flipCards(el,items){el=$(el);el.classList.add('flipgrid');items.forEach(v=>{const f=document.createElement('div');f.className='flip';
+  f.innerHTML=`<div class="flip-in"><div class="face front"><span class="em${v.sm?' sm':''}">${v.e}</span><span class="tap">${v.n||'tap to flip'}</span></div><div class="face back"><b>${v.w}</b><span>${v.d||''}</span><button class="say" aria-label="Listen">🔊</button></div></div>`;
+  const sayTxt=v.say||v.w;f.onclick=e=>{if(e.target.classList.contains('say')){e.stopPropagation();speak(sayTxt);return}f.classList.toggle('turned');if(f.classList.contains('turned'))speak(sayTxt)};el.appendChild(f)})}
+
+function memory(el,items,pairs=8){el=$(el);el.innerHTML='<div class="memgrid"></div><div class="row" style="justify-content:center;margin-top:12px"><span class="progress mi2"></span><button class="btn alt mnew">🔀 New game</button></div>';
+  const g=el.querySelector('.memgrid'),info=el.querySelector('.mi2');
+  function start(){let open=[],lock=false,found=0;const pick=shuffle(items).slice(0,pairs);const cards=shuffle(pick.flatMap(v=>[{id:v.w,t:v.e,word:false},{id:v.w,t:v.w,word:true}]));
+    g.innerHTML='';info.textContent=`Pairs: 0 / ${pairs}`;
+    cards.forEach((c,i)=>{const d=document.createElement('div');d.className='mem'+(c.word?' word':'');d.textContent=i+1;d.dataset.n=i+1;d.dataset.id=c.id;
+      d.onclick=()=>{if(lock||d.classList.contains('open')||d.classList.contains('gone'))return;d.classList.add('open');d.textContent=c.t;open.push(d);
+        if(open.length===2){lock=true;const[a,b]=open;if(a.dataset.id===b.dataset.id){setTimeout(()=>{a.classList.add('gone');b.classList.add('gone');open=[];lock=false;found++;speak(a.dataset.id);win(1,b);
+          info.textContent=`Pairs: ${found} / ${pairs}`;if(found===pairs){info.textContent='🏆 All pairs! Amazing!';win(3,g)}},350)}
+        else setTimeout(()=>{[a,b].forEach(x=>{x.classList.remove('open');x.textContent=x.dataset.n});open=[];lock=false},1000)}};g.appendChild(d)})}
+  el.querySelector('.mnew').onclick=start;start()}
+
+function tfList(el,items){el=$(el);items.forEach(([s,a])=>{const r=document.createElement('div');r.className='tf';r.innerHTML=`<p>${s}</p>`;
+  [true,false].forEach(l=>{const b=document.createElement('button');b.className='tfb';b.textContent=l?'✅ True':'❌ False';
+    b.onclick=()=>{if(r.dataset.done)return;if(l===a){b.classList.add('ok');r.dataset.done=1;win(1,b)}else{b.classList.add('bad');shake(b)}};r.appendChild(b)});el.appendChild(r)})}
+
+function mcList(el,qs){el=$(el);el.innerHTML='';qs.forEach(q=>{const d=document.createElement('div');d.className='mcq';d.innerHTML=`<p>${q.q}</p>`;
+  const opts=q.keep?q.opts:shuffle(q.opts);opts.forEach(o=>{const b=document.createElement('button');b.className='opt';b.textContent=o;
+    b.onclick=()=>{if(d.dataset.done)return;if(o===q.a){b.classList.add('ok');d.dataset.done=1;win(1,b);if(q.say)speak(q.say)}else{b.classList.add('bad');shake(b)}};d.appendChild(b)});el.appendChild(d)})}
+
+function sorter(el,items,buckets){el=$(el);el.innerHTML='<div class="pool"></div><div class="buckets"></div>';const pool=el.querySelector('.pool'),bw=el.querySelector('.buckets');let sel=null;
+  buckets.forEach(b=>{const d=document.createElement('div');d.className='bucket '+b.cls;d.innerHTML=`<h4>${b.label}</h4><div class="in"></div>`;
+    d.onclick=()=>{if(!sel)return;if(sel.dataset.b===b.id){d.querySelector('.in').insertAdjacentHTML('beforeend',`<span>${sel.dataset.show||sel.textContent}</span>`);win(1,d);sel.remove();sel=null;
+      if(!pool.querySelector('.chipw')){pool.innerHTML='<b style="margin:auto">🎉 All done! Brilliant!</b>';win(3,pool)}}else{shake(sel);shake(d)}};bw.appendChild(d)});
+  shuffle(items).forEach(it=>{const c=document.createElement('button');c.className='chipw';c.textContent=it.w;c.dataset.b=it.b;if(it.show)c.dataset.show=it.show;
+    c.onclick=()=>{pool.querySelectorAll('.chipw').forEach(x=>x.classList.remove('sel'));sel=c;c.classList.add('sel');speak(it.w)};pool.appendChild(c)})}
+
+function matchPairs(el,pairs){el=$(el);el.classList.add('match');el.innerHTML='<div class="mcol L"></div><div class="mcol R"></div>';const L=el.querySelector('.L'),R=el.querySelector('.R');let sel=null,n=0;
+  pairs.forEach(([a],i)=>{const x=document.createElement('button');x.className='mi';x.innerHTML=a;x.dataset.i=i;x.onclick=()=>{if(x.classList.contains('ok'))return;L.querySelectorAll('.mi').forEach(y=>y.classList.remove('sel'));sel=x;x.classList.add('sel')};L.appendChild(x)});
+  shuffle(pairs.map((p,i)=>[p[1],i])).forEach(([b,i])=>{const y=document.createElement('button');y.className='mi';y.innerHTML=b;y.dataset.i=i;
+    y.onclick=()=>{if(!sel||y.classList.contains('ok'))return;if(sel.dataset.i==y.dataset.i){sel.classList.remove('sel');sel.classList.add('ok');y.classList.add('ok');win(1,y);speak(sel.textContent+' '+y.textContent);sel=null;n++;if(n===pairs.length)win(3,el)}else shake(y)};R.appendChild(y)})}
+
+function race(el,items,secs=8){el=$(el);el.innerHTML=`<div class="progress rs">⏱️ Get ready!</div><div class="bigword rw">🏁</div><div class="tbar"><i></i></div><div class="choices ro"></div><div class="row" style="justify-content:center;margin-top:12px"><button class="btn coral rg">▶ Start the race!</button></div>`;
+  const W=el.querySelector('.rw'),O=el.querySelector('.ro'),B=el.querySelector('.tbar i'),S=el.querySelector('.rs'),G=el.querySelector('.rg');let list,i,score,timer,t0,busy,missed;
+  function next(){clearInterval(timer);if(i>=list.length){W.textContent=`${score} / ${list.length} ${score>=list.length-1?'🏆':'⭐'}`;S.textContent='Finished!';O.innerHTML='';B.style.width='0';G.style.display='';G.textContent='🔁 Race again';if(score)win(score>=list.length-1?3:1,W);return}
+    const it=list[i];busy=false;missed=false;W.textContent=it.b;S.textContent=`Word ${i+1} / ${list.length} · Score ${score}`;O.innerHTML='';
+    shuffle([it.a,...it.o]).forEach(x=>{const b=document.createElement('button');b.className='choice';b.textContent=x;b.onclick=()=>{if(busy)return;
+      if(x===it.a){busy=true;b.classList.add('ok');if(!missed)score++;ding(true);speak(it.b+'. '+it.a);clearInterval(timer);setTimeout(()=>{i++;next()},950)}else{missed=true;b.classList.add('bad');shake(b)}};O.appendChild(b)});
+    t0=Date.now();B.style.width='100%';timer=setInterval(()=>{const p=1-(Date.now()-t0)/(secs*1000);B.style.width=Math.max(0,p*100)+'%';
+      if(p<=0){clearInterval(timer);busy=true;[...O.children].forEach(b=>{if(b.textContent===it.a)b.classList.add('ok')});ding(false);setTimeout(()=>{i++;next()},1400)}},50)}
+  G.onclick=()=>{list=shuffle(items);i=0;score=0;G.style.display='none';next()}}
+
+function builder(el,items){el=$(el);let k=0;const order=shuffle(items);
+  function show(){if(k>=order.length){el.innerHTML='<div class="prompt">🎉 Super sentence builder!</div>';win(3,el);return}
+    const it=order[k];el.innerHTML=`<div class="progress">${k+1} / ${order.length}</div>${it.hint?`<p class="hintline">${it.hint}</p>`:''}<div class="ansline" aria-label="Your sentence"></div><div class="pool"></div><div class="row" style="justify-content:center;margin-top:10px"><button class="btn alt bc">↩ Clear</button><button class="btn sun bs">🙈 Show me</button></div>`;
+    const A=el.querySelector('.ansline'),P=el.querySelector('.pool');
+    shuffle(it.s.split(' ')).forEach(w=>{const c=document.createElement('button');c.className='chipw';c.textContent=w;c.onclick=()=>{(c.parentNode===P?A:P).appendChild(c);check()};P.appendChild(c)});
+    function check(){if(P.children.length)return;const got=[...A.children].map(c=>c.textContent).join(' ');if(got===it.s){A.classList.add('ok');win(1,A);speak(it.s);setTimeout(()=>{k++;show()},1400)}else shake(A)}
+    el.querySelector('.bc').onclick=()=>[...A.children].forEach(c=>P.appendChild(c));
+    el.querySelector('.bs').onclick=()=>{P.innerHTML='';A.textContent=it.s;speak(it.s);setTimeout(()=>{k++;show()},2600)}}
+  show()}
+
+function digGrid(el,qs,big,doneMsg){el=$(el);el.innerHTML=`<div class="dig"><div class="digbig">${big}</div><div class="diggrid"></div></div><p class="prompt dinfo"></p>`;
+  const g=el.querySelector('.diggrid'),info=el.querySelector('.dinfo');let left=qs.length;info.textContent=`Dig ${left} squares to find the secret!`;
+  qs.forEach((q,i)=>{const t=document.createElement('button');t.className='dtile';t.textContent='⛏️';t.setAttribute('aria-label','Dig square '+(i+1));
+    t.onclick=()=>ask(`⛏️ Square ${i+1}`,q.q,q.o,q.a,ok=>{if(ok){t.classList.add('gone');win(1,t);left--;info.textContent=left?`${left} squares left!`:doneMsg;if(!left)win(5,info)}else shake(t)});g.appendChild(t)})}
+
+function bankFill(el){el=$(el);let sel=null;
+  el.querySelectorAll('.bank .chipw').forEach(c=>c.onclick=()=>{el.querySelectorAll('.bank .chipw').forEach(x=>x.classList.remove('sel'));sel=c;c.classList.add('sel');speak(c.textContent)});
+  el.querySelectorAll('.slot').forEach(s=>{s.tabIndex=0;s.onclick=()=>{if(!sel||s.classList.contains('ok'))return;if(sel.textContent===s.dataset.ans){s.textContent=sel.textContent;s.classList.add('ok');sel.classList.add('used');sel.classList.remove('sel');sel=null;win(1,s);
+    if(![...el.querySelectorAll('.slot')].some(x=>!x.classList.contains('ok')))win(3,el)}else{shake(s);shake(sel)}}})}
+
+function hangman(el,words){el=$(el);const order=shuffle(words);let k=0;
+  function show(){if(k>=order.length){el.innerHTML='<div class="prompt">🏆 You saved the explorer every time!</div>';win(3,el);return}
+    const it=order[k],w=it.w.toLowerCase(),got=new Set(),MAX=6;let miss=0;
+    el.innerHTML=`<div class="progress">Word ${k+1} / ${order.length}</div><div class="hmtrack"><span class="hmdino">🦖</span><span class="hmman">🧍</span></div><div class="hmhint">${it.hint}</div><div class="hmword"></div><div class="keys"></div><div class="row" style="justify-content:center;margin-top:10px"><button class="btn hmn" hidden>Next word ➜</button></div>`;
+    const Wd=el.querySelector('.hmword'),K=el.querySelector('.keys'),D=el.querySelector('.hmdino'),N=el.querySelector('.hmn');
+    const draw=()=>{Wd.innerHTML=[...w].map(ch=>`<span>${got.has(ch)?ch:''}</span>`).join('')};draw();
+    function end(ok){K.querySelectorAll('button').forEach(b=>b.disabled=true);N.hidden=false;el.querySelector('.hmman').textContent=ok?'🥳':'😱'}
+    'abcdefghijklmnopqrstuvwxyz'.split('').forEach(ch=>{const b=document.createElement('button');b.className='key';b.textContent=ch;
+      b.onclick=()=>{if(b.disabled)return;b.disabled=true;if(w.includes(ch)){got.add(ch);b.classList.add('ok');draw();if([...w].every(c=>got.has(c))){win(2,Wd);speak(w);end(true)}}
+        else{b.classList.add('bad');miss++;D.style.left=(miss/MAX*78)+'%';ding(false);if(miss>=MAX){[...w].forEach(c=>got.add(c));draw();Wd.classList.add('lost');speak(w);end(false)}}};K.appendChild(b)});
+    N.onclick=()=>{k++;show()}}
+  show()}
+
+function guessTrip(el,cats){el=$(el);
+  function start(){const secret=cats.map(c=>Math.floor(Math.random()*c.opts.length));let asked=0,found=0;
+    el.innerHTML=`<div class="tripavatar">🧑‍🦱<div class="bubble">I went on a secret trip yesterday! Ask me questions to find out about it.</div></div><div class="tripcats"></div><p class="progress ti">Questions: 0</p><div class="row" style="justify-content:center"><button class="btn alt tn2">🔀 New secret trip</button></div>`;
+    const C=el.querySelector('.tripcats'),bub=el.querySelector('.bubble'),info=el.querySelector('.ti');
+    cats.forEach((c,ci)=>{const box=document.createElement('div');box.className='tripcat';box.innerHTML=`<h4>${c.label}</h4><div></div>`;
+      c.opts.forEach((o,oi)=>{const b=document.createElement('button');b.className='opt';b.textContent=`${o.e} ${o.w}`;
+        b.onclick=()=>{if(box.dataset.done)return;asked++;info.textContent='Questions: '+asked;const q=c.q.replace('#',o.w),yes=oi===secret[ci];
+          bub.innerHTML=`<i>“${q}”</i><br><b>${yes?'Yes, I did! 😃':'No, I didn’t. 🙅'}</b>`;speak(q+' '+(yes?'Yes, I did!':'No, I didn’t.'));
+          if(yes){b.classList.add('ok');box.dataset.done=1;win(1,b);found++;if(found===cats.length)setTimeout(()=>{bub.innerHTML=`<b>You found my trip in ${asked} questions! 🏆</b><br>${cats.map((c,i)=>c.say.replace('#',c.opts[secret[i]].w)).join(' ')}`;win(3,bub)},1400)}
+          else{b.classList.add('bad');b.disabled=true;ding(false)}};box.lastChild.appendChild(b)});C.appendChild(box)});
+    el.querySelector('.tn2').onclick=start}
+  start()}
+
+function fossilHunt(el,items,cols=6,rows=4){el=$(el);
+  function start(){const n=cols*rows,pos=shuffle([...Array(n).keys()]).slice(0,items.length);let digs=0,found=0;
+    el.innerHTML=`<div class="beach" style="grid-template-columns:repeat(${cols},1fr)"></div><p class="progress fi">Find ${items.length} fossils! Found 0 · Digs 0</p><div class="ffacts"></div><div class="row" style="justify-content:center"><button class="btn alt fn">🔀 Hide them again</button></div>`;
+    const G=el.querySelector('.beach'),I=el.querySelector('.fi'),F=el.querySelector('.ffacts');
+    for(let i=0;i<n;i++){const c=document.createElement('button');c.className='sandc';c.setAttribute('aria-label','Dig here');const fi=pos.indexOf(i);
+      c.onclick=()=>{if(c.classList.contains('dug')||found===items.length)return;c.classList.add('dug');digs++;
+        if(fi>-1){const it=items[fi];c.textContent=it.e;c.classList.add('fossil');found++;win(1,c);F.insertAdjacentHTML('afterbegin',`<div class="fact"><span>${it.e}</span><div><b>${it.name}</b><br>${it.fact}</div></div>`);speak(it.name+'. '+it.fact)}
+        I.textContent=found===items.length?`🏆 You found all the fossils in ${digs} digs!`:`Find ${items.length} fossils! Found ${found} · Digs ${digs}`;if(found===items.length)win(3,G)};G.appendChild(c)}
+    el.querySelector('.fn').onclick=start}
+  start()}
+
+function orderGame(el,events){el=$(el);el.innerHTML='<ol class="timeline"></ol><div class="olist"></div>';const T=el.querySelector('.timeline'),L=el.querySelector('.olist');let k=0;
+  shuffle(events.map((e,i)=>({e,i}))).forEach(o=>{const b=document.createElement('button');b.className='oitem';b.innerHTML=o.e;
+    b.onclick=()=>{if(o.i===k){T.insertAdjacentHTML('beforeend',`<li>${o.e}</li>`);b.remove();k++;win(1,T);if(k===events.length){L.innerHTML='<p class="prompt">🎉 Perfect order!</p>';win(3,T)}}else shake(b)};L.appendChild(b)})}
+
+function quizShow(el,cats,qs){el=$(el);el.innerHTML=`<div class="players"><div class="player turn"><div>🧒 Student</div><div class="sc">0</div></div><div class="player"><div>👩‍🏫 Teacher</div><div class="sc">0</div></div></div><div class="board"></div><p class="prompt qr"></p>`;
+  const P=el.querySelectorAll('.player'),B=el.querySelector('.board');let turn=0,score=[0,0],used=0;const rows=qs[0].length,total=cats.length*rows;
+  B.style.gridTemplateColumns=`repeat(${cats.length},1fr)`;cats.forEach(c=>B.insertAdjacentHTML('beforeend',`<div class="cat">${c}</div>`));
+  for(let r=0;r<rows;r++)for(let c=0;c<cats.length;c++){const t=document.createElement('button');t.className='tile';t.textContent=(r+1)*100;
+    t.onclick=()=>{const q=qs[c][r];ask(`${cats[c]} · ${(r+1)*100} · ${turn?'👩‍🏫 Teacher':'🧒 Student'}`,q.q,q.o,q.a,ok=>{
+      if(ok){score[turn]+=(r+1)*100;P[turn].querySelector('.sc').textContent=score[turn];if(turn===0)win(2,P[0])}
+      t.classList.add('used');used++;turn=1-turn;P.forEach((p,i)=>p.classList.toggle('turn',i===turn));
+      if(used===total){const R=el.querySelector('.qr');R.textContent=score[0]>score[1]?'🏆 Student wins!':score[1]>score[0]?'👩‍🏫 Teacher wins… this time!':'🤝 It’s a draw!';burst(R,20)}})};B.appendChild(t)}}
+
+function cando(el,list){el=$(el);list.forEach(t=>{const r=document.createElement('div');r.className='cando';r.innerHTML=`<p>${t}</p><div class="stars3">${'<button aria-label="star">⭐</button>'.repeat(3)}</div>`;
+  const bs=[...r.querySelectorAll('button')];bs.forEach((b,i)=>b.onclick=()=>bs.forEach((x,j)=>x.classList.toggle('on',j<=i)));el.appendChild(r)})}
+
+/* gap-fill check/reset */
+$$('[data-check]').forEach(b=>b.onclick=()=>{let all=true;$$(b.dataset.check+' .gap').forEach(g=>{const ok=g.dataset.ans.split('|').includes(g.value.toLowerCase().replace(/’/g,"'").replace(/\s+/g,' ').trim());g.classList.toggle('ok',ok);g.classList.toggle('bad',!ok);if(!ok)all=false});all?win(3,b):shake(b)});
+$$('[data-reset]').forEach(b=>b.onclick=()=>$$(b.dataset.reset+' .gap').forEach(g=>{g.value='';g.classList.remove('ok','bad')}));
+
+race('#race',[
+ {b:'go',a:'went',o:['goed','wented']},{b:'see',a:'saw',o:['seed','sawed']},{b:'buy',a:'bought',o:['buyed','brought']},
+ {b:'eat',a:'ate',o:['eated','eat']},{b:'hear',a:'heard',o:['heared','hears']},{b:'make',a:'made',o:['maked','mades']},
+ {b:'think',a:'thought',o:['thinked','thank']},{b:'wear',a:'wore',o:['weared','wears']},{b:'write',a:'wrote',o:['writed','writes']},
+ {b:'take',a:'took',o:['taked','tooked']},{b:'have',a:'had',o:['haved','has']}],8);
+
+builder('#build',[
+ {s:'Did you go to the museum?',hint:'🏛️'},{s:'What did you see?',hint:'👀'},{s:'Where did they go on Saturday?',hint:'🗺️'},
+ {s:'Did Amy buy a postcard?',hint:'💌'},{s:'What did you eat for lunch?',hint:'🥪'},{s:'Who did you see at the park?',hint:'🌳'}]);
+
+matchPairs('#qa',[
+ ['Where did you go?','I went to the zoo.'],['What did you see?','I saw a flamingo.'],['Did you buy anything?','Yes, I bought a badge.'],
+ ['Did you eat lunch there?',"No, I didn't."],['Who did you go with?','My cousin.'],['Did you have a good day?','Yes, I did!']]);
+
+guessTrip('#trip',[
+ {label:'🗺️ Did you go to …?',q:'Did you go to the #?',say:'I went to the #.',opts:[{e:'🏖️',w:'beach'},{e:'🦁',w:'zoo'},{e:'🏛️',w:'museum'},{e:'🐄',w:'farm'},{e:'🌳',w:'park'}]},
+ {label:'👀 Did you see …?',q:'Did you see #?',say:'I saw #.',opts:[{e:'🦩',w:'a flamingo'},{e:'🦴',w:'a skeleton'},{e:'🤖',w:'a robot'},{e:'🐍',w:'a snake'},{e:'🐒',w:'a monkey'}]},
+ {label:'🍽️ Did you eat …?',q:'Did you eat #?',say:'I ate #.',opts:[{e:'🥪',w:'a sandwich'},{e:'🍕',w:'pizza'},{e:'🍦',w:'ice cream'},{e:'🍎',w:'an apple'}]},
+ {label:'🛍️ Did you buy …?',q:'Did you buy #?',say:'I bought #.',opts:[{e:'💌',w:'a postcard'},{e:'📛',w:'a badge'},{e:'🦕',w:'a model'},{e:'🧢',w:'a hat'}]}]);
+
+sorter('#fph',[
+ ...['flamingo','scarf','feet','frog','fish','giraffe','family'].map(w=>({w,b:'f'})),
+ ...['phone','nephew','alphabet','photo','dolphin','elephant','trophy'].map(w=>({w,b:'ph'}))],
+ [{id:'f',label:'f 🐟',cls:'b-blue'},{id:'ph',label:'ph 📱',cls:'b-coral'}]);
+
+mcList('#fill',[
+ {q:'📷 _ _ oto',opts:['f','ph'],a:'ph',keep:1,say:'photo'},{q:'📱 _ _ one',opts:['f','ph'],a:'ph',keep:1,say:'phone'},
+ {q:'🔤 al _ _ abet',opts:['f','ph'],a:'ph',keep:1,say:'alphabet'},{q:'🦩 _ _ lamingo',opts:['f','ph'],a:'f',keep:1,say:'flamingo'},
+ {q:'🦶 _ _ eet',opts:['f','ph'],a:'f',keep:1,say:'feet'},{q:'👦 ne _ _ ew',opts:['f','ph'],a:'ph',keep:1,say:'nephew'},
+ {q:'🐸 _ _ rog',opts:['f','ph'],a:'f',keep:1,say:'frog'},{q:'🧣 scar _ _',opts:['f','ph'],a:'f',keep:1,say:'scarf'},
+ {q:'🐘 ele _ _ ant',opts:['f','ph'],a:'ph',keep:1,say:'elephant'},{q:'🐟 _ _ ish',opts:['f','ph'],a:'f',keep:1,say:'fish'}]);
+
+tfList('#guess',[['Dinosaurs lived on Earth for millions of years.',true],['All dinosaurs ate meat.',false],['We know what colour dinosaurs were.',false],['A big rock from space fell to Earth.',true],['The T-Rex was bigger than a house.',true]]);
+$('#readAloud').onclick=()=>speak($$('.fitem p').map(p=>p.textContent).join(' '));
+
+matchPairs('#vm',[
+ ['🌍 Earth','the planet we live on'],['🔬 scientist','a person who studies the world'],['🦓 pattern','lines or shapes on something, like stripes'],
+ ['✋ skin','the outside of an animal’s body'],['🫥 disappear','go away so you can’t see it'],['🪨 rock','a hard stone'],
+ ['☄️ asteroid','a big rock in space'],['⬇️ fall (fell)','go down to the ground']]);
+
+matchPairs('#halves',[
+ ['Scientists study dinosaur bones','to learn how dinosaurs lived.'],['Some dinosaurs ate plants','and some ate meat.'],
+ ['We don’t know their colour','because there is no skin left.'],['An asteroid is','a big rock from space.'],
+ ['When the asteroid fell,','the Earth became very cold.'],['The T-Rex was','bigger than a house!']]);
+
+mcList('#nums',[
+ {q:'🦖 How long was the T-Rex?',opts:['14 metres','4 metres','40 metres'],a:'14 metres'},
+ {q:'🦕 How many types of dinosaur were there?',opts:['more than 700','7','70'],a:'more than 700'},
+ {q:'☄️ When did the dinosaurs disappear?',opts:['65 million years ago','65 years ago','last week 😄'],a:'65 million years ago'},
+ {q:'🏠 How tall was the T-Rex?',opts:['5.5 metres','55 metres','half a metre'],a:'5.5 metres'}]);
+
+flipCards('#cards',[
+ {e:'🏖️ 🦀 🚤',sm:1,n:'👧 Jane',w:'Jane',d:'She went to the beach. She saw crabs. She liked the boat.',say:'Jane went to the beach. She saw crabs. She liked the boat.'},
+ {e:'🦁 🐒 🐍',sm:1,n:'👦 Simon',w:'Simon',d:'He went to the zoo. He saw monkeys. He liked the snakes.',say:'Simon went to the zoo. He saw monkeys. He liked the snakes.'},
+ {e:'🏛️ 🦴 🚗',sm:1,n:'👧 Lisa',w:'Lisa',d:'She went to the museum. She saw a skeleton. She liked the old cars.',say:'Lisa went to the museum. She saw a skeleton. She liked the old cars.'},
+ {e:'🚜 🐄 🚶',sm:1,n:'👦 Max',w:'Max',d:'He went to the farm. He saw cows. He liked the walk.',say:'Max went to the farm. He saw cows. He liked the walk.'}]);
+
+mcList('#fi',[
+ {q:'Close the door!',opts:['F','I'],a:'I',keep:1},{q:'Wow, a real dinosaur!',opts:['F','I'],a:'F',keep:1},
+ {q:'Don’t run in the museum!',opts:['F','I'],a:'I',keep:1},{q:'Hooray, we won!',opts:['F','I'],a:'F',keep:1},
+ {q:'Sit down, please!',opts:['F','I'],a:'I',keep:1},{q:'Oh no, it’s alive!',opts:['F','I'],a:'F',keep:1}]);
+
+cando('#cando',['I can ask "Did you…?" questions.','I can answer: Yes, I did. / No, I didn\'t.','I can spell words with f and ph.','I can tell you 3 facts about dinosaurs.','I can use ! for feelings and instructions.']);
+go(0);
+
+</script>
+</body>
+</html>
