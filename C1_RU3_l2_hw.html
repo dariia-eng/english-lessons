@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ideas — Homework</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+  <style>
+    /* ── Tokens ── */
+    :root{
+      --bg:#f5f4f1;--surface:#ffffff;--border:#e3e1d9;
+      --text:#1a1917;--muted:#6a6760;
+      --accent:#5B21B6;--accent-l:#EDE9FE;
+      --radius:14px;--shadow:0 2px 16px rgba(0,0,0,.07);
+    }
+    @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+      --bg:#141318;--surface:#1e1c24;--border:#2e2a3a;
+      --text:#eeebf5;--muted:#9994a8;
+      --accent:#9061F9;--accent-l:#2D1B69;
+    }}
+    :root[data-theme="dark"]{
+      --bg:#141318;--surface:#1e1c24;--border:#2e2a3a;
+      --text:#eeebf5;--muted:#9994a8;
+      --accent:#9061F9;--accent-l:#2D1B69;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);line-height:1.65;min-height:100vh}
+
+    /* ── Header ── */
+    .lesson-header{background:linear-gradient(135deg,#064E3B 0%,#047857 55%,#059669 100%);color:#fff;padding:3rem 2rem 2.5rem;position:relative;overflow:hidden}
+    .header-dots{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.07) 1px,transparent 1px);background-size:26px 26px;pointer-events:none}
+    .header-inner{max-width:880px;margin:0 auto;position:relative}
+    .header-eyebrow{font-family:"Outfit",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:.4rem}
+    .lesson-header h1{font-family:"Outfit",sans-serif;font-size:clamp(1.8rem,5vw,2.6rem);font-weight:800;line-height:1.1;text-wrap:balance;margin-bottom:.8rem}
+    .header-sub{font-size:.92rem;color:rgba(255,255,255,.75);margin-bottom:.6rem}
+    .theme-toggle{position:absolute;top:0;right:0;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:.38rem .75rem;color:#fff;cursor:pointer;font-size:.8rem;font-family:"DM Sans",sans-serif}
+    .theme-toggle:hover{background:rgba(255,255,255,.24)}
+
+    /* ── Name bar ── */
+    .name-bar{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1.25rem;display:flex;align-items:center;gap:.75rem;box-shadow:0 1px 8px rgba(0,0,0,.06)}
+    .name-bar label{font-size:.82rem;font-weight:600;color:var(--muted);white-space:nowrap}
+    .name-bar input{flex:1;max-width:260px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;font-size:.88rem;padding:.32rem .7rem;outline:none;transition:border-color .15s}
+    .name-bar input:focus{border-color:var(--accent)}
+
+    /* ── Progress ── */
+    .progress-wrap{max-width:880px;margin:1.4rem auto 0;padding:0 1.25rem}
+    .progress-row{display:flex;align-items:center;gap:.75rem;margin-bottom:2rem}
+    .progress-bar{flex:1;height:7px;background:var(--border);border-radius:100px;overflow:hidden}
+    .progress-fill{height:100%;background:var(--accent);border-radius:100px;width:0%;transition:width .35s ease}
+    .progress-label{font-size:.78rem;font-weight:600;color:var(--muted);white-space:nowrap}
+
+    /* ── Layout ── */
+    main{max-width:880px;margin:0 auto;padding:0 1.25rem 6rem}
+
+    /* ── Cards ── */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 1.6rem;margin-bottom:1.3rem;box-shadow:var(--shadow)}
+    .card-hd{margin-bottom:.8rem}
+    .ex-label{display:block;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.18rem}
+    .ex-title{font-family:"Outfit",sans-serif;font-size:1.05rem;font-weight:700;color:var(--text)}
+    .card-instr{font-size:.9rem;color:var(--muted);margin-bottom:1.1rem;line-height:1.6}
+
+    /* ── Word bank ── */
+    .word-bank{display:flex;flex-wrap:wrap;gap:.38rem;padding:.7rem 1rem;background:color-mix(in srgb,var(--accent) 6%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 18%,var(--border));border-radius:8px;margin-bottom:1.2rem}
+    .word-chip{padding:.2rem .65rem;border-radius:100px;background:var(--surface);border:1px solid var(--border);font-size:.83rem;font-weight:500}
+
+    /* ── Gap-fill ── */
+    .gap-row{display:flex;align-items:baseline;flex-wrap:wrap;gap:.3rem .4rem;margin-bottom:1rem;font-size:.94rem;line-height:1.7}
+    .gap-num{font-family:"Outfit",sans-serif;font-weight:700;color:var(--accent);min-width:1.4rem;flex-shrink:0}
+    .gap-inp{border:none;border-bottom:2px solid var(--border);background:transparent;color:var(--text);font-family:"DM Sans",sans-serif;font-size:.94rem;padding:.2rem .3rem;min-width:100px;outline:none;transition:border-color .15s}
+    .gap-inp:focus{border-bottom-color:var(--accent)}
+    .gap-inp.correct{border-color:#16a34a;color:#16a34a}
+    .gap-inp.wrong{border-color:#dc2626;color:#dc2626}
+    .gap-fb{font-size:.82rem;margin-left:.2rem}
+    .gap-fb.c{color:#16a34a}
+    .gap-fb.w{color:#dc2626}
+
+    /* ── Ex2 sentence pairs ── */
+    .sent-pair{margin-bottom:1.1rem;font-size:.94rem}
+    .sent-orig{color:var(--muted);margin-bottom:.3rem}
+    .sent-fill{display:flex;align-items:baseline;flex-wrap:wrap;gap:.3rem .4rem}
+    .sent-num{font-family:"Outfit",sans-serif;font-weight:700;color:var(--accent);min-width:1.4rem;flex-shrink:0}
+
+    /* ── Buttons ── */
+    .btn-row{display:flex;gap:.6rem;margin-top:1.2rem;flex-wrap:wrap}
+    .btn{font-family:"DM Sans",sans-serif;font-size:.83rem;font-weight:600;padding:.42rem 1.05rem;border-radius:8px;cursor:pointer;border:1.5px solid transparent;transition:all .15s}
+    .btn-check{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .btn-check:hover{opacity:.88}
+    .btn-reset{background:transparent;color:var(--muted);border-color:var(--border)}
+    .btn-reset:hover{border-color:var(--accent);color:var(--accent)}
+    .ex-status{font-size:.82rem;color:var(--muted);margin-top:.5rem;min-height:1.2em}
+    .ex-status.all-good{color:#16a34a;font-weight:600}
+
+    /* ── Send card ── */
+    .send-card{background:color-mix(in srgb,var(--accent) 7%,var(--surface));border:1.5px solid color-mix(in srgb,var(--accent) 22%,var(--border));border-radius:var(--radius);padding:1.5rem 1.6rem;margin-top:2rem;text-align:center}
+    .send-card h3{font-family:"Outfit",sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:.4rem}
+    .send-card p{font-size:.88rem;color:var(--muted);margin-bottom:1rem}
+    .btn-send{display:inline-flex;align-items:center;gap:.45rem;background:var(--accent);color:#fff;font-family:"DM Sans",sans-serif;font-size:.88rem;font-weight:600;padding:.55rem 1.4rem;border-radius:10px;border:none;cursor:pointer;transition:opacity .15s}
+    .btn-send:hover{opacity:.88}
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="lesson-header">
+  <div class="header-dots"></div>
+  <div class="header-inner">
+    <button class="theme-toggle" onclick="toggleTheme()">🌙 Theme</button>
+    <p class="header-eyebrow">Homework · Unit 3A</p>
+    <h1>Ideas</h1>
+    <p class="header-sub">Vocabulary — expressions with <em>idea</em></p>
+  </div>
+</header>
+
+<!-- Name bar -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<!-- Progress -->
+<div class="progress-wrap">
+  <div class="progress-row">
+    <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+    <span class="progress-label" id="plabel">0 / 2</span>
+  </div>
+
+  <main>
+
+    <!-- Exercise 1 -->
+    <div class="card">
+      <div class="card-hd">
+        <span class="ex-label">Exercise 1</span>
+        <span class="ex-title">Complete the definitions</span>
+      </div>
+      <p class="card-instr">Complete each definition with a word or phrase from the box.</p>
+
+      <div class="word-bank">
+        <span class="word-chip">bounce</span>
+        <span class="word-chip">brainwave</span>
+        <span class="word-chip">dawns</span>
+        <span class="word-chip">idea</span>
+        <span class="word-chip">out of</span>
+        <span class="word-chip">passing</span>
+        <span class="word-chip">springs</span>
+      </div>
+
+      <div class="gap-row">
+        <span class="gap-num">1</span>
+        <span>If you have a bright</span>
+        <input class="gap-inp" id="g1-1" data-ans="idea" placeholder="…">
+        <span>, it's very clever.</span>
+        <span class="gap-fb" id="gf1-1"></span>
+      </div>
+
+      <div class="gap-row">
+        <span class="gap-num">2</span>
+        <span>If you are</span>
+        <input class="gap-inp" id="g1-2" data-ans="out of" placeholder="…" style="min-width:80px">
+        <span>ideas, you don't know what to do next.</span>
+        <span class="gap-fb" id="gf1-2"></span>
+      </div>
+
+      <div class="gap-row">
+        <span class="gap-num">3</span>
+        <span>If something</span>
+        <input class="gap-inp" id="g1-3" data-ans="springs" placeholder="…">
+        <span>to mind, you suddenly think about it.</span>
+        <span class="gap-fb" id="gf1-3"></span>
+      </div>
+
+      <div class="gap-row">
+        <span class="gap-num">4</span>
+        <span>If something</span>
+        <input class="gap-inp" id="g1-4" data-ans="dawns" placeholder="…">
+        <span>on you, you realise it.</span>
+        <span class="gap-fb" id="gf1-4"></span>
+      </div>
+
+      <div class="gap-row">
+        <span class="gap-num">5</span>
+        <span>If you</span>
+        <input class="gap-inp" id="g1-5" data-ans="bounce" placeholder="…">
+        <span>ideas around, you discuss them with other people.</span>
+        <span class="gap-fb" id="gf1-5"></span>
+      </div>
+
+      <div class="gap-row">
+        <span class="gap-num">6</span>
+        <span>If you have a</span>
+        <input class="gap-inp" id="g1-6" data-ans="passing" placeholder="…">
+        <span>thought about something, you have an idea which you haven't thought about in great detail.</span>
+        <span class="gap-fb" id="gf1-6"></span>
+      </div>
+
+      <div class="gap-row">
+        <span class="gap-num">7</span>
+        <span>If you have a</span>
+        <input class="gap-inp" id="g1-7" data-ans="brainwave" placeholder="…">
+        <span>, you have a sudden clever idea.</span>
+        <span class="gap-fb" id="gf1-7"></span>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx1()">Check</button>
+        <button class="btn btn-reset" onclick="resetEx1()">Reset</button>
+      </div>
+      <p class="ex-status" id="st1"></p>
+    </div>
+
+    <!-- Exercise 2 -->
+    <div class="card">
+      <div class="card-hd">
+        <span class="ex-label">Exercise 2</span>
+        <span class="ex-title">Complete the second sentence</span>
+      </div>
+      <p class="card-instr">Complete the second sentence using a word from the box so it has a similar meaning to the first. Type only the missing word.</p>
+
+      <div class="word-bank">
+        <span class="word-chip">bounce</span>
+        <span class="word-chip">brainwave</span>
+        <span class="word-chip">bright</span>
+        <span class="word-chip">dawned</span>
+        <span class="word-chip">given</span>
+        <span class="word-chip"><s>occurs</s></span>
+        <span class="word-chip">out</span>
+        <span class="word-chip">thought</span>
+      </div>
+
+      <!-- 1 (model) -->
+      <div class="sent-pair">
+        <div class="sent-orig">1 &nbsp;I feel Gloria's up to something.</div>
+        <div class="sent-fill">
+          <span class="sent-num"></span>
+          <span>→ It <em>occurs to me</em> that Gloria's up to something.</span>
+          <span style="font-size:.78rem;color:var(--accent);font-weight:600;margin-left:.4rem">(example)</span>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="sent-pair">
+        <div class="sent-orig">2 &nbsp;Let's discuss some ideas for our project.</div>
+        <div class="sent-fill">
+          <span class="sent-num">→</span>
+          <span>Let's</span>
+          <input class="gap-inp" id="g2-2" data-ans="bounce" placeholder="…">
+          <span>some ideas around for our project.</span>
+          <span class="gap-fb" id="gf2-2"></span>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="sent-pair">
+        <div class="sent-orig">3 &nbsp;I'm hoping one of us will have a sudden, clever idea.</div>
+        <div class="sent-fill">
+          <span class="sent-num">→</span>
+          <span>Hopefully, one of us will have a</span>
+          <input class="gap-inp" id="g2-3" data-ans="brainwave" placeholder="…">
+          <span>.</span>
+          <span class="gap-fb" id="gf2-3"></span>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="sent-pair">
+        <div class="sent-orig">4 &nbsp;Oh, you've made me think, shall we just go home early?</div>
+        <div class="sent-fill">
+          <span class="sent-num">→</span>
+          <span>Oh, you've just</span>
+          <input class="gap-inp" id="g2-4" data-ans="given" placeholder="…">
+          <span>me the idea of going home early.</span>
+          <span class="gap-fb" id="gf2-4"></span>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="sent-pair">
+        <div class="sent-orig">5 &nbsp;Don't worry, it wasn't a serious idea.</div>
+        <div class="sent-fill">
+          <span class="sent-num">→</span>
+          <span>Don't worry, it was just a passing</span>
+          <input class="gap-inp" id="g2-5" data-ans="thought" placeholder="…">
+          <span>.</span>
+          <span class="gap-fb" id="gf2-5"></span>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="sent-pair">
+        <div class="sent-orig">6 &nbsp;Does anyone have any good suggestions?</div>
+        <div class="sent-fill">
+          <span class="sent-num">→</span>
+          <span>Does anyone have any</span>
+          <input class="gap-inp" id="g2-6" data-ans="bright" placeholder="…">
+          <span>ideas?</span>
+          <span class="gap-fb" id="gf2-6"></span>
+        </div>
+      </div>
+
+      <!-- 7 -->
+      <div class="sent-pair">
+        <div class="sent-orig">7 &nbsp;I've realised what it is that you need me to do.</div>
+        <div class="sent-fill">
+          <span class="sent-num">→</span>
+          <span>It's</span>
+          <input class="gap-inp" id="g2-7" data-ans="dawned" placeholder="…">
+          <span>on me what you need me to do.</span>
+          <span class="gap-fb" id="gf2-7"></span>
+        </div>
+      </div>
+
+      <!-- 8 -->
+      <div class="sent-pair">
+        <div class="sent-orig">8 &nbsp;You suggest something, I can't think of anything else.</div>
+        <div class="sent-fill">
+          <span class="sent-num">→</span>
+          <span>You suggest something, I'm</span>
+          <input class="gap-inp" id="g2-8" data-ans="out" placeholder="…">
+          <span>of ideas for now.</span>
+          <span class="gap-fb" id="gf2-8"></span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx2()">Check</button>
+        <button class="btn btn-reset" onclick="resetEx2()">Reset</button>
+      </div>
+      <p class="ex-status" id="st2"></p>
+    </div>
+
+    <!-- Send to Teacher -->
+    <div class="send-card">
+      <h3>📨 Send to Teacher</h3>
+      <p>Finished? Send your answers to your teacher.</p>
+      <button class="btn-send" onclick="sendToTeacher()">✉ Send my answers</button>
+    </div>
+
+  </main>
+</div><!-- end progress-wrap -->
+
+<script>
+  /* ── Progress ── */
+  var done = { ex1: false, ex2: false };
+  function updateProgress() {
+    var n = Object.values(done).filter(Boolean).length;
+    var total = Object.keys(done).length;
+    document.getElementById('pfill').style.width = (n / total * 100) + '%';
+    document.getElementById('plabel').textContent = n + ' / ' + total;
+  }
+
+  /* ── Theme ── */
+  function toggleTheme() {
+    var r = document.documentElement;
+    var cur = r.getAttribute('data-theme');
+    r.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+  }
+
+  /* ── Gap helpers ── */
+  function checkGap(inputEl, fbEl) {
+    var val = inputEl.value.toLowerCase().trim();
+    var alts = inputEl.dataset.ans.split(',').map(function(a){ return a.toLowerCase().trim(); });
+    var ok = alts.indexOf(val) !== -1;
+    inputEl.className = 'gap-inp ' + (ok ? 'correct' : 'wrong');
+    fbEl.className = 'gap-fb ' + (ok ? 'c' : 'w');
+    fbEl.textContent = ok ? '✓' : '✗ ' + alts[0];
+    return ok;
+  }
+  function resetGap(inputEl, fbEl) {
+    inputEl.value = '';
+    inputEl.className = 'gap-inp';
+    fbEl.className = 'gap-fb';
+    fbEl.textContent = '';
+  }
+
+  /* ── Exercise 1 ── */
+  function checkEx1() {
+    var correct = 0;
+    for (var i = 1; i <= 7; i++) {
+      if (checkGap(document.getElementById('g1-'+i), document.getElementById('gf1-'+i))) correct++;
+    }
+    var st = document.getElementById('st1');
+    if (correct === 7) {
+      st.textContent = '🎉 Perfect — all 7 correct!';
+      st.className = 'ex-status all-good';
+      done.ex1 = true;
+    } else {
+      st.textContent = correct + ' / 7 correct. Try again!';
+      st.className = 'ex-status';
+      done.ex1 = false;
+    }
+    updateProgress();
+  }
+  function resetEx1() {
+    for (var i = 1; i <= 7; i++) resetGap(document.getElementById('g1-'+i), document.getElementById('gf1-'+i));
+    document.getElementById('st1').textContent = '';
+    document.getElementById('st1').className = 'ex-status';
+    done.ex1 = false;
+    updateProgress();
+  }
+
+  /* ── Exercise 2 ── */
+  function checkEx2() {
+    var correct = 0;
+    var ids = [2,3,4,5,6,7,8];
+    ids.forEach(function(i) {
+      if (checkGap(document.getElementById('g2-'+i), document.getElementById('gf2-'+i))) correct++;
+    });
+    var st = document.getElementById('st2');
+    if (correct === 7) {
+      st.textContent = '🎉 Perfect — all 7 correct!';
+      st.className = 'ex-status all-good';
+      done.ex2 = true;
+    } else {
+      st.textContent = correct + ' / 7 correct. Try again!';
+      st.className = 'ex-status';
+      done.ex2 = false;
+    }
+    updateProgress();
+  }
+  function resetEx2() {
+    [2,3,4,5,6,7,8].forEach(function(i) {
+      resetGap(document.getElementById('g2-'+i), document.getElementById('gf2-'+i));
+    });
+    document.getElementById('st2').textContent = '';
+    document.getElementById('st2').className = 'ex-status';
+    done.ex2 = false;
+    updateProgress();
+  }
+
+  /* ── Send to Teacher ── */
+  function sendToTeacher() {
+    var name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+    var ex1lines = '';
+    var ex1answers = ['idea','out of','springs','dawns','bounce','passing','brainwave'];
+    for (var i = 1; i <= 7; i++) {
+      var inp = document.getElementById('g1-'+i);
+      var val = inp.value.trim() || '(blank)';
+      var correct = inp.dataset.ans.split(',').map(function(a){return a.toLowerCase().trim();}).indexOf(val.toLowerCase()) !== -1;
+      ex1lines += i + '. ' + val + ' ' + (correct ? '✓' : '✗ (answer: ' + ex1answers[i-1] + ')') + '\n';
+    }
+
+    var ex2prompts = [
+      "Let's ___ some ideas around…",
+      "…will have a ___.",
+      "…you've just ___ me the idea…",
+      "…it was just a passing ___.",
+      "…any ___ ideas?",
+      "It's ___ on me…",
+      "I'm ___ of ideas…"
+    ];
+    var ex2answers = ['bounce','brainwave','given','thought','bright','dawned','out'];
+    var ex2lines = '';
+    [2,3,4,5,6,7,8].forEach(function(i, idx) {
+      var inp = document.getElementById('g2-'+i);
+      var val = inp.value.trim() || '(blank)';
+      var correct = inp.dataset.ans.split(',').map(function(a){return a.toLowerCase().trim();}).indexOf(val.toLowerCase()) !== -1;
+      ex2lines += (idx+2) + '. ' + val + ' ' + (correct ? '✓' : '✗ (answer: ' + ex2answers[idx] + ')') + '\n';
+    });
+
+    var body =
+      'Student: ' + name + '\n\n' +
+      'Exercise 1 – Complete the definitions\n' +
+      ex1lines + '\n' +
+      'Exercise 2 – Complete the second sentence\n' +
+      ex2lines;
+
+    var subject = encodeURIComponent('Homework – ' + name + ' – Unit 3A Ideas');
+    window.location.href = 'mailto:dariia.mlnk@gmail.com?subject=' + subject + '&body=' + encodeURIComponent(body);
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>
