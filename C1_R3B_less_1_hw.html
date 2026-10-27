@@ -1,0 +1,762 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Problems & Solutions — Homework</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Nunito:wght@400;600;700;800&display=swap">
+
+<style>
+/* ── colour tokens ── */
+:root {
+  --ink:       #1a1a2e;
+  --ink-soft:  #3d3d5c;
+  --muted:     #7a7a9a;
+  --border:    #e0e0ef;
+  --surface:   #f7f7fb;
+  --card:      #ffffff;
+  --teal:      #1db8a8;
+  --teal-soft: #e6f9f7;
+  --sun:       #f2a900;
+  --sun-soft:  #fff8e6;
+  --rose:      #e05c7a;
+  --rose-soft: #fdeef2;
+  --correct:   #1db86a;
+  --correct-soft: #e6f9ef;
+  --wrong:     #e05c5c;
+  --wrong-soft: #fdeef0;
+  --bg:        #f0f0f8;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink:       #e8e8f5;
+    --ink-soft:  #b8b8d8;
+    --muted:     #7a7a9a;
+    --border:    #2a2a45;
+    --surface:   #1a1a2e;
+    --card:      #22223a;
+    --teal:      #1db8a8;
+    --teal-soft: #0d2e2a;
+    --sun:       #f2a900;
+    --sun-soft:  #2e2100;
+    --rose:      #e05c7a;
+    --rose-soft: #2e1020;
+    --correct:   #1db86a;
+    --correct-soft: #0d2e1a;
+    --wrong:     #e05c5c;
+    --wrong-soft: #2e1010;
+    --bg:        #12122a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ink:       #e8e8f5;
+  --ink-soft:  #b8b8d8;
+  --muted:     #7a7a9a;
+  --border:    #2a2a45;
+  --surface:   #1a1a2e;
+  --card:      #22223a;
+  --teal:      #1db8a8;
+  --teal-soft: #0d2e2a;
+  --sun:       #f2a900;
+  --sun-soft:  #2e2100;
+  --rose:      #e05c7a;
+  --rose-soft: #2e1020;
+  --correct:   #1db86a;
+  --correct-soft: #0d2e1a;
+  --wrong:     #e05c5c;
+  --wrong-soft: #2e1010;
+  --bg:        #12122a;
+  color-scheme: dark;
+}
+
+/* ── reset & base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  padding-left:  max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+
+/* ── header ── */
+.hw-header {
+  background: var(--ink);
+  color: #fff;
+  padding: 40px max(24px, env(safe-area-inset-left, 0px));
+  margin-left:  calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+}
+.hw-header .eyebrow {
+  font-family: 'Nunito', sans-serif;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 8px;
+}
+.hw-header h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  text-wrap: balance;
+  color: #fff;
+}
+.hw-header .subtitle {
+  font-size: .9rem;
+  color: rgba(255,255,255,.6);
+  margin-top: 6px;
+}
+.header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.theme-toggle {
+  background: rgba(255,255,255,.12);
+  border: none;
+  color: rgba(255,255,255,.8);
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background .15s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,.22); }
+
+/* ── sticky name bar ── */
+.name-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--card);
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  margin-left:  calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+  padding-left:  max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.name-bar label {
+  font-size: .82rem;
+  font-weight: 800;
+  color: var(--muted);
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+.name-bar input {
+  flex: 1;
+  min-width: 0;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 7px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--surface);
+  outline: none;
+  transition: border-color .15s;
+}
+.name-bar input:focus { border-color: var(--teal); }
+
+/* ── progress ── */
+.progress-wrap {
+  margin: 20px 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.progress-track {
+  flex: 1;
+  height: 8px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 99px;
+  width: 0%;
+  transition: width .4s ease;
+}
+.progress-label {
+  font-size: .78rem;
+  font-weight: 800;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ── exercise cards ── */
+.ex-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  padding: 28px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+.ex-hd {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ex-num {
+  background: var(--teal);
+  color: #fff;
+  border-radius: 8px;
+  padding: 2px 10px;
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+.ex-instr {
+  font-size: .88rem;
+  color: var(--ink-soft);
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+/* ── multiple choice items ── */
+.mc-item {
+  margin-bottom: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.mc-num {
+  font-weight: 800;
+  color: var(--muted);
+  font-size: .85rem;
+  min-width: 20px;
+}
+.mc-sentence {
+  font-size: .95rem;
+  color: var(--ink);
+  line-height: 1.5;
+  flex: 1;
+  min-width: 0;
+}
+.mc-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+  width: 100%;
+  padding-left: 30px;
+}
+.mc-btn {
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 5px 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: .88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+}
+.mc-btn:hover { border-color: var(--teal); background: var(--teal-soft); }
+.mc-btn.selected { border-color: var(--teal); background: var(--teal-soft); color: var(--ink); }
+.mc-btn.correct { border-color: var(--correct); background: var(--correct-soft); color: var(--correct); }
+.mc-btn.wrong   { border-color: var(--wrong);   background: var(--wrong-soft);   color: var(--wrong); }
+.mc-btn.show-correct { border-color: var(--correct); background: var(--correct-soft); color: var(--correct); }
+.mc-btn:disabled { cursor: default; }
+
+/* ── gap fill ── */
+.blog-text {
+  font-size: .92rem;
+  color: var(--ink);
+  line-height: 2.1;
+}
+.gap-input {
+  border: none;
+  border-bottom: 2.5px solid var(--teal);
+  background: transparent;
+  color: var(--ink);
+  font-family: 'Nunito', sans-serif;
+  font-size: .9rem;
+  font-weight: 700;
+  width: 120px;
+  padding: 0 4px;
+  outline: none;
+  transition: border-color .15s;
+  vertical-align: bottom;
+}
+.gap-input:focus { border-bottom-color: var(--rose); }
+.gap-input.correct { border-bottom-color: var(--correct); color: var(--correct); }
+.gap-input.wrong   { border-bottom-color: var(--wrong);   color: var(--wrong); }
+.gap-hint {
+  font-size: .7rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-left: 2px;
+}
+
+/* ── check / reset buttons ── */
+.ex-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+.btn-check {
+  background: var(--teal);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 24px;
+  font-family: 'Nunito', sans-serif;
+  font-size: .88rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.btn-check:hover { opacity: .88; }
+.btn-reset {
+  background: transparent;
+  color: var(--muted);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: .88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-reset:hover { border-color: var(--rose); color: var(--rose); }
+
+/* ── send to teacher card ── */
+.send-card {
+  background: var(--ink);
+  color: #fff;
+  border-radius: 18px;
+  padding: 28px 24px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+.send-card h3 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.send-card p {
+  font-size: .88rem;
+  color: rgba(255,255,255,.6);
+  margin-bottom: 20px;
+}
+.btn-send {
+  background: var(--teal);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 32px;
+  font-family: 'Nunito', sans-serif;
+  font-size: .95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.btn-send:hover { opacity: .88; }
+.send-note {
+  font-size: .75rem;
+  color: rgba(255,255,255,.4);
+  margin-top: 10px;
+}
+
+/* ── main wrapper ── */
+.main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-block: 0 0;
+}
+.content-pad { padding-top: 24px; padding-bottom: 0; }
+</style>
+
+<!-- HEADER -->
+<header class="hw-header">
+  <div class="header-top">
+    <div>
+      <div class="eyebrow">Homework</div>
+      <h1>Problems &amp; Solutions</h1>
+      <div class="subtitle">Unit 3B · Lesson 1 · Vocabulary</div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+  </div>
+</header>
+
+<!-- NAME BAR -->
+<div class="name-bar">
+  <label>Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<div class="main">
+<div class="content-pad">
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+  <span class="progress-label" id="plabel">0 / 2</span>
+</div>
+
+<!-- EXERCISE 1 -->
+<div class="ex-card" id="ex1card">
+  <div class="ex-hd"><span class="ex-num">Exercise 1</span> Choose the correct alternative</div>
+  <div class="ex-instr">Circle the word that completes each expression correctly.</div>
+
+  <div id="ex1items">
+
+    <div class="mc-item">
+      <span class="mc-num">1</span>
+      <div style="flex:1;min-width:0">
+        <div class="mc-sentence">I've been going round in _____ for days and still can't find the answer.</div>
+        <div class="mc-options">
+          <button class="mc-btn" data-q="1" data-val="circles" onclick="pickMC(this)">circles</button>
+          <button class="mc-btn" data-q="1" data-val="rounds"  onclick="pickMC(this)">rounds</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mc-item">
+      <span class="mc-num">2</span>
+      <div style="flex:1;min-width:0">
+        <div class="mc-sentence">I've been racking my _____ trying to remember where I left my keys.</div>
+        <div class="mc-options">
+          <button class="mc-btn" data-q="2" data-val="brain" onclick="pickMC(this)">brain</button>
+          <button class="mc-btn" data-q="2" data-val="head"  onclick="pickMC(this)">head</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mc-item">
+      <span class="mc-num">3</span>
+      <div style="flex:1;min-width:0">
+        <div class="mc-sentence">She needs some time to mull _____ the decision before she commits.</div>
+        <div class="mc-options">
+          <button class="mc-btn" data-q="3" data-val="over" onclick="pickMC(this)">over</button>
+          <button class="mc-btn" data-q="3" data-val="onto" onclick="pickMC(this)">onto</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mc-item">
+      <span class="mc-num">4</span>
+      <div style="flex:1;min-width:0">
+        <div class="mc-sentence">It took us an hour to _____ down exactly what was causing the error.</div>
+        <div class="mc-options">
+          <button class="mc-btn" data-q="4" data-val="pin"   onclick="pickMC(this)">pin</button>
+          <button class="mc-btn" data-q="4" data-val="punch" onclick="pickMC(this)">punch</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mc-item">
+      <span class="mc-num">5</span>
+      <div style="flex:1;min-width:0">
+        <div class="mc-sentence">We need to identify the _____ cause of the problem, not just the symptoms.</div>
+        <div class="mc-options">
+          <button class="mc-btn" data-q="5" data-val="root"   onclick="pickMC(this)">root</button>
+          <button class="mc-btn" data-q="5" data-val="bottom" onclick="pickMC(this)">bottom</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mc-item">
+      <span class="mc-num">6</span>
+      <div style="flex:1;min-width:0">
+        <div class="mc-sentence">This new research sheds _____ on how the brain processes language.</div>
+        <div class="mc-options">
+          <button class="mc-btn" data-q="6" data-val="light" onclick="pickMC(this)">light</button>
+          <button class="mc-btn" data-q="6" data-val="sun"   onclick="pickMC(this)">sun</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mc-item">
+      <span class="mc-num">7</span>
+      <div style="flex:1;min-width:0">
+        <div class="mc-sentence">After reviewing all the data, they could finally zero _____ on the solution.</div>
+        <div class="mc-options">
+          <button class="mc-btn" data-q="7" data-val="in" onclick="pickMC(this)">in</button>
+          <button class="mc-btn" data-q="7" data-val="up" onclick="pickMC(this)">up</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mc-item">
+      <span class="mc-num">8</span>
+      <div style="flex:1;min-width:0">
+        <div class="mc-sentence">Let's _____ stock of what we've achieved so far before moving forward.</div>
+        <div class="mc-options">
+          <button class="mc-btn" data-q="8" data-val="take" onclick="pickMC(this)">take</button>
+          <button class="mc-btn" data-q="8" data-val="make" onclick="pickMC(this)">make</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- #ex1items -->
+
+  <div class="ex-actions">
+    <button class="btn-check" onclick="checkEx1()">Check ✓</button>
+    <button class="btn-reset" onclick="resetEx1()">Reset</button>
+  </div>
+</div><!-- ex1card -->
+
+<!-- EXERCISE 2 -->
+<div class="ex-card" id="ex2card">
+  <div class="ex-hd"><span class="ex-num">Exercise 2</span> Complete the blog extract</div>
+  <div class="ex-instr">Fill in each gap with the correct word. The first and last letters are given as a hint.</div>
+
+  <div class="blog-text" id="blogText">
+    <p style="margin-bottom:1em">
+      <strong>The Incubation Effect</strong>
+    </p>
+    <p>
+      Have you ever been <input class="gap-input" id="g1" data-ans="racking" placeholder="r____g"><span class="gap-hint">(r…g)</span>
+      your brain over a difficult problem, only to have the answer pop into your head the moment you stop thinking about it?
+      Sometimes the best thing you can do is <input class="gap-input" id="g2" data-ans="mull" placeholder="m__l"><span class="gap-hint">(m…l)</span>
+      it over in the background and wait.
+    </p>
+    <p>
+      Psychologists call this the "incubation effect". When you hit a wall and feel completely
+      <input class="gap-input" id="g4" data-ans="baffled" placeholder="b_____d"><span class="gap-hint">(b…d)</span>,
+      your subconscious mind often continues to work on the problem. Suddenly a
+      <input class="gap-input" id="g3" data-ans="brainwave" placeholder="b_______e"><span class="gap-hint">(b…e)</span>
+      strikes — and the solution seems obvious.
+    </p>
+    <p>
+      Of course, it still helps to <input class="gap-input" id="g5" data-ans="deliberate" placeholder="d________e"><span class="gap-hint">(d…e)</span>
+      on a problem consciously first. The more you <input class="gap-input" id="g8" data-ans="ponder" placeholder="p____r"><span class="gap-hint">(p…r)</span>
+      the problem and try to <input class="gap-input" id="g6" data-ans="zero" placeholder="z__o"><span class="gap-hint">(z…o)</span>
+      in on the key issue, the more material your subconscious has to work with.
+    </p>
+    <p>
+      After your break, you may find you are no longer
+      <input class="gap-input" id="g7" data-ans="puzzled" placeholder="p_____d"><span class="gap-hint">(p…d)</span>
+      at all. Never <input class="gap-input" id="g9" data-ans="underestimate" placeholder="u___________e"><span class="gap-hint">(u…e)</span>
+      the power of rest — even if stepping away doesn't always seem
+      <input class="gap-input" id="g10" data-ans="intuitive" placeholder="i_______e"><span class="gap-hint">(i…e)</span>.
+    </p>
+  </div>
+
+  <div class="ex-actions">
+    <button class="btn-check" onclick="checkEx2()">Check ✓</button>
+    <button class="btn-reset" onclick="resetEx2()">Reset</button>
+  </div>
+</div><!-- ex2card -->
+
+<!-- SEND TO TEACHER -->
+<div class="send-card">
+  <h3>📬 Send to Teacher</h3>
+  <p>When you've finished, send your answers directly to your teacher.</p>
+  <button class="btn-send" onclick="sendToTeacher()">Send to Teacher</button>
+  <div class="send-note">Opens your email app with your answers pre-filled.</div>
+</div>
+
+</div><!-- content-pad -->
+</div><!-- main -->
+
+<script>
+/* ── shuffle ex1 options on load ── */
+function shuffleEx1() {
+  var groups = document.querySelectorAll('.mc-options');
+  groups.forEach(function(group) {
+    var btns = Array.from(group.querySelectorAll('.mc-btn'));
+    for (var i = btns.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      group.appendChild(btns[j]);
+      var tmp = btns[i]; btns[i] = btns[j]; btns[j] = tmp;
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', shuffleEx1);
+
+/* ── theme ── */
+var themeBtn = document.querySelector('.theme-toggle');
+function toggleTheme() {
+  var root = document.documentElement;
+  var cur = root.getAttribute('data-theme');
+  if (cur === 'dark') {
+    root.setAttribute('data-theme', 'light');
+    themeBtn.textContent = '🌙';
+  } else {
+    root.setAttribute('data-theme', 'dark');
+    themeBtn.textContent = '☀️';
+  }
+}
+
+/* ── progress ── */
+var done = { ex1: false, ex2: false };
+function updateProgress() {
+  var n = Object.values(done).filter(Boolean).length;
+  var total = Object.keys(done).length;
+  document.getElementById('pfill').style.width = (n / total * 100) + '%';
+  document.getElementById('plabel').textContent = n + ' / ' + total;
+}
+updateProgress();
+
+/* ── exercise 1 — multiple choice ── */
+var MC_CORRECT = { '1':'circles','2':'brain','3':'over','4':'pin','5':'root','6':'light','7':'in','8':'take' };
+var mc1Selections = {};
+
+function pickMC(btn) {
+  var q = btn.getAttribute('data-q');
+  // deselect siblings
+  var siblings = document.querySelectorAll('.mc-btn[data-q="' + q + '"]');
+  siblings.forEach(function(b) {
+    if (!b.disabled) b.classList.remove('selected');
+  });
+  btn.classList.add('selected');
+  mc1Selections[q] = btn.getAttribute('data-val');
+}
+
+function checkEx1() {
+  var allAnswered = true;
+  for (var q = 1; q <= 8; q++) {
+    if (!mc1Selections[String(q)]) { allAnswered = false; break; }
+  }
+  var allCorrect = true;
+  for (var q = 1; q <= 8; q++) {
+    var qStr = String(q);
+    var btns = document.querySelectorAll('.mc-btn[data-q="' + qStr + '"]');
+    btns.forEach(function(b) {
+      b.classList.remove('correct','wrong','show-correct','selected');
+      b.disabled = true;
+      var val = b.getAttribute('data-val');
+      var correct = MC_CORRECT[qStr];
+      if (val === correct) {
+        if (mc1Selections[qStr] === val) {
+          b.classList.add('correct');
+        } else {
+          b.classList.add('show-correct');
+          allCorrect = false;
+        }
+      } else if (mc1Selections[qStr] === val) {
+        b.classList.add('wrong');
+        allCorrect = false;
+      }
+    });
+    if (!mc1Selections[qStr]) allCorrect = false;
+  }
+  done.ex1 = allCorrect;
+  updateProgress();
+}
+
+function resetEx1() {
+  mc1Selections = {};
+  var btns = document.querySelectorAll('#ex1items .mc-btn');
+  btns.forEach(function(b) {
+    b.classList.remove('correct','wrong','show-correct','selected');
+    b.disabled = false;
+  });
+  done.ex1 = false;
+  updateProgress();
+}
+
+/* ── exercise 2 — gap fill ── */
+function checkEx2() {
+  var ids = ['g1','g2','g3','g4','g5','g6','g7','g8','g9','g10'];
+  var allCorrect = true;
+  ids.forEach(function(id) {
+    var inp = document.getElementById(id);
+    if (!inp) return;
+    var ans = inp.value.toLowerCase().trim();
+    var correct = inp.getAttribute('data-ans').toLowerCase().trim();
+    inp.classList.remove('correct','wrong');
+    if (ans === correct) {
+      inp.classList.add('correct');
+    } else {
+      inp.classList.add('wrong');
+      allCorrect = false;
+    }
+  });
+  done.ex2 = allCorrect;
+  updateProgress();
+}
+
+function resetEx2() {
+  var ids = ['g1','g2','g3','g4','g5','g6','g7','g8','g9','g10'];
+  ids.forEach(function(id) {
+    var inp = document.getElementById(id);
+    if (!inp) return;
+    inp.value = '';
+    inp.classList.remove('correct','wrong');
+  });
+  done.ex2 = false;
+  updateProgress();
+}
+
+/* ── send to teacher ── */
+function sendToTeacher() {
+  var name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+  // Exercise 1 summary
+  var ex1Lines = '';
+  var MC_LABELS = {
+    '1':'going round in ___ (circles/rounds)',
+    '2':'racking my ___ (brain/head)',
+    '3':'mull ___ (over/onto)',
+    '4':'___ down (pin/punch)',
+    '5':'___ cause (root/bottom)',
+    '6':'sheds ___ on (light/sun)',
+    '7':'zero ___ on (in/up)',
+    '8':'___ stock (take/make)'
+  };
+  for (var q = 1; q <= 8; q++) {
+    var sel = mc1Selections[String(q)] || '(no answer)';
+    var correct = MC_CORRECT[String(q)];
+    var mark = sel === correct ? '✓' : '✗';
+    ex1Lines += q + '. ' + MC_LABELS[String(q)] + ' → ' + sel + ' ' + mark + '\n';
+  }
+
+  // Exercise 2 summary
+  var gapIds = ['g1','g2','g3','g4','g5','g6','g7','g8','g9','g10'];
+  var gapLabels = [
+    'racking (r___g)',
+    'mull (m__l)',
+    'brainwave (b___e)',
+    'befuddled (b___d)',
+    'deliberate (d___e)',
+    'zero (z__o)',
+    'puzzled (p___d)',
+    'ponder (p___r)',
+    'underestimate (u___e)',
+    'intuitive (i___e)'
+  ];
+  var ex2Lines = '';
+  gapIds.forEach(function(id, i) {
+    var inp = document.getElementById(id);
+    var val = inp ? inp.value.trim() || '(blank)' : '(blank)';
+    var correct = inp ? inp.getAttribute('data-ans') : '';
+    var mark = val.toLowerCase() === correct.toLowerCase() ? '✓' : '✗';
+    ex2Lines += (i + 1) + '. ' + gapLabels[i] + ' → ' + val + ' ' + mark + '\n';
+  });
+
+  var bodyText = 'Student: ' + name + '\n\n'
+    + '=== Exercise 1: Choose the Correct Alternative ===\n'
+    + ex1Lines + '\n'
+    + '=== Exercise 2: Complete the Blog ===\n'
+    + ex2Lines;
+
+  var subject = encodeURIComponent('Homework – ' + name + ' – Problems & Solutions (U3B L1)');
+  var body    = encodeURIComponent(bodyText);
+  window.location.href = 'mailto:dariia.mlnk@gmail.com?subject=' + subject + '&body=' + body;
+}
+</script>
+
+</body></html>
