@@ -1,0 +1,966 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 5D Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* ─── Tokens ─── */
+:root {
+  --bg:#F0F9FF; --surface:#FFFFFF; --surface2:#E0F2FE;
+  --border:#BAE6FD; --text:#0C4A6E; --text-sub:#0369A1; --text-muted:#6B7280;
+  --primary:#0EA5E9; --primary-dark:#0284C7; --primary-light:#7DD3FC; --sky:#38BDF8;
+  --green:#10B981; --green-bg:#D1FAE5;
+  --red:#EF4444; --red-bg:#FEE2E2;
+  --amber:#D97706; --amber-bg:#FEF3C7;
+  --shadow:0 2px 8px rgba(14,165,233,.10); --shadow-lg:0 4px 20px rgba(14,165,233,.15);
+  --radius:14px; --radius-sm:8px;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0C1A27; --surface:#0F2438; --surface2:#0D2D45;
+  --border:#1E4B6B; --text:#E0F2FE; --text-sub:#7DD3FC; --text-muted:#9CA3AF;
+  --primary:#38BDF8; --primary-dark:#0EA5E9; --primary-light:#0284C7; --sky:#38BDF8;
+  --green:#34D399; --green-bg:#064E3B;
+  --red:#F87171; --red-bg:#450A0A;
+  --amber:#FCD34D; --amber-bg:#451A03;
+  --shadow:0 2px 8px rgba(0,0,0,.3); --shadow-lg:0 4px 20px rgba(0,0,0,.4);
+}}
+:root[data-theme="dark"]{
+  --bg:#0C1A27; --surface:#0F2438; --surface2:#0D2D45;
+  --border:#1E4B6B; --text:#E0F2FE; --text-sub:#7DD3FC; --text-muted:#9CA3AF;
+  --primary:#38BDF8; --primary-dark:#0EA5E9; --primary-light:#0284C7; --sky:#38BDF8;
+  --green:#34D399; --green-bg:#064E3B;
+  --red:#F87171; --red-bg:#450A0A;
+  --amber:#FCD34D; --amber-bg:#451A03;
+  --shadow:0 2px 8px rgba(0,0,0,.3); --shadow-lg:0 4px 20px rgba(0,0,0,.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:0 16px;padding-block:0 56px;}
+h1,h2,h3{font-family:'Nunito',sans-serif;text-wrap:balance;}
+button{cursor:pointer;font-family:'Inter',sans-serif;}
+
+/* ─── Header ─── */
+.site-header{
+  background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);
+  color:#fff;padding:36px 24px 52px;margin:0 -16px 40px;
+  position:relative;border-radius:0 0 36px 36px;overflow:hidden;
+}
+.site-header::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle at 76% 18%,rgba(255,255,255,.15) 0%,transparent 52%),
+             radial-gradient(circle at 12% 82%,rgba(255,255,255,.09) 0%,transparent 44%);
+}
+.header-inner{max-width:760px;margin:0 auto;position:relative;}
+.header-eyebrow{font-family:'Nunito',sans-serif;font-weight:900;font-size:.75rem;
+  letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:8px;}
+.site-header h1{font-size:clamp(1.6rem,5vw,2.3rem);font-weight:900;line-height:1.15;margin-bottom:6px;}
+.header-sub{font-size:.97rem;opacity:.88;font-weight:500;}
+.theme-toggle{
+  position:absolute;top:0;right:0;background:rgba(255,255,255,.18);border:none;
+  color:#fff;font-size:1.1rem;width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;transition:background .2s;
+}
+.theme-toggle:hover{background:rgba(255,255,255,.3);}
+
+/* ─── Name bar ─── */
+.name-bar{
+  position:sticky;top:0;z-index:10;background:var(--surface);
+  border-bottom:1.5px solid var(--border);padding:10px 16px;
+  display:flex;align-items:center;gap:10px;margin:0 -16px 28px;
+  box-shadow:var(--shadow);
+}
+.name-bar label{font-size:.88rem;font-weight:600;color:var(--text-sub);white-space:nowrap;}
+.name-bar input{
+  flex:1;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:6px 12px;font-size:.9rem;background:var(--bg);color:var(--text);
+  font-family:'Inter',sans-serif;outline:none;max-width:260px;
+}
+.name-bar input:focus{border-color:var(--primary);}
+
+/* ─── Progress ─── */
+.progress-wrap{margin-bottom:32px;}
+.prog-label{font-size:.82rem;font-weight:600;color:var(--text-sub);margin-bottom:6px;display:flex;justify-content:space-between;}
+.prog-track{background:var(--surface2);border-radius:100px;height:10px;overflow:hidden;}
+.prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--sky));
+  border-radius:100px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+
+/* ─── Section heading ─── */
+.section-heading{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:.72rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--primary);
+  margin:28px 0 12px;display:flex;align-items:center;gap:8px;
+}
+.section-heading::after{content:'';flex:1;height:1.5px;background:var(--border);}
+
+/* ─── Exercise cards ─── */
+.ex-card{
+  background:var(--surface);border:1.5px solid var(--border);border-left:4px solid var(--primary);
+  border-radius:var(--radius);padding:22px 22px 20px;margin-bottom:22px;box-shadow:var(--shadow);
+}
+.ex-hd{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;
+  color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+.ex-num{display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:.82rem;flex-shrink:0;}
+.ex-instr{font-size:.93rem;color:var(--text-sub);margin-bottom:16px;line-height:1.5;}
+
+/* ─── Buttons ─── */
+.btn-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.btn-check{
+  background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);
+  color:#fff;border:none;border-radius:100px;padding:9px 24px;
+  font-size:.88rem;font-weight:700;box-shadow:0 2px 10px rgba(14,165,233,.28);transition:opacity .2s;
+}
+.btn-check:hover{opacity:.88;}
+.btn-reset{
+  background:none;border:1.5px solid var(--border);border-radius:100px;
+  color:var(--text-muted);padding:9px 20px;font-size:.88rem;font-weight:600;
+  transition:border-color .2s,color .2s;
+}
+.btn-reset:hover{border-color:var(--primary);color:var(--primary);}
+.btn-reveal{
+  font-size:.8rem;font-weight:600;border:1.5px solid var(--primary-light);
+  background:var(--surface);color:var(--primary);border-radius:100px;padding:3px 12px;
+  transition:background .15s;margin-top:5px;
+}
+.btn-reveal:hover{background:var(--primary);color:#fff;}
+.btn-reveal:disabled{opacity:.4;cursor:default;}
+.score-msg{font-size:.88rem;font-weight:600;padding:8px 14px;
+  border-radius:var(--radius-sm);display:none;margin-top:12px;}
+.score-msg.good{background:var(--green-bg);color:var(--green);display:block;}
+.score-msg.bad{background:var(--red-bg);color:var(--red);display:block;}
+
+/* ─── Gap inputs ─── */
+.gap{
+  border:none;border-bottom:2px solid var(--primary-light);background:transparent;
+  font-size:.93rem;color:var(--text);font-family:'Inter',sans-serif;
+  outline:none;padding:2px 4px;width:90px;text-align:center;transition:border-color .2s;
+}
+.gap:focus{border-color:var(--primary);}
+.gap.correct{border-color:var(--green);background:var(--green-bg);border-radius:4px;color:var(--green);}
+.gap.wrong{border-color:var(--red);background:var(--red-bg);border-radius:4px;color:var(--red);}
+
+/* ─── Dialogue ─── */
+.dialogue-block{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:10px;}
+.d-num{font-size:.78rem;font-weight:700;color:var(--primary);margin-bottom:6px;
+  text-transform:uppercase;letter-spacing:.05em;}
+.d-line{font-size:.93rem;margin-bottom:4px;}
+.spk{font-weight:700;color:var(--primary);margin-right:4px;}
+
+/* ─── Error correction ─── */
+.corr-row{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:8px;}
+.err-sentence{font-size:.93rem;margin-bottom:6px;}
+.err-word{color:var(--red);font-weight:600;text-decoration:line-through;}
+.corr-answer{
+  display:none;font-size:.88rem;font-weight:600;
+  border-top:1px solid var(--border);padding-top:6px;margin-top:6px;
+}
+.corr-answer.correct{color:var(--green);}
+.corr-answer.correct::before{content:'✓ ';}
+.corr-answer.wrong{color:var(--amber);}
+.corr-answer.wrong::before{content:'✗ Not quite. Correction: ';}
+
+/* ─── Write sentences ─── */
+.write-row{margin-bottom:16px;}
+.write-prompt{font-size:.9rem;color:var(--text-sub);margin-bottom:5px;}
+.can-yes{color:var(--green);font-weight:700;}
+.can-no{color:var(--red);font-weight:700;}
+.write-ta{
+  width:100%;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:8px 12px;font-size:.9rem;font-family:'Inter',sans-serif;
+  color:var(--text);background:var(--bg);
+  outline:none;transition:border-color .2s;display:block;margin-bottom:5px;
+}
+.write-ta:focus{border-color:var(--primary);}
+.model-answer{
+  display:none;font-size:.88rem;font-weight:600;
+  margin-top:4px;padding:6px 12px;border-radius:var(--radius-sm);
+}
+.model-answer.correct{color:var(--green);background:var(--green-bg);}
+.model-answer.correct::before{content:'✓ ';}
+.model-answer.wrong{color:var(--amber);background:var(--amber-bg);}
+.model-answer.wrong::before{content:'✗ Not quite. Model answer: ';}
+
+/* ─── Matching ─── */
+.match-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.match-col-hd{font-size:.75rem;font-weight:700;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.match-item{
+  border:1.5px solid var(--border);background:var(--surface2);border-radius:var(--radius-sm);
+  padding:9px 12px;font-size:.85rem;cursor:pointer;user-select:none;
+  transition:border-color .15s,background .15s;margin-bottom:6px;position:relative;
+}
+.match-item:hover{border-color:var(--primary);}
+.match-item.sel{border-color:var(--primary);background:var(--primary);color:#fff;}
+.match-item.ok{border-color:var(--green);background:var(--green-bg);color:var(--green);cursor:default;font-weight:600;}
+.match-item.bad{border-color:var(--red);background:var(--red-bg);color:var(--red);}
+.match-badge{
+  display:inline-block;font-size:.73rem;font-weight:700;color:var(--primary);
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:4px;padding:1px 5px;margin-left:6px;
+}
+.match-item.ok .match-badge{color:var(--green);background:var(--green-bg);border-color:var(--green);}
+
+/* ─── Word choice ─── */
+.wc-row{display:flex;align-items:baseline;gap:6px;margin-bottom:10px;font-size:.93rem;flex-wrap:wrap;}
+.wc-num{font-weight:700;color:var(--text-sub);min-width:18px;}
+.wc-btn{
+  border:1.5px solid var(--primary-light);background:var(--surface2);color:var(--text);
+  border-radius:100px;padding:4px 14px;font-size:.88rem;font-weight:600;font-style:italic;
+  transition:background .15s,border-color .15s;
+}
+.wc-btn.selected{background:var(--primary);color:#fff;border-color:var(--primary);}
+.wc-btn.wc-correct{background:var(--green-bg);border-color:var(--green);color:var(--green);}
+.wc-btn.wc-wrong{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+
+/* ─── Gap grid (ex6) ─── */
+.gap-grid{display:grid;gap:10px;}
+.gap-line{font-size:.93rem;}
+
+/* ─── Word order ─── */
+.wo-item{margin-bottom:14px;}
+.wo-prompt{font-size:.85rem;color:var(--text-muted);margin-bottom:5px;}
+.wo-speaker{font-weight:700;color:var(--primary);margin-right:4px;font-size:.88rem;}
+.wo-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;}
+.chip{background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:100px;padding:3px 10px;font-size:.82rem;font-weight:600;color:var(--text-sub);}
+.wo-inp{
+  width:100%;border:none;border-bottom:2px solid var(--primary-light);
+  background:transparent;font-size:.93rem;color:var(--text);
+  font-family:'Inter',sans-serif;outline:none;padding:4px 2px;
+}
+.wo-inp:focus{border-color:var(--primary);}
+.wo-inp.correct{border-color:var(--green);color:var(--green);}
+.wo-inp.wrong{border-color:var(--red);color:var(--red);}
+.wo-reveal{display:none;font-size:.82rem;color:var(--amber);font-weight:600;margin-top:4px;}
+.wo-inp.wrong ~ .wo-reveal{display:block;}
+
+/* ─── Send card ─── */
+.send-card{
+  background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);
+  color:#fff;border-radius:var(--radius);padding:24px 22px;text-align:center;margin-top:8px;
+}
+.send-card h2{font-size:1.2rem;margin-bottom:6px;}
+.send-card p{font-size:.9rem;opacity:.88;margin-bottom:18px;}
+.btn-send{
+  background:#fff;color:var(--primary-dark);border:none;border-radius:100px;
+  padding:12px 32px;font-size:.95rem;font-weight:700;font-family:'Nunito',sans-serif;
+  box-shadow:0 4px 16px rgba(0,0,0,.18);transition:opacity .2s;
+}
+.btn-send:hover{opacity:.9;}
+
+@media(max-width:480px){
+  .match-cols{grid-template-columns:1fr;}
+  .name-bar input{max-width:180px;}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+    <div class="header-eyebrow">Homework · Unit 5D</div>
+    <h1>I Can Do That!</h1>
+    <div class="header-sub">can / can't · skills · making requests</div>
+  </div>
+</header>
+
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<div class="progress-wrap">
+  <div class="prog-label"><span>Exercises completed</span><span id="plabel">0 / 8</span></div>
+  <div class="prog-track"><div class="prog-fill" id="pfill"></div></div>
+</div>
+
+<!-- ══════ GRAMMAR ══════ -->
+<div class="section-heading">Grammar · can / can't for ability</div>
+
+<!-- Card 1: Correct the Mistake -->
+<div class="ex-card" id="card1">
+  <div class="ex-hd"><span class="ex-num">1</span> Correct the mistake in each sentence.</div>
+  <div class="ex-instr">Find the mistake and write the corrected sentence. Then press <strong>Check</strong>.</div>
+
+  <div class="corr-row">
+    <div class="err-sentence">1 He can <span class="err-word">to speak</span> five languages.</div>
+    <input type="text" class="write-ta" id="cta1">
+    <button class="btn-reveal" id="rb1" onclick="checkEx1(1)">Check</button>
+    <div class="corr-answer" id="c1">He can <strong>speak</strong> five languages. — no <em>to</em> after a modal verb</div>
+  </div>
+  <div class="corr-row">
+    <div class="err-sentence">2 She <span class="err-word">cans</span> play the guitar.</div>
+    <input type="text" class="write-ta" id="cta2">
+    <button class="btn-reveal" id="rb2" onclick="checkEx1(2)">Check</button>
+    <div class="corr-answer" id="c2">She <strong>can</strong> play the guitar. — <em>can</em> never adds -s</div>
+  </div>
+  <div class="corr-row">
+    <div class="err-sentence">3 <span class="err-word">Do you can</span> count to ten in German?</div>
+    <input type="text" class="write-ta" id="cta3">
+    <button class="btn-reveal" id="rb3" onclick="checkEx1(3)">Check</button>
+    <div class="corr-answer" id="c3"><strong>Can you</strong> count to ten in German? — modal goes to the front; no auxiliary <em>do</em></div>
+  </div>
+  <div class="corr-row">
+    <div class="err-sentence">4 I can't <span class="err-word">climbing</span> that tree.</div>
+    <input type="text" class="write-ta" id="cta4">
+    <button class="btn-reveal" id="rb4" onclick="checkEx1(4)">Check</button>
+    <div class="corr-answer" id="c4">I can't <strong>climb</strong> that tree. — modal + bare infinitive</div>
+  </div>
+  <div class="corr-row">
+    <div class="err-sentence">5 We can all <span class="err-word">to speak</span> English.</div>
+    <input type="text" class="write-ta" id="cta5">
+    <button class="btn-reveal" id="rb5" onclick="checkEx1(5)">Check</button>
+    <div class="corr-answer" id="c5">We can all <strong>speak</strong> English. — remove <em>to</em></div>
+  </div>
+  <div class="corr-row">
+    <div class="err-sentence">6 They can't <span class="err-word">cooking</span>.</div>
+    <input type="text" class="write-ta" id="cta6">
+    <button class="btn-reveal" id="rb6" onclick="checkEx1(6)">Check</button>
+    <div class="corr-answer" id="c6">They can't <strong>cook</strong>. — modal + bare infinitive</div>
+  </div>
+  <div class="corr-row">
+    <div class="err-sentence">7 <span class="err-word">Play chess you can?</span></div>
+    <input type="text" class="write-ta" id="cta7">
+    <button class="btn-reveal" id="rb7" onclick="checkEx1(7)">Check</button>
+    <div class="corr-answer" id="c7"><strong>Can you play chess?</strong> — question word order: modal + subject + verb</div>
+  </div>
+  <div class="corr-row">
+    <div class="err-sentence">8 I can't <span class="err-word">to swim</span> very well.</div>
+    <input type="text" class="write-ta" id="cta8">
+    <button class="btn-reveal" id="rb8" onclick="checkEx1(8)">Check</button>
+    <div class="corr-answer" id="c8">I can't <strong>swim</strong> very well. — remove <em>to</em></div>
+  </div>
+  <div class="btn-row"><button class="btn-reset" onclick="resetEx1()">Reset</button></div>
+</div>
+
+<!-- Card 2: Can or Can't conversations -->
+<div class="ex-card" id="card2">
+  <div class="ex-hd"><span class="ex-num">2</span> Complete the conversations with <em>can</em> or <em>can't</em>.</div>
+  <div class="ex-instr">Type <strong>can</strong> or <strong>can't</strong> in each gap.</div>
+
+  <div class="dialogue-block">
+    <div class="d-num">Conversation 1</div>
+    <div class="d-line"><span class="spk">A:</span> <input class="gap" data-ans="can" placeholder="____"> you swim?</div>
+    <div class="d-line"><span class="spk">B:</span> No, I <input class="gap" data-ans="can't,cant" placeholder="____">. But I'd like to!</div>
+  </div>
+  <div class="dialogue-block">
+    <div class="d-num">Conversation 2</div>
+    <div class="d-line"><span class="spk">A:</span> Where are you? I <input class="gap" data-ans="can't,cant" placeholder="____"> see you.</div>
+    <div class="d-line"><span class="spk">B:</span> I'm over here. <input class="gap" data-ans="can" placeholder="____"> you see me now?</div>
+  </div>
+  <div class="dialogue-block">
+    <div class="d-num">Conversation 3</div>
+    <div class="d-line"><span class="spk">A:</span> <input class="gap" data-ans="can" placeholder="____"> Carla speak French?</div>
+    <div class="d-line"><span class="spk">B:</span> Yes, she <input class="gap" data-ans="can" placeholder="____">. Very well.</div>
+  </div>
+  <div class="dialogue-block">
+    <div class="d-num">Conversation 4</div>
+    <div class="d-line"><span class="spk">A:</span> <input class="gap" data-ans="can" placeholder="____"> you help me?</div>
+    <div class="d-line"><span class="spk">B:</span> I'm sorry, I <input class="gap" data-ans="can't,cant" placeholder="____">. I have to leave right now.</div>
+  </div>
+  <div class="dialogue-block">
+    <div class="d-num">Conversation 5</div>
+    <div class="d-line"><span class="spk">A:</span> I <input class="gap" data-ans="can" placeholder="____"> climb that tree.</div>
+    <div class="d-line"><span class="spk">B:</span> No you <input class="gap" data-ans="can't,cant" placeholder="____">!</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-check" onclick="checkEx2()">Check</button>
+    <button class="btn-reset" onclick="resetEx2()">Reset</button>
+  </div>
+  <div id="score2" class="score-msg"></div>
+</div>
+
+<!-- Card 3: Write sentences -->
+<div class="ex-card" id="card3">
+  <div class="ex-hd"><span class="ex-num">3</span> Use the information to write sentences.</div>
+  <div class="ex-instr">Write one sentence using both <em>can</em> and <em>can't</em>. Then press <strong>Check</strong> to see if you're right.</div>
+
+  <div class="write-row">
+    <div class="write-prompt">1 James: play the piano <span class="can-yes">✓</span> &nbsp;play the guitar <span class="can-no">✗</span></div>
+    <input type="text" class="write-ta" id="wta1">
+    <button class="btn-reveal" id="mb1" onclick="checkEx3(1)">Check</button>
+    <div class="model-answer" id="ma1">James can play the piano, but he can't play the guitar.</div>
+  </div>
+  <div class="write-row">
+    <div class="write-prompt">2 Anna: make bread <span class="can-no">✗</span> &nbsp;make a good carrot cake <span class="can-yes">✓</span></div>
+    <input type="text" class="write-ta" id="wta2">
+    <button class="btn-reveal" id="mb2" onclick="checkEx3(2)">Check</button>
+    <div class="model-answer" id="ma2">Anna can't make bread, but she can make a good carrot cake.</div>
+  </div>
+  <div class="write-row">
+    <div class="write-prompt">3 I: speak English <span class="can-yes">✓</span> &nbsp;speak French <span class="can-no">✗</span></div>
+    <input type="text" class="write-ta" id="wta3">
+    <button class="btn-reveal" id="mb3" onclick="checkEx3(3)">Check</button>
+    <div class="model-answer" id="ma3">I can speak English, but I can't speak French.</div>
+  </div>
+  <div class="write-row">
+    <div class="write-prompt">4 My dad: sing quite well <span class="can-yes">✓</span> &nbsp;dance <span class="can-no">✗</span></div>
+    <input type="text" class="write-ta" id="wta4">
+    <button class="btn-reveal" id="mb4" onclick="checkEx3(4)">Check</button>
+    <div class="model-answer" id="ma4">My dad can sing quite well, but he can't dance.</div>
+  </div>
+  <div class="write-row">
+    <div class="write-prompt">5 Max: fix a car <span class="can-no">✗</span> &nbsp;drive one <span class="can-yes">✓</span></div>
+    <input type="text" class="write-ta" id="wta5">
+    <button class="btn-reveal" id="mb5" onclick="checkEx3(5)">Check</button>
+    <div class="model-answer" id="ma5">Max can't fix a car, but he can drive one.</div>
+  </div>
+  <div class="write-row">
+    <div class="write-prompt">6 I: say some words in Japanese <span class="can-yes">✓</span> &nbsp;have a conversation <span class="can-no">✗</span></div>
+    <input type="text" class="write-ta" id="wta6">
+    <button class="btn-reveal" id="mb6" onclick="checkEx3(6)">Check</button>
+    <div class="model-answer" id="ma6">I can say some words in Japanese, but I can't have a conversation.</div>
+  </div>
+  <div class="write-row">
+    <div class="write-prompt">7 She: play an instrument <span class="can-no">✗</span> &nbsp;sing beautifully <span class="can-yes">✓</span></div>
+    <input type="text" class="write-ta" id="wta7">
+    <button class="btn-reveal" id="mb7" onclick="checkEx3(7)">Check</button>
+    <div class="model-answer" id="ma7">She can't play an instrument, but she can sing beautifully.</div>
+  </div>
+  <div class="btn-row"><button class="btn-reset" onclick="resetEx3()">Reset</button></div>
+</div>
+
+<!-- ══════ VOCABULARY ══════ -->
+<div class="section-heading">Vocabulary · Skills</div>
+
+<!-- Card 4: Match verbs to phrases -->
+<div class="ex-card" id="card4">
+  <div class="ex-hd"><span class="ex-num">4</span> Match verbs 1–10 with a–j to make phrases.</div>
+  <div class="ex-instr">Click a verb, then click the matching phrase. Click a paired item again to re-pair.</div>
+
+  <div class="match-cols">
+    <div>
+      <div class="match-col-hd">Verbs</div>
+      <div class="match-item" data-ex="4" data-side="L" data-id="1" onclick="mClick4(this)">1 count</div>
+      <div class="match-item" data-ex="4" data-side="L" data-id="2" onclick="mClick4(this)">2 drive</div>
+      <div class="match-item" data-ex="4" data-side="L" data-id="3" onclick="mClick4(this)">3 play</div>
+      <div class="match-item" data-ex="4" data-side="L" data-id="4" onclick="mClick4(this)">4 bake</div>
+      <div class="match-item" data-ex="4" data-side="L" data-id="5" onclick="mClick4(this)">5 speak</div>
+      <div class="match-item" data-ex="4" data-side="L" data-id="6" onclick="mClick4(this)">6 climb</div>
+      <div class="match-item" data-ex="4" data-side="L" data-id="7" onclick="mClick4(this)">7 fix</div>
+      <div class="match-item" data-ex="4" data-side="L" data-id="8" onclick="mClick4(this)">8 spell</div>
+      <div class="match-item" data-ex="4" data-side="L" data-id="9" onclick="mClick4(this)">9 run</div>
+      <div class="match-item" data-ex="4" data-side="L" data-id="10" onclick="mClick4(this)">10 make</div>
+    </div>
+    <div>
+      <div class="match-col-hd">Phrases</div>
+      <div class="match-item" data-ex="4" data-side="R" data-id="a" onclick="mClick4(this)">a the word <em>Caribbean</em></div>
+      <div class="match-item" data-ex="4" data-side="R" data-id="b" onclick="mClick4(this)">b to 50 in Spanish</div>
+      <div class="match-item" data-ex="4" data-side="R" data-id="c" onclick="mClick4(this)">c another language</div>
+      <div class="match-item" data-ex="4" data-side="R" data-id="d" onclick="mClick4(this)">d a tree</div>
+      <div class="match-item" data-ex="4" data-side="R" data-id="e" onclick="mClick4(this)">e pizza</div>
+      <div class="match-item" data-ex="4" data-side="R" data-id="f" onclick="mClick4(this)">f five kilometres</div>
+      <div class="match-item" data-ex="4" data-side="R" data-id="g" onclick="mClick4(this)">g the piano</div>
+      <div class="match-item" data-ex="4" data-side="R" data-id="h" onclick="mClick4(this)">h a car</div>
+      <div class="match-item" data-ex="4" data-side="R" data-id="i" onclick="mClick4(this)">i a cake</div>
+      <div class="match-item" data-ex="4" data-side="R" data-id="j" onclick="mClick4(this)">j a computer</div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-check" onclick="checkEx4()">Check</button>
+    <button class="btn-reset" onclick="resetEx4()">Reset</button>
+  </div>
+  <div id="score4" class="score-msg"></div>
+</div>
+
+<!-- Card 5: Choose correct alternatives -->
+<div class="ex-card" id="card5">
+  <div class="ex-hd"><span class="ex-num">5</span> Choose the correct alternatives.</div>
+  <div class="ex-instr">Click the correct word in each sentence.</div>
+
+  <div class="wc-row"><span class="wc-num">1</span> Can you <button class="wc-btn" data-grp="g1" data-correct="1" onclick="wcPick(this)">speak</button> / <button class="wc-btn" data-grp="g1" onclick="wcPick(this)">tell</button> Italian?</div>
+  <div class="wc-row"><span class="wc-num">2</span> I think I can <button class="wc-btn" data-grp="g2" onclick="wcPick(this)">make</button> / <button class="wc-btn" data-grp="g2" data-correct="1" onclick="wcPick(this)">fix</button> your computer for you.</div>
+  <div class="wc-row"><span class="wc-num">3</span> Sarah wants to <button class="wc-btn" data-grp="g3" onclick="wcPick(this)">bake</button> / <button class="wc-btn" data-grp="g3" data-correct="1" onclick="wcPick(this)">cook</button> a meal for us tonight.</div>
+  <div class="wc-row"><span class="wc-num">4</span> Would you like to <button class="wc-btn" data-grp="g4" onclick="wcPick(this)">make</button> / <button class="wc-btn" data-grp="g4" data-correct="1" onclick="wcPick(this)">play</button> chess with me?</div>
+  <div class="wc-row"><span class="wc-num">5</span> I can <button class="wc-btn" data-grp="g5" data-correct="1" onclick="wcPick(this)">count</button> / <button class="wc-btn" data-grp="g5" onclick="wcPick(this)">speak</button> to ten in Korean.</div>
+  <div class="wc-row"><span class="wc-num">6</span> I can <button class="wc-btn" data-grp="g6" data-correct="1" onclick="wcPick(this)">run</button> / <button class="wc-btn" data-grp="g6" onclick="wcPick(this)">climb</button> for five kilometres.</div>
+  <div class="wc-row"><span class="wc-num">7</span> Can you <button class="wc-btn" data-grp="g7" onclick="wcPick(this)">speak</button> / <button class="wc-btn" data-grp="g7" data-correct="1" onclick="wcPick(this)">spell</button> your name for me, please?</div>
+  <div class="wc-row"><span class="wc-num">8</span> I want to <button class="wc-btn" data-grp="g8" data-correct="1" onclick="wcPick(this)">bake</button> / <button class="wc-btn" data-grp="g8" onclick="wcPick(this)">cook</button> a cake for mum's birthday.</div>
+
+  <div class="btn-row">
+    <button class="btn-check" onclick="checkEx5()">Check</button>
+    <button class="btn-reset" onclick="resetEx5()">Reset</button>
+  </div>
+  <div id="score5" class="score-msg"></div>
+</div>
+
+<!-- Card 6: Complete with missing verbs -->
+<div class="ex-card" id="card6">
+  <div class="ex-hd"><span class="ex-num">6</span> Complete the sentences with the missing verbs.</div>
+  <div class="ex-instr">Use: <strong>fix · play · spell · speak · bake · run · count · play</strong></div>
+
+  <div class="gap-grid">
+    <div class="gap-line">1 The mechanic says she can't <input class="gap" data-ans="fix" placeholder="_______"> the car.</div>
+    <div class="gap-line">2 Can you <input class="gap" data-ans="play" placeholder="_______"> chess?</div>
+    <div class="gap-line">3 How do you <input class="gap" data-ans="spell" placeholder="_______"> your name?</div>
+    <div class="gap-line">4 Do you <input class="gap" data-ans="speak" placeholder="_______"> French?</div>
+    <div class="gap-line">5 Let's <input class="gap" data-ans="bake" placeholder="_______"> a cake for our anniversary.</div>
+    <div class="gap-line">6 He can <input class="gap" data-ans="run" placeholder="_______"> really fast.</div>
+    <div class="gap-line">7 My two-year-old can <input class="gap" data-ans="count" placeholder="_______"> to ten!</div>
+    <div class="gap-line">8 Susan can <input class="gap" data-ans="play" placeholder="_______"> the piano.</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-check" onclick="checkEx6()">Check</button>
+    <button class="btn-reset" onclick="resetEx6()">Reset</button>
+  </div>
+  <div id="score6" class="score-msg"></div>
+</div>
+
+<!-- ══════ FUNCTIONAL LANGUAGE ══════ -->
+<div class="section-heading">Functional Language · Make and respond to requests</div>
+
+<!-- Card 7: Match requests to responses -->
+<div class="ex-card" id="card7">
+  <div class="ex-hd"><span class="ex-num">7</span> Match requests 1–8 with responses a–h.</div>
+  <div class="ex-instr">Click a request, then click its matching response. Click again to re-pair.</div>
+
+  <div class="match-cols">
+    <div>
+      <div class="match-col-hd">Requests</div>
+      <div class="match-item" data-ex="7" data-side="L" data-id="1" onclick="mClick7(this)">1 Can I borrow your charger?</div>
+      <div class="match-item" data-ex="7" data-side="L" data-id="2" onclick="mClick7(this)">2 Could you help me clean the house, please?</div>
+      <div class="match-item" data-ex="7" data-side="L" data-id="3" onclick="mClick7(this)">3 Excuse me, could you move your bag, please?</div>
+      <div class="match-item" data-ex="7" data-side="L" data-id="4" onclick="mClick7(this)">4 Can you lend me a pen?</div>
+      <div class="match-item" data-ex="7" data-side="L" data-id="5" onclick="mClick7(this)">5 Could I borrow £5?</div>
+      <div class="match-item" data-ex="7" data-side="L" data-id="6" onclick="mClick7(this)">6 Can you help me with my homework?</div>
+      <div class="match-item" data-ex="7" data-side="L" data-id="7" onclick="mClick7(this)">7 Could you lend me your bike?</div>
+      <div class="match-item" data-ex="7" data-side="L" data-id="8" onclick="mClick7(this)">8 Can you help me fix my computer?</div>
+    </div>
+    <div>
+      <div class="match-col-hd">Responses</div>
+      <div class="match-item" data-ex="7" data-side="R" data-id="a" onclick="mClick7(this)">a I'm afraid not. I've only got this one.</div>
+      <div class="match-item" data-ex="7" data-side="R" data-id="b" onclick="mClick7(this)">b I'm sorry, I need it for my phone.</div>
+      <div class="match-item" data-ex="7" data-side="R" data-id="c" onclick="mClick7(this)">c I can't, I'm sorry. I'm really bad with technology.</div>
+      <div class="match-item" data-ex="7" data-side="R" data-id="d" onclick="mClick7(this)">d Of course I can. I'm good at maths.</div>
+      <div class="match-item" data-ex="7" data-side="R" data-id="e" onclick="mClick7(this)">e Sure, no problem. Where are you going?</div>
+      <div class="match-item" data-ex="7" data-side="R" data-id="f" onclick="mClick7(this)">f Sure, no problem. I'll clean the kitchen.</div>
+      <div class="match-item" data-ex="7" data-side="R" data-id="g" onclick="mClick7(this)">g I'm afraid not. I haven't got any money myself!</div>
+      <div class="match-item" data-ex="7" data-side="R" data-id="h" onclick="mClick7(this)">h Of course I can. Sorry, I'll put it up here.</div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-check" onclick="checkEx7()">Check</button>
+    <button class="btn-reset" onclick="resetEx7()">Reset</button>
+  </div>
+  <div id="score7" class="score-msg"></div>
+</div>
+
+<!-- Card 8: Word order -->
+<div class="ex-card" id="card8">
+  <div class="ex-hd"><span class="ex-num">8</span> Put the words in the correct order to complete the conversations.</div>
+  <div class="ex-instr">Type the correct sentence. Include the question mark.</div>
+
+  <div class="wo-item">
+    <div class="wo-prompt"><span class="wo-speaker">A:</span> the / Can / window / open / you / ?</div>
+    <div class="wo-chips"><span class="chip">the</span><span class="chip">Can</span><span class="chip">window</span><span class="chip">open</span><span class="chip">you</span><span class="chip">?</span></div>
+    <input class="wo-inp" data-ans="can you open the window?" placeholder="Type the sentence…">
+    <div class="wo-reveal">✓ Can you open the window?</div>
+  </div>
+  <div class="wo-item">
+    <div class="wo-prompt"><span class="wo-speaker">A:</span> phone / your / Can / borrow / I / ?</div>
+    <div class="wo-chips"><span class="chip">phone</span><span class="chip">your</span><span class="chip">Can</span><span class="chip">borrow</span><span class="chip">I</span><span class="chip">?</span></div>
+    <input class="wo-inp" data-ans="can i borrow your phone?" placeholder="Type the sentence…">
+    <div class="wo-reveal">✓ Can I borrow your phone?</div>
+  </div>
+  <div class="wo-item">
+    <div class="wo-prompt"><span class="wo-speaker">A:</span> the / Could / me / door / for / open / you / ?</div>
+    <div class="wo-chips"><span class="chip">the</span><span class="chip">Could</span><span class="chip">me</span><span class="chip">door</span><span class="chip">for</span><span class="chip">open</span><span class="chip">you</span><span class="chip">?</span></div>
+    <input class="wo-inp" data-ans="could you open the door for me?" placeholder="Type the sentence…">
+    <div class="wo-reveal">✓ Could you open the door for me?</div>
+  </div>
+  <div class="wo-item">
+    <div class="wo-prompt"><span class="wo-speaker">A:</span> washing-up / me / the / Could / help / you / with / ?</div>
+    <div class="wo-chips"><span class="chip">washing-up</span><span class="chip">me</span><span class="chip">the</span><span class="chip">Could</span><span class="chip">help</span><span class="chip">you</span><span class="chip">with</span><span class="chip">?</span></div>
+    <input class="wo-inp" data-ans="could you help me with the washing-up?" placeholder="Type the sentence…">
+    <div class="wo-reveal">✓ Could you help me with the washing-up?</div>
+  </div>
+  <div class="wo-item">
+    <div class="wo-prompt"><span class="wo-speaker">A:</span> I / here / sit / Can / ?</div>
+    <div class="wo-chips"><span class="chip">I</span><span class="chip">here</span><span class="chip">sit</span><span class="chip">Can</span><span class="chip">?</span></div>
+    <input class="wo-inp" data-ans="can i sit here?" placeholder="Type the sentence…">
+    <div class="wo-reveal">✓ Can I sit here?</div>
+  </div>
+  <div class="wo-item">
+    <div class="wo-prompt"><span class="wo-speaker">A:</span> something / me / with / help / Can / you / ?</div>
+    <div class="wo-chips"><span class="chip">something</span><span class="chip">me</span><span class="chip">with</span><span class="chip">help</span><span class="chip">Can</span><span class="chip">you</span><span class="chip">?</span></div>
+    <input class="wo-inp" data-ans="can you help me with something?" placeholder="Type the sentence…">
+    <div class="wo-reveal">✓ Can you help me with something?</div>
+  </div>
+  <div class="wo-item">
+    <div class="wo-prompt"><span class="wo-speaker">A:</span> laptop / office / my / you / get / my / from / Can / ?</div>
+    <div class="wo-chips"><span class="chip">laptop</span><span class="chip">office</span><span class="chip">my</span><span class="chip">you</span><span class="chip">get</span><span class="chip">my</span><span class="chip">from</span><span class="chip">Can</span><span class="chip">?</span></div>
+    <input class="wo-inp" data-ans="can you get my laptop from my office?" placeholder="Type the sentence…">
+    <div class="wo-reveal">✓ Can you get my laptop from my office?</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-check" onclick="checkEx8()">Check</button>
+    <button class="btn-reset" onclick="resetEx8()">Reset</button>
+  </div>
+  <div id="score8" class="score-msg"></div>
+</div>
+
+<!-- Send to Teacher -->
+<div class="send-card">
+  <h2>All done? 🎉</h2>
+  <p>Send your answers to your teacher by email.</p>
+  <button class="btn-send" onclick="sendToTeacher()">✉ Send to Teacher</button>
+</div>
+
+<script>
+// ─── Theme ───
+function toggleTheme(){
+  const r=document.documentElement;
+  r.dataset.theme=r.dataset.theme==='dark'?'light':'dark';
+  document.querySelector('.theme-toggle').textContent=r.dataset.theme==='dark'?'☀️':'🌙';
+}
+
+// ─── Progress ───
+const done={ex1:false,ex2:false,ex3:false,ex4:false,ex5:false,ex6:false,ex7:false,ex8:false};
+function updateProgress(){
+  const n=Object.values(done).filter(Boolean).length;
+  document.getElementById('pfill').style.width=(n/8*100)+'%';
+  document.getElementById('plabel').textContent=n+' / 8';
+}
+
+// ─── Score helper ───
+function showScore(id,ok,total){
+  const el=document.getElementById(id);
+  if(ok===total){el.textContent='🎉 '+ok+'/'+total+' — excellent!';el.className='score-msg good';}
+  else{el.textContent='✗ '+ok+'/'+total+' correct. Check the highlighted answers.';el.className='score-msg bad';}
+}
+
+// ─── EX 1: Write corrections ───
+const EX1ANS=[null,
+  "he can speak five languages",
+  "she can play the guitar",
+  "can you count to ten in german",
+  "i cant climb that tree",
+  "we can all speak english",
+  "they cant cook",
+  "can you play chess",
+  "i cant swim very well"
+];
+function norm1(s){return s.toLowerCase().replace(/[''`]/g,'').replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim();}
+let ex1Done=0;
+function checkEx1(n){
+  const ta=document.getElementById('cta'+n);
+  const fb=document.getElementById('c'+n);
+  const b=document.getElementById('rb'+n);
+  const val=ta.value.trim();
+  if(!val){ta.style.borderColor='var(--red)';ta.focus();return;}
+  const isOk=norm1(val)===EX1ANS[n];
+  fb.className='corr-answer '+(isOk?'correct':'wrong');
+  fb.style.display='block';
+  b.textContent=isOk?'✓ Correct!':'↩ Try again';
+  if(isOk){b.disabled=true;ta.disabled=true;}
+  if(!b.dataset.counted){b.dataset.counted='1';ex1Done++;if(ex1Done>=8){done.ex1=true;updateProgress();}}
+}
+function resetEx1(){
+  ex1Done=0;
+  for(let i=1;i<=8;i++){
+    const ta=document.getElementById('cta'+i);ta.value='';ta.disabled=false;ta.style.borderColor='';
+    const fb=document.getElementById('c'+i);fb.style.display='none';fb.className='corr-answer';
+    const b=document.getElementById('rb'+i);b.textContent='Check';b.disabled=false;delete b.dataset.counted;
+  }
+  done.ex1=false;updateProgress();
+}
+
+// ─── EX 2: Can/Can't gaps ───
+function checkEx2(){
+  const gaps=document.querySelectorAll('#card2 .gap');let ok=0;
+  gaps.forEach(inp=>{
+    const v=inp.value.trim().toLowerCase().replace(/['']/g,"'");
+    const alts=inp.dataset.ans.split(',').map(a=>a.trim().toLowerCase());
+    inp.classList.remove('correct','wrong');
+    if(alts.some(a=>v===a)){inp.classList.add('correct');ok++;}else inp.classList.add('wrong');
+  });
+  showScore('score2',ok,gaps.length);
+  if(ok===gaps.length){done.ex2=true;updateProgress();}
+}
+function resetEx2(){
+  document.querySelectorAll('#card2 .gap').forEach(inp=>{inp.value='';inp.classList.remove('correct','wrong');});
+  const s=document.getElementById('score2');s.className='score-msg';s.textContent='';
+  done.ex2=false;updateProgress();
+}
+
+// ─── EX 3: Write sentences ───
+const EX3ANS=[null,
+  "james can play the piano but he cant play the guitar",
+  "anna cant make bread but she can make a good carrot cake",
+  "i can speak english but i cant speak french",
+  "my dad can sing quite well but he cant dance",
+  "max cant fix a car but he can drive one",
+  "i can say some words in japanese but i cant have a conversation",
+  "she cant play an instrument but she can sing beautifully"
+];
+function norm3(s){return s.toLowerCase().replace(/[''`]/g,'').replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim();}
+let ex3Done=0;
+function checkEx3(n){
+  const ta=document.getElementById('wta'+n);
+  const fb=document.getElementById('ma'+n);
+  const b=document.getElementById('mb'+n);
+  const val=ta.value.trim();
+  if(!val){ta.style.borderColor='var(--red)';ta.focus();return;}
+  const isOk=norm3(val)===EX3ANS[n];
+  fb.className='model-answer '+(isOk?'correct':'wrong');
+  fb.style.display='block';
+  b.textContent=isOk?'✓ Correct!':'↩ Try again';
+  if(isOk){b.disabled=true;ta.disabled=true;}
+  else{b.disabled=false;}
+  if(!b.dataset.counted){b.dataset.counted='1';ex3Done++;if(ex3Done>=7){done.ex3=true;updateProgress();}}
+}
+function resetEx3(){
+  ex3Done=0;
+  for(let i=1;i<=7;i++){
+    const ta=document.getElementById('wta'+i);ta.value='';ta.disabled=false;ta.style.borderColor='';
+    const fb=document.getElementById('ma'+i);fb.style.display='none';fb.className='model-answer';
+    const b=document.getElementById('mb'+i);b.textContent='Check';b.disabled=false;delete b.dataset.counted;
+  }
+  done.ex3=false;updateProgress();
+}
+
+// ─── EX 4: Match verbs (10×10) ───
+const ANS4={'1':'b','2':'h','3':'g','4':'i','5':'c','6':'d','7':'j','8':'a','9':'f','10':'e'};
+let mP4={},mL4=null,mR4=null;
+function mClick4(el){
+  if(el.classList.contains('ok'))return;
+  const side=el.dataset.side;
+  if(side==='L'){
+    if(mL4)mL4.classList.remove('sel');
+    if(mL4===el){mL4=null;return;}
+    mL4=el;el.classList.add('sel');
+    if(mR4)commitPair4();
+  }else{
+    if(mR4)mR4.classList.remove('sel');
+    if(mR4===el){mR4=null;return;}
+    mR4=el;el.classList.add('sel');
+    if(mL4)commitPair4();
+  }
+}
+function commitPair4(){
+  const lId=mL4.dataset.id,rId=mR4.dataset.id;
+  // clear old badge from left
+  let ob=mL4.querySelector('.match-badge');if(ob)ob.remove();
+  // clear right item that was paired to this left
+  if(mP4[lId]){
+    const oldR=document.querySelector('#card4 [data-side="R"][data-id="'+mP4[lId]+'"]');
+    if(oldR){const ob2=oldR.querySelector('.match-badge');if(ob2)ob2.remove();oldR.classList.remove('sel');}
+  }
+  // clear left item that was paired to this right
+  const prevL=Object.keys(mP4).find(k=>mP4[k]===rId);
+  if(prevL&&prevL!==lId){
+    const prevEl=document.querySelector('#card4 [data-side="L"][data-id="'+prevL+'"]');
+    if(prevEl){const ob3=prevEl.querySelector('.match-badge');if(ob3)ob3.remove();}
+    delete mP4[prevL];
+  }
+  // clear old badge from right
+  const ob4=mR4.querySelector('.match-badge');if(ob4)ob4.remove();
+  // record & badge
+  mP4[lId]=rId;
+  const bl=document.createElement('span');bl.className='match-badge';bl.textContent='→'+rId;mL4.appendChild(bl);
+  const br=document.createElement('span');br.className='match-badge';br.textContent='←'+lId;mR4.appendChild(br);
+  mL4.classList.remove('sel');mR4.classList.remove('sel');mL4=null;mR4=null;
+}
+function checkEx4(){
+  let ok=0;
+  document.querySelectorAll('#card4 [data-side="L"]').forEach(el=>{
+    el.classList.remove('ok','bad');
+    if(mP4[el.dataset.id]===ANS4[el.dataset.id]){el.classList.add('ok');ok++;}
+    else if(mP4[el.dataset.id])el.classList.add('bad');
+  });
+  showScore('score4',ok,10);
+  if(ok===10){done.ex4=true;updateProgress();}
+}
+function resetEx4(){
+  mP4={};mL4=null;mR4=null;
+  document.querySelectorAll('#card4 .match-item').forEach(el=>{
+    el.classList.remove('ok','bad','sel');
+    const b=el.querySelector('.match-badge');if(b)b.remove();
+  });
+  const s=document.getElementById('score4');s.className='score-msg';s.textContent='';
+  done.ex4=false;updateProgress();
+}
+
+// ─── EX 5: Word choice ───
+function wcPick(btn){
+  const grp=btn.dataset.grp;
+  document.querySelectorAll('[data-grp="'+grp+'"]').forEach(b=>b.classList.remove('selected','wc-correct','wc-wrong'));
+  btn.classList.add('selected');
+}
+function checkEx5(){
+  const grps=[...new Set([...document.querySelectorAll('#card5 .wc-btn')].map(b=>b.dataset.grp))];
+  let ok=0;
+  grps.forEach(grp=>{
+    const btns=document.querySelectorAll('[data-grp="'+grp+'"]');
+    btns.forEach(b=>{
+      b.classList.remove('wc-correct','wc-wrong');
+      if(b.dataset.correct==='1'){b.classList.add('wc-correct');if(b.classList.contains('selected'))ok++;}
+      else if(b.classList.contains('selected'))b.classList.add('wc-wrong');
+    });
+  });
+  showScore('score5',ok,grps.length);
+  if(ok===grps.length){done.ex5=true;updateProgress();}
+}
+function resetEx5(){
+  document.querySelectorAll('#card5 .wc-btn').forEach(b=>b.classList.remove('selected','wc-correct','wc-wrong'));
+  const s=document.getElementById('score5');s.className='score-msg';s.textContent='';
+  done.ex5=false;updateProgress();
+}
+
+// ─── EX 6: Missing verbs ───
+function checkEx6(){
+  const gaps=document.querySelectorAll('#card6 .gap');let ok=0;
+  gaps.forEach(inp=>{
+    const v=inp.value.trim().toLowerCase();
+    const alts=inp.dataset.ans.toLowerCase().split(',');
+    inp.classList.remove('correct','wrong');
+    if(alts.some(a=>v===a.trim())){inp.classList.add('correct');ok++;}else inp.classList.add('wrong');
+  });
+  showScore('score6',ok,gaps.length);
+  if(ok===gaps.length){done.ex6=true;updateProgress();}
+}
+function resetEx6(){
+  document.querySelectorAll('#card6 .gap').forEach(inp=>{inp.value='';inp.classList.remove('correct','wrong');});
+  const s=document.getElementById('score6');s.className='score-msg';s.textContent='';
+  done.ex6=false;updateProgress();
+}
+
+// ─── EX 7: Match requests (8×8) ───
+const ANS7={'1':'b','2':'f','3':'h','4':'a','5':'g','6':'d','7':'e','8':'c'};
+let mP7={},mL7=null,mR7=null;
+function mClick7(el){
+  if(el.classList.contains('ok'))return;
+  const side=el.dataset.side;
+  if(side==='L'){
+    if(mL7)mL7.classList.remove('sel');
+    if(mL7===el){mL7=null;return;}
+    mL7=el;el.classList.add('sel');
+    if(mR7)commitPair7();
+  }else{
+    if(mR7)mR7.classList.remove('sel');
+    if(mR7===el){mR7=null;return;}
+    mR7=el;el.classList.add('sel');
+    if(mL7)commitPair7();
+  }
+}
+function commitPair7(){
+  const lId=mL7.dataset.id,rId=mR7.dataset.id;
+  let ob=mL7.querySelector('.match-badge');if(ob)ob.remove();
+  if(mP7[lId]){
+    const oldR=document.querySelector('#card7 [data-side="R"][data-id="'+mP7[lId]+'"]');
+    if(oldR){const ob2=oldR.querySelector('.match-badge');if(ob2)ob2.remove();oldR.classList.remove('sel');}
+  }
+  const prevL=Object.keys(mP7).find(k=>mP7[k]===rId);
+  if(prevL&&prevL!==lId){
+    const prevEl=document.querySelector('#card7 [data-side="L"][data-id="'+prevL+'"]');
+    if(prevEl){const ob3=prevEl.querySelector('.match-badge');if(ob3)ob3.remove();}
+    delete mP7[prevL];
+  }
+  const ob4=mR7.querySelector('.match-badge');if(ob4)ob4.remove();
+  mP7[lId]=rId;
+  const bl=document.createElement('span');bl.className='match-badge';bl.textContent='→'+rId;mL7.appendChild(bl);
+  const br=document.createElement('span');br.className='match-badge';br.textContent='←'+lId;mR7.appendChild(br);
+  mL7.classList.remove('sel');mR7.classList.remove('sel');mL7=null;mR7=null;
+}
+function checkEx7(){
+  let ok=0;
+  document.querySelectorAll('#card7 [data-side="L"]').forEach(el=>{
+    el.classList.remove('ok','bad');
+    if(mP7[el.dataset.id]===ANS7[el.dataset.id]){el.classList.add('ok');ok++;}
+    else if(mP7[el.dataset.id])el.classList.add('bad');
+  });
+  showScore('score7',ok,8);
+  if(ok===8){done.ex7=true;updateProgress();}
+}
+function resetEx7(){
+  mP7={};mL7=null;mR7=null;
+  document.querySelectorAll('#card7 .match-item').forEach(el=>{
+    el.classList.remove('ok','bad','sel');
+    const b=el.querySelector('.match-badge');if(b)b.remove();
+  });
+  const s=document.getElementById('score7');s.className='score-msg';s.textContent='';
+  done.ex7=false;updateProgress();
+}
+
+// ─── EX 8: Word order ───
+function checkEx8(){
+  const inps=document.querySelectorAll('#card8 .wo-inp');let ok=0;
+  inps.forEach(inp=>{
+    const v=inp.value.trim().toLowerCase().replace(/\s+/g,' ');
+    const ans=inp.dataset.ans.toLowerCase();
+    inp.classList.remove('correct','wrong');
+    if(v===ans||v===ans.replace(/\?$/,'')){inp.classList.add('correct');ok++;}
+    else inp.classList.add('wrong');
+  });
+  showScore('score8',ok,inps.length);
+  if(ok===inps.length){done.ex8=true;updateProgress();}
+}
+function resetEx8(){
+  document.querySelectorAll('#card8 .wo-inp').forEach(inp=>{inp.value='';inp.classList.remove('correct','wrong');});
+  const s=document.getElementById('score8');s.className='score-msg';s.textContent='';
+  done.ex8=false;updateProgress();
+}
+
+// ─── Send to Teacher ───
+function sendToTeacher(){
+  const name=document.getElementById('nameInput').value.trim()||'Anonymous';
+
+  let e1='EXERCISE 1 – Correct the Mistake\n';
+  for(let i=1;i<=8;i++){
+    e1+=i+'. '+(document.getElementById('c'+i).style.display!=='none'?'Revealed':'Not revealed')+'\n';
+  }
+
+  let e2='\nEXERCISE 2 – Can or Can\'t?\n';
+  document.querySelectorAll('#card2 .gap').forEach((inp,i)=>{
+    e2+=(i+1)+'. '+(inp.value||'—')+(inp.classList.contains('correct')?' ✓':inp.classList.contains('wrong')?' ✗':'')+'\n';
+  });
+
+  let e3='\nEXERCISE 3 – Write Sentences\n';
+  for(let i=1;i<=7;i++){
+    e3+=i+'. '+(document.getElementById('wta'+i).value.trim()||'—')+'\n';
+  }
+
+  let e4='\nEXERCISE 4 – Match Verbs to Phrases\n';
+  for(let i=1;i<=10;i++){
+    const k=String(i);
+    e4+=k+' → '+(mP4[k]||'—')+(mP4[k]===ANS4[k]?' ✓':mP4[k]?' ✗':'')+'\n';
+  }
+
+  let e5='\nEXERCISE 5 – Choose the Word\n';
+  ['g1','g2','g3','g4','g5','g6','g7','g8'].forEach((grp,i)=>{
+    const sel=document.querySelector('[data-grp="'+grp+'"].selected');
+    const cor=document.querySelector('[data-grp="'+grp+'"][data-correct="1"]');
+    e5+=(i+1)+'. '+(sel?sel.textContent.trim():'—');
+    if(sel)e5+=sel.dataset.correct==='1'?' ✓':' ✗ (→'+(cor?cor.textContent.trim():'')+')';
+    e5+='\n';
+  });
+
+  let e6='\nEXERCISE 6 – Missing Verbs\n';
+  document.querySelectorAll('#card6 .gap').forEach((inp,i)=>{
+    e6+=(i+1)+'. '+(inp.value||'—')+(inp.classList.contains('correct')?' ✓':inp.classList.contains('wrong')?' ✗':'')+'\n';
+  });
+
+  let e7='\nEXERCISE 7 – Match Requests\n';
+  ['1','2','3','4','5','6','7','8'].forEach(id=>{
+    e7+=id+' → '+(mP7[id]||'—')+(mP7[id]===ANS7[id]?' ✓':mP7[id]?' ✗':'')+'\n';
+  });
+
+  let e8='\nEXERCISE 8 – Word Order\n';
+  document.querySelectorAll('#card8 .wo-inp').forEach((inp,i)=>{
+    e8+=(i+1)+'. '+(inp.value||'—')+(inp.classList.contains('correct')?' ✓':inp.classList.contains('wrong')?' ✗':'')+'\n';
+  });
+
+  const full='Student: '+name+'\n\n'+e1+e2+e3+e4+e5+e6+e7+e8;
+  window.location.href='mailto:daryaaa2028@gmail.com?subject='+encodeURIComponent('Unit 5D Homework – '+name)+'&body='+encodeURIComponent(full);
+}
+</script>
+</body>
+</html>
+
+</body></html>
