@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NYC Food Tour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Lexend:wght@400;500;600;700&display=swap">
+<style>
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+
+:root{
+  --ground:#F2F4F3; --paper:#FFFFFF; --paper2:#F6F7F6; --ink:#1B1B1B; --muted:#5A5E5C; --line:#D8DCDA;
+  --ketchup:#C8231F; --ketchup-soft:#FADDDC; --mustard:#B07A00; --mustard-bg:#F2B33D; --mustard-soft:#FCEFCF; --pickle:#2F6D2E; --pickle-soft:#DCEBD9;
+  --board:#1F2A24; --board-ink:#F4F1E6; --board-muted:#B9C2BB;
+  --ok:#2F7D3B; --ok-soft:#D6EDD6; --bad:#B23A2E; --bad-soft:#F6D8D3;
+  --on:#FFFFFF;
+  --display:"Bowlby One","Arial Black",Impact,sans-serif;
+  --body:"Lexend","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#121413; --paper:#1B1E1C; --paper2:#232725; --ink:#EEF0EE; --muted:#A3A9A5; --line:#323835;
+    --ketchup:#FF6E66; --ketchup-soft:#3E1D1B; --mustard:#F2B33D; --mustard-soft:#3A3018; --pickle:#7CC678; --pickle-soft:#1D3220;
+    --board:#0C110E; --board-ink:#F4F1E6; --board-muted:#9DA79F;
+    --ok:#7CCB85; --ok-soft:#1F3822; --bad:#F08A7E; --bad-soft:#40221E;
+    --on:#121413;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#121413; --paper:#1B1E1C; --paper2:#232725; --ink:#EEF0EE; --muted:#A3A9A5; --line:#323835;
+  --ketchup:#FF6E66; --ketchup-soft:#3E1D1B; --mustard:#F2B33D; --mustard-soft:#3A3018; --pickle:#7CC678; --pickle-soft:#1D3220;
+  --board:#0C110E; --board-ink:#F4F1E6; --board-muted:#9DA79F;
+  --ok:#7CCB85; --ok-soft:#1F3822; --bad:#F08A7E; --bad-soft:#40221E;
+  --on:#121413;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:860px;margin:0 auto}
+h1,h2{font-family:var(--display);font-weight:400;text-wrap:balance;line-height:1.05;margin:0}
+h2{font-size:clamp(1.6rem,4.8vw,2.2rem)}
+h3{font-family:var(--body);font-weight:700;font-size:1.15rem;margin:0}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--mustard-bg);outline-offset:2px}
+
+/* hero: deli sign */
+header.hero{padding-block:30px 12px;display:grid;gap:12px}
+.awning{height:22px;border-radius:8px 8px 0 0;background:repeating-linear-gradient(90deg,#C8231F 0 34px,#FFFFFF 34px 68px);box-shadow:inset 0 -4px 0 rgba(0,0,0,.12)}
+.sign{background:var(--board);color:var(--board-ink);border-radius:0 0 14px 14px;padding:20px 22px 22px;display:grid;gap:8px;margin-top:-12px}
+.sign h1{font-size:clamp(2.4rem,9vw,4.6rem);color:#F2B33D;letter-spacing:.01em}
+.sign .sub{color:var(--board-muted)}
+.sign .stops{display:flex;flex-wrap:wrap;gap:8px;font-size:1.5rem}
+.hero-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.plan{color:var(--muted);font-size:.95rem}
+.theme-btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:4px 14px;font-size:.85rem}
+
+nav.stages{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);padding-block:10px;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+nav.stages a{display:inline-block;margin-right:6px;padding:5px 12px;border-radius:999px;color:var(--ink);text-decoration:none;font-size:.86rem;font-weight:500;background:var(--paper);border:1px solid var(--line)}
+nav.stages a.ext{border-style:dashed;color:var(--muted)}
+nav.stages a:hover{border-color:var(--ketchup);color:var(--ketchup)}
+
+section.stage{margin-top:46px;display:grid;gap:18px;scroll-margin-top:70px}
+.stage-head{display:grid;gap:6px}
+.stage-head .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.step-no{font-weight:700;color:var(--ketchup)}
+.chip{font-size:.74rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 10px;border-radius:999px;background:var(--mustard-soft);color:var(--mustard)}
+.chip.game{background:var(--pickle-soft);color:var(--pickle)}
+.chip.vid{background:var(--ketchup-soft);color:var(--ketchup)}
+.chip.ext{background:transparent;border:1.5px dashed var(--muted);color:var(--muted)}
+.instr{color:var(--muted);max-width:65ch}
+.ext-band{margin-top:52px;padding:14px 18px;border:2px dashed var(--line);border-radius:14px;color:var(--muted);display:grid;gap:4px}
+.ext-band b{font-family:var(--display);font-weight:400;font-size:1.3rem;color:var(--ink)}
+
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;gap:14px}
+details.tnote{border-left:3px solid var(--mustard-bg);background:var(--mustard-soft);border-radius:0 10px 10px 0;padding:8px 14px;font-size:.92rem}
+details.tnote summary{cursor:pointer;font-weight:600;color:var(--mustard)}
+details.tnote ul{margin:8px 0 4px;padding-left:20px}
+.talk{display:grid;gap:8px;padding:0;margin:0;list-style:none}
+.talk li{padding:10px 14px;border-radius:12px;background:var(--paper2);border:1px solid var(--line)}
+.phr{display:flex;flex-wrap:wrap;gap:8px}
+.phr span{padding:4px 12px;border-radius:999px;background:var(--mustard-soft);font-size:.9rem}
+.phr span b{color:var(--ketchup)}
+
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:none;border-radius:999px;padding:9px 20px;font-weight:600;background:var(--ketchup);color:var(--on)}
+.btn.pickle{background:var(--pickle);color:var(--on)}
+.btn.dark{background:var(--ink);color:var(--ground)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+.score{font-weight:600;color:var(--ok);font-variant-numeric:tabular-nums}
+
+/* video */
+.vid{display:grid;gap:10px}
+.vid .frame{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000}
+.vid .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vlink{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:14px;background:var(--board);color:var(--board-ink);text-decoration:none}
+.vlink .play{width:44px;height:44px;flex:none;border-radius:50%;background:#C8231F;display:grid;place-items:center;color:#fff;font-size:1.1rem}
+.vlink b{display:block;font-weight:700;line-height:1.2}
+.vlink small{color:var(--board-muted)}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.vcard{background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:12px 6px;display:grid;justify-items:center;gap:4px;text-align:center;color:var(--ink)}
+.vcard .emo{font-size:2.3rem;line-height:1}
+.vcard .lbl{font-weight:600;font-size:.92rem;max-height:0;opacity:0;overflow:hidden;transition:opacity .3s,max-height .3s}
+.vcard .hint{font-size:.74rem;color:var(--muted)}
+.vcard.open{border-color:var(--ketchup)} .vcard.open .lbl{max-height:4em;opacity:1} .vcard.open .hint{display:none}
+
+/* match */
+.match{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:10px}
+.mcol{display:grid;gap:8px;align-content:start}
+.mcol button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:10px;padding:8px 12px;text-align:left;min-height:44px;font-size:.93rem}
+.mcol button.sel{border-color:var(--ketchup);background:var(--ketchup-soft)}
+.mcol button.done{border-color:var(--ok);background:var(--ok-soft);color:var(--ok);cursor:default}
+.mcol button.shake{border-color:var(--bad);background:var(--bad-soft)}
+
+/* mc */
+.list{display:grid;gap:16px}
+.q{display:grid;gap:8px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:10px;padding:6px 14px;text-align:left}
+.opts button:hover{border-color:var(--ketchup)}
+.opts button.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:600}
+.opts button.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.fb{font-size:.9rem;color:var(--muted);min-height:1.2em}
+
+/* toppings */
+.tops{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.tops button{display:flex;gap:8px;align-items:center;border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:10px;padding:8px 10px;text-align:left}
+.tops button.on{border-color:var(--ketchup);background:var(--ketchup-soft)}
+.tops button.right{border-color:var(--ok);background:var(--ok-soft);color:var(--ok);font-weight:600}
+.tops button.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+.tops button.miss{border-color:var(--ok);border-style:dashed}
+
+/* sorter */
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;padding:12px;border:2px dashed var(--line);border-radius:14px}
+.pool button,.bucket button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:999px;padding:5px 14px;font-weight:500}
+.pool button.picked{border-color:var(--mustard-bg);background:var(--mustard-soft)}
+.buckets{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bucket{border-radius:14px;padding:12px;min-height:130px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;cursor:pointer}
+.bucket .lbl{width:100%;font-family:var(--display);font-size:1.2rem}
+.bucket .lbl small{font-family:var(--body);font-size:.8rem;color:var(--muted);display:block}
+.bucket.c{background:var(--ketchup-soft);border:2px solid var(--ketchup)} .bucket.c .lbl{color:var(--ketchup)}
+.bucket.u{background:var(--pickle-soft);border:2px solid var(--pickle)} .bucket.u .lbl{color:var(--pickle)}
+.bucket button.right{border-color:var(--ok);color:var(--ok);font-weight:600}
+.bucket button.wrong{border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+
+/* rule table */
+.rtable{overflow-x:auto}
+.rtable table{width:100%;border-collapse:collapse;min-width:440px}
+.rtable th,.rtable td{padding:8px 10px;border-bottom:1px dashed var(--line);text-align:left;vertical-align:top}
+.rtable th{font-family:var(--display);font-weight:400;font-size:1.05rem}
+.rtable th.c{color:var(--ketchup)} .rtable th.u{color:var(--pickle)}
+input.gap{font:inherit;font-size:.95rem;border:none;border-bottom:2px solid var(--ketchup);background:var(--ketchup-soft);color:var(--ink);border-radius:6px 6px 0 0;padding:1px 8px;width:6.5em;max-width:100%}
+input.gap.right{border-color:var(--ok);background:var(--ok-soft)}
+input.gap.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.key{font-size:.85rem;color:var(--ok);margin-left:6px;font-weight:500}
+.dialog{display:grid;gap:8px}
+.line{display:grid;grid-template-columns:5.5em 1fr;gap:10px;align-items:baseline;line-height:2.1}
+.line .who{font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.05em}
+.line .who.c{color:var(--ketchup)} .line .who.s{color:var(--pickle)}
+@media (max-width:520px){.line{grid-template-columns:1fr;gap:0}}
+
+/* menu game */
+.menu{background:var(--board);color:var(--board-ink);border-radius:16px;padding:18px;display:grid;gap:14px}
+.menu h3{font-family:var(--display);font-weight:400;color:#F2B33D;font-size:1.2rem;letter-spacing:.03em}
+.mgroups{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.mitem{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px dashed rgba(244,241,230,.2)}
+.mitem .price{font-variant-numeric:tabular-nums;color:#F2B33D;font-weight:600}
+.qty{display:flex;align-items:center;gap:4px}
+.qty button{width:28px;height:28px;border-radius:50%;border:1px solid rgba(244,241,230,.4);background:transparent;color:var(--board-ink);line-height:1;padding:0}
+.qty span{min-width:1.4em;text-align:center;font-variant-numeric:tabular-nums}
+.bill{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:12px;background:var(--paper2);border:2px solid var(--line)}
+.bill b{font-family:var(--display);font-weight:400;font-size:1.6rem;font-variant-numeric:tabular-nums}
+.bill.over{border-color:var(--bad);background:var(--bad-soft)}
+.bill.okk{border-color:var(--ok);background:var(--ok-soft)}
+.mission{border-radius:14px;padding:14px 16px;background:var(--mustard-soft);border:2px solid var(--mustard-bg);font-weight:500}
+
+/* quick fire */
+.qf{display:grid;gap:14px;justify-items:center;text-align:center}
+.qf .expr{font-family:var(--display);font-size:clamp(2rem,7vw,3rem);line-height:1.05;min-height:1.2em}
+.qf .btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.qf .big{font-weight:700;font-size:1.3rem;padding:10px 26px;border-radius:999px;border:none;color:var(--on)}
+.qf .big.m{background:var(--pickle)} .qf .big.n{background:var(--ketchup)}
+.qf .stats{display:flex;gap:18px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--muted)}
+.qf .stats b{color:var(--ink)}
+.timer{font-family:var(--display);font-size:2.2rem;color:var(--ketchup);line-height:1;font-variant-numeric:tabular-nums}
+.timer.done{color:var(--ok)}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:999px;padding:4px 14px;font-weight:500}
+.chips button.used{background:var(--pickle);border-color:var(--pickle);color:var(--on)}
+.break{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:14px;background:var(--mustard-soft);font-weight:600;margin-top:36px}
+.break span{font-size:1.8rem}
+footer{margin-top:48px;color:var(--muted);font-size:.85rem;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="hero">
+  <div class="awning" aria-hidden="true"></div>
+  <div class="sign">
+    <div class="stops" aria-hidden="true">🥯 🍕 🌭 🥟 🍔</div>
+    <h1>NYC Food Tour</h1>
+    <span class="sub">24 hours of eating in New York City · bagels, pizza, hot dogs, Chinatown &amp; burgers · some / any / much / many</span>
+  </div>
+  <div class="hero-row"><span class="plan">Core lesson: 120 min · Extensions: +20 min</span><button class="theme-btn" id="themeBtn" type="button">◐ Light / dark</button></div>
+</header>
+
+<nav class="stages" aria-label="Lesson stages">
+  <a href="#s1">1 · Hungry?</a><a href="#s2">2 · Tasty words</a><a href="#s3">3 · Bagels 🎬</a><a href="#s4">4 · Grammar</a><a href="#s5">5 · Pizza &amp; hot dogs 🎬</a><a href="#s6">6 · Chinatown &amp; burger 🎬</a><a href="#s7">7 · Deli order</a><a href="#s8">8 · Food vlogger</a><a href="#s9">9 · Wrap-up</a><a class="ext" href="#x1">+ Much or many?</a><a class="ext" href="#x2">+ Food truck</a>
+</nav>
+
+<!-- 1 -->
+<section class="stage" id="s1">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 1 · Warm-up</span><span class="chip">10 min</span></div>
+    <h2>Are you hungry?</h2>
+    <p class="instr">Name each food in English, then tap to check.</p>
+  </div>
+  <div class="cards" id="vcards"></div>
+  <div class="panel">
+    <h3>Let's talk</h3>
+    <ul class="talk">
+      <li>What's your favourite street food in Freiburg? (a Lange Rote at the Münstermarkt? a Döner? a Brezel?)</li>
+      <li>Have you ever eaten a bagel? Where?</li>
+      <li><b>Predict:</b> a food vlogger has 24 hours to eat in New York. Which 5 foods will he eat?</li>
+    </ul>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Recycle American / British English: fries (AE) = chips (BE), chips (AE) = crisps (BE), soda (AE) = fizzy drink (BE).</li>
+      <li>Write her 5 predictions down and check them after the video stages.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 2 -->
+<section class="stage" id="s2">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 2 · Vocabulary</span><span class="chip">10 min</span><span class="chip game">Match</span></div>
+    <h2>Tasty words 😋</h2>
+    <p class="instr">The vlogger uses lots of adjectives to describe food. Click a word, then its meaning.</p>
+  </div>
+  <div class="panel">
+    <div class="actions"><button class="btn dark" type="button" id="adjNew">Shuffle</button><span class="score" id="adjScore"></span></div>
+    <div class="match"><div class="mcol" id="aW"></div><div class="mcol" id="aM"></div></div>
+  </div>
+  <div class="panel">
+    <h3>Describe it!</h3>
+    <p class="instr">Use 2 adjectives for each food: a Brezel · Black Forest cake · a Döner · chips / fries · a lemon · your favourite meal</p>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="stage" id="s3">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 3 · Video part 1</span><span class="chip">15 min</span><span class="chip vid">🎬 0:00–3:43</span></div>
+    <h2>Welcome to New York + bagels 🥯</h2>
+    <p class="instr">Before you watch: how many bagels do you think an average New Yorker eats in a year? 11? 111? 1,111?</p>
+  </div>
+  <div class="panel vid">
+    <div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/CE6Y8tqhO4A?start=0&amp;end=225&amp;rel=0" title="NYC food tour video clip" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    <a class="vlink" href="https://www.youtube.com/watch?v=CE6Y8tqhO4A&t=0s" target="_blank" rel="noopener"><span class="play" aria-hidden="true">▶</span><span><b>Part 1 · Intro &amp; bagels</b><small>0:00–3:43 · opens on YouTube</small></span></a>
+  </div>
+  <div class="panel">
+    <h3>A · Watch and answer</h3>
+    <div class="list" id="v1Q"></div>
+  </div>
+  <div class="panel">
+    <h3>B · Which toppings did you see on the two bagels?</h3>
+    <p class="instr">Tap all the toppings you saw or heard, then check.</p>
+    <div class="tops" id="tops"></div>
+    <div class="actions"><button class="btn" type="button" id="topCheck">Check</button><button class="btn ghost" type="button" id="topReset">Reset</button><span class="score" id="topScore"></span></div>
+  </div>
+  <div class="panel">
+    <h3>C · Video phrases</h3>
+    <div class="phr"><span><b>That hits the spot!</b> = exactly what I needed</span><span><b>dig in</b> = start eating</span><span><b>a staple</b> = a basic food people eat very often</span><span><b>chewy</b> = you have to bite it a lot</span></div>
+    <p class="instr">What's a staple food in Germany? What really hits the spot after school?</p>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Watch once for the questions and once for the toppings, pausing at 2:10 and 3:08.</li>
+      <li>Unit 1 links: "one of the most diverse cities in the world", immigrants (emigrate), "over 700 languages", multicultural.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 4 -->
+<section class="stage" id="s4">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 4 · Grammar</span><span class="chip">20 min</span></div>
+    <h2>How much cheese? How many bagels?</h2>
+    <p class="instr">Countable nouns: you can count them (one bagel, two bagels). Uncountable nouns: you can't (cheese, water, rice).</p>
+  </div>
+  <div class="panel">
+    <h3>A · Sort the food</h3>
+    <p class="instr">Click a word, then click the right box.</p>
+    <div class="pool" id="pool"></div>
+    <div class="buckets">
+      <div class="bucket c" id="bC" role="button" tabindex="0"><span class="lbl">COUNTABLE<small>a bagel, two bagels</small></span></div>
+      <div class="bucket u" id="bU" role="button" tabindex="0"><span class="lbl">UNCOUNTABLE<small>some cheese (not "a cheese")</small></span></div>
+    </div>
+    <div class="actions"><button class="btn" type="button" id="sortCheck">Check</button><button class="btn ghost" type="button" id="sortReset">Reset</button><span class="score" id="sortScore"></span></div>
+  </div>
+  <div class="panel" id="rule">
+    <h3>B · Rule card · complete it</h3>
+    <div class="rtable"><table>
+      <thead><tr><th></th><th class="c">Countable (bagels)</th><th class="u">Uncountable (cheese)</th></tr></thead>
+      <tbody>
+        <tr><td>Question</td><td>How <input class="gap" data-ans="many" aria-label="how many"> bagels?</td><td>How <input class="gap" data-ans="much" aria-label="how much"> cheese?</td></tr>
+        <tr><td>A small number</td><td>a <input class="gap" data-ans="few" aria-label="a few"> bagels</td><td>a <input class="gap" data-ans="little" aria-label="a little"> cheese</td></tr>
+        <tr><td>A big number</td><td colspan="2">a <input class="gap" data-ans="lot" aria-label="a lot of"> of bagels / cheese (both!)</td></tr>
+        <tr><td>Positive &amp; offers</td><td colspan="2"><input class="gap" data-ans="some" aria-label="some"> bagels / cheese · Can I have some…?</td></tr>
+        <tr><td>Negative &amp; questions</td><td colspan="2">I don't have <input class="gap" data-ans="any" aria-label="any"> bagels / cheese · Have you got any…?</td></tr>
+      </tbody>
+    </table></div>
+    <div class="actions"><button class="btn" type="button" data-check="rule">Check</button><button class="btn ghost" type="button" data-resetgap="rule">Reset</button><span class="score"></span></div>
+  </div>
+  <div class="panel">
+    <h3>C · Choose the correct word</h3>
+    <div class="list" id="gQ"></div>
+    <div class="actions"><button class="btn ghost" type="button" data-reset="gQ">New order</button></div>
+  </div>
+  <div class="panel" id="dlg">
+    <h3>D · At the bagel shop</h3>
+    <p class="instr">Complete the dialogue with <b>some, any, much, many, few, little</b>. Then read it out loud with your teacher, and swap roles!</p>
+    <div class="dialog">
+      <div class="line"><span class="who c">Customer</span><span>Hi! Can I get an everything bagel with <input class="gap" data-ans="some" aria-label="D1"> cream cheese, please?</span></div>
+      <div class="line"><span class="who s">Server</span><span>Sure. Do you want <input class="gap" data-ans="any" aria-label="D2"> tomato on it?</span></div>
+      <div class="line"><span class="who c">Customer</span><span>Yes, but just a <input class="gap" data-ans="few" aria-label="D3"> slices. And how <input class="gap" data-ans="much" aria-label="D4"> is the smoked salmon?</span></div>
+      <div class="line"><span class="who s">Server</span><span>Three dollars extra. How <input class="gap" data-ans="many" aria-label="D5"> bagels would you like?</span></div>
+      <div class="line"><span class="who c">Customer</span><span>Just one. Oh, and a <input class="gap" data-ans="little" aria-label="D6"> milk in my coffee, please. Not too <input class="gap" data-ans="much" aria-label="D7">!</span></div>
+      <div class="line"><span class="who s">Server</span><span>No problem. Anything else?</span></div>
+      <div class="line"><span class="who c">Customer</span><span>No, thanks. I don't have <input class="gap" data-ans="any" aria-label="D8"> more money! 😄</span></div>
+    </div>
+    <div class="actions"><button class="btn" type="button" data-check="dlg">Check</button><button class="btn ghost" type="button" data-resetgap="dlg">Reset</button><span class="score"></span></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>German trap: <i>Informationen, Ratschläge, Hausaufgaben</i> are plural in German, but <b>information, advice, homework</b> are uncountable in English. Do a quick oral check.</li>
+      <li>Containers: a slice of pizza, a cup of coffee, a bottle of water, a bag of chips.</li>
+    </ul>
+  </details>
+</section>
+
+<div class="break"><span>🥨</span>5-minute snack break! Next stop: Brooklyn pizza.</div>
+
+<!-- 5 -->
+<section class="stage" id="s5">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 5 · Video part 2</span><span class="chip">12 min</span><span class="chip vid">🎬 12:51–16:25</span></div>
+    <h2>Pizza &amp; hot dogs 🍕🌭</h2>
+  </div>
+  <div class="panel vid">
+    <div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/CE6Y8tqhO4A?start=771&amp;end=916&amp;rel=0" title="NYC food tour video clip" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    <a class="vlink" href="https://www.youtube.com/watch?v=CE6Y8tqhO4A&t=771s" target="_blank" rel="noopener"><span class="play" aria-hidden="true">▶</span><span><b>Part 2a · Luigi's Pizza, Brooklyn</b><small>12:51–15:15 · opens on YouTube</small></span></a>
+    <div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/CE6Y8tqhO4A?start=916&amp;end=986&amp;rel=0" title="NYC food tour video clip" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    <a class="vlink" href="https://www.youtube.com/watch?v=CE6Y8tqhO4A&t=916s" target="_blank" rel="noopener"><span class="play" aria-hidden="true">▶</span><span><b>Part 2b · The hot dog king</b><small>15:16–16:25 · opens on YouTube</small></span></a>
+  </div>
+  <div class="panel">
+    <h3>Watch and answer</h3>
+    <div class="list" id="v2Q"></div>
+  </div>
+  <div class="panel">
+    <h3>Talk about it</h3>
+    <ul class="talk">
+      <li>Retell the pizza family's story in the past simple: <i>His father came to America with… He worked… He shovelled… Then he…</i></li>
+      <li>Would you fold your pizza slice like a New Yorker? Why do people do it?</li>
+      <li>Sauerkraut on a hot dog! Which other German foods are famous in the USA?</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="stage" id="s6">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 6 · Video part 3</span><span class="chip">13 min</span><span class="chip vid">🎬 19:16–23:50</span></div>
+    <h2>Chinatown &amp; the burger 🥟🍔</h2>
+  </div>
+  <div class="panel vid">
+    <div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/CE6Y8tqhO4A?start=1156&amp;end=1286&amp;rel=0" title="NYC food tour video clip" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    <a class="vlink" href="https://www.youtube.com/watch?v=CE6Y8tqhO4A&t=1156s" target="_blank" rel="noopener"><span class="play" aria-hidden="true">▶</span><span><b>Part 3a · Chinatown</b><small>19:16–21:25 · opens on YouTube</small></span></a>
+    <div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/CE6Y8tqhO4A?start=1289&amp;end=1431&amp;rel=0" title="NYC food tour video clip" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    <a class="vlink" href="https://www.youtube.com/watch?v=CE6Y8tqhO4A&t=1289s" target="_blank" rel="noopener"><span class="play" aria-hidden="true">▶</span><span><b>Part 3b · The classic burger</b><small>21:29–23:50 · opens on YouTube</small></span></a>
+  </div>
+  <div class="panel">
+    <h3>Watch and answer</h3>
+    <div class="list" id="v3Q"></div>
+  </div>
+  <div class="panel">
+    <h3>Word detective 🔍</h3>
+    <p class="instr">At 22:27 the vlogger says the bun is "perfect to <b>c______</b> the thickness of that patty". It's a word from your Unit 1 list! What is it, and what does it usually mean?</p>
+    <details><summary>Show answer</summary><p><b>cradle</b> (die Wiege). Here: to hold something gently, like a baby in a cradle.</p></details>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Check her 5 predictions from Stage 1: how many did she get right?</li>
+      <li>Burger words: patty, bun, medium rare, caramelized onions, pickle (spear).</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 7 -->
+<section class="stage" id="s7">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 7 · Role-play game</span><span class="chip">15 min</span><span class="chip game">$20 challenge</span></div>
+    <h2>Order like a New Yorker 🗽</h2>
+    <p class="instr">Get a mission. Order your food out loud. Your teacher is the server. Use the menu to add items: can you stay inside your budget? Then swap roles!</p>
+  </div>
+  <div class="panel">
+    <div class="mission" id="mission">Press "New mission" to start.</div>
+    <div class="actions"><button class="btn dark" type="button" id="misBtn">New mission</button></div>
+    <div class="menu">
+      <div class="mgroups" id="menu"></div>
+      <small style="color:var(--board-muted)">Prices are invented for this game.</small>
+    </div>
+    <div class="bill" id="bill"><span>Your order: <span id="billItems">nothing yet</span></span><span>Total <b id="billTotal">$0.00</b></span></div>
+    <div class="actions"><button class="btn ghost" type="button" id="billReset">Clear order</button></div>
+    <h3>Useful phrases</h3>
+    <div class="phr"><span>Can I get…?</span><span>I'd like a slice of…, please.</span><span>How much is…?</span><span>Could I have some / a little more…?</span><span>Not too much…, please.</span><span>For here or to go? (AE) = eat in or take away? (BE)</span><span>Can I have the check? (AE) = the bill? (BE)</span></div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="stage" id="s8">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 8 · Speaking</span><span class="chip">10 min</span></div>
+    <h2>Be a food vlogger 🎥</h2>
+    <p class="instr">Choose a Freiburg food and review it for 1 minute, just like in the video. Click each thing in the checklist when you use it.</p>
+  </div>
+  <div class="panel">
+    <div class="phr"><span>🌭 Lange Rote at the Münstermarkt</span><span>🥨 Brezel</span><span>🍰 Black Forest cake</span><span>🥙 Döner</span><span>🍕 Flammkuchen</span><span>🧀 Käsespätzle</span></div>
+    <div class="chips" id="vlogChips"></div>
+    <div class="actions"><button class="btn" type="button" id="vlogBtn">Start 1:00</button><span class="timer" id="vlogTimer">1:00</span></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul><li>Film her on her phone if she likes. Then you review a food for her and she checks your checklist.</li></ul>
+  </details>
+</section>
+
+<!-- 9 -->
+<section class="stage" id="s9">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 9 · Wrap-up</span><span class="chip">10 min</span></div>
+    <h2>Final quiz</h2>
+  </div>
+  <div class="panel">
+    <div class="list" id="exitQ"></div>
+    <div class="actions"><button class="btn ghost" type="button" data-reset="exitQ">New order</button></div>
+  </div>
+  <div class="panel">
+    <h3>Last question</h3>
+    <p>If you had 24 hours in New York, which 3 foods from the video would you eat first? Why?</p>
+  </div>
+</section>
+
+<div class="ext-band"><b>Extensions (+20 min)</b><span>Use these if you have more time or the student finishes early.</span></div>
+
+<!-- X1 -->
+<section class="stage" id="x1">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Extension · Game</span><span class="chip ext">+10 min</span></div>
+    <h2>How much or how many? ⚡</h2>
+  </div>
+  <div class="panel qf" id="qf">
+    <div class="timer" id="qfTimer">1:00</div>
+    <div class="stats"><span>Score <b id="qfScore">0</b></span><span>Streak <b id="qfStreak">0</b> 🔥</span><span>Best <b id="qfBest">0</b></span></div>
+    <div class="expr" id="qfExpr">Ready?</div>
+    <div class="btns"><button class="big m" type="button" data-v="much" disabled>How much…?</button><button class="big n" type="button" data-v="many" disabled>How many…?</button></div>
+    <p class="fb" id="qfFb" aria-live="polite"></p>
+    <button class="btn pickle" type="button" id="qfStart">Start 60 seconds</button>
+  </div>
+</section>
+
+<!-- X2 -->
+<section class="stage" id="x2">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Extension · Speaking</span><span class="chip ext">+10 min</span></div>
+    <h2>Design a food truck for Freiburg 🚚</h2>
+    <p class="instr">Plan a food truck for the Münsterplatz. Then pitch it to your teacher, who is the city's food inspector!</p>
+  </div>
+  <div class="panel">
+    <ul class="talk">
+      <li>What's the name of your truck? What kind of food is it (New York? German? a mix?)</li>
+      <li>3 dishes with prices and 2 adjectives each: <i>"Our bagels are chewy and fresh…"</i></li>
+      <li>How much / how many: <i>"We use a lot of cheese, a little sauce and a few…"</i></li>
+      <li>Why will people love it? Where and when will you park?</li>
+    </ul>
+  </div>
+</section>
+
+<footer>NYC Food Tour · countable &amp; uncountable · video-based lesson · 120–140 min</footer>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const norm = s => s.toLowerCase().replace(/[’‘`]/g, "'").replace(/[?.!,]/g, "").replace(/\s+/g, " ").trim();
+  const fmt = n => Math.floor(n / 60) + ":" + String(n % 60).padStart(2, "0");
+
+  $("themeBtn").addEventListener("click", () => {
+    const r = document.documentElement;
+    const cur = r.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    r.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+  });
+
+  // ---- MC (questions & options shuffled) ----
+  const MC = {};
+  function buildMC(id) {
+    const box = $(id); box.innerHTML = "";
+    MC[id].forEach((it, i) => {
+      const q = document.createElement("div"); q.className = "q";
+      q.innerHTML = `<span>${i + 1}. ${it[0]}</span><div class="opts"></div><span class="fb"></span>`;
+      const o = q.querySelector(".opts"), fb = q.querySelector(".fb");
+      shuffle(it[1].map((t, j) => [t, j])).forEach(([t, j]) => {
+        const b = document.createElement("button"); b.type = "button"; b.textContent = t;
+        b.addEventListener("click", () => {
+          if (q.dataset.done) return;
+          if (j === it[2]) { b.classList.add("right"); q.dataset.done = 1; fb.textContent = it[3] ? "✓ " + it[3] : "✓ Correct!"; }
+          else { b.classList.add("wrong"); fb.textContent = "Try again!"; }
+        });
+        o.appendChild(b);
+      });
+      box.appendChild(q);
+    });
+  }
+  document.querySelectorAll("[data-reset]").forEach(b => b.addEventListener("click", () => buildMC(b.dataset.reset)));
+  document.querySelectorAll("[data-check]").forEach(b => b.addEventListener("click", () => {
+    const sec = $(b.dataset.check); let ok = 0, n = 0;
+    sec.querySelectorAll(".key").forEach(k => k.remove());
+    sec.querySelectorAll("input.gap").forEach(inp => { n++; const good = inp.dataset.ans.split("|").map(norm).includes(norm(inp.value)); inp.classList.toggle("right", good); inp.classList.toggle("wrong", !good); if (good) ok++; else { const k = document.createElement("span"); k.className = "key"; k.textContent = "→ " + inp.dataset.ans.split("|")[0]; inp.after(k); } });
+    sec.querySelector(".score").textContent = ok + " / " + n + (ok === n ? " 🎉" : "");
+  }));
+  document.querySelectorAll("[data-resetgap]").forEach(b => b.addEventListener("click", () => {
+    const sec = $(b.dataset.resetgap); sec.querySelectorAll("input.gap").forEach(i => { i.value = ""; i.classList.remove("right", "wrong"); }); sec.querySelectorAll(".key").forEach(k => k.remove()); sec.querySelector(".score").textContent = "";
+  }));
+
+  // ---- 1 cards ----
+  [["🥯","a bagel"],["🍕","a slice of pizza"],["🌭","a hot dog"],["🍔","a burger"],["🍟","fries (AE) / chips (BE)"],["🍢","a skewer"],["🥓","bacon"],["🧀","cheese"],["🧅","an onion"],["🥒","a pickle"],["🍳","a fried egg"],["🥤","a soda"]].forEach(([e, w]) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "vcard";
+    b.innerHTML = `<span class="emo" aria-hidden="true">${e}</span><span class="lbl">${w}</span><span class="hint">tap to check</span>`;
+    b.addEventListener("click", () => b.classList.toggle("open")); $("vcards").appendChild(b);
+  });
+
+  // ---- 2 adjectives ----
+  const ADJ = [["crispy", "hard on the outside, makes a noise when you bite it"], ["chewy", "you need to bite it many times (like a bagel or gum)"], ["juicy", "full of liquid, like a good burger or an orange"], ["fluffy", "soft and light, full of air"], ["creamy", "soft and smooth, like cream"], ["spicy", "hot, with chilli"], ["salty", "with a lot of salt"], ["tender", "meat that is soft and easy to cut"], ["fragrant", "it smells really good"], ["sour", "with a sharp taste, like a lemon"]];
+  let aSel = null, aDone = 0;
+  function buildAdj() {
+    aSel = null; aDone = 0; $("adjScore").textContent = ""; $("aW").innerHTML = ""; $("aM").innerHTML = "";
+    shuffle(ADJ.map((a, i) => [a[0], i])).forEach(([t, i]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.dataset.i = i; b.addEventListener("click", () => { if (b.classList.contains("done")) return; $("aW").querySelectorAll("button").forEach(x => x.classList.remove("sel")); b.classList.add("sel"); aSel = b; }); $("aW").appendChild(b); });
+    shuffle(ADJ.map((a, i) => [a[1], i])).forEach(([t, i]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.dataset.i = i; b.addEventListener("click", () => {
+      if (!aSel || b.classList.contains("done")) return;
+      if (aSel.dataset.i === b.dataset.i) { aSel.classList.remove("sel"); aSel.classList.add("done"); b.classList.add("done"); aSel = null; if (++aDone === ADJ.length) $("adjScore").textContent = "All matched! 🎉"; }
+      else { b.classList.add("shake"); setTimeout(() => b.classList.remove("shake"), 500); }
+    }); $("aM").appendChild(b); });
+  }
+  $("adjNew").addEventListener("click", buildAdj); buildAdj();
+
+  // ---- 3 video 1 ----
+  MC.v1Q = [
+    ["How many languages do people speak in New York?", ["over 70", "over 700", "over 7,000"], 1],
+    ["In which borough does he eat his bagels?", ["Manhattan", "the Bronx", "Brooklyn"], 2],
+    ["What do they do with the bagels before they bake them?", ["They boil them.", "They fry them.", "They freeze them."], 0],
+    ["Some people say the bagels are special because of…", ["the cold weather", "the New York water", "German flour"], 1],
+    ["How many bagels does the average New Yorker eat each year?", ["111", "11", "1,111"], 0],
+    ["So that's nearly one bagel every…", ["day", "three days", "week"], 1, "111 bagels a year = nearly one every three days!"]
+  ];
+  buildMC("v1Q");
+  const TOPS = [["poppy seeds", 1], ["bacon", 1], ["egg", 1], ["cheese", 1], ["sesame seeds", 1], ["onions", 1], ["cream cheese", 1], ["tomato", 1], ["smoked salmon", 1], ["ham", 0], ["avocado", 0], ["chocolate", 0], ["ketchup", 0], ["lettuce", 0]];
+  function buildTops() {
+    $("tops").innerHTML = ""; $("topScore").textContent = "";
+    shuffle(TOPS).forEach(([t, ok]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.dataset.ok = ok; b.addEventListener("click", () => { b.classList.toggle("on"); b.classList.remove("right", "wrong", "miss"); }); $("tops").appendChild(b); });
+  }
+  $("topCheck").addEventListener("click", () => {
+    let ok = 0;
+    $("tops").querySelectorAll("button").forEach(b => {
+      const on = b.classList.contains("on"), should = b.dataset.ok === "1";
+      b.classList.remove("right", "wrong", "miss");
+      if (on && should) { b.classList.add("right"); ok++; } else if (on && !should) b.classList.add("wrong"); else if (!on && should) b.classList.add("miss"); else ok++;
+    });
+    $("topScore").textContent = ok + " / " + TOPS.length + " correct";
+  });
+  $("topReset").addEventListener("click", buildTops); buildTops();
+
+  // ---- 4 sorter ----
+  const SORT = [["bagel", "c"], ["egg", "c"], ["onion", "c"], ["slice", "c"], ["hot dog", "c"], ["bun", "c"], ["skewer", "c"], ["seed", "c"], ["cheese", "u"], ["bacon", "u"], ["water", "u"], ["bread", "u"], ["rice", "u"], ["sauce", "u"], ["coffee", "u"], ["money", "u"]];
+  let picked = null;
+  function buildSort() {
+    picked = null; $("sortScore").textContent = ""; $("pool").innerHTML = "";
+    ["bC", "bU"].forEach(id => $(id).querySelectorAll("button").forEach(b => b.remove()));
+    shuffle(SORT).forEach(([t, a]) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.dataset.a = a;
+      b.addEventListener("click", e => { e.stopPropagation(); if (b.parentElement.id !== "pool") { $("pool").appendChild(b); b.classList.remove("right", "wrong"); return; } $("pool").querySelectorAll("button").forEach(x => x.classList.remove("picked")); picked = b; b.classList.add("picked"); });
+      $("pool").appendChild(b);
+    });
+  }
+  ["bC", "bU"].forEach(id => {
+    const drop = () => { if (!picked) return; picked.classList.remove("picked"); $(id).appendChild(picked); picked = null; };
+    $(id).addEventListener("click", drop);
+    $(id).addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); drop(); } });
+  });
+  $("sortCheck").addEventListener("click", () => {
+    let ok = 0;
+    [["bC", "c"], ["bU", "u"]].forEach(([id, v]) => $(id).querySelectorAll("button").forEach(b => { const g = b.dataset.a === v; b.classList.toggle("right", g); b.classList.toggle("wrong", !g); if (g) ok++; }));
+    const left = $("pool").querySelectorAll("button").length;
+    $("sortScore").textContent = ok + " / " + SORT.length + (left ? ` · ${left} still to sort` : "") + (ok === SORT.length ? " 🎉" : "");
+  });
+  $("sortReset").addEventListener("click", buildSort); buildSort();
+
+  MC.gQ = [
+    ["How ___ bagels do you eat a week?", ["much", "many"], 1],
+    ["How ___ cream cheese do you want?", ["many", "much"], 1],
+    ["There aren't ___ onions on my bagel.", ["some", "any"], 1],
+    ["Could I have ___ ketchup, please?", ["any", "some"], 1, "Requests and offers use some."],
+    ["Just a ___ sauce, please. Not too much!", ["little", "few"], 0],
+    ["The line was very long: there were ___ people!", ["a lot of", "much", "a little"], 0],
+    ["We've got a ___ onions left, enough for one burger.", ["little", "few", "much"], 1],
+    ["I don't have ___ money left after New York!", ["many", "much"], 1]
+  ];
+  buildMC("gQ");
+
+  // ---- 5 / 6 video Qs ----
+  MC.v2Q = [
+    ["When did Luigi's Pizza open?", ["1937", "1973", "1988"], 1],
+    ["Where is Luigi's Pizza?", ["in Queens", "in Harlem", "in Brooklyn"], 2],
+    ["What did the owner's father do in winter to earn money?", ["He shovelled snow.", "He sold hot dogs.", "He made ice cream."], 0],
+    ["Which two slices does he try?", ["a Chicago slice and a Roman slice", "a plain New York slice and a Sicilian slice", "a cheese slice and a pineapple slice"], 1],
+    ["What do New Yorkers do with their slice?", ["They fold it.", "They cut it with a knife.", "They eat it cold."], 0],
+    ["Where does he eat his hot dog?", ["in Central Park", "at Times Square", "outside the Met"], 2],
+    ["Which German food is on the hot dog?", ["sauerkraut", "a pretzel", "potato salad"], 0, "Sauerkraut gives it acidity (a sour taste)."],
+    ["Why are hot dogs so popular in New York?", ["They're healthy.", "They're fancy.", "They're affordable and fast."], 2]
+  ];
+  buildMC("v2Q");
+  MC.v3Q = [
+    ["How does he describe Chinatown?", ["quiet and clean", "crowded, noisy and alive", "small and boring"], 1],
+    ["Why are they called pineapple buns?", ["They have pineapple inside.", "They look like a pineapple.", "They're yellow and sour."], 1, "There's no pineapple in them at all!"],
+    ["What was inside his pineapple bun?", ["chocolate", "sweet pork", "pineapple"], 1],
+    ["Which skewer was his favourite?", ["the chicken", "the tofu", "the lamb"], 2],
+    ["The lamb had chili and…", ["cumin", "sugar", "mustard"], 0],
+    ["When did the burger restaurant first open?", ["1937", "1973", "1987"], 0],
+    ["What's on the burger?", ["ketchup and lettuce", "bacon and a fried egg", "cheddar cheese and caramelized onions"], 2],
+    ["What did he eat with the burger?", ["fries and a pickle", "a salad", "onion rings"], 0]
+  ];
+  buildMC("v3Q");
+
+  // ---- 7 menu game ----
+  const MENU = [
+    ["🥯 Bagels", [["Everything bagel with cream cheese", 6.5], ["Breakfast bagel (bacon, egg & cheese)", 8], ["Extra smoked salmon", 3]]],
+    ["🍕 Pizza & hot dogs", [["Plain slice", 3.5], ["Sicilian slice", 4.5], ["Hot dog", 4], ["Extra sauerkraut", 0.5]]],
+    ["🥟 Chinatown", [["Pineapple bun", 2], ["Lamb skewer", 3], ["Chicken skewer", 2.5]]],
+    ["🍔 Burgers & drinks", [["Cheeseburger with fries", 16], ["Extra pickle", 1], ["Soda", 2.5], ["Coffee", 2]]]
+  ];
+  const MISSIONS = [["You have $20. Buy breakfast AND lunch.", 20], ["You're very hungry but you only have $15. Get as much food as you can!", 15], ["Order for you and a friend. Your budget is $20 for both.", 20], ["Try food from 3 different places for under $20.", 20], ["You're vegetarian! Order a full meal for under $12.", 12], ["You have $25. Order the most expensive meal you can, but don't go over!", 25]];
+  let qty = {}, budget = 20;
+  const money = n => "$" + n.toFixed(2);
+  MENU.forEach(([g, items]) => {
+    const d = document.createElement("div"); d.innerHTML = `<h3>${g}</h3>`;
+    items.forEach(([name, p]) => {
+      qty[name] = 0;
+      const r = document.createElement("div"); r.className = "mitem";
+      r.innerHTML = `<span>${name}</span><span class="price">${money(p)}</span><span class="qty"><button type="button" aria-label="Remove ${name}">−</button><span>0</span><button type="button" aria-label="Add ${name}">+</button></span>`;
+      const [minus, plus] = r.querySelectorAll("button"), c = r.querySelector(".qty span");
+      minus.addEventListener("click", () => { qty[name] = Math.max(0, qty[name] - 1); c.textContent = qty[name]; updBill(); });
+      plus.addEventListener("click", () => { qty[name]++; c.textContent = qty[name]; updBill(); });
+      d.appendChild(r);
+    });
+    $("menu").appendChild(d);
+  });
+  const PRICE = Object.fromEntries(MENU.flatMap(g => g[1]));
+  function updBill() {
+    const items = Object.keys(qty).filter(k => qty[k] > 0);
+    const total = items.reduce((s, k) => s + qty[k] * PRICE[k], 0);
+    $("billItems").textContent = items.length ? items.map(k => qty[k] + " × " + k).join(", ") : "nothing yet";
+    $("billTotal").textContent = money(total) + " / " + money(budget);
+    $("bill").classList.toggle("over", total > budget); $("bill").classList.toggle("okk", total > 0 && total <= budget);
+  }
+  $("misBtn").addEventListener("click", () => { const m = MISSIONS[Math.floor(Math.random() * MISSIONS.length)]; budget = m[1]; $("mission").textContent = "🎯 Mission: " + m[0]; updBill(); });
+  $("billReset").addEventListener("click", () => { Object.keys(qty).forEach(k => qty[k] = 0); document.querySelectorAll(".qty span").forEach(s => s.textContent = 0); updBill(); });
+  updBill();
+
+  // ---- 8 vlog ----
+  ["4 tasty adjectives", "\"That hits the spot!\"", "some / any", "much / many / a lot of", "a few / a little", "a Unit 1 word (legendary, massive, vibrant…)", "a price: \"It costs…\"", "your final score out of 10"].forEach(t => { const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.addEventListener("click", () => b.classList.toggle("used")); $("vlogChips").appendChild(b); });
+  let vIv = null, vLeft = 60;
+  $("vlogBtn").addEventListener("click", () => {
+    const t = $("vlogTimer");
+    if (vIv) { clearInterval(vIv); vIv = null; vLeft = 60; t.textContent = "1:00"; t.classList.remove("done"); $("vlogBtn").textContent = "Start 1:00"; return; }
+    $("vlogBtn").textContent = "Stop"; t.classList.remove("done");
+    vIv = setInterval(() => { vLeft--; t.textContent = fmt(vLeft); if (vLeft <= 0) { clearInterval(vIv); vIv = null; vLeft = 60; t.textContent = "That's a wrap! 🎬"; t.classList.add("done"); $("vlogBtn").textContent = "Start 1:00"; } }, 1000);
+  });
+
+  // ---- 9 exit ----
+  MC.exitQ = [
+    ["How ___ slices of pizza did you eat?", ["much", "many"], 1],
+    ["Can I have ___ water, please?", ["some", "any", "many"], 0],
+    ["There isn't ___ cheese on this burger!", ["some", "any", "a few"], 1],
+    ["A bagel is ___ because you need to bite it a lot.", ["chewy", "fluffy", "sour"], 0],
+    ["Pineapple buns have ___ pineapple in them.", ["a lot of", "no", "a little"], 1],
+    ["British English for \"fries\":", ["crisps", "chips", "chops"], 1],
+    ["Only a ___ people know this bakery. It's a secret!", ["little", "few", "much"], 1],
+    ["\"That hits the spot!\" means…", ["That was exactly what I needed.", "That hurt me.", "I want to fight."], 0]
+  ];
+  buildMC("exitQ");
+
+  // ---- X1 quick-fire ----
+  const QF = [["bagels", "many"], ["cheese", "much"], ["slices of pizza", "many"], ["water", "much"], ["money", "much"], ["hot dogs", "many"], ["rice", "much"], ["onions", "many"], ["sauce", "much"], ["people in the line", "many"], ["coffee", "much"], ["eggs", "many"], ["bread", "much"], ["skewers", "many"], ["homework", "much"], ["information", "much"], ["sugar", "much"], ["fries", "many"], ["time", "much"], ["languages", "many"], ["milk", "much"], ["burgers", "many"], ["advice", "much"], ["seeds", "many"]];
+  let qfDeck = [], qfI = 0, qfS = 0, qfK = 0, qfBest = 0, qfLeft = 60, qfIv = null;
+  const qfBtns = document.querySelectorAll("#qf .big");
+  function qfNext() { if (qfI >= qfDeck.length) { qfDeck = shuffle(QF); qfI = 0; } $("qfExpr").textContent = qfDeck[qfI][0]; }
+  $("qfStart").addEventListener("click", () => {
+    clearInterval(qfIv); qfDeck = shuffle(QF); qfI = 0; qfS = 0; qfK = 0; qfLeft = 60;
+    $("qfScore").textContent = 0; $("qfStreak").textContent = 0; $("qfFb").textContent = ""; $("qfTimer").textContent = "1:00"; $("qfTimer").classList.remove("done");
+    qfBtns.forEach(b => b.disabled = false); $("qfStart").disabled = true; qfNext();
+    qfIv = setInterval(() => {
+      qfLeft--; $("qfTimer").textContent = fmt(qfLeft);
+      if (qfLeft <= 0) { clearInterval(qfIv); qfBtns.forEach(b => b.disabled = true); $("qfStart").disabled = false; $("qfStart").textContent = "Play again"; $("qfTimer").textContent = "Time!"; $("qfTimer").classList.add("done"); $("qfExpr").textContent = qfS + " points"; if (qfS > qfBest) { qfBest = qfS; $("qfBest").textContent = qfBest; $("qfFb").textContent = "New best score! 🏆"; } }
+    }, 1000);
+  });
+  qfBtns.forEach(b => b.addEventListener("click", () => {
+    const it = qfDeck[qfI], good = b.dataset.v === it[1];
+    if (good) { qfS++; qfK++; $("qfFb").textContent = "✓ How " + it[1] + " " + it[0] + "?"; } else { qfK = 0; $("qfFb").textContent = "✗ How " + it[1] + " " + it[0] + "?"; }
+    $("qfScore").textContent = qfS; $("qfStreak").textContent = qfK; qfI++; qfNext();
+  }));
+})();
+</script>
+
+</body>
+</html>
