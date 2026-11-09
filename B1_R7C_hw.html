@@ -1,0 +1,515 @@
+<title>Outdoor Equipment Homework</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0d1b2e;--navy-lt:#1a2d47;--navy-md:#243d5f;
+  --gold:#c9972a;--gold-lt:#f5d980;--gold-dk:#a07820;
+  --text:#e8dfc8;--text-dim:#8a7850;
+  --ok:#3dba74;--err:#e05555;
+  --bg:#0d1b2e;--card:#172538;--border:rgba(201,151,42,.22);
+}
+@media(prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#f7f2e8;--card:#ffffff;--text:#1a1208;--text-dim:#6b5820;
+    --border:rgba(160,120,32,.28);--navy-lt:#f0e8d0;--navy-md:#e4dcc8;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f7f2e8;--card:#ffffff;--text:#1a1208;--text-dim:#6b5820;
+  --border:rgba(160,120,32,.28);--navy-lt:#f0e8d0;--navy-md:#e4dcc8;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100%}
+
+/* header */
+.hd{background:var(--navy);border-bottom:3px solid var(--gold);padding:2rem 1.5rem 1.4rem;text-align:center;position:relative}
+.hd .eyebrow{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:.35rem}
+.hd h1{font-family:'Nunito',sans-serif;font-size:clamp(1.3rem,4vw,1.9rem);color:var(--gold-lt);text-wrap:balance;margin-bottom:.25rem}
+.hd .sub{font-size:.84rem;color:var(--text-dim)}
+.theme-btn{position:absolute;top:1rem;right:1rem;background:none;border:1.5px solid var(--gold);border-radius:50%;width:2rem;height:2rem;color:var(--gold);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.theme-btn:hover{background:rgba(201,151,42,.12)}
+
+/* name bar */
+.name-bar{position:sticky;top:0;z-index:30;background:var(--navy);border-bottom:2px solid var(--border);padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.name-bar label{font-size:.8rem;color:var(--gold);font-weight:700;white-space:nowrap}
+.name-bar input{flex:1;min-width:150px;background:rgba(255,255,255,.06);border:1.5px solid var(--border);border-radius:6px;padding:.4rem .75rem;color:var(--text);font-family:inherit;font-size:.9rem}
+.name-bar input::placeholder{color:var(--text-dim)}
+.name-bar input:focus{outline:none;border-color:var(--gold)}
+
+/* progress */
+.prog-wrap{background:var(--navy);border-bottom:1px solid var(--border);padding:.5rem 1.5rem .6rem}
+.prog-bar{background:rgba(201,151,42,.12);border-radius:999px;height:7px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold-dk),var(--gold));border-radius:999px;width:0%;transition:width .4s ease}
+.prog-label{font-size:.74rem;color:var(--text-dim);margin-top:.3rem;text-align:right}
+
+/* layout */
+.main{padding:1.5rem;max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem}
+
+/* section label */
+.section-label{font-family:'Nunito',sans-serif;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-dk);font-weight:800;padding:.25rem 0 .1rem;border-bottom:1px solid var(--border);margin-bottom:-.5rem}
+
+/* exercise card */
+.ex-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;overflow:hidden}
+.ex-hd{background:var(--navy);padding:.85rem 1.25rem;display:flex;align-items:center;gap:.7rem;border-bottom:2px solid var(--gold)}
+.ex-num{background:var(--gold);color:var(--navy);font-family:'Nunito',sans-serif;font-weight:900;font-size:.78rem;width:1.75rem;height:1.75rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ex-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:.98rem;color:var(--gold-lt)}
+.ex-body{padding:1.25rem;display:flex;flex-direction:column;gap:1rem}
+.ex-instr{font-size:.86rem;color:var(--text-dim);font-style:italic}
+
+/* text inputs */
+.ti{display:inline-block;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:6px;padding:.22rem .55rem;color:var(--text);font-family:inherit;font-size:.9rem;transition:border-color .12s;vertical-align:baseline}
+.ti:focus{outline:none;border-color:var(--gold)}
+.ti.ok{border-color:var(--ok);background:rgba(61,186,116,.12);color:var(--ok)}
+.ti.err{border-color:var(--err);background:rgba(224,85,85,.08);color:var(--err)}
+.ti-sm{width:140px}
+.ti-md{width:170px}
+.ti-lg{width:200px}
+input[disabled].ti{opacity:.7;cursor:default}
+
+/* def list (Ex 1 & 3) */
+.def-list{display:flex;flex-direction:column;gap:.6rem}
+.def-row{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;line-height:1.75}
+.def-n{font-weight:800;color:var(--gold);min-width:1.15rem;flex-shrink:0;font-size:.88rem}
+.def-txt{font-size:.9rem;flex:1;min-width:0}
+
+/* word bank */
+.word-bank{background:rgba(201,151,42,.07);border:1px dashed var(--gold);border-radius:8px;padding:.6rem 1rem;font-size:.84rem;color:var(--text-dim);line-height:1.7}
+.word-bank strong{color:var(--gold)}
+.wb-word{display:inline-block;margin:.05rem .2rem}
+.wb-word.used{text-decoration:line-through;opacity:.45}
+
+/* passage (Ex 2) */
+.passage{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:1rem 1.1rem;font-size:.9rem;line-height:2;font-style:italic}
+.blank-num{font-style:normal;font-weight:800;color:var(--gold);font-size:.75rem;vertical-align:super;margin-right:.1rem}
+
+/* option buttons (Ex 4) */
+.opt-items{display:flex;flex-direction:column;gap:.75rem}
+.opt-row{display:flex;flex-direction:column;gap:.35rem}
+.opt-q{font-size:.9rem;font-weight:600}
+.opt-btns{display:flex;gap:.45rem;flex-wrap:wrap}
+.opt-btn{padding:.35rem .9rem;border-radius:7px;border:1.5px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-family:inherit;font-size:.88rem;cursor:pointer;transition:background .12s,border-color .12s;font-weight:600}
+.opt-btn:hover{background:rgba(201,151,42,.07);border-color:rgba(201,151,42,.5)}
+.opt-btn.sel{background:rgba(201,151,42,.14);border-color:var(--gold);color:var(--gold-lt)}
+.opt-btn.ok{background:rgba(61,186,116,.15);border-color:var(--ok);color:var(--ok)}
+.opt-btn.bad{background:rgba(224,85,85,.12);border-color:var(--err);color:var(--err)}
+
+/* matching (Ex 5) */
+.match-ref{background:rgba(201,151,42,.06);border:1px dashed var(--gold);border-radius:8px;padding:.75rem 1rem;display:flex;flex-direction:column;gap:.3rem}
+.match-ref-title{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:.2rem}
+.match-ref-row{font-size:.84rem;display:flex;gap:.5rem;align-items:baseline}
+.match-ref-ltr{font-weight:800;color:var(--gold);min-width:1rem;flex-shrink:0}
+.match-items{display:flex;flex-direction:column;gap:.5rem}
+.match-row{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.match-n{font-weight:800;color:var(--gold);min-width:1.15rem;flex-shrink:0;font-size:.88rem}
+.match-txt{font-size:.88rem;flex:1;min-width:140px}
+.match-sel{background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:6px;padding:.3rem .6rem;color:var(--text);font-family:inherit;font-size:.88rem;cursor:pointer;transition:border-color .12s;min-width:60px}
+.match-sel:focus{outline:none;border-color:var(--gold)}
+.match-sel.ok{border-color:var(--ok);background:rgba(61,186,116,.12);color:var(--ok)}
+.match-sel.err{border-color:var(--err);background:rgba(224,85,85,.08);color:var(--err)}
+
+/* button row */
+.btn-row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.btn{padding:.48rem 1.1rem;border-radius:8px;border:2px solid var(--gold);background:var(--gold);color:var(--navy);font-family:'Nunito',sans-serif;font-size:.84rem;font-weight:800;cursor:pointer;transition:background .12s,transform .08s}
+.btn:hover{background:var(--gold-lt);border-color:var(--gold-lt)}
+.btn:active{transform:scale(.97)}
+.btn-ghost{background:transparent;color:var(--text-dim);border-color:var(--border);font-family:'Nunito Sans',sans-serif;font-weight:600}
+.btn-ghost:hover{background:rgba(255,255,255,.05);border-color:var(--text-dim);color:var(--text)}
+.sc-badge{display:inline-flex;align-items:center;background:rgba(201,151,42,.1);border:1px solid var(--gold);border-radius:999px;padding:.22rem .7rem;font-size:.8rem;font-weight:700;color:var(--gold)}
+
+/* send card */
+.send-card{background:var(--navy);border:2px solid var(--gold);border-radius:12px;padding:1.4rem 1.25rem;text-align:center;display:flex;flex-direction:column;gap:.7rem;align-items:center}
+.send-card h3{font-family:'Nunito',sans-serif;color:var(--gold-lt);font-size:1rem}
+.send-card p{font-size:.84rem;color:var(--text-dim)}
+
+footer{text-align:center;padding:1.5rem;font-size:.74rem;color:var(--text-dim)}
+
+@media(max-width:500px){
+  .main{padding:1rem}
+  .ti-sm{width:120px}.ti-md{width:145px}.ti-lg{width:170px}
+  .match-txt{min-width:100px}
+}
+</style>
+
+<header class="hd">
+  <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">☀</button>
+  <div class="eyebrow">Homework</div>
+  <h1>Trip of a Lifetime</h1>
+  <p class="sub">Outdoor Equipment &amp; Expressing Purpose</p>
+</header>
+
+<div class="name-bar">
+  <label for="nameIn">Your name:</label>
+  <input id="nameIn" type="text" placeholder="Type your name here…" autocomplete="name">
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-bar"><div class="prog-fill" id="pfill"></div></div>
+  <div class="prog-label" id="plabel">0 / 5 exercises checked</div>
+</div>
+
+<main class="main">
+
+  <div class="section-label">Vocabulary — Outdoor Equipment</div>
+
+  <!-- EX 1 -->
+  <div class="ex-card">
+    <div class="ex-hd"><div class="ex-num">1</div><div class="ex-title">Complete the missing words in the definitions</div></div>
+    <div class="ex-body">
+      <p class="ex-instr">The first letter of each missing word is given.</p>
+      <div class="def-list" id="ex1list"></div>
+      <div class="btn-row">
+        <button class="btn" onclick="checkEx1()">Check</button>
+        <button class="btn btn-ghost" onclick="resetEx1()">Reset</button>
+        <span class="sc-badge" id="sc1" hidden></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- EX 2 -->
+  <div class="ex-card">
+    <div class="ex-hd"><div class="ex-num">2</div><div class="ex-title">Complete the text — three extra words</div></div>
+    <div class="ex-body">
+      <p class="ex-instr">Use words from the box. There are three extra words you will not need.</p>
+      <div class="word-bank" id="wb2">
+        <strong>Word bank:</strong>&ensp;
+        <span class="wb-word" id="wb_backpack">backpack</span>
+        <span class="wb-word" id="wb_camping-stove">camping stove</span>
+        <span class="wb-word" id="wb_insect-repellent">insect repellent</span>
+        <span class="wb-word" id="wb_portable-charger">portable charger</span>
+        <span class="wb-word" id="wb_sunglasses">sunglasses</span>
+        <span class="wb-word" id="wb_sunscreen">sunscreen</span>
+        <span class="wb-word" id="wb_tent">tent</span>
+        <span class="wb-word" id="wb_torch">torch</span>
+        <span class="wb-word" id="wb_walking-boots">walking boots</span>
+        <span class="wb-word" id="wb_waterproof-jacket">waterproof jacket</span>
+      </div>
+      <div class="passage">
+        My first music festival was awesome! I think it was the best weekend of my life, although it wasn't all perfect! I'd bought a new <span class="blank-num">1</span><input class="ti ti-sm" id="gf2_1" data-ans="tent" placeholder="…"> – it was bigger than I thought and I was worried it was too big for the car! It was forecast to be sunny and warm, so I packed my <span class="blank-num">2</span><input class="ti ti-sm" id="gf2_2" data-ans="sunglasses" placeholder="…"> and <span class="blank-num">3</span><input class="ti ti-sm" id="gf2_3" data-ans="sunscreen" placeholder="…">.<br><br>
+        We got to the campsite at lunchtime. By the time we'd unpacked, we were all so hungry, but luckily Sandra had brought a <span class="blank-num">4</span><input class="ti ti-md" id="gf2_4" data-ans="camping stove" placeholder="…">, so we could cook! That was good fun. Oh, but I almost forgot the first disaster – so, when we were all unpacking, Trish realised she hadn't brought her <span class="blank-num">5</span><input class="ti ti-lg" id="gf2_5" data-ans="portable charger" placeholder="…"> and so her phone died. Oh, and then Mike was attacked by mosquitoes, but of course, Sandra was prepared with her <span class="blank-num">6</span><input class="ti ti-lg" id="gf2_6" data-ans="insect repellent" placeholder="…">.<br><br>
+        The bands were all incredible – I haven't danced so much in my life! My mum had given me a <span class="blank-num">7</span><input class="ti ti-sm" id="gf2_7" data-ans="torch" placeholder="…">, so luckily we could find our way around in the dark! On the last day it rained heavily, but then a festival wouldn't be a festival without rain!
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="checkEx2()">Check</button>
+        <button class="btn btn-ghost" onclick="resetEx2()">Reset</button>
+        <span class="sc-badge" id="sc2" hidden></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- EX 3 -->
+  <div class="ex-card">
+    <div class="ex-hd"><div class="ex-num">3</div><div class="ex-title">Complete the sentences with the words in the box</div></div>
+    <div class="ex-body">
+      <p class="ex-instr">Item 1 is done for you as an example.</p>
+      <div class="word-bank">
+        <strong>Word bank:</strong>&ensp;
+        <span style="text-decoration:line-through;opacity:.5">torch</span> &nbsp;·&nbsp;
+        insect repellent &nbsp;·&nbsp; portable charger &nbsp;·&nbsp; sleeping bag &nbsp;·&nbsp; sunglasses &nbsp;·&nbsp; sunscreen &nbsp;·&nbsp; tent &nbsp;·&nbsp; waterproof jacket
+      </div>
+      <div class="def-list" id="ex3list"></div>
+      <div class="btn-row">
+        <button class="btn" onclick="checkEx3()">Check</button>
+        <button class="btn btn-ghost" onclick="resetEx3()">Reset</button>
+        <span class="sc-badge" id="sc3" hidden></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Grammar — Expressing Purpose</div>
+
+  <!-- EX 4 -->
+  <div class="ex-card">
+    <div class="ex-hd"><div class="ex-num">4</div><div class="ex-title">Choose the correct alternative</div></div>
+    <div class="ex-body">
+      <p class="ex-instr">Click the correct word or phrase to complete each sentence.</p>
+      <div class="opt-items" id="ex4list"></div>
+      <div class="btn-row">
+        <button class="btn" onclick="checkEx4()">Check</button>
+        <button class="btn btn-ghost" onclick="resetEx4()">Reset</button>
+        <span class="sc-badge" id="sc4" hidden></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- EX 5 -->
+  <div class="ex-card">
+    <div class="ex-hd"><div class="ex-num">5</div><div class="ex-title">Match the sentence halves</div></div>
+    <div class="ex-body">
+      <p class="ex-instr">Choose the correct ending (a–h) for each sentence.</p>
+      <div class="match-ref">
+        <div class="match-ref-title">Sentence endings</div>
+        <div class="match-ref-row"><span class="match-ref-ltr">a</span><span>so you will be able to contact us in case of emergency.</span></div>
+        <div class="match-ref-row"><span class="match-ref-ltr">b</span><span>to have lunch at 3 p.m.</span></div>
+        <div class="match-ref-row"><span class="match-ref-ltr">c</span><span>so that we can leave on time.</span></div>
+        <div class="match-ref-row"><span class="match-ref-ltr">d</span><span>for keeping the mosquitoes away!</span></div>
+        <div class="match-ref-row"><span class="match-ref-ltr">e</span><span>so if you have any health issues, it's probably not suitable.</span></div>
+        <div class="match-ref-row"><span class="match-ref-ltr">f</span><span>so that you feel comfortable while you're walking.</span></div>
+        <div class="match-ref-row"><span class="match-ref-ltr">g</span><span>in order to stay hydrated.</span></div>
+        <div class="match-ref-row"><span class="match-ref-ltr">h</span><span>so that you can become familiar with the area.</span></div>
+      </div>
+      <div class="match-items" id="ex5list"></div>
+      <div class="btn-row">
+        <button class="btn" onclick="checkEx5()">Check</button>
+        <button class="btn btn-ghost" onclick="resetEx5()">Reset</button>
+        <span class="sc-badge" id="sc5" hidden></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- send -->
+  <div class="send-card">
+    <h3>✉ Send to your teacher</h3>
+    <p>When you have finished all five exercises, click below to email your answers.</p>
+    <button class="btn" onclick="sendToTeacher()">Send to Teacher</button>
+  </div>
+
+</main>
+
+<footer>Trip of a Lifetime · Homework · B1 Level · Outdoor Equipment &amp; Expressing Purpose</footer>
+
+<script>
+// ── theme ──
+function toggleTheme(){
+  const r=document.documentElement;
+  r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');
+}
+
+// ── progress ──
+const done={e1:false,e2:false,e3:false,e4:false,e5:false};
+function updateProgress(){
+  const n=Object.values(done).filter(Boolean).length;
+  document.getElementById('pfill').style.width=(n/5*100)+'%';
+  document.getElementById('plabel').textContent=n+' / 5 exercises checked';
+}
+
+// ── helpers ──
+function chk(val,ans){
+  const v=val.toLowerCase().trim();
+  return ans.split(',').map(a=>a.trim().toLowerCase()).includes(v);
+}
+
+// ══ EXERCISE 1 ══
+const ex1Data=[
+  {pre:'A ',hint:'b',mid:'',post:' is a large bag you carry on your back.',ans:'backpack'},
+  {pre:'A waterproof ',hint:'j',mid:'',post:' is an item of clothing which protects you from the rain.',ans:'jacket,waterproof jacket'},
+  {pre:'Walking ',hint:'b',mid:'',post:' are special shoes for hiking.',ans:'boots,walking boots'},
+  {pre:'A camping ',hint:'s',mid:'',post:' is for cooking when you go camping.',ans:'stove,camping stove'},
+  {pre:'Insect ',hint:'r',mid:'',post:' protects you from insect bites.',ans:'repellent,insect repellent'},
+  {pre:'A portable ',hint:'c',mid:'',post:' fills your phone or tablet battery with electricity.',ans:'charger,portable charger'}
+];
+(function buildEx1(){
+  const list=document.getElementById('ex1list');
+  ex1Data.forEach((d,i)=>{
+    list.innerHTML+=`<div class="def-row">
+      <span class="def-n">${i+1}.</span>
+      <span class="def-txt">${d.pre}<span style="font-weight:700">${d.hint}</span><input class="ti ti-sm" id="e1_${i}" data-ans="${d.ans}" placeholder="______">${d.post}</span>
+    </div>`;
+  });
+})();
+function checkEx1(){
+  let ok=0;
+  ex1Data.forEach((_,i)=>{
+    const inp=document.getElementById('e1_'+i);
+    inp.classList.remove('ok','err');
+    if(chk(inp.value,inp.dataset.ans)){inp.classList.add('ok');ok++;}
+    else inp.classList.add('err');
+  });
+  const sc=document.getElementById('sc1');sc.hidden=false;sc.textContent=ok+' / 6 correct';
+  done.e1=true;updateProgress();
+}
+function resetEx1(){
+  ex1Data.forEach((_,i)=>{const inp=document.getElementById('e1_'+i);inp.value='';inp.classList.remove('ok','err');});
+  document.getElementById('sc1').hidden=true;done.e1=false;updateProgress();
+}
+
+// ══ EXERCISE 2 ══
+const ex2Ans=['tent','sunglasses','sunscreen','camping stove','portable charger','insect repellent','torch'];
+// word bank IDs
+const wbMap={
+  'tent':'wb_tent','sunglasses':'wb_sunglasses','sunscreen':'wb_sunscreen',
+  'camping stove':'wb_camping-stove','portable charger':'wb_portable-charger',
+  'insect repellent':'wb_insect-repellent','torch':'wb_torch'
+};
+function checkEx2(){
+  let ok=0;
+  for(let i=1;i<=7;i++){
+    const inp=document.getElementById('gf2_'+i);
+    inp.classList.remove('ok','err');
+    if(chk(inp.value,inp.dataset.ans)){inp.classList.add('ok');ok++;}
+    else inp.classList.add('err');
+  }
+  const sc=document.getElementById('sc2');sc.hidden=false;sc.textContent=ok+' / 7 correct';
+  done.e2=true;updateProgress();
+}
+function resetEx2(){
+  for(let i=1;i<=7;i++){const inp=document.getElementById('gf2_'+i);inp.value='';inp.classList.remove('ok','err');}
+  document.getElementById('sc2').hidden=true;done.e2=false;updateProgress();
+}
+
+// ══ EXERCISE 3 ══
+const ex3Data=[
+  {defn:"It's something you use to see in the dark.",ans:'torch',given:true},
+  {defn:"You put this on your skin so you don't burn when it's hot.",ans:'sunscreen'},
+  {defn:'You wear this when it rains.',ans:'waterproof jacket'},
+  {defn:'You use this to protect yourself from mosquitoes.',ans:'insect repellent'},
+  {defn:'You use this for keeping warm at night.',ans:'sleeping bag'},
+  {defn:'You wear these to protect you from bright light.',ans:'sunglasses'},
+  {defn:"Take one of these so that your phone doesn't die.",ans:'portable charger'},
+  {defn:'If you go camping, you and your friends can sleep in one of these.',ans:'tent'}
+];
+(function buildEx3(){
+  const list=document.getElementById('ex3list');
+  ex3Data.forEach((d,i)=>{
+    const disabled=d.given?'disabled':'' ;
+    const val=d.given?d.ans:'';
+    const cls=d.given?'ti ti-md ok':'ti ti-md';
+    list.innerHTML+=`<div class="def-row">
+      <span class="def-n">${i+1}.</span>
+      <span class="def-txt">${d.defn}&ensp;<input class="${cls}" id="e3_${i}" data-ans="${d.ans}" value="${val}" ${disabled} placeholder="…"></span>
+    </div>`;
+  });
+})();
+function checkEx3(){
+  let ok=0;
+  ex3Data.forEach((d,i)=>{
+    if(d.given){ok++;return;}
+    const inp=document.getElementById('e3_'+i);
+    inp.classList.remove('ok','err');
+    if(chk(inp.value,inp.dataset.ans)){inp.classList.add('ok');ok++;}
+    else inp.classList.add('err');
+  });
+  const sc=document.getElementById('sc3');sc.hidden=false;sc.textContent=ok+' / 8 correct';
+  done.e3=true;updateProgress();
+}
+function resetEx3(){
+  ex3Data.forEach((d,i)=>{
+    if(d.given)return;
+    const inp=document.getElementById('e3_'+i);inp.value='';inp.classList.remove('ok','err');
+  });
+  document.getElementById('sc3').hidden=true;done.e3=false;updateProgress();
+}
+
+// ══ EXERCISE 4 ══
+const ex4Data=[
+  {q:"Take a coat _____ you don't get cold.",opts:['so','that'],ans:0},
+  {q:'This is really good repellent _____ keeping the mosquitoes away.',opts:['for','to'],ans:0},
+  {q:'Take this torch with you _____ you can find the path at night. There are no street lights there.',opts:['so that','for'],ans:0},
+  {q:"Take your phone _____ you don't get lost.",opts:['so that','for'],ans:0},
+  {q:'I\'m going to the US _____ visit the Grand Canyon.',opts:['to','so that'],ans:0},
+  {q:'There are special areas _____ put your bags in.',opts:['to','for'],ans:0},
+  {q:'You\'ll need to complete a form _____ open an account.',opts:['to','so that'],ans:0},
+  {q:'Have you got anything _____ opening bottles?',opts:['for','to'],ans:0}
+];
+const ex4Sel=new Array(8).fill(-1);
+(function buildEx4(){
+  const list=document.getElementById('ex4list');
+  ex4Data.forEach((d,i)=>{
+    const btns=d.opts.map((o,j)=>`<button class="opt-btn" id="op${i}_${j}" onclick="selOpt(${i},${j})">${o}</button>`).join('');
+    list.innerHTML+=`<div class="opt-row">
+      <p class="opt-q">${i+1}. ${d.q}</p>
+      <div class="opt-btns">${btns}</div>
+    </div>`;
+  });
+})();
+function selOpt(q,j){
+  const prev=ex4Sel[q];
+  if(prev>=0){const b=document.getElementById('op'+q+'_'+prev);if(b)b.classList.remove('sel');}
+  ex4Sel[q]=j;
+  document.getElementById('op'+q+'_'+j).classList.add('sel');
+}
+function checkEx4(){
+  let ok=0;
+  ex4Data.forEach((d,i)=>{
+    d.opts.forEach((_,j)=>{document.getElementById('op'+i+'_'+j).classList.remove('sel','ok','bad');});
+    const s=ex4Sel[i];
+    if(s>=0){
+      const b=document.getElementById('op'+i+'_'+s);
+      if(s===d.ans){b.classList.add('ok');ok++;}
+      else{b.classList.add('bad');document.getElementById('op'+i+'_'+d.ans).classList.add('ok');}
+    }else{document.getElementById('op'+i+'_'+d.ans).classList.add('ok');}
+  });
+  const sc=document.getElementById('sc4');sc.hidden=false;sc.textContent=ok+' / 8 correct';
+  done.e4=true;updateProgress();
+}
+function resetEx4(){
+  ex4Data.forEach((_,i)=>{
+    ex4Sel[i]=-1;
+    ex4Data[i].opts.forEach((_,j)=>document.getElementById('op'+i+'_'+j).classList.remove('sel','ok','bad'));
+  });
+  document.getElementById('sc4').hidden=true;done.e4=false;updateProgress();
+}
+
+// ══ EXERCISE 5 ══
+const ex5Left=[
+  'Bring some good walking boots',
+  'Please be punctual',
+  'There will be a phone signal on most parts of the walk',
+  'We must drink water',
+  "We'll stop",
+  'We recommend an insect repellent',
+  "It's a difficult hike",
+  'Please see the map attached'
+];
+// correct letters: 1-f, 2-c, 3-a, 4-g, 5-b, 6-d, 7-e, 8-h
+const ex5Ans=['f','c','a','g','b','d','e','h'];
+(function buildEx5(){
+  const list=document.getElementById('ex5list');
+  const opts=['a','b','c','d','e','f','g','h'].map(l=>`<option value="${l}">${l}</option>`).join('');
+  ex5Left.forEach((txt,i)=>{
+    list.innerHTML+=`<div class="match-row">
+      <span class="match-n">${i+1}.</span>
+      <span class="match-txt">${txt}</span>
+      <select class="match-sel" id="ms${i}">
+        <option value="">– –</option>${opts}
+      </select>
+    </div>`;
+  });
+})();
+function checkEx5(){
+  let ok=0;
+  ex5Ans.forEach((ans,i)=>{
+    const sel=document.getElementById('ms'+i);
+    sel.classList.remove('ok','err');
+    if(sel.value===ans){sel.classList.add('ok');ok++;}
+    else if(sel.value!=='')sel.classList.add('err');
+  });
+  const sc=document.getElementById('sc5');sc.hidden=false;sc.textContent=ok+' / 8 correct';
+  done.e5=true;updateProgress();
+}
+function resetEx5(){
+  ex5Ans.forEach((_,i)=>{const s=document.getElementById('ms'+i);s.value='';s.classList.remove('ok','err');});
+  document.getElementById('sc5').hidden=true;done.e5=false;updateProgress();
+}
+
+// ══ SEND TO TEACHER ══
+function sendToTeacher(){
+  const name=document.getElementById('nameIn').value.trim()||'Anonymous';
+
+  // Ex 1
+  let e1='';
+  ex1Data.forEach((_,i)=>{const v=document.getElementById('e1_'+i).value.trim()||'(blank)';const m=document.getElementById('e1_'+i).classList.contains('ok')?'✓':'✗';e1+='  '+(i+1)+'. '+v+' '+m+'\n';});
+
+  // Ex 2
+  let e2='';
+  for(let i=1;i<=7;i++){const v=document.getElementById('gf2_'+i).value.trim()||'(blank)';const m=document.getElementById('gf2_'+i).classList.contains('ok')?'✓':'✗';e2+='  '+(i)+'. '+v+' '+m+'\n';}
+
+  // Ex 3
+  let e3='';
+  ex3Data.forEach((d,i)=>{const v=document.getElementById('e3_'+i).value.trim()||'(blank)';const m=d.given?'(given)':document.getElementById('e3_'+i).classList.contains('ok')?'✓':'✗';e3+='  '+(i+1)+'. '+v+' '+m+'\n';});
+
+  // Ex 4
+  const letters=['A','B'];
+  let e4='';
+  ex4Data.forEach((d,i)=>{const s=ex4Sel[i];const v=s>=0?d.opts[s]:'(no answer)';const m=s===d.ans?'✓':'✗';e4+='  '+(i+1)+'. '+v+' '+m+'\n';});
+
+  // Ex 5
+  let e5='';
+  ex5Ans.forEach((_,i)=>{const v=document.getElementById('ms'+i).value||'(no answer)';const m=document.getElementById('ms'+i).classList.contains('ok')?'✓':'✗';e5+='  '+(i+1)+'. → '+v+' '+m+'\n';});
+
+  const body=`Student: ${name}\n\nEXERCISE 1 – Definitions\n${e1}\nEXERCISE 2 – Passage gap-fill\n${e2}\nEXERCISE 3 – Definitions to words\n${e3}\nEXERCISE 4 – Choose the alternative\n${e4}\nEXERCISE 5 – Match sentence halves\n${e5}`;
+  const sub=encodeURIComponent('Homework – '+name+' – Trip of a Lifetime (Vocab + Grammar)');
+  window.location.href='mailto:daryaaa2028@gmail.com?subject='+sub+'&body='+encodeURIComponent(body);
+}
+
+updateProgress();
+</script>
