@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unit 6B Grammar Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  --teal:#1BBCB3;--purple:#7B4FD6;--orange:#E8653A;--yellow:#F9C23C;--coral:#E04565;
+  --teal-soft:rgba(27,188,179,.13);--purple-soft:rgba(123,79,214,.13);
+  --bg:#F7F8FA;--surface:#FFFFFF;--surface-2:#EEF0F4;
+  --text-1:#1A1D27;--text-2:#6B7280;--text-3:#9CA3AF;
+  --border:#E2E5EC;--radius:16px;--radius-sm:10px;
+  --correct:#22c55e;--wrong:#ef4444;--correct-bg:rgba(34,197,94,.1);--wrong-bg:rgba(239,68,68,.1);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12141C;--surface:#1E2130;--surface-2:#262A3A;
+  --text-1:#F0F2F8;--text-2:#9AA3B8;--text-3:#5A6480;
+  --border:#2E3448;
+  --teal-soft:rgba(27,188,179,.18);--purple-soft:rgba(123,79,214,.18);
+}}
+:root[data-theme="dark"]{
+  --bg:#12141C;--surface:#1E2130;--surface-2:#262A3A;
+  --text-1:#F0F2F8;--text-2:#9AA3B8;--text-3:#5A6480;
+  --border:#2E3448;
+  --teal-soft:rgba(27,188,179,.18);--purple-soft:rgba(123,79,214,.18);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-1);min-height:100vh;padding:0 0 60px;}
+
+.header{background:linear-gradient(135deg,#1a1d2e 0%,#2d1a4a 50%,#1a3040 100%);color:#fff;padding:2.2rem 1.25rem 1.8rem;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(27,188,179,.06) 0,rgba(27,188,179,.06) 1px,transparent 1px,transparent 20px);pointer-events:none;}
+.hw-badge{display:inline-flex;align-items:center;gap:.4rem;background:var(--orange);color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;padding:.25rem .7rem;border-radius:6px;margin-bottom:.6rem;}
+.header h1{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;line-height:1.15;}
+.header h1 span{color:var(--teal);}
+.header p{font-size:.82rem;color:rgba(255,255,255,.65);margin-top:.35rem;}
+.theme-btn{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.15);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:1rem;color:#fff;display:flex;align-items:center;justify-content:center;}
+
+.name-bar{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1.25rem;display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;}
+.name-bar label{font-size:.82rem;font-weight:600;color:var(--text-2);white-space:nowrap;}
+.name-bar input{flex:1;min-width:140px;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:.3rem .6rem;font-family:'Inter',sans-serif;font-size:.87rem;background:var(--surface-2);color:var(--text-1);}
+.name-bar input:focus{outline:none;border-color:var(--teal);}
+
+.progress-wrap{padding:.6rem 1.25rem;background:var(--surface);border-bottom:1px solid var(--border);}
+.progress-track{background:var(--surface-2);border-radius:99px;height:7px;overflow:hidden;}
+.progress-fill{background:linear-gradient(90deg,var(--teal),var(--purple));height:100%;border-radius:99px;transition:width .4s;}
+.progress-label{font-size:.72rem;color:var(--text-2);margin-top:.3rem;text-align:right;}
+
+.main{padding:1.25rem;max-width:740px;margin:0 auto;display:flex;flex-direction:column;gap:1.75rem;}
+
+.ex-card{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--surface);}
+.ex-hd{padding:.9rem 1.25rem;background:linear-gradient(135deg,var(--teal),var(--purple));display:flex;align-items:center;gap:.6rem;}
+.ex-num{background:rgba(255,255,255,.25);color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:.85rem;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ex-title{font-family:'Nunito',sans-serif;font-weight:700;font-size:.97rem;color:#fff;}
+.ex-body{padding:1.25rem;}
+.instr{font-size:.87rem;color:var(--text-2);line-height:1.6;margin-bottom:1rem;}
+
+/* MCQ */
+.mcq-list{display:flex;flex-direction:column;gap:.85rem;}
+.mcq-row{font-size:.9rem;line-height:1.5;}
+.mcq-opts{display:flex;gap:.5rem;margin-top:.3rem;flex-wrap:wrap;}
+.mcq-btn{border:1.5px solid var(--border);background:var(--surface-2);border-radius:var(--radius-sm);padding:.28rem .75rem;font-size:.85rem;cursor:pointer;font-family:'Inter',sans-serif;transition:border-color .15s,background .15s;}
+.mcq-btn:hover{border-color:var(--teal);background:var(--teal-soft);}
+.mcq-btn.selected{border-color:var(--teal);background:var(--teal-soft);}
+.mcq-btn.correct{border-color:var(--correct);background:var(--correct-bg);font-weight:600;}
+.mcq-btn.wrong{border-color:var(--wrong);background:var(--wrong-bg);}
+.mcq-reveal{font-size:.8rem;color:var(--correct);font-weight:600;margin-top:.25rem;display:none;}
+
+/* GAP FILL */
+.gf-list{display:flex;flex-direction:column;gap:.85rem;}
+.gf-row{font-size:.9rem;line-height:1.6;}
+.gf-num{font-weight:700;color:var(--teal);margin-right:.3rem;}
+.gf-in{border:none;border-bottom:1.5px solid var(--teal);background:transparent;color:var(--text-1);font-family:'Inter',sans-serif;font-size:.9rem;padding:0 3px;min-width:80px;max-width:140px;text-align:center;}
+.gf-in:focus{outline:none;border-bottom-color:var(--purple);}
+.gf-in.correct{border-bottom-color:var(--correct);color:var(--correct);font-weight:600;}
+.gf-in.wrong{border-bottom-color:var(--wrong);color:var(--wrong);}
+.gf-hint{font-size:.78rem;color:var(--text-3);font-style:italic;margin-left:.2rem;}
+
+/* DIARY */
+.diary{border:1.5px solid var(--teal);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:1.25rem;}
+.diary-row{display:grid;grid-template-columns:95px 1fr;border-bottom:1px dashed rgba(27,188,179,.3);}
+.diary-row:last-child{border-bottom:none;}
+.diary-day{background:var(--teal-soft);padding:.55rem .75rem;font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;color:var(--teal);display:flex;align-items:center;}
+.diary-items{padding:.5rem .75rem;font-size:.83rem;line-height:1.75;color:var(--text-2);}
+.diary-items s{color:var(--text-3);}
+.diary-items .tick{color:var(--correct);font-weight:700;}
+.diary-items .cross{color:var(--wrong);font-weight:700;}
+.diary-items .note{font-style:italic;color:var(--text-3);font-size:.78rem;}
+
+.sent-list{display:flex;flex-direction:column;gap:.6rem;}
+.sent-row{font-size:.9rem;display:flex;align-items:flex-start;gap:.5rem;}
+.sent-num{font-weight:700;color:var(--teal);min-width:1.4em;padding-top:.1rem;}
+.sent-in{flex:1;border:none;border-bottom:1.5px solid var(--teal);background:transparent;color:var(--text-1);font-family:'Inter',sans-serif;font-size:.9rem;padding:.1rem 3px;}
+.sent-in:focus{outline:none;border-bottom-color:var(--purple);}
+.sent-given{flex:1;font-style:italic;color:var(--text-2);font-size:.87rem;padding:.1rem 0;}
+.sent-ans{font-size:.82rem;color:var(--correct);font-weight:600;margin-top:.15rem;display:none;}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;}
+.btn-check{background:linear-gradient(135deg,var(--teal),var(--purple));color:#fff;border:none;border-radius:var(--radius-sm);padding:.5rem 1.1rem;font-size:.85rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-reset{background:var(--surface-2);color:var(--text-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.5rem 1.1rem;font-size:.85rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-show{background:var(--purple-soft);color:var(--purple);border:1.5px solid var(--purple);border-radius:var(--radius-sm);padding:.5rem 1.1rem;font-size:.85rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+
+/* SEND CARD */
+.send-card{background:var(--teal-soft);border:1.5px solid var(--teal);border-radius:var(--radius);padding:1.25rem;text-align:center;}
+.send-card h3{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;margin-bottom:.4rem;}
+.send-card p{font-size:.85rem;color:var(--text-2);margin-bottom:.85rem;}
+.btn-send{background:linear-gradient(135deg,var(--teal),var(--purple));color:#fff;border:none;border-radius:var(--radius-sm);padding:.6rem 1.6rem;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;}
+
+@media(max-width:480px){
+  .mcq-opts{flex-direction:column;gap:.3rem;}
+  .diary-row{grid-template-columns:80px 1fr;}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+  <div class="hw-badge">📝 Homework</div>
+  <h1>Unit 6B — <span>Past Simple</span><br>Irregular Verbs</h1>
+  <p>Grammar practice · Exercises 4, 5 &amp; 6</p>
+</header>
+
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="pfill" style="width:0%"></div></div>
+  <div class="progress-label" id="plabel">0 / 2 exercises checked</div>
+</div>
+
+<main class="main">
+
+<!-- ══ EXERCISE 1 — MCQ ══ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">1</span>
+    <span class="ex-title">Choose the correct option, a or b</span>
+  </div>
+  <div class="ex-body">
+    <p class="instr">Choose the correct past simple form to complete each sentence.</p>
+    <div class="mcq-list" id="mcqList">
+
+      <div class="mcq-row" data-correct="b">
+        <span>1 &nbsp;He ___ the ball to me.</span>
+        <div class="mcq-opts">
+          <button class="mcq-btn" data-grp="m1" data-val="a" onclick="pickMCQ(this)">a &nbsp;throw</button>
+          <button class="mcq-btn" data-grp="m1" data-val="b" onclick="pickMCQ(this)">b &nbsp;threw</button>
+        </div>
+        <div class="mcq-reveal" id="rev1">✓ threw</div>
+      </div>
+
+      <div class="mcq-row" data-correct="a">
+        <span>2 &nbsp;I ___ my laptop to school yesterday.</span>
+        <div class="mcq-opts">
+          <button class="mcq-btn" data-grp="m2" data-val="a" onclick="pickMCQ(this)">a &nbsp;took</button>
+          <button class="mcq-btn" data-grp="m2" data-val="b" onclick="pickMCQ(this)">b &nbsp;taked</button>
+        </div>
+        <div class="mcq-reveal" id="rev2">✓ took</div>
+      </div>
+
+      <div class="mcq-row" data-correct="a">
+        <span>3 &nbsp;I ___ the ball!</span>
+        <div class="mcq-opts">
+          <button class="mcq-btn" data-grp="m3" data-val="a" onclick="pickMCQ(this)">a &nbsp;caught</button>
+          <button class="mcq-btn" data-grp="m3" data-val="b" onclick="pickMCQ(this)">b &nbsp;catched</button>
+        </div>
+        <div class="mcq-reveal" id="rev3">✓ caught</div>
+      </div>
+
+      <div class="mcq-row" data-correct="b">
+        <span>4 &nbsp;We ___ Maria at the party last night.</span>
+        <div class="mcq-opts">
+          <button class="mcq-btn" data-grp="m4" data-val="a" onclick="pickMCQ(this)">a &nbsp;didn't saw</button>
+          <button class="mcq-btn" data-grp="m4" data-val="b" onclick="pickMCQ(this)">b &nbsp;didn't see</button>
+        </div>
+        <div class="mcq-reveal" id="rev4">✓ didn't see</div>
+      </div>
+
+      <div class="mcq-row" data-correct="a">
+        <span>5 &nbsp;They ___ work early last Thursday.</span>
+        <div class="mcq-opts">
+          <button class="mcq-btn" data-grp="m5" data-val="a" onclick="pickMCQ(this)">a &nbsp;left</button>
+          <button class="mcq-btn" data-grp="m5" data-val="b" onclick="pickMCQ(this)">b &nbsp;leaved</button>
+        </div>
+        <div class="mcq-reveal" id="rev5">✓ left</div>
+      </div>
+
+      <div class="mcq-row" data-correct="b">
+        <span>6 &nbsp;I ___ well last week.</span>
+        <div class="mcq-opts">
+          <button class="mcq-btn" data-grp="m6" data-val="a" onclick="pickMCQ(this)">a &nbsp;didn't fell</button>
+          <button class="mcq-btn" data-grp="m6" data-val="b" onclick="pickMCQ(this)">b &nbsp;didn't feel</button>
+        </div>
+        <div class="mcq-reveal" id="rev6">✓ didn't feel</div>
+      </div>
+
+      <div class="mcq-row" data-correct="b">
+        <span>7 &nbsp;Mark ___ his daughter to work yesterday.</span>
+        <div class="mcq-opts">
+          <button class="mcq-btn" data-grp="m7" data-val="a" onclick="pickMCQ(this)">a &nbsp;bought</button>
+          <button class="mcq-btn" data-grp="m7" data-val="b" onclick="pickMCQ(this)">b &nbsp;brought</button>
+        </div>
+        <div class="mcq-reveal" id="rev7">✓ brought</div>
+      </div>
+
+      <div class="mcq-row" data-correct="a">
+        <span>8 &nbsp;We ___ to Italy for our last holiday.</span>
+        <div class="mcq-opts">
+          <button class="mcq-btn" data-grp="m8" data-val="a" onclick="pickMCQ(this)">a &nbsp;drove</button>
+          <button class="mcq-btn" data-grp="m8" data-val="b" onclick="pickMCQ(this)">b &nbsp;drive</button>
+        </div>
+        <div class="mcq-reveal" id="rev8">✓ drove</div>
+      </div>
+
+    </div>
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkMCQ()">✓ Check</button>
+      <button class="btn-reset" onclick="resetMCQ()">↺ Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EXERCISE 2 — GAP FILL ══ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">2</span>
+    <span class="ex-title">Complete with the past simple form of the verb</span>
+  </div>
+  <div class="ex-body">
+    <p class="instr">Write the correct past simple form of the verb in brackets.</p>
+    <div class="gf-list">
+
+      <div class="gf-row">
+        <span class="gf-num">1</span>I <input class="gf-in" id="g1" data-ans="had"> breakfast early this morning. <span class="gf-hint">(have)</span>
+      </div>
+
+      <div class="gf-row">
+        <span class="gf-num">2</span>I was late, so I <input class="gf-in" id="g2" data-ans="missed"> the bus this morning. <span class="gf-hint">(miss)</span>
+      </div>
+
+      <div class="gf-row">
+        <span class="gf-num">3</span>I <input class="gf-in" id="g3" data-ans="brought"> you a cup of coffee. <span class="gf-hint">(bring)</span>
+      </div>
+
+      <div class="gf-row">
+        <span class="gf-num">4</span>Yesterday Sally <input class="gf-in" id="g4" data-ans="felt"> ill, so she <input class="gf-in" id="g4b" data-ans="didn't go,did not go"> to work. <span class="gf-hint">(feel / not go)</span>
+      </div>
+
+      <div class="gf-row">
+        <span class="gf-num">5</span>I <input class="gf-in" id="g5" data-ans="bought"> a new laptop yesterday. <span class="gf-hint">(buy)</span>
+      </div>
+
+      <div class="gf-row">
+        <span class="gf-num">6</span>I'm tired – I <input class="gf-in" id="g6" data-ans="woke up"> really early this morning. <span class="gf-hint">(wake up)</span>
+      </div>
+
+      <div class="gf-row">
+        <span class="gf-num">7</span>She <input class="gf-in" id="g7" data-ans="drove"> to Edinburgh at the weekend. <span class="gf-hint">(drive)</span>
+      </div>
+
+      <div class="gf-row">
+        <span class="gf-num">8</span>Mark <input class="gf-in" id="g8" data-ans="didn't see,did not see"> his friends last week. <span class="gf-hint">(not see)</span>
+      </div>
+
+      <div class="gf-row">
+        <span class="gf-num">9</span>We <input class="gf-in" id="g9" data-ans="went"> to the cinema last night. <span class="gf-hint">(go)</span>
+      </div>
+
+      <div class="gf-row">
+        <span class="gf-num">10</span>My girlfriend <input class="gf-in" id="g10" data-ans="made"> me a beautiful cake for my birthday. <span class="gf-hint">(make)</span>
+      </div>
+
+    </div>
+    <div class="btn-row">
+      <button class="btn-check" onclick="checkGF()">✓ Check</button>
+      <button class="btn-reset" onclick="resetGF()">↺ Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EXERCISE 3 — DIARY SENTENCES ══ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">3</span>
+    <span class="ex-title">Use Maya's diary to write sentences</span>
+  </div>
+  <div class="ex-body">
+    <p class="instr">Read Maya's diary. Write sentences about what she did and didn't do last week. Sentences 1 and 2 are given as examples.</p>
+
+    <div class="diary">
+      <div class="diary-row">
+        <div class="diary-day">Monday</div>
+        <div class="diary-items">
+          <sup>1</sup>Catch a train to London <span class="tick">✓</span><br>
+          <sup>2</sup><s>Lunch with Sam</s> <span class="note">move to next week</span>
+        </div>
+      </div>
+      <div class="diary-row">
+        <div class="diary-day">Tuesday</div>
+        <div class="diary-items">
+          <sup>3</sup>Give a presentation <span class="tick">✓</span><br>
+          <sup>4</sup>Have dinner with Jenny <span class="tick">✓</span>
+        </div>
+      </div>
+      <div class="diary-row">
+        <div class="diary-day">Wednesday</div>
+        <div class="diary-items">
+          <sup>5</sup><s>Phone Lucas</s> <span class="note">busy – phone on Monday</span><br>
+          <sup>6</sup><s>Drive to Manchester</s> <span class="note">take train instead</span>
+        </div>
+      </div>
+      <div class="diary-row">
+        <div class="diary-day">Thursday</div>
+        <div class="diary-items">
+          <sup>7</sup>Buy a new watch <span class="tick">✓</span><br>
+          <sup>8</sup>Go to the theatre <span class="cross">✗</span>
+        </div>
+      </div>
+      <div class="diary-row">
+        <div class="diary-day">Friday</div>
+        <div class="diary-items">
+          <sup>9</sup>Gym <span class="note">too tired!</span><br>
+          <sup>10</sup>Meet Carla <span class="tick">✓</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sent-list">
+      <div class="sent-row">
+        <span class="sent-num">1</span>
+        <span class="sent-given">She caught a train to London.</span>
+      </div>
+      <div class="sent-row">
+        <span class="sent-num">2</span>
+        <span class="sent-given">She didn't have lunch with Sam.</span>
+      </div>
+      <div class="sent-row">
+        <span class="sent-num">3</span>
+        <input class="sent-in" id="s3" placeholder="Write a sentence…">
+        <div class="sent-ans" id="sa3">She gave a presentation.</div>
+      </div>
+      <div class="sent-row">
+        <span class="sent-num">4</span>
+        <input class="sent-in" id="s4" placeholder="Write a sentence…">
+        <div class="sent-ans" id="sa4">She had dinner with Jenny.</div>
+      </div>
+      <div class="sent-row">
+        <span class="sent-num">5</span>
+        <input class="sent-in" id="s5" placeholder="Write a sentence…">
+        <div class="sent-ans" id="sa5">She didn't phone Lucas.</div>
+      </div>
+      <div class="sent-row">
+        <span class="sent-num">6</span>
+        <input class="sent-in" id="s6" placeholder="Write a sentence…">
+        <div class="sent-ans" id="sa6">She didn't drive to Manchester. She took a train instead.</div>
+      </div>
+      <div class="sent-row">
+        <span class="sent-num">7</span>
+        <input class="sent-in" id="s7" placeholder="Write a sentence…">
+        <div class="sent-ans" id="sa7">She bought a new watch.</div>
+      </div>
+      <div class="sent-row">
+        <span class="sent-num">8</span>
+        <input class="sent-in" id="s8" placeholder="Write a sentence…">
+        <div class="sent-ans" id="sa8">She didn't go to the theatre.</div>
+      </div>
+      <div class="sent-row">
+        <span class="sent-num">9</span>
+        <input class="sent-in" id="s9" placeholder="Write a sentence…">
+        <div class="sent-ans" id="sa9">She didn't go to the gym. She was too tired.</div>
+      </div>
+      <div class="sent-row">
+        <span class="sent-num">10</span>
+        <input class="sent-in" id="s10" placeholder="Write a sentence…">
+        <div class="sent-ans" id="sa10">She met Carla.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ SEND TO TEACHER ══ -->
+<div class="send-card">
+  <h3>📬 Send to Teacher</h3>
+  <p>When you've finished, send your answers to your teacher.</p>
+  <button class="btn-send" onclick="sendToTeacher()">Send to Teacher ✉</button>
+</div>
+
+</main>
+
+<script>
+var done = {ex1: false, ex2: false};
+var answersVisible = false;
+
+function updateProgress() {
+  var n = Object.values(done).filter(Boolean).length;
+  document.getElementById('pfill').style.width = (n / 2 * 100) + '%';
+  document.getElementById('plabel').textContent = n + ' / 2 exercises checked';
+}
+
+function toggleTheme() {
+  var r = document.documentElement;
+  r.setAttribute('data-theme', r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+function norm(s) { return s.toLowerCase().replace(/[.,!?]/g,'').trim(); }
+
+/* ── EXERCISE 1 MCQ ── */
+function pickMCQ(btn) {
+  var grp = btn.getAttribute('data-grp');
+  var row = btn.closest('.mcq-row');
+  row.querySelectorAll('.mcq-btn').forEach(function(b) { b.classList.remove('selected','correct','wrong'); });
+  btn.classList.add('selected');
+}
+
+function checkMCQ() {
+  var rows = document.querySelectorAll('#mcqList .mcq-row');
+  var correct = 0;
+  rows.forEach(function(row, i) {
+    var ans = row.getAttribute('data-correct');
+    var sel = row.querySelector('.mcq-btn.selected');
+    var rev = document.getElementById('rev' + (i + 1));
+    row.querySelectorAll('.mcq-btn').forEach(function(b) { b.classList.remove('correct','wrong'); });
+    if (rev) rev.style.display = 'none';
+    if (!sel) return;
+    var allBtns = row.querySelectorAll('.mcq-btn');
+    allBtns.forEach(function(b) { if (b.getAttribute('data-val') === ans) b.classList.add('correct'); });
+    if (sel.getAttribute('data-val') === ans) {
+      correct++;
+    } else {
+      sel.classList.add('wrong');
+      if (rev) rev.style.display = 'block';
+    }
+  });
+  if (correct === rows.length) { done.ex1 = true; updateProgress(); }
+}
+
+function resetMCQ() {
+  document.querySelectorAll('#mcqList .mcq-btn').forEach(function(b) {
+    b.classList.remove('selected','correct','wrong');
+  });
+  for (var i = 1; i <= 8; i++) {
+    var rev = document.getElementById('rev' + i);
+    if (rev) rev.style.display = 'none';
+  }
+  done.ex1 = false; updateProgress();
+}
+
+/* ── EXERCISE 2 GAP FILL ── */
+var gfIds = ['g1','g2','g3','g4','g4b','g5','g6','g7','g8','g9','g10'];
+
+function checkGF() {
+  var correct = 0; var total = gfIds.length;
+  gfIds.forEach(function(id) {
+    var inp = document.getElementById(id);
+    var alts = inp.getAttribute('data-ans').split(',').map(norm);
+    inp.classList.remove('correct','wrong');
+    if (alts.indexOf(norm(inp.value)) > -1) {
+      inp.classList.add('correct'); correct++;
+    } else {
+      inp.classList.add('wrong');
+    }
+  });
+  if (correct === total) { done.ex2 = true; updateProgress(); }
+}
+
+function resetGF() {
+  gfIds.forEach(function(id) {
+    var inp = document.getElementById(id);
+    inp.value = ''; inp.classList.remove('correct','wrong');
+  });
+  done.ex2 = false; updateProgress();
+}
+
+/* ── EXERCISE 3 SHOW ANSWERS ── */
+function toggleAnswers() {
+  answersVisible = !answersVisible;
+  for (var i = 3; i <= 10; i++) {
+    var el = document.getElementById('sa' + i);
+    if (el) el.style.display = answersVisible ? 'block' : 'none';
+  }
+}
+
+/* ── SEND TO TEACHER ── */
+function sendToTeacher() {
+  var name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+  var mcqAnswers = '';
+  var mcqRows = document.querySelectorAll('#mcqList .mcq-row');
+  mcqRows.forEach(function(row, i) {
+    var sel = row.querySelector('.mcq-btn.selected');
+    var val = sel ? sel.textContent.trim() : '(no answer)';
+    mcqAnswers += (i + 1) + '. ' + val + '\n';
+  });
+
+  var gfAnswers = '';
+  gfIds.forEach(function(id, i) {
+    var inp = document.getElementById(id);
+    var val = inp.value.trim() || '(blank)';
+    gfAnswers += id.replace('g','') + '. ' + val + '\n';
+  });
+
+  var sentAnswers = '';
+  for (var i = 3; i <= 10; i++) {
+    var inp = document.getElementById('s' + i);
+    var val = inp ? (inp.value.trim() || '(blank)') : '(blank)';
+    sentAnswers += i + '. ' + val + '\n';
+  }
+
+  var body = 'Student: ' + name + '\n\n'
+    + 'EXERCISE 1 — Choose the correct option\n' + mcqAnswers + '\n'
+    + 'EXERCISE 2 — Past simple gap fill\n' + gfAnswers + '\n'
+    + 'EXERCISE 3 — Maya\'s diary sentences\n' + sentAnswers;
+
+  var subject = encodeURIComponent('Homework – Unit 6B Grammar – ' + name);
+  window.location.href = 'mailto:daryaaa2028@gmail.com?subject=' + subject + '&body=' + encodeURIComponent(body);
+}
+
+updateProgress();
+</script>
+</body>
+</html>
