@@ -1,0 +1,337 @@
+<title>I've Got a Cat! Homework</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: lesson palette; header band, sticky name bar + progress, one card per exercise, send card at the end. The -s ending is always red. */
+:root{
+  --bg:#f7f8ff; --surface:#ffffff; --surface-2:#eef0fb;
+  --ink:#1d1b3a; --muted:#5f5d7e; --line:#dcdff2;
+  --red:#e8364f; --red-soft:#ffdfe4;
+  --teal:#11a39a; --teal-soft:#cdf3ef;
+  --navy:#2b3a8f; --navy-soft:#dde3ff;
+  --sun:#f2a900; --sun-soft:#fff0c4;
+  --good:#0f9d6e; --bad:#d92d4a; --good-bg:#dcf8ec; --bad-bg:#ffe1e7;
+  --on-accent:#ffffff; --band:#1d1b3a; --on-band:#f7f8ff;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Nunito", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#12132a; --surface:#1c1e3a; --surface-2:#262947; --ink:#eef0ff; --muted:#aeb1d6; --line:#363a63;
+  --red:#ff6b80; --red-soft:#4a1f2c; --teal:#3fd6c9; --teal-soft:#123f3c; --navy:#93a4ff; --navy-soft:#2a3166;
+  --sun:#ffcf5c; --sun-soft:#433a1b; --good:#4fe0aa; --bad:#ff7b95; --good-bg:#173f31; --bad-bg:#4a1d2a; --on-accent:#12132a;
+  --band:#262947; --on-band:#eef0ff; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#12132a; --surface:#1c1e3a; --surface-2:#262947; --ink:#eef0ff; --muted:#aeb1d6; --line:#363a63;
+  --red:#ff6b80; --red-soft:#4a1f2c; --teal:#3fd6c9; --teal-soft:#123f3c; --navy:#93a4ff; --navy-soft:#2a3166;
+  --sun:#ffcf5c; --sun-soft:#433a1b; --good:#4fe0aa; --bad:#ff7b95; --good-bg:#173f31; --bad-bg:#4a1d2a; --on-accent:#12132a;
+  --band:#262947; --on-band:#eef0ff; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--band)}
+h1,h2,h3,h4{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.s{color:var(--red);font-weight:800}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.inner{max-width:820px;margin:0 auto}
+
+header{background:var(--band);color:var(--on-band)}
+header .inner{padding-block:32px 28px;display:flex;flex-direction:column;gap:8px;position:relative}
+.eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--sun)}
+header h1{font-size:clamp(36px,8vw,64px);font-weight:800;text-transform:uppercase;letter-spacing:-.01em}
+header h1 b{color:var(--red)}
+header p{opacity:.85;font-weight:600;max-width:60ch}
+.theme-btn{position:absolute;top:28px;right:0;border:2px solid currentColor;background:transparent;color:var(--on-band);border-radius:999px;padding:5px 12px;font-weight:700;font-size:14px}
+
+.name-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--surface);border-bottom:2px solid var(--line)}
+.name-bar .inner{padding-block:10px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.name-bar label{font-weight:800}
+.name-bar input{font:inherit;font-weight:700;color:var(--ink);background:var(--surface-2);border:2px solid var(--line);border-radius:12px;padding:6px 12px;flex:1 1 180px;min-width:0;max-width:320px}
+.prog{display:flex;align-items:center;gap:10px;flex:1 1 200px}
+.pbar{flex:1;height:12px;border-radius:999px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line)}
+.pfill{height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--sun),var(--teal));transition:width .3s}
+#plabel{font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+
+main .inner{display:flex;flex-direction:column;gap:22px;padding-top:24px}
+.rules{background:var(--teal-soft);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.rules h2{font-size:20px}
+.rules .r{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;background:var(--surface);border-radius:12px;padding:6px 12px;font-weight:700}
+.rules .r b.k{font-family:var(--display);min-width:5.5em}
+
+.ex-card{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.ex-card.complete{border-color:var(--teal)}
+.ex-hd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.ex-hd .n{font-family:var(--display);font-weight:800;font-size:28px;color:var(--red)}
+.ex-hd h2{font-size:22px}
+.ex-instr{color:var(--muted);font-weight:600}
+
+.rows{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;background:var(--surface-2);border-radius:14px;padding:8px 12px}
+.row .lab{font-family:var(--display);font-weight:800;color:var(--navy);min-width:1.4em}
+.row .txt{flex:1 1 260px;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-weight:700}
+.row .base{color:var(--muted)}
+input.gap{font:inherit;font-weight:700;color:var(--ink);background:var(--surface);border:none;border-bottom:3px solid var(--navy);border-radius:8px 8px 0 0;padding:2px 8px;width:7em;max-width:100%}
+input.right,textarea.right{border-color:var(--good)!important;background:var(--good-bg)!important}
+input.wrong,textarea.wrong{border-color:var(--bad)!important;background:var(--bad-bg)!important}
+.fix{font-size:14px;font-weight:800;color:var(--good)}
+.fix:empty{display:none}
+
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:600px){ .cols2{grid-template-columns:1fr} }
+
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{border:2px solid var(--line);background:var(--surface);color:var(--ink);padding:4px 14px;border-radius:999px;font-weight:700}
+.opt.sel{border-color:var(--navy);background:var(--navy-soft)}
+.opt.right{border-color:var(--good);background:var(--good-bg);color:var(--good)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.opt.reveal{border-color:var(--good);border-style:dashed}
+
+.story{background:var(--red-soft);border-radius:18px;padding:16px;font-size:18px;line-height:2.1;font-weight:600}
+.story input.gap{width:6.5em}
+.story .hint{color:var(--muted);font-size:15px}
+.story .fix{margin-right:4px}
+
+.fixrow .corr{display:none;align-items:center;gap:6px;flex-basis:100%;padding-left:2em}
+.fixrow.needfix .corr{display:flex}
+
+.wb{display:flex;flex-wrap:wrap;gap:6px;border:2px dashed var(--line);border-radius:14px;padding:10px}
+.wb span{background:var(--sun-soft);border-radius:999px;padding:2px 12px;font-weight:700;font-size:15px}
+select{font:inherit;font-weight:800;color:var(--ink);background:var(--surface-2);border:2px solid var(--line);border-radius:12px;padding:6px 10px;max-width:100%}
+textarea.write{font:inherit;font-weight:700;color:var(--ink);background:var(--surface-2);border:2px solid var(--line);border-radius:14px;padding:10px 12px;width:100%;min-height:170px;resize:vertical}
+.checklist{display:flex;flex-direction:column;gap:6px;font-weight:700}
+.checklist .ok{color:var(--good)} .checklist .warn{color:var(--bad)}
+
+.btns{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:none;border-radius:999px;padding:9px 20px;font-weight:800;background:var(--red);color:var(--on-accent)}
+.btn.navy{background:var(--navy)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.score{font-weight:800;color:var(--muted)}
+
+.send{background:var(--navy-soft);border-color:var(--navy)}
+.send pre{white-space:pre-wrap;word-break:break-word;background:var(--surface);border-radius:12px;padding:12px;font-size:14px;max-height:240px;overflow:auto;margin:0}
+.send .addr{font-weight:800;user-select:all}
+
+@media (max-width:600px){ .ex-card{padding:16px} .theme-btn{position:static;align-self:flex-start} .fixrow .corr{padding-left:0} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+<style>
+.mcq{display:flex;flex-direction:column;gap:6px;background:var(--surface-2);border-radius:14px;padding:10px 12px}
+.mcq .p{font-weight:700;display:flex;gap:8px;align-items:baseline}
+.mcq .p .lab{font-family:var(--display);font-weight:800;color:var(--navy);min-width:1.4em}
+select.sel{font:inherit;font-weight:700;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:3px 6px;max-width:100%}
+select.sel.right{border-color:var(--good);background:var(--good-bg)} select.sel.wrong{border-color:var(--bad);background:var(--bad-bg)}
+input.gap.w2{width:9.5em}
+.worow{background:var(--surface-2);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.worow .top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-weight:800}
+.worow .line{min-height:40px;border:2px dashed var(--line);border-radius:12px;padding:6px;display:flex;flex-wrap:wrap;gap:6px;background:var(--surface)}
+.worow .line.right{border-style:solid;border-color:var(--good);background:var(--good-bg)} .worow .line.wrong{border-style:solid;border-color:var(--bad);background:var(--bad-bg)}
+.worow .bank{display:flex;flex-wrap:wrap;gap:6px}
+.tile{font-family:var(--display);font-weight:800;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:3px 10px}
+.line .tile{background:var(--navy-soft);border-color:var(--navy)}
+.wq{display:flex;flex-direction:column;gap:6px;background:var(--surface-2);border-radius:14px;padding:10px 12px}
+.wq label{font-weight:800}
+.wq input{font:inherit;font-weight:700;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:6px 10px;width:100%}
+.wq .eg{font-size:14px;font-weight:700;color:var(--muted);font-style:italic}
+</style>
+
+<header class="gut">
+  <div class="inner">
+    <button class="theme-btn" id="themeBtn" type="button">🌙 Dark</button>
+    <span class="eyebrow">Homework · Unit 1</span>
+    <h1>I've got a cat!</h1>
+    <p><b>have got / has got</b> and <b>my, your, his, her, its, our, their</b>.</p>
+  </div>
+</header>
+
+<div class="name-bar gut">
+  <div class="inner">
+    <label for="nameInput">Your name:</label>
+    <input id="nameInput" type="text" placeholder="Type your name…" autocomplete="off">
+    <div class="prog"><div class="pbar"><div class="pfill" id="pfill"></div></div><span id="plabel">0 / 6</span></div>
+  </div>
+</div>
+
+<main class="gut"><div class="inner">
+
+<section class="rules" aria-label="Remember">
+  <h2>Remember! 💡</h2>
+  <div class="r"><b class="k">I / you / we / they</b><span>'ve got · haven't got · <b>Have</b> you got…?</span></div>
+  <div class="r"><b class="k">he / she / it</b><span>'s got (= <b>has</b> got) · hasn't got · <b>Has</b> she got…?</span></div>
+  <div class="r"><b class="k">Short answers</b><span>Yes, I have. / No, she hasn't. (no <i>got</i>!)</span></div>
+  <div class="r"><b class="k">my, your…</b><span>I → my · you → your · he → his · she → her · it → its · we → our · they → their</span></div>
+</section>
+
+<!-- EX 1 -->
+<section class="ex-card" id="ex1">
+  <div class="ex-hd"><span class="n">1</span><h2>have got or has got?</h2></div>
+  <p class="ex-instr">Choose the correct form.</p>
+  <div class="rows">
+    <div class="mcq mc" data-ans="has got"><div class="p"><span class="lab">1</span><span>My sister ___ a new bike.</span></div><div class="opts"><button class="opt" type="button">have got</button><button class="opt" type="button">has got</button></div></div>
+    <div class="mcq mc" data-ans="have got"><div class="p"><span class="lab">2</span><span>We ___ a small garden.</span></div><div class="opts"><button class="opt" type="button">have got</button><button class="opt" type="button">has got</button></div></div>
+    <div class="mcq mc" data-ans="has got"><div class="p"><span class="lab">3</span><span>The cat ___ green eyes.</span></div><div class="opts"><button class="opt" type="button">has got</button><button class="opt" type="button">have got</button></div></div>
+    <div class="mcq mc" data-ans="have got"><div class="p"><span class="lab">4</span><span>My grandparents ___ a big dog.</span></div><div class="opts"><button class="opt" type="button">has got</button><button class="opt" type="button">have got</button></div></div>
+    <div class="mcq mc" data-ans="have got"><div class="p"><span class="lab">5</span><span>I ___ two cousins.</span></div><div class="opts"><button class="opt" type="button">have got</button><button class="opt" type="button">has got</button></div></div>
+    <div class="mcq mc" data-ans="has got"><div class="p"><span class="lab">6</span><span>Leo ___ a lot of comics.</span></div><div class="opts"><button class="opt" type="button">have got</button><button class="opt" type="button">has got</button></div></div>
+  </div>
+  <div class="btns"><button class="btn" type="button" onclick="checkMC('ex1')">Check</button><button class="btn ghost" type="button" onclick="resetMC('ex1')">Reset</button><span class="score" id="ex1-score"></span></div>
+</section>
+
+<!-- EX 2 -->
+<section class="ex-card" id="ex2">
+  <div class="ex-hd"><span class="n">2</span><h2>Make it negative</h2></div>
+  <p class="ex-instr">Write <b>haven't got</b> or <b>hasn't got</b>.</p>
+  <div class="rows">
+    <div class="row"><span class="lab">1</span><span class="txt">❌ 🐶 Zoe <input class="gap w2" data-ans="hasn't got,has not got" aria-label="1"> a dog. She's got a cat.</span><span class="fix"></span></div>
+    <div class="row"><span class="lab">2</span><span class="txt">❌ 🚗 My parents <input class="gap w2" data-ans="haven't got,have not got" aria-label="2"> a red car. They've got a white car.</span><span class="fix"></span></div>
+    <div class="row"><span class="lab">3</span><span class="txt">❌ 👧 I <input class="gap w2" data-ans="haven't got,have not got" aria-label="3"> a sister. I've got a brother.</span><span class="fix"></span></div>
+    <div class="row"><span class="lab">4</span><span class="txt">❌ 💻 My dad <input class="gap w2" data-ans="hasn't got,has not got" aria-label="4"> a laptop. He's got a computer.</span><span class="fix"></span></div>
+    <div class="row"><span class="lab">5</span><span class="txt">❌ 🎸 We <input class="gap w2" data-ans="haven't got,have not got" aria-label="5"> a guitar. We've got a piano.</span><span class="fix"></span></div>
+  </div>
+  <div class="btns"><button class="btn" type="button" onclick="checkGaps('ex2')">Check</button><button class="btn ghost" type="button" onclick="resetGaps('ex2')">Reset</button><span class="score" id="ex2-score"></span></div>
+</section>
+
+<!-- EX 3 -->
+<section class="ex-card" id="ex3">
+  <div class="ex-hd"><span class="n">3</span><h2>Questions and short answers</h2></div>
+  <p class="ex-instr">Choose the correct short answer.</p>
+  <div class="rows">
+    <div class="mcq mc" data-ans="No, I haven't."><div class="p"><span class="lab">1</span><span>Have you got a pet?</span></div><div class="opts"><button class="opt" type="button">No, I hasn't.</button><button class="opt" type="button">No, I haven't.</button><button class="opt" type="button">No, I haven't got.</button></div></div>
+    <div class="mcq mc" data-ans="Yes, she has."><div class="p"><span class="lab">2</span><span>Has your mum got a car?</span></div><div class="opts"><button class="opt" type="button">Yes, she has.</button><button class="opt" type="button">Yes, she have.</button><button class="opt" type="button">Yes, she's got.</button></div></div>
+    <div class="mcq mc" data-ans="Yes, they have."><div class="p"><span class="lab">3</span><span>Have your cousins got a dog?</span></div><div class="opts"><button class="opt" type="button">Yes, they has.</button><button class="opt" type="button">Yes, they're.</button><button class="opt" type="button">Yes, they have.</button></div></div>
+    <div class="mcq mc" data-ans="No, he hasn't."><div class="p"><span class="lab">4</span><span>Has Leo got a phone?</span></div><div class="opts"><button class="opt" type="button">No, he hasn't.</button><button class="opt" type="button">No, he haven't.</button><button class="opt" type="button">No, he isn't.</button></div></div>
+    <div class="mcq mc" data-ans="Has"><div class="p"><span class="lab">5</span><span>___ your school got a big library?</span></div><div class="opts"><button class="opt" type="button">Have</button><button class="opt" type="button">Has</button><button class="opt" type="button">Is</button></div></div>
+  </div>
+  <div class="btns"><button class="btn" type="button" onclick="checkMC('ex3')">Check</button><button class="btn ghost" type="button" onclick="resetMC('ex3')">Reset</button><span class="score" id="ex3-score"></span></div>
+</section>
+
+<!-- EX 4 -->
+<section class="ex-card" id="ex4">
+  <div class="ex-hd"><span class="n">4</span><h2>my, your, his, her…</h2></div>
+  <p class="ex-instr">Choose the correct possessive adjective.</p>
+  <div class="rows" id="paRows"></div>
+  <div class="btns"><button class="btn" type="button" onclick="checkPA()">Check</button><span class="score" id="ex4-score"></span></div>
+</section>
+
+<!-- EX 5 -->
+<section class="ex-card" id="ex5">
+  <div class="ex-hd"><span class="n">5</span><h2>Make questions</h2></div>
+  <p class="ex-instr">Tap the words in the right order.</p>
+  <div class="rows" id="wo" style="display:flex;flex-direction:column;gap:10px"></div>
+  <div class="btns"><button class="btn" type="button" onclick="checkWO()">Check all</button><span class="score" id="ex5-score"></span></div>
+</section>
+
+<!-- EX 6 -->
+<section class="ex-card" id="ex6">
+  <div class="ex-hd"><span class="n">6</span><h2>My things, my family</h2></div>
+  <p class="ex-instr">Write 5 sentences. Use <b>have got</b> / <b>has got</b> and <b>my, his, her, their…</b></p>
+  <div class="rows" style="display:flex;flex-direction:column;gap:8px">
+    <div class="wq"><label for="w1">1. Something you've got</label><input id="w1" autocomplete="off"><span class="eg">e.g. I've got a blue bike.</span></div>
+    <div class="wq"><label for="w2">2. Something you haven't got</label><input id="w2" autocomplete="off"><span class="eg">e.g. I haven't got a pet.</span></div>
+    <div class="wq"><label for="w3">3. A person in your family</label><input id="w3" autocomplete="off"><span class="eg">e.g. My brother has got a guitar. His guitar is black.</span></div>
+    <div class="wq"><label for="w4">4. Another person in your family</label><input id="w4" autocomplete="off"><span class="eg">e.g. My mum has got brown eyes.</span></div>
+    <div class="wq"><label for="w5">5. Your best friend</label><input id="w5" autocomplete="off"><span class="eg">e.g. My best friend has got a cat. Its name is Kiki.</span></div>
+  </div>
+  <div class="btns"><button class="btn" type="button" onclick="checkWrite()">Done</button><span class="score" id="ex6-score"></span></div>
+  <div class="checklist" id="writeOut"></div>
+</section>
+
+<!-- SEND -->
+<section class="ex-card send" id="send">
+  <div class="ex-hd"><span class="n">✉️</span><h2>Send to teacher</h2></div>
+  <p class="ex-instr">Check all six exercises, then tap Send. Your email app opens with your answers. If it doesn't open, tap Copy and send the text to <span class="addr">dariia.mlnk@gmail.com</span>.</p>
+  <div class="btns"><button class="btn navy" type="button" onclick="sendToTeacher()">Send to teacher</button><button class="btn ghost" type="button" onclick="copyAnswers()">Copy answers</button><span class="score" id="sendMsg"></span></div>
+  <pre id="preview" hidden></pre>
+</section>
+
+</div></main>
+
+<script>
+const TEACHER='dariia.mlnk@gmail.com', TITLE="I've got a cat!";
+const $=id=>document.getElementById(id);
+const norm=s=>s.toLowerCase().replace(/[’‘`]/g,"'").replace(/[.!?]/g,'').replace(/\s+/g,' ').trim();
+const shuffle=a=>{ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; };
+const done={ex1:false,ex2:false,ex3:false,ex4:false,ex5:false,ex6:false};
+const results={};
+function updateProgress(){ const n=Object.values(done).filter(Boolean).length, total=Object.keys(done).length;
+  $('pfill').style.width=(n/total*100)+'%'; $('plabel').textContent=n+' / '+total;
+  Object.keys(done).forEach(k=>$(k).classList.toggle('complete',done[k])); }
+(function(){ const root=document.documentElement, tb=$('themeBtn');
+  const isDark=()=> root.dataset.theme ? root.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const label=()=>{ tb.textContent = isDark() ? '☀️ Light' : '🌙 Dark'; };
+  tb.addEventListener('click',()=>{ root.dataset.theme = isDark()?'light':'dark'; label(); }); label(); })();
+
+document.querySelectorAll('.mc').forEach(r=>r.querySelectorAll('.opt').forEach(o=>o.addEventListener('click',()=>{
+  r.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel','right','wrong','reveal')); o.classList.add('sel'); })));
+function checkMC(id){ let ok=0,n=0; const lines=[];
+  $(id).querySelectorAll('.mc').forEach(r=>{ n++; const s=r.querySelector('.opt.sel'), a=r.dataset.ans, L=r.querySelector('.lab').textContent;
+    r.querySelectorAll('.opt').forEach(x=>x.classList.remove('right','wrong','reveal'));
+    const good= s && s.textContent===a;
+    if(good){ s.classList.add('right'); ok++; } else { if(s) s.classList.add('wrong'); r.querySelectorAll('.opt').forEach(x=>{ if(x.textContent===a) x.classList.add('reveal'); }); }
+    lines.push(`${L}. ${s?s.textContent:'—'} ${good?'✓':'✗ ('+a+')'}`); });
+  $(id+'-score').textContent=`${ok} / ${n}`+(ok===n?' 🎉':''); results[id]={score:`${ok}/${n}`,lines}; done[id]=true; updateProgress(); }
+function resetMC(id){ $(id).querySelectorAll('.opt').forEach(x=>x.classList.remove('sel','right','wrong','reveal')); $(id+'-score').textContent=''; done[id]=false; delete results[id]; updateProgress(); }
+
+function checkGaps(id){ let ok=0,n=0; const lines=[];
+  $(id).querySelectorAll('input.gap').forEach(i=>{ n++; const alts=i.dataset.ans.split(',').map(norm), f=i.closest('.row').querySelector('.fix');
+    i.classList.remove('right','wrong'); const good=alts.includes(norm(i.value)); i.classList.add(good?'right':'wrong'); f.textContent=good?'':'✓ '+alts[0]; if(good) ok++;
+    lines.push(`${i.getAttribute('aria-label')}. ${i.value||'—'} ${good?'✓':'✗ ('+alts[0]+')'}`); });
+  $(id+'-score').textContent=`${ok} / ${n}`+(ok===n?' 🎉':''); results[id]={score:`${ok}/${n}`,lines}; done[id]=true; updateProgress(); }
+function resetGaps(id){ $(id).querySelectorAll('input.gap').forEach(i=>{ i.value=''; i.classList.remove('right','wrong'); });
+  $(id).querySelectorAll('.fix').forEach(f=>f.textContent=''); $(id+'-score').textContent=''; done[id]=false; delete results[id]; updateProgress(); }
+
+// EX 4 possessives
+const PA=['my','your','his','her','its','our','their'];
+const PAQ=[["I love ___ bedroom. It's blue!",'my'],["Leo is happy. ___ birthday is today.",'His'],["Zoe's got a YouTube channel. ___ videos are about dance.",'Her'],["We've got a dog. ___ dog is called Max.",'Our'],["The dog has got a ball. ___ ball is red.",'Its'],["My cousins live in Madrid. ___ house is big.",'Their'],["\"Is this ___ phone?\" \"Yes, it's mine. Thanks!\"",'your'],["Mum has got a new car. ___ car is white.",'Her']];
+$('paRows').innerHTML=PAQ.map(([t],i)=>`<div class="row"><span class="lab">${i+1}</span><span class="txt">${t.replace('___',`<select class="sel" id="pa${i}" aria-label="Sentence ${i+1}"><option value="">…</option>${PA.map(p=>`<option>${/(^|[.!?]\s+)___/.test(t)?p.charAt(0).toUpperCase()+p.slice(1):p}</option>`).join('')}</select>`)}</span><span class="fix"></span></div>`).join('');
+function checkPA(){ let ok=0; const lines=[];
+  PAQ.forEach(([t,a],i)=>{ const s=$('pa'+i), f=s.closest('.row').querySelector('.fix'); s.classList.remove('right','wrong'); const g=s.value===a; s.classList.add(g?'right':'wrong'); f.textContent=g?'':'✓ '+a; if(g) ok++;
+    lines.push(`${i+1}. ${s.value||'—'} ${g?'✓':'✗ ('+a+')'}`); });
+  $('ex4-score').textContent=`${ok} / ${PAQ.length}`+(ok===PAQ.length?' 🎉':''); results.ex4={score:`${ok}/${PAQ.length}`,lines}; done.ex4=true; updateProgress(); }
+
+// EX 5 word order
+const WO=[['you','got','Have','a','tablet?'],['got','Has','your','a','bike?','brother'],['grandparents','Have','got','a','garden?','your'],['Zoe','got','Has','a','cat?']];
+const WOK=['Have you got a tablet?','Has your brother got a bike?','Have your grandparents got a garden?','Has Zoe got a cat?'];
+WO.forEach((words,k)=>{ const r=document.createElement('div'); r.className='worow'; r.dataset.k=k;
+  r.innerHTML=`<div class="top">${k+1}. <button class="small-btn" type="button" data-r style="margin-left:auto">Clear</button></div><div class="line"></div><div class="bank"></div>`;
+  const line=r.querySelector('.line'), bank=r.querySelector('.bank');
+  const mk=w=>{ const b=document.createElement('button'); b.type='button'; b.className='tile'; b.textContent=w; b.onclick=()=>{ line.classList.remove('right','wrong'); (b.parentElement===bank?line:bank).appendChild(b); }; return b; };
+  let sh=shuffle(words); if(sh.join(' ')===words.join(' ')) sh=sh.reverse(); sh.forEach(w=>bank.appendChild(mk(w)));
+  r.querySelector('[data-r]').onclick=()=>{ [...line.children].forEach(b=>bank.appendChild(b)); line.classList.remove('right','wrong'); };
+  $('wo').appendChild(r); });
+function checkWO(){ let ok=0; const lines=[];
+  $('wo').querySelectorAll('.worow').forEach(r=>{ const k=+r.dataset.k, line=r.querySelector('.line'); const got=[...line.children].map(b=>b.textContent).join(' ');
+    const g= norm(got)===norm(WOK[k]) && !r.querySelector('.bank').children.length; line.classList.remove('right','wrong'); line.classList.add(g?'right':'wrong'); if(g) ok++;
+    lines.push(`${k+1}. ${got||'—'} ${g?'✓':'✗ ('+WOK[k]+')'}`); });
+  $('ex5-score').textContent=`${ok} / ${WO.length}`+(ok===WO.length?' 🎉':''); results.ex5={score:`${ok}/${WO.length}`,lines}; done.ex5=true; updateProgress(); }
+
+// EX 6 writing
+function checkWrite(){ const out=[]; let filled=0; const lines=[];
+  [1,2,3,4,5].forEach(i=>{ const v=$('w'+i).value.trim(); lines.push(`${i}. ${v||'—'}`);
+    if(!v){ out.push(`<span class="warn">⚠️ Sentence ${i}: write a sentence.</span>`); return; } filled++;
+    const l=norm(v);
+    if(!/\b(have|has|'ve|'s|haven't|hasn't)\b|'ve got|'s got/.test(l) || !/\bgot\b/.test(l)) out.push(`<span class="warn">💡 Sentence ${i}: use <b>have got / has got</b>.</span>`);
+    if(/\b(he|she|it|my (mum|dad|mother|father|brother|sister|grandma|grandpa|grandmother|grandfather|cousin|aunt|uncle|best friend|friend|dog|cat))\s+(have got|'ve got|haven't got)/.test(l)) out.push(`<span class="warn">💡 Sentence ${i}: he / she → <b>has got / hasn't got</b>.</span>`);
+    if(/^(i|we|they|you)\s+(has got|'s got|hasn't got)/.test(l)) out.push(`<span class="warn">💡 Sentence ${i}: I / we / they → <b>have got / haven't got</b>.</span>`); });
+  if(filled===5 && !out.length) out.push('<span class="ok">✓ Great! Your teacher will read your sentences.</span>');
+  $('writeOut').innerHTML=out.join(''); $('ex6-score').textContent=`${filled} / 5 written`;
+  results.ex6={score:`${filled}/5`,lines}; done.ex6=filled===5; updateProgress(); }
+
+const names={ex1:'1 have got or has got?',ex2:'2 Make it negative',ex3:'3 Questions and short answers',ex4:'4 my, your, his, her…',ex5:'5 Make questions',ex6:'6 My things, my family'};
+function buildBody(){ const name=$('nameInput').value.trim()||'Anonymous';
+  let total=0,max=0; ['ex1','ex2','ex3','ex4','ex5'].forEach(k=>{ if(results[k]){ const [a,b]=results[k].score.split('/').map(Number); total+=a; max+=b; } });
+  let body=`Student: ${name}\nHomework: ${TITLE}\nScore (ex 1–5): ${total}/${max}\n`;
+  Object.keys(names).forEach(k=>{ body+=`\n${names[k]}`; if(results[k]) body+=` — ${results[k].score}\n`+results[k].lines.join('\n')+'\n'; else body+=' — not checked\n'; });
+  return {name,body}; }
+function sendToTeacher(){ if(!results.ex6) checkWrite(); const {name,body}=buildBody(); const pending=Object.values(done).filter(v=>!v).length;
+  $('sendMsg').textContent= pending? `${pending} exercise(s) not finished yet. Sending anyway.` : '';
+  $('preview').textContent=body; $('preview').hidden=false;
+  window.location.href=`mailto:${TEACHER}?subject=${encodeURIComponent(`Homework – ${name} – ${TITLE}`)}&body=${encodeURIComponent(body)}`; }
+function copyAnswers(){ if(!results.ex6) checkWrite(); const {body}=buildBody(); const pre=$('preview'); pre.textContent=body; pre.hidden=false;
+  const sel=()=>{ const r=document.createRange(); r.selectNodeContents(pre); const s=getSelection(); s.removeAllRanges(); s.addRange(r); };
+  try{ navigator.clipboard.writeText(body).then(()=>{ $('sendMsg').textContent='Copied! Paste it in an email or message to your teacher.'; },()=>{ sel(); $('sendMsg').textContent='Text selected. Copy it and send it to your teacher.'; }); }
+  catch(e){ sel(); $('sendMsg').textContent='Text selected. Copy it and send it to your teacher.'; } }
+updateProgress();
+</script>
