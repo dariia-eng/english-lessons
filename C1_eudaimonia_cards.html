@@ -1,0 +1,498 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eudaimonia Vocab Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap">
+<style>
+/* ── TOKENS ─────────────────────────────── */
+:root{
+  --indigo:#5548e0;--indigo-s:rgba(85,72,224,.1);
+  --gold:#c8820a;  --gold-s:rgba(200,130,10,.13);
+  --teal:#0f8f80;  --teal-s:rgba(15,143,128,.12);
+  --coral:#d94f3d; --coral-s:rgba(217,79,61,.1);
+  --mint:#1aa882;  --mint-s:rgba(26,168,130,.12);
+  --violet:#7c3aed;--violet-s:rgba(124,58,237,.12);
+  --sage:#3a7d5c;  --sage-s:rgba(58,125,92,.12);
+  --bg:#f7f6ff;--bg2:#edeeff;--bg3:#fff;
+  --card:#fff;--border:rgba(85,72,224,.13);
+  --ink:#1a1733;--ink2:#3d3862;--ink3:#7470a0;
+  --shadow:0 2px 20px rgba(85,72,224,.1),0 1px 6px rgba(85,72,224,.07);
+  --r:20px;
+  color-scheme:light;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12111f;--bg2:#1b1a2e;--bg3:#0d0c1a;
+  --card:#1e1d33;--border:rgba(140,130,255,.14);
+  --ink:#edeaff;--ink2:#b0acdd;--ink3:#7470a0;
+  --shadow:0 2px 20px rgba(0,0,0,.4),0 1px 6px rgba(0,0,0,.2);
+  --indigo-s:rgba(85,72,224,.2);--violet-s:rgba(124,58,237,.22);
+  --teal-s:rgba(15,143,128,.2);--gold-s:rgba(200,130,10,.2);
+  --mint-s:rgba(26,168,130,.2);--sage-s:rgba(58,125,92,.2);--coral-s:rgba(217,79,61,.18);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#12111f;--bg2:#1b1a2e;--bg3:#0d0c1a;
+  --card:#1e1d33;--border:rgba(140,130,255,.14);
+  --ink:#edeaff;--ink2:#b0acdd;--ink3:#7470a0;
+  --shadow:0 2px 20px rgba(0,0,0,.4),0 1px 6px rgba(0,0,0,.2);
+  --indigo-s:rgba(85,72,224,.2);--violet-s:rgba(124,58,237,.22);
+  --teal-s:rgba(15,143,128,.2);--gold-s:rgba(200,130,10,.2);
+  --mint-s:rgba(26,168,130,.2);--sage-s:rgba(58,125,92,.2);--coral-s:rgba(217,79,61,.18);
+  color-scheme:dark;
+}
+
+/* ── BASE ────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);
+  min-height:100vh;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+
+/* ── HEADER ──────────────────────────────── */
+.hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 0 10px;max-width:680px;margin-inline:auto;
+}
+.hdr-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1rem;color:var(--ink3);}
+.hdr-title span{color:var(--indigo);}
+#tbtn{
+  background:none;border:1.5px solid var(--border);border-radius:100px;
+  padding:5px 12px;font-size:.85rem;cursor:pointer;color:var(--ink3);
+}
+
+/* ── PROGRESS ────────────────────────────── */
+.progress-wrap{max-width:680px;margin-inline:auto;padding:4px 0 18px;}
+.prog-bar{height:4px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:10px;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--indigo),var(--violet));border-radius:4px;transition:width .35s;}
+.dots{display:flex;gap:7px;justify-content:center;}
+.dot{
+  width:28px;height:28px;border-radius:50%;border:2px solid var(--border);
+  background:none;cursor:pointer;font-size:.7rem;font-weight:800;color:var(--ink3);
+  transition:all .15s;display:flex;align-items:center;justify-content:center;
+}
+.dot.active{background:var(--c,var(--indigo));border-color:var(--c,var(--indigo));color:#fff;}
+.dot.done{background:var(--teal-s);border-color:var(--teal);color:var(--teal);}
+
+/* ── FLIP CARD STAGE ─────────────────────── */
+.stage{max-width:680px;margin-inline:auto;perspective:1200px;margin-bottom:22px;}
+.flip-card{
+  width:100%;height:420px;cursor:pointer;
+  transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,.2,.2,1);
+  position:relative;
+}
+.flip-card.flipped{transform:rotateY(180deg);}
+.card-face{
+  position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--r);
+  box-shadow:var(--shadow);overflow:hidden;
+}
+
+/* FRONT ──────────────────────────────────── */
+.card-front{
+  background:var(--card);border:1.5px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px 28px;text-align:center;
+}
+.card-front::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:6px;
+  background:var(--grad);
+}
+.cf-num{
+  font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--ink3);margin-bottom:18px;
+}
+.cf-word{
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:clamp(2.4rem,9vw,4rem);line-height:1;color:var(--c);margin-bottom:14px;
+}
+.cf-ipa{
+  font-size:1rem;color:var(--ink3);font-weight:600;letter-spacing:.03em;margin-bottom:10px;
+}
+.cf-pos{
+  display:inline-block;border-radius:100px;padding:4px 14px;
+  font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;
+  background:var(--cs);color:var(--c);margin-bottom:28px;
+}
+.cf-hint{font-size:.78rem;color:var(--ink3);font-style:italic;}
+
+/* BACK ───────────────────────────────────── */
+.card-back{
+  transform:rotateY(180deg);
+  background:var(--card);border:1.5px solid var(--border);
+  display:flex;flex-direction:column;padding:24px 28px;
+  overflow-y:auto;
+}
+.card-back::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:6px;
+  background:var(--grad);flex-shrink:0;
+}
+.cb-def{
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:700;
+  font-size:clamp(1rem,3vw,1.3rem);color:var(--ink);line-height:1.35;
+  margin-bottom:12px;padding-top:10px;
+}
+.cb-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.cb-tag{
+  border-radius:100px;padding:3px 11px;font-size:.68rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:.06em;
+  background:var(--cs);color:var(--c);
+}
+.cb-ukr{
+  background:var(--gold-s);border-left:3px solid var(--gold);
+  border-radius:0 10px 10px 0;padding:9px 14px;margin-bottom:12px;
+  font-size:.82rem;font-weight:700;color:var(--ink2);
+}
+.cb-ex-label{font-size:.72rem;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;}
+.cb-examples{margin-bottom:12px;}
+.cb-ex{
+  font-size:.8rem;color:var(--ink2);line-height:1.6;font-weight:600;
+  padding:4px 0;border-bottom:1px solid var(--border);
+}
+.cb-ex:last-child{border-bottom:none;}
+.cb-blank{
+  display:inline-block;border-bottom:2.5px solid var(--c);
+  min-width:88px;font-weight:800;color:transparent;
+  vertical-align:bottom;line-height:1.1;
+}
+.cb-gap-label{font-size:.75rem;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+.cb-gap-sent{font-size:.88rem;font-weight:600;color:var(--ink2);line-height:1.7;}
+.cb-gap-sent input{
+  border:none;border-bottom:2.5px solid var(--c);background:transparent;
+  color:var(--ink);font-family:'Nunito',sans-serif;font-size:.86rem;font-weight:700;
+  width:120px;padding:1px 5px;text-align:center;outline:none;
+}
+.cb-gap-sent input.ok{border-bottom-color:var(--teal);color:var(--teal);}
+.cb-gap-sent input.wrong{border-bottom-color:var(--coral);color:var(--coral);}
+.cb-fb{font-size:.75rem;font-weight:700;margin-top:5px;min-height:18px;}
+.cb-fb.ok{color:var(--teal);}
+.cb-fb.wrong{color:var(--coral);}
+.cb-btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.cb-btn{
+  border:none;border-radius:100px;padding:7px 18px;
+  font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:800;
+  cursor:pointer;transition:all .15s;
+}
+.cb-check{background:var(--c);color:#fff;}
+.cb-reset{background:none;border:1.5px solid var(--border);color:var(--ink3);}
+
+/* ── NAV ─────────────────────────────────── */
+.nav-row{
+  display:flex;gap:12px;justify-content:center;align-items:center;
+  max-width:680px;margin-inline:auto;margin-bottom:32px;
+}
+.nav-btn{
+  background:var(--card);border:1.5px solid var(--border);border-radius:100px;
+  padding:10px 24px;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:800;
+  color:var(--ink3);cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;gap:7px;
+}
+.nav-btn:hover:not(:disabled){border-color:var(--indigo);color:var(--indigo);}
+.nav-btn:disabled{opacity:.35;cursor:default;}
+.nav-flip{
+  background:var(--indigo);color:#fff;border-color:var(--indigo);
+  flex:1;max-width:180px;justify-content:center;
+}
+.nav-flip:hover{opacity:.88;}
+.card-counter{font-size:.8rem;font-weight:700;color:var(--ink3);min-width:50px;text-align:center;}
+
+/* ── GRID OVERVIEW ───────────────────────── */
+.grid-section{max-width:680px;margin-inline:auto;padding-bottom:48px;}
+.grid-title{
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:.85rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.1em;
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;
+}
+.grid-title::before,.grid-title::after{content:'';flex:1;height:1.5px;background:var(--border);}
+.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+@media(max-width:420px){.mini-grid{grid-template-columns:repeat(2,1fr);}}
+.mini-card{
+  background:var(--card);border:1.5px solid var(--border);border-radius:14px;
+  padding:14px 12px;text-align:center;cursor:pointer;transition:all .18s;
+  box-shadow:var(--shadow);
+}
+.mini-card:hover{transform:translateY(-2px);}
+.mini-word{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1rem;}
+.mini-pos{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-top:2px;}
+.mini-ipa{font-size:.7rem;color:var(--ink3);margin-top:3px;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-title">📚 <span>Eudaimonia</span> · Vocabulary Cards</div>
+  <button id="tbtn" onclick="toggleTheme()">🌙</button>
+</div>
+
+<div class="progress-wrap">
+  <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:16.6%"></div></div>
+  <div class="dots" id="dots"></div>
+</div>
+
+<div class="stage">
+  <div class="flip-card" id="mainCard" onclick="flipMain()">
+    <div class="card-face card-front" id="cf"></div>
+    <div class="card-face card-back"  id="cb"></div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="nav-btn" id="prevBtn" onclick="go(-1)">← Prev</button>
+  <button class="nav-btn nav-flip" onclick="flipMain()">Flip</button>
+  <span class="card-counter" id="ctr">1 / 6</span>
+  <button class="nav-btn" id="nextBtn" onclick="go(1)">Next →</button>
+</div>
+
+<div class="grid-section">
+  <div class="grid-title">All Cards</div>
+  <div class="mini-grid" id="miniGrid"></div>
+</div>
+
+<script>
+var WORDS=[
+  {
+    word:'transient',
+    ipa:'/ˈtrænziənt/',
+    pos:'adjective',
+    c:'var(--coral)',cs:'var(--coral-s)',
+    grad:'linear-gradient(90deg,var(--coral),#e8826e)',
+    def:'Lasting only a short time; not permanent.',
+    tags:['formal register','academic / philosophical','opposite: enduring'],
+    ukr:'тимчасовий; недовговічний (про емоції, стани, задоволення)',
+    examples:[
+      'Fleeting pleasures are <b>transient</b>; meaningful work leaves a lasting trace.',
+      'Her mood was <b>transient</b> — bright one moment, distant the next.',
+      'The exhibition explored the <b>transient</b> nature of modern identity.'
+    ],
+    gap:'Social media offers _______ rewards — the dopamine hit from a "like" disappears almost immediately.',
+    ans:'transient'
+  },
+  {
+    word:'enduring',
+    ipa:'/ɪnˈdjʊərɪŋ/',
+    pos:'adjective / verb',
+    c:'var(--teal)',cs:'var(--teal-s)',
+    grad:'linear-gradient(90deg,var(--teal),#0bb89f)',
+    def:'Lasting for a long time; continuing to exist.',
+    tags:['enduring legacy','enduring love','enduring impact','also: to endure = to suffer'],
+    ukr:'тривалий; стійкий; той, що витримує випробування часом',
+    examples:[
+      'Their <b>enduring</b> friendship survived decades of distance.',
+      'The novel\'s <b>enduring</b> appeal lies in its honesty about human nature.',
+      'He left behind an <b>enduring</b> legacy of compassion.'
+    ],
+    gap:'The Harvard study\'s most _______ finding is that relationships, not wealth, predict late-life happiness.',
+    ans:'enduring'
+  },
+  {
+    word:'transcend',
+    ipa:'/trænˈsend/',
+    pos:'verb',
+    c:'var(--violet)',cs:'var(--violet-s)',
+    grad:'linear-gradient(90deg,var(--violet),#9f6ef5)',
+    def:'To go beyond the usual limits of something.',
+    tags:['transcend differences','transcend the self','transcend time / culture'],
+    ukr:'виходити за межі; перевершувати; підніматися вище (обмежень, звичного)',
+    examples:[
+      'Great art can <b>transcend</b> language and cultural barriers.',
+      'She managed to <b>transcend</b> her difficult childhood.',
+      'The experience seemed to <b>transcend</b> ordinary time.'
+    ],
+    gap:'Seligman argues that genuine wellbeing must _______ positive emotion alone.',
+    ans:'transcend'
+  },
+  {
+    word:'compelling',
+    ipa:'/kəmˈpelɪŋ/',
+    pos:'adjective',
+    c:'var(--indigo)',cs:'var(--indigo-s)',
+    grad:'linear-gradient(90deg,var(--indigo),#7a6ef5)',
+    def:'So convincing or interesting it\'s hard to ignore.',
+    tags:['compelling evidence','compelling argument','compelling case','verb: compel'],
+    ukr:'переконливий; захопливий; той, якому важко протистояти',
+    examples:[
+      'The documentary makes a <b>compelling</b> case for rethinking education.',
+      'His argument was so <b>compelling</b> that the room fell silent.',
+      'What makes the theory <b>compelling</b> is its simplicity.'
+    ],
+    gap:'What is most _______ about Self-Determination Theory is how universal its findings appear across cultures.',
+    ans:'compelling'
+  },
+  {
+    word:'cultivate',
+    ipa:'/ˈkʌltɪveɪt/',
+    pos:'verb',
+    c:'var(--mint)',cs:'var(--mint-s)',
+    grad:'linear-gradient(90deg,var(--mint),#1ebf91)',
+    def:'To develop a skill, quality or relationship carefully over time.',
+    tags:['cultivate a skill','cultivate friendship','cultivate a mindset','deliberate, gradual effort'],
+    ukr:'розвивати; плекати; формувати (навички, стосунки, звички)',
+    examples:[
+      'She deliberately chose to <b>cultivate</b> patience as a daily practice.',
+      'He spent years <b>cultivating</b> relationships that truly mattered.',
+      'You can <b>cultivate</b> resilience the same way you build a skill — through repetition.'
+    ],
+    gap:'People who _______ deep friendships throughout their lives tend to be far healthier in old age.',
+    ans:'cultivate'
+  },
+  {
+    word:'prioritise',
+    ipa:'/praɪˈɒrɪtaɪz/',
+    pos:'verb',
+    c:'var(--gold)',cs:'var(--gold-s)',
+    grad:'linear-gradient(90deg,var(--gold),#e8a832)',
+    def:'To treat something as more important than other things.',
+    tags:['prioritise X over Y','priority / priorities','useful in arguments'],
+    ukr:'пріоритизувати; ставити щось на перше місце; надавати чомусь більшої ваги',
+    examples:[
+      'In her forties, she began to <b>prioritise</b> experience over achievement.',
+      'Modern workplaces rarely <b>prioritise</b> rest as a form of productivity.',
+      'He had to <b>prioritise</b>: not everything deserved his energy.'
+    ],
+    gap:'Modern schools often _______ academic achievement over students\' emotional and social development.',
+    ans:'prioritise'
+  }
+];
+
+var cur=0,flipped=false;
+
+/* ── RENDER ─────────────────────────────── */
+function renderCard(i){
+  var w=WORDS[i];
+  flipped=false;
+  document.getElementById('mainCard').classList.remove('flipped');
+
+  /* front */
+  var cf=document.getElementById('cf');
+  cf.style.setProperty('--c',w.c);
+  cf.style.setProperty('--cs',w.cs);
+  cf.style.setProperty('--grad',w.grad);
+  cf.innerHTML=
+    '<div class="cf-num">Card '+(i+1)+' of '+WORDS.length+'</div>'+
+    '<div class="cf-word">'+w.word+'</div>'+
+    '<div class="cf-ipa">'+w.ipa+'</div>'+
+    '<div class="cf-pos">'+w.pos+'</div>'+
+    '<div class="cf-hint">tap or click to reveal definition</div>';
+
+  /* back */
+  var cb=document.getElementById('cb');
+  cb.style.setProperty('--c',w.c);
+  cb.style.setProperty('--cs',w.cs);
+  cb.style.setProperty('--grad',w.grad);
+
+  cb.innerHTML=
+    '<div class="cb-def">'+w.def+'</div>'+
+    '<div class="cb-ukr">🇺🇦 '+w.ukr+'</div>'+
+    '<div class="cb-examples">'+
+      '<div class="cb-ex-label">Examples</div>'+
+      w.examples.map(function(ex){return '<div class="cb-ex">'+ex.replace(/<b>[^<]*<\/b>/g,'<span class="cb-blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>')+'</div>';}).join('')+
+    '</div>'+
+    '<div class="cb-gap-label">Gap-fill: use it</div>'+
+    '<div class="cb-gap-sent">'+
+      w.gap.replace('_______','<input id="gi" data-ans="'+w.ans+'" placeholder="…">')+
+    '</div>'+
+    '<div class="cb-fb" id="gfb"></div>'+
+    '<div class="cb-btn-row">'+
+      '<button class="cb-btn cb-check" onclick="checkGap(event)">Check</button>'+
+      '<button class="cb-btn cb-reset" onclick="resetGap(event)">Reset</button>'+
+    '</div>';
+
+  /* progress */
+  document.getElementById('progFill').style.width=(((i+1)/WORDS.length)*100)+'%';
+  document.getElementById('ctr').textContent=(i+1)+' / '+WORDS.length;
+  document.getElementById('prevBtn').disabled=i===0;
+  document.getElementById('nextBtn').disabled=i===WORDS.length-1;
+
+  /* dots */
+  renderDots();
+  renderMini();
+}
+
+function renderDots(){
+  var el=document.getElementById('dots');
+  el.innerHTML='';
+  WORDS.forEach(function(w,i){
+    var d=document.createElement('button');
+    d.className='dot'+(i===cur?' active':'');
+    d.style.setProperty('--c',w.c);
+    d.textContent=i+1;
+    d.onclick=function(){cur=i;renderCard(i);};
+    el.appendChild(d);
+  });
+}
+
+function renderMini(){
+  var el=document.getElementById('miniGrid');
+  if(el.children.length===WORDS.length)return;
+  el.innerHTML='';
+  WORDS.forEach(function(w,i){
+    var d=document.createElement('div');
+    d.className='mini-card';
+    d.innerHTML=
+      '<div class="mini-word" style="color:'+w.c+'">'+w.word+'</div>'+
+      '<div class="mini-pos">'+w.pos+'</div>'+
+      '<div class="mini-ipa">'+w.ipa+'</div>';
+    d.onclick=function(){cur=i;renderCard(i);window.scrollTo({top:0,behavior:'smooth'});};
+    el.appendChild(d);
+  });
+}
+
+/* ── ACTIONS ─────────────────────────────── */
+function flipMain(){
+  flipped=!flipped;
+  document.getElementById('mainCard').classList.toggle('flipped',flipped);
+}
+function go(dir){
+  cur=Math.max(0,Math.min(WORDS.length-1,cur+dir));
+  renderCard(cur);
+}
+function checkGap(e){
+  e.stopPropagation();
+  var inp=document.getElementById('gi');
+  var fb=document.getElementById('gfb');
+  var ans=(inp.getAttribute('data-ans')||'').split(',');
+  var val=inp.value.toLowerCase().trim();
+  if(ans.indexOf(val)>-1){
+    inp.className='ok';fb.className='cb-fb ok';fb.textContent='✓ Correct!';
+  } else {
+    inp.className='wrong';fb.className='cb-fb wrong';fb.textContent='✗ Answer: '+ans[0];
+  }
+}
+function resetGap(e){
+  e.stopPropagation();
+  var inp=document.getElementById('gi');
+  if(inp){inp.value='';inp.className='';}
+  var fb=document.getElementById('gfb');
+  if(fb){fb.className='cb-fb';fb.textContent='';}
+}
+
+/* ── THEME ───────────────────────────────── */
+function toggleTheme(){
+  var r=document.documentElement;
+  if(r.getAttribute('data-theme')==='dark'){
+    r.setAttribute('data-theme','light');
+    document.getElementById('tbtn').textContent='🌙';
+  } else {
+    r.setAttribute('data-theme','dark');
+    document.getElementById('tbtn').textContent='☀️';
+  }
+}
+
+/* ── KEYBOARD ────────────────────────────── */
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight')go(1);
+  if(e.key==='ArrowLeft')go(-1);
+  if(e.key===' '){e.preventDefault();flipMain();}
+});
+
+/* ── INIT ────────────────────────────────── */
+renderCard(0);
+</script>
+</body>
+</html>
+
+</body></html>
