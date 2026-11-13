@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unit 6D Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  --teal:#1BBCB3;--purple:#7B4FD6;--orange:#E8653A;--yellow:#F9C23C;--coral:#E04565;
+  --teal-soft:rgba(27,188,179,.13);--purple-soft:rgba(123,79,214,.13);--orange-soft:rgba(232,101,58,.13);
+  --bg:#F7F8FA;--surface:#fff;--surface-2:#EEF0F4;--border:#E2E5EC;
+  --text-1:#1A1D27;--text-2:#6B7280;--text-3:#9CA3AF;
+  --radius:14px;--radius-sm:9px;
+  --correct:#22c55e;--wrong:#ef4444;--correct-bg:rgba(34,197,94,.1);--wrong-bg:rgba(239,68,68,.1);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12141C;--surface:#1E2130;--surface-2:#262A3A;--border:#2E3448;
+  --text-1:#F0F2F8;--text-2:#9AA3B8;--text-3:#5A6480;
+}}
+:root[data-theme="dark"]{
+  --bg:#12141C;--surface:#1E2130;--surface-2:#262A3A;--border:#2E3448;
+  --text-1:#F0F2F8;--text-2:#9AA3B8;--text-3:#5A6480;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-1);min-height:100vh;padding-bottom:60px;}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#1a1b2e,#2d1a4a,#1a3040);color:#fff;padding:1.5rem 1.25rem 1.3rem;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(249,194,60,.05) 0,rgba(249,194,60,.05) 1px,transparent 1px,transparent 22px);pointer-events:none;}
+.theme-btn{position:absolute;top:.9rem;right:1rem;background:rgba(255,255,255,.12);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:.9rem;color:#fff;}
+.eyebrow{font-size:.6rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.3rem;}
+.header h1{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.6rem;line-height:1.15;margin-bottom:.35rem;}
+.header h1 em{color:var(--yellow);font-style:normal;}
+.header .sub{font-size:.85rem;color:rgba(255,255,255,.6);}
+
+/* NAME BAR */
+.name-bar{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1.5px solid var(--border);padding:.6rem 1.1rem;display:flex;align-items:center;gap:.7rem;box-shadow:0 2px 8px rgba(0,0,0,.07);}
+.name-bar label{font-size:.8rem;font-weight:600;color:var(--text-2);white-space:nowrap;}
+.name-bar input{flex:1;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:.3rem .65rem;font-family:'Inter',sans-serif;font-size:.86rem;background:var(--surface-2);color:var(--text-1);max-width:260px;}
+.name-bar input:focus{outline:none;border-color:var(--teal);}
+
+/* PROGRESS */
+.progress-wrap{padding:.55rem 1.1rem;background:var(--surface-2);border-bottom:1px solid var(--border);}
+.progress-label{font-size:.72rem;font-weight:700;color:var(--text-2);margin-bottom:.3rem;}
+.progress-track{background:var(--border);border-radius:99px;height:7px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--purple));border-radius:99px;transition:width .4s ease;width:0%;}
+
+/* MAIN */
+.main{max-width:680px;margin:0 auto;padding:1.1rem;display:flex;flex-direction:column;gap:1.3rem;}
+
+/* ===================== QUIZLET SECTION ===================== */
+.ql-section{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;}
+.ql-hd{padding:.75rem 1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:.5rem;}
+.ql-hd-left{display:flex;align-items:center;gap:.55rem;}
+.ql-label{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#fff;padding:.18rem .5rem;border-radius:99px;background:linear-gradient(135deg,var(--purple),var(--coral));}
+.ql-title{font-family:'Nunito',sans-serif;font-weight:700;font-size:.92rem;}
+.ql-counter{font-size:.78rem;font-weight:700;color:var(--text-3);font-family:'Nunito',sans-serif;}
+
+/* CARD AREA */
+.ql-card-area{padding:1rem 1.1rem .5rem;}
+.ql-card-wrap{perspective:900px;margin-bottom:.7rem;}
+.ql-card{position:relative;width:100%;height:200px;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);cursor:pointer;}
+.ql-card.flipped{transform:rotateY(180deg);}
+.ql-face{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;border:1.5px solid var(--border);}
+.ql-front{background:var(--surface);box-shadow:0 4px 20px rgba(0,0,0,.08);}
+.ql-back{transform:rotateY(180deg);background:linear-gradient(135deg,var(--purple-soft),rgba(27,188,179,.1));border-color:var(--purple);}
+.ql-side-tag{position:absolute;top:.55rem;left:.75rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);}
+.ql-back .ql-side-tag{color:var(--purple);}
+.ql-category{font-size:.68rem;font-weight:700;padding:.15rem .5rem;border-radius:99px;margin-bottom:.6rem;color:#fff;}
+.ql-category.sorry{background:linear-gradient(135deg,var(--coral),var(--orange));}
+.ql-category.respond{background:linear-gradient(135deg,var(--teal),#0d9488);}
+.ql-en{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.3rem;text-align:center;line-height:1.35;color:var(--text-1);}
+.ql-ua{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.15rem;text-align:center;line-height:1.4;color:var(--purple);}
+.ql-ua-sub{font-size:.75rem;color:var(--text-2);margin-top:.4rem;font-style:italic;text-align:center;}
+.ql-flip-hint{font-size:.72rem;color:var(--text-3);margin-top:.5rem;display:flex;align-items:center;gap:.25rem;}
+
+/* TRACK DOTS */
+.ql-dots{display:flex;justify-content:center;gap:.3rem;margin-bottom:.65rem;flex-wrap:wrap;}
+.ql-dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:none;cursor:pointer;padding:0;transition:all .2s;}
+.ql-dot.active{background:var(--purple);transform:scale(1.3);}
+.ql-dot.known{background:var(--correct);}
+.ql-dot.learning{background:var(--wrong);}
+
+/* CONTROLS */
+.ql-controls{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1.1rem .75rem;gap:.5rem;}
+.ql-nav{display:flex;align-items:center;gap:.4rem;}
+.ql-nav-btn{background:var(--surface-2);border:1.5px solid var(--border);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:all .15s;}
+.ql-nav-btn:hover{border-color:var(--teal);background:var(--teal-soft);}
+.ql-nav-btn:disabled{opacity:.35;cursor:default;}
+.ql-actions{display:flex;gap:.4rem;}
+.ql-action-btn{background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:.3rem .65rem;font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;color:var(--text-2);transition:all .15s;}
+.ql-action-btn:hover{border-color:var(--teal);color:var(--teal);}
+
+/* KNOW BUTTONS */
+.ql-know-row{display:flex;gap:.5rem;padding:0 1.1rem .9rem;}
+.ql-know-btn{flex:1;border:none;border-radius:var(--radius-sm);padding:.5rem;font-size:.82rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .15s;}
+.ql-know-btn.still{background:var(--wrong-bg);color:var(--wrong);border:1.5px solid var(--wrong);}
+.ql-know-btn.know{background:var(--correct-bg);color:var(--correct);border:1.5px solid var(--correct);}
+.ql-know-btn:hover{opacity:.8;transform:translateY(-1px);}
+
+/* KNOW PROGRESS */
+.ql-know-progress{padding:.5rem 1.1rem .75rem;border-top:1px solid var(--border);}
+.ql-know-label{font-size:.72rem;color:var(--text-2);margin-bottom:.3rem;display:flex;justify-content:space-between;}
+.ql-know-track{height:7px;background:var(--border);border-radius:99px;overflow:hidden;}
+.ql-know-fill{height:100%;background:var(--correct);border-radius:99px;transition:width .4s ease;width:0%;}
+
+/* EX CARD */
+.ex-card{border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);overflow:hidden;}
+.ex-hd{padding:.7rem 1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.55rem;}
+.ex-label{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#fff;padding:.18rem .5rem;border-radius:99px;white-space:nowrap;}
+.ex-label.a{background:linear-gradient(135deg,var(--teal),#0d9488);}
+.ex-label.b{background:linear-gradient(135deg,var(--purple),var(--coral));}
+.ex-label.c{background:linear-gradient(135deg,var(--orange),var(--yellow));}
+.ex-title{font-family:'Nunito',sans-serif;font-weight:700;font-size:.92rem;}
+.ex-body{padding:1rem 1.1rem;}
+.instr{font-size:.85rem;color:var(--text-2);line-height:1.6;margin-bottom:.85rem;}
+
+/* MATCH */
+.match-cols{display:grid;grid-template-columns:1fr 1fr;gap:.5rem 1rem;}
+.match-col-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);margin-bottom:.3rem;text-align:center;}
+.match-col{display:flex;flex-direction:column;gap:.35rem;}
+.match-item{padding:.4rem .65rem;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface-2);cursor:pointer;font-size:.84rem;line-height:1.5;transition:all .15s;user-select:none;text-align:left;width:100%;}
+.match-item:hover{border-color:var(--teal);background:var(--teal-soft);}
+.match-item.active{border-color:var(--purple);background:var(--purple-soft);color:var(--purple);}
+.match-item.paired{border-color:var(--teal);background:var(--teal-soft);cursor:default;}
+.match-item.paired-correct{border-color:var(--correct);background:var(--correct-bg);color:var(--correct);cursor:default;}
+.match-item.paired-wrong{border-color:var(--wrong);background:var(--wrong-bg);color:var(--wrong);cursor:default;}
+.match-num{font-weight:800;color:var(--teal);margin-right:.25rem;}
+.match-let{font-weight:800;color:var(--purple);margin-right:.25rem;}
+.match-hint{font-size:.75rem;color:var(--text-3);font-style:italic;margin-top:.4rem;}
+
+/* SR */
+.sr-list{display:flex;flex-direction:column;gap:.45rem;}
+.sr-row{display:flex;align-items:center;gap:.7rem;padding:.45rem .7rem;background:var(--surface-2);border-radius:var(--radius-sm);border:1.5px solid var(--border);}
+.sr-sent{font-size:.87rem;line-height:1.5;flex:1;}
+.sr-opts{display:flex;gap:.35rem;flex-shrink:0;}
+.sr-btn{border:1.5px solid var(--border);background:var(--surface);border-radius:6px;padding:.18rem .6rem;font-size:.8rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;min-width:34px;text-align:center;}
+.sr-btn:hover{border-color:var(--teal);background:var(--teal-soft);}
+.sr-btn.selected{border-color:var(--teal);background:var(--teal-soft);color:var(--teal);}
+.sr-btn.correct{border-color:var(--correct);background:var(--correct-bg);color:var(--correct);}
+.sr-btn.wrong{border-color:var(--wrong);background:var(--wrong-bg);color:var(--wrong);}
+
+/* MCQ dialogues */
+.dlg-list{display:flex;flex-direction:column;gap:.6rem;}
+.dlg-row{background:var(--surface-2);border-radius:var(--radius-sm);border:1.5px solid var(--border);padding:.55rem .8rem;}
+.dlg-turn{font-size:.87rem;line-height:2;display:flex;flex-wrap:wrap;align-items:center;gap:0 .2rem;}
+.dlg-turn .who{font-weight:700;color:var(--teal);margin-right:.2rem;}
+.mcq-pair{display:inline-flex;border:1.5px solid var(--border);border-radius:6px;overflow:hidden;vertical-align:middle;margin:0 1px;}
+.mcq-opt{padding:.05rem .45rem;font-size:.82rem;font-weight:600;cursor:pointer;background:var(--surface);border:none;font-family:'Inter',sans-serif;color:var(--text-1);transition:all .12s;white-space:nowrap;}
+.mcq-opt:not(:last-child){border-right:1px solid var(--border);}
+.mcq-opt:hover{background:var(--teal-soft);color:var(--teal);}
+.mcq-opt.selected{background:var(--purple-soft);color:var(--purple);}
+.mcq-opt.correct{background:var(--correct-bg);color:var(--correct);}
+.mcq-opt.wrong{background:var(--wrong-bg);color:var(--wrong);}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.85rem;}
+.btn-check{background:linear-gradient(135deg,var(--teal),var(--purple));color:#fff;border:none;border-radius:var(--radius-sm);padding:.42rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-reset{background:var(--surface-2);color:var(--text-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.42rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.score-bar{margin-top:.6rem;padding:.4rem .7rem;background:var(--surface-2);border-radius:var(--radius-sm);font-size:.82rem;color:var(--text-2);display:none;}
+.score-bar.show{display:block;}
+
+/* SEND CARD */
+.send-card{background:var(--purple-soft);border:1.5px solid var(--purple);border-radius:var(--radius);padding:1rem 1.1rem;}
+.send-card h3{font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;color:var(--purple);margin-bottom:.35rem;}
+.send-card p{font-size:.84rem;color:var(--text-2);margin-bottom:.7rem;line-height:1.5;}
+.btn-send{background:linear-gradient(135deg,var(--purple),var(--coral));color:#fff;border:none;border-radius:var(--radius-sm);padding:.5rem 1.2rem;font-size:.88rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+  <div class="eyebrow">📚 Homework · Unit 6D</div>
+  <h1>Give and Accept <em>an Apology</em></h1>
+  <div class="sub">Functional language — apologising &amp; responding</div>
+</header>
+
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-label">Progress: <span id="plabel">0 / 3</span> exercises done</div>
+  <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+</div>
+
+<div class="main">
+
+  <!-- FLASHCARDS -->
+  <div class="ql-section">
+    <div class="ql-hd">
+      <div class="ql-hd-left"><span class="ql-label">Flashcards</span><span class="ql-title">Learn the phrases</span></div>
+      <span class="ql-counter" id="qlCounter">1 / 12</span>
+    </div>
+
+    <div class="ql-card-area">
+      <div class="ql-card-wrap">
+        <div class="ql-card" id="qlCard" onclick="flipCard()">
+          <div class="ql-face ql-front">
+            <div class="ql-side-tag">English</div>
+            <div class="ql-category" id="qlCat"></div>
+            <div class="ql-en" id="qlEn"></div>
+            <div class="ql-flip-hint">🔄 click to flip</div>
+          </div>
+          <div class="ql-face ql-back">
+            <div class="ql-side-tag">Ukrainian</div>
+            <div class="ql-ua" id="qlUa"></div>
+            <div class="ql-ua-sub" id="qlSub"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ql-dots" id="qlDots"></div>
+    </div>
+
+    <div class="ql-controls">
+      <div class="ql-nav">
+        <button class="ql-nav-btn" id="qlPrev" onclick="goCard(-1)">←</button>
+        <button class="ql-nav-btn" id="qlNext" onclick="goCard(1)">→</button>
+      </div>
+      <div class="ql-actions">
+        <button class="ql-action-btn" onclick="shuffleCards()">🔀 Shuffle</button>
+        <button class="ql-action-btn" onclick="resetCards()">↺ Restart</button>
+      </div>
+    </div>
+
+    <div class="ql-know-row">
+      <button class="ql-know-btn still" onclick="markCard(false)">↩ Still learning</button>
+      <button class="ql-know-btn know" onclick="markCard(true)">✓ Know it!</button>
+    </div>
+
+    <div class="ql-know-progress">
+      <div class="ql-know-label">
+        <span>Known: <strong id="knownCount">0</strong> / 12</span>
+        <span id="knownPct">0%</span>
+      </div>
+      <div class="ql-know-track"><div class="ql-know-fill" id="knownFill"></div></div>
+    </div>
+  </div>
+
+  <!-- EX 1 -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label a">Exercise 1</span><span class="ex-title">Match the sentence halves</span></div>
+    <div class="ex-body">
+      <p class="instr">Click a sentence beginning (1–6), then click the correct ending (a–f) to match them.</p>
+      <div class="match-cols">
+        <div>
+          <div class="match-col-label">Beginnings</div>
+          <div class="match-col" id="leftCol">
+            <button class="match-item" id="L1" onclick="selectLeft('L1')"><span class="match-num">1</span> I'm really</button>
+            <button class="match-item" id="L2" onclick="selectLeft('L2')"><span class="match-num">2</span> No</button>
+            <button class="match-item" id="L3" onclick="selectLeft('L3')"><span class="match-num">3</span> That's all</button>
+            <button class="match-item" id="L4" onclick="selectLeft('L4')"><span class="match-num">4</span> That's</button>
+            <button class="match-item" id="L5" onclick="selectLeft('L5')"><span class="match-num">5</span> I'm sorry I'm</button>
+            <button class="match-item" id="L6" onclick="selectLeft('L6')"><span class="match-num">6</span> I'm afraid</button>
+          </div>
+        </div>
+        <div>
+          <div class="match-col-label">Endings</div>
+          <div class="match-col" id="rightCol">
+            <button class="match-item" id="Ra" onclick="selectRight('Ra')"><span class="match-let">a</span> right.</button>
+            <button class="match-item" id="Rb" onclick="selectRight('Rb')"><span class="match-let">b</span> I didn't talk to Marjorie.</button>
+            <button class="match-item" id="Rc" onclick="selectRight('Rc')"><span class="match-let">c</span> fine.</button>
+            <button class="match-item" id="Rd" onclick="selectRight('Rd')"><span class="match-let">d</span> late.</button>
+            <button class="match-item" id="Re" onclick="selectRight('Re')"><span class="match-let">e</span> problem.</button>
+            <button class="match-item" id="Rf" onclick="selectRight('Rf')"><span class="match-let">f</span> sorry.</button>
+          </div>
+        </div>
+      </div>
+      <p class="match-hint">💡 Click a beginning first, then an ending to pair them.</p>
+      <div class="btn-row">
+        <button class="btn-check" onclick="checkEx1()">✓ Check</button>
+        <button class="btn-reset" onclick="resetEx1()">↺ Reset</button>
+      </div>
+      <div class="score-bar" id="ex1Score"></div>
+    </div>
+  </div>
+
+  <!-- EX 2 -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label b">Exercise 2</span><span class="ex-title">Saying sorry (S) or responding (R)?</span></div>
+    <div class="ex-body">
+      <p class="instr">Is each sentence a way of <strong>saying sorry (S)</strong> or <strong>responding to an apology (R)</strong>?</p>
+      <div class="sr-list">
+        <div class="sr-row"><div class="sr-sent">I'm really sorry.</div><div class="sr-opts"><button class="sr-btn" data-grp="s1" data-val="S" onclick="pickSR(this)">S</button><button class="sr-btn" data-grp="s1" data-val="R" onclick="pickSR(this)">R</button></div></div>
+        <div class="sr-row"><div class="sr-sent">No problem.</div><div class="sr-opts"><button class="sr-btn" data-grp="s2" data-val="S" onclick="pickSR(this)">S</button><button class="sr-btn" data-grp="s2" data-val="R" onclick="pickSR(this)">R</button></div></div>
+        <div class="sr-row"><div class="sr-sent">That's all right.</div><div class="sr-opts"><button class="sr-btn" data-grp="s3" data-val="S" onclick="pickSR(this)">S</button><button class="sr-btn" data-grp="s3" data-val="R" onclick="pickSR(this)">R</button></div></div>
+        <div class="sr-row"><div class="sr-sent">That's fine.</div><div class="sr-opts"><button class="sr-btn" data-grp="s4" data-val="S" onclick="pickSR(this)">S</button><button class="sr-btn" data-grp="s4" data-val="R" onclick="pickSR(this)">R</button></div></div>
+        <div class="sr-row"><div class="sr-sent">I'm sorry I'm late.</div><div class="sr-opts"><button class="sr-btn" data-grp="s5" data-val="S" onclick="pickSR(this)">S</button><button class="sr-btn" data-grp="s5" data-val="R" onclick="pickSR(this)">R</button></div></div>
+        <div class="sr-row"><div class="sr-sent">I'm afraid I didn't talk to Marjorie.</div><div class="sr-opts"><button class="sr-btn" data-grp="s6" data-val="S" onclick="pickSR(this)">S</button><button class="sr-btn" data-grp="s6" data-val="R" onclick="pickSR(this)">R</button></div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-check" onclick="checkEx2()">✓ Check</button>
+        <button class="btn-reset" onclick="resetEx2()">↺ Reset</button>
+      </div>
+      <div class="score-bar" id="ex2Score"></div>
+    </div>
+  </div>
+
+  <!-- EX 3 -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label c">Exercise 3</span><span class="ex-title">Choose the correct alternative</span></div>
+    <div class="ex-body">
+      <p class="instr">Click the correct word in each dialogue.</p>
+      <div class="dlg-list">
+        <div class="dlg-row">
+          <div class="dlg-turn"><span class="who">A:</span> Excuse me, can I get past?</div>
+          <div class="dlg-turn"><span class="who">B:</span> Oh no! I'm <span class="mcq-pair"><button class="mcq-opt" data-grp="d1a" data-val="afraid" onclick="pickMCQ(this)">afraid</button><button class="mcq-opt" data-grp="d1a" data-val="sorry" onclick="pickMCQ(this)">sorry</button></span>.</div>
+          <div class="dlg-turn"><span class="who">A:</span> No <span class="mcq-pair"><button class="mcq-opt" data-grp="d1b" data-val="fine" onclick="pickMCQ(this)">fine</button><button class="mcq-opt" data-grp="d1b" data-val="worries" onclick="pickMCQ(this)">worries</button></span>!</div>
+        </div>
+        <div class="dlg-row">
+          <div class="dlg-turn"><span class="who">A:</span> I'm <span class="mcq-pair"><button class="mcq-opt" data-grp="d2a" data-val="really" onclick="pickMCQ(this)">really</button><button class="mcq-opt" data-grp="d2a" data-val="afraid" onclick="pickMCQ(this)">afraid</button></span> I can't come to work today. I don't feel well.</div>
+          <div class="dlg-turn"><span class="who">B:</span> <span class="mcq-pair"><button class="mcq-opt" data-grp="d2b" data-val="That's" onclick="pickMCQ(this)">That's</button><button class="mcq-opt" data-grp="d2b" data-val="That" onclick="pickMCQ(this)">That</button></span> fine. I hope you feel better soon.</div>
+        </div>
+        <div class="dlg-row">
+          <div class="dlg-turn"><span class="who">A:</span> Can I borrow your phone charger?</div>
+          <div class="dlg-turn"><span class="who">B:</span> <span class="mcq-pair"><button class="mcq-opt" data-grp="d3a" data-val="I'm" onclick="pickMCQ(this)">I'm</button><button class="mcq-opt" data-grp="d3a" data-val="I" onclick="pickMCQ(this)">I</button></span> sorry, I need it myself.</div>
+          <div class="dlg-turn"><span class="who">A:</span> That's <span class="mcq-pair"><button class="mcq-opt" data-grp="d3b" data-val="OK" onclick="pickMCQ(this)">OK</button><button class="mcq-opt" data-grp="d3b" data-val="all" onclick="pickMCQ(this)">all</button></span> right.</div>
+        </div>
+        <div class="dlg-row">
+          <div class="dlg-turn"><span class="who">A:</span> Ouch! That's my foot!</div>
+          <div class="dlg-turn"><span class="who">B:</span> Oh no! I'm <span class="mcq-pair"><button class="mcq-opt" data-grp="d4" data-val="too" onclick="pickMCQ(this)">too</button><button class="mcq-opt" data-grp="d4" data-val="so" onclick="pickMCQ(this)">so</button></span> sorry! I didn't see you.</div>
+        </div>
+        <div class="dlg-row">
+          <div class="dlg-turn"><span class="who">A:</span> I'm <span class="mcq-pair"><button class="mcq-opt" data-grp="d5a" data-val="afraid" onclick="pickMCQ(this)">afraid</button><button class="mcq-opt" data-grp="d5a" data-val="worries" onclick="pickMCQ(this)">worries</button></span> I didn't do the homework.</div>
+          <div class="dlg-turn"><span class="who">B:</span> <span class="mcq-pair"><button class="mcq-opt" data-grp="d5b" data-val="None" onclick="pickMCQ(this)">None</button><button class="mcq-opt" data-grp="d5b" data-val="No" onclick="pickMCQ(this)">No</button></span> problem. Can you do it for tomorrow?</div>
+        </div>
+        <div class="dlg-row">
+          <div class="dlg-turn"><span class="who">A:</span> Did you break this glass?</div>
+          <div class="dlg-turn"><span class="who">B:</span> Yes, I did. I'm <span class="mcq-pair"><button class="mcq-opt" data-grp="d6a" data-val="badly" onclick="pickMCQ(this)">badly</button><button class="mcq-opt" data-grp="d6a" data-val="really" onclick="pickMCQ(this)">really</button></span> sorry.</div>
+          <div class="dlg-turn"><span class="who">A:</span> That's <span class="mcq-pair"><button class="mcq-opt" data-grp="d6b" data-val="right" onclick="pickMCQ(this)">right</button><button class="mcq-opt" data-grp="d6b" data-val="OK" onclick="pickMCQ(this)">OK</button></span>. We've got more.</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-check" onclick="checkEx3()">✓ Check</button>
+        <button class="btn-reset" onclick="resetEx3()">↺ Reset</button>
+      </div>
+      <div class="score-bar" id="ex3Score"></div>
+    </div>
+  </div>
+
+  <!-- SEND -->
+  <div class="send-card">
+    <h3>📧 Send to your teacher</h3>
+    <p>When you're done, click the button to email your answers to your teacher.</p>
+    <button class="btn-send" onclick="sendToTeacher()">Send to Teacher ✉️</button>
+  </div>
+
+</div>
+
+<script>
+function toggleTheme(){var r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');}
+
+var done={ex1:false,ex2:false,ex3:false};
+function updateProgress(){
+  var n=0;if(done.ex1)n++;if(done.ex2)n++;if(done.ex3)n++;
+  document.getElementById('pfill').style.width=(n/3*100)+'%';
+  document.getElementById('plabel').textContent=n+' / 3';
+}
+
+/* ============ FLASHCARDS ============ */
+var allCards=[
+  {en:"I'm sorry.",ua:"Вибачте. / Пробачте.",sub:"",cat:"sorry"},
+  {en:"I'm really sorry.",ua:"Мені дуже шкода.",sub:"",cat:"sorry"},
+  {en:"I'm so sorry!",ua:"Мені так шкода!",sub:"",cat:"sorry"},
+  {en:"I'm sorry I'm late.",ua:"Вибачте, що запізнився / запізнилась.",sub:"",cat:"sorry"},
+  {en:"I'm afraid I can't…",ua:"На жаль, я не можу…",sub:"(politely giving bad news)",cat:"sorry"},
+  {en:"I'm afraid I didn't…",ua:"На жаль, я не…",sub:"(regret + bad news)",cat:"sorry"},
+  {en:"No problem.",ua:"Не проблема.",sub:"",cat:"respond"},
+  {en:"No worries.",ua:"Нічого страшного.",sub:"",cat:"respond"},
+  {en:"That's fine.",ua:"Все добре.",sub:"",cat:"respond"},
+  {en:"That's all right.",ua:"Все гаразд.",sub:"",cat:"respond"},
+  {en:"That's OK.",ua:"Все окей.",sub:"",cat:"respond"},
+  {en:"Don't worry about it.",ua:"Не переймайся.",sub:"",cat:"respond"}
+];
+
+var cards=allCards.slice();
+var cardIdx=0;
+var known={};
+var isFlipped=false;
+
+function buildDots(){
+  var d=document.getElementById('qlDots');d.innerHTML='';
+  for(var i=0;i<cards.length;i++){
+    var btn=document.createElement('button');
+    btn.className='ql-dot'+(i===cardIdx?' active':'');
+    if(known[i]==='yes')btn.classList.add('known');
+    if(known[i]==='no')btn.classList.add('learning');
+    btn.setAttribute('data-i',i);
+    btn.onclick=(function(idx){return function(){goTo(idx);};})(i);
+    d.appendChild(btn);
+  }
+}
+
+function renderCard(){
+  var c=cards[cardIdx];
+  var cardEl=document.getElementById('qlCard');
+  cardEl.classList.remove('flipped');isFlipped=false;
+  document.getElementById('qlEn').textContent=c.en;
+  document.getElementById('qlUa').textContent=c.ua;
+  document.getElementById('qlSub').textContent=c.sub;
+  var cat=document.getElementById('qlCat');
+  cat.textContent=c.cat==='sorry'?'🙏 Saying sorry':'✅ Responding';
+  cat.className='ql-category '+(c.cat==='sorry'?'sorry':'respond');
+  document.getElementById('qlCounter').textContent=(cardIdx+1)+' / '+cards.length;
+  document.getElementById('qlPrev').disabled=(cardIdx===0);
+  document.getElementById('qlNext').disabled=(cardIdx===cards.length-1);
+  buildDots();
+}
+
+function flipCard(){
+  var c=document.getElementById('qlCard');
+  c.classList.toggle('flipped');isFlipped=!isFlipped;
+}
+
+function goTo(i){cardIdx=i;renderCard();}
+function goCard(dir){
+  var n=cardIdx+dir;
+  if(n>=0&&n<cards.length){cardIdx=n;renderCard();}
+}
+
+function markCard(isKnown){
+  known[cardIdx]=isKnown?'yes':'no';
+  var kn=Object.values(known).filter(function(v){return v==='yes';}).length;
+  document.getElementById('knownCount').textContent=kn;
+  var pct=Math.round(kn/cards.length*100);
+  document.getElementById('knownPct').textContent=pct+'%';
+  document.getElementById('knownFill').style.width=pct+'%';
+  buildDots();
+  if(cardIdx<cards.length-1){cardIdx++;renderCard();}
+}
+
+function shuffleCards(){
+  known={};
+  var arr=cards.slice();
+  for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}
+  cards=arr;cardIdx=0;
+  document.getElementById('knownCount').textContent='0';
+  document.getElementById('knownPct').textContent='0%';
+  document.getElementById('knownFill').style.width='0%';
+  renderCard();
+}
+
+function resetCards(){
+  cards=allCards.slice();known={};cardIdx=0;
+  document.getElementById('knownCount').textContent='0';
+  document.getElementById('knownPct').textContent='0%';
+  document.getElementById('knownFill').style.width='0%';
+  renderCard();
+}
+
+/* ============ EX 1 ============ */
+var ex1Answers={L1:'Rf',L2:'Re',L3:'Ra',L4:'Rc',L5:'Rd',L6:'Rb'};
+var ex1Pairs={};var activeLeft=null;
+
+function selectLeft(id){
+  var el=document.getElementById(id);
+  if(el.classList.contains('paired-correct')||el.classList.contains('paired-wrong'))return;
+  document.querySelectorAll('#leftCol .match-item').forEach(function(b){if(b.id!==id)b.classList.remove('active');});
+  el.classList.toggle('active');
+  activeLeft=el.classList.contains('active')?id:null;
+}
+function selectRight(id){
+  if(!activeLeft)return;
+  var el=document.getElementById(id);
+  if(el.classList.contains('paired-correct')||el.classList.contains('paired-wrong'))return;
+  ex1Pairs[activeLeft]=id;
+  document.getElementById(activeLeft).classList.remove('active');
+  document.getElementById(activeLeft).classList.add('paired');
+  el.classList.add('paired');
+  activeLeft=null;
+}
+function checkEx1(){
+  var c=0,t=6;
+  for(var lk in ex1Answers){
+    var lEl=document.getElementById(lk);var rEl=document.getElementById(ex1Answers[lk]);
+    var paired=ex1Pairs[lk];
+    lEl.classList.remove('paired','paired-correct','paired-wrong');
+    if(rEl)rEl.classList.remove('paired','paired-correct','paired-wrong');
+    if(paired){
+      var pEl=document.getElementById(paired);if(pEl)pEl.classList.remove('paired');
+      if(paired===ex1Answers[lk]){lEl.classList.add('paired-correct');if(pEl)pEl.classList.add('paired-correct');c++;}
+      else{lEl.classList.add('paired-wrong');if(pEl)pEl.classList.add('paired-wrong');if(rEl)rEl.classList.add('paired-correct');}
+    }
+  }
+  var bar=document.getElementById('ex1Score');bar.textContent='Score: '+c+' / '+t;bar.classList.add('show');
+  if(c===t){done.ex1=true;updateProgress();}
+}
+function resetEx1(){
+  ex1Pairs={};activeLeft=null;
+  document.querySelectorAll('.match-item').forEach(function(el){el.className='match-item';el.style.border='';});
+  var bar=document.getElementById('ex1Score');bar.textContent='';bar.classList.remove('show');
+}
+
+/* ============ EX 2 ============ */
+var srAnswers={s1:'S',s2:'R',s3:'R',s4:'R',s5:'S',s6:'S'};
+function pickSR(btn){
+  btn.closest('.sr-row').querySelectorAll('.sr-btn').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+  btn.classList.add('selected');
+}
+function checkEx2(){
+  var c=0,t=6;
+  document.querySelectorAll('.sr-row').forEach(function(row){
+    var grp=row.querySelector('.sr-btn').getAttribute('data-grp');var ans=srAnswers[grp];var sel=row.querySelector('.selected');
+    row.querySelectorAll('.sr-btn').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+    if(!sel)return;
+    if(sel.getAttribute('data-val')===ans){sel.classList.add('correct');c++;}
+    else{sel.classList.add('wrong');row.querySelectorAll('.sr-btn').forEach(function(b){if(b.getAttribute('data-val')===ans)b.classList.add('correct');});}
+  });
+  var bar=document.getElementById('ex2Score');bar.textContent='Score: '+c+' / '+t;bar.classList.add('show');
+  if(c===t){done.ex2=true;updateProgress();}
+}
+function resetEx2(){
+  document.querySelectorAll('.sr-btn').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+  var bar=document.getElementById('ex2Score');bar.textContent='';bar.classList.remove('show');
+}
+
+/* ============ EX 3 ============ */
+var dlgAnswers={d1a:'sorry',d1b:'worries',d2a:'afraid',d2b:"That's",d3a:"I'm",d3b:'all',d4:'so',d5a:'afraid',d5b:'No',d6a:'really',d6b:'OK'};
+function pickMCQ(btn){
+  btn.closest('.mcq-pair').querySelectorAll('.mcq-opt').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+  btn.classList.add('selected');
+}
+function checkEx3(){
+  var c=0,t=0;
+  for(var grp in dlgAnswers){
+    t++;var pair=document.querySelector('[data-grp="'+grp+'"]').closest('.mcq-pair');
+    var ans=dlgAnswers[grp];var sel=pair.querySelector('.selected');
+    pair.querySelectorAll('.mcq-opt').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+    if(!sel)continue;
+    if(sel.getAttribute('data-val')===ans){sel.classList.add('correct');c++;}
+    else{sel.classList.add('wrong');pair.querySelectorAll('.mcq-opt').forEach(function(b){if(b.getAttribute('data-val')===ans)b.classList.add('correct');});}
+  }
+  var bar=document.getElementById('ex3Score');bar.textContent='Score: '+c+' / '+t;bar.classList.add('show');
+  if(c===t){done.ex3=true;updateProgress();}
+}
+function resetEx3(){
+  document.querySelectorAll('.mcq-opt').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+  var bar=document.getElementById('ex3Score');bar.textContent='';bar.classList.remove('show');
+}
+
+/* ============ SEND ============ */
+function sendToTeacher(){
+  var name=document.getElementById('nameInput').value.trim()||'(no name)';
+  var lines=['Student: '+name,'Unit: 6D — Give and Accept an Apology',''];
+  lines.push('=== Exercise 1 — Match the halves ===');
+  var e1txt={L1:"I'm really",L2:"No",L3:"That's all",L4:"That's",L5:"I'm sorry I'm",L6:"I'm afraid"};
+  var e1rtxt={Ra:"right.",Rb:"I didn't talk to Marjorie.",Rc:"fine.",Rd:"late.",Re:"problem.",Rf:"sorry."};
+  for(var lk in ex1Answers){
+    var prd=ex1Pairs[lk];var status=prd?(prd===ex1Answers[lk]?'✓':'✗ (correct: '+ex1Answers[lk]+')'):'no answer';
+    lines.push(lk.replace('L','')+'. '+e1txt[lk]+' → '+(prd?e1rtxt[prd]:'?')+' '+status);
+  }
+  lines.push('','=== Exercise 2 — Saying sorry or responding? ===');
+  var s2txt={s1:"I'm really sorry.",s2:"No problem.",s3:"That's all right.",s4:"That's fine.",s5:"I'm sorry I'm late.",s6:"I'm afraid I didn't talk to Marjorie."};
+  document.querySelectorAll('.sr-row').forEach(function(row,i){
+    var grp=row.querySelector('.sr-btn').getAttribute('data-grp');var ans=srAnswers[grp];
+    var sel=row.querySelector('.selected,.correct,.wrong');var chosen=sel?sel.getAttribute('data-val'):'no answer';
+    var status=chosen===ans?'✓':(chosen==='no answer'?'no answer':'✗ (correct: '+ans+')');
+    lines.push((i+1)+'. '+s2txt[grp]+' → '+chosen+' '+status);
+  });
+  lines.push('','=== Exercise 3 — Choose the correct alternative ===');
+  var d3txt={d1a:'1B: afraid/sorry',d1b:'1A: fine/worries',d2a:'2A: really/afraid',d2b:"2B: That's/That",d3a:"3B: I'm/I",d3b:'3A: OK/all',d4:'4B: too/so',d5a:'5A: afraid/worries',d5b:'5B: None/No',d6a:'6B: badly/really',d6b:'6A: right/OK'};
+  for(var grp in dlgAnswers){
+    var pair=document.querySelector('[data-grp="'+grp+'"]').closest('.mcq-pair');
+    var sel=pair.querySelector('.selected,.correct,.wrong');var ans=dlgAnswers[grp];
+    var chosen=sel?sel.getAttribute('data-val'):'no answer';
+    var status=chosen===ans?'✓':(chosen==='no answer'?'no answer':'✗ (correct: '+ans+')');
+    lines.push(d3txt[grp]+' → '+chosen+' '+status);
+  }
+  var body=encodeURIComponent(lines.join('\n'));
+  var subject=encodeURIComponent('Homework Unit 6D — '+name);
+  window.location.href='mailto:dariia.mlnk@gmail.com?subject='+subject+'&body='+body;
+}
+
+/* INIT */
+renderCard();
+</script>
+</body>
+</html>
