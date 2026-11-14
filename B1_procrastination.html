@@ -1,0 +1,876 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Stop Waiting, Start Living &mdash; B1 Discussion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@700;800;900&display=swap">
+<style>
+:root{
+  --bg:#edf0f7;--surface:#f8f9fd;--surface2:#dde3f0;
+  --navy:#0d1b2e;--navy-mid:#1a2d4a;--navy-lt:#dde3f0;
+  --accent:#e8601e;--accent-lt:#ffb08a;--accent-dk:#b8420e;
+  --ok:#2a9e62;--ok-lt:#d4f0e0;
+  --err:#d94444;--err-lt:#fde8e8;
+  --amber:#e09020;--amber-lt:#fdf3dc;
+  --text:#1a2235;--text2:#4a5568;--muted:#718096;
+  --border:rgba(13,27,46,.12);
+  --r:14px;--sh:0 2px 20px rgba(13,27,46,.10);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0a1628;--surface:#111d30;--surface2:#172538;
+  --text:#e8edf5;--text2:#a8b4c8;--muted:#6b7a96;
+  --border:rgba(232,96,30,.15);
+  --ok-lt:#0a1f14;--err-lt:#1f0a0a;--amber-lt:#1f1600;
+}}
+:root[data-theme="dark"]{
+  --bg:#0a1628;--surface:#111d30;--surface2:#172538;
+  --text:#e8edf5;--text2:#a8b4c8;--muted:#6b7a96;
+  --border:rgba(232,96,30,.15);
+  --ok-lt:#0a1f14;--err-lt:#1f0a0a;--amber-lt:#1f1600;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.65;padding-bottom:80px;}
+
+/* HEADER */
+.hdr{background:var(--navy);color:#fff;padding:46px 20px 36px;text-align:center;position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 70%,rgba(232,96,30,.25) 0%,transparent 55%);pointer-events:none;}
+.hdr::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(232,96,30,.12) 0%,transparent 50%);pointer-events:none;}
+.eyebrow{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-lt);font-weight:700;margin-bottom:8px;position:relative;}
+h1{font-family:'Nunito',sans-serif;font-size:2.4rem;font-weight:900;line-height:1.1;margin-bottom:6px;position:relative;}
+.hdr-sub{font-size:1rem;color:rgba(255,255,255,.4);font-style:italic;margin-bottom:14px;position:relative;}
+.hdr-chips{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;position:relative;}
+.chip{font-size:.72rem;color:rgba(255,255,255,.5);background:rgba(255,255,255,.08);border-radius:20px;padding:3px 13px;}
+.chip b{color:var(--accent-lt);}
+.theme-btn{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:20px;padding:5px 13px;font-size:.78rem;cursor:pointer;font-family:'Nunito Sans',sans-serif;}
+.theme-btn:hover{background:rgba(255,255,255,.2);}
+
+/* SECTION NAV */
+.sec-nav{background:var(--navy-mid);position:sticky;top:0;z-index:30;padding:0 16px;}
+.sec-nav-inner{max-width:780px;margin:0 auto;display:flex;overflow-x:auto;gap:0;}
+.sec-nav-inner::-webkit-scrollbar{display:none;}
+.snb{flex:0 0 auto;padding:12px 14px;border:none;background:transparent;color:rgba(255,255,255,.45);font-family:'Nunito',sans-serif;font-weight:800;font-size:.75rem;letter-spacing:.05em;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;}
+.snb:hover{color:rgba(255,255,255,.75);}
+.snb.active{color:#fff;border-bottom-color:var(--accent);}
+.snb .sn{display:inline-block;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.12);font-size:.7rem;line-height:18px;text-align:center;margin-right:5px;}
+.snb.active .sn{background:var(--accent);}
+.timer-bar{background:rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;padding:5px 16px;gap:6px;}
+.timer-txt{font-size:.7rem;color:rgba(255,255,255,.4);font-family:'Nunito',sans-serif;font-weight:700;}
+#sec-timer{color:rgba(255,255,255,.65);}
+
+/* MAIN */
+main{max-width:780px;margin:0 auto;padding:28px 16px 0;}
+.section{display:none;}
+.section.active{display:block;}
+.sec-label{font-size:.66rem;font-weight:800;letter-spacing:.17em;text-transform:uppercase;color:var(--accent);margin-bottom:3px;}
+.sec-title{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--navy);margin-bottom:4px;line-height:1.15;}
+:is(:root[data-theme="dark"],:root:not([data-theme="light"])) .sec-title{color:var(--accent-lt);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .sec-title{color:var(--accent-lt);}}
+.sec-meta{font-size:.78rem;color:var(--muted);margin-bottom:22px;}
+.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);padding:26px;margin-bottom:18px;border:1px solid var(--border);}
+.card h4{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:10px;}
+.instr{font-size:.86rem;color:var(--text2);line-height:1.6;margin-bottom:14px;}
+
+/* QUOTE */
+.quote-block{background:var(--navy);border-radius:12px;padding:28px 28px 22px;margin-bottom:18px;position:relative;overflow:hidden;}
+.quote-block::before{content:'\201C';position:absolute;top:-8px;left:14px;font-size:6rem;color:rgba(232,96,30,.2);font-family:Georgia,serif;line-height:1;}
+blockquote{font-size:1.1rem;font-style:italic;color:#fff;line-height:1.65;position:relative;text-align:center;margin-bottom:12px;}
+.quote-attr{font-size:.8rem;color:rgba(255,255,255,.45);text-align:center;font-weight:600;letter-spacing:.06em;}
+
+/* DISCUSSION Qs */
+.discuss-q{display:flex;flex-direction:column;gap:14px;}
+.dq{display:flex;gap:12px;align-items:flex-start;}
+.dq-num{font-family:'Nunito',sans-serif;font-weight:900;color:var(--accent);font-size:1rem;min-width:22px;}
+.dq-text{font-size:.91rem;line-height:1.6;}
+
+/* READING */
+.reading-body{font-size:.93rem;line-height:1.85;color:var(--text);}
+.reading-body p{margin-bottom:14px;}
+.reading-body h5{font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;color:var(--navy);margin:20px 0 6px;padding-left:10px;border-left:3px solid var(--accent);}
+:is(:root[data-theme="dark"],:root:not([data-theme="light"])) .reading-body h5{color:var(--accent-lt);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .reading-body h5{color:var(--accent-lt);}}
+.reading-body em{color:var(--accent-dk);font-style:italic;}
+:is(:root[data-theme="dark"],:root:not([data-theme="light"])) .reading-body em{color:var(--accent-lt);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .reading-body em{color:var(--accent-lt);}}
+.reading-quote{background:var(--navy);border-radius:10px;padding:16px 20px;margin:18px 0;font-style:italic;color:#fff;font-size:.9rem;text-align:center;line-height:1.6;}
+
+/* VOCAB */
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.vocab-card{background:var(--surface2);border-radius:12px;padding:18px 18px 14px;border:1px solid var(--border);}
+.vc-word{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1rem;color:var(--navy);margin-bottom:2px;}
+:is(:root[data-theme="dark"],:root:not([data-theme="light"])) .vc-word{color:var(--accent-lt);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .vc-word{color:var(--accent-lt);}}
+.vc-ipa{font-size:.8rem;color:var(--muted);font-style:italic;margin-bottom:3px;}
+.vc-pos{display:inline-block;font-size:.68rem;background:rgba(232,96,30,.12);color:var(--accent-dk);border-radius:12px;padding:1px 8px;font-weight:700;margin-bottom:8px;}
+:is(:root[data-theme="dark"],:root:not([data-theme="light"])) .vc-pos{color:var(--accent-lt);background:rgba(232,96,30,.2);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .vc-pos{color:var(--accent-lt);background:rgba(232,96,30,.2);}}
+.vc-def{font-size:.86rem;line-height:1.55;color:var(--text2);margin-bottom:10px;border-top:1px solid var(--border);padding-top:9px;}
+.vc-use{background:var(--surface);border-radius:8px;padding:9px 12px;font-size:.82rem;line-height:1.6;}
+.vc-use span{color:var(--muted);font-size:.74rem;font-weight:700;display:block;margin-bottom:3px;letter-spacing:.08em;text-transform:uppercase;}
+.vc-gap{border:none;border-bottom:1.5px solid var(--accent);background:transparent;color:var(--text);font-family:'Nunito Sans',sans-serif;font-size:.82rem;width:120px;padding:1px 4px;outline:none;}
+.vc-gap.ok{border-bottom-color:var(--ok);color:var(--ok);}
+.vc-gap.bad{border-bottom-color:var(--err);color:var(--err);}
+
+/* AGREE / DISAGREE */
+.ad-item{background:var(--surface2);border-radius:12px;padding:18px 18px 14px;margin-bottom:12px;border:1px solid var(--border);}
+.ad-num{font-size:.72rem;font-weight:800;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
+.ad-stmt{font-size:.95rem;font-weight:600;line-height:1.5;margin-bottom:12px;color:var(--text);}
+.scale{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.scale-btn{flex:1;min-width:60px;border:1.5px solid var(--border);border-radius:8px;padding:6px 4px;font-size:.72rem;text-align:center;cursor:pointer;background:var(--surface);color:var(--text2);font-family:'Nunito',sans-serif;font-weight:700;line-height:1.3;transition:all .15s;}
+.scale-btn:hover{border-color:var(--navy);}
+.scale-btn.sa{background:var(--ok-lt);border-color:var(--ok);color:var(--ok);}
+.scale-btn.ag{background:rgba(42,158,98,.1);border-color:rgba(42,158,98,.4);color:var(--ok);}
+.scale-btn.ns{background:var(--amber-lt);border-color:rgba(224,144,32,.35);color:var(--amber);}
+.scale-btn.dg{background:rgba(217,68,68,.1);border-color:rgba(217,68,68,.35);color:var(--err);}
+.scale-btn.sd{background:var(--err-lt);border-color:var(--err);color:var(--err);}
+.scale-btn.picked{transform:scale(1.04);box-shadow:0 2px 8px rgba(0,0,0,.12);}
+.ad-why{font-size:.8rem;color:var(--muted);margin-bottom:5px;font-weight:600;}
+
+/* SCENARIOS */
+.scenarios{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin-bottom:16px;}
+.scen{background:var(--surface2);border-radius:14px;padding:20px 18px;border:1px solid var(--border);}
+.scen-top{display:flex;align-items:center;gap:11px;margin-bottom:12px;}
+.scen-av{width:46px;height:46px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
+.scen-name{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;color:var(--text);}
+.scen-type{font-size:.7rem;font-weight:700;border-radius:12px;padding:2px 9px;display:inline-block;margin-top:2px;}
+.scen-type.dt{background:rgba(217,68,68,.12);color:var(--err);}
+.scen-type.ac{background:rgba(42,158,98,.12);color:var(--ok);}
+.scen-type.pf{background:rgba(224,144,32,.15);color:var(--amber);}
+.scen-body{font-size:.85rem;line-height:1.65;color:var(--text2);}
+.verdict-box{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-top:14px;}
+.verdict-label{font-size:.74rem;font-weight:700;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;}
+
+/* DISCUSSION */
+.disc-q{background:var(--surface2);border-radius:12px;padding:18px 18px 14px;margin-bottom:12px;border:1px solid var(--border);}
+.dq-label{font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.dq-main{font-size:.97rem;font-weight:700;line-height:1.5;color:var(--text);margin-bottom:10px;}
+.think-about{font-size:.83rem;color:var(--text2);line-height:1.6;border-left:3px solid var(--navy-lt);padding-left:12px;}
+:is(:root[data-theme="dark"],:root:not([data-theme="light"])) .think-about{border-left-color:rgba(255,255,255,.12);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .think-about{border-left-color:rgba(255,255,255,.12);}}
+.think-about strong{color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:3px;}
+
+/* USEFUL LANGUAGE */
+.ul-toggle{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 16px;background:var(--surface2);color:var(--text2);font-family:'Nunito',sans-serif;font-weight:800;font-size:.86rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:border-color .15s;}
+.ul-toggle:hover{border-color:var(--accent);color:var(--accent);}
+.ul-body{display:none;padding:16px 0 0;}
+.ul-body.show{display:block;}
+.ul-cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.ul-group h6{font-family:'Nunito',sans-serif;font-weight:800;font-size:.78rem;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
+.ul-phrase{font-size:.83rem;line-height:1.75;color:var(--text2);}
+.ul-phrase span{font-style:italic;color:var(--text);}
+
+/* TEXTAREA */
+.nt{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:.88rem;font-family:'Nunito Sans',sans-serif;background:var(--surface);color:var(--text);line-height:1.6;resize:vertical;min-height:70px;margin-top:8px;}
+.nt:focus{outline:none;border-color:var(--accent);}
+
+/* NAV FOOTER */
+.sec-footer{display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:16px;border-top:1px solid var(--border);}
+.sec-prog{font-size:.8rem;color:var(--muted);}
+.btn{border:none;border-radius:9px;padding:11px 24px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .14s;}
+.btn-next{background:var(--accent);color:#fff;}
+.btn-next:hover{background:var(--accent-dk);}
+.btn-prev{background:transparent;border:1.5px solid var(--border);color:var(--text2);}
+.btn-prev:hover{border-color:var(--navy);color:var(--navy);}
+.btn-disabled{opacity:.35;cursor:default;}
+
+/* FINISH */
+.finish-box{text-align:center;padding:36px 20px;}
+.finish-emoji{font-size:3.5rem;margin-bottom:14px;}
+.finish-title{font-family:'Nunito',sans-serif;font-size:1.5rem;font-weight:900;color:var(--navy);margin-bottom:8px;}
+:is(:root[data-theme="dark"],:root:not([data-theme="light"])) .finish-title{color:var(--accent-lt);}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .finish-title{color:var(--accent-lt);}}
+.finish-sub{font-size:.9rem;color:var(--text2);max-width:360px;margin:0 auto;}
+
+/* EXPERIMENT & STRATEGIES */
+.exp-box{background:var(--navy);border-radius:12px;padding:20px;margin:14px 0;}
+.exp-finding{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:12px;}
+.exp-stage{text-align:center;}
+.exp-icon{font-size:1.8rem;margin-bottom:4px;}
+.exp-label{font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:6px;letter-spacing:.03em;}
+.exp-rating{font-size:.88rem;font-weight:700;border-radius:8px;padding:5px 12px;}
+.exp-rating.high{background:rgba(217,68,68,.25);color:#ff9999;}
+.exp-rating.low{background:rgba(42,158,98,.25);color:#88e8b4;}
+.exp-arrow{font-size:1.5rem;color:rgba(255,255,255,.3);}
+.exp-quote{text-align:center;font-style:italic;color:rgba(255,255,255,.65);font-size:.88rem;border-top:1px solid rgba(255,255,255,.1);padding-top:12px;margin-top:4px;}
+.strat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:12px;}
+.strat-card{background:var(--surface2);border-radius:11px;padding:16px 14px;border:1px solid var(--border);text-align:center;}
+.strat-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:.68rem;color:var(--accent);letter-spacing:.1em;margin-bottom:6px;text-transform:uppercase;}
+.strat-icon{font-size:1.6rem;margin-bottom:6px;}
+.strat-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;color:var(--text);margin-bottom:6px;}
+.strat-body{font-size:.8rem;color:var(--text2);line-height:1.5;}
+.strat-rank-row{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.strat-rank-label{font-size:.72rem;color:var(--text2);font-weight:700;white-space:nowrap;}
+.strat-rank-btns{display:flex;gap:4px;}
+.rank-btn{width:26px;height:26px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-family:'Nunito',sans-serif;font-weight:800;font-size:.78rem;cursor:pointer;transition:all .12s;padding:0;line-height:1;}
+.rank-btn:hover{border-color:var(--accent);color:var(--accent);}
+.rank-btn.picked{background:var(--accent);border-color:var(--accent);color:#fff;}
+.strat-own{background:var(--surface2);border-radius:11px;padding:16px;margin-top:14px;border:1px solid var(--border);}
+.strat-own-hd{font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;color:var(--accent);margin-bottom:10px;}
+.strat-own-name{width:100%;box-sizing:border-box;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'Nunito Sans',sans-serif;font-size:.9rem;background:var(--surface);color:var(--text);outline:none;margin-bottom:8px;display:block;}
+.strat-own-name:focus{border-color:var(--accent);}
+.rewatch-note{font-size:.82rem;color:var(--text2);background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:9px 14px;font-style:italic;}
+
+/* LISTENING EXERCISES */
+.tf-item{background:var(--surface2);border-radius:10px;padding:12px 14px;margin-bottom:10px;border:1px solid var(--border);}
+.tf-top{display:flex;gap:10px;align-items:flex-start;margin-bottom:7px;}
+.tf-num{font-family:'Nunito',sans-serif;font-weight:900;color:var(--accent);font-size:.95rem;min-width:22px;padding-top:1px;}
+.tf-stmt{font-size:.9rem;line-height:1.55;flex:1;}
+.tf-btns{display:flex;gap:7px;margin-left:32px;}
+.tf-btn{border:1.5px solid var(--border);border-radius:7px;padding:5px 16px;font-size:.8rem;font-weight:800;cursor:pointer;background:var(--surface);color:var(--text2);font-family:'Nunito',sans-serif;transition:all .12s;}
+.tf-btn:hover{border-color:var(--navy);}
+.tf-btn.picked-t{background:rgba(42,158,98,.12);border-color:var(--ok);color:var(--ok);}
+.tf-btn.picked-f{background:rgba(217,68,68,.12);border-color:var(--err);color:var(--err);}
+.tf-btn.ok-reveal{background:var(--ok-lt);border-color:var(--ok);color:var(--ok);}
+.tf-btn.err-reveal{background:var(--err-lt);border-color:var(--err);color:var(--err);}
+.tf-fb{font-size:.8rem;font-weight:700;margin-left:32px;min-height:14px;}
+.lg-item{background:var(--surface2);border-radius:10px;padding:14px 16px;margin-bottom:10px;border:1px solid var(--border);font-size:.9rem;line-height:1.65;}
+.lg-gap{border:none;border-bottom:1.5px solid var(--accent);background:transparent;color:var(--text);font-family:'Nunito Sans',sans-serif;font-size:.9rem;width:140px;padding:1px 4px;outline:none;}
+.lg-gap.ok{border-bottom-color:var(--ok);color:var(--ok);}
+.lg-gap.bad{border-bottom-color:var(--err);color:var(--err);}
+.ex-actions{display:flex;gap:8px;margin-top:14px;}
+.btn-sm{border:none;border-radius:8px;padding:8px 18px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;}
+.btn-sm-ok{background:var(--accent);color:#fff;}
+.btn-sm-ok:hover{background:var(--accent-dk);}
+.btn-sm-rst{background:transparent;border:1.5px solid var(--border);color:var(--text2);}
+.btn-sm-rst:hover{border-color:var(--navy);color:var(--navy);}
+
+/* VIDEO EMBED */
+.video-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;background:#000;}
+.video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;}
+.video-label{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center;margin-top:8px;}
+.vq-item{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start;}
+.vq-num{font-family:'Nunito',sans-serif;font-weight:900;color:var(--accent);font-size:.95rem;min-width:22px;}
+.vq-text{font-size:.9rem;line-height:1.6;}
+
+/* REGRET STAT */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:4px;}
+.stat-tile{background:var(--navy);border-radius:12px;padding:18px 16px;text-align:center;}
+.stat-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:2rem;color:var(--accent-lt);line-height:1;}
+.stat-label{font-size:.78rem;color:rgba(255,255,255,.55);margin-top:5px;line-height:1.4;}
+
+@media(max-width:520px){
+  h1{font-size:1.85rem;}
+  .vocab-grid{grid-template-columns:1fr;}
+  .scenarios{grid-template-columns:1fr;}
+  .snb{font-size:.68rem;padding:11px 10px;}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <button class="theme-btn" onclick="toggleTheme()">&#9728; / &#9790;</button>
+  <h1>Stop Waiting,<br>Start Living</h1>
+  <div class="hdr-sub">Why do we keep putting life off?</div>
+</header>
+
+<div class="sec-nav">
+  <div class="sec-nav-inner">
+    <button class="snb active" onclick="goSec(0)"><span class="sn">1</span>Opening</button>
+    <button class="snb" onclick="goSec(1)"><span class="sn">2</span>Video</button>
+    <button class="snb" onclick="goSec(2)"><span class="sn">3</span>Vocabulary</button>
+    <button class="snb" onclick="goSec(3)"><span class="sn">4</span>Agree?</button>
+    <button class="snb" onclick="goSec(4)"><span class="sn">5</span>Three Types</button>
+    <button class="snb" onclick="goSec(5)"><span class="sn">6</span>Discussion</button>
+  </div>
+  <div class="timer-bar">
+    <span class="timer-txt">Section:</span>
+    <span class="timer-txt" id="sec-timer">Warm-up &nbsp;&mdash;&nbsp; 8 min</span>
+  </div>
+</div>
+
+<main>
+
+<!-- ====== SECTION 1: OPENING ====== -->
+<div class="section active" id="sec0">
+  <div class="sec-label">Section 1</div>
+  <div class="sec-title">Opening</div>
+  <div class="sec-meta">&#128336; 8 min &nbsp;&bull;&nbsp; Warm-up &amp; activation</div>
+
+  <div class="quote-block">
+    <blockquote>&ldquo;The secret of getting ahead is getting started.&rdquo;</blockquote>
+    <div class="quote-attr">Mark Twain</div>
+  </div>
+
+  <div class="card">
+    <div class="instr">Read the quote. Discuss these questions with your teacher.</div>
+    <div class="discuss-q">
+      <div class="dq"><span class="dq-num">1.</span><span class="dq-text">Is there something you have been saying &ldquo;I&rsquo;ll do it tomorrow&rdquo; about for a long time? What is it?</span></div>
+      <div class="dq"><span class="dq-num">2.</span><span class="dq-text">Think of a time you finally did something you had been putting off. How did you feel? Was it as difficult as you expected?</span></div>
+      <div class="dq"><span class="dq-num">3.</span><span class="dq-text">What do you think &ldquo;getting started&rdquo; is so difficult? What stops people?</span></div>
+    </div>
+    <textarea class="nt" placeholder="Notes&hellip;"></textarea>
+  </div>
+
+  <div class="sec-footer">
+    <span class="sec-prog">1 / 6</span>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-prev btn-disabled">&#8592; Prev</button>
+      <button class="btn btn-next" onclick="goSec(1)">Next &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SECTION 2: VIDEO & READING ====== -->
+<div class="section" id="sec1">
+  <div class="sec-label">Section 2</div>
+  <div class="sec-title">Video &amp; Reading</div>
+  <div class="sec-meta">&#128336; 15 min &nbsp;&bull;&nbsp; Watch &amp; discuss</div>
+
+  <div class="card">
+    <h4>&#127916; Before you watch &mdash; predict</h4>
+    <div class="instr">Look at the video title: <b>&ldquo;Why You Procrastinate (It Has Nothing to Do With Self-Control)&rdquo;</b>. What do you think the video will say? Discuss with your teacher, then watch.</div>
+    <textarea class="nt" placeholder="I think it will say that&hellip;"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/FWTNMzK9vG4" allowfullscreen title="Why You Procrastinate (It Has Nothing to Do With Self-Control) — TED-Ed"></iframe>
+    </div>
+    <div class="video-label">TED-Ed &nbsp;&mdash;&nbsp; &ldquo;Why You Procrastinate (It Has Nothing to Do With Self-Control)&rdquo; &nbsp;&mdash;&nbsp; ~5 min</div>
+    <div style="text-align:center;margin-top:12px;"><a href="https://www.youtube.com/watch?v=FWTNMzK9vG4" target="_blank" style="display:inline-block;background:var(--accent);color:#fff;border-radius:9px;padding:10px 22px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;text-decoration:none;">&#9654; Watch on YouTube</a></div>
+  </div>
+
+  <div class="card">
+    <h4>&#127909; Listening &mdash; True or False?</h4>
+    <div class="instr">Watch the video. Decide if each statement is <strong>True</strong> or <strong>False</strong>. Click your answer, then press <em>Check</em>.</div>
+    <div id="tfBox"></div>
+    <div class="ex-actions">
+      <button class="btn-sm btn-sm-ok" onclick="checkTF()">Check &#10003;</button>
+      <button class="btn-sm btn-sm-rst" onclick="resetTF()">Reset</button>
+    </div>
+  </div>
+
+  <div class="rewatch-note">&#9654;&#65039; Rewatch the part of the video about the research study before you discuss. <span style="font-style:normal;font-weight:800;color:var(--accent);">approx. 2:30–3:30</span></div>
+
+  <div class="card">
+    <h4>&#128202; The Experiment &mdash; What Did They Find?</h4>
+    <div class="instr">Researchers asked students to rate how stressful studying felt <strong>while they were avoiding it</strong>, and then again <strong>once they had actually started</strong>. Here are the results:</div>
+    <div class="exp-box">
+      <div class="exp-finding">
+        <div class="exp-stage">
+          <div class="exp-icon">&#128516;</div>
+          <div class="exp-label">While avoiding the task</div>
+          <div class="exp-rating high">Very stressful &#128165;</div>
+        </div>
+        <div class="exp-arrow">&#8594;</div>
+        <div class="exp-stage">
+          <div class="exp-icon">&#128218;</div>
+          <div class="exp-label">Once they started studying</div>
+          <div class="exp-rating low">Much less stressful &#128515;</div>
+        </div>
+      </div>
+      <div class="exp-quote">&ldquo;The anticipation was worse than the reality.&rdquo;</div>
+    </div>
+    <div class="instr" style="margin-top:14px;">Discuss with your teacher:</div>
+    <div class="vq-item"><span class="vq-num">1.</span><span class="vq-text">Does this match your own experience? Think of a task that felt much harder or scarier <em>before</em> you started than when you were actually doing it.</span></div>
+    <div class="vq-item"><span class="vq-num">2.</span><span class="vq-text">Why do you think our brains make avoided tasks feel more stressful and threatening than they really are?</span></div>
+    <div class="vq-item"><span class="vq-num">3.</span><span class="vq-text">What does this experiment suggest is the most powerful thing you can do when you notice yourself procrastinating?</span></div>
+    <textarea class="nt" placeholder="Notes&hellip;"></textarea>
+  </div>
+
+  <div class="rewatch-note">&#9654;&#65039; Rewatch the final part of the video about the four strategies before you rank them. <span style="font-style:normal;font-weight:800;color:var(--accent);">approx. 3:30–5:43</span></div>
+
+  <div class="card">
+    <h4>&#128161; How to Deal With It &mdash; Rank the Strategies</h4>
+    <div class="instr">Read the four strategies from the video. Rank them from <strong>1 (most useful for you)</strong> to <strong>4 (least useful)</strong>. Each number can only be used once. Then add your own idea below.</div>
+    <div class="strat-grid">
+      <div class="strat-card">
+        <div class="strat-icon">&#9986;&#65039;</div>
+        <div class="strat-title">Break it down</div>
+        <div class="strat-body">Divide the task into very small steps. Focus on only the first one &mdash; not the whole thing.</div>
+        <div class="strat-rank-row">
+          <span class="strat-rank-label">My rank:</span>
+          <div class="strat-rank-btns">
+            <button class="rank-btn" onclick="pickRank(0,1)" data-sid="0" data-rank="1">1</button>
+            <button class="rank-btn" onclick="pickRank(0,2)" data-sid="0" data-rank="2">2</button>
+            <button class="rank-btn" onclick="pickRank(0,3)" data-sid="0" data-rank="3">3</button>
+            <button class="rank-btn" onclick="pickRank(0,4)" data-sid="0" data-rank="4">4</button>
+          </div>
+        </div>
+      </div>
+      <div class="strat-card">
+        <div class="strat-icon">&#128393;</div>
+        <div class="strat-title">Journal your worries</div>
+        <div class="strat-body">Write about the feelings behind the procrastination. Ask yourself: what am I really afraid of?</div>
+        <div class="strat-rank-row">
+          <span class="strat-rank-label">My rank:</span>
+          <div class="strat-rank-btns">
+            <button class="rank-btn" onclick="pickRank(1,1)" data-sid="1" data-rank="1">1</button>
+            <button class="rank-btn" onclick="pickRank(1,2)" data-sid="1" data-rank="2">2</button>
+            <button class="rank-btn" onclick="pickRank(1,3)" data-sid="1" data-rank="3">3</button>
+            <button class="rank-btn" onclick="pickRank(1,4)" data-sid="1" data-rank="4">4</button>
+          </div>
+        </div>
+      </div>
+      <div class="strat-card">
+        <div class="strat-icon">&#128245;</div>
+        <div class="strat-title">Remove distractions</div>
+        <div class="strat-body">Put your phone away. Close unnecessary tabs. Create a space and time where focus is easy.</div>
+        <div class="strat-rank-row">
+          <span class="strat-rank-label">My rank:</span>
+          <div class="strat-rank-btns">
+            <button class="rank-btn" onclick="pickRank(2,1)" data-sid="2" data-rank="1">1</button>
+            <button class="rank-btn" onclick="pickRank(2,2)" data-sid="2" data-rank="2">2</button>
+            <button class="rank-btn" onclick="pickRank(2,3)" data-sid="2" data-rank="3">3</button>
+            <button class="rank-btn" onclick="pickRank(2,4)" data-sid="2" data-rank="4">4</button>
+          </div>
+        </div>
+      </div>
+      <div class="strat-card">
+        <div class="strat-icon">&#10084;&#65039;</div>
+        <div class="strat-title">Be kind to yourself</div>
+        <div class="strat-body">Forgive yourself for procrastinating. Make a realistic plan &mdash; don&rsquo;t use guilt as motivation.</div>
+        <div class="strat-rank-row">
+          <span class="strat-rank-label">My rank:</span>
+          <div class="strat-rank-btns">
+            <button class="rank-btn" onclick="pickRank(3,1)" data-sid="3" data-rank="1">1</button>
+            <button class="rank-btn" onclick="pickRank(3,2)" data-sid="3" data-rank="2">2</button>
+            <button class="rank-btn" onclick="pickRank(3,3)" data-sid="3" data-rank="3">3</button>
+            <button class="rank-btn" onclick="pickRank(3,4)" data-sid="3" data-rank="4">4</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="strat-own">
+      <div class="strat-own-hd">&#10133; Add your own strategy</div>
+      <input type="text" class="strat-own-name" placeholder="Name it&hellip;" />
+      <textarea class="nt" style="min-height:70px;margin-top:0;" placeholder="Describe it briefly &mdash; how does it work?"></textarea>
+    </div>
+    <div class="instr" style="margin-top:16px;">Discuss:</div>
+    <div class="vq-item"><span class="vq-num">1.</span><span class="vq-text">Compare your rankings with your teacher. Where do you agree? Where do you disagree?</span></div>
+    <div class="vq-item"><span class="vq-num">2.</span><span class="vq-text">Which strategy would be the hardest for you to actually use in real life? Why?</span></div>
+    <div class="vq-item"><span class="vq-num">3.</span><span class="vq-text">The video says self-compassion is more effective than self-criticism. Do you agree? Is it easy or difficult to be kind to yourself when you haven&rsquo;t done something you planned?</span></div>
+  </div>
+
+  <div class="sec-footer">
+    <span class="sec-prog">2 / 6</span>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-prev" onclick="goSec(0)">&#8592; Prev</button>
+      <button class="btn btn-next" onclick="goSec(2)">Next &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SECTION 3: VOCABULARY ====== -->
+<div class="section" id="sec2">
+  <div class="sec-label">Section 3</div>
+  <div class="sec-title">Vocabulary</div>
+  <div class="sec-meta">&#128336; 20 min &nbsp;&bull;&nbsp; Read, build vocabulary &amp; discuss</div>
+
+  <div class="card">
+    <h4>Why Do We Keep Waiting?</h4>
+    <div class="reading-body">
+      <p>&ldquo;I&rsquo;ll start on Monday.&rdquo; &ldquo;I&rsquo;ll do it when I have more time.&rdquo; &ldquo;I&rsquo;ll begin when I feel ready.&rdquo;</p>
+      <p>Do these sentences sound familiar? Most of us postpone things we know are important &mdash; exercising, learning something new, having a difficult conversation, or even starting to live the life we really want. This habit is called <em>procrastination</em>, and researchers say it affects around 20% of adults regularly.</p>
+
+      <h5>It&rsquo;s not about laziness</h5>
+      <p>Psychologists say procrastination is not really about being lazy. It is usually about <em>feelings</em>. We put things off because we are afraid of failure, because a task feels too big, or because we prefer the comfort of staying exactly where we are. Our brains find it easier to choose something enjoyable right now &mdash; a TV series, another scroll through social media &mdash; than something difficult that might pay off later.</p>
+      <p>There is also a trap called the <em>&ldquo;someday&rdquo; mentality</em>: the belief that the right time will come. &ldquo;Someday I will travel.&rdquo; &ldquo;Someday I will start that project.&rdquo; &ldquo;Someday I will tell that person how I feel.&rdquo; But research is clear: <em>someday</em> almost never arrives on its own. The right moment is not found &mdash; it is created.</p>
+
+      <h5>What we regret most</h5>
+      <p>A nurse called Bronnie Ware worked with people at the very end of their lives and asked them what they regretted most. The number-one answer was not &ldquo;I wish I&rsquo;d worked harder.&rdquo; It was:</p>
+      <div class="reading-quote">&ldquo;I wish I&rsquo;d had the courage to live a life true to myself, not the life others expected of me.&rdquo;</div>
+      <p>In other words, people&rsquo;s biggest regrets were not the mistakes they made &mdash; they were the things they never tried.</p>
+
+      <h5>The good news</h5>
+      <p>You do not need to change everything at once. Research on habits shows that small actions build <em>momentum</em> &mdash; the energy that keeps you moving forward. One phone call. One hour of practice. One honest conversation. The secret is not waiting until you feel ready. It is starting before you do.</p>
+    </div>
+
+    <div class="stat-row" style="margin-top:18px;">
+      <div class="stat-tile"><div class="stat-num">20%</div><div class="stat-label">of adults regularly procrastinate on important tasks</div></div>
+      <div class="stat-tile"><div class="stat-num">#1</div><div class="stat-label">deathbed regret: not living a life true to yourself</div></div>
+      <div class="stat-tile"><div class="stat-num">2 min</div><div class="stat-label">&ldquo;Two-minute rule&rdquo; &mdash; if it takes less than 2 min, do it now</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>&#128172; Tell your teacher&hellip;</h4>
+    <div class="discuss-q">
+      <div class="dq"><span class="dq-num">1.</span><span class="dq-text">The text says procrastination is about feelings, not laziness. Does this surprise you? Do you agree?</span></div>
+      <div class="dq"><span class="dq-num">2.</span><span class="dq-text">What is the &ldquo;someday&rdquo; mentality? Do you recognise it in yourself or someone you know?</span></div>
+      <div class="dq"><span class="dq-num">3.</span><span class="dq-text">The nurse found that people&rsquo;s biggest regret was not trying things. Does this change how you think about anything in your own life?</span></div>
+    </div>
+    <textarea class="nt" placeholder="Notes&hellip;"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="instr">Read each card carefully. Then complete the &ldquo;Use it&rdquo; gap-fill sentence and press Enter to check your answer.</div>
+    <div class="vocab-grid" id="vcGrid"></div>
+  </div>
+
+  <div class="card">
+    <h4>&#128172; Use the words</h4>
+    <div class="discuss-q">
+      <div class="dq"><span class="dq-num">1.</span><span class="dq-text">Which word best describes something you do or feel? Give an example from your own life.</span></div>
+      <div class="dq"><span class="dq-num">2.</span><span class="dq-text">Can you think of a person &mdash; real or fictional &mdash; who has great <em>momentum</em> in their life? What do they do differently?</span></div>
+    </div>
+    <textarea class="nt" placeholder="Notes&hellip;"></textarea>
+  </div>
+
+  <div class="sec-footer">
+    <span class="sec-prog">3 / 6</span>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-prev" onclick="goSec(1)">&#8592; Prev</button>
+      <button class="btn btn-next" onclick="goSec(3)">Next &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SECTION 4: AGREE/DISAGREE ====== -->
+<div class="section" id="sec3">
+  <div class="sec-label">Section 4</div>
+  <div class="sec-title">Agree or Disagree?</div>
+  <div class="sec-meta">&#128336; 15 min &nbsp;&bull;&nbsp; Choose your position and explain it</div>
+
+  <div class="card">
+    <div class="instr">Read each statement. Click to show your opinion on the scale, then write 1&ndash;2 sentences to explain why. Discuss with your teacher.</div>
+    <div id="adBox"></div>
+  </div>
+
+  <div class="sec-footer">
+    <span class="sec-prog">4 / 6</span>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-prev" onclick="goSec(2)">&#8592; Prev</button>
+      <button class="btn btn-next" onclick="goSec(4)">Next &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SECTION 5: THREE TYPES ====== -->
+<div class="section" id="sec4">
+  <div class="sec-label">Section 5</div>
+  <div class="sec-title">Three Types of People</div>
+  <div class="sec-meta">&#128336; 12 min &nbsp;&bull;&nbsp; Analyse, compare, and give your verdict</div>
+
+  <div class="card">
+    <div class="instr">Read about three people. How do they deal with postponing? Who do you think will look back on their life with the fewest regrets? Who worries you most?</div>
+
+    <div class="scenarios">
+      <div class="scen">
+        <div class="scen-top">
+          <div class="scen-av">&#128583;</div>
+          <div>
+            <div class="scen-name">Alex, 29</div>
+            <div class="scen-type dt">The Dreamer</div>
+          </div>
+        </div>
+        <div class="scen-body">Alex has a long list of things he wants to do &mdash; learn Spanish, start running, write a blog, travel to Japan. He talks about these plans often. But every time he thinks about starting, something stops him. &ldquo;Not yet,&rdquo; he tells himself. &ldquo;I need to prepare more first.&rdquo; The list never gets shorter.</div>
+      </div>
+
+      <div class="scen">
+        <div class="scen-top">
+          <div class="scen-av">&#127939;&#8205;&#9792;&#65039;</div>
+          <div>
+            <div class="scen-name">Nadia, 33</div>
+            <div class="scen-type ac">The Action-Taker</div>
+          </div>
+        </div>
+        <div class="scen-body">Nadia is not perfect &mdash; she gets distracted and sometimes fails. She tried four different sports before she found one she loved. She failed her driving test twice, but she passed on the third attempt. She does not wait for the perfect moment. &ldquo;Done is better than perfect,&rdquo; she says. She is not always confident, but she moves anyway.</div>
+      </div>
+
+      <div class="scen">
+        <div class="scen-top">
+          <div class="scen-av">&#128187;</div>
+          <div>
+            <div class="scen-name">Marco, 37</div>
+            <div class="scen-type pf">The Perfectionist</div>
+          </div>
+        </div>
+        <div class="scen-body">Marco is very good at his job and is respected by everyone around him. He has been working on a business idea for three years but has not launched it yet &mdash; it is &ldquo;not ready.&rdquo; He wants to ask for a promotion but is waiting for the &ldquo;right moment.&rdquo; He tells himself he is being careful. His friends think he is afraid.</div>
+      </div>
+    </div>
+
+    <div class="verdict-box">
+      <div class="verdict-label">Your verdict &mdash; write 4&ndash;5 sentences</div>
+      <div class="instr" style="margin-bottom:0;">Which person do you think will have the fewest regrets? Who do you recognise most in yourself &mdash; Alex, Nadia, or Marco? What advice would you give to each of them?</div>
+      <textarea class="nt" style="min-height:100px;" placeholder="I think Nadia will have the fewest regrets because&hellip;"></textarea>
+    </div>
+  </div>
+
+  <div class="sec-footer">
+    <span class="sec-prog">5 / 6</span>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-prev" onclick="goSec(3)">&#8592; Prev</button>
+      <button class="btn btn-next" onclick="goSec(5)">Next &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SECTION 6: DISCUSSION ====== -->
+<div class="section" id="sec5">
+  <div class="sec-label">Section 6</div>
+  <div class="sec-title">Extended Discussion</div>
+  <div class="sec-meta">&#128336; 15 min &nbsp;&bull;&nbsp; In-depth speaking practice</div>
+
+  <div class="card">
+    <div class="instr">Choose 2&ndash;3 questions. Aim for 3&ndash;4 minutes per answer. Use the useful language box below.</div>
+    <div id="discBox"></div>
+  </div>
+
+  <div class="card">
+    <button class="ul-toggle" onclick="toggleUL()">
+      <span>&#128172; Useful Language &mdash; click to open</span>
+      <span id="ul-arr">&#9660;</span>
+    </button>
+    <div class="ul-body" id="ulBody">
+      <div class="ul-cols">
+        <div class="ul-group">
+          <h6>Giving your opinion</h6>
+          <div class="ul-phrase"><span>I think&hellip; / I believe&hellip;</span></div>
+          <div class="ul-phrase"><span>In my opinion,&hellip;</span></div>
+          <div class="ul-phrase"><span>Personally, I feel that&hellip;</span></div>
+          <div class="ul-phrase"><span>For me, the main issue is&hellip;</span></div>
+        </div>
+        <div class="ul-group">
+          <h6>Agreeing</h6>
+          <div class="ul-phrase"><span>I completely agree because&hellip;</span></div>
+          <div class="ul-phrase"><span>Exactly &mdash; and another point is&hellip;</span></div>
+          <div class="ul-phrase"><span>That&rsquo;s a really good point&hellip;</span></div>
+        </div>
+        <div class="ul-group">
+          <h6>Disagreeing politely</h6>
+          <div class="ul-phrase"><span>I see your point, but&hellip;</span></div>
+          <div class="ul-phrase"><span>I&rsquo;m not sure I agree. I think&hellip;</span></div>
+          <div class="ul-phrase"><span>That might be true, but what about&hellip;?</span></div>
+        </div>
+        <div class="ul-group">
+          <h6>Giving examples</h6>
+          <div class="ul-phrase"><span>For example,&hellip;</span></div>
+          <div class="ul-phrase"><span>In my own experience,&hellip;</span></div>
+          <div class="ul-phrase"><span>I know someone who&hellip;</span></div>
+        </div>
+        <div class="ul-group">
+          <h6>Speculating</h6>
+          <div class="ul-phrase"><span>Maybe&hellip; / Perhaps&hellip;</span></div>
+          <div class="ul-phrase"><span>I think it depends on&hellip;</span></div>
+          <div class="ul-phrase"><span>It&rsquo;s possible that&hellip;</span></div>
+        </div>
+        <div class="ul-group">
+          <h6>Talking about feelings</h6>
+          <div class="ul-phrase"><span>I feel / felt (quite) nervous about&hellip;</span></div>
+          <div class="ul-phrase"><span>I find it difficult to&hellip;</span></div>
+          <div class="ul-phrase"><span>What stops me is&hellip;</span></div>
+          <div class="ul-phrase"><span>Once I started, I realised&hellip;</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-footer">
+    <span class="sec-prog">6 / 6</span>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-prev" onclick="goSec(4)">&#8592; Prev</button>
+      <button class="btn btn-next btn-disabled">Done &#10003;</button>
+    </div>
+  </div>
+
+  <div class="finish-box">
+    <div class="finish-emoji">&#9201;&#65039;</div>
+    <div class="finish-title">Great work!</div>
+    <div class="finish-sub">What is one thing from today&rsquo;s lesson that you are going to do &mdash; this week, not &ldquo;someday&rdquo;?</div>
+  </div>
+</div>
+
+</main>
+
+<script>
+function toggleTheme(){
+  var r=document.documentElement,c=r.getAttribute('data-theme');
+  if(!c){r.setAttribute('data-theme',window.matchMedia('(prefers-color-scheme:dark)').matches?'light':'dark');}
+  else if(c==='dark'){r.setAttribute('data-theme','light');}
+  else{r.removeAttribute('data-theme');}
+}
+
+var secTitles=['Warm-up — 8 min','Video & Discussion — 15 min','Reading & Vocabulary — 20 min','Agree / Disagree — 15 min','Three Types — 12 min','Discussion — 15 min'];
+var currentSec=0;
+function goSec(n){
+  document.getElementById('sec'+currentSec).classList.remove('active');
+  document.querySelectorAll('.snb')[currentSec].classList.remove('active');
+  currentSec=n;
+  document.getElementById('sec'+n).classList.add('active');
+  document.querySelectorAll('.snb')[n].classList.add('active');
+  document.getElementById('sec-timer').textContent=secTitles[n];
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* VOCAB */
+var vData=[
+  {w:'procrastinate',ipa:'/prəˈkræstɪneɪt/',pos:'verb',
+   def:'To keep delaying something you should do, usually because you don\'t want to or it feels too difficult.',
+   use:'She always tends to ___ when she has a big project — she waits until the last minute.',ans:'procrastinate'},
+  {w:'postpone',ipa:'/pəʊstˈpəʊn/',pos:'verb',
+   def:'To arrange to do something at a later time than originally planned.',
+   use:'They decided to ___ the meeting because two people were ill.',ans:'postpone'},
+  {w:'comfort zone',ipa:'/ˈkʌmfət zəʊn/',pos:'noun',
+   def:'A situation where you feel safe, familiar, and don\'t have to take any risks.',
+   use:'Learning a new language pushes you outside your ___ — but that\'s how you grow.',ans:'comfort zone'},
+  {w:'intention',ipa:'/ɪnˈtenʃən/',pos:'noun',
+   def:'A plan or decision to do something; what you are going to do.',
+   use:'She had every ___ to exercise this morning, but she slept through her alarm.',ans:'intention'},
+  {w:'momentum',ipa:'/məˈmentəm/',pos:'noun',
+   def:'The energy or forward movement that makes it easier to keep going once you have started.',
+   use:'Once she started writing, she found her ___  — the words just kept coming.',ans:'momentum'},
+  {w:'regret',ipa:'/rɪˈɡret/',pos:'noun / verb',
+   def:'A feeling of sadness or disappointment about something you did or — more often — didn\'t do.',
+   use:'He didn\'t want to look back on his life and ___ not taking the chance.',ans:'regret'},
+];
+var vcg=document.getElementById('vcGrid');
+vData.forEach(function(v,i){
+  var d=document.createElement('div');d.className='vocab-card';
+  d.innerHTML='<div class="vc-word">'+v.w+'</div>'
+    +'<div class="vc-ipa">'+v.ipa+'</div>'
+    +'<span class="vc-pos">'+v.pos+'</span>'
+    +'<div class="vc-def">'+v.def+'</div>'
+    +'<div class="vc-use"><span>Use it &rarr;</span>'
+    +v.use.replace('___','<input class="vc-gap" id="vcg'+i+'" data-ans="'+v.ans+'" placeholder="___" autocomplete="off">')
+    +'</div>';
+  vcg.appendChild(d);
+});
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Enter')return;
+  var t=e.target;
+  if(!t.classList.contains('vc-gap'))return;
+  t.classList.remove('ok','bad');
+  var ans=t.dataset.ans.split(',').map(function(a){return a.trim().toLowerCase();});
+  if(ans.includes(t.value.toLowerCase().trim())){t.classList.add('ok');}
+  else{t.classList.add('bad');}
+});
+
+/* TRUE / FALSE */
+var tfData=[
+  {stmt:'Procrastination means putting off a task because you have a good reason to wait.',ans:false},
+  {stmt:'When the brain sees a task as a threat, it releases stress chemicals.',ans:true},
+  {stmt:'We procrastinate most on tasks that feel boring or uninteresting.',ans:false},
+  {stmt:'In a research study, students found studying felt LESS stressful once they actually started.',ans:true},
+  {stmt:'The video says strict self-discipline is the best solution to procrastination.',ans:false},
+];
+var tfPicks=tfData.map(function(){return null;});
+var tfBox=document.getElementById('tfBox');
+tfData.forEach(function(d,i){
+  var el=document.createElement('div');el.className='tf-item';el.id='tfi'+i;
+  el.innerHTML='<div class="tf-top"><span class="tf-num">'+(i+1)+'.</span><span class="tf-stmt">'+d.stmt+'</span></div>'
+    +'<div class="tf-btns"><button class="tf-btn" id="tfT'+i+'" onclick="pickTF('+i+',true)">True</button>'
+    +'<button class="tf-btn" id="tfF'+i+'" onclick="pickTF('+i+',false)">False</button></div>'
+    +'<div class="tf-fb" id="tffb'+i+'"></div>';
+  tfBox.appendChild(el);
+});
+function pickTF(i,val){
+  tfPicks[i]=val;
+  var bt=document.getElementById('tfT'+i),bf=document.getElementById('tfF'+i);
+  bt.className='tf-btn'+(val?' picked-t':'');
+  bf.className='tf-btn'+(!val?' picked-f':'');
+  document.getElementById('tffb'+i).textContent='';
+  document.getElementById('tffb'+i).style.color='';
+}
+function checkTF(){
+  tfData.forEach(function(d,i){
+    var fb=document.getElementById('tffb'+i);
+    if(tfPicks[i]===null){fb.textContent='← Please pick True or False';fb.style.color='var(--muted)';return;}
+    var bt=document.getElementById('tfT'+i),bf=document.getElementById('tfF'+i);
+    var correct=tfPicks[i]===d.ans;
+    bt.className='tf-btn';bf.className='tf-btn';
+    var rightBtn=d.ans?bt:bf;
+    var wrongBtn=d.ans?bf:bt;
+    if(correct){rightBtn.className+=' ok-reveal';fb.textContent='✓ Correct!';fb.style.color='var(--ok)';}
+    else{wrongBtn.className+=' err-reveal';rightBtn.className+=' ok-reveal';fb.textContent='✗ The answer is '+(d.ans?'True':'False')+'.';fb.style.color='var(--err)';}
+  });
+}
+function resetTF(){
+  tfPicks=tfData.map(function(){return null;});
+  tfData.forEach(function(d,i){
+    document.getElementById('tfT'+i).className='tf-btn';
+    document.getElementById('tfF'+i).className='tf-btn';
+    document.getElementById('tffb'+i).textContent='';
+  });
+}
+
+/* STRATEGY RANKING */
+var rankMap={};
+function pickRank(sid,rank){
+  Object.keys(rankMap).forEach(function(s){
+    if(rankMap[s]===rank&&Number(s)!==sid){
+      delete rankMap[s];
+      document.querySelectorAll('.rank-btn[data-sid="'+s+'"]').forEach(function(b){b.classList.remove('picked');});
+    }
+  });
+  if(rankMap[sid]===rank){
+    delete rankMap[sid];
+    document.querySelectorAll('.rank-btn[data-sid="'+sid+'"]').forEach(function(b){b.classList.remove('picked');});
+  } else {
+    rankMap[sid]=rank;
+    document.querySelectorAll('.rank-btn[data-sid="'+sid+'"]').forEach(function(b){b.classList.remove('picked');});
+    document.querySelector('.rank-btn[data-sid="'+sid+'"][data-rank="'+rank+'"]').classList.add('picked');
+  }
+}
+
+/* AGREE / DISAGREE */
+var adData=[
+  'It is completely normal to put off difficult things — everyone procrastinates sometimes.',
+  'Waiting for the "right moment" usually means you never do something.',
+  'Fear of failure is a bigger reason for procrastination than laziness.',
+  'If you want to change your life, you have to start with something small today.',
+  'Social media and technology are the main reasons why people waste time.',
+  'The biggest regrets in life are about the things we never tried, not the mistakes we made.',
+];
+var scales=[
+  {cls:'sa',lbl:'Strongly agree'},
+  {cls:'ag',lbl:'Agree'},
+  {cls:'ns',lbl:'Not sure'},
+  {cls:'dg',lbl:'Disagree'},
+  {cls:'sd',lbl:'Strongly disagree'},
+];
+var adBox=document.getElementById('adBox');
+adData.forEach(function(stmt,i){
+  var btns=scales.map(function(s,j){
+    return '<button class="scale-btn" data-row="'+i+'" data-col="'+j+'" onclick="pickScale(this,'+i+')">'
+      +s.lbl+'</button>';
+  }).join('');
+  var d=document.createElement('div');d.className='ad-item';
+  d.innerHTML='<div class="ad-num">Statement '+(i+1)+'</div>'
+    +'<div class="ad-stmt">'+stmt+'</div>'
+    +'<div class="scale" id="scl'+i+'">'+btns+'</div>'
+    +'<div class="ad-why">Why? Write 1&ndash;2 sentences:</div>'
+    +'<textarea class="nt" placeholder="I think this because&hellip;"></textarea>';
+  adBox.appendChild(d);
+});
+function pickScale(btn,i){
+  var row=document.getElementById('scl'+i);
+  row.querySelectorAll('.scale-btn').forEach(function(b){b.classList.remove('sa','ag','ns','dg','sd','picked');});
+  var sc=scales[btn.dataset.col];
+  btn.classList.add(sc.cls,'picked');
+}
+
+/* DISCUSSION */
+var discData=[
+  {q:'The text says procrastination is about feelings, not laziness. What feelings stop you personally from doing difficult things?',
+   think:'Think about: When did you last put something off? What were you feeling at that moment? Was it fear, tiredness, or something else? Have you ever been surprised by how easy something was once you started?'},
+  {q:'What is something you have been postponing for a long time? What is the real reason you have not done it yet?',
+   think:'Think about: Is it fear of failure, lack of time, waiting for the right moment, or something else? What would you need to feel ready? Is it possible to start before you are ready?'},
+  {q:'The nurse Bronnie Ware found that the biggest regret of dying people was not living a life true to themselves. What do you think this means? Does it apply to your own life?',
+   think:'Think about: Are there things you are doing for other people\'s expectations, not your own? What would "living true to yourself" look like for you? Is there anything you have been afraid to do or say?'},
+  {q:'What is one thing you could start this week — not "someday"? What is the first small step you could take?',
+   think:'Think about: What has the smallest starting cost? What would give you the most momentum? Who could help or support you? How would you feel if you did it?'},
+];
+var discBox=document.getElementById('discBox');
+discData.forEach(function(d,i){
+  var el=document.createElement('div');el.className='disc-q';
+  el.innerHTML='<div class="dq-label">Question '+(i+1)+'</div>'
+    +'<div class="dq-main">'+d.q+'</div>'
+    +'<div class="think-about"><strong>&#128161; Think about&hellip;</strong>'+d.think+'</div>'
+    +'<textarea class="nt" placeholder="Notes&hellip;"></textarea>';
+  discBox.appendChild(el);
+});
+
+function toggleUL(){
+  var b=document.getElementById('ulBody'),a=document.getElementById('ul-arr');
+  b.classList.toggle('show');
+  a.textContent=b.classList.contains('show')?'&#9650;':'&#9660;';
+}
+</script>
+</body>
+</html>
+
+</body></html>
