@@ -1,0 +1,525 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Stop Waiting — Homework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root{
+  --bg:#edf0f7;--surface:#f8f9fd;--surface2:#dde3f0;
+  --navy:#0d1b2e;--navy-mid:#1a2d4a;--navy-lt:#dde3f0;
+  --accent:#e8601e;--accent-lt:#ffb08a;--accent-dk:#b8420e;
+  --ok:#2a9e62;--ok-lt:#d4f0e0;--err:#d94444;--err-lt:#fde8e8;
+  --text:#1a2030;--text2:#5a6478;--border:#c8d0e0;
+  --radius:14px;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111827;--surface:#1c2537;--surface2:#232f44;
+  --navy:#0a1120;--navy-mid:#111c30;--navy-lt:#1e2d47;
+  --text:#e8ecf4;--text2:#8a96aa;--border:#2a3550;
+}}
+:root[data-theme="dark"]{
+  --bg:#111827;--surface:#1c2537;--surface2:#232f44;
+  --navy:#0a1120;--navy-mid:#111c30;--navy-lt:#1e2d47;
+  --text:#e8ecf4;--text2:#8a96aa;--border:#2a3550;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;}
+body{background:var(--bg);color:var(--text);font-family:'Nunito Sans',sans-serif;font-size:1rem;line-height:1.6;}
+
+/* ── HEADER ── */
+.hdr{background:var(--navy);color:#fff;padding:46px 20px 36px;text-align:center;position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 70%,rgba(232,96,30,.25) 0%,transparent 55%);pointer-events:none;}
+.hdr::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(232,96,30,.12) 0%,transparent 50%);pointer-events:none;}
+h1{font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;line-height:1.1;margin-bottom:6px;position:relative;}
+.hdr-sub{font-size:.9rem;color:rgba(255,255,255,.45);font-style:italic;position:relative;}
+.theme-btn{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:20px;padding:5px 13px;font-size:.78rem;cursor:pointer;font-family:'Nunito Sans',sans-serif;}
+.theme-btn:hover{background:rgba(255,255,255,.2);}
+
+/* ── NAME BAR ── */
+.name-bar{position:sticky;top:0;z-index:50;background:var(--navy-mid);padding:10px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.08);}
+.name-bar label{font-size:.82rem;color:rgba(255,255,255,.55);font-weight:600;white-space:nowrap;}
+.name-bar input{flex:1;max-width:260px;border:none;border-bottom:1.5px solid rgba(255,255,255,.25);background:transparent;color:#fff;font-family:'Nunito Sans',sans-serif;font-size:.9rem;padding:3px 6px;outline:none;}
+.name-bar input::placeholder{color:rgba(255,255,255,.3);}
+.name-bar input:focus{border-bottom-color:var(--accent-lt);}
+
+/* ── PROGRESS ── */
+.progress-wrap{background:var(--navy);padding:10px 20px 14px;display:flex;align-items:center;gap:14px;}
+.progress-track{flex:1;height:6px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .4s ease;width:0%;}
+.progress-label{font-size:.75rem;color:rgba(255,255,255,.45);font-weight:700;white-space:nowrap;}
+
+/* ── MAIN ── */
+.main{max-width:680px;margin:0 auto;padding:24px 16px 60px;}
+
+/* ── READING CARD ── */
+.reading-card{background:var(--surface);border-radius:var(--radius);padding:22px 20px;margin-bottom:20px;border:1px solid var(--border);}
+.reading-eyebrow{font-size:.72rem;font-weight:800;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
+.reading-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.25rem;color:var(--text);margin-bottom:16px;line-height:1.3;}
+.reading-quotes{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 9px 9px 0;padding:12px 16px;margin:0 0 14px;font-style:italic;color:var(--text2);font-size:.9rem;line-height:2;}
+.reading-subhd{font-family:'Nunito',sans-serif;font-weight:900;font-size:.95rem;color:var(--accent);margin:18px 0 8px;}
+.reading-body p{font-size:.93rem;line-height:1.75;color:var(--text);margin-bottom:12px;}
+.reading-body p:last-child{margin-bottom:0;}
+.reading-blockquote{background:var(--navy);border-radius:10px;padding:16px 18px;margin:14px 0;color:rgba(255,255,255,.85);font-style:italic;font-size:.9rem;line-height:1.7;}
+.reading-blockquote .bq-attr{font-size:.78rem;color:rgba(255,255,255,.4);margin-top:10px;font-style:normal;}
+.stat-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px;}
+.stat-tile{background:var(--surface2);border-radius:10px;padding:14px 10px;text-align:center;border:1px solid var(--border);}
+.stat-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.4rem;color:var(--accent);line-height:1.1;margin-bottom:5px;}
+.stat-label{font-size:.74rem;color:var(--text2);line-height:1.45;}
+
+/* ── EXERCISE CARDS ── */
+.ex-card{background:var(--surface);border-radius:var(--radius);padding:22px 20px;margin-bottom:20px;border:1px solid var(--border);}
+.ex-hd{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.ex-num{background:var(--accent);color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:.78rem;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ex-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.05rem;color:var(--text);}
+.ex-instr{font-size:.85rem;color:var(--text2);margin:8px 0 16px;line-height:1.6;}
+
+/* ── T/F ── */
+.tf-item{background:var(--surface2);border-radius:10px;padding:13px 14px;margin-bottom:9px;border:1px solid var(--border);}
+.tf-row{display:flex;align-items:flex-start;gap:10px;}
+.tf-q{flex:1;font-size:.92rem;line-height:1.6;color:var(--text);}
+.tf-num{font-family:'Nunito',sans-serif;font-weight:900;color:var(--accent);font-size:.88rem;white-space:nowrap;padding-top:2px;}
+.tf-btns{display:flex;gap:6px;flex-shrink:0;align-self:center;}
+.tf-btn{width:38px;height:32px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-family:'Nunito',sans-serif;font-weight:800;font-size:.82rem;cursor:pointer;transition:all .12s;padding:0;}
+.tf-btn:hover{border-color:var(--accent);color:var(--accent);}
+.tf-btn.sel-t{background:var(--ok);border-color:var(--ok);color:#fff;}
+.tf-btn.sel-f{background:var(--accent-dk);border-color:var(--accent-dk);color:#fff;}
+.tf-btn.correct{background:var(--ok);border-color:var(--ok);color:#fff;}
+.tf-btn.wrong{background:var(--err);border-color:var(--err);color:#fff;}
+.tf-fb{font-size:.78rem;font-weight:700;margin-top:5px;padding-left:30px;min-height:12px;}
+.tf-fb.ok{color:var(--ok);}
+.tf-fb.bad{color:var(--err);}
+
+/* ── ACTIONS ── */
+.ex-actions{display:flex;gap:8px;margin-top:16px;}
+.btn{border:none;border-radius:9px;padding:9px 20px;font-size:.84rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:opacity .15s;}
+.btn-check{background:var(--accent);color:#fff;}
+.btn-check:hover{opacity:.88;}
+.btn-reset{background:var(--surface2);color:var(--text2);border:1.5px solid var(--border);}
+.btn-reset:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── PLAN CARDS ── */
+.plan-cards-wrap{display:flex;flex-direction:column;gap:12px;margin-bottom:4px;}
+.plan-card{background:var(--surface2);border-radius:11px;padding:18px 16px;border:1px solid var(--border);}
+.plan-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:.8rem;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+.plan-field{margin-bottom:13px;}
+.plan-field:last-child{margin-bottom:0;}
+.plan-label{display:block;font-size:.78rem;font-weight:700;color:var(--text2);margin-bottom:7px;text-transform:uppercase;letter-spacing:.04em;}
+.plan-input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:'Nunito Sans',sans-serif;font-size:.9rem;background:var(--surface);color:var(--text);outline:none;}
+.plan-input:focus{border-color:var(--accent);}
+.plan-input::placeholder{color:var(--text2);opacity:.6;}
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{border:1.5px solid var(--border);background:var(--surface);color:var(--text2);border-radius:20px;padding:6px 14px;font-size:.8rem;font-family:'Nunito Sans',sans-serif;font-weight:600;cursor:pointer;transition:all .12s;line-height:1;}
+.chip:hover{border-color:var(--accent);color:var(--accent);}
+.chip.sel{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+/* ── PLAN WRITING ── */
+.plan-write{background:var(--surface2);border-radius:11px;padding:18px 16px;margin-top:14px;border:1px solid var(--border);}
+.plan-write-hd{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;color:var(--accent);margin-bottom:8px;}
+.plan-write-instr{font-size:.85rem;color:var(--text2);margin-bottom:14px;line-height:1.6;}
+.writing-area{position:relative;}
+.writing-area textarea{width:100%;min-height:150px;border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;font-family:'Nunito Sans',sans-serif;font-size:.93rem;color:var(--text);background:var(--surface);resize:vertical;outline:none;line-height:1.75;}
+.writing-area textarea:focus{border-color:var(--accent);}
+.word-count{text-align:right;font-size:.78rem;color:var(--text2);margin-top:5px;font-weight:600;}
+.word-count.ok{color:var(--ok);}
+.word-count.over{color:var(--err);}
+
+/* ── SEND ── */
+.send-card{background:var(--navy);border-radius:var(--radius);padding:24px 20px;text-align:center;margin-top:8px;}
+.send-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.05rem;color:#fff;margin-bottom:6px;}
+.send-sub{font-size:.85rem;color:rgba(255,255,255,.45);margin-bottom:16px;}
+.btn-send{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:12px 28px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.95rem;cursor:pointer;transition:opacity .15s;}
+.btn-send:hover{opacity:.88;}
+.send-note{font-size:.75rem;color:rgba(255,255,255,.3);margin-top:12px;}
+</style>
+</head>
+<body>
+
+<button class="theme-btn" onclick="toggleTheme()">☀ / ☾</button>
+
+<!-- NAME BAR -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+  <div class="progress-label" id="plabel">0 / 2</div>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <h1>Stop Waiting,<br>Start Living</h1>
+  <div class="hdr-sub">Homework &mdash; B1</div>
+</div>
+
+<div class="main">
+
+  <!-- ── READING ── -->
+  <div class="reading-card">
+    <div class="reading-eyebrow">📖 Read before you start</div>
+    <div class="reading-title">Why Do We Keep Waiting?</div>
+
+    <div class="reading-quotes">
+      &ldquo;I&rsquo;ll start on Monday.&rdquo;<br>
+      &ldquo;I&rsquo;ll do it when I have more time.&rdquo;<br>
+      &ldquo;I&rsquo;ll begin when I feel ready.&rdquo;
+    </div>
+
+    <div class="reading-body">
+      <p>Do these sentences sound familiar? Most of us postpone things we know are important — exercising, learning something new, having a difficult conversation, or even starting to live the life we really want. This habit is called procrastination, and researchers say it affects around 20% of adults regularly.</p>
+    </div>
+
+    <div class="reading-subhd">It&rsquo;s not about laziness</div>
+    <div class="reading-body">
+      <p>Psychologists say procrastination is not really about being lazy. It is usually about feelings. We put things off because we are afraid of failure, because a task feels too big, or because we prefer the comfort of staying exactly where we are. Our brains find it easier to choose something enjoyable right now — a TV series, another scroll through social media — than something difficult that might pay off later.</p>
+      <p>There is also a trap called the &ldquo;someday&rdquo; mentality: the belief that the right time will come. &ldquo;Someday I will travel.&rdquo; &ldquo;Someday I will start that project.&rdquo; &ldquo;Someday I will tell that person how I feel.&rdquo; But research is clear: someday almost never arrives on its own. The right moment is not found &mdash; it is created.</p>
+    </div>
+
+    <div class="reading-subhd">What we regret most</div>
+    <div class="reading-body">
+      <p>A nurse called Bronnie Ware worked with people at the very end of their lives and asked them what they regretted most. The number-one answer was not &ldquo;I wish I&rsquo;d worked harder.&rdquo; It was:</p>
+    </div>
+    <div class="reading-blockquote">
+      &ldquo;I wish I&rsquo;d had the courage to live a life true to myself, not the life others expected of me.&rdquo;
+      <div class="bq-attr">— Bronnie Ware, <em>The Top Five Regrets of the Dying</em></div>
+    </div>
+    <div class="reading-body">
+      <p>In other words, people&rsquo;s biggest regrets were not the mistakes they made &mdash; they were the things they never tried.</p>
+    </div>
+
+    <div class="reading-subhd">The good news</div>
+    <div class="reading-body">
+      <p>You do not need to change everything at once. Research on habits shows that small actions build momentum &mdash; the energy that keeps you moving forward. One phone call. One hour of practice. One honest conversation. The secret is not waiting until you feel ready. It is starting before you do.</p>
+    </div>
+
+    <div class="stat-tiles">
+      <div class="stat-tile">
+        <div class="stat-num">20%</div>
+        <div class="stat-label">of adults regularly procrastinate on important tasks</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-num">#1</div>
+        <div class="stat-label">deathbed regret: not living a life true to yourself</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-num">2 min</div>
+        <div class="stat-label">&ldquo;Two-minute rule&rdquo; &mdash; if it takes less than 2 min, do it now</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── EXERCISE 1: T/F ── -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <div class="ex-num">1</div>
+      <div class="ex-title">True or False?</div>
+    </div>
+    <div class="ex-instr">Read the sentences. Are they <strong>True</strong> or <strong>False</strong> according to the text? Click <strong>T</strong> or <strong>F</strong>, then press <strong>Check</strong>.</div>
+
+    <div id="tfBox"></div>
+
+    <div class="ex-actions">
+      <button class="btn btn-check" onclick="checkTF()">Check</button>
+      <button class="btn btn-reset" onclick="resetTF()">Reset</button>
+    </div>
+  </div>
+
+  <!-- ── EXERCISE 2: ACTION PLAN ── -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <div class="ex-num">2</div>
+      <div class="ex-title">My Action Plan</div>
+    </div>
+    <div class="ex-instr">Write down <strong>3 things</strong> you have been putting off. For each one, choose what is stopping you, pick a strategy from the lesson, and decide exactly when you will do it. Then write your plan.</div>
+
+    <div class="plan-cards-wrap">
+
+      <!-- TASK 1 -->
+      <div class="plan-card">
+        <div class="plan-num">📌 Task 1</div>
+        <div class="plan-field">
+          <label class="plan-label">I have been putting off…</label>
+          <input class="plan-input" id="task0" type="text" placeholder="e.g. learning to drive, calling my dentist…" oninput="checkEx2()">
+        </div>
+        <div class="plan-field">
+          <label class="plan-label">What's stopping me:</label>
+          <div class="chip-row">
+            <button class="chip" data-group="stop0" onclick="pickChip(this)">😨 Fear of failure</button>
+            <button class="chip" data-group="stop0" onclick="pickChip(this)">😩 Feels too big</button>
+            <button class="chip" data-group="stop0" onclick="pickChip(this)">😴 Too comfortable</button>
+            <button class="chip" data-group="stop0" onclick="pickChip(this)">🤷 Not sure</button>
+          </div>
+        </div>
+        <div class="plan-field">
+          <label class="plan-label">My strategy:</label>
+          <div class="chip-row">
+            <button class="chip" data-group="strat0" onclick="pickChip(this)">✂️ Break it down</button>
+            <button class="chip" data-group="strat0" onclick="pickChip(this)">📝 Journal my worries</button>
+            <button class="chip" data-group="strat0" onclick="pickChip(this)">📵 Remove distractions</button>
+            <button class="chip" data-group="strat0" onclick="pickChip(this)">❤️ Be kind to myself</button>
+          </div>
+        </div>
+        <div class="plan-field">
+          <label class="plan-label">I will do it:</label>
+          <input class="plan-input" id="when0" type="text" placeholder="e.g. this Saturday at 10am, next Monday evening…" oninput="checkEx2()">
+        </div>
+      </div>
+
+      <!-- TASK 2 -->
+      <div class="plan-card">
+        <div class="plan-num">📌 Task 2</div>
+        <div class="plan-field">
+          <label class="plan-label">I have been putting off…</label>
+          <input class="plan-input" id="task1" type="text" placeholder="e.g. starting to exercise, writing to a friend…" oninput="checkEx2()">
+        </div>
+        <div class="plan-field">
+          <label class="plan-label">What's stopping me:</label>
+          <div class="chip-row">
+            <button class="chip" data-group="stop1" onclick="pickChip(this)">😨 Fear of failure</button>
+            <button class="chip" data-group="stop1" onclick="pickChip(this)">😩 Feels too big</button>
+            <button class="chip" data-group="stop1" onclick="pickChip(this)">😴 Too comfortable</button>
+            <button class="chip" data-group="stop1" onclick="pickChip(this)">🤷 Not sure</button>
+          </div>
+        </div>
+        <div class="plan-field">
+          <label class="plan-label">My strategy:</label>
+          <div class="chip-row">
+            <button class="chip" data-group="strat1" onclick="pickChip(this)">✂️ Break it down</button>
+            <button class="chip" data-group="strat1" onclick="pickChip(this)">📝 Journal my worries</button>
+            <button class="chip" data-group="strat1" onclick="pickChip(this)">📵 Remove distractions</button>
+            <button class="chip" data-group="strat1" onclick="pickChip(this)">❤️ Be kind to myself</button>
+          </div>
+        </div>
+        <div class="plan-field">
+          <label class="plan-label">I will do it:</label>
+          <input class="plan-input" id="when1" type="text" placeholder="e.g. tomorrow at 7pm, next Wednesday morning…" oninput="checkEx2()">
+        </div>
+      </div>
+
+      <!-- TASK 3 -->
+      <div class="plan-card">
+        <div class="plan-num">📌 Task 3</div>
+        <div class="plan-field">
+          <label class="plan-label">I have been putting off…</label>
+          <input class="plan-input" id="task2" type="text" placeholder="e.g. reading a book, tidying my room…" oninput="checkEx2()">
+        </div>
+        <div class="plan-field">
+          <label class="plan-label">What's stopping me:</label>
+          <div class="chip-row">
+            <button class="chip" data-group="stop2" onclick="pickChip(this)">😨 Fear of failure</button>
+            <button class="chip" data-group="stop2" onclick="pickChip(this)">😩 Feels too big</button>
+            <button class="chip" data-group="stop2" onclick="pickChip(this)">😴 Too comfortable</button>
+            <button class="chip" data-group="stop2" onclick="pickChip(this)">🤷 Not sure</button>
+          </div>
+        </div>
+        <div class="plan-field">
+          <label class="plan-label">My strategy:</label>
+          <div class="chip-row">
+            <button class="chip" data-group="strat2" onclick="pickChip(this)">✂️ Break it down</button>
+            <button class="chip" data-group="strat2" onclick="pickChip(this)">📝 Journal my worries</button>
+            <button class="chip" data-group="strat2" onclick="pickChip(this)">📵 Remove distractions</button>
+            <button class="chip" data-group="strat2" onclick="pickChip(this)">❤️ Be kind to myself</button>
+          </div>
+        </div>
+        <div class="plan-field">
+          <label class="plan-label">I will do it:</label>
+          <input class="plan-input" id="when2" type="text" placeholder="e.g. this weekend, Friday after work…" oninput="checkEx2()">
+        </div>
+      </div>
+
+    </div><!-- /plan-cards-wrap -->
+
+    <!-- WRITE YOUR PLAN -->
+    <div class="plan-write">
+      <div class="plan-write-hd">✍️ Now write your plan</div>
+      <div class="plan-write-instr">Choose <strong>one</strong> task from above. Write <strong>60&ndash;80 words</strong>. What will you do? When exactly? How will you use your strategy? How will you feel when it is done?</div>
+      <div class="writing-area">
+        <textarea id="writingBox" placeholder="My plan is…" oninput="countWords()"></textarea>
+        <div class="word-count" id="wordCount">0 / 80 words</div>
+      </div>
+    </div>
+
+  </div><!-- /ex-card -->
+
+  <!-- ── SEND TO TEACHER ── -->
+  <div class="send-card">
+    <div class="send-title">&#128231; Send to your teacher</div>
+    <div class="send-sub">When you are finished, click the button to send your homework.</div>
+    <button class="btn-send" onclick="sendToTeacher()">Send homework &#8594;</button>
+    <div class="send-note">This will open your email app with your answers already filled in.</div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+/* ── THEME ── */
+function toggleTheme(){
+  var r=document.documentElement;
+  if(r.dataset.theme==='dark'){r.dataset.theme='light';}
+  else if(r.dataset.theme==='light'){delete r.dataset.theme;}
+  else{r.dataset.theme='dark';}
+  try{localStorage.setItem('hw-theme',r.dataset.theme||'');}catch(e){}
+}
+try{var t=localStorage.getItem('hw-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}
+
+/* ── PROGRESS ── */
+var done={ex1:false,ex2:false};
+function updateProgress(){
+  var n=Object.values(done).filter(Boolean).length;
+  var total=Object.keys(done).length;
+  document.getElementById('pfill').style.width=(n/total*100)+'%';
+  document.getElementById('plabel').textContent=n+' / '+total;
+}
+
+/* ── T/F DATA ──
+   Answers: T, T, F, T, F
+*/
+var tfData=[
+  {q:'Psychologists believe procrastination is more about feelings than about being lazy.',ans:true},
+  {q:'Research shows that about 20% of adults procrastinate regularly.',ans:true},
+  {q:'According to the text, the right moment for action usually arrives on its own if you wait.',ans:false},
+  {q:'Bronnie Ware found that people\'s biggest regret was not living a life true to themselves.',ans:true},
+  {q:'The text says you need to feel fully ready before you start something new.',ans:false},
+];
+
+var tfBox=document.getElementById('tfBox');
+tfData.forEach(function(d,i){
+  var div=document.createElement('div');div.className='tf-item';div.id='tfi'+i;
+  div.innerHTML='<div class="tf-row">'
+    +'<span class="tf-num">'+(i+1)+'.</span>'
+    +'<span class="tf-q">'+d.q+'</span>'
+    +'<div class="tf-btns">'
+    +'<button class="tf-btn" data-idx="'+i+'" data-val="true" onclick="pickTF('+i+',true)">T</button>'
+    +'<button class="tf-btn" data-idx="'+i+'" data-val="false" onclick="pickTF('+i+',false)">F</button>'
+    +'</div></div>'
+    +'<div class="tf-fb" id="tffb'+i+'"></div>';
+  tfBox.appendChild(div);
+});
+
+var tfPicks={};
+function pickTF(i,val){
+  tfPicks[i]=val;
+  var item=document.getElementById('tfi'+i);
+  item.querySelectorAll('.tf-btn').forEach(function(b){b.classList.remove('sel-t','sel-f','correct','wrong');});
+  item.querySelector('.tf-btn[data-val="'+val+'"]').classList.add(val?'sel-t':'sel-f');
+}
+
+function checkTF(){
+  var allOk=true;
+  tfData.forEach(function(d,i){
+    var item=document.getElementById('tfi'+i);
+    var fb=document.getElementById('tffb'+i);
+    item.querySelectorAll('.tf-btn').forEach(function(b){b.classList.remove('sel-t','sel-f','correct','wrong');});
+    if(tfPicks[i]===undefined){
+      if(fb){fb.className='tf-fb bad';fb.textContent='Choose T or F.';}
+      allOk=false;return;
+    }
+    var correct=(tfPicks[i]===d.ans);
+    item.querySelector('.tf-btn[data-val="'+tfPicks[i]+'"]').classList.add(correct?'correct':'wrong');
+    if(!correct){
+      item.querySelector('.tf-btn[data-val="'+d.ans+'"]').classList.add('correct');
+    }
+    if(fb){fb.className='tf-fb '+(correct?'ok':'bad');fb.textContent=correct?'✓ Correct':'✗ The answer is '+(d.ans?'True':'False')+'.';}
+    if(!correct){allOk=false;}
+  });
+  done.ex1=allOk;updateProgress();
+}
+
+function resetTF(){
+  tfPicks={};
+  tfData.forEach(function(_,i){
+    var item=document.getElementById('tfi'+i);
+    item.querySelectorAll('.tf-btn').forEach(function(b){b.classList.remove('sel-t','sel-f','correct','wrong');});
+    var fb=document.getElementById('tffb'+i);
+    if(fb){fb.textContent='';fb.className='tf-fb';}
+  });
+  done.ex1=false;updateProgress();
+}
+
+/* ── CHIP SELECTION ── */
+function pickChip(btn){
+  var group=btn.dataset.group;
+  var alreadySel=btn.classList.contains('sel');
+  document.querySelectorAll('[data-group="'+group+'"]').forEach(function(b){b.classList.remove('sel');});
+  if(!alreadySel){btn.classList.add('sel');}
+  checkEx2();
+}
+
+/* ── EX2 PROGRESS CHECK ── */
+function checkEx2(){
+  var filled=0;
+  for(var i=0;i<3;i++){
+    var v=(document.getElementById('task'+i)||{value:''}).value||'';
+    if(v.trim().length>2){filled++;}
+  }
+  var words=(document.getElementById('writingBox').value.trim()).split(/\s+/).filter(Boolean).length;
+  done.ex2=(filled>=2&&words>=20);
+  updateProgress();
+}
+
+/* ── WORD COUNT ── */
+function countWords(){
+  var text=document.getElementById('writingBox').value.trim();
+  var words=text===''?0:text.split(/\s+/).filter(Boolean).length;
+  var el=document.getElementById('wordCount');
+  el.textContent=words+' / 80 words';
+  if(words>=60&&words<=80){el.className='word-count ok';}
+  else if(words>80){el.className='word-count over';}
+  else{el.className='word-count';}
+  checkEx2();
+}
+
+/* ── SEND TO TEACHER ── */
+function sendToTeacher(){
+  var name=document.getElementById('nameInput').value.trim()||'(no name)';
+
+  /* Exercise 1 — T/F */
+  var tfResults='';
+  tfData.forEach(function(d,i){
+    var pick=tfPicks[i];
+    var val=(pick===undefined)?'(not answered)':(pick?'True':'False');
+    var correct=(pick===d.ans)?'✓':'✗';
+    tfResults+=(i+1)+'. '+d.q+'\n   Answer: '+val+' '+correct+'\n';
+  });
+
+  /* Exercise 2 — task cards */
+  var planResults='';
+  for(var i=0;i<3;i++){
+    var task=(document.getElementById('task'+i)||{value:''}).value||'(blank)';
+    var stopSel=document.querySelector('[data-group="stop'+i+'"].sel');
+    var stratSel=document.querySelector('[data-group="strat'+i+'"].sel');
+    var when=(document.getElementById('when'+i)||{value:''}).value||'(blank)';
+    planResults+='Task '+(i+1)+':\n';
+    planResults+='  Putting off: '+task+'\n';
+    planResults+='  Stopping me: '+(stopSel?stopSel.textContent.trim():'(not chosen)')+'\n';
+    planResults+='  Strategy: '+(stratSel?stratSel.textContent.trim():'(not chosen)')+'\n';
+    planResults+='  When: '+when+'\n\n';
+  }
+
+  var writing=document.getElementById('writingBox').value.trim()||'(not written)';
+
+  var body='Student: '+name+'\n\n'
+    +'=== Exercise 1: True or False ===\n'
+    +tfResults+'\n'
+    +'=== Exercise 2: My Action Plan ===\n'
+    +planResults
+    +'--- Written Plan ---\n'
+    +writing;
+
+  var subject=encodeURIComponent('Homework — Stop Waiting, Start Living — '+name);
+  var bodyEnc=encodeURIComponent(body);
+  window.location.href='mailto:daryaaa2028@gmail.com?subject='+subject+'&body='+bodyEnc;
+}
+</script>
+</body>
+</html>
+
+</body></html>
