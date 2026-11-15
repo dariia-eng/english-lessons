@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Viral Snack Lab</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Lexend:wght@400;500;600&display=swap">
+<style>
+html{-webkit-text-size-adjust:100%} body{margin:0} img{max-width:100%} [hidden]{display:none!important}
+:root{
+  --ground:#F3F5F2; --paper:#FFFFFF; --paper2:#F7F8F6; --ink:#1E1B19; --muted:#5D5A57; --line:#DCDFDA;
+  --pist:#5E8A2E; --pist-soft:#E1EDD2; --berry:#C93570; --berry-soft:#FADDE8; --choco:#6B3F2A; --choco-soft:#F0E2D9; --taro:#7A58B8; --taro-soft:#E9E1F6; --caramel:#A86A12; --caramel-soft:#FBEBD0;
+  --ok:#2F7D3B; --ok-soft:#D6EDD6; --bad:#B23A2E; --bad-soft:#F6D8D3;
+  --on:#FFFFFF;
+  --display:"Fredoka","Trebuchet MS",sans-serif;
+  --body:"Lexend","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#141513; --paper:#1D1F1C; --paper2:#252824; --ink:#EFEFEA; --muted:#A8ABA4; --line:#343832;
+    --pist:#9BCB66; --pist-soft:#24331A; --berry:#FF7AA8; --berry-soft:#3E1C2A; --choco:#D9A27E; --choco-soft:#33241B; --taro:#B99BF0; --taro-soft:#2B2340; --caramel:#F2B85A; --caramel-soft:#3A2D18;
+    --ok:#7CCB85; --ok-soft:#1F3822; --bad:#F08A7E; --bad-soft:#40221E;
+    --on:#141513;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#141513; --paper:#1D1F1C; --paper2:#252824; --ink:#EFEFEA; --muted:#A8ABA4; --line:#343832;
+  --pist:#9BCB66; --pist-soft:#24331A; --berry:#FF7AA8; --berry-soft:#3E1C2A; --choco:#D9A27E; --choco-soft:#33241B; --taro:#B99BF0; --taro-soft:#2B2340; --caramel:#F2B85A; --caramel-soft:#3A2D18;
+  --ok:#7CCB85; --ok-soft:#1F3822; --bad:#F08A7E; --bad-soft:#40221E;
+  --on:#141513;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:860px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.08;margin:0}
+h1{font-weight:700;font-size:clamp(2.8rem,9vw,4.8rem)}
+h2{font-weight:700;font-size:clamp(1.7rem,4.8vw,2.3rem)}
+h3{font-weight:600;font-size:1.25rem}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--berry);outline-offset:2px}
+
+header.hero{padding-block:34px 16px;display:grid;gap:10px}
+.drip{display:flex;gap:10px;font-size:2rem}
+.hero h1 span.p{color:var(--pist)} .hero h1 span.b{color:var(--berry)}
+.hero .sub{color:var(--muted);max-width:60ch}
+.hero-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.plan{color:var(--muted);font-size:.95rem}
+.theme-btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:4px 14px;font-size:.85rem}
+
+nav.stages{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);padding-block:10px;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+nav.stages a{display:inline-block;margin-right:6px;padding:5px 12px;border-radius:999px;color:var(--ink);text-decoration:none;font-size:.86rem;font-weight:500;background:var(--paper);border:1px solid var(--line)}
+nav.stages a.ext{border-style:dashed;color:var(--muted)}
+nav.stages a:hover{border-color:var(--berry);color:var(--berry)}
+
+section.stage{margin-top:46px;display:grid;gap:18px;scroll-margin-top:70px}
+.stage-head{display:grid;gap:6px}
+.stage-head .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.step-no{font-family:var(--display);font-weight:600;color:var(--berry)}
+.chip{font-size:.74rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 10px;border-radius:999px;background:var(--caramel-soft);color:var(--caramel)}
+.chip.game{background:var(--pist-soft);color:var(--pist)}
+.chip.vid{background:var(--berry-soft);color:var(--berry)}
+.chip.ext{background:transparent;border:1.5px dashed var(--muted);color:var(--muted)}
+.instr{color:var(--muted);max-width:66ch}
+.ext-band{margin-top:52px;padding:14px 18px;border:2px dashed var(--line);border-radius:14px;color:var(--muted);display:grid;gap:4px}
+.ext-band b{font-family:var(--display);font-size:1.3rem;color:var(--ink)}
+
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:20px;display:grid;gap:14px}
+details.tnote{border-left:3px solid var(--caramel);background:var(--caramel-soft);border-radius:0 10px 10px 0;padding:8px 14px;font-size:.92rem}
+details.tnote summary{cursor:pointer;font-weight:600;color:var(--caramel)}
+details.tnote ul{margin:8px 0 4px;padding-left:20px}
+.talk{display:grid;gap:8px;padding:0;margin:0;list-style:none}
+.talk li{padding:10px 14px;border-radius:14px;background:var(--paper2);border:1px solid var(--line)}
+.phr{display:flex;flex-wrap:wrap;gap:8px}
+.phr span{padding:4px 12px;border-radius:999px;background:var(--berry-soft);font-size:.9rem}
+
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:none;border-radius:999px;padding:9px 20px;font-weight:600;background:var(--berry);color:var(--on)}
+.btn.pist{background:var(--pist);color:var(--on)} .btn.dark{background:var(--ink);color:var(--ground)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+.score{font-weight:600;color:var(--ok);font-variant-numeric:tabular-nums}
+
+/* video */
+.vid{display:grid;gap:10px}
+.vid .frame{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#000}
+.vid .frame.short{aspect-ratio:9/16;max-width:320px}
+.vid .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vlink{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:16px;background:var(--ink);color:var(--ground);text-decoration:none}
+.vlink .play{width:44px;height:44px;flex:none;border-radius:50%;background:#E0245E;display:grid;place-items:center;color:#fff}
+.vlink b{display:block;line-height:1.2}
+.vlink small{opacity:.75}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.vcard{background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:12px 6px;display:grid;justify-items:center;gap:4px;text-align:center;color:var(--ink)}
+.vcard .emo{font-size:2.4rem;line-height:1}
+.vcard .lbl{font-weight:600;font-size:.9rem;max-height:0;opacity:0;overflow:hidden;transition:opacity .3s,max-height .3s}
+.vcard .hint{font-size:.74rem;color:var(--muted)}
+.vcard.open{border-color:var(--berry)} .vcard.open .lbl{max-height:4em;opacity:1} .vcard.open .hint{display:none}
+
+/* sort */
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;padding:12px;border:2px dashed var(--line);border-radius:16px}
+.pool button,.bk button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:999px;padding:4px 12px;font-weight:500}
+.pool button.picked{border-color:var(--berry);background:var(--berry-soft)}
+.bks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:680px){.bks{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.bk{border-radius:16px;padding:10px;min-height:120px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;cursor:pointer;border:2px solid var(--c);background:var(--cs)}
+.bk .lbl{width:100%;font-family:var(--display);font-weight:600;color:var(--c)}
+.bk button.right{border-color:var(--ok);color:var(--ok);font-weight:600}
+.bk button.wrong{border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+
+/* articles */
+.arts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.art{border-radius:20px;padding:16px;display:grid;gap:8px;align-content:start;background:var(--cs);border:2px solid var(--c)}
+.art .emo{font-size:2.2rem;line-height:1}
+.art h3{color:var(--c)}
+.art p{font-size:.95rem}
+
+/* mc */
+.list{display:grid;gap:16px}
+.q{display:grid;gap:8px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:12px;padding:6px 14px;text-align:left}
+.opts button:hover{border-color:var(--berry)}
+.opts button.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:600}
+.opts button.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.fb{font-size:.9rem;color:var(--muted);min-height:1.2em}
+
+/* tick list */
+.ticks{display:flex;flex-wrap:wrap;gap:8px}
+.ticks button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:999px;padding:4px 12px}
+.ticks button.on{background:var(--pist);border-color:var(--pist);color:var(--on)}
+
+/* steps order */
+.steps{display:grid;gap:8px}
+.stp{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:var(--paper2);border:1.5px solid var(--line)}
+.stp .no{font-family:var(--display);font-weight:700;color:var(--taro);min-width:1.4em}
+.stp .mv{margin-left:auto;display:flex;gap:4px}
+.stp .mv button{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:0}
+.stp.right{border-color:var(--ok);background:var(--ok-soft)} .stp.wrong{border-color:var(--bad);background:var(--bad-soft)}
+
+/* rule */
+.rule{display:grid;gap:10px}
+.rule .r{display:grid;grid-template-columns:minmax(150px,210px) 1fr;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px dashed var(--line)}
+.rule .r:last-child{border-bottom:none}
+.rule .r>span:first-child{font-weight:600;color:var(--taro)}
+@media (max-width:560px){.rule .r{grid-template-columns:1fr;gap:2px}}
+.meter{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;text-align:center}
+.meter div{border-radius:16px;padding:12px 8px;display:grid;gap:4px}
+.meter b{font-family:var(--display);font-size:1.1rem}
+.meter .lo{background:var(--taro-soft)} .meter .ok{background:var(--pist-soft)} .meter .hi{background:var(--berry-soft)}
+.meter span{font-size:2rem;line-height:1}
+input.gap{font:inherit;font-size:.95rem;border:none;border-bottom:2px solid var(--taro);background:var(--taro-soft);color:var(--ink);border-radius:6px 6px 0 0;padding:1px 8px;width:7em;max-width:100%}
+input.gap.full{width:100%}
+input.gap.right{border-color:var(--ok);background:var(--ok-soft)}
+input.gap.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.key{font-size:.85rem;color:var(--ok);margin-left:6px;font-weight:500}
+.key.block{display:block;margin-left:0;line-height:1.5}
+.gl{line-height:2.3}
+.gl .n{font-weight:600;color:var(--taro);margin-right:6px}
+
+/* critic */
+.critic{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.ccard{border-radius:18px;padding:14px;background:var(--paper2);border:1.5px solid var(--line);display:grid;gap:8px}
+.ccard h3{font-size:1.1rem}
+.ccard label{display:grid;grid-template-columns:5.5em 1fr 2em;gap:8px;align-items:center;font-size:.9rem}
+.ccard input[type=range]{width:100%;accent-color:var(--berry)}
+.ccard output{font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.ccard .total{font-family:var(--display);font-weight:700;color:var(--berry)}
+.dish{border-radius:18px;padding:16px;background:var(--choco-soft);border:2px solid var(--choco);display:grid;gap:6px}
+.dish .nm{font-family:var(--display);font-weight:700;font-size:1.4rem;color:var(--choco)}
+
+/* tier list */
+.tiers{display:grid;gap:6px}
+.tier{display:grid;grid-template-columns:3.2em 1fr;min-height:58px;border-radius:12px;overflow:hidden;border:1.5px solid var(--line);cursor:pointer;background:var(--paper)}
+.tier .t{display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:1.4rem;color:#1E1B19}
+.tier .items{display:flex;flex-wrap:wrap;gap:6px;padding:8px;align-content:center}
+.tier .items button,.tpool button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:12px;padding:4px 10px;font-size:.88rem}
+.tpool{display:flex;flex-wrap:wrap;gap:8px;padding:12px;border:2px dashed var(--line);border-radius:16px;min-height:44px}
+.tpool button.picked{border-color:var(--berry);background:var(--berry-soft)}
+
+/* snack builder */
+.builder{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.builder label{display:grid;gap:4px;font-weight:600;font-size:.9rem}
+.builder select,.builder input{font:inherit;padding:8px 10px;border-radius:12px;border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);width:100%}
+.snack{border-radius:22px;padding:20px;display:grid;gap:8px;text-align:center;justify-items:center;background:linear-gradient(135deg,var(--berry-soft),var(--pist-soft));border:2px solid var(--berry)}
+.snack .big{font-size:3rem;line-height:1}
+.snack .nm{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,5vw,2.2rem);line-height:1.1}
+.timer{font-family:var(--display);font-weight:700;font-size:2.2rem;color:var(--berry);line-height:1;font-variant-numeric:tabular-nums}
+.timer.done{color:var(--ok)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:999px;padding:4px 14px;font-weight:500}
+.chips button.used{background:var(--pist);border-color:var(--pist);color:var(--on)}
+
+.qf{display:grid;gap:14px;justify-items:center;text-align:center}
+.qf .expr{font-family:var(--display);font-weight:600;font-size:clamp(1.3rem,4.5vw,1.9rem);line-height:1.2;min-height:2.4em;max-width:32ch}
+.qf .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.qf .big{font-family:var(--display);font-weight:700;font-size:1.2rem;padding:10px 22px;border-radius:999px;border:none;color:var(--on)}
+.qf .stats{display:flex;gap:18px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--muted)}
+.qf .stats b{color:var(--ink)}
+.break{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:16px;background:var(--caramel-soft);font-weight:600;margin-top:36px}
+.break span{font-size:1.8rem}
+footer{margin-top:48px;color:var(--muted);font-size:.85rem;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="hero">
+  <div class="drip" aria-hidden="true">🧋🍫🍬🥐🍡</div>
+  <h1>Viral <span class="p">Snack</span> <span class="b">Lab</span></h1>
+  <p class="sub">Bubble tea, Dubai chocolate, giant sweets: are internet food trends really that good? Rate them, review them, and create your own viral snack. Grammar: <b>too</b> &amp; <b>enough</b>.</p>
+  <div class="hero-row"><span class="plan">Core lesson: 120 min · Extensions: +15 min</span><button class="theme-btn" id="themeBtn" type="button">◐ Light / dark</button></div>
+</header>
+
+<nav class="stages" aria-label="Lesson stages">
+  <a href="#s1">1 · Snack chat</a><a href="#s2">2 · Taste words</a><a href="#s3">3 · Food trends</a><a href="#s4">4 · Videos 🎬</a><a href="#s5">5 · too / enough</a><a href="#s6">6 · Food critic</a><a href="#s7">7 · Tier list</a><a href="#s8">8 · Create a snack</a><a href="#s9">9 · Wrap-up</a><a class="ext" href="#x1">+ Quick-fire</a>
+</nav>
+
+<!-- 1 -->
+<section class="stage" id="s1">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 1 · Warm-up</span><span class="chip">10 min</span></div>
+    <h2>Snack chat 🍿</h2>
+    <p class="instr">Do you know these viral foods? Say what they are, then tap to check.</p>
+  </div>
+  <div class="cards" id="vcards"></div>
+  <div class="panel">
+    <h3>Let's talk</h3>
+    <ul class="talk">
+      <li>Have you ever tried bubble tea or Dubai chocolate? Did you like it?</li>
+      <li>What's the most popular snack at your school right now?</li>
+      <li>Have you ever bought food just because you saw it on TikTok or Instagram? Was it worth it?</li>
+      <li>Sweet or salty? Crunchy or soft? What's your perfect snack?</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="stage" id="s2">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 2 · Vocabulary</span><span class="chip">15 min</span><span class="chip game">Sort</span></div>
+    <h2>Taste words 👅</h2>
+    <p class="instr">Food critics use lots of adjectives. Click a word, then click the right box.</p>
+  </div>
+  <div class="panel">
+    <div class="pool" id="pool"></div>
+    <div class="bks" id="bks"></div>
+    <div class="actions"><button class="btn" type="button" id="sortCheck">Check</button><button class="btn ghost" type="button" id="sortReset">Reset</button><span class="score" id="sortScore"></span></div>
+  </div>
+  <div class="panel">
+    <h3>Describe it in 3 words</h3>
+    <p class="instr">Use one word from 3 different boxes for each food: <b>gummy bears · crisps · a lemon · Black Forest cake · popcorn · your favourite snack</b></p>
+    <div class="phr"><span>Gummy bears are sweet, chewy and colourful.</span></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Drill: <i>crunchy</i> vs <i>crispy</i> (both fine for crisps; crunchy is harder and louder, like apples and nuts), <i>sticky</i>, <i>bitter</i>.</li>
+      <li>Opinion words like <i>overrated</i> and <i>addictive</i> are very useful for the critic role-play later.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 3 -->
+<section class="stage" id="s3">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 3 · Reading</span><span class="chip">10 min</span></div>
+    <h2>3 viral food trends</h2>
+    <p class="instr">Read the three short texts. Then answer the questions.</p>
+  </div>
+  <div class="arts">
+    <article class="art" style="--c:var(--taro);--cs:var(--taro-soft)"><span class="emo">🧋</span><h3>Bubble tea</h3><p>Bubble tea comes from Taiwan, where people started making it in the 1980s. It's tea with milk or fruit, ice, and little balls called <b>tapioca pearls</b>. The pearls are soft and chewy, and you drink them through a <b>very big straw</b>. Some people love it, but others say it's <b>too sweet</b> and the pearls are <b>too weird</b>.</p></article>
+    <article class="art" style="--c:var(--pist);--cs:var(--pist-soft)"><span class="emo">🍫</span><h3>Dubai chocolate</h3><p>Dubai chocolate is a thick chocolate bar filled with <b>pistachio cream</b> and crispy shredded pastry. It became famous on TikTok, and in 2024 it was <b>so popular</b> in Germany that many shops sold out. Fans say it's crunchy, creamy and addictive. Critics say it's <b>too expensive</b> for a chocolate bar.</p></article>
+    <article class="art" style="--c:var(--berry);--cs:var(--berry-soft)"><span class="emo">🍬</span><h3>Giant sweets</h3><p>Giant gummy bears, huge lollipops and jelly sweets as big as your head: giant sweets are perfect for videos because they look crazy. But are they really good? One giant gummy bear can have as much sugar as a <b>whole bag</b> of normal ones. It's fun for a video, but it's probably <b>too big</b> for one person!</p></article>
+  </div>
+  <div class="panel">
+    <h3>Did you understand?</h3>
+    <div class="list" id="readQ"></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul><li>Ask her to find every <b>too + adjective</b> in the texts (too sweet, too weird, too expensive, too big). These set up Stage 5.</li></ul>
+  </details>
+</section>
+
+<!-- 4 -->
+<section class="stage" id="s4">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 4 · Videos</span><span class="chip">15 min</span><span class="chip vid">🎬 2 short videos</span></div>
+    <h2>Watch the trends</h2>
+  </div>
+  <div class="panel vid">
+    <h3>Video 1 · Testing Dubai chocolate (short)</h3>
+    <div class="frame short"><iframe src="https://www.youtube-nocookie.com/embed/5xGNQ0zLkEo?rel=0" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    <a class="vlink" href="https://www.youtube.com/shorts/5xGNQ0zLkEo" target="_blank" rel="noopener"><span class="play" aria-hidden="true">▶</span><span><b>CNBC tests the viral Dubai chocolate bars</b><small>YouTube Short · opens on YouTube</small></span></a>
+    <p class="instr"><b>While you watch:</b> tap every adjective you hear or would use for the chocolate.</p>
+    <div class="ticks" id="ticks1"></div>
+    <ul class="talk">
+      <li>Which bar did they like best? Which was not good enough? Why?</li>
+      <li>Would you pay a lot of money for this chocolate? Is it worth it?</li>
+    </ul>
+  </div>
+  <div class="panel vid">
+    <h3>Video 2 · Bubble tea from scratch (short)</h3>
+    <div class="frame short"><iframe src="https://www.youtube-nocookie.com/embed/3IRlJ7tC8sA?rel=0" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    <a class="vlink" href="https://www.youtube.com/shorts/3IRlJ7tC8sA" target="_blank" rel="noopener"><span class="play" aria-hidden="true">▶</span><span><b>Traditional bubble tea, made by hand</b><small>YouTube Short · opens on YouTube</small></span></a>
+    <p class="instr"><b>New words:</b> <i>cassava root</i> (Maniokwurzel) · <i>starch</i> (Stärke) · <i>to grind</i> (mahlen) · <i>to steam</i> (dämpfen) · <i>taro</i> &amp; <i>sweet potato</i> (Süßkartoffel) · <i>to caramelise</i> (karamellisieren)</p>
+    <p class="instr"><b>Before you watch:</b> guess the order of the steps. <b>Then watch</b> and fix it. Use ↑ and ↓, then check.</p>
+    <div class="steps" id="steps"></div>
+    <div class="actions"><button class="btn" type="button" id="stCheck">Check</button><button class="btn ghost" type="button" id="stReset">Shuffle</button><span class="score" id="stScore"></span></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Please preview both videos before class. I found them by search and couldn't watch them, so check that the content and length suit her. For Video 2, the first few minutes are enough.</li>
+      <li>The bubble tea steps follow the video's description. If the video shows the tea before the pearls, accept it: "In the video, they first…" is a nice discussion point.</li>
+      <li>After Video 2, ask: Is handmade bubble tea worth the time? Is it too much work? Would it be fresh enough from a shop?</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 5 -->
+<section class="stage" id="s5">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 5 · Grammar</span><span class="chip">20 min</span></div>
+    <h2>Too sweet? Sweet enough?</h2>
+    <p class="instr">"This bubble tea is <b>too sweet</b>." = more sugar than I want 👎 · "This chocolate is<b>n't crunchy enough</b>." = less than I want 👎 · "It's <b>sweet enough</b>." = just right 👍</p>
+  </div>
+  <div class="panel">
+    <div class="meter">
+      <div class="lo"><span>🥶</span><b>not hot enough</b><small>less than you want</small></div>
+      <div class="ok"><span>😋</span><b>hot enough</b><small>just right</small></div>
+      <div class="hi"><span>🥵</span><b>too hot</b><small>more than you want</small></div>
+    </div>
+  </div>
+  <div class="panel" id="rule">
+    <h3>Rule card · complete it</h3>
+    <div class="rule">
+      <div class="r"><span>too + adjective</span><span>It's <input class="gap" data-ans="too" aria-label="too"> sweet. (= more than I want)</span></div>
+      <div class="r"><span>adjective + enough</span><span>It isn't crunchy <input class="gap" data-ans="enough" aria-label="enough after adjective"> (enough comes <b>after</b> the adjective!)</span></div>
+      <div class="r"><span>enough + noun</span><span>There isn't <input class="gap" data-ans="enough" aria-label="enough before noun"> sugar. (enough comes <b>before</b> a noun)</span></div>
+      <div class="r"><span>too much + uncountable</span><span>There's too <input class="gap" data-ans="much" aria-label="too much"> cream.</span></div>
+      <div class="r"><span>too many + countable</span><span>There are too <input class="gap" data-ans="many" aria-label="too many"> pearls.</span></div>
+      <div class="r"><span>+ to + verb</span><span>I'm too full <input class="gap" data-ans="to" aria-label="to"> eat dessert. · She's old enough to drive.</span></div>
+    </div>
+    <div class="actions"><button class="btn" type="button" data-check="rule">Check</button><button class="btn ghost" type="button" data-resetgap="rule">Reset</button><span class="score"></span></div>
+  </div>
+  <div class="panel">
+    <h3>A · Choose the correct option</h3>
+    <div class="list" id="gQ"></div>
+    <div class="actions"><button class="btn ghost" type="button" data-reset="gQ">New order</button></div>
+  </div>
+  <div class="panel" id="rw">
+    <h3>B · Say it another way</h3>
+    <p class="instr">Rewrite the sentence with the word in brackets. Keep the same meaning.</p>
+    <div class="gl"><span class="n">1</span><i>The bubble tea is too cold. (warm)</i><br>The bubble tea isn't <input class="gap" data-ans="warm enough" aria-label="R1"></div>
+    <div class="gl"><span class="n">2</span><i>The chocolate isn't cheap enough. (expensive)</i><br>The chocolate is <input class="gap" data-ans="too expensive" aria-label="R2"></div>
+    <div class="gl"><span class="n">3</span><i>The gummy bear is too big to eat alone. (small)</i><br>The gummy bear isn't <input class="gap" data-ans="small enough" aria-label="R3"> to eat alone.</div>
+    <div class="gl"><span class="n">4</span><i>My brother is too young to watch horror films. (old)</i><br>My brother isn't <input class="gap" data-ans="old enough" aria-label="R4"> to watch horror films.</div>
+    <div class="gl"><span class="n">5</span><i>The croissant isn't fresh enough. (old)</i><br>The croissant is <input class="gap" data-ans="too old" aria-label="R5"></div>
+    <div class="gl"><span class="n">6</span><i>The line was too long. (short)</i><br>The line wasn't <input class="gap" data-ans="short enough" aria-label="R6"></div>
+    <div class="actions"><button class="btn" type="button" data-check="rw">Check</button><button class="btn ghost" type="button" data-resetgap="rw">Reset</button><span class="score"></span></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>German trap: <i>zu</i> = too, but <i>genug</i> goes <b>after</b> adjectives in English too ("gut genug" = good enough). Easy! But ✗ <i>enough good</i> still appears. Check it.</li>
+      <li>Don't mix up <i>too</i> (zu) / <i>to</i> (zu, nach) / <i>two</i> (zwei). They sound the same!</li>
+    </ul>
+  </details>
+</section>
+
+<div class="break"><span>🧋</span>5-minute break: snack time? Next, you're a famous food critic!</div>
+
+<!-- 6 -->
+<section class="stage" id="s6">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 6 · Video + role-play</span><span class="chip">15 min</span><span class="chip vid">🎬</span></div>
+    <h2>The food critic 🎙️</h2>
+    <p class="instr"><b>Part A:</b> watch the start of a viral snack taste test and rate the snacks like a critic. <b>Part B:</b> your teacher brings dishes from their "café" and you review them!</p>
+  </div>
+  <div class="panel vid">
+    <div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/2ozy3vSrG5A?rel=0" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    <a class="vlink" href="https://www.youtube.com/watch?v=2ozy3vSrG5A" target="_blank" rel="noopener"><span class="play" aria-hidden="true">▶</span><span><b>Testing TOP 5 VIRAL TikTok Snacks of 2025!</b><small>YouTube · watch the first 3–4 minutes</small></span></a>
+  </div>
+  <div class="panel">
+    <h3>Critic cards</h3>
+    <p class="instr">Rate each snack from 0 to 5. Then explain one score with <b>too</b> or <b>enough</b>: "It's too salty, so I gave it a 2."</p>
+    <div class="critic" id="critic"></div>
+  </div>
+  <div class="panel">
+    <h3>Part B · Taste-test show</h3>
+    <p class="instr">Your teacher is the café owner. Press "Next dish". Listen to the description, ask questions, then give your review: 2 good things, 1 problem with <b>too / not … enough</b>, and a score.</p>
+    <div class="dish" id="dish"><span class="nm">Press "Next dish"</span></div>
+    <div class="actions"><button class="btn dark" type="button" id="dishBtn">Next dish</button></div>
+    <div class="phr"><span>It's absolutely delicious!</span><span>It's a bit too…</span><span>It isn't … enough.</span><span>It needs more / less…</span><span>It's overrated.</span><span>It's worth the money / not worth it.</span><span>I'd give it 4 out of 5.</span></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>If you're in person, bring 2–3 cheap snacks (crisps, gummy bears, a cookie) for a real blind taste test. It works brilliantly!</li>
+      <li>Swap roles after 3 dishes: she presents a dish and you are the very strict critic.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 7 -->
+<section class="stage" id="s7">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 7 · Game</span><span class="chip">10 min</span><span class="chip game">Tier list</span></div>
+    <h2>The ultimate food trend tier list 🏆</h2>
+    <p class="instr">Click a food trend, then click a tier. <b>S</b> = the best, <b>D</b> = never again! Explain each choice with <b>too / enough</b>. Then make your teacher's tier list and compare.</p>
+  </div>
+  <div class="panel">
+    <div class="tpool" id="tpool"></div>
+    <div class="tiers" id="tiers"></div>
+    <div class="actions"><button class="btn ghost" type="button" id="tierReset">Reset</button></div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="stage" id="s8">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 8 · Freer speaking</span><span class="chip">15 min</span></div>
+    <h2>Create a viral snack for a Freiburg café ✨</h2>
+    <p class="instr">A café near the Münster wants a new snack that will go viral on TikTok. Build it, name it, and pitch it in a 1-minute "TikTok ad". Your teacher is the café owner: they'll find problems ("Isn't it too expensive?"), so be ready to answer!</p>
+  </div>
+  <div class="panel">
+    <div class="builder">
+      <label for="b1">Base<select id="b1"><option>Brezel</option><option>waffle</option><option>croissant</option><option>bubble tea</option><option>Black Forest cake</option><option>cookie</option><option>doughnut</option></select></label>
+      <label for="b2">Filling<select id="b2"><option>pistachio cream</option><option>Nutella</option><option>cherry jam</option><option>cheese</option><option>vanilla cream</option><option>peanut butter</option><option>nothing</option></select></label>
+      <label for="b3">Topping<select id="b3"><option>crunchy kataifi</option><option>gummy bears</option><option>popping candy</option><option>caramel sauce</option><option>salt flakes</option><option>chocolate drip</option><option>edible glitter</option></select></label>
+      <label for="b4">Colour<select id="b4"><option>rainbow</option><option>pastel pink</option><option>pistachio green</option><option>black</option><option>golden</option><option>blue</option></select></label>
+      <label for="b5">Price<input id="b5" type="number" min="1" max="30" value="6"></label>
+      <label for="b6">Name (or press "Surprise me")<input id="b6" type="text" placeholder="e.g. The Münster Monster"></label>
+    </div>
+    <div class="actions"><button class="btn" type="button" id="buildBtn">Make my snack</button><button class="btn ghost" type="button" id="randBtn">Surprise me 🎲</button></div>
+    <div class="snack" id="snack" aria-live="polite"><span class="big">🧁</span><span class="nm">Your snack appears here</span></div>
+    <h3>Your 1-minute TikTok ad must include…</h3>
+    <div class="chips" id="adChips"></div>
+    <div class="actions"><button class="btn pist" type="button" id="adBtn">Start 1:00</button><span class="timer" id="adTimer">1:00</span></div>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="stage" id="s9">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 9 · Wrap-up</span><span class="chip">5 min</span></div>
+    <h2>Final taste test</h2>
+  </div>
+  <div class="panel">
+    <div class="list" id="exitQ"></div>
+    <div class="actions"><button class="btn ghost" type="button" data-reset="exitQ">New order</button></div>
+  </div>
+</section>
+
+<div class="ext-band"><b>Extension (+15 min)</b><span>If you have time left or want more grammar practice.</span></div>
+
+<!-- X1 -->
+<section class="stage" id="x1">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Extension · Game</span><span class="chip ext">+10–15 min</span></div>
+    <h2>Too, enough or just right? ⚡</h2>
+    <p class="instr">Read the situation. What's the problem? Tap fast!</p>
+  </div>
+  <div class="panel qf" id="qf">
+    <div class="timer" id="qfTimer">1:00</div>
+    <div class="stats"><span>Score <b id="qfScore">0</b></span><span>Streak <b id="qfStreak">0</b> 🔥</span><span>Best <b id="qfBest">0</b></span></div>
+    <div class="expr" id="qfExpr">Ready?</div>
+    <div class="btns" id="qfBtns"></div>
+    <p class="fb" id="qfFb" aria-live="polite"></p>
+    <button class="btn pist" type="button" id="qfStart">Start 60 seconds</button>
+  </div>
+</section>
+
+<footer>Viral Snack Lab · adjectives &amp; too / enough · 120–135 min</footer>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const norm = s => s.toLowerCase().replace(/[’‘`]/g, "'").replace(/[?.!,]/g, "").replace(/\s+/g, " ").trim();
+  const fmt = n => Math.floor(n / 60) + ":" + String(n % 60).padStart(2, "0");
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+
+  $("themeBtn").addEventListener("click", () => {
+    const r = document.documentElement;
+    const cur = r.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    r.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+  });
+
+  // ---- MC ----
+  const MC = {};
+  function buildMC(id) {
+    const box = $(id); box.innerHTML = "";
+    MC[id].forEach((it, i) => {
+      const q = document.createElement("div"); q.className = "q";
+      q.innerHTML = `<span>${i + 1}. ${it[0]}</span><div class="opts"></div><span class="fb"></span>`;
+      const o = q.querySelector(".opts"), fb = q.querySelector(".fb");
+      shuffle(it[1].map((t, j) => [t, j])).forEach(([t, j]) => {
+        const b = document.createElement("button"); b.type = "button"; b.textContent = t;
+        b.addEventListener("click", () => { if (q.dataset.done) return; if (j === it[2]) { b.classList.add("right"); q.dataset.done = 1; fb.textContent = it[3] ? "✓ " + it[3] : "✓ Correct!"; } else { b.classList.add("wrong"); fb.textContent = "Try again!"; } });
+        o.appendChild(b);
+      });
+      box.appendChild(q);
+    });
+  }
+  document.querySelectorAll("[data-reset]").forEach(b => b.addEventListener("click", () => buildMC(b.dataset.reset)));
+  document.querySelectorAll("[data-check]").forEach(b => b.addEventListener("click", () => {
+    const sec = $(b.dataset.check); let ok = 0, n = 0;
+    sec.querySelectorAll(".key").forEach(k => k.remove());
+    sec.querySelectorAll("input.gap").forEach(inp => { n++; const good = inp.dataset.ans.split("|").map(norm).includes(norm(inp.value)); inp.classList.toggle("right", good); inp.classList.toggle("wrong", !good); if (good) ok++; else { const k = document.createElement("span"); k.className = "key"; k.textContent = "→ " + inp.dataset.ans.split("|")[0]; inp.after(k); } });
+    sec.querySelector(".score").textContent = ok + " / " + n + (ok === n ? " 🎉" : "");
+  }));
+  document.querySelectorAll("[data-resetgap]").forEach(b => b.addEventListener("click", () => {
+    const sec = $(b.dataset.resetgap); sec.querySelectorAll("input.gap").forEach(i => { i.value = ""; i.classList.remove("right", "wrong"); }); sec.querySelectorAll(".key").forEach(k => k.remove()); sec.querySelector(".score").textContent = "";
+  }));
+
+  // ---- 1 cards ----
+  [["🧋","bubble tea"],["🍫","Dubai chocolate"],["🍬","giant gummy bear"],["🥐","croissant"],["🍪","cookie"],["🍩","doughnut"],["🍡","mochi"],["🌶️","spicy crisps (Takis)"],["🥨","Brezel / pretzel"],["🍦","soft-serve ice cream"]].forEach(([e, w]) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "vcard";
+    b.innerHTML = `<span class="emo" aria-hidden="true">${e}</span><span class="lbl">${w}</span><span class="hint">tap to check</span>`;
+    b.addEventListener("click", () => b.classList.toggle("open")); $("vcards").appendChild(b);
+  });
+
+  // ---- 2 sort ----
+  const BOX = [["Taste", "var(--berry)", "var(--berry-soft)"], ["Texture", "var(--taro)", "var(--taro-soft)"], ["Looks", "var(--pist)", "var(--pist-soft)"], ["Opinion", "var(--choco)", "var(--choco-soft)"]];
+  const WORDS = [["sweet", 0], ["salty", 0], ["sour", 0], ["bitter", 0], ["spicy", 0], ["crunchy", 1], ["chewy", 1], ["creamy", 1], ["sticky", 1], ["fluffy", 1], ["colourful", 2], ["huge", 2], ["tiny", 2], ["messy", 2], ["delicious", 3], ["disgusting", 3], ["addictive", 3], ["overrated", 3]];
+  let picked = null;
+  function buildSort() {
+    picked = null; $("sortScore").textContent = ""; $("pool").innerHTML = "";
+    $("bks").innerHTML = BOX.map((b, i) => `<div class="bk" style="--c:${b[1]};--cs:${b[2]}" data-i="${i}" role="button" tabindex="0"><span class="lbl">${b[0]}</span></div>`).join("");
+    $("bks").querySelectorAll(".bk").forEach(bk => { const drop = () => { if (!picked) return; picked.classList.remove("picked"); bk.appendChild(picked); picked = null; }; bk.addEventListener("click", drop); bk.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); drop(); } }); });
+    shuffle(WORDS).forEach(([w, i]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = w; b.dataset.i = i; b.addEventListener("click", e => { e.stopPropagation(); if (b.parentElement.id !== "pool") { $("pool").appendChild(b); b.classList.remove("right", "wrong"); return; } $("pool").querySelectorAll("button").forEach(x => x.classList.remove("picked")); picked = b; b.classList.add("picked"); }); $("pool").appendChild(b); });
+  }
+  $("sortCheck").addEventListener("click", () => {
+    let ok = 0;
+    $("bks").querySelectorAll(".bk").forEach(bk => bk.querySelectorAll("button").forEach(b => { const g = b.dataset.i === bk.dataset.i; b.classList.toggle("right", g); b.classList.toggle("wrong", !g); if (g) ok++; }));
+    const left = $("pool").querySelectorAll("button").length;
+    $("sortScore").textContent = ok + " / " + WORDS.length + (left ? ` · ${left} still to sort` : "") + (ok === WORDS.length ? " 🎉" : "");
+  });
+  $("sortReset").addEventListener("click", buildSort); buildSort();
+
+  // ---- 3 reading ----
+  MC.readQ = [
+    ["Where does bubble tea come from?", ["Japan", "Taiwan", "Dubai"], 1],
+    ["What are tapioca pearls like?", ["soft and chewy", "hard and crunchy", "sour and spicy"], 0],
+    ["What is inside Dubai chocolate?", ["strawberry jam", "caramel and nuts", "pistachio cream and crispy pastry"], 2],
+    ["What happened in Germany in 2024?", ["Dubai chocolate was banned.", "Many shops sold out of Dubai chocolate.", "Dubai chocolate got cheaper."], 1],
+    ["Why are giant sweets popular online?", ["They look crazy in videos.", "They're healthy.", "They're cheap."], 0],
+    ["What's the problem with a giant gummy bear?", ["It isn't sweet enough.", "It's too small.", "It has a lot of sugar."], 2]
+  ];
+  buildMC("readQ");
+
+  // ---- 4 videos ----
+  ["sweet", "crunchy", "creamy", "rich", "expensive", "nutty", "thick", "delicious", "too sweet", "worth it", "overrated", "messy"].forEach(t => { const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.addEventListener("click", () => b.classList.toggle("on")); $("ticks1").appendChild(b); });
+  const STEPS = ["Grind fresh cassava root on a stone.", "Get the pure white starch out of the cassava.", "Steam the taro and sweet potato.", "Mix the starch with the taro and sweet potato.", "Roll the dough into small colourful pearls.", "Cook the pearls until they're soft and chewy.", "Caramelise sugar and brew black tea with milk.", "Put the pearls in a cup and pour in the milk tea."];
+  let order = [];
+  function drawSteps() {
+    $("steps").innerHTML = "";
+    order.forEach((si, k) => {
+      const d = document.createElement("div"); d.className = "stp";
+      d.innerHTML = `<span class="no">${k + 1}</span><span>${STEPS[si]}</span><span class="mv"><button type="button" aria-label="Move up">↑</button><button type="button" aria-label="Move down">↓</button></span>`;
+      const [up, dn] = d.querySelectorAll("button");
+      up.addEventListener("click", () => { if (k > 0) { [order[k - 1], order[k]] = [order[k], order[k - 1]]; drawSteps(); } });
+      dn.addEventListener("click", () => { if (k < order.length - 1) { [order[k + 1], order[k]] = [order[k], order[k + 1]]; drawSteps(); } });
+      $("steps").appendChild(d);
+    });
+  }
+  function shuffleSteps() { do { order = shuffle(STEPS.map((_, i) => i)); } while (order.every((v, i) => v === i)); $("stScore").textContent = ""; drawSteps(); }
+  $("stCheck").addEventListener("click", () => { let ok = 0; [...$("steps").children].forEach((d, k) => { const g = order[k] === k; d.classList.toggle("right", g); d.classList.toggle("wrong", !g); if (g) ok++; }); $("stScore").textContent = ok + " / " + STEPS.length + (ok === STEPS.length ? " 🎉" : ""); });
+  $("stReset").addEventListener("click", shuffleSteps); shuffleSteps();
+
+  // ---- 5 grammar ----
+  MC.gQ = [
+    ["I can't drink this tea. It's ___ hot.", ["enough", "too", "very enough"], 1],
+    ["This chocolate isn't ___.", ["sweet enough", "enough sweet", "too enough"], 0, "enough comes after the adjective."],
+    ["We don't have ___ for two bubble teas.", ["money enough", "too money", "enough money"], 2, "enough comes before a noun."],
+    ["There are too ___ gummy bears in this bag. I feel sick!", ["much", "many", "enough"], 1],
+    ["There's too ___ sugar in this drink.", ["many", "much", "enough"], 1],
+    ["He's 12. He isn't ___ to watch that film.", ["old enough", "too old", "enough old"], 0],
+    ["The giant lollipop is ___ big to eat in one day.", ["enough", "too", "to"], 1],
+    ["Is the croissant ___ for you?", ["enough warm", "warm enough", "too enough"], 1]
+  ];
+  buildMC("gQ");
+
+  // ---- 6 critic ----
+  const CRIT = ["Snack 1", "Snack 2", "Snack 3", "Snack 4", "Snack 5"];
+  CRIT.forEach((nm, i) => {
+    const c = document.createElement("div"); c.className = "ccard";
+    c.innerHTML = `<h3 contenteditable="true" aria-label="Snack name, editable">${nm}</h3>` + ["Taste", "Texture", "Looks", "Value"].map((k, j) => `<label for="cr${i}${j}"><span>${k}</span><input id="cr${i}${j}" type="range" min="0" max="5" value="3"><output>3</output></label>`).join("") + `<span class="total">Total: <span>12</span> / 20</span>`;
+    const ins = c.querySelectorAll("input"), tot = c.querySelector(".total span");
+    ins.forEach(inp => inp.addEventListener("input", () => { inp.nextElementSibling.textContent = inp.value; tot.textContent = [...ins].reduce((s, x) => s + +x.value, 0); }));
+    $("critic").appendChild(c);
+  });
+  const DISHES = [
+    ["🥨🍫 The Choco-Brezel", "A soft Freiburg pretzel dipped in thick dark chocolate, with salt on top. Price: €4.50."],
+    ["🧋🍒 Black Forest Bubble Tea", "Chocolate milk tea with cherry pearls and whipped cream. It's 1 litre! Price: €8."],
+    ["🍪🥐 The Crookie", "Half croissant, half cookie, baked together and filled with Nutella. Price: €6."],
+    ["🍬 The Mega Gummy", "A gummy bear as big as your hand, in 5 colours. Price: €12."],
+    ["🌶️🍦 Fire &amp; Ice", "Vanilla ice cream with spicy chilli crisps on top. Price: €5."],
+    ["🍫💚 Dubai Waffle", "A waffle with pistachio cream, crunchy pastry and gold glitter. Price: €14."]
+  ];
+  let dDeck = [], dI = 0;
+  $("dishBtn").addEventListener("click", () => { if (dI >= dDeck.length) { dDeck = shuffle(DISHES); dI = 0; } const d = dDeck[dI++]; $("dish").innerHTML = `<span class="nm">${d[0]}</span><span>${d[1]}</span>`; });
+
+  // ---- 7 tier list ----
+  const TIER = [["S", "#FF7F7F"], ["A", "#FFBF7F"], ["B", "#FFDF7F"], ["C", "#BFFF7F"], ["D", "#7FBFFF"]];
+  const TREND = ["🧋 bubble tea", "🍫 Dubai chocolate", "🍬 giant gummy bear", "🍪🥐 crookie", "☁️ cloud bread", "🥒 pickle-flavoured snacks", "🌈 rainbow bagel", "🍯 frozen honey", "🌶️ Takis", "🍡 mochi ice cream", "☕ dalgona coffee", "🍓 strawberry Dubai cups"];
+  let tPick = null;
+  function buildTiers() {
+    tPick = null; $("tpool").innerHTML = ""; $("tiers").innerHTML = "";
+    TIER.forEach(([t, c]) => {
+      const row = document.createElement("div"); row.className = "tier"; row.setAttribute("role", "button"); row.tabIndex = 0;
+      row.innerHTML = `<span class="t" style="background:${c}">${t}</span><div class="items"></div>`;
+      const drop = () => { if (!tPick) return; tPick.classList.remove("picked"); row.querySelector(".items").appendChild(tPick); tPick = null; };
+      row.addEventListener("click", drop); row.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); drop(); } });
+      $("tiers").appendChild(row);
+    });
+    TREND.forEach(t => { const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.addEventListener("click", e => { e.stopPropagation(); if (b.parentElement.id !== "tpool") { $("tpool").appendChild(b); return; } $("tpool").querySelectorAll("button").forEach(x => x.classList.remove("picked")); tPick = b; b.classList.add("picked"); }); $("tpool").appendChild(b); });
+  }
+  $("tierReset").addEventListener("click", buildTiers); buildTiers();
+
+  // ---- 8 snack builder ----
+  const EMO = { "Brezel": "🥨", "waffle": "🧇", "croissant": "🥐", "bubble tea": "🧋", "Black Forest cake": "🍰", "cookie": "🍪", "doughnut": "🍩" };
+  const N1 = ["Münster", "Schlossberg", "Bächle", "Black Forest", "Freiburg", "Dreisam", "Vauban"], N2 = ["Monster", "Bomb", "Dream", "Explosion", "Crunch", "Cloud", "Magic"];
+  function makeSnack() {
+    const v = id => $(id).value, nm = v("b6").trim() || `The ${pick(N1)} ${pick(N2)}`;
+    if (!v("b6").trim()) $("b6").value = nm;
+    $("snack").innerHTML = `<span class="big">${EMO[v("b1")] || "🧁"}✨</span><span class="nm">${nm}</span><span>A ${v("b4")} ${v("b1")}${v("b2") !== "nothing" ? " filled with " + v("b2") : ""}, topped with ${v("b3")}.</span><b>€${(+v("b5") || 0).toFixed(2)}</b>`;
+  }
+  $("buildBtn").addEventListener("click", makeSnack);
+  $("randBtn").addEventListener("click", () => { ["b1", "b2", "b3", "b4"].forEach(id => { const s = $(id); s.selectedIndex = Math.floor(Math.random() * s.options.length); }); $("b5").value = 3 + Math.floor(Math.random() * 10); $("b6").value = ""; makeSnack(); });
+  ["4 taste / texture adjectives", "too + adjective", "… enough", "the price: is it worth it?", "who it's perfect for", "a catchy slogan", "\"You have to try it!\""].forEach(t => { const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.addEventListener("click", () => b.classList.toggle("used")); $("adChips").appendChild(b); });
+  let aIv = null, aLeft = 60;
+  $("adBtn").addEventListener("click", () => {
+    const t = $("adTimer");
+    if (aIv) { clearInterval(aIv); aIv = null; aLeft = 60; t.textContent = "1:00"; t.classList.remove("done"); $("adBtn").textContent = "Start 1:00"; return; }
+    $("adBtn").textContent = "Stop"; t.classList.remove("done");
+    aIv = setInterval(() => { aLeft--; t.textContent = fmt(aLeft); if (aLeft <= 0) { clearInterval(aIv); aIv = null; aLeft = 60; t.textContent = "Viral! 🔥"; t.classList.add("done"); $("adBtn").textContent = "Start 1:00"; } }, 1000);
+  });
+
+  // ---- 9 exit ----
+  MC.exitQ = [
+    ["This bubble tea has too ___ ice.", ["many", "much", "enough"], 1],
+    ["The chocolate isn't ___.", ["enough cheap", "too cheap enough", "cheap enough"], 2],
+    ["Tapioca pearls are soft and ___.", ["chewy", "crunchy", "bitter"], 0],
+    ["I'm too tired ___ go out.", ["for", "to", "too"], 1],
+    ["A food that everybody talks about but isn't that good is…", ["addictive", "overrated", "delicious"], 1],
+    ["We have ___ chairs for everyone. Sit down!", ["enough", "too many", "too"], 0, "enough + noun."]
+  ];
+  buildMC("exitQ");
+
+  // ---- X1 quick fire ----
+  const QF = [["The soup burns your mouth.", "too hot"], ["You can't reach the top shelf.", "not tall enough"], ["The coffee is perfect.", "just right"], ["There's so much sugar you feel sick.", "too sweet"], ["Your bag doesn't fit all your books.", "not big enough"], ["The cake is ready to eat.", "just right"], ["You can't afford the chocolate.", "too expensive"], ["The ice cream is melting already.", "not cold enough"], ["The film was 3 hours long and boring.", "too long"], ["You can't hear the music.", "not loud enough"], ["The jeans fit perfectly.", "just right"], ["The crisps are soft and old.", "not crunchy enough"]];
+  const OPTS = ["too …", "not … enough", "just right"];
+  const kind = a => a === "just right" ? 2 : a.startsWith("too") ? 0 : 1;
+  OPTS.forEach((o, i) => { const b = document.createElement("button"); b.type = "button"; b.className = "big"; b.textContent = o; b.dataset.k = i; b.style.background = ["var(--berry)", "var(--taro)", "var(--pist)"][i]; b.disabled = true; $("qfBtns").appendChild(b); });
+  let qfDeck = [], qfI = 0, qfS = 0, qfK = 0, qfBest = 0, qfLeft = 60, qfIv = null;
+  const qfBtns = $("qfBtns").querySelectorAll("button");
+  function qfNext() { if (qfI >= qfDeck.length) { qfDeck = shuffle(QF); qfI = 0; } $("qfExpr").textContent = qfDeck[qfI][0]; }
+  $("qfStart").addEventListener("click", () => {
+    clearInterval(qfIv); qfDeck = shuffle(QF); qfI = 0; qfS = 0; qfK = 0; qfLeft = 60;
+    $("qfScore").textContent = 0; $("qfStreak").textContent = 0; $("qfFb").textContent = ""; $("qfTimer").textContent = "1:00"; $("qfTimer").classList.remove("done");
+    qfBtns.forEach(b => b.disabled = false); $("qfStart").disabled = true; qfNext();
+    qfIv = setInterval(() => { qfLeft--; $("qfTimer").textContent = fmt(qfLeft); if (qfLeft <= 0) { clearInterval(qfIv); qfBtns.forEach(b => b.disabled = true); $("qfStart").disabled = false; $("qfStart").textContent = "Play again"; $("qfTimer").textContent = "Time!"; $("qfTimer").classList.add("done"); $("qfExpr").textContent = qfS + " points"; if (qfS > qfBest) { qfBest = qfS; $("qfBest").textContent = qfBest; $("qfFb").textContent = "New best score! 🏆"; } } }, 1000);
+  });
+  qfBtns.forEach(b => b.addEventListener("click", () => {
+    const it = qfDeck[qfI], good = +b.dataset.k === kind(it[1]);
+    if (good) { qfS++; qfK++; $("qfFb").textContent = "✓ " + it[1] + "! Now say the full sentence."; } else { qfK = 0; $("qfFb").textContent = "✗ It's " + it[1]; }
+    $("qfScore").textContent = qfS; $("qfStreak").textContent = qfK; qfI++; qfNext();
+  }));
+})();
+</script>
+
+</body>
+</html>
