@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7A Food &amp; Shopping — Homework</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS — light
+═══════════════════════════════════════════ */
+:root{
+  --teal:#1BBCB3;--purple:#7B4FD6;--orange:#E8653A;
+  --yellow:#F9C23C;--coral:#E04565;--green:#22c55e;
+  --teal-soft:rgba(27,188,179,.13);--purple-soft:rgba(123,79,214,.13);
+  --orange-soft:rgba(232,101,58,.13);--yellow-soft:rgba(249,194,60,.15);
+  --green-soft:rgba(34,197,94,.12);--coral-soft:rgba(224,69,101,.12);
+  --bg:#f5f7fa;--surface:#ffffff;--surface2:#f0f2f7;
+  --text:#1a1d2e;--text2:#5a6075;
+  --border:rgba(0,0,0,.08);--shadow:0 2px 12px rgba(0,0,0,.07);
+  --radius:16px;--radius-sm:10px;--radius-xs:6px;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#131520;--surface:#1e2130;--surface2:#252838;
+    --text:#eceef5;--text2:#9199b8;
+    --border:rgba(255,255,255,.07);--shadow:0 2px 12px rgba(0,0,0,.3);
+    --teal-soft:rgba(27,188,179,.18);--purple-soft:rgba(123,79,214,.18);
+    --orange-soft:rgba(232,101,58,.18);--yellow-soft:rgba(249,194,60,.18);
+    --green-soft:rgba(34,197,94,.16);--coral-soft:rgba(224,69,101,.16);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131520;--surface:#1e2130;--surface2:#252838;
+  --text:#eceef5;--text2:#9199b8;
+  --border:rgba(255,255,255,.07);--shadow:0 2px 12px rgba(0,0,0,.3);
+  --teal-soft:rgba(27,188,179,.18);--purple-soft:rgba(123,79,214,.18);
+  --orange-soft:rgba(232,101,58,.18);--yellow-soft:rgba(249,194,60,.18);
+  --green-soft:rgba(34,197,94,.16);--coral-soft:rgba(224,69,101,.16);
+}
+
+/* ═══════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Inter',sans-serif;font-size:16px;line-height:1.6;
+  background:var(--bg);color:var(--text);min-height:100vh;
+}
+
+/* ═══════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════ */
+.site-header{
+  background:linear-gradient(135deg,var(--teal) 0%,var(--purple) 100%);
+  color:#fff;padding:2rem 1.5rem 1.75rem;position:relative;
+}
+.hdr-inner{max-width:720px;margin:0 auto;}
+.hdr-eyebrow{
+  font-family:'Nunito',sans-serif;font-size:.7rem;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;opacity:.8;margin-bottom:.4rem;
+}
+.hdr-title{
+  font-family:'Nunito',sans-serif;font-size:1.75rem;font-weight:900;line-height:1.15;
+}
+.hdr-sub{font-size:.9rem;opacity:.88;margin-top:.35rem;}
+.theme-btn{
+  position:absolute;top:1rem;right:1rem;
+  background:rgba(255,255,255,.18);border:none;border-radius:50px;
+  color:#fff;cursor:pointer;font-family:'Inter',sans-serif;
+  font-size:.82rem;font-weight:500;padding:.3rem .7rem;
+  transition:background .2s;
+}
+.theme-btn:hover{background:rgba(255,255,255,.28);}
+
+/* ═══════════════════════════════════════════
+   STICKY NAME BAR
+═══════════════════════════════════════════ */
+.name-bar{
+  position:sticky;top:0;z-index:10;
+  background:var(--surface);border-bottom:1.5px solid var(--border);
+  box-shadow:0 1px 8px rgba(0,0,0,.06);padding:.6rem 1.5rem;
+}
+.name-bar-inner{
+  max-width:720px;margin:0 auto;
+  display:flex;align-items:center;gap:.7rem;
+}
+.name-bar label{
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:.85rem;
+  color:var(--text2);white-space:nowrap;
+}
+#nameInput{
+  flex:1;border:1.5px solid var(--border);border-radius:var(--radius-xs);
+  background:var(--bg);color:var(--text);padding:.35rem .7rem;
+  font-size:.9rem;font-family:'Inter',sans-serif;outline:none;
+  transition:border-color .2s;
+}
+#nameInput:focus{border-color:var(--teal);}
+
+/* ═══════════════════════════════════════════
+   PROGRESS
+═══════════════════════════════════════════ */
+.progress-wrap{max-width:720px;margin:1.2rem auto .4rem;padding:0 1rem;}
+.progress-label{
+  font-size:.78rem;color:var(--text2);font-family:'Nunito',sans-serif;
+  font-weight:700;margin-bottom:.3rem;letter-spacing:.03em;
+}
+.progress-track{
+  background:var(--surface2);border-radius:50px;height:8px;
+  overflow:hidden;border:1px solid var(--border);
+}
+#pfill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--teal),var(--purple));
+  border-radius:50px;transition:width .4s cubic-bezier(.4,0,.2,1);
+}
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+.main{max-width:720px;margin:0 auto;padding:0 1rem 3rem;}
+
+/* ═══════════════════════════════════════════
+   EXERCISE CARD
+═══════════════════════════════════════════ */
+.ex-card{
+  background:var(--surface);border-radius:var(--radius);
+  box-shadow:var(--shadow);border:1px solid var(--border);
+  margin-top:1.25rem;overflow:hidden;
+}
+.ex-hd{
+  display:flex;align-items:center;gap:.7rem;
+  padding:.9rem 1.25rem .6rem;border-bottom:1px solid var(--border);
+}
+.ex-num{
+  font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:900;
+  letter-spacing:.1em;text-transform:uppercase;
+  background:var(--teal);color:#fff;padding:.18rem .55rem;border-radius:50px;
+}
+.ex-ttl{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;}
+.ex-body{padding:1rem 1.25rem 1.25rem;}
+.ex-instr{font-size:.88rem;color:var(--text2);margin-bottom:.85rem;line-height:1.5;}
+.ex-instr strong{color:var(--text);}
+
+/* ═══════════════════════════════════════════
+   EX 1 — UNSCRAMBLE
+═══════════════════════════════════════════ */
+.scr-list{
+  list-style:none;
+  display:grid;grid-template-columns:1fr 1fr;gap:.5rem .65rem;
+}
+@media(max-width:480px){.scr-list{grid-template-columns:1fr;}}
+.scr-item{
+  display:flex;align-items:center;gap:.4rem;
+  background:var(--surface2);border-radius:var(--radius-xs);
+  padding:.45rem .65rem;
+}
+.scr-num{
+  font-size:.7rem;color:var(--text2);font-family:'Nunito',sans-serif;
+  font-weight:700;min-width:1.1rem;flex-shrink:0;
+}
+.scr-word{
+  font-family:'Nunito',sans-serif;font-weight:800;
+  color:var(--purple);font-size:.88rem;flex-shrink:0;
+}
+.scr-arr{color:var(--text2);font-size:.8rem;flex-shrink:0;}
+.scr-inp{
+  flex:1;min-width:0;border:1.5px solid var(--border);
+  border-radius:var(--radius-xs);background:var(--surface);
+  color:var(--text);padding:.22rem .45rem;font-size:.86rem;
+  font-family:'Inter',sans-serif;outline:none;
+  transition:border-color .2s;
+}
+.scr-inp:focus{border-color:var(--teal);}
+.scr-inp.correct{background:var(--green-soft);border-color:var(--green);color:var(--green);}
+.scr-inp.wrong{background:var(--coral-soft);border-color:var(--coral);color:var(--coral);}
+.scr-inp.revealed{background:var(--yellow-soft);border-color:var(--yellow);}
+
+/* ═══════════════════════════════════════════
+   MCQ (Ex 3, Ex 5)
+═══════════════════════════════════════════ */
+.mcq-list{list-style:none;display:flex;flex-direction:column;gap:.55rem;}
+.mcq-item{
+  background:var(--surface2);border-radius:var(--radius-sm);
+  padding:.6rem .85rem;
+}
+.mcq-stem{font-size:.9rem;margin-bottom:.42rem;line-height:1.5;}
+.mcq-opts{display:flex;flex-wrap:wrap;gap:.38rem;}
+.mcq-btn{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:50px;color:var(--text);cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:.84rem;font-weight:700;
+  padding:.28rem .82rem;transition:all .15s;
+}
+.mcq-btn:hover:not([disabled]){border-color:var(--teal);background:var(--teal-soft);}
+.mcq-btn.selected{border-color:var(--purple);background:var(--purple-soft);color:var(--purple);}
+.mcq-btn.correct{border-color:var(--green);background:var(--green-soft);color:var(--green);cursor:default;}
+.mcq-btn.wrong{border-color:var(--coral);background:var(--coral-soft);color:var(--coral);cursor:default;}
+.mcq-btn.show-ans{border-color:var(--teal);background:var(--teal-soft);color:var(--teal);cursor:default;}
+.mcq-btn[disabled]{cursor:default;}
+
+/* ═══════════════════════════════════════════
+   GAP-FILL (Ex 6)
+═══════════════════════════════════════════ */
+.gf-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;}
+.gf-item{
+  background:var(--surface2);border-radius:var(--radius-sm);
+  padding:.55rem .85rem;font-size:.9rem;line-height:1.6;
+}
+.gf-num{
+  font-size:.7rem;color:var(--text2);font-family:'Nunito',sans-serif;
+  font-weight:700;margin-right:.3rem;
+}
+.gf-inp{
+  border:none;border-bottom:2px solid var(--border);
+  background:transparent;color:var(--text);
+  font-family:'Inter',sans-serif;font-size:.88rem;
+  width:4.2rem;text-align:center;
+  outline:none;padding:.03rem .1rem;
+  transition:border-color .2s;
+  display:inline-block;vertical-align:baseline;
+}
+.gf-inp:focus{border-color:var(--teal);}
+.gf-inp.correct{border-color:var(--green);color:var(--green);}
+.gf-inp.wrong{border-color:var(--coral);color:var(--coral);}
+.gf-inp.revealed{border-color:var(--yellow);}
+
+/* ═══════════════════════════════════════════
+   SCORE + BUTTONS
+═══════════════════════════════════════════ */
+.score-line{
+  font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;
+  color:var(--text2);margin-top:.55rem;min-height:1.2rem;
+}
+.btn-row{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin-top:.8rem;}
+.btn{
+  border:none;border-radius:50px;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:.84rem;font-weight:800;
+  padding:.38rem 1.05rem;transition:all .15s;
+}
+.btn-check{background:var(--teal);color:#fff;}
+.btn-check:hover{background:#17a39b;}
+.btn-reset{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+.btn-reset:hover{border-color:var(--text2);}
+.btn-show{background:var(--yellow-soft);color:var(--text);border:1px solid rgba(249,194,60,.5);}
+.btn-show:hover{background:rgba(249,194,60,.25);}
+
+/* ═══════════════════════════════════════════
+   SEND TO TEACHER
+═══════════════════════════════════════════ */
+.send-card{
+  background:linear-gradient(135deg,var(--teal-soft),var(--purple-soft));
+  border:1.5px solid var(--teal);border-radius:var(--radius);
+  margin-top:1.5rem;padding:1.3rem 1.5rem;text-align:center;
+}
+.send-card h3{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:1.05rem;
+  margin-bottom:.35rem;
+}
+.send-card p{font-size:.85rem;color:var(--text2);margin-bottom:.85rem;}
+.btn-send{
+  background:linear-gradient(135deg,var(--teal),var(--purple));
+  color:#fff;border:none;border-radius:50px;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:800;
+  padding:.5rem 1.6rem;transition:opacity .15s;
+}
+.btn-send:hover{opacity:.88;}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <button class="theme-btn" onclick="toggleTheme()">🌙 / ☀️</button>
+  <div class="hdr-inner">
+    <div class="hdr-eyebrow">Unit 7A &middot; Homework</div>
+    <h1 class="hdr-title">Food &amp; Shopping</h1>
+    <div class="hdr-sub">Countable &amp; uncountable nouns &nbsp;·&nbsp; <em>some / any / lots of</em></div>
+  </div>
+</header>
+
+<!-- NAME BAR -->
+<div class="name-bar">
+  <div class="name-bar-inner">
+    <label for="nameInput">Your name:</label>
+    <input id="nameInput" type="text" placeholder="Type your name here…">
+  </div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-wrap">
+  <div class="progress-label" id="plabel">0 / 4 exercises checked</div>
+  <div class="progress-track"><div id="pfill"></div></div>
+</div>
+
+<main class="main">
+
+  <!-- ══════════════════════════════════════
+       EXERCISE 1 — Unscramble
+  ══════════════════════════════════════ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-num">Exercise 1</span>
+      <span class="ex-ttl">Unscramble the food words</span>
+    </div>
+    <div class="ex-body">
+      <p class="ex-instr">Unscramble these food and drink words. Write the correct word in each box.</p>
+      <ul class="scr-list">
+        <li class="scr-item">
+          <span class="scr-num">1</span>
+          <span class="scr-word">nekihcc</span>
+          <span class="scr-arr">→</span>
+          <input class="scr-inp" id="s1" data-ans="chicken" placeholder="…">
+        </li>
+        <li class="scr-item">
+          <span class="scr-num">2</span>
+          <span class="scr-word">fots kirnds</span>
+          <span class="scr-arr">→</span>
+          <input class="scr-inp" id="s2" data-ans="soft drinks" placeholder="…">
+        </li>
+        <li class="scr-item">
+          <span class="scr-num">3</span>
+          <span class="scr-word">tame</span>
+          <span class="scr-arr">→</span>
+          <input class="scr-inp" id="s3" data-ans="meat" placeholder="…">
+        </li>
+        <li class="scr-item">
+          <span class="scr-num">4</span>
+          <span class="scr-word">ladsa</span>
+          <span class="scr-arr">→</span>
+          <input class="scr-inp" id="s4" data-ans="salad" placeholder="…">
+        </li>
+        <li class="scr-item">
+          <span class="scr-num">5</span>
+          <span class="scr-word">fecoef</span>
+          <span class="scr-arr">→</span>
+          <input class="scr-inp" id="s5" data-ans="coffee" placeholder="…">
+        </li>
+        <li class="scr-item">
+          <span class="scr-num">6</span>
+          <span class="scr-word">rufti</span>
+          <span class="scr-arr">→</span>
+          <input class="scr-inp" id="s6" data-ans="fruit" placeholder="…">
+        </li>
+        <li class="scr-item">
+          <span class="scr-num">7</span>
+          <span class="scr-word">snabe</span>
+          <span class="scr-arr">→</span>
+          <input class="scr-inp" id="s7" data-ans="beans" placeholder="…">
+        </li>
+        <li class="scr-item">
+          <span class="scr-num">8</span>
+          <span class="scr-word">ate</span>
+          <span class="scr-arr">→</span>
+          <input class="scr-inp" id="s8" data-ans="tea" placeholder="…">
+        </li>
+        <li class="scr-item">
+          <span class="scr-num">9</span>
+          <span class="scr-word">gesg</span>
+          <span class="scr-arr">→</span>
+          <input class="scr-inp" id="s9" data-ans="eggs" placeholder="…">
+        </li>
+        <li class="scr-item">
+          <span class="scr-num">10</span>
+          <span class="scr-word">cujei</span>
+          <span class="scr-arr">→</span>
+          <input class="scr-inp" id="s10" data-ans="juice" placeholder="…">
+        </li>
+        <li class="scr-item">
+          <span class="scr-num">11</span>
+          <span class="scr-word">hisf</span>
+          <span class="scr-arr">→</span>
+          <input class="scr-inp" id="s11" data-ans="fish" placeholder="…">
+        </li>
+        <li class="scr-item">
+          <span class="scr-num">12</span>
+          <span class="scr-word">gaebletsev</span>
+          <span class="scr-arr">→</span>
+          <input class="scr-inp" id="s12" data-ans="vegetables" placeholder="…">
+        </li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx1()">✓ Check</button>
+        <button class="btn btn-reset" onclick="resetEx1()">↺ Reset</button>
+      </div>
+      <div class="score-line" id="score1"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       EXERCISE 3 — Vocabulary MCQ
+  ══════════════════════════════════════ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-num">Exercise 3</span>
+      <span class="ex-ttl">Choose the correct word</span>
+    </div>
+    <div class="ex-body">
+      <p class="ex-instr">Choose the correct word to complete each sentence.</p>
+      <ul class="mcq-list" id="mcq3List">
+
+        <li class="mcq-item">
+          <div class="mcq-stem">1. After dinner, I usually have a little ___ for dessert.</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g3a" data-val="fruit" onclick="pickMCQ(this)">fruit</button>
+            <button class="mcq-btn" data-grp="g3a" data-val="meat" onclick="pickMCQ(this)">meat</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">2. I never eat ___. I only eat fresh things.</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g3b" data-val="frozen food" onclick="pickMCQ(this)">frozen food</button>
+            <button class="mcq-btn" data-grp="g3b" data-val="salad" onclick="pickMCQ(this)">salad</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">3. Diane's a vegetarian, so she doesn't eat any ___.</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g3c" data-val="vegetables" onclick="pickMCQ(this)">vegetables</button>
+            <button class="mcq-btn" data-grp="g3c" data-val="meat" onclick="pickMCQ(this)">meat</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">4. This orange ___ is delicious.</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g3d" data-val="juice" onclick="pickMCQ(this)">juice</button>
+            <button class="mcq-btn" data-grp="g3d" data-val="coffee" onclick="pickMCQ(this)">coffee</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">5. Would you like sugar in your ___?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g3e" data-val="coffee" onclick="pickMCQ(this)">coffee</button>
+            <button class="mcq-btn" data-grp="g3e" data-val="juice" onclick="pickMCQ(this)">juice</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">6. Orange juice is my favourite ___.</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g3f" data-val="fruit" onclick="pickMCQ(this)">fruit</button>
+            <button class="mcq-btn" data-grp="g3f" data-val="soft drink" onclick="pickMCQ(this)">soft drink</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">7. Would you like rice or ___ with your fish?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g3g" data-val="pasta" onclick="pickMCQ(this)">pasta</button>
+            <button class="mcq-btn" data-grp="g3g" data-val="chicken" onclick="pickMCQ(this)">chicken</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">8. Green beans are my favourite ___.</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g3h" data-val="fruit" onclick="pickMCQ(this)">fruit</button>
+            <button class="mcq-btn" data-grp="g3h" data-val="vegetables" onclick="pickMCQ(this)">vegetables</button>
+          </div>
+        </li>
+
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx3()">✓ Check</button>
+        <button class="btn btn-reset" onclick="resetEx3()">↺ Reset</button>
+      </div>
+      <div class="score-line" id="score3"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       EXERCISE 5 — Grammar MCQ
+  ══════════════════════════════════════ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-num">Exercise 5</span>
+      <span class="ex-ttl">Grammar: choose the correct form</span>
+    </div>
+    <div class="ex-body">
+      <p class="ex-instr">Choose the correct alternative to complete each sentence.</p>
+      <ul class="mcq-list" id="mcq5List">
+
+        <li class="mcq-item">
+          <div class="mcq-stem">1. There ___ some carrots in the fridge.</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g5a" data-val="is" onclick="pickMCQ(this)">is</button>
+            <button class="mcq-btn" data-grp="g5a" data-val="are" onclick="pickMCQ(this)">are</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">2. We ___ got any milk.</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g5b" data-val="have" onclick="pickMCQ(this)">have</button>
+            <button class="mcq-btn" data-grp="g5b" data-val="haven't" onclick="pickMCQ(this)">haven't</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">3. Can you buy ___ sugar, please?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g5c" data-val="some" onclick="pickMCQ(this)">some</button>
+            <button class="mcq-btn" data-grp="g5c" data-val="any" onclick="pickMCQ(this)">any</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">4. Would you like ___ cheese?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g5d" data-val="a" onclick="pickMCQ(this)">a</button>
+            <button class="mcq-btn" data-grp="g5d" data-val="some" onclick="pickMCQ(this)">some</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">5. These eggs ___ delicious!</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g5e" data-val="is" onclick="pickMCQ(this)">is</button>
+            <button class="mcq-btn" data-grp="g5e" data-val="are" onclick="pickMCQ(this)">are</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">6. ___ there any rice left?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g5f" data-val="Is" onclick="pickMCQ(this)">Is</button>
+            <button class="mcq-btn" data-grp="g5f" data-val="Are" onclick="pickMCQ(this)">Are</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">7. There ___ any salt in it.</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g5g" data-val="isn't" onclick="pickMCQ(this)">isn't</button>
+            <button class="mcq-btn" data-grp="g5g" data-val="aren't" onclick="pickMCQ(this)">aren't</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">8. Have we got ___ chocolate?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g5h" data-val="some" onclick="pickMCQ(this)">some</button>
+            <button class="mcq-btn" data-grp="g5h" data-val="any" onclick="pickMCQ(this)">any</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">9. Well, let's get ___ food first.</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g5i" data-val="some" onclick="pickMCQ(this)">some</button>
+            <button class="mcq-btn" data-grp="g5i" data-val="any" onclick="pickMCQ(this)">any</button>
+          </div>
+        </li>
+
+        <li class="mcq-item">
+          <div class="mcq-stem">10. Could you get me ___ bottle of water?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="g5j" data-val="a" onclick="pickMCQ(this)">a</button>
+            <button class="mcq-btn" data-grp="g5j" data-val="some" onclick="pickMCQ(this)">some</button>
+          </div>
+        </li>
+
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx5()">✓ Check</button>
+        <button class="btn btn-reset" onclick="resetEx5()">↺ Reset</button>
+      </div>
+      <div class="score-line" id="score5"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       EXERCISE 6 — Gap-fill
+  ══════════════════════════════════════ -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-num">Exercise 6</span>
+      <span class="ex-ttl">Complete the sentences</span>
+    </div>
+    <div class="ex-body">
+      <p class="ex-instr">Write <strong>one word</strong> in each gap.</p>
+      <ul class="gf-list">
+        <li class="gf-item">
+          <span class="gf-num">1.</span><input class="gf-inp" id="gf1" data-ans="are"> there any tomatoes in the fridge?
+        </li>
+        <li class="gf-item">
+          <span class="gf-num">2.</span>My son's favourite food <input class="gf-inp" id="gf2" data-ans="is"> pizza!
+        </li>
+        <li class="gf-item">
+          <span class="gf-num">3.</span>I think there's <input class="gf-inp" id="gf3" data-ans="some"> pasta in that cupboard.
+        </li>
+        <li class="gf-item">
+          <span class="gf-num">4.</span>We haven't got <input class="gf-inp" id="gf4" data-ans="any"> bread left.
+        </li>
+        <li class="gf-item">
+          <span class="gf-num">5.</span>I'd like <input class="gf-inp" id="gf5" data-ans="a"> chicken sandwich, please.
+        </li>
+        <li class="gf-item">
+          <span class="gf-num">6.</span>Excuse me, where <input class="gf-inp" id="gf6" data-ans="is"> the frozen food section?
+        </li>
+        <li class="gf-item">
+          <span class="gf-num">7.</span>No, there aren't <input class="gf-inp" id="gf7" data-ans="any"> eggs in this recipe.
+        </li>
+        <li class="gf-item">
+          <span class="gf-num">8.</span>Would you like <input class="gf-inp" id="gf8" data-ans="a"> piece of cake?
+        </li>
+        <li class="gf-item">
+          <span class="gf-num">9.</span>I don't want <input class="gf-inp" id="gf9" data-ans="any"> butter on mine, thanks.
+        </li>
+        <li class="gf-item">
+          <span class="gf-num">10.</span>I bought <input class="gf-inp" id="gf10" data-ans="some"> oranges at the supermarket.
+        </li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkEx6()">✓ Check</button>
+        <button class="btn btn-reset" onclick="resetEx6()">↺ Reset</button>
+      </div>
+      <div class="score-line" id="score6"></div>
+    </div>
+  </div>
+
+  <!-- SEND TO TEACHER -->
+  <div class="send-card">
+    <h3>📧 Send to Teacher</h3>
+    <p>When you've finished all the exercises, click the button to send your answers.</p>
+    <button class="btn-send" onclick="sendToTeacher()">Send my homework →</button>
+  </div>
+
+</main>
+
+<script>
+/* ══════════════════════════════════════════
+   PROGRESS
+══════════════════════════════════════════ */
+var done = {ex1: false, ex3: false, ex5: false, ex6: false};
+
+function updateProgress() {
+  var n = 0;
+  var keys = Object.keys(done);
+  for (var i = 0; i < keys.length; i++) {
+    if (done[keys[i]]) n++;
+  }
+  var total = keys.length;
+  document.getElementById('pfill').style.width = (n / total * 100) + '%';
+  document.getElementById('plabel').textContent = n + ' / ' + total + ' exercises checked';
+}
+
+/* ══════════════════════════════════════════
+   THEME
+══════════════════════════════════════════ */
+function toggleTheme() {
+  var root = document.documentElement;
+  var current = root.getAttribute('data-theme');
+  root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+}
+
+/* ══════════════════════════════════════════
+   MCQ — shared pick handler
+══════════════════════════════════════════ */
+function pickMCQ(btn) {
+  var grp = btn.getAttribute('data-grp');
+  var siblings = document.querySelectorAll('[data-grp="' + grp + '"]');
+  for (var i = 0; i < siblings.length; i++) {
+    siblings[i].classList.remove('selected');
+  }
+  btn.classList.add('selected');
+}
+
+function checkMCQGroup(grps, answers, scoreId, doneKey) {
+  var correct = 0;
+  for (var i = 0; i < grps.length; i++) {
+    var btns = document.querySelectorAll('[data-grp="' + grps[i] + '"]');
+    var selBtn = null;
+    for (var k = 0; k < btns.length; k++) {
+      if (btns[k].classList.contains('selected')) { selBtn = btns[k]; break; }
+    }
+    for (var k = 0; k < btns.length; k++) {
+      btns[k].classList.remove('selected', 'correct', 'wrong', 'show-ans');
+      btns[k].disabled = true;
+    }
+    if (selBtn) {
+      if (selBtn.getAttribute('data-val') === answers[i]) {
+        selBtn.classList.add('correct');
+        correct++;
+      } else {
+        selBtn.classList.add('wrong');
+        for (var k = 0; k < btns.length; k++) {
+          if (btns[k].getAttribute('data-val') === answers[i]) {
+            btns[k].classList.add('show-ans');
+          }
+        }
+      }
+    }
+  }
+  document.getElementById(scoreId).textContent = 'Score: ' + correct + ' / ' + grps.length;
+  done[doneKey] = true;
+  updateProgress();
+}
+
+function resetMCQGroup(grps, scoreId, doneKey) {
+  for (var i = 0; i < grps.length; i++) {
+    var btns = document.querySelectorAll('[data-grp="' + grps[i] + '"]');
+    for (var k = 0; k < btns.length; k++) {
+      btns[k].classList.remove('selected', 'correct', 'wrong', 'show-ans');
+      btns[k].disabled = false;
+    }
+  }
+  document.getElementById(scoreId).textContent = '';
+  done[doneKey] = false;
+  updateProgress();
+}
+
+/* ══════════════════════════════════════════
+   EXERCISE 1 — UNSCRAMBLE
+══════════════════════════════════════════ */
+var scrIds = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12'];
+
+function checkEx1() {
+  var correct = 0;
+  for (var i = 0; i < scrIds.length; i++) {
+    var inp = document.getElementById(scrIds[i]);
+    inp.classList.remove('correct', 'wrong', 'revealed');
+    var ans = inp.getAttribute('data-ans').toLowerCase().trim();
+    var val = inp.value.toLowerCase().trim();
+    if (val === ans) {
+      inp.classList.add('correct');
+      correct++;
+    } else if (val !== '') {
+      inp.classList.add('wrong');
+    }
+  }
+  document.getElementById('score1').textContent = 'Score: ' + correct + ' / ' + scrIds.length;
+  done.ex1 = true;
+  updateProgress();
+}
+
+function resetEx1() {
+  for (var i = 0; i < scrIds.length; i++) {
+    var inp = document.getElementById(scrIds[i]);
+    inp.value = '';
+    inp.classList.remove('correct', 'wrong', 'revealed');
+  }
+  document.getElementById('score1').textContent = '';
+  done.ex1 = false;
+  updateProgress();
+}
+
+/* ══════════════════════════════════════════
+   EXERCISE 3 — VOCABULARY MCQ
+══════════════════════════════════════════ */
+var ex3Grps    = ['g3a','g3b','g3c','g3d','g3e','g3f','g3g','g3h'];
+var ex3Answers = ['fruit','salad','meat','juice','coffee','soft drink','pasta','vegetables'];
+
+function checkEx3() { checkMCQGroup(ex3Grps, ex3Answers, 'score3', 'ex3'); }
+function resetEx3()  { resetMCQGroup(ex3Grps, 'score3', 'ex3'); }
+
+/* ══════════════════════════════════════════
+   EXERCISE 5 — GRAMMAR MCQ
+══════════════════════════════════════════ */
+var ex5Grps    = ['g5a','g5b','g5c','g5d','g5e','g5f','g5g','g5h','g5i','g5j'];
+var ex5Answers = ['are',"haven't",'some','some','are','Is',"isn't",'any','some','a'];
+
+function checkEx5() { checkMCQGroup(ex5Grps, ex5Answers, 'score5', 'ex5'); }
+function resetEx5()  { resetMCQGroup(ex5Grps, 'score5', 'ex5'); }
+
+/* ══════════════════════════════════════════
+   EXERCISE 6 — GAP-FILL
+══════════════════════════════════════════ */
+var gfIds = ['gf1','gf2','gf3','gf4','gf5','gf6','gf7','gf8','gf9','gf10'];
+
+function checkEx6() {
+  var correct = 0;
+  for (var i = 0; i < gfIds.length; i++) {
+    var inp = document.getElementById(gfIds[i]);
+    inp.classList.remove('correct', 'wrong', 'revealed');
+    var ans = inp.getAttribute('data-ans').toLowerCase().trim();
+    var val = inp.value.toLowerCase().trim();
+    if (val === ans) {
+      inp.classList.add('correct');
+      correct++;
+    } else if (val !== '') {
+      inp.classList.add('wrong');
+    }
+  }
+  document.getElementById('score6').textContent = 'Score: ' + correct + ' / ' + gfIds.length;
+  done.ex6 = true;
+  updateProgress();
+}
+
+function resetEx6() {
+  for (var i = 0; i < gfIds.length; i++) {
+    var inp = document.getElementById(gfIds[i]);
+    inp.value = '';
+    inp.classList.remove('correct', 'wrong', 'revealed');
+  }
+  document.getElementById('score6').textContent = '';
+  done.ex6 = false;
+  updateProgress();
+}
+
+function showAllEx6() {
+  for (var i = 0; i < gfIds.length; i++) {
+    var inp = document.getElementById(gfIds[i]);
+    if (!inp.classList.contains('correct')) {
+      inp.value = inp.getAttribute('data-ans');
+      inp.classList.remove('wrong');
+      inp.classList.add('revealed');
+    }
+  }
+}
+
+/* ══════════════════════════════════════════
+   SEND TO TEACHER
+══════════════════════════════════════════ */
+function getMCQResults(grps) {
+  var out = [];
+  for (var i = 0; i < grps.length; i++) {
+    var btns = document.querySelectorAll('[data-grp="' + grps[i] + '"]');
+    var val = '(no answer)';
+    var status = '';
+    for (var k = 0; k < btns.length; k++) {
+      if (btns[k].classList.contains('correct')) { val = btns[k].getAttribute('data-val'); status = ' ✓'; break; }
+      if (btns[k].classList.contains('wrong'))   { val = btns[k].getAttribute('data-val'); status = ' ✗'; break; }
+      if (btns[k].classList.contains('selected')){ val = btns[k].getAttribute('data-val'); status = ''; break; }
+    }
+    out.push((i + 1) + '. ' + val + status);
+  }
+  return out;
+}
+
+function sendToTeacher() {
+  var name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+  var today = new Date().toLocaleDateString('en-GB', {day:'2-digit', month:'long', year:'numeric'});
+
+  var lines = [];
+  lines.push('Student: ' + name);
+  lines.push('Lesson: 7A Food & Shopping');
+  lines.push('Date: ' + today);
+  lines.push('');
+
+  /* Exercise 1 */
+  lines.push('=== Exercise 1: Unscramble the words ===');
+  var scrWords = ['nekihcc','fots kirnds','tame','ladsa','fecoef','rufti','snabe','ate','gesg','cujei','hisf','gaebletsev'];
+  for (var i = 0; i < scrIds.length; i++) {
+    var inp = document.getElementById(scrIds[i]);
+    var val = inp.value.trim() || '(blank)';
+    var status = inp.classList.contains('correct') ? ' ✓' : inp.classList.contains('wrong') ? ' ✗' : '';
+    lines.push((i + 1) + '. ' + scrWords[i] + ' → ' + val + status);
+  }
+  lines.push('');
+
+  /* Exercise 3 */
+  lines.push('=== Exercise 3: Vocabulary MCQ ===');
+  var ex3results = getMCQResults(ex3Grps);
+  for (var j = 0; j < ex3results.length; j++) { lines.push(ex3results[j]); }
+  lines.push('');
+
+  /* Exercise 5 */
+  lines.push('=== Exercise 5: Grammar MCQ ===');
+  var ex5results = getMCQResults(ex5Grps);
+  for (var j = 0; j < ex5results.length; j++) { lines.push(ex5results[j]); }
+  lines.push('');
+
+  /* Exercise 6 */
+  lines.push('=== Exercise 6: Gap-fill ===');
+  for (var i = 0; i < gfIds.length; i++) {
+    var inp = document.getElementById(gfIds[i]);
+    var val = inp.value.trim() || '(blank)';
+    var status = inp.classList.contains('correct') ? ' ✓' : inp.classList.contains('wrong') ? ' ✗' : '';
+    lines.push((i + 1) + '. ' + val + status);
+  }
+
+  var body = lines.join('\n');
+  var subject = encodeURIComponent('Homework – ' + name + ' – 7A Food & Shopping');
+  /* Replace TEACHER_EMAIL with your actual email address */
+  window.location.href = 'mailto:TEACHER_EMAIL?subject=' + subject + '&body=' + encodeURIComponent(body);
+}
+</script>
+
+</body>
+</html>
