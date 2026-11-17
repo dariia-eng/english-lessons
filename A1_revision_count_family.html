@@ -1,0 +1,573 @@
+<title>Unit 1 Quiz Show</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: one centred column of stage panels, sticky stage bar with timings; book tasks tagged with page numbers, every book task followed by a speaking task or game */
+:root{
+  --bg:#f7f8ff; --surface:#ffffff; --surface-2:#eef0fb;
+  --ink:#1d1b3a; --muted:#5f5d7e; --line:#dcdff2;
+  --red:#e8364f; --red-soft:#ffdfe4;
+  --teal:#11a39a; --teal-soft:#cdf3ef;
+  --navy:#2b3a8f; --navy-soft:#dde3ff;
+  --sun:#f2a900; --sun-soft:#fff0c4;
+  --good:#0f9d6e; --bad:#d92d4a; --good-bg:#dcf8ec; --bad-bg:#ffe1e7;
+  --on-accent:#ffffff;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Nunito", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#12132a; --surface:#1c1e3a; --surface-2:#262947; --ink:#eef0ff; --muted:#aeb1d6; --line:#363a63;
+  --red:#ff6b80; --red-soft:#4a1f2c; --teal:#3fd6c9; --teal-soft:#123f3c; --navy:#93a4ff; --navy-soft:#2a3166;
+  --sun:#ffcf5c; --sun-soft:#433a1b; --good:#4fe0aa; --bad:#ff7b95; --good-bg:#173f31; --bad-bg:#4a1d2a; --on-accent:#12132a; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#12132a; --surface:#1c1e3a; --surface-2:#262947; --ink:#eef0ff; --muted:#aeb1d6; --line:#363a63;
+  --red:#ff6b80; --red-soft:#4a1f2c; --teal:#3fd6c9; --teal-soft:#123f3c; --navy:#93a4ff; --navy-soft:#2a3166;
+  --sun:#ffcf5c; --sun-soft:#433a1b; --good:#4fe0aa; --bad:#ff7b95; --good-bg:#173f31; --bad-bg:#4a1d2a; --on-accent:#12132a; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3,h4{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+button:disabled{cursor:default;opacity:.45}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+
+.hero{padding-top:28px;display:flex;flex-direction:column;gap:12px;position:relative}
+.hero .meta{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:999px;background:var(--navy-soft);color:var(--navy)}
+.chip.red{background:var(--red-soft);color:var(--red)} .chip.teal{background:var(--teal-soft);color:var(--teal)}
+.hero h1{font-size:clamp(46px,10vw,92px);font-weight:800;letter-spacing:-.02em;text-transform:uppercase;line-height:.95}
+.hero h1 span{display:inline-block;background:var(--ink);color:var(--bg);padding:0 .12em;margin-top:.06em}
+.hero p.lede{font-size:19px;color:var(--muted);max-width:62ch}
+.theme-btn{position:absolute;top:24px;right:0;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.bar a{flex:0 0 auto;text-decoration:none;color:var(--ink);font-weight:800;font-size:14px;padding:6px 12px;border-radius:999px;border:2px solid var(--line);background:var(--surface);white-space:nowrap}
+.bar a span{color:var(--muted);font-weight:600;margin-left:4px}
+.bar a:hover{border-color:var(--red)}
+
+.stage{background:var(--surface);border:2px solid var(--line);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:24px;scroll-margin-top:70px}
+.stage-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.stage-head h2{font-size:clamp(26px,5vw,34px);font-weight:800}
+.stage-head .num{font-family:var(--display);color:var(--red);margin-right:8px}
+.time{font-weight:800;font-size:14px;background:var(--sun-soft);color:var(--ink);padding:4px 12px;border-radius:999px;font-variant-numeric:tabular-nums}
+.task{display:flex;flex-direction:column;gap:12px}
+.task h3{font-size:21px;font-weight:600;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.tag{font-family:var(--body);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--navy-soft);color:var(--navy)}
+.tag.book{background:var(--surface-2);color:var(--muted);border:2px solid var(--line)}
+.tag.talk{background:var(--teal-soft);color:var(--teal)}
+.tag.game{background:var(--sun-soft);color:var(--ink)}
+.tag.audio{background:var(--red-soft);color:var(--red)}
+.instr{color:var(--muted);font-weight:600}
+.tnote{font-size:15px;background:var(--surface-2);border-radius:14px;padding:10px 14px;color:var(--muted)}
+.tnote b{color:var(--ink)}
+.say{display:flex;flex-wrap:wrap;gap:8px}
+.say .pill{background:var(--surface-2);border-radius:12px;padding:6px 12px;font-weight:800}
+.say .pill.q{background:var(--navy-soft)} .say .pill.a{background:var(--teal-soft)}
+.qlist{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:6px;font-weight:700}
+
+.big{border-radius:24px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;background:var(--sun-soft)}
+.big.navy{background:var(--navy-soft)} .big.red{background:var(--red-soft)} .big.teal{background:var(--teal-soft)}
+.big .line{font-family:var(--display);font-weight:800;font-size:clamp(24px,5vw,36px);min-height:1.2em}
+.big .sub{font-weight:700;color:var(--muted)}
+.big .emo{font-size:64px;line-height:1}
+
+.btns{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:inherit}
+.btn{border:none;border-radius:999px;padding:9px 20px;font-weight:800;background:var(--red);color:var(--on-accent)}
+.btn.navy{background:var(--navy)} .btn.teal{background:var(--teal)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.small-btn{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;font-weight:700;font-size:14px}
+.score{font-weight:800;color:var(--muted)}
+.opt{border:2px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 14px;border-radius:999px;font-weight:700}
+.opt:hover{border-color:var(--navy)}
+.opt.sel{border-color:var(--navy);background:var(--navy-soft)}
+.opt.right{border-color:var(--good);background:var(--good-bg);color:var(--good)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+
+.teams{display:flex;flex-wrap:wrap;gap:10px;width:100%}
+.team{flex:1 1 160px;border-radius:16px;padding:10px 14px;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--surface)}
+.team.s{color:var(--red)} .team.t{color:var(--navy)}
+
+/* early bird quiz */
+.eq{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.eq .card{background:var(--surface-2);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.eq .card p{font-weight:800}
+
+/* order my day */
+.order{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.order .col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.order h4{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bank{display:flex;flex-wrap:wrap;gap:6px}
+.bank button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;font-weight:700;font-size:15px}
+.myday{list-style:none;margin:0;padding:10px;display:flex;flex-direction:column;gap:6px;min-height:120px;border:3px dashed var(--line);border-radius:16px;counter-reset:d}
+.myday li{counter-increment:d}
+.myday button{width:100%;text-align:left;border:none;background:var(--navy-soft);color:var(--ink);border-radius:10px;padding:5px 10px;font-weight:700;font-size:15px}
+.myday button::before{content:counter(d) ". ";font-family:var(--display);font-weight:800;color:var(--navy)}
+.myday:empty::after{content:"Tap activities to build your day";color:var(--muted);font-weight:600;font-size:15px}
+
+/* which verb */
+.verbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px;width:100%;max-width:640px}
+.verbs button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:6px 0;font-weight:800}
+.verbs button.no{animation:shake .3s;border-color:var(--bad);background:var(--bad-bg)}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* average quiz */
+.modes{display:flex;flex-wrap:wrap;gap:6px}
+.modes button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;font-weight:800;font-size:15px}
+.modes button.on.s{background:var(--red);border-color:var(--red);color:var(--on-accent)}
+.modes button.on.t{background:var(--navy);border-color:var(--navy);color:var(--on-accent)}
+.modes button.on.k{background:var(--teal);border-color:var(--teal);color:var(--on-accent)}
+.avg{display:flex;flex-direction:column;gap:8px}
+.arow{background:var(--surface-2);border-radius:16px;padding:10px 14px;display:flex;flex-direction:column;gap:8px}
+.arow .st{font-weight:700}
+.arow .opts .ao{position:relative;padding-right:14px}
+.ao .marks{font-size:13px;margin-left:6px}
+.ao.key{border-color:var(--teal);background:var(--teal-soft)}
+
+/* time detective */
+.tt{width:100%;border-collapse:collapse}
+.tt th,.tt td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.tt th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.tt input{font:inherit;font-weight:700;color:var(--ink);background:var(--surface-2);border:2px solid var(--line);border-radius:10px;padding:3px 6px;max-width:120px}
+.tt td.res{font-weight:700;color:var(--teal)}
+.table-wrap{overflow-x:auto}
+
+/* odd one out */
+.ooo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%;max-width:560px}
+.ooo button{border:3px solid var(--line);background:var(--surface);color:var(--ink);border-radius:18px;padding:14px 8px;font-family:var(--display);font-weight:800;font-size:19px}
+.ooo button.sel{border-color:var(--navy);background:var(--navy-soft)}
+.ooo button.ans{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
+
+/* emoticons */
+.emos{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.emo-card{background:var(--surface-2);border-radius:16px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.emo-card .e{font-size:40px;line-height:1}
+.emo-card .l{font-family:var(--display);font-weight:800}
+.emo-card select{font:inherit;font-size:14px;font-weight:700;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:3px;max-width:100%}
+.emo-card select.right{border-color:var(--good);background:var(--good-bg)}
+.emo-card select.wrong{border-color:var(--bad);background:var(--bad-bg)}
+@media (max-width:560px){ .emos{grid-template-columns:repeat(3,minmax(0,1fr))} }
+
+/* compatibility */
+.compat{display:flex;flex-direction:column;gap:10px;width:100%}
+.crow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
+.crow .who{font-weight:800;min-width:90px}
+.crow .who.s{color:var(--red)} .crow .who.t{color:var(--navy)}
+.cf{font-size:30px;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:2px 8px}
+.cf.picked{border-color:var(--ink)}
+.cf.hidden-pick{border-color:var(--line);background:var(--surface)}
+.meter{width:100%;max-width:520px;height:22px;border-radius:999px;background:var(--surface);overflow:hidden;border:2px solid var(--line)}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--sun),var(--teal));transition:width .4s}
+
+/* reading */
+.rq{display:flex;flex-direction:column;gap:8px}
+.rrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--surface-2);border-radius:14px;padding:8px 12px}
+.rrow .st{font-weight:700;min-width:0;flex:1 1 260px}
+.abc .opt{min-width:42px;padding:4px 10px;font-family:var(--display);font-weight:800}
+
+.match{display:grid;grid-template-columns:1fr 2fr;gap:10px}
+.match .col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.mi{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:8px 12px;text-align:left;font-weight:700}
+.mi.w{font-family:var(--display);font-weight:800;font-size:19px}
+.mi.sel{border-color:var(--navy);background:var(--navy-soft)}
+.mi.done{border-color:var(--good);background:var(--good-bg);color:var(--good);cursor:default}
+.mi.nope{animation:shake .3s}
+
+.cards3{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.qcard{border-radius:16px;padding:14px;font-weight:800;background:var(--navy-soft);min-width:0}
+.qcard:nth-child(2n){background:var(--teal-soft)} .qcard:nth-child(3n){background:var(--red-soft)}
+
+/* agree-o-meter */
+.debate{display:flex;flex-direction:column;gap:12px}
+.dcard{background:var(--surface-2);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.dcard .st{font-family:var(--display);font-weight:800;font-size:20px}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.scale button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:6px 4px;font-weight:800;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.scale button span{font-size:22px}
+.scale button.s{border-color:var(--red);background:var(--red-soft)}
+.scale button.t{border-color:var(--navy);background:var(--navy-soft)}
+.scale button.s.t{background:linear-gradient(90deg,var(--red-soft) 50%,var(--navy-soft) 50%);border-color:var(--ink)}
+.dwho{display:flex;gap:6px;font-size:14px;font-weight:800}
+
+/* dream school */
+.builder{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.bgroup{background:var(--surface-2);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.bgroup h4{font-size:15px}
+.bgroup .opt{font-size:14px;padding:4px 10px}
+.preview{background:var(--sun-soft);border-radius:20px;padding:18px;font-size:19px;font-weight:700;line-height:1.6}
+.preview b{color:var(--red)}
+
+.faces{display:flex;gap:8px}
+.face{font-size:34px;background:transparent;border:2px solid transparent;border-radius:14px;padding:2px 8px}
+.face.sel{border-color:var(--red);background:var(--red-soft)}
+
+.plan{width:100%;border-collapse:collapse;font-size:15px}
+.plan td,.plan th{text-align:left;padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.plan th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.plan td:first-child{font-variant-numeric:tabular-nums;font-weight:800;white-space:nowrap}
+details summary{cursor:pointer;font-weight:800}
+
+@media (max-width:620px){ .order,.match{grid-template-columns:1fr} .stage{padding:18px} .theme-btn{position:static;align-self:flex-start} .scale button{font-size:11px} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
+
+/* listening: number Sam's day */
+.numlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px}
+.numlist label{display:flex;align-items:center;gap:8px;background:var(--surface-2);border-radius:12px;padding:5px 10px;font-weight:700;min-width:0}
+.numlist input{font:inherit;font-weight:800;width:3.2em;text-align:center;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:8px;padding:2px}
+/* listening: tick what you hear */
+.ticks{display:flex;flex-wrap:wrap;gap:8px}
+.ticks button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 14px;font-weight:700}
+.ticks button.on{border-color:var(--red);background:var(--red-soft)}
+.ticks button.on::before{content:"✓ ";color:var(--red);font-weight:800}
+/* teacher marking */
+.mk{display:flex;gap:4px}
+.mk button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:2px 8px;font-weight:800;font-size:14px}
+.mk button.ok{border-color:var(--good);background:var(--good-bg);color:var(--good)}
+.mk button.no{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.lrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--surface-2);border-radius:14px;padding:8px 12px}
+.lrow .st{font-weight:700;flex:1 1 280px;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.lrow select,.photo select{font:inherit;font-weight:800;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:3px 6px;max-width:100%}
+.photo select.right{border-color:var(--good);background:var(--good-bg)} .photo select.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.photo{background:var(--surface-2);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;min-width:0}
+.photo .let{font-family:var(--display);font-weight:800;font-size:22px;background:var(--surface);border:2px solid var(--ink);border-radius:8px;padding:0 10px}
+/* slot machine */
+.slots3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%;max-width:640px}
+.slot{background:var(--surface);border:3px solid var(--ink);border-radius:16px;padding:12px 6px;font-family:var(--display);font-weight:800;font-size:clamp(16px,3.5vw,22px);display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
+.slot span{font-size:34px;line-height:1}
+@media (max-width:520px){ .slots3{grid-template-columns:1fr} }
+</style><style>
+/* family lesson additions */
+.photo-lead{width:100%;max-width:100%;border-radius:18px;display:block;aspect-ratio:640/331;object-fit:cover}
+select.sel{font:inherit;font-weight:700;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:3px 6px;max-width:100%;min-width:0}
+select.sel.right{border-color:var(--good);background:var(--good-bg)} select.sel.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.fix{font-size:14px;font-weight:800;color:var(--good)} .fix:empty{display:none}
+.gcols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.gcol{border:3px solid var(--line);border-radius:16px;background:var(--surface-2);color:var(--ink);padding:10px;display:flex;flex-direction:column;gap:6px;min-height:150px;text-align:left;min-width:0}
+.gcol:hover{border-color:var(--navy)}
+.gcol h4{font-size:18px}
+.gcol .in{display:flex;flex-wrap:wrap;gap:4px}
+.wbank{display:flex;flex-wrap:wrap;gap:6px;padding:10px;border:2px dashed var(--line);border-radius:14px;min-height:46px}
+.chip{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;font-weight:800}
+.chip.sel{border-color:var(--navy);background:var(--navy-soft)}
+.chip.right{border-color:var(--good);background:var(--good-bg)} .chip.wrong{border-color:var(--bad);background:var(--bad-bg)}
+@media (max-width:600px){ .gcols{grid-template-columns:1fr} }
+.tree{position:relative;width:100%;max-width:640px;aspect-ratio:600/400;margin:0 auto}
+.tree svg{position:absolute;inset:0;width:100%;height:100%}
+.tree svg line{stroke:var(--teal);stroke-width:4;stroke-linecap:round}
+.node{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;width:22%;text-align:center}
+.node .av{font-size:clamp(26px,5vw,40px);line-height:1;background:var(--surface);border:3px solid var(--teal);border-radius:50%;width:1.6em;height:1.6em;display:flex;align-items:center;justify-content:center}
+.node .nm{font-weight:800;font-size:clamp(12px,2.6vw,16px);background:var(--surface);border-radius:8px;padding:0 6px}
+.node.you .av{border-color:var(--red);background:var(--red-soft)}
+.node select{font-size:clamp(11px,2.4vw,15px);width:100%}
+.memo{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:560px}
+.mcd{aspect-ratio:1.2;border:2px solid var(--line);border-radius:14px;background:var(--navy);color:var(--on-accent);font-family:var(--display);font-weight:800;font-size:clamp(14px,3.4vw,19px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;text-align:center;min-width:0}
+.mcd.up{background:var(--surface);color:var(--ink)}
+.mcd .e{font-size:24px}
+.mcd.done{background:var(--good-bg);border-color:var(--good);color:var(--good)}
+.trow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;background:var(--surface-2);border-radius:12px;padding:8px 12px;font-weight:700}
+.trow .st{flex:1 1 240px;min-width:0}
+.story{background:var(--sun-soft);border-radius:18px;padding:16px;font-size:18px;line-height:2.2;font-weight:600}
+.story-wrap{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+.story-wrap .ava{font-size:56px;line-height:1}
+@media (max-width:560px){ .story-wrap{grid-template-columns:1fr} }
+.m7{display:flex;flex-direction:column;gap:8px}
+.athlete{display:grid;grid-template-columns:auto 1fr;gap:14px;background:var(--navy-soft);border-radius:18px;padding:16px;align-items:center}
+.athlete .ava{font-size:70px;line-height:1}
+.athlete dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-weight:700}
+.athlete dt{color:var(--muted)} .athlete dd{margin:0}
+@media (max-width:520px){ .athlete{grid-template-columns:1fr} }
+textarea.write{font:inherit;font-weight:700;color:var(--ink);background:var(--surface-2);border:2px solid var(--line);border-radius:14px;padding:10px 12px;width:100%;min-height:140px;resize:vertical}
+.names{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.nrow{display:flex;gap:6px;align-items:center;background:var(--surface-2);border-radius:12px;padding:6px 8px;min-width:0}
+.nrow input{font:inherit;font-weight:700;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:4px 8px;width:100%;min-width:0}
+.ncards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ncard{background:var(--surface);border:3px solid var(--sun);border-radius:16px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.ncard .n{font-family:var(--display);font-weight:800;font-size:22px}
+.ncard .rel{font-weight:800;color:var(--good)}
+</style><style>.rq{display:flex;flex-direction:column;gap:8px}</style>
+<style>
+.jgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.jcat{font-family:var(--display);font-weight:800;font-size:clamp(11px,2.4vw,15px);text-align:center;background:var(--navy);color:var(--on-accent);border-radius:10px;padding:8px 4px;display:flex;align-items:center;justify-content:center;min-height:52px;line-height:1.1}
+.jcell{font-family:var(--display);font-weight:800;font-size:clamp(16px,3.6vw,24px);border:none;border-radius:10px;background:var(--sun);color:#1d1b3a;min-height:56px}
+.jcell.used{background:var(--surface-2);color:var(--muted);text-decoration:line-through}
+.jcell.won{background:var(--good-bg);color:var(--good)}
+.jq{background:var(--surface);border:3px solid var(--navy);border-radius:20px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.jq .cat{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.jq .qq{font-family:var(--display);font-weight:800;font-size:clamp(20px,4.6vw,28px)}
+.jq .aa{font-weight:800;color:var(--good);font-size:20px}
+.scoreboard{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.scoreboard span{background:var(--sun-soft);border-radius:999px;padding:6px 16px;font-family:var(--display);font-weight:800;font-size:20px}
+.auction{display:flex;flex-direction:column;gap:8px}
+.arow2{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:8px;align-items:center;background:var(--surface-2);border-radius:12px;padding:8px 12px;font-weight:700}
+.arow2 select{font:inherit;font-weight:800;border:2px solid var(--line);border-radius:10px;padding:2px 6px;background:var(--surface);color:var(--ink)}
+.arow2 .res{min-width:110px;text-align:right;font-weight:800;font-size:14px}
+.arow2.win{background:var(--good-bg)} .arow2.lose{background:var(--bad-bg)}
+@media (max-width:600px){ .arow2{grid-template-columns:1fr auto auto} .arow2 .res{grid-column:1/-1;text-align:left} }
+.coins{font-family:var(--display);font-weight:800;font-size:28px}
+.roles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.role{background:var(--surface);border:3px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0;font-weight:700}
+.role .top{display:flex;align-items:center;gap:10px}
+.role .e{font-size:40px;line-height:1}
+.role h4{font-size:20px}
+.role ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:2px}
+.role.secret{border-color:var(--sun);box-shadow:0 0 0 3px var(--sun)}
+.role.out{opacity:.35}
+@media (max-width:600px){ .roles{grid-template-columns:1fr} }
+.pform{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.pform label{display:flex;flex-direction:column;gap:4px;font-weight:800;background:var(--surface-2);border-radius:12px;padding:8px 10px}
+.pform input{font:inherit;font-weight:700;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:5px 8px;width:100%}
+@media (max-width:560px){ .pform{grid-template-columns:1fr} }
+.preview{background:var(--sun-soft);border-radius:18px;padding:16px;font-size:18px;font-weight:700;line-height:1.7}
+</style>
+
+<div class="wrap">
+
+<header class="hero">
+  <button class="theme-btn" id="themeBtn" type="button">🌙 Dark</button>
+  <h1><span>Unit 1</span><br><span>quiz show!</span></h1>
+  <p class="lede">Let's play with everything from Unit 1: countries, <b>am / is / are</b>, family, <b>have got</b> and <b>my, your, his…</b></p>
+  <details class="tnote">
+    <summary>Teacher plan · 70 minutes, 1-to-1 · A1 review</summary>
+    <div class="table-wrap"><table class="plan">
+      <tr><th>Time</th><th>Stage</th><th>Activity</th></tr>
+      <tr><td>0–5</td><td>Warm-up</td><td>Me in 5 sentences</td></tr>
+      <tr><td>5–25</td><td>🎮 Quiz show</td><td>5 categories × 4 questions</td></tr>
+      <tr><td>25–37</td><td>Reading</td><td>Ama's family: true/false + short answers</td></tr>
+      <tr><td>37–47</td><td>🎮 Sentence auction</td><td>Bet coins on correct sentences, fix the wrong ones</td></tr>
+      <tr><td>47–57</td><td>🎮 Secret person</td><td>Yes/no questions with <i>to be</i> and <i>have got</i></td></tr>
+      <tr><td>57–65</td><td>Writing</td><td>My profile card</td></tr>
+      <tr><td>65–70</td><td>Wrap-up</td><td>Exit quiz, rate the lesson</td></tr>
+    </table></div>
+    <p><b>Use your notes</b> from the last lessons: give extra quiz-show turns to the topic she found hardest.</p>
+  </details>
+</header>
+
+<nav class="bar" aria-label="Lesson stages">
+  <a href="#warm">1 Warm-up <span>5′</span></a>
+  <a href="#show">2 Quiz show <span>20′</span></a>
+  <a href="#read">3 Read <span>12′</span></a>
+  <a href="#auction">4 Auction <span>10′</span></a>
+  <a href="#secret">5 Secret person <span>10′</span></a>
+  <a href="#write">6 Write <span>8′</span></a>
+  <a href="#wrap">7 Wrap-up <span>5′</span></a>
+</nav>
+
+<!-- 1 -->
+<section class="stage" id="warm">
+  <div class="stage-head"><h2><span class="num">1</span>Me in 5 sentences</h2><span class="time">5 min</span></div>
+  <div class="task">
+    <h3>Tell the teacher about you <span class="tag talk">Speaking</span></h3>
+    <p class="instr">Use these to help you. Then ask the teacher the same things!</p>
+    <div class="say"><span class="pill">I'm… (name)</span><span class="pill">I'm … years old.</span><span class="pill">I'm from… I'm…(nationality)</span><span class="pill">I've got… (brother / sister / pet)</span><span class="pill">My … is … (mum / best friend)</span></div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="stage" id="show">
+  <div class="stage-head"><h2><span class="num">2</span>Quiz show</h2><span class="time">20 min</span></div>
+  <div class="task">
+    <h3>Choose a question! <span class="tag game">Game</span></h3>
+    <p class="instr">Tap a number. Answer the question. Correct? You win the points! Can you get <b>3,000 points</b>?</p>
+    <div class="jgrid" id="jgrid"></div>
+    <div class="scoreboard"><span id="jScore">⭐ 0 points</span><span id="jLeft">20 questions left</span></div>
+    <div class="jq" id="jBox" hidden>
+      <span class="cat" id="jCat"></span>
+      <span class="qq" id="jQ"></span>
+      <span class="aa" id="jA" hidden></span>
+      <div class="btns" style="justify-content:center"><button class="btn ghost" type="button" id="jShow">Show answer</button><button class="btn teal" type="button" id="jYes">✅ Correct</button><button class="btn" type="button" id="jNo">❌ Not this time</button></div>
+    </div>
+    <div class="btns"><button class="btn ghost" type="button" id="jReset">New game</button></div>
+    <p class="tnote">For the 400 questions, accept any correct answer. She must answer in a full sentence for the points.</p>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="stage" id="read">
+  <div class="stage-head"><h2><span class="num">3</span>Ama's family</h2><span class="time">12 min</span></div>
+  <div class="task">
+    <h3>Read</h3>
+    <div class="story-wrap"><span class="ava" aria-hidden="true">👧🏾</span>
+      <div class="story">Hi, I'm Ama! I'm 12 and I'm from London, but my dad is from Ghana and my mum is Spanish. I've got one brother, Kofi. He's 15. He's got a guitar and his room is very noisy! My mum and dad have got a small café. Their café is near our school, so we have lunch there on Fridays. My grandparents live in Madrid. They've got a big garden and a dog. Its name is Toby. I haven't got a pet, but I love Toby!</div>
+    </div>
+  </div>
+  <div class="task">
+    <h3>True or false?</h3>
+    <div class="rq" id="tfRows"></div>
+    <div class="btns"><button class="btn" type="button" id="tfCheck">Check</button><span class="score" id="tfScore"></span></div>
+    <p class="tnote"><b>False ones:</b> she corrects them: "No! Ama's mum isn't British. She's Spanish."</p>
+  </div>
+  <div class="task">
+    <h3>Short answers</h3>
+    <div class="rq" id="saRows"></div>
+    <div class="btns"><button class="btn" type="button" id="saCheck">Check</button><span class="score" id="saScore"></span></div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="stage" id="auction">
+  <div class="stage-head"><h2><span class="num">4</span>Sentence auction</h2><span class="time">10 min</span></div>
+  <div class="task">
+    <h3>Buy the correct sentences! <span class="tag game">Game</span></h3>
+    <p class="instr">You've got <b>500 coins</b>. Bet coins on the sentences you think are <b>correct</b>. Correct sentence = you win your bet. Wrong sentence = you lose it!</p>
+    <div class="coins" id="coins">🪙 500 coins</div>
+    <div class="auction" id="auRows"></div>
+    <div class="btns"><button class="btn" type="button" id="auReveal">Reveal!</button><button class="btn ghost" type="button" id="auReset">Play again</button></div>
+    <p class="tnote"><b>After the reveal:</b> she corrects every wrong sentence aloud for a bonus 20 coins each.</p>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="stage" id="secret">
+  <div class="stage-head"><h2><span class="num">5</span>Secret person</h2><span class="time">10 min</span></div>
+  <div class="task">
+    <h3>Who are you? <span class="tag game">Game</span></h3>
+    <p class="instr"><b>Student:</b> tap "Choose a secret person" (the teacher doesn't look!). Remember, then tap Hide. <b>Teacher:</b> ask yes/no questions. Who is it?</p>
+    <div class="roles" id="roles"></div>
+    <div class="btns"><button class="btn" type="button" id="rsPick">🤫 Choose a secret person</button><button class="btn ghost" type="button" id="rsHide">Hide</button><button class="btn ghost" type="button" id="rsReset">Reset</button><span class="score" id="rsMsg"></span></div>
+    <div class="say"><span class="pill q">Are you 13?</span><span class="pill q">Are you Japanese?</span><span class="pill q">Have you got a cat?</span><span class="pill q">Is your mum a chef?</span><span class="pill a">Yes, I am. / No, I'm not.</span><span class="pill a">Yes, I have. / No, I haven't.</span><span class="pill a">Yes, she is. / No, she isn't.</span></div>
+    <p class="tnote"><b>Swap:</b> you choose, she asks. Tap a card to cross it out. Who needs fewer questions?</p>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="stage" id="write">
+  <div class="stage-head"><h2><span class="num">6</span>My profile card</h2><span class="time">8 min</span></div>
+  <div class="task">
+    <h3>Fill in your card <span class="tag talk">Writing</span></h3>
+    <div class="pform">
+      <label>Name<input id="pName" autocomplete="off" placeholder="Ana"></label>
+      <label>Age<input id="pAge" autocomplete="off" placeholder="13"></label>
+      <label>Country<input id="pCountry" autocomplete="off" placeholder="Spain"></label>
+      <label>Nationality<input id="pNat" autocomplete="off" placeholder="Spanish"></label>
+      <label>I've got… (family)<input id="pFam" autocomplete="off" placeholder="one sister"></label>
+      <label>I haven't got…<input id="pNot" autocomplete="off" placeholder="a pet"></label>
+      <label>A person in my family<input id="pPer" autocomplete="off" placeholder="my mum"></label>
+      <label>This person has got…<input id="pPerHas" autocomplete="off" placeholder="a red car"></label>
+    </div>
+    <div class="preview" id="pPreview">Fill in the card and your profile appears here!</div>
+    <p class="tnote"><b>Then:</b> she reads her profile aloud without looking, and you ask one follow-up question for each sentence.</p>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="stage" id="wrap">
+  <div class="stage-head"><h2><span class="num">7</span>Wrap-up</h2><span class="time">5 min</span></div>
+  <div class="task" id="exit">
+    <h3>Exit quiz</h3>
+    <div class="q" data-ans="c"><p class="prompt">1. My cousins ___ from Italy.</p><div class="opts"><button class="opt" type="button" data-v="a">is</button><button class="opt" type="button" data-v="b">am</button><button class="opt" type="button" data-v="c">are</button></div></div>
+    <div class="q" data-ans="a"><p class="prompt">2. ___ your sister got a phone?</p><div class="opts"><button class="opt" type="button" data-v="a">Has</button><button class="opt" type="button" data-v="b">Have</button><button class="opt" type="button" data-v="c">Is</button></div></div>
+    <div class="q" data-ans="b"><p class="prompt">3. My dad's sister is my…</p><div class="opts"><button class="opt" type="button" data-v="a">cousin</button><button class="opt" type="button" data-v="b">aunt</button><button class="opt" type="button" data-v="c">niece</button></div></div>
+    <div class="q" data-ans="c"><p class="prompt">4. We've got a dog. ___ dog is black.</p><div class="opts"><button class="opt" type="button" data-v="a">Their</button><button class="opt" type="button" data-v="b">My</button><button class="opt" type="button" data-v="c">Our</button></div></div>
+    <div class="q" data-ans="a"><p class="prompt">5. She's from Mexico. She's…</p><div class="opts"><button class="opt" type="button" data-v="a">Mexican</button><button class="opt" type="button" data-v="b">Mexicish</button><button class="opt" type="button" data-v="c">Mexico</button></div></div>
+    <div class="btns"><button class="btn" type="button" data-check-mc="exit">Check</button><span class="score" id="exit-score"></span></div>
+  </div>
+  <div class="task">
+    <h3>Today's lesson was…</h3>
+    <div class="faces" id="faces"><button class="face" type="button" aria-label="great">🤩</button><button class="face" type="button" aria-label="good">🙂</button><button class="face" type="button" aria-label="okay">😐</button></div>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function(){
+  const root=document.documentElement, tb=document.getElementById('themeBtn');
+  const isDark=()=> root.dataset.theme ? root.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const label=()=>{ tb.textContent = isDark() ? '☀️ Light' : '🌙 Dark'; };
+  tb.addEventListener('click',()=>{ root.dataset.theme = isDark()?'light':'dark'; label(); });
+  label();
+  const $=id=>document.getElementById(id);
+  const shuffle=a=>{ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; };
+  const pick=(arr,avoid)=>{ let x; do{ x=arr[Math.floor(Math.random()*arr.length)]; }while(arr.length>1&&x===avoid); return x; };
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+  function choiceRows(elId,items){ const el=$(elId);
+    items.forEach(([t,opts,a])=>{ const r=document.createElement('div'); r.className='trow q'; r.dataset.ans=a;
+      r.innerHTML=`<span class="st">${t}</span><div class="opts">${opts.map(o=>`<button class="opt" type="button" data-v="${o}">${o}</button>`).join('')}</div>`;
+      r.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{ r.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel','right','wrong')); o.classList.add('sel'); });
+      el.appendChild(r); }); }
+  function checkRows(elId,scoreId){ let ok=0,n=0; $(elId).querySelectorAll('.q').forEach(q=>{ n++; const s=q.querySelector('.opt.sel'); q.querySelectorAll('.opt').forEach(x=>x.classList.remove('right','wrong'));
+      if(s){ if(s.dataset.v===q.dataset.ans){ s.classList.add('right'); ok++; } else s.classList.add('wrong'); } }); $(scoreId).textContent=`${ok} / ${n}`+(ok===n?' 🎉':''); }
+  document.querySelectorAll('#exit .q').forEach(q=>q.querySelectorAll('.opt').forEach(o=>o.addEventListener('click',()=>{ q.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel','right','wrong')); o.classList.add('sel'); })));
+  document.querySelectorAll('[data-check-mc]').forEach(btn=>btn.onclick=()=>checkRows(btn.dataset.checkMc, btn.dataset.checkMc+'-score'));
+
+  // quiz show
+  const CATS=[
+    ['🌍 Countries',[["I'm from Japan. I'm…","Japanese"],["Paella is a ___ dish.","Spanish"],["She's from the UK. She's…","British"],["Say 3 nationalities that end in -an or -ian.","e.g. American, Mexican, Brazilian, Italian…"]]],
+    ['✅ am / is / are',[["I ___ 13 years old.","am"],["My parents ___ at home.","are"],["Make it negative: She's Mexican.","She isn't Mexican. / She's not Mexican."],["Make a question: you / British","Are you British?"]]],
+    ['👨‍👩‍👧 Family',[["Your mum's mum is your…","grandmother"],["The girl word for nephew is…","niece"],["Your uncle's son is your…","cousin"],["Say 4 family words for women.","e.g. mother, sister, aunt, grandmother, niece, daughter, wife"]]],
+    ['🎁 have got',[["I ___ a bike.","have got / 've got"],["Leo ___ a dog.","has got / 's got"],["Have you got a pet? — No, I…","haven't."],["Make a question: your brother / a phone","Has your brother got a phone?"]]],
+    ['🔑 my, your…',[["I → ?","my"],["they → ?","their"],["Zoe has got a cat. ___ cat is white.","Her"],["The dog has got a ball. ___ ball is red.","Its"]]]
+  ];
+  const vals=[100,200,300,400];
+  let jPts=0, jLeft=20, jCur=null;
+  function jBuild(){ const g=$('jgrid'); g.innerHTML=''; jPts=0; jLeft=20; jCur=null; $('jBox').hidden=true;
+    CATS.forEach(([c])=>{ const d=document.createElement('div'); d.className='jcat'; d.textContent=c; g.appendChild(d); });
+    vals.forEach((v,r)=>CATS.forEach(([c,qs],ci)=>{ const b=document.createElement('button'); b.type='button'; b.className='jcell'; b.textContent=v; b.dataset.c=ci; b.dataset.r=r;
+      b.setAttribute('aria-label',`${c} for ${v}`);
+      b.onclick=()=>{ if(b.classList.contains('used')||b.classList.contains('won')) return; jCur=b; const [q,a]=qs[r];
+        $('jCat').textContent=`${c} · ${v}`; $('jQ').textContent=q; $('jA').textContent=a; $('jA').hidden=true; $('jBox').hidden=false; $('jBox').scrollIntoView({block:'nearest'}); };
+      g.appendChild(b); }));
+    jDraw(); }
+  function jDraw(){ $('jScore').textContent=`⭐ ${jPts} points`+(jPts>=3000?' 🏆':''); $('jLeft').textContent=`${jLeft} questions left`; }
+  function jEnd(win){ if(!jCur) return; jCur.classList.add(win?'won':'used'); if(win) jPts+=+jCur.textContent; jLeft--; jCur=null; $('jBox').hidden=true; jDraw(); }
+  $('jShow').onclick=()=>{ $('jA').hidden=false; };
+  $('jYes').onclick=()=>jEnd(true); $('jNo').onclick=()=>jEnd(false);
+  $('jReset').onclick=jBuild; jBuild();
+
+  // reading
+  choiceRows('tfRows',[["1. Ama is 12.",['True','False'],'True'],["2. Ama's mum is British.",['True','False'],'False'],["3. Kofi has got a guitar.",['True','False'],'True'],["4. The café is near Ama's school.",['True','False'],'True'],["5. Ama has got a dog.",['True','False'],'False'],["6. Toby is her grandparents' dog.",['True','False'],'True']]);
+  $('tfCheck').onclick=()=>checkRows('tfRows','tfScore');
+  choiceRows('saRows',[["1. Is Ama from London?",["Yes, she is.","Yes, she has."],"Yes, she is."],["2. Has Ama got a sister?",["No, she isn't.","No, she hasn't."],"No, she hasn't."],["3. Are her grandparents in Madrid?",["Yes, they have.","Yes, they are."],"Yes, they are."],["4. Have her parents got a café?",["Yes, they have.","Yes, they are."],"Yes, they have."],["5. Is Kofi 13?",["No, he hasn't.","No, he isn't."],"No, he isn't."]]);
+  $('saCheck').onclick=()=>checkRows('saRows','saScore');
+
+  // auction
+  const AU=[["She's got two brothers.",1,''],["I has got a cat.",0,"I have got a cat."],["Are you Spanish? Yes, I am.",1,''],["My mum is from Brazil. She's Brazilian.",1,''],["They is my cousins.",0,"They are my cousins."],["Has your dad got a car? Yes, he's got.",0,"Yes, he has."],["This is Leo. His sister is Zoe.",1,''],["We haven't got a dog. Our cat is called Mimi.",1,''],["My aunt's son is my nephew.",0,"My aunt's son is my cousin."],["Ana is Italian. Her husband are Spanish.",0,"Her husband is Spanish."]];
+  function auBuild(){ const el=$('auRows'); el.innerHTML=''; $('coins').textContent='🪙 500 coins';
+    AU.forEach(([s],i)=>{ const r=document.createElement('div'); r.className='arow2';
+      r.innerHTML=`<span>${i+1}. ${s}</span><label class="muted" for="bet${i}">Bet</label><select id="bet${i}"><option>0</option><option>20</option><option>50</option><option>100</option></select><span class="res"></span>`;
+      r.querySelector('select').onchange=auDraw; el.appendChild(r); }); }
+  function auDraw(){ const used=AU.reduce((t,_,i)=>t+ +$('bet'+i).value,0); $('coins').textContent=`🪙 500 coins · bet: ${used}`+(used>500?' ⚠️ too much!':''); }
+  $('auReveal').onclick=()=>{ let total=500; AU.forEach(([s,ok,fix],i)=>{ const bet=+$('bet'+i).value, r=$('bet'+i).closest('.arow2'), res=r.querySelector('.res'); r.classList.remove('win','lose');
+      if(ok){ total+=bet; res.textContent= `✓ correct${bet?' +'+bet:''}`; if(bet) r.classList.add('win'); }
+      else { total-=bet; res.textContent=`✗ ${fix}${bet?' −'+bet:''}`; r.classList.add('lose'); } });
+    $('coins').textContent=`🪙 ${total} coins`+(total>=700?' 🏆':''); };
+  $('auReset').onclick=auBuild; auBuild();
+
+  // secret person
+  const RS=[
+    ['🛹','Luca',['14 years old','Italian','has got 2 sisters and a skateboard',"hasn't got a pet",'his mum is a chef']],
+    ['🐱','Yuki',['12 years old','Japanese','has got a cat, Mochi',"hasn't got brothers or sisters",'her dad is a pilot']],
+    ['🎸','Sam',['13 years old','American','has got 5 cousins and a guitar',"hasn't got a phone",'his mum is a teacher']],
+    ['🐴','Inés',['15 years old','Mexican','has got a horse and one brother',"hasn't got a bike",'her grandparents are Spanish']],
+    ['📚','Emma',['13 years old','British','has got a dog and a sister',"hasn't got a guitar",'her mum is a doctor']],
+    ['⚽','Tomás',['12 years old','Brazilian','has got 3 brothers and a football',"hasn't got a cat",'his dad is a chef']]];
+  $('roles').innerHTML=RS.map(([e,n,l])=>`<button type="button" class="role" data-n="${n}"><span class="top"><span class="e" aria-hidden="true">${e}</span><h4>${n}</h4></span><ul>${l.map(x=>`<li>${x}</li>`).join('')}</ul></button>`).join('');
+  $('roles').querySelectorAll('.role').forEach(c=>c.onclick=()=>c.classList.toggle('out'));
+  let rsCur=null;
+  $('rsPick').onclick=()=>{ rsCur=pick(RS,rsCur); $('roles').querySelectorAll('.role').forEach(c=>{ c.classList.remove('out'); c.classList.toggle('secret',c.dataset.n===rsCur[1]); }); $('rsMsg').textContent=`You are ${rsCur[1]}! Remember, then tap Hide.`; };
+  $('rsHide').onclick=()=>{ $('roles').querySelectorAll('.role').forEach(c=>c.classList.remove('secret')); $('rsMsg').textContent='Hidden. Answer the questions!'; };
+  $('rsReset').onclick=()=>{ $('roles').querySelectorAll('.role').forEach(c=>c.classList.remove('secret','out')); $('rsMsg').textContent=''; };
+
+  // profile card
+  const pf=['pName','pAge','pCountry','pNat','pFam','pNot','pPer','pPerHas'];
+  function pDraw(){ const v=Object.fromEntries(pf.map(k=>[k,$(k).value.trim()])); const out=[];
+    if(v.pName) out.push(`Hi! My name is <b>${esc(v.pName)}</b>.`);
+    if(v.pAge) out.push(`I'm <b>${esc(v.pAge)}</b> years old.`);
+    if(v.pCountry||v.pNat) out.push(`I'm from <b>${esc(v.pCountry||'…')}</b>. I'm <b>${esc(v.pNat||'…')}</b>.`);
+    if(v.pFam) out.push(`I've got <b>${esc(v.pFam)}</b>.`);
+    if(v.pNot) out.push(`I haven't got <b>${esc(v.pNot)}</b>.`);
+    if(v.pPer||v.pPerHas){ const p=v.pPer||'…'; const cap=p.charAt(0).toUpperCase()+p.slice(1); out.push(`<b>${esc(cap)}</b> has got <b>${esc(v.pPerHas||'…')}</b>.`); }
+    $('pPreview').innerHTML= out.length? out.join(' ') : 'Fill in the card and your profile appears here!'; }
+  pf.forEach(k=>$(k).addEventListener('input',pDraw));
+
+  document.querySelectorAll('#faces .face').forEach(f=>f.addEventListener('click',()=>{
+    document.querySelectorAll('#faces .face').forEach(x=>x.classList.remove('sel')); f.classList.add('sel'); }));
+})();
+</script>
