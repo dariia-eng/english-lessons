@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Check &amp; Reflect — A2 Revision</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  --teal:#1BBCB3;--purple:#7B4FD6;--orange:#E8653A;--yellow:#F9C23C;--coral:#E04565;--green:#22c55e;
+  --teal-soft:rgba(27,188,179,.13);--purple-soft:rgba(123,79,214,.13);--orange-soft:rgba(232,101,58,.13);--yellow-soft:rgba(249,194,60,.15);--green-soft:rgba(34,197,94,.12);
+  --bg:#F7F8FA;--surface:#FFFFFF;--surface-2:#EEF0F4;--surface-3:#E5E7EB;
+  --text-1:#1A1D27;--text-2:#6B7280;--text-3:#9CA3AF;
+  --border:#E2E5EC;--radius:14px;--radius-sm:9px;
+  --correct:#22c55e;--wrong:#ef4444;--correct-bg:rgba(34,197,94,.1);--wrong-bg:rgba(239,68,68,.1);
+  --header-bg:linear-gradient(135deg,#1a1b2e 0%,#2d1a4a 50%,#1a3040 100%);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12141C;--surface:#1E2130;--surface-2:#262A3A;--surface-3:#2E3448;
+  --text-1:#F0F2F8;--text-2:#9AA3B8;--text-3:#5A6480;--border:#2E3448;
+  --teal-soft:rgba(27,188,179,.2);--purple-soft:rgba(123,79,214,.2);--orange-soft:rgba(232,101,58,.2);--yellow-soft:rgba(249,194,60,.18);--green-soft:rgba(34,197,94,.18);
+}}
+:root[data-theme="dark"]{
+  --bg:#12141C;--surface:#1E2130;--surface-2:#262A3A;--surface-3:#2E3448;
+  --text-1:#F0F2F8;--text-2:#9AA3B8;--text-3:#5A6480;--border:#2E3448;
+  --teal-soft:rgba(27,188,179,.2);--purple-soft:rgba(123,79,214,.2);--orange-soft:rgba(232,101,58,.2);--yellow-soft:rgba(249,194,60,.18);--green-soft:rgba(34,197,94,.18);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-1);min-height:100vh;padding-bottom:60px;}
+.header{background:var(--header-bg);color:#fff;padding:1.75rem 1.25rem 1.5rem;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(249,194,60,.05) 0,rgba(249,194,60,.05) 1px,transparent 1px,transparent 22px);pointer-events:none;}
+.theme-btn{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.12);border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:.95rem;color:#fff;display:flex;align-items:center;justify-content:center;}
+.level-chip{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:.4rem;}
+.header h1{font-family:'Nunito',sans-serif;font-weight:900;font-size:2rem;line-height:1.15;margin-bottom:.7rem;}
+.meta-chips{display:flex;flex-wrap:wrap;gap:.45rem;}
+.meta-chip{display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;font-weight:700;padding:.22rem .6rem;border-radius:99px;color:#fff;}
+.meta-chip.goal{background:rgba(27,188,179,.35);border:1px solid rgba(27,188,179,.5);}
+.meta-chip.gram{background:rgba(123,79,214,.35);border:1px solid rgba(123,79,214,.5);}
+.meta-chip.vocab{background:rgba(232,101,58,.35);border:1px solid rgba(232,101,58,.5);}
+.tab-nav{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:2px solid var(--border);padding:.5rem 1rem;display:flex;gap:.35rem;overflow-x:auto;scrollbar-width:none;}
+.tab-nav::-webkit-scrollbar{display:none;}
+.tab-btn{flex-shrink:0;border:1.5px solid var(--border);background:var(--surface);color:var(--text-2);font-family:'Nunito',sans-serif;font-weight:700;font-size:.77rem;padding:.3rem .75rem;border-radius:99px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.tab-btn.active{background:var(--yellow);border-color:var(--yellow);color:#1a1b2e;}
+.tab-btn:hover:not(.active){border-color:var(--teal);color:var(--teal);}
+.section{display:none;padding:1.1rem;max-width:740px;margin:0 auto;}
+.section.active{display:flex;flex-direction:column;gap:1.4rem;}
+.today-card{background:linear-gradient(135deg,#1e2240,#2a1a40);border-radius:var(--radius);padding:1.1rem 1.25rem;color:#fff;}
+.today-card-title{font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.6rem;}
+.today-row{display:grid;grid-template-columns:auto 1fr;gap:.25rem .75rem;align-items:start;font-size:.84rem;line-height:1.6;}
+.today-label{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:.15rem .5rem;border-radius:4px;white-space:nowrap;margin-top:.15rem;}
+.today-label.g{background:var(--teal);color:#fff;}
+.today-label.gr{background:var(--purple);color:#fff;}
+.today-label.v{background:var(--orange);color:#fff;}
+.today-val{color:rgba(255,255,255,.85);}
+.today-val em{color:var(--yellow);font-style:normal;font-weight:600;}
+.talk-card{background:var(--teal-soft);border:1.5px solid var(--teal);border-radius:var(--radius);padding:1rem 1.1rem;}
+.talk-card h3{font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;color:var(--teal);margin-bottom:.3rem;}
+.talk-card p.instr{font-size:.83rem;color:var(--text-2);margin-bottom:.7rem;line-height:1.5;}
+.talk-list{display:flex;flex-direction:column;gap:.45rem;}
+.talk-item{display:flex;gap:.6rem;font-size:.87rem;line-height:1.6;}
+.talk-num{font-weight:700;color:var(--teal);min-width:1.4em;}
+.ex-card{border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);overflow:hidden;}
+.ex-hd{padding:.8rem 1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.6rem;}
+.ex-label{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#fff;padding:.18rem .5rem;border-radius:99px;white-space:nowrap;}
+.ex-label.gram{background:linear-gradient(135deg,var(--purple),var(--coral));}
+.ex-label.vocab{background:linear-gradient(135deg,var(--teal),#0d9488);}
+.ex-label.speak{background:linear-gradient(135deg,var(--orange),var(--coral));}
+.ex-label.game{background:linear-gradient(135deg,var(--yellow),var(--orange));color:#1a1b2e;}
+.ex-title{font-family:'Nunito',sans-serif;font-weight:700;font-size:.93rem;}
+.ex-body{padding:1rem 1.1rem;}
+.instr{font-size:.85rem;color:var(--text-2);line-height:1.6;margin-bottom:.85rem;}
+.rule-card{background:var(--purple-soft);border:1.5px solid var(--purple);border-radius:var(--radius-sm);padding:.85rem 1rem;margin-bottom:.85rem;}
+.rule-card h4{font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;color:var(--purple);margin-bottom:.5rem;}
+.rule-row{font-size:.84rem;line-height:1.75;}
+.rule-row code{background:var(--surface-2);padding:.1rem .4rem;border-radius:4px;font-family:monospace;font-size:.82rem;color:var(--purple);}
+.rule-row + .rule-row{margin-top:.35rem;}
+.rule-ex{font-size:.82rem;color:var(--text-2);font-style:italic;margin-top:.4rem;}
+.rule-ex span{color:var(--teal);font-weight:600;font-style:normal;}
+.word-box{border:2px dashed var(--yellow);background:var(--yellow-soft);border-radius:var(--radius-sm);padding:.6rem .9rem;font-size:.84rem;line-height:1.75;margin-bottom:.9rem;color:var(--text-2);}
+.word-box strong{color:var(--text-1);display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem;}
+.gf-list{display:flex;flex-direction:column;gap:.5rem;}
+.gf-row{display:flex;align-items:center;flex-wrap:wrap;gap:.3rem;padding:.45rem .75rem;background:var(--surface-2);border-radius:var(--radius-sm);border:1.5px solid var(--border);font-size:.87rem;line-height:1.75;}
+.gf-num{font-size:.74rem;font-weight:700;color:var(--text-3);min-width:1.4em;flex-shrink:0;}
+.gf-in{border:none;border-bottom:1.5px solid var(--teal);background:transparent;color:var(--text-1);font-family:'Inter',sans-serif;font-size:.87rem;padding:0 3px;min-width:70px;max-width:140px;text-align:center;}
+.gf-in:focus{outline:none;border-bottom-color:var(--purple);}
+.gf-in.correct{border-bottom-color:var(--correct);color:var(--correct);font-weight:600;}
+.gf-in.wrong{border-bottom-color:var(--wrong);color:var(--wrong);}
+.gf-hint{font-size:.77rem;color:var(--text-3);font-style:italic;}
+.mcq-list{display:flex;flex-direction:column;gap:.6rem;}
+.mcq-row{padding:.5rem .75rem;background:var(--surface-2);border-radius:var(--radius-sm);border:1.5px solid var(--border);}
+.mcq-sent{font-size:.87rem;line-height:1.6;margin-bottom:.35rem;}
+.mcq-num{font-weight:700;color:var(--text-3);margin-right:.4rem;}
+.mcq-opts{display:flex;gap:.4rem;flex-wrap:wrap;}
+.mcq-btn{border:1.5px solid var(--border);background:var(--surface);border-radius:var(--radius-sm);padding:.2rem .65rem;font-size:.82rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;font-style:italic;transition:all .15s;}
+.mcq-btn:hover{border-color:var(--teal);background:var(--teal-soft);}
+.mcq-btn.selected{border-color:var(--teal);background:var(--teal-soft);color:var(--teal);}
+.mcq-btn.correct{border-color:var(--correct);background:var(--correct-bg);color:var(--correct);font-weight:700;}
+.mcq-btn.wrong{border-color:var(--wrong);background:var(--wrong-bg);color:var(--wrong);}
+/* FLIP CARDS */
+.flip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.6rem;margin-bottom:.85rem;}
+.flip-card{perspective:600px;cursor:pointer;height:80px;}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d;}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:var(--radius-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.4rem;}
+.flip-front{background:linear-gradient(135deg,var(--purple),var(--coral));color:#fff;}
+.flip-back{background:linear-gradient(135deg,var(--teal),#0d9488);color:#fff;transform:rotateY(180deg);}
+.flip-base{font-size:.72rem;font-weight:600;opacity:.75;margin-bottom:.2rem;}
+.flip-past{font-size:.95rem;font-weight:800;}
+.flip-tap{font-size:.62rem;opacity:.6;margin-top:.2rem;}
+.flip-reset-btn{font-size:.77rem;border:1.5px solid var(--border);background:var(--surface-2);color:var(--text-2);border-radius:var(--radius-sm);padding:.3rem .8rem;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;margin-bottom:.85rem;}
+/* MEMORY MATCH */
+.mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:.7rem;}
+.mem-card{perspective:500px;cursor:pointer;height:72px;}
+.mem-inner{position:relative;width:100%;height:100%;transition:transform .35s;transform-style:preserve-3d;}
+.mem-card.flipped .mem-inner,.mem-card.matched .mem-inner{transform:rotateY(180deg);}
+.mem-front,.mem-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;padding:.3rem;}
+.mem-front{background:linear-gradient(135deg,var(--purple),#4f35a0);color:#fff;font-size:1.3rem;}
+.mem-back{background:var(--surface-2);border:1.5px solid var(--border);color:var(--text-1);transform:rotateY(180deg);text-align:center;font-size:.8rem;}
+.mem-card.matched .mem-back{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+.mem-stats{font-size:.83rem;color:var(--text-2);display:flex;gap:1rem;margin-bottom:.5rem;}
+.mem-stats span{font-weight:700;color:var(--text-1);}
+/* SENTENCE SCRAMBLE */
+.scramble-wrap{display:flex;flex-direction:column;gap:.6rem;}
+.scramble-q{font-size:.82rem;color:var(--text-2);margin-bottom:.3rem;font-style:italic;}
+.scramble-answer{min-height:36px;border:1.5px dashed var(--teal);border-radius:var(--radius-sm);padding:.35rem .6rem;display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;background:var(--teal-soft);font-size:.87rem;}
+.scramble-answer span{color:var(--text-3);font-size:.78rem;font-style:italic;}
+.scramble-words{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.4rem;}
+.word-chip{background:var(--surface-2);border:1.5px solid var(--border);border-radius:6px;padding:.22rem .55rem;font-size:.84rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
+.word-chip:hover{border-color:var(--teal);background:var(--teal-soft);}
+.word-chip.used{opacity:.3;pointer-events:none;cursor:default;}
+.word-chip.selected-ans{background:var(--teal-soft);border-color:var(--teal);color:var(--teal);}
+.scramble-item{padding:.6rem .75rem;background:var(--surface-2);border-radius:var(--radius-sm);border:1.5px solid var(--border);}
+.scramble-num{font-size:.74rem;font-weight:700;color:var(--text-3);margin-bottom:.35rem;}
+.scramble-reveal{display:none;font-size:.82rem;color:var(--correct);font-weight:600;padding:.3rem .55rem;background:var(--correct-bg);border-radius:6px;border-left:3px solid var(--correct);margin-top:.3rem;}
+.scramble-wrong-reveal{display:none;font-size:.82rem;color:var(--wrong);font-weight:600;padding:.3rem .55rem;background:var(--wrong-bg);border-radius:6px;border-left:3px solid var(--wrong);margin-top:.3rem;}
+/* NOUGHTS & CROSSES */
+.ttt-board{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.7rem;max-width:380px;}
+.ttt-cell{aspect-ratio:1;border:2px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:.35rem;transition:all .15s;text-align:center;}
+.ttt-cell:hover:not(.claimed){border-color:var(--teal);background:var(--teal-soft);}
+.ttt-cell .ttt-q{font-size:.73rem;color:var(--text-2);line-height:1.4;}
+.ttt-cell .ttt-mark{font-size:1.6rem;font-weight:900;display:none;margin-bottom:.2rem;}
+.ttt-cell.x-cell{border-color:var(--teal);background:var(--teal-soft);}
+.ttt-cell.x-cell .ttt-mark{display:block;color:var(--teal);}
+.ttt-cell.o-cell{border-color:var(--coral);background:var(--orange-soft);}
+.ttt-cell.o-cell .ttt-mark{display:block;color:var(--coral);}
+.ttt-cell.claimed .ttt-q{display:none;}
+.ttt-cell.win-line{box-shadow:0 0 0 3px var(--yellow) inset;}
+.ttt-status{font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;padding:.45rem .9rem;border-radius:var(--radius-sm);background:var(--purple-soft);border:1.5px solid var(--purple);color:var(--purple);margin-bottom:.6rem;display:inline-block;}
+.ttt-turn{font-size:.82rem;color:var(--text-2);margin-bottom:.5rem;}
+.ttt-answer-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;align-items:center;justify-content:center;}
+.ttt-answer-modal.open{display:flex;}
+.ttt-modal-box{background:var(--surface);border-radius:var(--radius);padding:1.5rem;max-width:340px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.ttt-modal-q{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.05rem;margin-bottom:1rem;color:var(--text-1);}
+.ttt-modal-in{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:.5rem .75rem;font-family:'Inter',sans-serif;font-size:.9rem;background:var(--surface);color:var(--text-1);margin-bottom:.75rem;}
+.ttt-modal-in:focus{outline:none;border-color:var(--teal);}
+.ttt-modal-btns{display:flex;gap:.5rem;justify-content:center;}
+.ttt-modal-submit{background:linear-gradient(135deg,var(--teal),var(--purple));color:#fff;border:none;border-radius:8px;padding:.45rem 1.1rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.ttt-modal-skip{background:var(--surface-2);border:1.5px solid var(--border);border-radius:8px;padding:.45rem 1rem;font-weight:600;cursor:pointer;color:var(--text-2);font-family:'Inter',sans-serif;}
+/* SPEAKING CARDS */
+.speak-card{background:linear-gradient(135deg,#1e2240,#2a1a40);border-radius:var(--radius);padding:1.75rem 1.5rem;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;margin-bottom:.85rem;}
+.speak-card-num{font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.6rem;}
+.speak-card-q{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.25rem;line-height:1.4;color:#fff;margin-bottom:.5rem;}
+.speak-card-tip{font-size:.78rem;color:var(--yellow);font-style:italic;}
+.speak-nav{display:flex;align-items:center;justify-content:center;gap:.75rem;}
+.speak-nav-btn{background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:.4rem 1rem;font-size:.83rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;color:var(--text-2);}
+.speak-nav-btn:hover{border-color:var(--teal);color:var(--teal);}
+.speak-counter{font-size:.8rem;color:var(--text-3);font-weight:600;min-width:4rem;text-align:center;}
+.btn-shuffle{background:var(--yellow);border:none;border-radius:var(--radius-sm);padding:.4rem 1rem;font-size:.83rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;color:#1a1b2e;}
+/* OPEN ANSWER */
+.open-list{display:flex;flex-direction:column;gap:.6rem;}
+.open-row{padding:.5rem .75rem;background:var(--surface-2);border-radius:var(--radius-sm);border:1.5px solid var(--border);}
+.open-prompt{font-size:.85rem;color:var(--text-2);margin-bottom:.35rem;line-height:1.5;}
+.open-prompt strong{color:var(--text-1);}
+.open-in{width:100%;border:1.5px solid var(--border);border-radius:6px;padding:.35rem .6rem;font-family:'Inter',sans-serif;font-size:.87rem;background:var(--surface);color:var(--text-1);}
+.open-in:focus{outline:none;border-color:var(--teal);}
+.open-reveal{display:none;margin-top:.4rem;font-size:.82rem;color:var(--correct);font-weight:600;padding:.3rem .55rem;background:var(--correct-bg);border-radius:6px;border-left:3px solid var(--correct);}
+.btn-show{background:none;border:1.5px solid var(--border);border-radius:6px;padding:.2rem .6rem;font-size:.77rem;font-weight:600;cursor:pointer;color:var(--text-2);font-family:'Inter',sans-serif;margin-top:.3rem;}
+.btn-show:hover{border-color:var(--teal);color:var(--teal);}
+.example-reveal{display:block;margin-top:.2rem;font-size:.82rem;font-style:italic;color:var(--teal);}
+/* HOT SEAT */
+.hotseat-wrap{display:flex;flex-direction:column;gap:.6rem;}
+.hotseat-card{background:linear-gradient(135deg,#2d1a4a,#1a3040);border-radius:var(--radius);padding:1.4rem;text-align:center;color:#fff;min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.hotseat-word{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.8rem;color:var(--yellow);margin-bottom:.4rem;}
+.hotseat-hint{font-size:.8rem;color:rgba(255,255,255,.55);margin-bottom:.5rem;}
+.hotseat-clues{display:flex;flex-wrap:wrap;gap:.35rem;justify-content:center;}
+.hotseat-clue{font-size:.78rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:.18rem .6rem;color:rgba(255,255,255,.75);}
+.hotseat-nav{display:flex;gap:.5rem;align-items:center;justify-content:center;}
+.hotseat-counter{font-size:.8rem;color:var(--text-3);min-width:3.5rem;text-align:center;}
+/* BUTTONS */
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.9rem;}
+.btn-check{background:linear-gradient(135deg,var(--teal),var(--purple));color:#fff;border:none;border-radius:var(--radius-sm);padding:.45rem 1rem;font-size:.83rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-reset{background:var(--surface-2);color:var(--text-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.45rem 1rem;font-size:.83rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-show-all{background:none;border:1.5px solid var(--border);color:var(--text-2);border-radius:var(--radius-sm);padding:.45rem 1rem;font-size:.83rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-show-all:hover{border-color:var(--teal);color:var(--teal);}
+.btn-primary{background:var(--yellow);border:none;border-radius:var(--radius-sm);padding:.45rem 1.1rem;font-size:.85rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;color:#1a1b2e;}
+.score-bar{margin-top:.75rem;padding:.5rem .75rem;background:var(--surface-2);border-radius:var(--radius-sm);font-size:.83rem;color:var(--text-2);display:none;}
+.score-bar.show{display:block;}
+/* TRUTH OR LIE */
+.lie-inputs{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.7rem;}
+.lie-row{display:flex;align-items:center;gap:.5rem;}
+.lie-label{font-size:.75rem;font-weight:700;color:var(--text-2);min-width:3.5rem;}
+.lie-in{flex:1;border:1.5px solid var(--border);border-radius:6px;padding:.35rem .65rem;font-family:'Inter',sans-serif;font-size:.86rem;background:var(--surface);color:var(--text-1);}
+.lie-in:focus{outline:none;border-color:var(--orange);}
+.game-card{background:var(--orange-soft);border:1.5px solid var(--orange);border-radius:var(--radius);padding:1rem 1.1rem;}
+.game-card h3{font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;color:var(--orange);margin-bottom:.35rem;}
+.game-card .instr{margin-bottom:.7rem;}
+/* STORY FRAME */
+.story-frame{background:var(--surface-2);border-radius:var(--radius-sm);padding:.8rem 1rem;font-size:.87rem;line-height:2;border:1.5px dashed var(--teal);color:var(--text-1);}
+.story-frame strong{color:var(--teal);}
+/* INTERVIEW GRID */
+.interview-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;}
+@media(max-width:460px){.interview-grid{grid-template-columns:1fr;}}
+.interview-q{background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:.5rem .75rem;font-size:.85rem;line-height:1.5;color:var(--text-1);}
+.interview-q .q-num{font-size:.68rem;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:.2rem;}
+/* READING TEXT */
+.reading-text{background:var(--surface-2);border-radius:var(--radius-sm);padding:1rem 1.1rem;border:1.5px solid var(--border);font-size:.87rem;line-height:2.1;margin-bottom:1rem;color:var(--text-1);}
+.reading-text p{margin-bottom:.6rem;}
+.reading-text p:last-child{margin-bottom:0;}
+.reading-text strong{color:var(--teal);font-weight:700;}
+.reading-text em{color:var(--text-2);}
+@media(max-width:500px){
+  .header h1{font-size:1.5rem;}
+  .flip-grid{grid-template-columns:repeat(3,1fr);}
+  .mem-grid{grid-template-columns:repeat(4,1fr);}
+  .mcq-opts{flex-direction:column;}
+  .ttt-board{max-width:100%;}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+  <div class="level-chip">A2 · Units 6–7 · Review</div>
+  <h1>Check &amp; Reflect</h1>
+  <div class="meta-chips">
+    <span class="meta-chip goal">🎯 Review &amp; practise</span>
+    <span class="meta-chip gram">📐 Past simple</span>
+    <span class="meta-chip vocab">📍 Prepositions</span>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="warmup" onclick="showTab('warmup')">🔁 Warm-up</button>
+  <button class="tab-btn" data-tab="pastsimple" onclick="showTab('pastsimple')">📝 Past Simple</button>
+  <button class="tab-btn" data-tab="irregular" onclick="showTab('irregular')">🔀 Irregular</button>
+  <button class="tab-btn" data-tab="prepositions" onclick="showTab('prepositions')">📍 Prepositions</button>
+  <button class="tab-btn" data-tab="questions" onclick="showTab('questions')">❓ Questions</button>
+  <button class="tab-btn" data-tab="games" onclick="showTab('games')">🎮 Games</button>
+</nav>
+
+<!-- ═══ WARM-UP ═══ -->
+<section class="section active" id="warmup">
+
+  <div class="today-card">
+    <div class="today-card-title">Today's lesson</div>
+    <div class="today-row">
+      <span class="today-label g">Goal</span>
+      <span class="today-val">Review past simple, prepositions, and questions</span>
+      <span class="today-label gr">Grammar</span>
+      <span class="today-val">Past simple (regular + irregular) · <em>Did</em>/<em>Wh-</em> questions</span>
+      <span class="today-label v">Vocab</span>
+      <span class="today-val">Prepositions of place · verb + preposition</span>
+    </div>
+  </div>
+
+  <!-- LEAD-IN -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label speak">🌟 Lead-in</span><span class="ex-title">Hobbies &amp; free time</span></div>
+    <div class="ex-body">
+      <p class="instr">Look at the hobbies below. Which ones do <strong>you</strong> do? Tell your teacher!</p>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;">
+        <span style="background:var(--teal-soft);border:1.5px solid var(--teal);border-radius:99px;padding:.3rem .9rem;font-size:.87rem;font-weight:700;color:var(--teal);">📸 photography</span>
+        <span style="background:var(--purple-soft);border:1.5px solid var(--purple);border-radius:99px;padding:.3rem .9rem;font-size:.87rem;font-weight:700;color:var(--purple);">🎵 music</span>
+        <span style="background:var(--orange-soft);border:1.5px solid var(--orange);border-radius:99px;padding:.3rem .9rem;font-size:.87rem;font-weight:700;color:var(--orange);">🏃 sport</span>
+        <span style="background:var(--yellow-soft);border:1.5px solid var(--yellow);border-radius:99px;padding:.3rem .9rem;font-size:.87rem;font-weight:700;color:#a07820;">✈️ travel</span>
+        <span style="background:var(--green-soft);border:1.5px solid var(--green);border-radius:99px;padding:.3rem .9rem;font-size:.87rem;font-weight:700;color:#15803d;">🎨 drawing</span>
+        <span style="background:var(--teal-soft);border:1.5px solid var(--teal);border-radius:99px;padding:.3rem .9rem;font-size:.87rem;font-weight:700;color:var(--teal);">💃 dancing</span>
+        <span style="background:var(--purple-soft);border:1.5px solid var(--purple);border-radius:99px;padding:.3rem .9rem;font-size:.87rem;font-weight:700;color:var(--purple);">🍳 cooking</span>
+        <span style="background:var(--orange-soft);border:1.5px solid var(--orange);border-radius:99px;padding:.3rem .9rem;font-size:.87rem;font-weight:700;color:var(--orange);">📚 reading</span>
+      </div>
+      <div style="background:var(--surface-2);border-radius:var(--radius-sm);border:1.5px dashed var(--border);padding:.85rem 1rem;">
+        <p style="font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);margin-bottom:.5rem;">💬 Talk about it!</p>
+        <div style="display:flex;flex-direction:column;gap:.5rem;">
+          <div style="display:flex;gap:.6rem;font-size:.87rem;line-height:1.6;"><span style="color:var(--teal);font-weight:700;min-width:1.4em;">1</span><span>What do you do in your free time? Do you have a hobby?</span></div>
+          <div style="display:flex;gap:.6rem;font-size:.87rem;line-height:1.6;"><span style="color:var(--teal);font-weight:700;min-width:1.4em;">2</span><span>Is photography a hobby for you? Do you take a lot of photos?</span></div>
+        </div>
+        <p style="font-size:.78rem;color:var(--text-3);margin-top:.5rem;font-style:italic;">💡 Try: <em>"In my free time, I… / My hobby is… / I love… / I don't like…"</em></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- READING TEXT (NEW) -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label vocab">📖 Reading</span><span class="ex-title">A New Beginning</span></div>
+    <div class="ex-body">
+      <p class="instr">Read the story. Notice the <strong>past simple verbs</strong> and <strong>prepositions</strong> (in bold). Then answer the comprehension questions below.</p>
+      <div class="reading-text">
+        <p>Maya <strong>worked</strong> as a manager at a finance company in the city. She <strong>sat</strong> at a desk <strong>next to</strong> a large window and <strong>worked</strong> long hours every week. She <strong>earned</strong> good money, but she <strong>felt</strong> bored and unhappy.</p>
+        <p>Last year, she <strong>made</strong> a big decision. She <strong>saved</strong> money for six months, <strong>quit</strong> her job, and <strong>moved</strong> to a new city. She <strong>found</strong> a small flat <strong>between</strong> the river and the city centre. She enrolled in a photography course at a college <strong>near</strong> the park.</p>
+        <p>The first few months were difficult. She <strong>didn't earn</strong> much and <strong>lived</strong> on a small budget. But every morning, she <strong>walked</strong> to class with her camera. She <strong>felt</strong> free.</p>
+        <p>A year later, she <strong>got</strong> her first paid project — a wedding <strong>outside</strong> the city.</p>
+        <p><em>"I didn't regret it for a second," she told everyone.</em></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- READING COMPREHENSION (NEW) -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label gram">Reading Check</span><span class="ex-title">Answer the questions about the text</span></div>
+    <div class="ex-body">
+      <p class="instr">Choose the correct answer. Use the text to help you.</p>
+      <div class="mcq-list" id="rcList">
+        <div class="mcq-row">
+          <div class="mcq-sent"><span class="mcq-num">1</span>What was Maya's job before the change?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="rc1" data-val="photo" onclick="pickMCQ(this)">a photographer</button>
+            <button class="mcq-btn" data-grp="rc1" data-val="manager" onclick="pickMCQ(this)">a finance manager</button>
+            <button class="mcq-btn" data-grp="rc1" data-val="designer" onclick="pickMCQ(this)">a designer</button>
+          </div>
+        </div>
+        <div class="mcq-row">
+          <div class="mcq-sent"><span class="mcq-num">2</span>How long did Maya save money before she quit?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="rc2" data-val="year" onclick="pickMCQ(this)">one year</button>
+            <button class="mcq-btn" data-grp="rc2" data-val="three" onclick="pickMCQ(this)">three months</button>
+            <button class="mcq-btn" data-grp="rc2" data-val="six" onclick="pickMCQ(this)">six months</button>
+          </div>
+        </div>
+        <div class="mcq-row">
+          <div class="mcq-sent"><span class="mcq-num">3</span>Where was Maya's flat?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="rc3" data-val="park" onclick="pickMCQ(this)">next to the park</button>
+            <button class="mcq-btn" data-grp="rc3" data-val="river" onclick="pickMCQ(this)">between the river and city centre</button>
+            <button class="mcq-btn" data-grp="rc3" data-val="outside" onclick="pickMCQ(this)">outside the city</button>
+          </div>
+        </div>
+        <div class="mcq-row">
+          <div class="mcq-sent"><span class="mcq-num">4</span>How did Maya feel on her way to class every morning?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="rc4" data-val="bored" onclick="pickMCQ(this)">bored</button>
+            <button class="mcq-btn" data-grp="rc4" data-val="free" onclick="pickMCQ(this)">free</button>
+            <button class="mcq-btn" data-grp="rc4" data-val="nervous" onclick="pickMCQ(this)">nervous</button>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-check" onclick="checkRC()">✓ Check</button>
+        <button class="btn-reset" onclick="resetRC()">↺ Reset</button>
+      </div>
+      <div class="score-bar" id="rcScore"></div>
+    </div>
+  </div>
+
+  <!-- QUICK QUIZ -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label game">⚡ Quick Quiz</span><span class="ex-title">What do you remember?</span></div>
+    <div class="ex-body">
+      <p class="instr">Choose the correct answer. How much do you remember from the last lessons?</p>
+      <div class="mcq-list" id="qqList">
+        <div class="mcq-row">
+          <div class="mcq-sent"><span class="mcq-num">1</span>What is the past simple of <em>study</em>?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="q1" data-val="studyed" onclick="pickMCQ(this)">studyed</button>
+            <button class="mcq-btn" data-grp="q1" data-val="studied" onclick="pickMCQ(this)">studied</button>
+            <button class="mcq-btn" data-grp="q1" data-val="studid" onclick="pickMCQ(this)">studid</button>
+          </div>
+        </div>
+        <div class="mcq-row">
+          <div class="mcq-sent"><span class="mcq-num">2</span>She <em>___ not go</em> to the park. Which word is missing?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="q2" data-val="was" onclick="pickMCQ(this)">was</button>
+            <button class="mcq-btn" data-grp="q2" data-val="did" onclick="pickMCQ(this)">did</button>
+            <button class="mcq-btn" data-grp="q2" data-val="does" onclick="pickMCQ(this)">does</button>
+          </div>
+        </div>
+        <div class="mcq-row">
+          <div class="mcq-sent"><span class="mcq-num">3</span>The cat is <em>___</em> the chair and the sofa.</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="q3" data-val="between" onclick="pickMCQ(this)">between</button>
+            <button class="mcq-btn" data-grp="q3" data-val="inside" onclick="pickMCQ(this)">inside</button>
+            <button class="mcq-btn" data-grp="q3" data-val="on" onclick="pickMCQ(this)">on</button>
+          </div>
+        </div>
+        <div class="mcq-row">
+          <div class="mcq-sent"><span class="mcq-num">4</span>I work <em>___</em> a teacher.</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="q4" data-val="for" onclick="pickMCQ(this)">for</button>
+            <button class="mcq-btn" data-grp="q4" data-val="to" onclick="pickMCQ(this)">to</button>
+            <button class="mcq-btn" data-grp="q4" data-val="as" onclick="pickMCQ(this)">as</button>
+          </div>
+        </div>
+        <div class="mcq-row">
+          <div class="mcq-sent"><span class="mcq-num">5</span>Which question is correct?</div>
+          <div class="mcq-opts">
+            <button class="mcq-btn" data-grp="q5" data-val="a" onclick="pickMCQ(this)">Where did you went?</button>
+            <button class="mcq-btn" data-grp="q5" data-val="b" onclick="pickMCQ(this)">Where did you go?</button>
+            <button class="mcq-btn" data-grp="q5" data-val="c" onclick="pickMCQ(this)">Where you went?</button>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-check" onclick="checkQQ()">✓ Check</button>
+        <button class="btn-reset" onclick="resetQQ()">↺ Reset</button>
+      </div>
+      <div class="score-bar" id="qqScore"></div>
+    </div>
+  </div>
+
+  <!-- ADULT DISCUSSION (UPGRADED) -->
+  <div class="talk-card">
+    <h3>💬 Real Talk!</h3>
+    <p class="instr">Use the past simple to answer. Give full answers — add details and feelings! Ask your teacher too.</p>
+    <div class="talk-list">
+      <div class="talk-item"><span class="talk-num">1</span><span>Think of a decision you made in the last year or two — a job, a move, a course. What did you decide? Why?</span></div>
+      <div class="talk-item"><span class="talk-num">2</span><span>Did you ever do something that surprised the people around you? What happened?</span></div>
+      <div class="talk-item"><span class="talk-num">3</span><span>What was the best thing that happened to you last year? Tell the whole story!</span></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══ PAST SIMPLE ═══ -->
+<section class="section" id="pastsimple">
+
+  <div class="rule-card" style="margin:0;">
+    <h4>📐 Past Simple — Regular Verbs</h4>
+    <div class="rule-row">✅ Most verbs: <code>verb + -ed</code></div>
+    <div class="rule-ex">call → <span>called</span> &nbsp;·&nbsp; start → <span>started</span></div>
+    <div class="rule-row" style="margin-top:.4rem;">✅ Verbs ending in <em>-y</em>: <code>-y → -ied</code></div>
+    <div class="rule-ex">study → <span>studied</span> &nbsp;·&nbsp; dance → <span>danced</span></div>
+    <div class="rule-row" style="margin-top:.4rem;">❌ Negative: <code>didn't + base form</code></div>
+    <div class="rule-ex">I <span>didn't watch</span> TV. &nbsp;·&nbsp; She <span>didn't go</span> out.</div>
+  </div>
+
+  <!-- Ex 1a -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label gram">Exercise 1a</span><span class="ex-title">Complete with the past simple</span></div>
+    <div class="ex-body">
+      <p class="instr">Write the correct past simple form of the verb in brackets.</p>
+      <div class="gf-list">
+        <div class="gf-row"><span class="gf-num">1</span>I <input class="gf-in" id="e1_1" data-ans="danced"> at a club last year. <span class="gf-hint">(dance)</span></div>
+        <div class="gf-row"><span class="gf-num">2</span>I <input class="gf-in" id="e1_2" data-ans="didn't do,did not do"> any sport last month. <span class="gf-hint">(not/do)</span></div>
+        <div class="gf-row"><span class="gf-num">3</span>My friends <input class="gf-in" id="e1_3" data-ans="studied"> English last weekend. <span class="gf-hint">(study)</span></div>
+        <div class="gf-row"><span class="gf-num">4</span>I <input class="gf-in" id="e1_4" data-ans="didn't listen,did not listen"> to the radio this morning. <span class="gf-hint">(not/listen)</span></div>
+        <div class="gf-row"><span class="gf-num">5</span>I <input class="gf-in" id="e1_5" data-ans="didn't watch,did not watch"> TV last night. <span class="gf-hint">(not/watch)</span></div>
+        <div class="gf-row"><span class="gf-num">6</span>My course <input class="gf-in" id="e1_6" data-ans="started"> five years ago. <span class="gf-hint">(start)</span></div>
+        <div class="gf-row"><span class="gf-num">7</span>I <input class="gf-in" id="e1_7" data-ans="didn't arrive,did not arrive"> late today. <span class="gf-hint">(not/arrive)</span></div>
+        <div class="gf-row"><span class="gf-num">8</span>Someone <input class="gf-in" id="e1_8" data-ans="called"> me this morning. <span class="gf-hint">(call)</span></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-check" onclick="checkGF(['e1_1','e1_2','e1_3','e1_4','e1_5','e1_6','e1_7','e1_8'],'ex1Score')">✓ Check</button>
+        <button class="btn-reset" onclick="resetGF(['e1_1','e1_2','e1_3','e1_4','e1_5','e1_6','e1_7','e1_8'],'ex1Score')">↺ Reset</button>
+        <button class="btn-show-all" onclick="showAllGF(['e1_1','e1_2','e1_3','e1_4','e1_5','e1_6','e1_7','e1_8'])">👁 Show answers</button>
+      </div>
+      <div class="score-bar" id="ex1Score"></div>
+    </div>
+  </div>
+
+  <!-- TRUTH OR LIE (UPGRADED) -->
+  <div class="game-card">
+    <h3>🃏 Truth or Lie!</h3>
+    <p class="instr">Write 3 sentences about your life — work, travel, decisions, big moments. <strong>2 must be true</strong>, <strong>1 must be a lie</strong>. Your teacher guesses which one is the lie!</p>
+    <div class="lie-inputs">
+      <div class="lie-row"><span class="lie-label">Sentence 1</span><input class="lie-in" type="text" placeholder="e.g. I changed my job three years ago."></div>
+      <div class="lie-row"><span class="lie-label">Sentence 2</span><input class="lie-in" type="text" placeholder="e.g. I lived abroad for a year."></div>
+      <div class="lie-row"><span class="lie-label">Sentence 3</span><input class="lie-in" type="text" placeholder="e.g. I didn't enjoy school when I was young."></div>
+    </div>
+    <p style="font-size:.8rem;color:var(--text-2);">💡 Think about: jobs · travel · studying · relationships · big decisions · family</p>
+  </div>
+
+  <!-- STORY FRAME (UPGRADED) -->
+  <div class="talk-card">
+    <h3>💬 A Chapter of My Life</h3>
+    <p class="instr">Think of a time when something important happened — a job, a move, a course, a big decision. Use this frame to tell the story!</p>
+    <div class="story-frame">
+      In [year / time], I decided to <strong>___</strong>. I <strong>___</strong>.<br>
+      I didn't <strong>___</strong>, but I <strong>___</strong>.<br>
+      The most difficult thing was <strong>___</strong>.<br>
+      In the end, I <strong>___</strong>, and I felt <strong>___</strong>.
+    </div>
+    <p style="font-size:.8rem;color:var(--text-2);margin-top:.6rem;">💡 Ideas: changing jobs · moving cities · studying something new · starting a project · ending a relationship · a trip you took alone</p>
+  </div>
+
+</section>
+
+<!-- ═══ IRREGULAR VERBS ═══ -->
+<section class="section" id="irregular">
+
+  <!-- FLIP CARDS -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label vocab">Flip Cards</span><span class="ex-title">Tap to reveal the past simple!</span></div>
+    <div class="ex-body">
+      <div class="flip-grid" id="flipGrid"></div>
+      <button class="flip-reset-btn" onclick="resetFlips()">↺ Flip all back</button>
+    </div>
+  </div>
+
+  <!-- OPEN QUESTIONS — IRREGULAR VERBS IN CONTEXT -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label speak">💬 Talk about you!</span><span class="ex-title">Answer the questions — use the past simple</span></div>
+    <div class="ex-body">
+      <p class="instr">Answer each question. The verb in <strong style="color:var(--teal);">teal</strong> tells you which past simple form to use!</p>
+      <div class="open-list">
+        <div class="open-row">
+          <div class="open-prompt"><strong>1</strong> &nbsp;Where did you <strong style="color:var(--teal);">go</strong> last weekend? &nbsp;<span style="font-size:.78rem;color:var(--text-3);">(go → went)</span></div>
+          <input class="open-in" type="text" placeholder="I went to…">
+        </div>
+        <div class="open-row">
+          <div class="open-prompt"><strong>2</strong> &nbsp;What film or TV show did you <strong style="color:var(--teal);">see</strong> recently? &nbsp;<span style="font-size:.78rem;color:var(--text-3);">(see → saw)</span></div>
+          <input class="open-in" type="text" placeholder="I saw…">
+        </div>
+        <div class="open-row">
+          <div class="open-prompt"><strong>3</strong> &nbsp;What did you <strong style="color:var(--teal);">buy</strong> last week? &nbsp;<span style="font-size:.78rem;color:var(--text-3);">(buy → bought)</span></div>
+          <input class="open-in" type="text" placeholder="I bought…">
+        </div>
+        <div class="open-row">
+          <div class="open-prompt"><strong>4</strong> &nbsp;Did you <strong style="color:var(--teal);">drive</strong> anywhere this week? Where? &nbsp;<span style="font-size:.78rem;color:var(--text-3);">(drive → drove)</span></div>
+          <input class="open-in" type="text" placeholder="I drove to… / I didn't drive.">
+        </div>
+        <div class="open-row">
+          <div class="open-prompt"><strong>5</strong> &nbsp;How did you <strong style="color:var(--teal);">feel</strong> this morning? &nbsp;<span style="font-size:.78rem;color:var(--text-3);">(feel → felt)</span></div>
+          <input class="open-in" type="text" placeholder="I felt…">
+        </div>
+        <div class="open-row">
+          <div class="open-prompt"><strong>6</strong> &nbsp;What time did you <strong style="color:var(--teal);">wake up</strong> today? &nbsp;<span style="font-size:.78rem;color:var(--text-3);">(wake up → woke up)</span></div>
+          <input class="open-in" type="text" placeholder="I woke up at…">
+        </div>
+        <div class="open-row">
+          <div class="open-prompt"><strong>7</strong> &nbsp;Did you <strong style="color:var(--teal);">sit</strong> outside or inside today? &nbsp;<span style="font-size:.78rem;color:var(--text-3);">(sit → sat)</span></div>
+          <input class="open-in" type="text" placeholder="I sat…">
+        </div>
+        <div class="open-row">
+          <div class="open-prompt"><strong>8</strong> &nbsp;Did you <strong style="color:var(--teal);">take</strong> any photos recently? What of? &nbsp;<span style="font-size:.78rem;color:var(--text-3);">(take → took)</span></div>
+          <input class="open-in" type="text" placeholder="I took photos of… / I didn't take any photos.">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 3 GAP FILL -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label gram">Exercise 3</span><span class="ex-title">Use the past simple from the word box</span></div>
+    <div class="ex-body">
+      <div class="word-box">
+        <strong>Word box</strong>
+        buy &nbsp;·&nbsp; drive &nbsp;·&nbsp; feel &nbsp;·&nbsp; go &nbsp;·&nbsp; throw &nbsp;·&nbsp; see &nbsp;·&nbsp; sit &nbsp;·&nbsp; wake up
+      </div>
+      <div class="gf-list">
+        <div class="gf-row"><span class="gf-num">1</span>Nikki <input class="gf-in" id="e3_1" data-ans="bought"> a new car last weekend.</div>
+        <div class="gf-row"><span class="gf-num">2</span>We <input class="gf-in" id="e3_2" data-ans="drove"> to a beautiful lake.</div>
+        <div class="gf-row"><span class="gf-num">3</span>I <input class="gf-in" id="e3_3" data-ans="threw"> the ball for my dog.</div>
+        <div class="gf-row"><span class="gf-num">4</span>Fumi always <input class="gf-in" id="e3_4" data-ans="went"> to bed late at university.</div>
+        <div class="gf-row"><span class="gf-num">5</span>I <input class="gf-in" id="e3_5" data-ans="saw"> my wife for the first time at work.</div>
+        <div class="gf-row"><span class="gf-num">6</span>Sorry I'm late — I <input class="gf-in" id="e3_6" data-ans="sat"> in traffic for two hours.</div>
+        <div class="gf-row"><span class="gf-num">7</span>My mum always <input class="gf-in" id="e3_7" data-ans="felt"> sad when she was a child.</div>
+        <div class="gf-row"><span class="gf-num">8</span>I <input class="gf-in" id="e3_8" data-ans="woke up"> late and ran to the station.</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-check" onclick="checkGF(['e3_1','e3_2','e3_3','e3_4','e3_5','e3_6','e3_7','e3_8'],'ex3Score')">✓ Check</button>
+        <button class="btn-reset" onclick="resetGF(['e3_1','e3_2','e3_3','e3_4','e3_5','e3_6','e3_7','e3_8'],'ex3Score')">↺ Reset</button>
+        <button class="btn-show-all" onclick="showAllGF(['e3_1','e3_2','e3_3','e3_4','e3_5','e3_6','e3_7','e3_8'])">👁 Show answers</button>
+      </div>
+      <div class="score-bar" id="ex3Score"></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══ PREPOSITIONS ═══ -->
+<section class="section" id="prepositions">
+
+  <!-- Ex 2a PICTURES -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label vocab">Exercise 2a</span><span class="ex-title">Prepositions of place — look at the picture and choose</span></div>
+    <div class="ex-body">
+      <p class="instr">Look at each picture. Where is the object? Choose the correct preposition.</p>
+      <div id="ex2List" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.6rem;margin-top:.4rem;">
+
+        <!-- CARD 1: cup ON table -->
+        <div style="background:var(--surface-2);border:1.5px solid var(--border);border-radius:8px;overflow:hidden;">
+          <div style="padding:.5rem .5rem 0;text-align:center;">
+            <svg viewBox="0 0 160 105" style="width:100%;max-height:115px;display:block;">
+              <rect x="10" y="58" width="140" height="8" rx="3" fill="#E8653A"/>
+              <rect x="22" y="66" width="8" height="30" rx="2" fill="#E8653A"/>
+              <rect x="130" y="66" width="8" height="30" rx="2" fill="#E8653A"/>
+              <rect x="62" y="36" width="34" height="22" rx="5" fill="#1BBCB3"/>
+              <ellipse cx="79" cy="36" rx="17" ry="5" fill="#0d9488"/>
+              <path d="M96 41 Q106 41 106 47 Q106 53 96 53" stroke="#0d9488" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div style="padding:.3rem .5rem .5rem;">
+            <p style="font-size:.87rem;margin:.2rem 0 .35rem;color:var(--text-1);">The cup is <span style="background:var(--border);border-radius:3px;padding:0 .3em;font-weight:600;">___</span> the table.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
+              <button class="mcq-btn" data-grp="p1" data-val="next to" onclick="pickMCQ(this)">next to</button>
+              <button class="mcq-btn" data-grp="p1" data-val="on" onclick="pickMCQ(this)">on</button>
+              <button class="mcq-btn" data-grp="p1" data-val="below" onclick="pickMCQ(this)">below</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: ball UNDER table -->
+        <div style="background:var(--surface-2);border:1.5px solid var(--border);border-radius:8px;overflow:hidden;">
+          <div style="padding:.5rem .5rem 0;text-align:center;">
+            <svg viewBox="0 0 160 105" style="width:100%;max-height:115px;display:block;">
+              <rect x="10" y="28" width="140" height="8" rx="3" fill="#7B4FD6"/>
+              <rect x="22" y="36" width="8" height="60" rx="2" fill="#7B4FD6"/>
+              <rect x="130" y="36" width="8" height="60" rx="2" fill="#7B4FD6"/>
+              <circle cx="80" cy="66" r="20" fill="#F9C23C"/>
+              <path d="M66 56 Q80 68 94 56" stroke="#b89010" stroke-width="2" fill="none"/>
+            </svg>
+          </div>
+          <div style="padding:.3rem .5rem .5rem;">
+            <p style="font-size:.87rem;margin:.2rem 0 .35rem;color:var(--text-1);">The ball is <span style="background:var(--border);border-radius:3px;padding:0 .3em;font-weight:600;">___</span> the table.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
+              <button class="mcq-btn" data-grp="p2" data-val="outside" onclick="pickMCQ(this)">outside</button>
+              <button class="mcq-btn" data-grp="p2" data-val="between" onclick="pickMCQ(this)">between</button>
+              <button class="mcq-btn" data-grp="p2" data-val="under" onclick="pickMCQ(this)">under</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: flower BETWEEN two books -->
+        <div style="background:var(--surface-2);border:1.5px solid var(--border);border-radius:8px;overflow:hidden;">
+          <div style="padding:.5rem .5rem 0;text-align:center;">
+            <svg viewBox="0 0 160 105" style="width:100%;max-height:115px;display:block;">
+              <rect x="12" y="18" width="32" height="78" rx="4" fill="#E8653A"/>
+              <rect x="12" y="18" width="8" height="78" rx="2" fill="#c04a1c"/>
+              <rect x="116" y="18" width="32" height="78" rx="4" fill="#F9C23C"/>
+              <rect x="140" y="18" width="8" height="78" rx="2" fill="#c09410"/>
+              <rect x="62" y="62" width="36" height="34" rx="4" fill="#1BBCB3"/>
+              <rect x="56" y="58" width="48" height="10" rx="3" fill="#0d9488"/>
+              <rect x="78" y="30" width="4" height="30" fill="#22c55e"/>
+              <circle cx="80" cy="24" r="13" fill="#E04565"/>
+              <circle cx="80" cy="24" r="6" fill="#F9C23C"/>
+            </svg>
+          </div>
+          <div style="padding:.3rem .5rem .5rem;">
+            <p style="font-size:.87rem;margin:.2rem 0 .35rem;color:var(--text-1);">The flower is <span style="background:var(--border);border-radius:3px;padding:0 .3em;font-weight:600;">___</span> the two books.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
+              <button class="mcq-btn" data-grp="p3" data-val="between" onclick="pickMCQ(this)">between</button>
+              <button class="mcq-btn" data-grp="p3" data-val="on" onclick="pickMCQ(this)">on</button>
+              <button class="mcq-btn" data-grp="p3" data-val="inside" onclick="pickMCQ(this)">inside</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 4: phone NEXT TO mug -->
+        <div style="background:var(--surface-2);border:1.5px solid var(--border);border-radius:8px;overflow:hidden;">
+          <div style="padding:.5rem .5rem 0;text-align:center;">
+            <svg viewBox="0 0 160 105" style="width:100%;max-height:115px;display:block;">
+              <rect x="20" y="38" width="46" height="52" rx="8" fill="#7B4FD6"/>
+              <ellipse cx="43" cy="38" rx="23" ry="6" fill="#5a3baf"/>
+              <path d="M66 48 Q80 48 80 56 Q80 64 66 64" stroke="#5a3baf" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <path d="M33 28 Q35 23 33 18" stroke="#9b7deb" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <path d="M43 25 Q45 20 43 15" stroke="#9b7deb" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <rect x="98" y="28" width="44" height="68" rx="7" fill="#E8653A"/>
+              <rect x="104" y="37" width="32" height="50" rx="4" fill="#c04a1c" fill-opacity="0.3"/>
+              <circle cx="120" cy="90" r="4" fill="#c04a1c" fill-opacity="0.5"/>
+            </svg>
+          </div>
+          <div style="padding:.3rem .5rem .5rem;">
+            <p style="font-size:.87rem;margin:.2rem 0 .35rem;color:var(--text-1);">The phone is <span style="background:var(--border);border-radius:3px;padding:0 .3em;font-weight:600;">___</span> the mug.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
+              <button class="mcq-btn" data-grp="p4" data-val="on" onclick="pickMCQ(this)">on</button>
+              <button class="mcq-btn" data-grp="p4" data-val="under" onclick="pickMCQ(this)">under</button>
+              <button class="mcq-btn" data-grp="p4" data-val="next to" onclick="pickMCQ(this)">next to</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 5: ball INSIDE box -->
+        <div style="background:var(--surface-2);border:1.5px solid var(--border);border-radius:8px;overflow:hidden;">
+          <div style="padding:.5rem .5rem 0;text-align:center;">
+            <svg viewBox="0 0 160 105" style="width:100%;max-height:115px;display:block;">
+              <rect x="20" y="45" width="120" height="55" rx="4" fill="#E8653A" fill-opacity="0.15" stroke="#E8653A" stroke-width="2.5"/>
+              <path d="M20 45 L50 20 L80 45" fill="#E8653A" fill-opacity="0.12" stroke="#E8653A" stroke-width="2"/>
+              <path d="M140 45 L110 20 L80 45" fill="#E8653A" fill-opacity="0.12" stroke="#E8653A" stroke-width="2"/>
+              <circle cx="80" cy="68" r="19" fill="#1BBCB3"/>
+              <path d="M68 57 Q80 68 92 57" stroke="#0d9488" stroke-width="2" fill="none"/>
+            </svg>
+          </div>
+          <div style="padding:.3rem .5rem .5rem;">
+            <p style="font-size:.87rem;margin:.2rem 0 .35rem;color:var(--text-1);">The ball is <span style="background:var(--border);border-radius:3px;padding:0 .3em;font-weight:600;">___</span> the box.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
+              <button class="mcq-btn" data-grp="p5" data-val="inside" onclick="pickMCQ(this)">inside</button>
+              <button class="mcq-btn" data-grp="p5" data-val="outside" onclick="pickMCQ(this)">outside</button>
+              <button class="mcq-btn" data-grp="p5" data-val="on" onclick="pickMCQ(this)">on</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 6: cat OUTSIDE house -->
+        <div style="background:var(--surface-2);border:1.5px solid var(--border);border-radius:8px;overflow:hidden;">
+          <div style="padding:.5rem .5rem 0;text-align:center;">
+            <svg viewBox="0 0 160 105" style="width:100%;max-height:115px;display:block;">
+              <rect x="12" y="45" width="88" height="55" rx="2" fill="#f0f4f8" stroke="#9CA3AF" stroke-width="2"/>
+              <polygon points="5,47 56,10 107,47" fill="#7B4FD6"/>
+              <rect x="38" y="66" width="22" height="34" rx="3" fill="#E8653A"/>
+              <circle cx="58" cy="84" r="2.5" fill="#c04a1c"/>
+              <rect x="68" y="52" width="20" height="16" rx="2" fill="#1BBCB3" fill-opacity="0.4" stroke="#9CA3AF" stroke-width="1.5"/>
+              <line x1="78" y1="52" x2="78" y2="68" stroke="#9CA3AF" stroke-width="1"/>
+              <line x1="68" y1="60" x2="88" y2="60" stroke="#9CA3AF" stroke-width="1"/>
+              <ellipse cx="134" cy="78" rx="16" ry="13" fill="#F9C23C"/>
+              <circle cx="145" cy="66" r="13" fill="#F9C23C"/>
+              <polygon points="138,56 141,47 146,55" fill="#E8A500"/>
+              <polygon points="147,55 151,47 155,56" fill="#E8A500"/>
+              <circle cx="142" cy="64" r="2.5" fill="#2D3748"/>
+              <circle cx="149" cy="64" r="2.5" fill="#2D3748"/>
+              <circle cx="145" cy="68" r="2" fill="#E04565"/>
+              <line x1="128" y1="66" x2="140" y2="67" stroke="#6B7280" stroke-width="1"/>
+              <line x1="128" y1="69" x2="140" y2="69" stroke="#6B7280" stroke-width="1"/>
+              <line x1="150" y1="67" x2="159" y2="66" stroke="#6B7280" stroke-width="1"/>
+              <path d="M118 78 Q106 68 112 58" stroke="#F9C23C" stroke-width="5" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div style="padding:.3rem .5rem .5rem;">
+            <p style="font-size:.87rem;margin:.2rem 0 .35rem;color:var(--text-1);">The cat is <span style="background:var(--border);border-radius:3px;padding:0 .3em;font-weight:600;">___</span> the house.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:.3rem;">
+              <button class="mcq-btn" data-grp="p6" data-val="below" onclick="pickMCQ(this)">below</button>
+              <button class="mcq-btn" data-grp="p6" data-val="outside" onclick="pickMCQ(this)">outside</button>
+              <button class="mcq-btn" data-grp="p6" data-val="under" onclick="pickMCQ(this)">under</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="btn-row">
+        <button class="btn-check" onclick="checkMCQSection('ex2List',ex2ans,'ex2Score')">✓ Check</button>
+        <button class="btn-reset" onclick="resetMCQSection('ex2List','ex2Score')">↺ Reset</button>
+      </div>
+      <div class="score-bar" id="ex2Score"></div>
+    </div>
+  </div>
+
+  <!-- DESCRIBE IT — UPGRADED -->
+  <div class="game-card">
+    <h3>🗣️ Describe It!</h3>
+    <p class="instr">Choose one option and describe it using as many prepositions as you can. Try to give 5+ sentences!</p>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem;">
+      <span style="background:var(--teal-soft);border:1.5px solid var(--teal);border-radius:99px;padding:.2rem .7rem;font-size:.8rem;font-weight:700;color:var(--teal);">Option A: Your workplace or study space</span>
+      <span style="background:var(--purple-soft);border:1.5px solid var(--purple);border-radius:99px;padding:.2rem .7rem;font-size:.8rem;font-weight:700;color:var(--purple);">Option B: Your home or living room</span>
+      <span style="background:var(--orange-soft);border:1.5px solid var(--orange);border-radius:99px;padding:.2rem .7rem;font-size:.8rem;font-weight:700;color:var(--orange);">Option C: This room right now</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:.4rem;font-size:.87rem;">
+      <div style="background:var(--surface-2);border-radius:8px;padding:.5rem .75rem;border:1.5px solid var(--border);">💡 My desk is <strong>next to</strong> the window.</div>
+      <div style="background:var(--surface-2);border-radius:8px;padding:.5rem .75rem;border:1.5px solid var(--border);">💡 My computer is <strong>on</strong> a table <strong>between</strong> two shelves.</div>
+      <div style="background:var(--surface-2);border-radius:8px;padding:.5rem .75rem;border:1.5px solid var(--border);">💡 There's a coffee cup <strong>next to</strong> my laptop and my phone is <strong>inside</strong> my bag.</div>
+    </div>
+    <p style="font-size:.8rem;color:var(--text-2);margin-top:.6rem;">Use: <strong>next to · between · under · on · inside · outside · above · opposite</strong></p>
+  </div>
+
+  <!-- Ex 4a MCQ -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label vocab">Exercise 4a</span><span class="ex-title">Verb + preposition — choose the correct word</span></div>
+    <div class="ex-body">
+      <div class="mcq-list" id="ex4List">
+        <div class="mcq-row"><div class="mcq-sent"><span class="mcq-num">1</span>I work <em>as / for</em> a shop assistant.</div><div class="mcq-opts"><button class="mcq-btn" data-grp="v1" data-val="as" onclick="pickMCQ(this)">as</button><button class="mcq-btn" data-grp="v1" data-val="for" onclick="pickMCQ(this)">for</button></div></div>
+        <div class="mcq-row"><div class="mcq-sent"><span class="mcq-num">2</span>I walk <em>for / to</em> work most days.</div><div class="mcq-opts"><button class="mcq-btn" data-grp="v2" data-val="for" onclick="pickMCQ(this)">for</button><button class="mcq-btn" data-grp="v2" data-val="to" onclick="pickMCQ(this)">to</button></div></div>
+        <div class="mcq-row"><div class="mcq-sent"><span class="mcq-num">3</span>I travel <em>for / to</em> my English lessons by bus.</div><div class="mcq-opts"><button class="mcq-btn" data-grp="v3" data-val="for" onclick="pickMCQ(this)">for</button><button class="mcq-btn" data-grp="v3" data-val="to" onclick="pickMCQ(this)">to</button></div></div>
+        <div class="mcq-row"><div class="mcq-sent"><span class="mcq-num">4</span>I live <em>about / with</em> my family.</div><div class="mcq-opts"><button class="mcq-btn" data-grp="v4" data-val="about" onclick="pickMCQ(this)">about</button><button class="mcq-btn" data-grp="v4" data-val="with" onclick="pickMCQ(this)">with</button></div></div>
+        <div class="mcq-row"><div class="mcq-sent"><span class="mcq-num">5</span>I meet up <em>from / with</em> friends at weekends.</div><div class="mcq-opts"><button class="mcq-btn" data-grp="v5" data-val="from" onclick="pickMCQ(this)">from</button><button class="mcq-btn" data-grp="v5" data-val="with" onclick="pickMCQ(this)">with</button></div></div>
+        <div class="mcq-row"><div class="mcq-sent"><span class="mcq-num">6</span>My brother moved <em>at / to</em> Australia last year.</div><div class="mcq-opts"><button class="mcq-btn" data-grp="v6" data-val="at" onclick="pickMCQ(this)">at</button><button class="mcq-btn" data-grp="v6" data-val="to" onclick="pickMCQ(this)">to</button></div></div>
+        <div class="mcq-row"><div class="mcq-sent"><span class="mcq-num">7</span>I usually listen <em>of / to</em> dance music.</div><div class="mcq-opts"><button class="mcq-btn" data-grp="v7" data-val="of" onclick="pickMCQ(this)">of</button><button class="mcq-btn" data-grp="v7" data-val="to" onclick="pickMCQ(this)">to</button></div></div>
+        <div class="mcq-row"><div class="mcq-sent"><span class="mcq-num">8</span>I go <em>at / to</em> school in the city centre.</div><div class="mcq-opts"><button class="mcq-btn" data-grp="v8" data-val="at" onclick="pickMCQ(this)">at</button><button class="mcq-btn" data-grp="v8" data-val="to" onclick="pickMCQ(this)">to</button></div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-check" onclick="checkMCQSection('ex4List',ex4ans,'ex4Score')">✓ Check</button>
+        <button class="btn-reset" onclick="resetMCQSection('ex4List','ex4Score')">↺ Reset</button>
+      </div>
+      <div class="score-bar" id="ex4Score"></div>
+    </div>
+  </div>
+
+  <!-- TRUE FOR YOU (UPGRADED) -->
+  <div class="talk-card">
+    <h3>💬 True for you?</h3>
+    <p class="instr">Look at the sentences in Exercise 4a. Change the ones that are NOT true for you. Tell your teacher — and explain <em>why</em>!</p>
+    <div class="talk-list">
+      <div class="talk-item"><span class="talk-num">💡</span><span><em>"I don't work as a shop assistant — I work as a ___!"</em> → What do you do? Do you enjoy it?</span></div>
+      <div class="talk-item"><span class="talk-num">💡</span><span><em>"I don't walk to work — I travel by ___."</em> → How long does it take? Do you like the commute?</span></div>
+      <div class="talk-item"><span class="talk-num">💡</span><span><em>"I live with ___."</em> → Did you always live this way? Did you ever live alone?</span></div>
+      <div class="talk-item"><span class="talk-num">💡</span><span>Did you ever move to a different city or country? What made you go?</span></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══ QUESTIONS ═══ -->
+<section class="section" id="questions">
+
+  <div class="rule-card" style="margin:0;">
+    <h4>❓ Past Simple Questions</h4>
+    <div class="rule-row">✅ Yes/No: <code>Did + subject + base verb?</code></div>
+    <div class="rule-ex">Did you <span>watch</span> TV? &nbsp;·&nbsp; Did she <span>go</span> out?</div>
+    <div class="rule-row" style="margin-top:.4rem;">✅ Wh-: <code>Wh- word + did + subject + base verb?</code></div>
+    <div class="rule-ex">Where did you <span>go</span>? &nbsp;·&nbsp; What did he <span>do</span>?</div>
+    <div class="rule-row" style="margin-top:.4rem;">❌ WRONG: <em>Where did you <u>went</u>?</em> → ✅ Where did you <span>go</span>?</div>
+  </div>
+
+  <!-- SENTENCE SCRAMBLE GAME -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label game">🔀 Sentence Scramble!</span><span class="ex-title">Put the words in order to make a question</span></div>
+    <div class="ex-body">
+      <p class="instr">Click the words in the correct order to build a past simple question. Click a word in the answer box to remove it.</p>
+      <div id="scrambleWrap" class="scramble-wrap"></div>
+      <div class="btn-row">
+        <button class="btn-check" onclick="checkScramble()">✓ Check all</button>
+        <button class="btn-reset" onclick="initScramble()">↺ Reset</button>
+      </div>
+      <div class="score-bar" id="scrambleScore"></div>
+    </div>
+  </div>
+
+  <!-- Ex 5a -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label gram">Exercise 5a</span><span class="ex-title">Make questions in the past simple</span></div>
+    <div class="ex-body">
+      <p class="instr">Write a past simple question using the prompt. The first one is an example.</p>
+      <div class="open-list">
+        <div class="open-row"><div class="open-prompt"><strong>1</strong> &nbsp;you / have a good weekend?</div><span class="example-reveal">Did you have a good weekend?</span></div>
+        <div class="open-row"><div class="open-prompt"><strong>2</strong> &nbsp;What / you / do?</div><input class="open-in" type="text" placeholder="Write the question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">What did you do?</div></div>
+        <div class="open-row"><div class="open-prompt"><strong>3</strong> &nbsp;Where / you / go?</div><input class="open-in" type="text" placeholder="Write the question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">Where did you go?</div></div>
+        <div class="open-row"><div class="open-prompt"><strong>4</strong> &nbsp;Who / you / go with?</div><input class="open-in" type="text" placeholder="Write the question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">Who did you go with?</div></div>
+        <div class="open-row"><div class="open-prompt"><strong>5</strong> &nbsp;When / you / get home?</div><input class="open-in" type="text" placeholder="Write the question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">When did you get home?</div></div>
+        <div class="open-row"><div class="open-prompt"><strong>6</strong> &nbsp;you / have a good time?</div><input class="open-in" type="text" placeholder="Write the question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">Did you have a good time?</div></div>
+        <div class="open-row"><div class="open-prompt"><strong>7</strong> &nbsp;What / you / watch on TV?</div><input class="open-in" type="text" placeholder="Write the question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">What did you watch on TV?</div></div>
+        <div class="open-row"><div class="open-prompt"><strong>8</strong> &nbsp;you / enjoy the TV show?</div><input class="open-in" type="text" placeholder="Write the question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">Did you enjoy the TV show?</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 6 -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label gram">Exercise 6</span><span class="ex-title">Write the question for each answer</span></div>
+    <div class="ex-body">
+      <p class="instr">Look at the underlined words. Write a past simple question that matches the answer.</p>
+      <div class="open-list">
+        <div class="open-row"><div class="open-prompt"><strong>1</strong> &nbsp;I went to <u>the park</u> yesterday.</div><span class="example-reveal">Where did you go yesterday?</span></div>
+        <div class="open-row"><div class="open-prompt"><strong>2</strong> &nbsp;Ali had <u>coffee with a friend</u> last Saturday.</div><input class="open-in" type="text" placeholder="Write your question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">What did Ali do last Saturday?</div></div>
+        <div class="open-row"><div class="open-prompt"><strong>3</strong> &nbsp;We saw Ed <u>last night</u>.</div><input class="open-in" type="text" placeholder="Write your question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">When did you see Ed?</div></div>
+        <div class="open-row"><div class="open-prompt"><strong>4</strong> &nbsp;I watched the film <u>with Mariana</u>.</div><input class="open-in" type="text" placeholder="Write your question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">Who did you watch the film with?</div></div>
+        <div class="open-row"><div class="open-prompt"><strong>5</strong> &nbsp;They had dinner <u>at a Chinese restaurant</u>.</div><input class="open-in" type="text" placeholder="Write your question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">Where did they have dinner?</div></div>
+        <div class="open-row"><div class="open-prompt"><strong>6</strong> &nbsp;I went to bed <u>at ten o'clock</u>.</div><input class="open-in" type="text" placeholder="Write your question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">What time did you go to bed?</div></div>
+        <div class="open-row"><div class="open-prompt"><strong>7</strong> &nbsp;We had <u>pizza</u> for lunch.</div><input class="open-in" type="text" placeholder="Write your question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">What did you have for lunch?</div></div>
+        <div class="open-row"><div class="open-prompt"><strong>8</strong> &nbsp;We got a <u>Hawaiian</u> pizza.</div><input class="open-in" type="text" placeholder="Write your question…"><div><button class="btn-show" onclick="showReveal(this)">Show answer</button></div><div class="open-reveal">What kind of pizza did you get?</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERVIEW SPEAKING (UPGRADED) -->
+  <div class="talk-card">
+    <h3>💬 Exercise 5b — Interview your partner!</h3>
+    <p class="instr">Use the questions from Exercise 5a — then try these extra interview questions. Ask your teacher or partner. <strong>Give full answers</strong>, not just "yes" or "no". Ask follow-up questions to keep the conversation going!</p>
+    <div class="interview-grid" style="margin-top:.5rem;">
+      <div class="interview-q"><span class="q-num">Bonus Q 1</span>Where did you grow up? What was your hometown like?</div>
+      <div class="interview-q"><span class="q-num">Bonus Q 2</span>What did you study? Do you use it in your work now?</div>
+      <div class="interview-q"><span class="q-num">Bonus Q 3</span>What was the first job you ever had? How did you feel on your first day?</div>
+      <div class="interview-q"><span class="q-num">Bonus Q 4</span>Did you ever travel somewhere completely alone? Where did you go?</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══ GAMES ═══ -->
+<section class="section" id="games">
+
+  <!-- PING PONG SPEAKING CARDS (NEW ADULT CONTENT) -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label speak">🏓 Question Ping-Pong!</span><span class="ex-title">Take turns asking and answering</span></div>
+    <div class="ex-body">
+      <p class="instr">One person reads the question. The other answers. Then ask a <strong>follow-up question</strong>! Take turns. Try to keep talking for at least 2 minutes per card.</p>
+      <div class="speak-card">
+        <div class="speak-card-num" id="cardNum">Card 1 of 10</div>
+        <div class="speak-card-q" id="cardQ">Did you ever live in a different city or country? What made you decide to go?</div>
+        <div class="speak-card-tip" id="cardTip">Follow-up: How long did you stay? What did you miss most?</div>
+      </div>
+      <div class="speak-nav">
+        <button class="speak-nav-btn" onclick="prevCard()">◀ Prev</button>
+        <span class="speak-counter" id="cardCounter">1 / 10</span>
+        <button class="speak-nav-btn" onclick="nextCard()">Next ▶</button>
+        <button class="btn-shuffle" onclick="shuffleCards()">🔀 Shuffle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOT SEAT GAME -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label game">🔥 Hot Seat!</span><span class="ex-title">Describe without saying the word!</span></div>
+    <div class="ex-body">
+      <p class="instr">One player is in the "hot seat" — they can't see the word. The other player <strong>describes or mimes</strong> it. No saying the word or its translation!</p>
+      <div class="hotseat-wrap">
+        <div class="hotseat-card">
+          <div class="hotseat-word" id="hsWord">went</div>
+          <div class="hotseat-hint" id="hsHint">past simple of: go</div>
+          <div class="hotseat-clues" id="hsClues"></div>
+        </div>
+        <div class="hotseat-nav">
+          <button class="speak-nav-btn" onclick="prevHot()">◀ Prev</button>
+          <span class="hotseat-counter" id="hsCounter">1 / 12</span>
+          <button class="speak-nav-btn" onclick="nextHot()">Next ▶</button>
+          <button class="btn-shuffle" onclick="shuffleHot()">🔀 Shuffle</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOUGHTS & CROSSES -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label game">❌⭕ Noughts &amp; Crosses</span><span class="ex-title">Answer the question to claim the square!</span></div>
+    <div class="ex-body">
+      <p class="instr">Take turns. Click a square to see the question. Answer correctly to claim it with your symbol. <strong>Get 3 in a row to win!</strong></p>
+      <div class="ttt-turn" id="tttTurn">❌ X goes first (student)</div>
+      <div class="ttt-status" id="tttStatus" style="display:none;"></div>
+      <div class="ttt-board" id="tttBoard"></div>
+      <button class="btn-primary" onclick="initTTT()">🔄 New game</button>
+      <div class="ttt-answer-modal" id="tttModal">
+        <div class="ttt-modal-box">
+          <div class="ttt-modal-q" id="tttModalQ"></div>
+          <input class="ttt-modal-in" id="tttModalIn" type="text" placeholder="Your answer…">
+          <div class="ttt-modal-btns">
+            <button class="ttt-modal-submit" onclick="submitTTT()">✓ Submit</button>
+            <button class="ttt-modal-skip" onclick="closeTTT()">✗ Skip</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFLECT -->
+  <div class="ex-card">
+    <div class="ex-hd"><span class="ex-label speak">Reflect</span><span class="ex-title">How confident are you? Rate 1–5</span></div>
+    <div class="ex-body">
+      <div style="display:flex;flex-direction:column;gap:.6rem;font-size:.87rem;">
+        <div class="reflect-row" data-label="I can use the past simple (regular and irregular)."></div>
+        <div class="reflect-row" data-label="I can make negative sentences with 'didn't'."></div>
+        <div class="reflect-row" data-label="I can use prepositions of place (between, under, next to…)."></div>
+        <div class="reflect-row" data-label="I can use verb + preposition phrases (work as, live with…)."></div>
+        <div class="reflect-row" data-label="I can form past simple questions."></div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+/* THEME */
+function toggleTheme(){var r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');}
+
+/* TABS */
+function showTab(id){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  document.querySelector('[data-tab="'+id+'"]').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* UTILS */
+function norm(s){return s.toLowerCase().replace(/[.,!?']/g,'').trim();}
+
+/* MCQ */
+function pickMCQ(btn){
+  var grp=btn.getAttribute('data-grp');
+  btn.closest('.mcq-row').querySelectorAll('.mcq-btn').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+  btn.classList.add('selected');
+}
+
+/* READING COMPREHENSION */
+var rcAns={rc1:'manager',rc2:'six',rc3:'river',rc4:'free'};
+function checkRC(){
+  var c=0;
+  document.querySelectorAll('#rcList .mcq-row').forEach(function(row){
+    var grp=row.querySelector('.mcq-btn').getAttribute('data-grp');
+    var ans=rcAns[grp];
+    var sel=row.querySelector('.selected');
+    row.querySelectorAll('.mcq-btn').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+    if(!sel)return;
+    if(sel.getAttribute('data-val')===ans){sel.classList.add('correct');c++;}
+    else{sel.classList.add('wrong');row.querySelectorAll('.mcq-btn').forEach(function(b){if(b.getAttribute('data-val')===ans)b.classList.add('correct');});}
+  });
+  var bar=document.getElementById('rcScore');bar.textContent='Score: '+c+' / 4';bar.classList.add('show');
+}
+function resetRC(){
+  document.querySelectorAll('#rcList .mcq-btn').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+  var bar=document.getElementById('rcScore');bar.textContent='';bar.classList.remove('show');
+}
+
+/* QUICK QUIZ */
+var qqAns={q1:'studied',q2:'did',q3:'between',q4:'as',q5:'b'};
+function checkQQ(){
+  var c=0;
+  document.querySelectorAll('#qqList .mcq-row').forEach(function(row){
+    var grp=row.querySelector('.mcq-btn').getAttribute('data-grp');
+    var ans=qqAns[grp];
+    var sel=row.querySelector('.selected');
+    row.querySelectorAll('.mcq-btn').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+    if(!sel)return;
+    if(sel.getAttribute('data-val')===ans){sel.classList.add('correct');c++;}
+    else{sel.classList.add('wrong');row.querySelectorAll('.mcq-btn').forEach(function(b){if(b.getAttribute('data-val')===ans)b.classList.add('correct');});}
+  });
+  var bar=document.getElementById('qqScore');bar.textContent='Score: '+c+' / 5';bar.classList.add('show');
+}
+function resetQQ(){
+  document.querySelectorAll('#qqList .mcq-btn').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+  var bar=document.getElementById('qqScore');bar.textContent='';bar.classList.remove('show');
+}
+
+/* MCQ SECTIONS */
+function checkMCQSection(lid,ansMap,sid){
+  var rows=document.querySelectorAll('#'+lid+' .mcq-row');var c=0;
+  rows.forEach(function(row){
+    var grp=row.querySelector('.mcq-btn').getAttribute('data-grp');
+    var ans=ansMap[grp];var sel=row.querySelector('.selected');
+    row.querySelectorAll('.mcq-btn').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+    if(!sel)return;
+    if(sel.getAttribute('data-val')===ans){sel.classList.add('correct');c++;}
+    else{sel.classList.add('wrong');row.querySelectorAll('.mcq-btn').forEach(function(b){if(b.getAttribute('data-val')===ans)b.classList.add('correct');});}
+  });
+  var bar=document.getElementById(sid);bar.textContent='Score: '+c+' / '+rows.length;bar.classList.add('show');
+}
+function resetMCQSection(lid,sid){
+  document.querySelectorAll('#'+lid+' .mcq-btn').forEach(function(b){b.classList.remove('selected','correct','wrong');});
+  var bar=document.getElementById(sid);bar.textContent='';bar.classList.remove('show');
+}
+var ex2ans={p1:'on',p2:'under',p3:'between',p4:'next to',p5:'inside',p6:'outside'};
+var ex4ans={v1:'as',v2:'to',v3:'to',v4:'with',v5:'with',v6:'to',v7:'to',v8:'to'};
+
+/* GAP FILL */
+function checkGF(ids,sid){
+  var c=0;
+  ids.forEach(function(id){
+    var inp=document.getElementById(id);
+    var alts=inp.getAttribute('data-ans').split(',').map(norm);
+    inp.classList.remove('correct','wrong');
+    if(alts.indexOf(norm(inp.value))>-1){inp.classList.add('correct');c++;}
+    else{inp.classList.add('wrong');}
+  });
+  var bar=document.getElementById(sid);bar.textContent='Score: '+c+' / '+ids.length;bar.classList.add('show');
+}
+function resetGF(ids,sid){
+  ids.forEach(function(id){var inp=document.getElementById(id);inp.value='';inp.classList.remove('correct','wrong');});
+  var bar=document.getElementById(sid);bar.textContent='';bar.classList.remove('show');
+}
+function showAllGF(ids){
+  ids.forEach(function(id){
+    var inp=document.getElementById(id);inp.value=inp.getAttribute('data-ans').split(',')[0];
+    inp.classList.remove('wrong');inp.classList.add('correct');
+  });
+}
+
+/* FLIP CARDS */
+var flipData=[
+  {base:'go',past:'went'},{base:'see',past:'saw'},{base:'buy',past:'bought'},
+  {base:'drive',past:'drove'},{base:'sit',past:'sat'},{base:'feel',past:'felt'},
+  {base:'throw',past:'threw'},{base:'wake up',past:'woke up'},{base:'begin',past:'began'},
+  {base:'take',past:'took'},{base:'get',past:'got'}
+];
+(function buildFlips(){
+  var grid=document.getElementById('flipGrid');if(!grid)return;
+  flipData.forEach(function(v,i){
+    var div=document.createElement('div');div.className='flip-card';div.setAttribute('data-idx',i);
+    div.innerHTML='<div class="flip-inner"><div class="flip-front"><span class="flip-base">base form</span><span class="flip-past">'+v.base+'</span><span class="flip-tap">tap →</span></div><div class="flip-back"><span class="flip-base">past simple</span><span class="flip-past">'+v.past+'</span></div></div>';
+    div.addEventListener('click',function(){this.classList.toggle('flipped');});
+    grid.appendChild(div);
+  });
+})();
+function resetFlips(){document.querySelectorAll('.flip-card').forEach(function(c){c.classList.remove('flipped');});}
+
+/* MEMORY MATCH */
+var memPairs=[
+  {base:'go',past:'went'},{base:'see',past:'saw'},{base:'buy',past:'bought'},
+  {base:'drive',past:'drove'},{base:'sit',past:'sat'},{base:'feel',past:'felt'},
+  {base:'throw',past:'threw'},{base:'wake up',past:'woke up'}
+];
+var memState={flipped:[],matched:[],moves:0,pairs:0,lock:false};
+function initMemory(){
+  var grid=document.getElementById('memGrid');grid.innerHTML='';
+  memState={flipped:[],matched:[],moves:0,pairs:0,lock:false};
+  document.getElementById('memPairs').textContent='0';
+  document.getElementById('memMoves').textContent='0';
+  var cards=[];
+  memPairs.forEach(function(p,i){
+    cards.push({id:'b'+i,text:p.base,pair:i});
+    cards.push({id:'p'+i,text:p.past,pair:i});
+  });
+  for(var i=cards.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=cards[i];cards[i]=cards[j];cards[j]=t;}
+  cards.forEach(function(c){
+    var el=document.createElement('div');el.className='mem-card';el.setAttribute('data-id',c.id);el.setAttribute('data-pair',c.pair);el.setAttribute('data-text',c.text);
+    el.innerHTML='<div class="mem-inner"><div class="mem-front">🃏</div><div class="mem-back">'+c.text+'</div></div>';
+    el.addEventListener('click',function(){flipMemCard(this);});
+    grid.appendChild(el);
+  });
+}
+function flipMemCard(el){
+  if(memState.lock||el.classList.contains('flipped')||el.classList.contains('matched'))return;
+  el.classList.add('flipped');memState.flipped.push(el);
+  if(memState.flipped.length===2){
+    memState.lock=true;memState.moves++;
+    document.getElementById('memMoves').textContent=memState.moves;
+    var a=memState.flipped[0],b=memState.flipped[1];
+    if(a.getAttribute('data-pair')===b.getAttribute('data-pair')&&a.getAttribute('data-id')!==b.getAttribute('data-id')){
+      a.classList.add('matched');b.classList.add('matched');memState.pairs++;
+      document.getElementById('memPairs').textContent=memState.pairs;
+      memState.flipped=[];memState.lock=false;
+    }else{
+      setTimeout(function(){a.classList.remove('flipped');b.classList.remove('flipped');memState.flipped=[];memState.lock=false;},900);
+    }
+  }
+}
+
+/* SENTENCE SCRAMBLE */
+var scrambleData=[
+  {prompt:'you / watch / last night / Did / TV / ?',words:['Did','you','watch','TV','last','night','?'],ans:['did','you','watch','tv','last','night']},
+  {prompt:'you / go / Where / did / ?',words:['Where','did','you','go','?'],ans:['where','did','you','go']},
+  {prompt:'did / you / Who / with / go / ?',words:['Who','did','you','go','with','?'],ans:['who','did','you','go','with']},
+  {prompt:'have / you / Did / weekend / good / a / ?',words:['Did','you','have','a','good','weekend','?'],ans:['did','you','have','a','good','weekend']},
+  {prompt:'you / get / home / When / did / ?',words:['When','did','you','get','home','?'],ans:['when','did','you','get','home']}
+];
+var scrambleState=[];
+function initScramble(){
+  var wrap=document.getElementById('scrambleWrap');wrap.innerHTML='';
+  document.getElementById('scrambleScore').textContent='';document.getElementById('scrambleScore').classList.remove('show');
+  scrambleState=[];
+  scrambleData.forEach(function(item,idx){
+    var state={answer:[],used:[],idx:idx};scrambleState.push(state);
+    var shuffled=item.words.slice();
+    for(var i=shuffled.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=shuffled[i];shuffled[i]=shuffled[j];shuffled[j]=t;}
+    var div=document.createElement('div');div.className='scramble-item';div.setAttribute('data-idx',idx);
+    var html='<div class="scramble-num">'+(idx+1)+'.</div>';
+    html+='<div class="scramble-answer" id="scAns_'+idx+'"><span>Click words to build the question…</span></div>';
+    html+='<div class="scramble-words" id="scWords_'+idx+'">';
+    shuffled.forEach(function(w,wi){
+      html+='<button class="word-chip" data-word="'+w+'" data-wi="'+wi+'" data-sidx="'+idx+'" onclick="addWord(this)">'+w+'</button>';
+    });
+    html+='</div>';
+    html+='<div class="scramble-reveal" id="scOk_'+idx+'">✓ Correct!</div>';
+    html+='<div class="scramble-wrong-reveal" id="scBad_'+idx+'"></div>';
+    div.innerHTML=html;wrap.appendChild(div);
+  });
+}
+function addWord(btn){
+  var idx=parseInt(btn.getAttribute('data-sidx'));
+  var word=btn.getAttribute('data-word');
+  var state=scrambleState[idx];
+  if(btn.classList.contains('used'))return;
+  btn.classList.add('used');state.answer.push({word:word,btn:btn});
+  renderAnswer(idx);
+}
+function renderAnswer(idx){
+  var state=scrambleState[idx];
+  var box=document.getElementById('scAns_'+idx);box.innerHTML='';
+  if(state.answer.length===0){box.innerHTML='<span>Click words to build the question…</span>';return;}
+  state.answer.forEach(function(item,i){
+    var chip=document.createElement('button');chip.className='word-chip selected-ans';chip.textContent=item.word;
+    chip.setAttribute('data-aidx',i);chip.setAttribute('data-sidx',idx);
+    chip.onclick=function(){removeWord(idx,parseInt(this.getAttribute('data-aidx')));};
+    box.appendChild(chip);
+  });
+}
+function removeWord(idx,aidx){
+  var state=scrambleState[idx];
+  var removed=state.answer.splice(aidx,1)[0];
+  removed.btn.classList.remove('used');
+  renderAnswer(idx);
+}
+function checkScramble(){
+  var c=0;
+  scrambleData.forEach(function(item,idx){
+    var state=scrambleState[idx];
+    var built=state.answer.map(function(a){return a.word.toLowerCase().replace(/[?!.,]/g,'');}).join(' ');
+    var correct=item.ans.join(' ');
+    var okEl=document.getElementById('scOk_'+idx);var badEl=document.getElementById('scBad_'+idx);
+    okEl.style.display='none';badEl.style.display='none';
+    if(built===correct){okEl.style.display='block';c++;}
+    else{badEl.textContent='✗ Correct order: '+item.words.join(' ');badEl.style.display='block';}
+  });
+  var bar=document.getElementById('scrambleScore');bar.textContent='Score: '+c+' / '+scrambleData.length;bar.classList.add('show');
+}
+
+/* SHOW REVEAL */
+function showReveal(btn){
+  var row=btn.closest('.open-row');var rev=row.querySelector('.open-reveal');
+  if(!rev)return;rev.style.display='block';btn.style.display='none';
+}
+
+/* SPEAKING CARDS — ADULT CONTENT */
+var allCards=[
+  {q:'Did you ever live in a different city or country? What made you decide to go?',tip:'Follow-up: How long did you stay? What did you miss most?'},
+  {q:'What did you study at school or university? Do you use it in your work now?',tip:'Follow-up: What would you study today if you could choose again?'},
+  {q:'When did you last try something completely new? What was it?',tip:'Follow-up: Did it go well? Would you do it again?'},
+  {q:"Did you ever disagree with your boss or a colleague? What happened?",tip:'Follow-up: What did you do? How did it end?'},
+  {q:'What was the best trip or holiday you ever took? Where did you go?',tip:'Follow-up: Who did you go with? What was the highlight?'},
+  {q:"Did you ever make a big decision very quickly? What did you decide?",tip:"Follow-up: Did you regret it? Would you do the same thing now?"},
+  {q:'What was the last thing you felt really proud of?',tip:'Follow-up: When did it happen? Who did you tell?'},
+  {q:"Did you ever start something and then quit? What was it?",tip:'Follow-up: Why did you stop? Do you regret it?'},
+  {q:'What was the most challenging year of your life? What happened?',tip:'Follow-up: What helped you get through it? What did you learn?'},
+  {q:'Who had the biggest influence on your life? What did they do or say?',tip:'Follow-up: When did you meet them? Are you still in touch?'}
+];
+var cardOrder=[0,1,2,3,4,5,6,7,8,9],currentCard=0;
+function renderCard(){
+  var idx=cardOrder[currentCard];
+  document.getElementById('cardQ').textContent=allCards[idx].q;
+  document.getElementById('cardTip').textContent=allCards[idx].tip;
+  document.getElementById('cardNum').textContent='Card '+(currentCard+1)+' of '+cardOrder.length;
+  document.getElementById('cardCounter').textContent=(currentCard+1)+' / '+cardOrder.length;
+}
+function nextCard(){currentCard=(currentCard+1)%cardOrder.length;renderCard();}
+function prevCard(){currentCard=(currentCard-1+cardOrder.length)%cardOrder.length;renderCard();}
+function shuffleCards(){for(var i=cardOrder.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=cardOrder[i];cardOrder[i]=cardOrder[j];cardOrder[j]=t;}currentCard=0;renderCard();}
+
+/* HOT SEAT */
+var hotData=[
+  {word:'went',hint:'past simple of: go',clues:['movement','past','opposite of came']},
+  {word:'bought',hint:'past simple of: buy',clues:['shop','money','past']},
+  {word:'saw',hint:'past simple of: see',clues:['eyes','past','a film / a person']},
+  {word:'drove',hint:'past simple of: drive',clues:['car','past','road']},
+  {word:'felt',hint:'past simple of: feel',clues:['emotion','past','happy / sad / tired']},
+  {word:'woke up',hint:'past simple of: wake up',clues:['morning','bed','alarm clock']},
+  {word:'threw',hint:'past simple of: throw',clues:['ball','hand','past']},
+  {word:'between',hint:'preposition of place',clues:['two things','middle','sofa and chair']},
+  {word:'inside',hint:'preposition of place',clues:['in a box','opposite of outside','room']},
+  {word:'next to',hint:'preposition of place',clues:['beside','side by side','neighbour']},
+  {word:"didn't go",hint:"negative past simple of: go",clues:["no movement","past","stayed home"]},
+  {word:'danced',hint:'past simple of: dance',clues:['music','party','feet']}
+];
+var hotOrder=[0,1,2,3,4,5,6,7,8,9,10,11],currentHot=0;
+function renderHot(){
+  var d=hotData[hotOrder[currentHot]];
+  document.getElementById('hsWord').textContent=d.word;
+  document.getElementById('hsHint').textContent=d.hint;
+  var cl=document.getElementById('hsClues');cl.innerHTML='';
+  d.clues.forEach(function(c){var s=document.createElement('span');s.className='hotseat-clue';s.textContent=c;cl.appendChild(s);});
+  document.getElementById('hsCounter').textContent=(currentHot+1)+' / '+hotOrder.length;
+}
+function nextHot(){currentHot=(currentHot+1)%hotOrder.length;renderHot();}
+function prevHot(){currentHot=(currentHot-1+hotOrder.length)%hotOrder.length;renderHot();}
+function shuffleHot(){for(var i=hotOrder.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=hotOrder[i];hotOrder[i]=hotOrder[j];hotOrder[j]=t;}currentHot=0;renderHot();}
+
+/* NOUGHTS & CROSSES */
+var tttQuestions=[
+  {q:'What is the past simple of "go"?',ans:['went']},
+  {q:'What is the past simple of "see"?',ans:['saw']},
+  {q:'What is the past simple of "buy"?',ans:['bought']},
+  {q:'Make a negative: I ___ (not/watch) TV.',ans:["didn't watch",'did not watch']},
+  {q:'Complete: Where did you ___? (go)',ans:['go']},
+  {q:'Which preposition? The book is ___ the table. (on it)',ans:['on']},
+  {q:'What is the past simple of "feel"?',ans:['felt']},
+  {q:'Complete: I live ___ my family.',ans:['with']},
+  {q:'Make a question: ___ did you go? (where)',ans:['where did you go','where did you go?']}
+];
+var tttBoard=[],tttTurn='X',tttActive=false,tttSelectedCell=-1;
+var winLines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+function initTTT(){
+  tttBoard=new Array(9).fill('');tttTurn='X';tttActive=true;tttSelectedCell=-1;
+  document.getElementById('tttStatus').style.display='none';
+  document.getElementById('tttTurn').textContent='❌ X goes first (student)';
+  var bd=document.getElementById('tttBoard');bd.innerHTML='';
+  var qs=tttQuestions.slice();for(var i=qs.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=qs[i];qs[i]=qs[j];qs[j]=t;}
+  for(var i=0;i<9;i++){
+    var cell=document.createElement('div');cell.className='ttt-cell';cell.setAttribute('data-idx',i);cell.setAttribute('data-q',qs[i].q);cell.setAttribute('data-ans',qs[i].ans.join('|'));
+    cell.innerHTML='<span class="ttt-mark"></span><span class="ttt-q">'+qs[i].q+'</span>';
+    cell.addEventListener('click',function(){openTTT(this);});
+    bd.appendChild(cell);
+  }
+}
+function openTTT(cell){
+  if(!tttActive)return;
+  var idx=parseInt(cell.getAttribute('data-idx'));
+  if(tttBoard[idx]!=='')return;
+  tttSelectedCell=idx;
+  document.getElementById('tttModalQ').textContent=cell.getAttribute('data-q');
+  document.getElementById('tttModalIn').value='';
+  document.getElementById('tttModal').classList.add('open');
+  document.getElementById('tttModalIn').focus();
+}
+function submitTTT(){
+  var val=document.getElementById('tttModalIn').value;
+  var cells=document.querySelectorAll('.ttt-cell');
+  var cell=cells[tttSelectedCell];
+  var alts=cell.getAttribute('data-ans').split('|');
+  var correct=alts.some(function(a){return norm(a)===norm(val);});
+  if(correct){
+    tttBoard[tttSelectedCell]=tttTurn;
+    cell.classList.add(tttTurn==='X'?'x-cell':'o-cell','claimed');
+    cell.querySelector('.ttt-mark').textContent=tttTurn==='X'?'❌':'⭕';
+    var won=checkWinTTT();
+    if(won){
+      var winner=tttTurn;tttActive=false;
+      var st=document.getElementById('tttStatus');
+      st.textContent=(winner==='X'?'❌ X wins! 🎉':'⭕ O wins! 🎉');st.style.display='inline-block';
+      document.getElementById('tttTurn').textContent='';
+      won.forEach(function(i){cells[i].classList.add('win-line');});
+    }else if(tttBoard.every(function(v){return v!=='';})){
+      var st=document.getElementById('tttStatus');st.textContent="It's a draw! 🤝";st.style.display='inline-block';tttActive=false;
+    }else{
+      tttTurn=tttTurn==='X'?'O':'X';
+      document.getElementById('tttTurn').textContent=(tttTurn==='X'?'❌ X':'⭕ O')+' — your turn!';
+    }
+  }
+  closeTTT();
+}
+function checkWinTTT(){
+  for(var i=0;i<winLines.length;i++){
+    var l=winLines[i];
+    if(tttBoard[l[0]]!==''&&tttBoard[l[0]]===tttBoard[l[1]]&&tttBoard[l[1]]===tttBoard[l[2]])return l;
+  }
+  return null;
+}
+function closeTTT(){document.getElementById('tttModal').classList.remove('open');tttSelectedCell=-1;}
+document.getElementById('tttModalIn').addEventListener('keydown',function(e){if(e.key==='Enter')submitTTT();});
+
+/* REFLECT */
+(function buildReflect(){
+  document.querySelectorAll('.reflect-row').forEach(function(row){
+    var label=row.getAttribute('data-label');
+    var html='<div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;">';
+    html+='<span style="flex:1;font-size:.85rem;line-height:1.5;">'+label+'</span>';
+    html+='<div style="display:flex;gap:.25rem;">';
+    for(var i=1;i<=5;i++){html+='<button onclick="rateStar(this,'+i+')" data-val="'+i+'" style="background:var(--surface-2);border:1.5px solid var(--border);border-radius:6px;padding:.2rem .5rem;font-size:.85rem;cursor:pointer;">'+i+'</button>';}
+    html+='</div></div>';row.innerHTML=html;
+  });
+})();
+function rateStar(btn,val){
+  btn.closest('.reflect-row').querySelectorAll('button').forEach(function(b){
+    b.style.background=parseInt(b.getAttribute('data-val'))<=val?'var(--yellow)':'var(--surface-2)';
+    b.style.borderColor=parseInt(b.getAttribute('data-val'))<=val?'var(--yellow)':'var(--border)';
+    b.style.color=parseInt(b.getAttribute('data-val'))<=val?'#1a1b2e':'var(--text-2)';
+  });
+}
+
+/* INIT ALL */
+initScramble();
+initTTT();
+renderCard();
+renderHot();
+</script>
+</body>
+</html>
