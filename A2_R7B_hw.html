@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>7B Homework — Don't Waste It!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#1BBCB3;--purple:#7B4FD6;--orange:#E8653A;--yellow:#F9C23C;
+  --coral:#E04565;--green:#22c55e;
+  --teal-s:rgba(27,188,179,.13);--purple-s:rgba(123,79,214,.13);
+  --orange-s:rgba(232,101,58,.13);--yellow-s:rgba(249,194,60,.15);
+  --green-s:rgba(34,197,94,.12);--coral-s:rgba(224,69,101,.12);
+  --bg:#f4f7fb;--surface:#fff;--border:#e2e8f0;--text:#1e293b;
+  --text2:#64748b;--shadow:0 2px 8px rgba(0,0,0,.07);--radius:12px;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1623;--surface:#1a2235;--border:#2a3650;--text:#e2e8f0;
+    --text2:#94a3b8;--shadow:0 2px 8px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1623;--surface:#1a2235;--border:#2a3650;--text:#e2e8f0;
+  --text2:#94a3b8;--shadow:0 2px 8px rgba(0,0,0,.3);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,#1BBCB3 0%,#7B4FD6 100%);padding:28px 20px 24px;text-align:center;position:relative}
+.hdr-eyebrow{font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:6px}
+.hdr h1{font-family:'Nunito',sans-serif;font-size:1.65rem;font-weight:900;color:#fff;line-height:1.2;margin-bottom:4px}
+.hdr-sub{font-family:'Inter',sans-serif;font-size:.87rem;color:rgba(255,255,255,.8)}
+.theme-btn{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;color:#fff;font-size:.78rem;padding:5px 12px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;transition:.2s}
+.theme-btn:hover{background:rgba(255,255,255,.28)}
+
+/* ── Name bar ── */
+.name-bar{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border);padding:9px 20px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 6px rgba(0,0,0,.07)}
+.name-bar label{font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;color:var(--text2);white-space:nowrap}
+.name-bar input{flex:1;max-width:300px;border:1.5px solid var(--border);border-radius:8px;padding:6px 12px;font-family:'Inter',sans-serif;font-size:.9rem;background:var(--bg);color:var(--text);outline:none;transition:.2s}
+.name-bar input:focus{border-color:var(--teal)}
+
+/* ── Progress ── */
+.prog-wrap{padding:14px 20px 6px;max-width:860px;margin:0 auto}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.prog-top span{font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;color:var(--text2)}
+.prog-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--purple));border-radius:4px;transition:width .4s ease;width:0%}
+
+/* ── Layout ── */
+.main{max-width:860px;margin:0 auto;padding:16px 16px 0}
+
+/* ── Exercise card ── */
+.ex-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px 20px;margin-bottom:20px;box-shadow:var(--shadow)}
+.ex-hd{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}
+.ex-num{background:var(--teal);color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:.78rem;border-radius:7px;padding:3px 10px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.ex-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;color:var(--text)}
+.ex-instr{font-family:'Inter',sans-serif;font-size:.87rem;color:var(--text2);margin-bottom:16px;line-height:1.5;margin-top:4px}
+
+/* ── Gap-fill inputs ── */
+.sent-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;font-family:'Inter',sans-serif;font-size:.93rem;line-height:1.7}
+.sent-num{color:var(--teal);font-family:'Nunito',sans-serif;font-weight:800;min-width:22px;padding-top:2px;flex-shrink:0}
+.sent-txt{line-height:1.9;flex:1}
+.gf{border:none;border-bottom:2px solid var(--teal);background:transparent;color:var(--text);font-family:'Inter',sans-serif;font-size:.93rem;padding:0 4px 1px;width:70px;text-align:center;outline:none;transition:.2s;vertical-align:middle}
+.gf:focus{border-bottom-color:var(--purple)}
+.gf.correct{border-bottom-color:var(--green);color:var(--green);font-weight:600}
+.gf.wrong{border-bottom-color:var(--coral);color:var(--coral)}
+.gf.wrong::placeholder{color:var(--coral);font-size:.8rem}
+
+/* ── Exercise 3 (error correction) ── */
+.sent-body{flex:1}
+.err-word{background:var(--coral-s);color:var(--coral);border-radius:4px;padding:1px 5px;font-weight:600;text-decoration:underline;text-decoration-style:wavy;text-decoration-color:var(--coral)}
+.corr-row{display:flex;align-items:center;gap:8px;margin-top:5px}
+.corr-lbl{font-size:.78rem;color:var(--text2);font-style:italic;white-space:nowrap}
+
+/* ── Dialogue blocks (Ex 2) ── */
+.dialogue-block{display:flex;gap:12px;margin-bottom:12px;padding:11px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px}
+.d-num{font-family:'Nunito',sans-serif;font-weight:900;color:var(--teal);font-size:1rem;min-width:20px;padding-top:2px;flex-shrink:0}
+.d-lines{flex:1}
+.d-line{font-family:'Inter',sans-serif;font-size:.9rem;line-height:2;color:var(--text)}
+.spk{font-family:'Nunito',sans-serif;font-weight:800;font-size:.8rem;color:var(--purple);margin-right:3px}
+
+/* ── Inline MCQ buttons (Ex 2, Ex 5) ── */
+.ibtn{display:inline-block;border:2px solid var(--border);background:var(--surface);color:var(--text);font-family:'Nunito',sans-serif;font-weight:700;font-size:.82rem;border-radius:6px;padding:1px 10px;cursor:pointer;margin:0 2px;vertical-align:middle;transition:.15s;white-space:nowrap}
+.ibtn:hover:not(:disabled){border-color:var(--teal);background:var(--teal-s)}
+.ibtn.selected{border-color:var(--purple);background:var(--purple-s);color:var(--purple)}
+.ibtn.correct{border-color:var(--green);background:var(--green-s);color:var(--green)}
+.ibtn.wrong{border-color:var(--coral);background:var(--coral-s);color:var(--coral)}
+.ibtn.show-correct{border-color:var(--green);background:var(--green-s);color:var(--green)}
+.ibtn:disabled{cursor:default;opacity:.85}
+
+/* ── Match containers (Ex 4) ── */
+.match-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:9px}
+.match-label{font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;color:var(--text);min-width:130px}
+.match-label em{color:var(--teal);font-style:normal}
+.match-opts{display:flex;gap:7px;flex-wrap:wrap}
+.mbtn{border:2px solid var(--border);background:var(--surface);color:var(--text);font-family:'Nunito',sans-serif;font-weight:700;font-size:.82rem;border-radius:8px;padding:4px 14px;cursor:pointer;transition:.15s;white-space:nowrap}
+.mbtn:hover:not(:disabled){border-color:var(--orange);background:var(--orange-s)}
+.mbtn.selected{border-color:var(--purple);background:var(--purple-s);color:var(--purple)}
+.mbtn.correct{border-color:var(--green);background:var(--green-s);color:var(--green)}
+.mbtn.wrong{border-color:var(--coral);background:var(--coral-s);color:var(--coral)}
+.mbtn.show-correct{border-color:var(--green);background:var(--green-s);color:var(--green)}
+.mbtn:disabled{cursor:default;opacity:.85}
+
+/* ── Exercise footer ── */
+.ex-footer{display:flex;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+.score-badge{font-family:'Nunito',sans-serif;font-weight:800;font-size:.87rem;color:var(--text2);background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:4px 14px}
+.btn-check{background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.87rem;padding:8px 20px;cursor:pointer;transition:.2s}
+.btn-check:hover{filter:brightness(1.08)}
+.btn-reset{background:transparent;color:var(--text2);border:1.5px solid var(--border);border-radius:8px;font-family:'Nunito',sans-serif;font-weight:700;font-size:.87rem;padding:7px 16px;cursor:pointer;transition:.2s}
+.btn-reset:hover{border-color:var(--text2);color:var(--text)}
+
+/* ── Send to teacher ── */
+.send-card{background:linear-gradient(135deg,var(--purple-s) 0%,var(--teal-s) 100%);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-top:4px;text-align:center}
+.send-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.05rem;color:var(--text);margin-bottom:6px}
+.send-sub{font-size:.85rem;color:var(--text2);margin-bottom:18px}
+.btn-send{background:linear-gradient(135deg,var(--purple),var(--teal));color:#fff;border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;padding:12px 32px;cursor:pointer;box-shadow:0 3px 12px rgba(123,79,214,.3);transition:.2s}
+.btn-send:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(123,79,214,.4)}
+
+@media(max-width:600px){
+  .ex-card{padding:16px 14px}
+  .match-row{flex-direction:column;align-items:flex-start;gap:6px}
+  .match-label{min-width:unset}
+  .hdr h1{font-size:1.35rem}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
+  <div class="hdr-eyebrow">Homework · Unit 7B</div>
+  <h1>🌱 Don't Waste It!</h1>
+  <div class="hdr-sub">Grammar: <em>how much / how many</em> &amp; quantifiers &nbsp;·&nbsp; Vocabulary: food containers</div>
+</div>
+
+<!-- NAME BAR -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name here…">
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="prog-wrap">
+  <div class="prog-top">
+    <span>Progress</span>
+    <span id="plabel">0 / 5</span>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="pfill"></div></div>
+</div>
+
+<div class="main">
+
+<!-- ══════════════════════════════════
+     EXERCISE 1  — much or many?
+══════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 1</span>
+    <span class="ex-title">Complete the questions with <em>much</em> or <em>many</em>.</span>
+  </div>
+  <p class="ex-instr">Write the correct word in each gap.</p>
+
+  <div class="sent-row">
+    <span class="sent-num">1.</span>
+    <span class="sent-txt">How <input class="gf" id="gf1_1" data-ans="much"> rice do you eat?</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">2.</span>
+    <span class="sent-txt">How <input class="gf" id="gf1_2" data-ans="many"> cups of coffee do you drink a day?</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">3.</span>
+    <span class="sent-txt">How <input class="gf" id="gf1_3" data-ans="much"> milk do we need?</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">4.</span>
+    <span class="sent-txt">How <input class="gf" id="gf1_4" data-ans="much"> fish have we got?</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">5.</span>
+    <span class="sent-txt">How <input class="gf" id="gf1_5" data-ans="many"> onions are in this recipe?</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">6.</span>
+    <span class="sent-txt">How <input class="gf" id="gf1_6" data-ans="many"> pizzas shall we buy for the party?</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">7.</span>
+    <span class="sent-txt">How <input class="gf" id="gf1_7" data-ans="much"> oil do we need?</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">8.</span>
+    <span class="sent-txt">How <input class="gf" id="gf1_8" data-ans="much"> juice do you want?</span>
+  </div>
+
+  <div class="ex-footer">
+    <button class="btn-check" onclick="checkEx1()">✔ Check</button>
+    <button class="btn-reset" onclick="resetEx1()">↺ Reset</button>
+    <span class="score-badge">Score: <span id="ex1Score">—</span></span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     EXERCISE 2  — Choose correct alternatives
+══════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 2</span>
+    <span class="ex-title">Choose the correct alternatives.</span>
+  </div>
+  <p class="ex-instr">Click the correct word in each pair.</p>
+
+  <!-- 1 -->
+  <div class="dialogue-block">
+    <div class="d-num">1</div>
+    <div class="d-lines">
+      <div class="d-line"><span class="spk">A:</span> How <button class="ibtn" data-grp="e2_1a" data-val="much" onclick="pickMCQ(this)">much</button><button class="ibtn" data-grp="e2_1a" data-val="many" onclick="pickMCQ(this)">many</button> milk do you want in your coffee?</div>
+      <div class="d-line"><span class="spk">B:</span> Just a <button class="ibtn" data-grp="e2_1b" data-val="few" onclick="pickMCQ(this)">few</button><button class="ibtn" data-grp="e2_1b" data-val="little" onclick="pickMCQ(this)">little</button>.</div>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="dialogue-block">
+    <div class="d-num">2</div>
+    <div class="d-lines">
+      <div class="d-line"><span class="spk">A:</span> How <button class="ibtn" data-grp="e2_2a" data-val="many" onclick="pickMCQ(this)">many</button><button class="ibtn" data-grp="e2_2a" data-val="much" onclick="pickMCQ(this)">much</button> eggs have we got?</div>
+      <div class="d-line"><span class="spk">B:</span> <button class="ibtn" data-grp="e2_2b" data-val="None" onclick="pickMCQ(this)">None</button><button class="ibtn" data-grp="e2_2b" data-val="Any" onclick="pickMCQ(this)">Any</button>. Can you buy some?</div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="dialogue-block">
+    <div class="d-num">3</div>
+    <div class="d-lines">
+      <div class="d-line"><span class="spk">A:</span> We need <button class="ibtn" data-grp="e2_3a" data-val="some" onclick="pickMCQ(this)">some</button><button class="ibtn" data-grp="e2_3a" data-val="none" onclick="pickMCQ(this)">none</button> onions.</div>
+      <div class="d-line"><span class="spk">B:</span> How <button class="ibtn" data-grp="e2_3b" data-val="much" onclick="pickMCQ(this)">much</button><button class="ibtn" data-grp="e2_3b" data-val="many" onclick="pickMCQ(this)">many</button> do we need?</div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="dialogue-block">
+    <div class="d-num">4</div>
+    <div class="d-lines">
+      <div class="d-line"><span class="spk">A:</span> How <button class="ibtn" data-grp="e2_4a" data-val="much" onclick="pickMCQ(this)">much</button><button class="ibtn" data-grp="e2_4a" data-val="many" onclick="pickMCQ(this)">many</button> sweets are there?</div>
+      <div class="d-line"><span class="spk">B:</span> There aren't <button class="ibtn" data-grp="e2_4b" data-val="any" onclick="pickMCQ(this)">any</button><button class="ibtn" data-grp="e2_4b" data-val="some" onclick="pickMCQ(this)">some</button>. Sorry!</div>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="dialogue-block">
+    <div class="d-num">5</div>
+    <div class="d-lines">
+      <div class="d-line"><span class="spk">A:</span> How <button class="ibtn" data-grp="e2_5a" data-val="many" onclick="pickMCQ(this)">many</button><button class="ibtn" data-grp="e2_5a" data-val="much" onclick="pickMCQ(this)">much</button> chocolate is there?</div>
+      <div class="d-line"><span class="spk">B:</span> <button class="ibtn" data-grp="e2_5b" data-val="Lot" onclick="pickMCQ(this)">Lot</button><button class="ibtn" data-grp="e2_5b" data-val="Lots" onclick="pickMCQ(this)">Lots</button>.</div>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="dialogue-block">
+    <div class="d-num">6</div>
+    <div class="d-lines">
+      <div class="d-line"><span class="spk">A:</span> How <button class="ibtn" data-grp="e2_6a" data-val="much" onclick="pickMCQ(this)">much</button><button class="ibtn" data-grp="e2_6a" data-val="many" onclick="pickMCQ(this)">many</button> bananas do you want?</div>
+      <div class="d-line"><span class="spk">B:</span> Just a <button class="ibtn" data-grp="e2_6b" data-val="few" onclick="pickMCQ(this)">few</button><button class="ibtn" data-grp="e2_6b" data-val="little" onclick="pickMCQ(this)">little</button>.</div>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="dialogue-block">
+    <div class="d-num">7</div>
+    <div class="d-lines">
+      <div class="d-line"><span class="spk">A:</span> How <button class="ibtn" data-grp="e2_7a" data-val="much" onclick="pickMCQ(this)">much</button><button class="ibtn" data-grp="e2_7a" data-val="many" onclick="pickMCQ(this)">many</button> meat do you eat?</div>
+      <div class="d-line"><span class="spk">B:</span> I'm a vegetarian. I don't eat <button class="ibtn" data-grp="e2_7b" data-val="none" onclick="pickMCQ(this)">none</button><button class="ibtn" data-grp="e2_7b" data-val="any" onclick="pickMCQ(this)">any</button> meat.</div>
+    </div>
+  </div>
+
+  <!-- 8 -->
+  <div class="dialogue-block">
+    <div class="d-num">8</div>
+    <div class="d-lines">
+      <div class="d-line"><span class="spk">A:</span> Would you like <button class="ibtn" data-grp="e2_8a" data-val="a" onclick="pickMCQ(this)">a</button><button class="ibtn" data-grp="e2_8a" data-val="some" onclick="pickMCQ(this)">some</button> rice?</div>
+      <div class="d-line"><span class="spk">B:</span> Yes, please.</div>
+      <div class="d-line"><span class="spk">A:</span> How <button class="ibtn" data-grp="e2_8b" data-val="much" onclick="pickMCQ(this)">much</button><button class="ibtn" data-grp="e2_8b" data-val="many" onclick="pickMCQ(this)">many</button>?</div>
+      <div class="d-line"><span class="spk">B:</span> Just a <button class="ibtn" data-grp="e2_8c" data-val="little" onclick="pickMCQ(this)">little</button><button class="ibtn" data-grp="e2_8c" data-val="few" onclick="pickMCQ(this)">few</button>. Thanks.</div>
+    </div>
+  </div>
+
+  <div class="ex-footer">
+    <button class="btn-check" onclick="checkEx2()">✔ Check</button>
+    <button class="btn-reset" onclick="resetEx2()">↺ Reset</button>
+    <span class="score-badge">Score: <span id="ex2Score">—</span></span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     EXERCISE 3  — Correct the mistake
+══════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 3</span>
+    <span class="ex-title">Correct the mistake in each sentence.</span>
+  </div>
+  <p class="ex-instr">Find the underlined mistake and type the correct word in the box. (In sentence 5, a word is missing — write the missing word.)</p>
+
+  <div class="sent-row">
+    <span class="sent-num">1.</span>
+    <div class="sent-body">
+      <div class="sent-txt">How <span class="err-word">much</span> potatoes have you got?</div>
+      <div class="corr-row"><span class="corr-lbl">Correct word:</span><input class="gf" id="gf3_1" data-ans="many"></div>
+    </div>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">2.</span>
+    <div class="sent-body">
+      <div class="sent-txt">We've got <span class="err-word">lot</span> of cheese.</div>
+      <div class="corr-row"><span class="corr-lbl">Correct word:</span><input class="gf" id="gf3_2" data-ans="lots"></div>
+    </div>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">3.</span>
+    <div class="sent-body">
+      <div class="sent-txt">We haven't got <span class="err-word">none</span> coffee.</div>
+      <div class="corr-row"><span class="corr-lbl">Correct word:</span><input class="gf" id="gf3_3" data-ans="any"></div>
+    </div>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">4.</span>
+    <div class="sent-body">
+      <div class="sent-txt">How <span class="err-word">many</span> milk do you want in your tea?</div>
+      <div class="corr-row"><span class="corr-lbl">Correct word:</span><input class="gf" id="gf3_4" data-ans="much"></div>
+    </div>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">5.</span>
+    <div class="sent-body">
+      <div class="sent-txt">We've got some bread, but we haven't got a lot <span class="err-word">___</span> rice.</div>
+      <div class="corr-row"><span class="corr-lbl">Missing word:</span><input class="gf" id="gf3_5" data-ans="of"></div>
+    </div>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">6.</span>
+    <div class="sent-body">
+      <div class="sent-txt">Can I have a <span class="err-word">little</span> of your crisps, please?</div>
+      <div class="corr-row"><span class="corr-lbl">Correct word:</span><input class="gf" id="gf3_6" data-ans="few"></div>
+    </div>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">7.</span>
+    <div class="sent-body">
+      <div class="sent-txt">I don't think there's <span class="err-word">some</span> orange juice left.</div>
+      <div class="corr-row"><span class="corr-lbl">Correct word:</span><input class="gf" id="gf3_7" data-ans="any"></div>
+    </div>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">8.</span>
+    <div class="sent-body">
+      <div class="sent-txt">We've still got a <span class="err-word">little</span> tomatoes in the fridge.</div>
+      <div class="corr-row"><span class="corr-lbl">Correct word:</span><input class="gf" id="gf3_8" data-ans="few"></div>
+    </div>
+  </div>
+
+  <div class="ex-footer">
+    <button class="btn-check" onclick="checkEx3()">✔ Check</button>
+    <button class="btn-reset" onclick="resetEx3()">↺ Reset</button>
+    <span class="score-badge">Score: <span id="ex3Score">—</span></span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     EXERCISE 4  — Match containers to food
+══════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 4</span>
+    <span class="ex-title">Match each container with the correct food or drink.</span>
+  </div>
+  <p class="ex-instr">Click the correct food or drink for each container.</p>
+
+  <div class="match-row">
+    <div class="match-label">a <em>carton</em> of</div>
+    <div class="match-opts">
+      <button class="mbtn" data-grp="e4_1" data-val="juice" onclick="pickMCQ(this)">juice</button>
+      <button class="mbtn" data-grp="e4_1" data-val="water" onclick="pickMCQ(this)">water</button>
+      <button class="mbtn" data-grp="e4_1" data-val="cola" onclick="pickMCQ(this)">cola</button>
+    </div>
+  </div>
+  <div class="match-row">
+    <div class="match-label">a <em>tin</em> of</div>
+    <div class="match-opts">
+      <button class="mbtn" data-grp="e4_2" data-val="eggs" onclick="pickMCQ(this)">eggs</button>
+      <button class="mbtn" data-grp="e4_2" data-val="beans" onclick="pickMCQ(this)">beans</button>
+      <button class="mbtn" data-grp="e4_2" data-val="coffee" onclick="pickMCQ(this)">coffee</button>
+    </div>
+  </div>
+  <div class="match-row">
+    <div class="match-label">a <em>bag</em> of</div>
+    <div class="match-opts">
+      <button class="mbtn" data-grp="e4_3" data-val="pasta" onclick="pickMCQ(this)">pasta</button>
+      <button class="mbtn" data-grp="e4_3" data-val="coffee" onclick="pickMCQ(this)">coffee</button>
+      <button class="mbtn" data-grp="e4_3" data-val="rice" onclick="pickMCQ(this)">rice</button>
+    </div>
+  </div>
+  <div class="match-row">
+    <div class="match-label">a <em>cup</em> of</div>
+    <div class="match-opts">
+      <button class="mbtn" data-grp="e4_4" data-val="cola" onclick="pickMCQ(this)">cola</button>
+      <button class="mbtn" data-grp="e4_4" data-val="tea" onclick="pickMCQ(this)">tea</button>
+      <button class="mbtn" data-grp="e4_4" data-val="juice" onclick="pickMCQ(this)">juice</button>
+    </div>
+  </div>
+  <div class="match-row">
+    <div class="match-label">a <em>bottle</em> of</div>
+    <div class="match-opts">
+      <button class="mbtn" data-grp="e4_5" data-val="water" onclick="pickMCQ(this)">water</button>
+      <button class="mbtn" data-grp="e4_5" data-val="cola" onclick="pickMCQ(this)">cola</button>
+      <button class="mbtn" data-grp="e4_5" data-val="juice" onclick="pickMCQ(this)">juice</button>
+    </div>
+  </div>
+  <div class="match-row">
+    <div class="match-label">a <em>packet</em> of</div>
+    <div class="match-opts">
+      <button class="mbtn" data-grp="e4_6" data-val="rice" onclick="pickMCQ(this)">rice</button>
+      <button class="mbtn" data-grp="e4_6" data-val="pasta" onclick="pickMCQ(this)">pasta</button>
+      <button class="mbtn" data-grp="e4_6" data-val="beans" onclick="pickMCQ(this)">beans</button>
+    </div>
+  </div>
+  <div class="match-row">
+    <div class="match-label">a <em>bar</em> of</div>
+    <div class="match-opts">
+      <button class="mbtn" data-grp="e4_7" data-val="tea" onclick="pickMCQ(this)">tea</button>
+      <button class="mbtn" data-grp="e4_7" data-val="cola" onclick="pickMCQ(this)">cola</button>
+      <button class="mbtn" data-grp="e4_7" data-val="chocolate" onclick="pickMCQ(this)">chocolate</button>
+    </div>
+  </div>
+  <div class="match-row">
+    <div class="match-label">a <em>box</em> of</div>
+    <div class="match-opts">
+      <button class="mbtn" data-grp="e4_8" data-val="eggs" onclick="pickMCQ(this)">eggs</button>
+      <button class="mbtn" data-grp="e4_8" data-val="rice" onclick="pickMCQ(this)">rice</button>
+      <button class="mbtn" data-grp="e4_8" data-val="pasta" onclick="pickMCQ(this)">pasta</button>
+    </div>
+  </div>
+  <div class="match-row">
+    <div class="match-label">a <em>can</em> of</div>
+    <div class="match-opts">
+      <button class="mbtn" data-grp="e4_9" data-val="coffee" onclick="pickMCQ(this)">coffee</button>
+      <button class="mbtn" data-grp="e4_9" data-val="cola" onclick="pickMCQ(this)">cola</button>
+      <button class="mbtn" data-grp="e4_9" data-val="tea" onclick="pickMCQ(this)">tea</button>
+    </div>
+  </div>
+  <div class="match-row">
+    <div class="match-label">a <em>jar</em> of</div>
+    <div class="match-opts">
+      <button class="mbtn" data-grp="e4_10" data-val="pasta" onclick="pickMCQ(this)">pasta</button>
+      <button class="mbtn" data-grp="e4_10" data-val="eggs" onclick="pickMCQ(this)">eggs</button>
+      <button class="mbtn" data-grp="e4_10" data-val="coffee" onclick="pickMCQ(this)">coffee</button>
+    </div>
+  </div>
+
+  <div class="ex-footer">
+    <button class="btn-check" onclick="checkEx4()">✔ Check</button>
+    <button class="btn-reset" onclick="resetEx4()">↺ Reset</button>
+    <span class="score-badge">Score: <span id="ex4Score">—</span></span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     EXERCISE 5  — Choose the correct container
+══════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <span class="ex-num">Exercise 5</span>
+    <span class="ex-title">Choose the correct container.</span>
+  </div>
+  <p class="ex-instr">Click the correct word in each pair.</p>
+
+  <div class="sent-row">
+    <span class="sent-num">1.</span>
+    <span class="sent-txt">Can you help me? I can't open this <button class="ibtn" data-grp="e5_1" data-val="bag" onclick="pickMCQ(this)">bag</button><button class="ibtn" data-grp="e5_1" data-val="carton" onclick="pickMCQ(this)">carton</button> of orange juice.</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">2.</span>
+    <span class="sent-txt">Please buy a <button class="ibtn" data-grp="e5_2" data-val="jar" onclick="pickMCQ(this)">jar</button><button class="ibtn" data-grp="e5_2" data-val="cup" onclick="pickMCQ(this)">cup</button> of coffee from the supermarket.</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">3.</span>
+    <span class="sent-txt">Where is the <button class="ibtn" data-grp="e5_3" data-val="box" onclick="pickMCQ(this)">box</button><button class="ibtn" data-grp="e5_3" data-val="can" onclick="pickMCQ(this)">can</button> of eggs?</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">4.</span>
+    <span class="sent-txt">We need two <button class="ibtn" data-grp="e5_4" data-val="tins" onclick="pickMCQ(this)">tins</button><button class="ibtn" data-grp="e5_4" data-val="packets" onclick="pickMCQ(this)">packets</button> of tomatoes.</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">5.</span>
+    <span class="sent-txt">Would you like a <button class="ibtn" data-grp="e5_5" data-val="tin" onclick="pickMCQ(this)">tin</button><button class="ibtn" data-grp="e5_5" data-val="can" onclick="pickMCQ(this)">can</button> of cola?</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">6.</span>
+    <span class="sent-txt">Put a <button class="ibtn" data-grp="e5_6" data-val="box" onclick="pickMCQ(this)">box</button><button class="ibtn" data-grp="e5_6" data-val="bottle" onclick="pickMCQ(this)">bottle</button> of water in your bag to take with you.</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">7.</span>
+    <span class="sent-txt">Let's have a <button class="ibtn" data-grp="e5_7" data-val="cup" onclick="pickMCQ(this)">cup</button><button class="ibtn" data-grp="e5_7" data-val="jar" onclick="pickMCQ(this)">jar</button> of tea.</span>
+  </div>
+  <div class="sent-row">
+    <span class="sent-num">8.</span>
+    <span class="sent-txt">When I was a child, my mum bought me a <button class="ibtn" data-grp="e5_8" data-val="packet" onclick="pickMCQ(this)">packet</button><button class="ibtn" data-grp="e5_8" data-val="bar" onclick="pickMCQ(this)">bar</button> of chocolate when I was good.</span>
+  </div>
+
+  <div class="ex-footer">
+    <button class="btn-check" onclick="checkEx5()">✔ Check</button>
+    <button class="btn-reset" onclick="resetEx5()">↺ Reset</button>
+    <span class="score-badge">Score: <span id="ex5Score">—</span></span>
+  </div>
+</div>
+
+<!-- SEND TO TEACHER -->
+<div class="send-card">
+  <div class="send-title">📧 Send to Your Teacher</div>
+  <div class="send-sub">Make sure your name is filled in above, then click the button to email your answers.</div>
+  <button class="btn-send" onclick="sendToTeacher()">Send Homework ✉️</button>
+</div>
+
+</div><!-- /main -->
+
+<script>
+var done = {ex1:false, ex2:false, ex3:false, ex4:false, ex5:false};
+
+function updateProgress() {
+  var n = 0;
+  var total = 0;
+  for (var k in done) { total++; if (done[k]) n++; }
+  document.getElementById('pfill').style.width = Math.round(n/total*100)+'%';
+  document.getElementById('plabel').textContent = n+' / '+total;
+}
+
+function toggleTheme() {
+  var html = document.documentElement;
+  if (html.getAttribute('data-theme') === 'dark') {
+    html.setAttribute('data-theme','light');
+    document.getElementById('themeBtn').textContent = '🌙 Dark';
+  } else {
+    html.setAttribute('data-theme','dark');
+    document.getElementById('themeBtn').textContent = '☀️ Light';
+  }
+}
+
+function pickMCQ(btn) {
+  var grp = btn.dataset.grp;
+  var btns = document.querySelectorAll('[data-grp="'+grp+'"]');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.remove('selected');
+  }
+  btn.classList.add('selected');
+}
+
+function checkMCQGroup(grps, answers, scoreId) {
+  var correct = 0;
+  for (var i = 0; i < grps.length; i++) {
+    var btns = document.querySelectorAll('[data-grp="'+grps[i]+'"]');
+    var selectedVal = null;
+    for (var j = 0; j < btns.length; j++) {
+      if (btns[j].classList.contains('selected')) { selectedVal = btns[j].dataset.val; break; }
+    }
+    for (var k = 0; k < btns.length; k++) {
+      btns[k].disabled = true;
+      if (btns[k].classList.contains('selected')) {
+        if (btns[k].dataset.val === answers[i]) {
+          btns[k].classList.add('correct');
+          correct++;
+        } else {
+          btns[k].classList.add('wrong');
+        }
+      } else if (btns[k].dataset.val === answers[i] && selectedVal !== answers[i]) {
+        btns[k].classList.add('show-correct');
+      }
+    }
+  }
+  document.getElementById(scoreId).textContent = correct+' / '+grps.length;
+}
+
+function resetMCQGroup(grps, scoreId) {
+  for (var i = 0; i < grps.length; i++) {
+    var btns = document.querySelectorAll('[data-grp="'+grps[i]+'"]');
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].disabled = false;
+      btns[j].classList.remove('selected','correct','wrong','show-correct');
+    }
+  }
+  document.getElementById(scoreId).textContent = '—';
+}
+
+function checkGapFill(prefix, count, scoreId) {
+  var correct = 0;
+  for (var i = 1; i <= count; i++) {
+    var inp = document.getElementById(prefix+i);
+    if (!inp) continue;
+    inp.disabled = true;
+    var userVal = inp.value.toLowerCase().trim();
+    var ansList = inp.dataset.ans.split(',');
+    var isCorrect = false;
+    for (var j = 0; j < ansList.length; j++) {
+      if (userVal === ansList[j].toLowerCase().trim()) { isCorrect = true; break; }
+    }
+    if (isCorrect) {
+      inp.classList.add('correct');
+      correct++;
+    } else {
+      inp.classList.add('wrong');
+      inp.placeholder = inp.dataset.ans;
+    }
+  }
+  document.getElementById(scoreId).textContent = correct+' / '+count;
+}
+
+function resetGapFill(prefix, count, scoreId) {
+  for (var i = 1; i <= count; i++) {
+    var inp = document.getElementById(prefix+i);
+    if (!inp) continue;
+    inp.disabled = false;
+    inp.classList.remove('correct','wrong');
+    inp.value = '';
+    inp.placeholder = '';
+  }
+  document.getElementById(scoreId).textContent = '—';
+}
+
+/* ── Exercise functions ── */
+function checkEx1() { checkGapFill('gf1_',8,'ex1Score'); done.ex1=true; updateProgress(); }
+function resetEx1()  { resetGapFill('gf1_',8,'ex1Score'); done.ex1=false; updateProgress(); }
+
+var ex2Grps = ['e2_1a','e2_1b','e2_2a','e2_2b','e2_3a','e2_3b','e2_4a','e2_4b','e2_5a','e2_5b','e2_6a','e2_6b','e2_7a','e2_7b','e2_8a','e2_8b','e2_8c'];
+var ex2Ans  = ['much','little','many','None','some','many','many','any','much','Lots','many','few','much','any','some','much','little'];
+function checkEx2() { checkMCQGroup(ex2Grps,ex2Ans,'ex2Score'); done.ex2=true; updateProgress(); }
+function resetEx2() { resetMCQGroup(ex2Grps,'ex2Score'); done.ex2=false; updateProgress(); }
+
+function checkEx3() { checkGapFill('gf3_',8,'ex3Score'); done.ex3=true; updateProgress(); }
+function resetEx3()  { resetGapFill('gf3_',8,'ex3Score'); done.ex3=false; updateProgress(); }
+
+var ex4Grps = ['e4_1','e4_2','e4_3','e4_4','e4_5','e4_6','e4_7','e4_8','e4_9','e4_10'];
+var ex4Ans  = ['juice','beans','rice','tea','water','pasta','chocolate','eggs','cola','coffee'];
+function checkEx4() { checkMCQGroup(ex4Grps,ex4Ans,'ex4Score'); done.ex4=true; updateProgress(); }
+function resetEx4() { resetMCQGroup(ex4Grps,'ex4Score'); done.ex4=false; updateProgress(); }
+
+var ex5Grps = ['e5_1','e5_2','e5_3','e5_4','e5_5','e5_6','e5_7','e5_8'];
+var ex5Ans  = ['carton','jar','box','tins','can','bottle','cup','bar'];
+function checkEx5() { checkMCQGroup(ex5Grps,ex5Ans,'ex5Score'); done.ex5=true; updateProgress(); }
+function resetEx5() { resetMCQGroup(ex5Grps,'ex5Score'); done.ex5=false; updateProgress(); }
+
+/* ── Send to teacher ── */
+function getSelVal(grp) {
+  var btns = document.querySelectorAll('[data-grp="'+grp+'"]');
+  for (var i = 0; i < btns.length; i++) {
+    if (btns[i].classList.contains('selected')) return btns[i].dataset.val;
+  }
+  return '—';
+}
+function getGFVal(id) {
+  var el = document.getElementById(id);
+  return el ? (el.value.trim() || '—') : '—';
+}
+
+function sendToTeacher() {
+  var name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+  var b = 'Student: '+name+'\nHomework: Unit 7B – Don\'t Waste It!\n\n';
+
+  b += '-- Exercise 1: much or many? --\n';
+  var q1 = ['rice','cups of coffee','milk','fish','onions','pizzas','oil','juice'];
+  for (var i = 1; i <= 8; i++) {
+    b += i+'. How ___ '+q1[i-1]+'... → '+getGFVal('gf1_'+i)+'\n';
+  }
+
+  b += '\n-- Exercise 2: Choose the correct alternative --\n';
+  b += '1. A: '+getSelVal('e2_1a')+'  |  B: '+getSelVal('e2_1b')+'\n';
+  b += '2. A: '+getSelVal('e2_2a')+'  |  B: '+getSelVal('e2_2b')+'\n';
+  b += '3. A: '+getSelVal('e2_3a')+'  |  B: '+getSelVal('e2_3b')+'\n';
+  b += '4. A: '+getSelVal('e2_4a')+'  |  B: '+getSelVal('e2_4b')+'\n';
+  b += '5. A: '+getSelVal('e2_5a')+'  |  B: '+getSelVal('e2_5b')+'\n';
+  b += '6. A: '+getSelVal('e2_6a')+'  |  B: '+getSelVal('e2_6b')+'\n';
+  b += '7. A: '+getSelVal('e2_7a')+'  |  B: '+getSelVal('e2_7b')+'\n';
+  b += '8. A: '+getSelVal('e2_8a')+' / A: '+getSelVal('e2_8b')+'  |  B: '+getSelVal('e2_8c')+'\n';
+
+  b += '\n-- Exercise 3: Correct the mistake --\n';
+  var q3 = [
+    'How ___ potatoes...','We\'ve got ___ of cheese','haven\'t got ___ coffee',
+    'How ___ milk...','a lot ___ rice (missing word)','a ___ of your crisps',
+    'there\'s ___ orange juice','a ___ tomatoes'
+  ];
+  for (var i = 1; i <= 8; i++) {
+    b += i+'. '+q3[i-1]+' → '+getGFVal('gf3_'+i)+'\n';
+  }
+
+  b += '\n-- Exercise 4: Match the containers --\n';
+  var c4 = ['a carton of','a tin of','a bag of','a cup of','a bottle of','a packet of','a bar of','a box of','a can of','a jar of'];
+  for (var i = 1; i <= 10; i++) {
+    b += i+'. '+c4[i-1]+' '+getSelVal('e4_'+i)+'\n';
+  }
+
+  b += '\n-- Exercise 5: Choose the correct container --\n';
+  var q5 = ['orange juice','coffee (supermarket)','eggs','tomatoes','cola','water','tea','chocolate'];
+  for (var i = 1; i <= 8; i++) {
+    b += i+'. a '+getSelVal('e5_'+i)+' of '+q5[i-1]+'\n';
+  }
+
+  var subj = encodeURIComponent('Homework – Unit 7B – '+name);
+  window.location.href = 'mailto:TEACHER_EMAIL?subject='+subj+'&body='+encodeURIComponent(b);
+}
+</script>
+</body>
+</html>
