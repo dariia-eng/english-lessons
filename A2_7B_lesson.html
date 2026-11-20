@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7B Don't Waste It</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --teal:#1BBCB3; --purple:#7B4FD6; --orange:#E8653A; --yellow:#F9C23C; --coral:#E04565; --green:#22c55e;
+  --teal-s:rgba(27,188,179,.13); --purple-s:rgba(123,79,214,.13); --orange-s:rgba(232,101,58,.13);
+  --yellow-s:rgba(249,194,60,.15); --green-s:rgba(34,197,94,.12); --coral-s:rgba(224,69,101,.12);
+  --bg:#f7f8fc; --surface:#fff; --surface2:#f0f1f7; --border:#e3e6f0;
+  --text:#1a1d2e; --muted:#6b7280; --radius:14px; --shadow:0 2px 12px rgba(0,0,0,.07);
+  --tab-bg:#eef0f8; --tab-active-bg:#fff;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12131f; --surface:#1c1e30; --surface2:#252840; --border:#2e3150;
+  --text:#e8eaf6; --muted:#9ca3c8; --tab-bg:#1c1e30; --tab-active-bg:#252840;
+  --teal-s:rgba(27,188,179,.18); --purple-s:rgba(123,79,214,.18); --orange-s:rgba(232,101,58,.18);
+  --yellow-s:rgba(249,194,60,.18); --green-s:rgba(34,197,94,.16); --coral-s:rgba(224,69,101,.16);
+  --shadow:0 2px 16px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --bg:#12131f; --surface:#1c1e30; --surface2:#252840; --border:#2e3150;
+  --text:#e8eaf6; --muted:#9ca3c8; --tab-bg:#1c1e30; --tab-active-bg:#252840;
+  --teal-s:rgba(27,188,179,.18); --purple-s:rgba(123,79,214,.18); --orange-s:rgba(232,101,58,.18);
+  --yellow-s:rgba(249,194,60,.18); --green-s:rgba(34,197,94,.16); --coral-s:rgba(224,69,101,.16);
+  --shadow:0 2px 16px rgba(0,0,0,.35);
+}
+/* ── RESET & BASE ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+h1,h2,h3,h4{font-family:'Nunito',sans-serif}
+/* ── HEADER ── */
+.site-header{background:linear-gradient(135deg,var(--teal) 0%,var(--purple) 100%);color:#fff;padding:28px 20px 24px;position:relative}
+.header-inner{max-width:860px;margin:0 auto}
+.eyebrow{font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.85;margin-bottom:6px}
+.site-header h1{font-size:clamp(1.5rem,4vw,2.3rem);font-weight:900;line-height:1.15;margin-bottom:6px}
+.subtitle{font-size:.9rem;opacity:.88;font-weight:500}
+.theme-btn{position:absolute;top:18px;right:18px;background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:8px;padding:6px 11px;cursor:pointer;font-size:.85rem;font-family:'Nunito',sans-serif;font-weight:700}
+/* ── TAB NAV ── */
+.tab-nav-wrap{background:var(--surface);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:50;box-shadow:var(--shadow)}
+.tab-nav{max-width:860px;margin:0 auto;display:flex;overflow-x:auto;scrollbar-width:none;gap:2px;padding:6px 8px 0}
+.tab-nav::-webkit-scrollbar{display:none}
+.tab-btn{font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;border:none;background:transparent;color:var(--muted);cursor:pointer;padding:9px 14px 10px;border-radius:10px 10px 0 0;white-space:nowrap;transition:all .2s;border-bottom:3px solid transparent}
+.tab-btn:hover{color:var(--text);background:var(--surface2)}
+.tab-btn.active{color:var(--teal);background:var(--tab-active-bg);border-bottom-color:var(--teal)}
+/* ── MAIN ── */
+.main{max-width:860px;margin:0 auto;padding:24px 16px 60px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+/* ── CARDS ── */
+.card{background:var(--surface);border-radius:var(--radius);padding:22px;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:18px}
+.card-teal{border-left:4px solid var(--teal);background:var(--teal-s)}
+.card-purple{border-left:4px solid var(--purple);background:var(--purple-s)}
+.card-orange{border-left:4px solid var(--orange);background:var(--orange-s)}
+.card-yellow{border-left:4px solid var(--yellow);background:var(--yellow-s)}
+.card-coral{border-left:4px solid var(--coral);background:var(--coral-s)}
+.card-green{border-left:4px solid var(--green);background:var(--green-s)}
+.card-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1.05rem;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.card-title .badge{font-size:.7rem;background:var(--teal);color:#fff;border-radius:5px;padding:2px 7px;font-weight:700;letter-spacing:.05em}
+/* ── DISCUSSION CARDS ── */
+.disc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:14px}
+.disc-card{background:var(--surface);border-radius:var(--radius);padding:18px;border:1px solid var(--border);box-shadow:var(--shadow);text-align:center}
+.disc-card .icon{font-size:2rem;margin-bottom:8px}
+.disc-card p{font-size:.88rem;color:var(--text);line-height:1.5}
+/* ── ARTICLE ── */
+.article-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:18px}
+.article-title{background:linear-gradient(90deg,var(--teal),var(--purple));color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:1.1rem;padding:14px 20px}
+.article-body{padding:18px 20px;font-size:.93rem;line-height:1.8}
+.article-body p{margin-bottom:12px}
+.article-body p:last-child{margin-bottom:0}
+.hl{background:var(--yellow-s);border-radius:3px;padding:0 3px;font-weight:600}
+/* ── EX CARDS ── */
+.ex-card{background:var(--surface);border-radius:var(--radius);padding:22px;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:18px}
+.ex-hd{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;color:var(--purple);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.ex-instr{font-size:.85rem;color:var(--muted);margin-bottom:16px;font-style:italic}
+/* ── T/F ── */
+.tf-list{display:flex;flex-direction:column;gap:14px}
+.tf-item{background:var(--surface2);border-radius:10px;padding:14px 16px}
+.tf-sent{font-size:.9rem;margin-bottom:10px;line-height:1.5}
+.tf-btns{display:flex;gap:8px}
+/* ── MCQ BUTTONS ── */
+.mcq-group{display:flex;flex-direction:column;gap:14px;margin-bottom:4px}
+.mcq-row{background:var(--surface2);border-radius:10px;padding:14px 16px}
+.mcq-sent{font-size:.9rem;margin-bottom:10px;line-height:1.5;font-weight:500}
+.mcq-opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt-btn{font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;border:2px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:6px 16px;cursor:pointer;transition:all .2s}
+.opt-btn:hover{border-color:var(--teal);background:var(--teal-s)}
+.opt-btn.selected{border-color:var(--purple);background:var(--purple-s);color:var(--purple)}
+.opt-btn.correct{border-color:var(--green);background:var(--green-s);color:var(--green)}
+.opt-btn.wrong{border-color:var(--coral);background:var(--coral-s);color:var(--coral)}
+/* ── GAP-FILL ── */
+.conv-block{background:var(--surface2);border-radius:10px;padding:16px;margin-bottom:12px}
+.conv-row{display:flex;align-items:baseline;gap:8px;margin-bottom:8px;font-size:.9rem;flex-wrap:wrap}
+.conv-row:last-child{margin-bottom:0}
+.sp{font-weight:700;color:var(--purple);min-width:20px;flex-shrink:0}
+.sp.b-sp{color:var(--teal)}
+.gf-input{font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:700;border:2px solid var(--border);background:var(--surface);color:var(--text);border-radius:7px;padding:4px 10px;width:90px;text-align:center;transition:border-color .2s}
+.gf-input:focus{outline:none;border-color:var(--teal)}
+.gf-input.correct{border-color:var(--green);background:var(--green-s);color:var(--green)}
+.gf-input.wrong{border-color:var(--coral);background:var(--coral-s);color:var(--coral)}
+.reveal{font-size:.8rem;color:var(--green);font-weight:700;margin-left:4px;display:none}
+/* ── SCORE ROW ── */
+.score-row{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap}
+.score-badge{background:var(--purple-s);color:var(--purple);border-radius:8px;padding:4px 14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem}
+.btn-check{font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;background:linear-gradient(135deg,var(--teal),var(--purple));color:#fff;border:none;border-radius:9px;padding:8px 20px;cursor:pointer;transition:opacity .2s}
+.btn-check:hover{opacity:.88}
+.btn-reset{font-family:'Nunito',sans-serif;font-weight:700;font-size:.85rem;background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:9px;padding:8px 16px;cursor:pointer;transition:all .2s}
+.btn-reset:hover{background:var(--border);color:var(--text)}
+/* ── GRAMMAR BOX ── */
+.gram-box{background:var(--surface);border:2px solid var(--teal);border-radius:var(--radius);padding:22px;margin-bottom:18px}
+.gram-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;color:var(--teal);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.gram-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:520px){.gram-cols{grid-template-columns:1fr}}
+.gram-col h4{font-size:.85rem;font-weight:800;margin-bottom:8px;padding:5px 10px;border-radius:6px}
+.gram-col.mc h4{background:var(--teal-s);color:var(--teal)}
+.gram-col.my h4{background:var(--purple-s);color:var(--purple)}
+.gram-col p{font-size:.88rem;margin-bottom:6px;line-height:1.6}
+.gram-col p em{font-style:italic;opacity:.8}
+/* ── QUANTIFIERS TABLE ── */
+.q-table{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:14px;background:var(--surface);border-radius:10px;overflow:hidden}
+.q-table th{background:linear-gradient(90deg,var(--teal),var(--purple));color:#fff;font-family:'Nunito',sans-serif;font-weight:800;padding:9px 12px;text-align:left}
+.q-table td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.q-table tr:last-child td{border-bottom:none}
+.q-table tr:nth-child(even) td{background:var(--surface2)}
+.q-tag{display:inline-block;background:var(--teal-s);color:var(--teal);border-radius:5px;padding:1px 7px;font-weight:700;font-family:'Nunito',sans-serif;margin-right:4px;font-size:.82rem}
+.q-tag.unc{background:var(--purple-s);color:var(--purple)}
+/* ── CONTAINERS GRID ── */
+.cont-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin:14px 0}
+.cont-card{background:var(--surface2);border-radius:10px;padding:14px 10px;text-align:center;border:1px solid var(--border)}
+.cont-card .cont-icon{font-size:1.8rem;margin-bottom:6px}
+.cont-card .cont-word{font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;color:var(--purple)}
+.cont-card .cont-ex{font-size:.78rem;color:var(--muted);margin-top:3px}
+/* ── MCQ 3-opt ── */
+.cont-mcq-list{display:flex;flex-direction:column;gap:12px}
+.cont-mcq-row{background:var(--surface2);border-radius:10px;padding:14px 16px}
+.cont-mcq-q{font-size:.9rem;font-weight:600;margin-bottom:10px}
+.cont-mcq-q em{font-style:italic;opacity:.7;font-size:.85rem}
+.cont-opts{display:flex;gap:8px;flex-wrap:wrap}
+/* ── SPEAKING ── */
+.phrase-box{background:var(--purple-s);border-radius:var(--radius);padding:18px;margin-bottom:18px;border:1px solid var(--border)}
+.phrase-box h3{font-family:'Nunito',sans-serif;font-weight:800;color:var(--purple);margin-bottom:12px}
+.phrase-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.phrase-list li{font-size:.88rem;padding:7px 12px;background:var(--surface);border-radius:8px;border-left:3px solid var(--purple)}
+.role-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+@media(max-width:520px){.role-cards{grid-template-columns:1fr}}
+.role-card{background:var(--surface);border-radius:var(--radius);padding:18px;border:2px solid var(--border)}
+.role-card.a{border-color:var(--teal)}
+.role-card.b{border-color:var(--orange)}
+.role-card h4{font-family:'Nunito',sans-serif;font-weight:800;margin-bottom:10px;font-size:.95rem}
+.role-card.a h4{color:var(--teal)}
+.role-card.b h4{color:var(--orange)}
+.role-card ul{list-style:none;padding:0}
+.role-card li{font-size:.85rem;padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.role-card li:last-child{border-bottom:none}
+.food-chip{display:inline-block;background:var(--teal-s);color:var(--teal);border-radius:6px;padding:3px 10px;font-family:'Nunito',sans-serif;font-weight:700;font-size:.82rem;margin:3px}
+.speak-prompt{background:var(--surface2);border-radius:10px;padding:14px 16px;margin-bottom:10px;font-size:.9rem;border-left:3px solid var(--orange)}
+.speak-num{font-family:'Nunito',sans-serif;font-weight:900;color:var(--orange);margin-right:6px}
+/* ── QUIZ ── */
+.quiz-intro{text-align:center;padding:16px 0 10px}
+.quiz-intro p{font-size:.9rem;color:var(--muted);margin-top:6px}
+.quiz-list{display:flex;flex-direction:column;gap:12px}
+.quiz-item{background:var(--surface2);border-radius:10px;padding:16px}
+.quiz-item .q-num{font-family:'Nunito',sans-serif;font-weight:900;color:var(--muted);font-size:.8rem;margin-bottom:6px}
+.quiz-item .q-noun{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.3rem;margin-bottom:10px;color:var(--text)}
+.quiz-item .q-opts{display:flex;gap:10px;flex-wrap:wrap}
+.quiz-score-banner{text-align:center;padding:20px;background:var(--surface);border-radius:var(--radius);border:2px solid var(--teal);display:none;margin-top:16px}
+.quiz-score-banner h3{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.4rem;color:var(--teal)}
+.quiz-score-banner p{color:var(--muted);margin-top:6px}
+/* ── SECTION LABEL ── */
+.sec-label{font-family:'Nunito',sans-serif;font-weight:900;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--border)}
+/* ── INFO BOX ── */
+.info-box{background:var(--yellow-s);border:1px solid var(--yellow);border-radius:10px;padding:14px 16px;font-size:.88rem;margin-bottom:16px;line-height:1.6}
+.info-box strong{color:var(--orange)}
+/* ── FREEGAN CARD ── */
+.freegan-card{background:linear-gradient(135deg,var(--teal-s),var(--purple-s));border-radius:var(--radius);padding:20px;border:1px solid var(--border);margin-bottom:18px}
+.freegan-card h3{font-family:'Nunito',sans-serif;font-weight:900;color:var(--purple);margin-bottom:8px;font-size:1rem}
+.freegan-card p{font-size:.88rem;line-height:1.65}
+/* ── VIDEO ── */
+.video-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius);background:#000;margin-bottom:4px}
+.video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:var(--radius);border:none}
+.video-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:18px}
+.video-card .vc-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.video-card .vc-src{font-size:.77rem;color:var(--muted);margin-bottom:12px}
+.video-card .vc-task{font-size:.85rem;color:var(--muted);margin-top:10px;padding:10px 12px;background:var(--surface2);border-radius:8px;line-height:1.5}
+/* ── STEP BADGE ── */
+.step-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.step-badge{background:var(--teal);color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:.85rem;flex-shrink:0}
+/* ── CCQ ── */
+.ccq-block{margin-bottom:16px}
+.ccq-q{font-weight:600;font-size:.9rem;margin-bottom:8px}
+.ccq-opts{display:flex;gap:8px;flex-wrap:wrap}
+/* ── FEEDBACK ── */
+.fb-msg{font-size:.8rem;font-weight:700;margin-top:8px;min-height:20px}
+.fb-msg.ok{color:var(--green)}
+.fb-msg.err{color:var(--coral)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="eyebrow">Unit 7B &nbsp;·&nbsp; EFL Lesson</div>
+    <h1>🌍 Don't Waste It!</h1>
+    <div class="subtitle">How much / How many &nbsp;·&nbsp; Quantifiers &nbsp;·&nbsp; Food containers</div>
+  </div>
+  <button class="theme-btn" onclick="toggleTheme()">🌙 Dark</button>
+</header>
+
+<!-- TAB NAV -->
+<div class="tab-nav-wrap">
+  <nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('t1',this)">🗑️ Warm-up</button>
+    <button class="tab-btn" onclick="showTab('t2',this)">📖 Reading</button>
+    <button class="tab-btn" onclick="showTab('t3',this)">📚 Grammar</button>
+    <button class="tab-btn" onclick="showTab('t4',this)">🛍️ Containers</button>
+    <button class="tab-btn" onclick="showTab('t5',this)">💬 Speaking</button>
+    <button class="tab-btn" onclick="showTab('t6',this)">🎮 Quiz</button>
+  </nav>
+</div>
+
+<main class="main">
+
+<!-- ══════════ TAB 1 : WARM-UP ══════════ -->
+<section id="t1" class="tab-panel active">
+
+  <div class="card card-teal" style="margin-bottom:18px">
+    <div class="card-title">🗑️ Lead-in: Food Waste</div>
+    <p style="font-size:.9rem;margin-bottom:14px">Work in pairs. Talk about these questions:</p>
+    <div class="disc-grid">
+      <div class="disc-card">
+        <div class="icon">🛒</div>
+        <p>Do you eat <strong>all</strong> the food you buy? Why / why not?</p>
+      </div>
+      <div class="disc-card">
+        <div class="icon">🗑️</div>
+        <p>What food do you <strong>sometimes</strong> throw away?</p>
+      </div>
+      <div class="disc-card">
+        <div class="icon">❤️</div>
+        <p>What food do you <strong>never</strong> throw away?</p>
+      </div>
+      <div class="disc-card">
+        <div class="icon">🌍</div>
+        <p>Do you think food waste is a big problem in your country?</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    💡 <strong>Did you know?</strong> Every year, the world throws away about <strong>one third</strong> of all food produced. That's 1.3 billion tonnes — enough to feed millions of people.
+  </div>
+
+  <div class="video-card">
+    <div class="vc-title">🎥 Watch: The food-waste rebel</div>
+    <div class="vc-src">YouTube</div>
+    <div class="video-wrap">
+      <iframe src="https://www.youtube.com/embed/_FynV0V0fmk?start=54" title="Freegans video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="vc-task">
+      💬 <strong>While you watch:</strong> What food does this person save? What do they do with it? Do you think this is a good idea?
+    </div>
+  </div>
+
+  <div class="freegan-card">
+    <h3>🧑‍🤝‍🧑 Who are freegans?</h3>
+    <p>Some people look for food that supermarkets and cafés throw away — instead of buying it. These people are called <strong>freegans</strong>. They believe that our society wastes too much food, so they try to find and use food that others throw out.</p>
+    <p style="margin-top:8px;font-size:.85rem;color:var(--muted)"><em>Before reading: What do you think about freegans? Is this a good idea? Would you do the same?</em></p>
+  </div>
+
+  <div class="card" style="margin-bottom:0">
+    <div class="card-title">🔤 Key vocabulary preview</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
+      <div style="background:var(--teal-s);border-radius:8px;padding:8px 14px;font-size:.88rem"><strong>throw away</strong> — to put in the bin / rubbish</div>
+      <div style="background:var(--purple-s);border-radius:8px;padding:8px 14px;font-size:.88rem"><strong>closing time</strong> — when a shop closes</div>
+      <div style="background:var(--orange-s);border-radius:8px;padding:8px 14px;font-size:.88rem"><strong>amazing</strong> — very surprising</div>
+      <div style="background:var(--yellow-s);border-radius:8px;padding:8px 14px;font-size:.88rem"><strong>frozen</strong> — very cold, kept in a freezer</div>
+      <div style="background:var(--green-s);border-radius:8px;padding:8px 14px;font-size:.88rem"><strong>broken</strong> — damaged, not perfect</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════ TAB 2 : READING ══════════ -->
+<section id="t2" class="tab-panel">
+
+  <div class="card card-purple" style="margin-bottom:18px">
+    <div class="card-title">🔮 Before you read</div>
+    <p style="font-size:.9rem">Look at the title of the article. What do you think it is about? Tell your teacher!</p>
+  </div>
+
+  <div class="article-box">
+    <div class="article-title">📰 Don't waste it – eat for free!</div>
+    <div class="article-body">
+      <p>It's early evening in <span class="hl">downtown New York</span> and it's <span class="hl">closing time</span> for many cafés and supermarkets. It's time to <span class="hl">throw out</span> all their old food for the day. A group of young people arrive and quickly start to look for any food they can find.</p>
+      <p>These people are <strong>freegans</strong>. They're people who think that we throw out <span class="hl">a lot of</span> food, so they try to use it.</p>
+      <p>'It's amazing what supermarkets throw away,' says Elias, a 24-year-old. 'Yesterday I found <span class="hl">a box of</span> eggs, with just one broken egg, and four frozen pizzas. They were fine, but the boxes were broken so the supermarket threw them away.'</p>
+      <p>So <span class="hl">how much</span> food do they find? And <span class="hl">how many</span> meals can they make? Elias says sometimes they find <span class="hl">a little</span>, and sometimes they find <span class="hl">a lot</span>, but they're never hungry and can always make a meal.</p>
+    </div>
+  </div>
+
+  <div class="card card-orange" style="margin-bottom:18px">
+    <div class="card-title">💬 After reading</div>
+    <p style="font-size:.9rem">Would you do the same as Elias? Why / why not? What do you think about freegans?</p>
+  </div>
+
+  <!-- Ex 2c: T/F -->
+  <div class="ex-card">
+    <div class="ex-hd">📝 Exercise 2c <span class="badge">Comprehension</span></div>
+    <div class="ex-instr">Read the article again. Are the sentences True (T) or False (F)?</div>
+    <div class="tf-list">
+
+      <div class="tf-item">
+        <div class="tf-sent">1. Supermarkets and cafés throw away old food in the evening.</div>
+        <div class="tf-btns">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="tf1" data-val="true">✅ True</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="tf1" data-val="false">❌ False</button>
+        </div>
+      </div>
+
+      <div class="tf-item">
+        <div class="tf-sent">2. Freegans throw out a lot of food.</div>
+        <div class="tf-btns">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="tf2" data-val="true">✅ True</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="tf2" data-val="false">❌ False</button>
+        </div>
+      </div>
+
+      <div class="tf-item">
+        <div class="tf-sent">3. The pizzas that Elias found weren't broken.</div>
+        <div class="tf-btns">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="tf3" data-val="true">✅ True</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="tf3" data-val="false">❌ False</button>
+        </div>
+      </div>
+
+      <div class="tf-item">
+        <div class="tf-sent">4. Elias is sometimes hungry.</div>
+        <div class="tf-btns">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="tf4" data-val="true">✅ True</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="tf4" data-val="false">❌ False</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="score-row">
+      <button class="btn-check" onclick="checkTF()">Check ✓</button>
+      <button class="btn-reset" onclick="resetTF()">Reset</button>
+      <span class="score-badge" id="tfScore" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Ex 3b: Choose the correct alternative -->
+  <div class="ex-card">
+    <div class="ex-hd">🎧 Exercise 3b <span class="badge">Listening practice</span></div>
+    <div class="ex-instr">Elias and Clara are talking about food. Choose the correct word in each sentence.</div>
+    <div class="mcq-group">
+
+      <div class="mcq-row">
+        <div class="mcq-sent">1. How ___ eggs do we have?</div>
+        <div class="mcq-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r1" data-val="many">many</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r1" data-val="much">much</button>
+        </div>
+      </div>
+
+      <div class="mcq-row">
+        <div class="mcq-sent">2. ___, just two, I think.</div>
+        <div class="mcq-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r2" data-val="A lot">A lot</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r2" data-val="A few">A few</button>
+        </div>
+      </div>
+
+      <div class="mcq-row">
+        <div class="mcq-sent">3. How ___ oil do we have?</div>
+        <div class="mcq-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r3" data-val="much">much</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r3" data-val="many">many</button>
+        </div>
+      </div>
+
+      <div class="mcq-row">
+        <div class="mcq-sent">4. — (How much oil?) — ___.</div>
+        <div class="mcq-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r4" data-val="A little">A little</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r4" data-val="Lots">Lots</button>
+        </div>
+      </div>
+
+      <div class="mcq-row">
+        <div class="mcq-sent">5. Wow, ice cream! How ___ did you find?</div>
+        <div class="mcq-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r5" data-val="many">many</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r5" data-val="much">much</button>
+        </div>
+      </div>
+
+      <div class="mcq-row">
+        <div class="mcq-sent">6. Just a ___, but we've got some fruit.</div>
+        <div class="mcq-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r6" data-val="a little">a little</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r6" data-val="a few">a few</button>
+        </div>
+      </div>
+
+      <div class="mcq-row">
+        <div class="mcq-sent">7. How ___ fruit do we have?</div>
+        <div class="mcq-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r7" data-val="much">much</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r7" data-val="many">many</button>
+        </div>
+      </div>
+
+      <div class="mcq-row">
+        <div class="mcq-sent">8. Oh, ___. Sorry. I ate it last night.</div>
+        <div class="mcq-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r8" data-val="none">none</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="r8" data-val="lots">lots</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="score-row">
+      <button class="btn-check" onclick="checkEx3b()">Check ✓</button>
+      <button class="btn-reset" onclick="resetEx3b()">Reset</button>
+      <span class="score-badge" id="ex3bScore" style="display:none"></span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════ TAB 3 : GRAMMAR ══════════ -->
+<section id="t3" class="tab-panel">
+
+  <!-- Grammar Box -->
+  <div class="gram-box">
+    <div class="gram-title">📚 Grammar: How much? / How many? + Quantifiers</div>
+    <div class="gram-cols">
+      <div class="gram-col mc">
+        <h4>How MUCH? → Uncountable nouns</h4>
+        <p>Use with nouns you <strong>can't count</strong>:</p>
+        <p><em>water, oil, milk, rice, bread, coffee, meat, sugar, fruit</em></p>
+        <p>→ <strong>How much oil</strong> do we have?</p>
+        <p>→ <strong>How much milk</strong> did you buy?</p>
+      </div>
+      <div class="gram-col my">
+        <h4>How MANY? → Countable nouns</h4>
+        <p>Use with nouns you <strong>can count</strong>:</p>
+        <p><em>eggs, pizzas, apples, meals, bottles, bags</em></p>
+        <p>→ <strong>How many eggs</strong> did you find?</p>
+        <p>→ <strong>How many apples</strong> do you want?</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quantifiers Table -->
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-title">⚖️ Quantifiers</div>
+    <table class="q-table">
+      <thead>
+        <tr><th>Amount</th><th>With countable nouns</th><th>With uncountable nouns</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>❌ Zero</td>
+          <td><strong>none / not any</strong><br><em>How many eggs? None.</em></td>
+          <td><strong>none / not any</strong><br><em>How much oil? None.</em></td>
+        </tr>
+        <tr>
+          <td>⬇️ Small</td>
+          <td><span class="q-tag">a few</span> <em>a few eggs</em></td>
+          <td><span class="q-tag unc">a little</span> <em>a little oil</em></td>
+        </tr>
+        <tr>
+          <td>➡️ Medium</td>
+          <td colspan="2"><strong>some</strong> — with both types<br><em>some eggs &nbsp;/&nbsp; some oil</em></td>
+        </tr>
+        <tr>
+          <td>⬆️ Large</td>
+          <td colspan="2"><strong>a lot of / lots of</strong> — with both types<br><em>lots of eggs &nbsp;/&nbsp; a lot of oil</em></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="info-box" style="margin-top:14px;margin-bottom:0">
+      💡 <strong>Remember:</strong> Use <em>a few</em> (countable) → <em>a few bananas</em> &nbsp;|&nbsp; Use <em>a little</em> (uncountable) → <em>a little cheese</em>
+    </div>
+  </div>
+
+  <!-- CCQ -->
+  <div class="card card-yellow" style="margin-bottom:18px">
+    <div class="card-title">🤔 Concept check questions</div>
+    <p style="font-size:.88rem;margin-bottom:14px">Answer these quickly — say the answers aloud!</p>
+
+    <div class="ccq-block">
+      <div class="ccq-q">1. "How much water?" — Is water countable or uncountable?</div>
+      <div class="ccq-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="ccq1" data-val="uncountable">Uncountable ✓</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="ccq1" data-val="countable">Countable</button>
+      </div>
+    </div>
+
+    <div class="ccq-block">
+      <div class="ccq-q">2. "How many bottles?" — Are bottles countable or uncountable?</div>
+      <div class="ccq-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="ccq2" data-val="countable">Countable ✓</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="ccq2" data-val="uncountable">Uncountable</button>
+      </div>
+    </div>
+
+    <div class="ccq-block">
+      <div class="ccq-q">3. "There are <em>a few</em> bananas." Do we know the exact number?</div>
+      <div class="ccq-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="ccq3" data-val="no">No — just a small number</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="ccq3" data-val="yes">Yes — exactly three</button>
+      </div>
+    </div>
+
+    <div class="ccq-block" style="margin-bottom:0">
+      <div class="ccq-q">4. "There's <em>a little</em> coffee." Is there a lot of coffee?</div>
+      <div class="ccq-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="ccq4" data-val="no">No — just a small amount</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="ccq4" data-val="yes">Yes — a large amount</button>
+      </div>
+    </div>
+
+    <div class="score-row">
+      <button class="btn-check" onclick="checkCCQ()">Check ✓</button>
+      <button class="btn-reset" onclick="resetCCQ()">Reset</button>
+      <span class="score-badge" id="ccqScore" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Ex 6a: gap-fill conversations -->
+  <div class="ex-card">
+    <div class="ex-hd">✏️ Exercise 6a <span class="badge">Gap-fill</span></div>
+    <div class="ex-instr">Complete the conversations. Use: <strong>much, many, a little, a few, lots, some, none</strong></div>
+
+    <div class="conv-block">
+      <div class="conv-row"><span class="sp">A:</span> How <input class="gf-input" id="gf6_1" data-ans="much" placeholder="???"> milk do you want?</div>
+      <div class="conv-row"><span class="sp b-sp">B:</span> Just a <input class="gf-input" id="gf6_2" data-ans="little" placeholder="???"> , please.</div>
+    </div>
+
+    <div class="conv-block">
+      <div class="conv-row"><span class="sp">A:</span> How <input class="gf-input" id="gf6_3" data-ans="many" placeholder="???"> potatoes do we have?</div>
+      <div class="conv-row"><span class="sp b-sp">B:</span> <input class="gf-input" id="gf6_4" data-ans="lots" placeholder="???">! A whole bag!</div>
+    </div>
+
+    <div class="conv-block">
+      <div class="conv-row"><span class="sp">A:</span> How <input class="gf-input" id="gf6_5" data-ans="much" placeholder="???"> oil do we need?</div>
+      <div class="conv-row"><span class="sp b-sp">B:</span> <input class="gf-input" id="gf6_6" data-ans="none" placeholder="???">. We don't use oil in this recipe.</div>
+    </div>
+
+    <div class="conv-block">
+      <div class="conv-row"><span class="sp">A:</span> We need <input class="gf-input" id="gf6_7" data-ans="some" placeholder="???"> onions.</div>
+      <div class="conv-row"><span class="sp b-sp">B:</span> How <input class="gf-input" id="gf6_8" data-ans="many" placeholder="???">?</div>
+    </div>
+
+    <div class="conv-block">
+      <div class="conv-row"><span class="sp">A:</span> How <input class="gf-input" id="gf6_9" data-ans="many" placeholder="???"> bananas are there?</div>
+      <div class="conv-row"><span class="sp b-sp">B:</span> Just a <input class="gf-input" id="gf6_10" data-ans="few" placeholder="???">. We need to buy more.</div>
+    </div>
+
+    <div class="score-row">
+      <button class="btn-check" onclick="checkEx6a()">Check ✓</button>
+      <button class="btn-reset" onclick="resetEx6a()">Reset</button>
+      <span class="score-badge" id="ex6aScore" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Ex 7a: many or much MCQ -->
+  <div class="ex-card">
+    <div class="ex-hd">✏️ Exercise 7a <span class="badge">Many or Much?</span></div>
+    <div class="ex-instr">Complete the questions about your family with <em>many</em> or <em>much</em>. Then answer the questions!</div>
+    <div class="mcq-group">
+
+      <div class="mcq-row">
+        <div class="mcq-sent">1. In your family, how ___ <strong>meat</strong> do you eat?</div>
+        <div class="mcq-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="g7a1" data-val="many">many</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="g7a1" data-val="much">much</button>
+        </div>
+      </div>
+
+      <div class="mcq-row">
+        <div class="mcq-sent">2. In your family, how ___ <strong>cups of coffee</strong> do you drink a day?</div>
+        <div class="mcq-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="g7a2" data-val="many">many</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="g7a2" data-val="much">much</button>
+        </div>
+      </div>
+
+      <div class="mcq-row">
+        <div class="mcq-sent">3. In your family, how ___ <strong>rice</strong> do you eat?</div>
+        <div class="mcq-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="g7a3" data-val="much">much</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="g7a3" data-val="many">many</button>
+        </div>
+      </div>
+
+      <div class="mcq-row">
+        <div class="mcq-sent">4. In your family, how ___ <strong>pizzas</strong> do you eat a week?</div>
+        <div class="mcq-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="g7a4" data-val="much">much</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="g7a4" data-val="many">many</button>
+        </div>
+      </div>
+
+      <div class="mcq-row">
+        <div class="mcq-sent">5. In your family, how ___ <strong>chocolate</strong> do you eat?</div>
+        <div class="mcq-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="g7a5" data-val="many">many</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="g7a5" data-val="much">much</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="score-row">
+      <button class="btn-check" onclick="checkEx7a()">Check ✓</button>
+      <button class="btn-reset" onclick="resetEx7a()">Reset</button>
+      <span class="score-badge" id="ex7aScore" style="display:none"></span>
+    </div>
+    <div class="card-teal card" style="margin-top:16px;padding:14px 18px">
+      <div class="card-title" style="margin-bottom:6px">💬 Now answer the questions!</div>
+      <p style="font-size:.88rem">After checking, go back and <strong>answer</strong> each question about yourself. Use: <em>a lot / not much / not many / a little / a few / none</em></p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════ TAB 4 : CONTAINERS ══════════ -->
+<section id="t4" class="tab-panel">
+
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-title">🛍️ Food containers vocabulary</div>
+    <p style="font-size:.88rem;margin-bottom:14px;color:var(--muted)">Learn these 10 container words. We use them with <strong>a ___ of ___</strong>:</p>
+    <div class="cont-grid">
+      <div class="cont-card"><div class="cont-icon">☕</div><div class="cont-word">cup</div><div class="cont-ex">a cup of tea</div></div>
+      <div class="cont-card"><div class="cont-icon">👜</div><div class="cont-word">bag</div><div class="cont-ex">a bag of rice</div></div>
+      <div class="cont-card"><div class="cont-icon">📦</div><div class="cont-word">packet</div><div class="cont-ex">a packet of pasta</div></div>
+      <div class="cont-card"><div class="cont-icon">🍶</div><div class="cont-word">bottle</div><div class="cont-ex">a bottle of water</div></div>
+      <div class="cont-card"><div class="cont-icon">🧃</div><div class="cont-word">carton</div><div class="cont-ex">a carton of juice</div></div>
+      <div class="cont-card"><div class="cont-icon">🥫</div><div class="cont-word">tin</div><div class="cont-ex">a tin of beans</div></div>
+      <div class="cont-card"><div class="cont-icon">📫</div><div class="cont-word">box</div><div class="cont-ex">a box of eggs</div></div>
+      <div class="cont-card"><div class="cont-icon">🥤</div><div class="cont-word">can</div><div class="cont-ex">a can of cola</div></div>
+      <div class="cont-card"><div class="cont-icon">🍫</div><div class="cont-word">bar</div><div class="cont-ex">a bar of chocolate</div></div>
+      <div class="cont-card"><div class="cont-icon">🫙</div><div class="cont-word">jar</div><div class="cont-ex">a jar of coffee</div></div>
+    </div>
+  </div>
+
+  <!-- Ex 8a: Container MCQ -->
+  <div class="ex-card">
+    <div class="ex-hd">✏️ Exercise 8a <span class="badge">Containers</span></div>
+    <div class="ex-instr">Choose the correct container for each food or drink.</div>
+    <div class="cont-mcq-list">
+
+      <div class="cont-mcq-row">
+        <div class="cont-mcq-q">1. a ___ of <strong>tea</strong> <em>(hot drink in a mug)</em></div>
+        <div class="cont-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c1" data-val="cup">cup</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c1" data-val="tin">tin</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c1" data-val="bar">bar</button>
+        </div>
+      </div>
+
+      <div class="cont-mcq-row">
+        <div class="cont-mcq-q">2. a ___ of <strong>rice</strong> <em>(dry grain, plastic or paper container)</em></div>
+        <div class="cont-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c2" data-val="tin">tin</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c2" data-val="bag">bag</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c2" data-val="can">can</button>
+        </div>
+      </div>
+
+      <div class="cont-mcq-row">
+        <div class="cont-mcq-q">3. a ___ of <strong>pasta</strong> <em>(dry pasta, paper or plastic)</em></div>
+        <div class="cont-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c3" data-val="jar">jar</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c3" data-val="packet">packet</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c3" data-val="can">can</button>
+        </div>
+      </div>
+
+      <div class="cont-mcq-row">
+        <div class="cont-mcq-q">4. a ___ of <strong>water</strong> <em>(you buy this at a shop)</em></div>
+        <div class="cont-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c4" data-val="carton">carton</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c4" data-val="bottle">bottle</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c4" data-val="tin">tin</button>
+        </div>
+      </div>
+
+      <div class="cont-mcq-row">
+        <div class="cont-mcq-q">5. a ___ of <strong>juice</strong> <em>(cardboard container, often for orange juice)</em></div>
+        <div class="cont-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c5" data-val="carton">carton</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c5" data-val="cup">cup</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c5" data-val="jar">jar</button>
+        </div>
+      </div>
+
+      <div class="cont-mcq-row">
+        <div class="cont-mcq-q">6. a ___ of <strong>beans</strong> <em>(British English — metal container)</em></div>
+        <div class="cont-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c6" data-val="jar">jar</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c6" data-val="can">can</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c6" data-val="tin">tin</button>
+        </div>
+      </div>
+
+      <div class="cont-mcq-row">
+        <div class="cont-mcq-q">7. a ___ of <strong>eggs</strong> <em>(cardboard or paper container at the supermarket)</em></div>
+        <div class="cont-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c7" data-val="box">box</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c7" data-val="bar">bar</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c7" data-val="packet">packet</button>
+        </div>
+      </div>
+
+      <div class="cont-mcq-row">
+        <div class="cont-mcq-q">8. a ___ of <strong>cola</strong> <em>(aluminium container, you pull the ring to open)</em></div>
+        <div class="cont-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c8" data-val="bottle">bottle</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c8" data-val="can">can</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c8" data-val="carton">carton</button>
+        </div>
+      </div>
+
+      <div class="cont-mcq-row">
+        <div class="cont-mcq-q">9. a ___ of <strong>chocolate</strong> <em>(flat, rectangular shape wrapped in foil)</em></div>
+        <div class="cont-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c9" data-val="packet">packet</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c9" data-val="tin">tin</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c9" data-val="bar">bar</button>
+        </div>
+      </div>
+
+      <div class="cont-mcq-row">
+        <div class="cont-mcq-q">10. a ___ of <strong>coffee</strong> <em>(glass container with a lid — think Nescafé)</em></div>
+        <div class="cont-opts">
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c10" data-val="jar">jar</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c10" data-val="cup">cup</button>
+          <button class="opt-btn" onclick="pickMCQ(this)" data-grp="c10" data-val="packet">packet</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="score-row">
+      <button class="btn-check" onclick="checkEx8a()">Check ✓</button>
+      <button class="btn-reset" onclick="resetEx8a()">Reset</button>
+      <span class="score-badge" id="ex8aScore" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- Discussion -->
+  <div class="card card-teal">
+    <div class="card-title">💬 Exercises 9 &amp; 10 — Discuss</div>
+    <p style="font-size:.88rem;margin-bottom:12px">Work with your teacher. Answer these questions:</p>
+    <div class="speak-prompt"><span class="speak-num">1.</span> What other food or drink can you buy in each container? Example: <em>"A tin of… tomatoes, soup, peas"</em></div>
+    <div class="speak-prompt"><span class="speak-num">2.</span> Which of these did you buy the last time you went shopping?</div>
+    <div class="speak-prompt"><span class="speak-num">3.</span> Which containers do you sometimes buy? Which do you never buy?</div>
+  </div>
+
+</section>
+
+<!-- ══════════ TAB 5 : SPEAKING ══════════ -->
+<section id="t5" class="tab-panel">
+
+  <div class="phrase-box">
+    <h3>💬 Useful phrases</h3>
+    <ul class="phrase-list">
+      <li>How many eggs have we got?</li>
+      <li>How much coffee is there?</li>
+      <li>We've only got two eggs in the box.</li>
+      <li>We've got lots of cans of cola.</li>
+      <li>Let's buy three bottles of milk.</li>
+      <li>We haven't got any sugar.</li>
+      <li>There's a little bread left.</li>
+      <li>How much does it cost?</li>
+    </ul>
+  </div>
+
+  <!-- Ex 11-12: Supermarket Roleplay -->
+  <div class="ex-card">
+    <div class="ex-hd">🎭 Exercises 11–12 <span class="badge">Roleplay</span></div>
+    <div class="ex-instr">You live together. One person is at the supermarket. The other is at home. Have a phone conversation about food!</div>
+
+    <div class="role-cards">
+      <div class="role-card a">
+        <h4>🛒 Student A — At the supermarket</h4>
+        <p style="font-size:.82rem;margin-bottom:10px;color:var(--muted)">You're shopping. Call home and ask what food you need:</p>
+        <ul>
+          <li>📞 Call Student B</li>
+          <li>❓ Ask: "How much ___ have we got?"</li>
+          <li>❓ Ask: "How many ___ are there?"</li>
+          <li>🛒 Decide what to buy</li>
+          <li>✅ Tell B what you will buy</li>
+        </ul>
+      </div>
+      <div class="role-card b">
+        <h4>🏠 Student B — At home</h4>
+        <p style="font-size:.82rem;margin-bottom:10px;color:var(--muted)">You're at home. Answer A's questions about the food you have:</p>
+        <ul>
+          <li>📱 Answer the phone</li>
+          <li>✅ Say what you have: "We've got…"</li>
+          <li>❌ Say what you don't have: "We haven't got any…"</li>
+          <li>⬇️ Say amounts: "Just a little… / Only a few…"</li>
+          <li>🛒 Tell A what to buy</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card-yellow card" style="padding:16px 18px">
+      <div class="card-title" style="margin-bottom:10px">🛒 Food to talk about:</div>
+      <div>
+        <span class="food-chip">🧀 cheese</span>
+        <span class="food-chip">🍫 chocolate</span>
+        <span class="food-chip">🍗 chicken</span>
+        <span class="food-chip">☕ coffee</span>
+        <span class="food-chip">🥤 cola</span>
+        <span class="food-chip">🥚 eggs</span>
+        <span class="food-chip">🧃 juice</span>
+        <span class="food-chip">🥦 vegetables</span>
+        <span class="food-chip">💧 water</span>
+        <span class="food-chip">🍞 bread</span>
+        <span class="food-chip">🍚 rice</span>
+        <span class="food-chip">🥛 milk</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Extra speaking -->
+  <div class="card card-orange" style="margin-bottom:18px">
+    <div class="card-title">🗣️ Extra speaking: Your family's food habits</div>
+    <p style="font-size:.88rem;margin-bottom:14px">Use the questions from Exercise 7a. Talk about your family!</p>
+    <div class="speak-prompt"><span class="speak-num">1.</span> How much meat does your family eat? <em>(a lot / not much / none)</em></div>
+    <div class="speak-prompt"><span class="speak-num">2.</span> How many cups of coffee do you drink every day?</div>
+    <div class="speak-prompt"><span class="speak-num">3.</span> How much rice do you eat — every day, sometimes, or never?</div>
+    <div class="speak-prompt"><span class="speak-num">4.</span> How many pizzas do you eat in a week?</div>
+    <div class="speak-prompt"><span class="speak-num">5.</span> How much chocolate do you eat? Too much? 😄</div>
+  </div>
+
+  <!-- Deeper discussion -->
+  <div class="card card-teal">
+    <div class="card-title">🌍 Deeper discussion: Food waste</div>
+    <p style="font-size:.88rem;margin-bottom:12px">Talk about these questions with your teacher:</p>
+    <div class="speak-prompt"><span class="speak-num">1.</span> Do you think about food waste when you shop? How?</div>
+    <div class="speak-prompt"><span class="speak-num">2.</span> What can people do to waste <em>less</em> food?</div>
+    <div class="speak-prompt"><span class="speak-num">3.</span> Should supermarkets give food to poor people instead of throwing it away? Why?</div>
+    <div class="speak-prompt"><span class="speak-num">4.</span> Would you try freeganism? Why / why not?</div>
+  </div>
+
+  <!-- 7b adapted speaking -->
+  <div class="card card-purple" style="margin-bottom:0">
+    <div class="card-title">💬 Free practice: Tell me about last week's shopping</div>
+    <p style="font-size:.88rem;margin-bottom:12px">Imagine you are at the supermarket. Tell your teacher what you are buying. Use containers and quantifiers!</p>
+    <div class="info-box" style="margin-bottom:0">
+      <strong>Example:</strong> <em>"I'm buying two bottles of water, a bag of rice, a few tins of beans, and a bar of chocolate. I don't need much milk — there's a little at home. How much does the coffee cost?"</em>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════ TAB 6 : QUIZ ══════════ -->
+<section id="t6" class="tab-panel">
+
+  <div class="quiz-intro">
+    <h2 style="font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:900">🎮 How much or How many?</h2>
+    <p>Choose the correct question word for each noun. 10 questions!</p>
+  </div>
+
+  <div class="quiz-list" style="margin-top:16px">
+
+    <div class="quiz-item">
+      <div class="q-num">Question 1 of 10</div>
+      <div class="q-noun">🍞 bread</div>
+      <div class="q-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q1" data-val="How much">How much?</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q1" data-val="How many">How many?</button>
+      </div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="q-num">Question 2 of 10</div>
+      <div class="q-noun">🍅 tomatoes</div>
+      <div class="q-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q2" data-val="How much">How much?</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q2" data-val="How many">How many?</button>
+      </div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="q-num">Question 3 of 10</div>
+      <div class="q-noun">🥛 milk</div>
+      <div class="q-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q3" data-val="How many">How many?</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q3" data-val="How much">How much?</button>
+      </div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="q-num">Question 4 of 10</div>
+      <div class="q-noun">🥚 eggs</div>
+      <div class="q-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q4" data-val="How many">How many?</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q4" data-val="How much">How much?</button>
+      </div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="q-num">Question 5 of 10</div>
+      <div class="q-noun">🍝 pasta</div>
+      <div class="q-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q5" data-val="How much">How much?</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q5" data-val="How many">How many?</button>
+      </div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="q-num">Question 6 of 10</div>
+      <div class="q-noun">🍊 oranges</div>
+      <div class="q-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q6" data-val="How much">How much?</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q6" data-val="How many">How many?</button>
+      </div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="q-num">Question 7 of 10</div>
+      <div class="q-noun">🫒 oil</div>
+      <div class="q-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q7" data-val="How many">How many?</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q7" data-val="How much">How much?</button>
+      </div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="q-num">Question 8 of 10</div>
+      <div class="q-noun">🍶 bottles</div>
+      <div class="q-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q8" data-val="How many">How many?</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q8" data-val="How much">How much?</button>
+      </div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="q-num">Question 9 of 10</div>
+      <div class="q-noun">🍬 sugar</div>
+      <div class="q-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q9" data-val="How much">How much?</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q9" data-val="How many">How many?</button>
+      </div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="q-num">Question 10 of 10</div>
+      <div class="q-noun">🥪 sandwiches</div>
+      <div class="q-opts">
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q10" data-val="How much">How much?</button>
+        <button class="opt-btn" onclick="pickMCQ(this)" data-grp="q10" data-val="How many">How many?</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="score-row" style="margin-top:16px">
+    <button class="btn-check" onclick="checkQuiz()">Check ✓</button>
+    <button class="btn-reset" onclick="resetQuiz()">Reset</button>
+    <span class="score-badge" id="quizScore" style="display:none"></span>
+  </div>
+
+  <div class="quiz-score-banner" id="quizBanner">
+    <h3 id="quizBannerTitle">🎉 Well done!</h3>
+    <p id="quizBannerMsg"></p>
+  </div>
+
+</section>
+
+</main>
+
+<script>
+/* ── TAB SWITCHING ── */
+function showTab(id, el) {
+  var panels = document.querySelectorAll('.tab-panel');
+  for (var i = 0; i < panels.length; i++) {
+    panels[i].classList.remove('active');
+  }
+  document.getElementById(id).classList.add('active');
+  var btns = document.querySelectorAll('.tab-btn');
+  for (var j = 0; j < btns.length; j++) {
+    btns[j].classList.remove('active');
+  }
+  el.classList.add('active');
+}
+
+/* ── THEME TOGGLE ── */
+function toggleTheme() {
+  var root = document.documentElement;
+  var btn = document.querySelector('.theme-btn');
+  if (root.getAttribute('data-theme') === 'dark') {
+    root.setAttribute('data-theme', 'light');
+    btn.textContent = '🌙 Dark';
+  } else {
+    root.setAttribute('data-theme', 'dark');
+    btn.textContent = '☀️ Light';
+  }
+}
+
+/* ── MCQ PICK ── */
+function pickMCQ(btn) {
+  var grp = btn.getAttribute('data-grp');
+  var siblings = document.querySelectorAll('[data-grp="' + grp + '"]');
+  for (var i = 0; i < siblings.length; i++) {
+    siblings[i].classList.remove('selected', 'correct', 'wrong');
+  }
+  btn.classList.add('selected');
+}
+
+/* ── GENERIC MCQ CHECK ── */
+function checkMCQGroup(grps, answers, scoreId) {
+  var correct = 0;
+  for (var i = 0; i < grps.length; i++) {
+    var btns = document.querySelectorAll('[data-grp="' + grps[i] + '"]');
+    var selected = null;
+    for (var j = 0; j < btns.length; j++) {
+      if (btns[j].classList.contains('selected')) { selected = btns[j]; }
+    }
+    for (var k = 0; k < btns.length; k++) {
+      btns[k].classList.remove('correct', 'wrong', 'selected');
+    }
+    if (selected) {
+      if (selected.getAttribute('data-val') === answers[i]) {
+        selected.classList.add('correct');
+        correct++;
+      } else {
+        selected.classList.add('wrong');
+        // mark correct answer
+        for (var m = 0; m < btns.length; m++) {
+          if (btns[m].getAttribute('data-val') === answers[i]) {
+            btns[m].classList.add('correct');
+          }
+        }
+      }
+    } else {
+      // no selection — reveal correct
+      for (var n = 0; n < btns.length; n++) {
+        if (btns[n].getAttribute('data-val') === answers[i]) {
+          btns[n].classList.add('correct');
+        }
+      }
+    }
+  }
+  var el = document.getElementById(scoreId);
+  el.style.display = 'inline-block';
+  el.textContent = correct + ' / ' + grps.length;
+  return correct;
+}
+
+function resetMCQGroup(grps, scoreId) {
+  for (var i = 0; i < grps.length; i++) {
+    var btns = document.querySelectorAll('[data-grp="' + grps[i] + '"]');
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].classList.remove('selected', 'correct', 'wrong');
+    }
+  }
+  var el = document.getElementById(scoreId);
+  if (el) { el.style.display = 'none'; el.textContent = ''; }
+}
+
+/* ── T/F ── */
+var tfGrps = ['tf1','tf2','tf3','tf4'];
+var tfAnswers = ['true','false','true','false'];
+function checkTF() { checkMCQGroup(tfGrps, tfAnswers, 'tfScore'); }
+function resetTF()  { resetMCQGroup(tfGrps, 'tfScore'); }
+
+/* ── EX 3b ── */
+var ex3bGrps = ['r1','r2','r3','r4','r5','r6','r7','r8'];
+var ex3bAnswers = ['many','A few','much','A little','much','a little','much','none'];
+function checkEx3b() { checkMCQGroup(ex3bGrps, ex3bAnswers, 'ex3bScore'); }
+function resetEx3b() { resetMCQGroup(ex3bGrps, 'ex3bScore'); }
+
+/* ── CCQ ── */
+var ccqGrps = ['ccq1','ccq2','ccq3','ccq4'];
+var ccqAnswers = ['uncountable','countable','no','no'];
+function checkCCQ() { checkMCQGroup(ccqGrps, ccqAnswers, 'ccqScore'); }
+function resetCCQ() { resetMCQGroup(ccqGrps, 'ccqScore'); }
+
+/* ── EX 7a ── */
+var ex7aGrps = ['g7a1','g7a2','g7a3','g7a4','g7a5'];
+var ex7aAnswers = ['much','many','much','many','much'];
+function checkEx7a() { checkMCQGroup(ex7aGrps, ex7aAnswers, 'ex7aScore'); }
+function resetEx7a() { resetMCQGroup(ex7aGrps, 'ex7aScore'); }
+
+/* ── EX 8a ── */
+var ex8aGrps = ['c1','c2','c3','c4','c5','c6','c7','c8','c9','c10'];
+var ex8aAnswers = ['cup','bag','packet','bottle','carton','tin','box','can','bar','jar'];
+function checkEx8a() { checkMCQGroup(ex8aGrps, ex8aAnswers, 'ex8aScore'); }
+function resetEx8a() { resetMCQGroup(ex8aGrps, 'ex8aScore'); }
+
+/* ── QUIZ ── */
+var quizGrps = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10'];
+var quizAnswers = ['How much','How many','How much','How many','How much','How many','How much','How many','How much','How many'];
+function checkQuiz() {
+  var score = checkMCQGroup(quizGrps, quizAnswers, 'quizScore');
+  var banner = document.getElementById('quizBanner');
+  var title = document.getElementById('quizBannerTitle');
+  var msg = document.getElementById('quizBannerMsg');
+  banner.style.display = 'block';
+  if (score === 10) {
+    title.textContent = '🏆 Perfect score!';
+    msg.textContent = 'Excellent! You know how much and how many perfectly!';
+  } else if (score >= 7) {
+    title.textContent = '🎉 Great job! ' + score + '/10';
+    msg.textContent = 'Very good! Check the ones you missed and try again.';
+  } else if (score >= 5) {
+    title.textContent = '👍 Good try! ' + score + '/10';
+    msg.textContent = 'Review the grammar card and try again!';
+  } else {
+    title.textContent = '📚 Keep studying! ' + score + '/10';
+    msg.textContent = 'Go back to the Grammar tab and review the rules, then try again!';
+  }
+}
+function resetQuiz() {
+  resetMCQGroup(quizGrps, 'quizScore');
+  document.getElementById('quizBanner').style.display = 'none';
+}
+
+/* ── EX 6a GAP-FILL ── */
+var gf6Ids = ['gf6_1','gf6_2','gf6_3','gf6_4','gf6_5','gf6_6','gf6_7','gf6_8','gf6_9','gf6_10'];
+function checkEx6a() {
+  var correct = 0;
+  for (var i = 0; i < gf6Ids.length; i++) {
+    var inp = document.getElementById(gf6Ids[i]);
+    if (!inp) continue;
+    var val = inp.value.toLowerCase().trim();
+    var ans = inp.getAttribute('data-ans').toLowerCase();
+    inp.classList.remove('correct','wrong');
+    if (val === ans) {
+      inp.classList.add('correct');
+      correct++;
+    } else {
+      inp.classList.add('wrong');
+      if (!inp.nextElementSibling || !inp.nextElementSibling.classList.contains('reveal')) {
+        var span = document.createElement('span');
+        span.className = 'reveal';
+        span.textContent = '→ ' + inp.getAttribute('data-ans');
+        inp.parentNode.insertBefore(span, inp.nextSibling);
+      }
+      var rev = inp.nextElementSibling;
+      if (rev && rev.classList.contains('reveal')) { rev.style.display = 'inline'; }
+    }
+  }
+  var el = document.getElementById('ex6aScore');
+  el.style.display = 'inline-block';
+  el.textContent = correct + ' / ' + gf6Ids.length;
+}
+function resetEx6a() {
+  for (var i = 0; i < gf6Ids.length; i++) {
+    var inp = document.getElementById(gf6Ids[i]);
+    if (!inp) continue;
+    inp.value = '';
+    inp.classList.remove('correct','wrong');
+    var rev = inp.nextElementSibling;
+    if (rev && rev.classList.contains('reveal')) { rev.style.display = 'none'; }
+  }
+  var el = document.getElementById('ex6aScore');
+  if (el) { el.style.display = 'none'; el.textContent = ''; }
+}
+</script>
+</body>
+</html>
