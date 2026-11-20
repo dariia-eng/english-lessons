@@ -1,439 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>4D Homework</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Asking for Information — Unit 4D Homework</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Nunito:wght@700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Figtree:wght@400;600;700&display=swap">
 <style>
 :root{
-  --bg:#F4FFFE;--surface:#fff;--border:#D1F0EC;
-  --text:#1A2E2C;--muted:#5A7876;--label:#374140;
-  --teal:#0D9488;--teal-dk:#0F766E;--teal-lt:#CCFBF1;--teal-mid:#5EEAD4;
-  --green:#16A34A;--green-lt:#F0FDF4;--red:#DC2626;--red-lt:#FEF2F2;
-  --shadow:0 2px 10px rgba(13,148,136,.09);
+  --navy:#1E2D4A; --navy-mid:#2a3e63; --navy-dk:#14203a;
+  --gold:#C9972A; --gold-lt:#FDF4E3; --gold-pale:#faf1dc;
+  --cream:#f9f7f3; --bg:#f4f2ed; --card-bg:#ffffff;
+  --text:#1a1a2e; --muted:#6b7280; --border:#e5e0d8;
+  --success:#22863a; --error:#d32f2f;
+  --display:'Fraunces',Georgia,serif; --body:'Figtree',system-ui,sans-serif;
+  --radius:12px; --head:#1E2D4A;
 }
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0A1918;--surface:#111F1E;--border:#1A3533;
-  --text:#E2F8F6;--muted:#7BABA6;--label:#A5CECA;
-  --teal-lt:#134E4A;--green-lt:#052E16;--red-lt:#450A0A;
+  --bg:#0e1620; --card-bg:#182130; --cream:#1a2535;
+  --text:#e2d9c8; --muted:#8b96a8; --border:#263045;
+  --gold-lt:#1f1a0d; --gold-pale:#1a1508; --navy:#3a5a90;
+  --navy-mid:#4a6aa0; --navy-dk:#2a3f68; --head:#e9cf94;
 }}
 :root[data-theme="dark"]{
-  --bg:#0A1918;--surface:#111F1E;--border:#1A3533;
-  --text:#E2F8F6;--muted:#7BABA6;--label:#A5CECA;
-  --teal-lt:#134E4A;--green-lt:#052E16;--red-lt:#450A0A;
+  --bg:#0e1620; --card-bg:#182130; --cream:#1a2535;
+  --text:#e2d9c8; --muted:#8b96a8; --border:#263045;
+  --gold-lt:#1f1a0d; --gold-pale:#1a1508; --navy:#3a5a90;
+  --navy-mid:#4a6aa0; --navy-dk:#2a3f68; --head:#e9cf94;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding-bottom:64px}
+[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--body);background:var(--bg);color:var(--text);line-height:1.55;font-size:16px}
+.page{max-width:760px;margin:0 auto;padding:0 16px 80px}
 
-.hdr{background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dk) 100%);padding:30px 20px 26px;color:#fff;text-align:center;position:relative}
-.hdr-eye{font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;opacity:.8;margin-bottom:6px}
-.hdr h1{font-family:'Nunito',sans-serif;font-size:1.65rem;font-weight:900;line-height:1.2;margin-bottom:4px}
-.hdr-sub{font-size:.88rem;opacity:.85}
-.theme-btn{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:20px;padding:4px 11px;font-size:.75rem;cursor:pointer;font-family:'Inter',sans-serif}
+/* HEADER */
+.hdr{background:var(--navy-dk);color:#fff;padding:22px 20px 16px;position:relative}
+.hdr-inner{max-width:760px;margin:0 auto}
+.unit-eye{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.lesson-h1{font-family:var(--display);font-size:clamp(1.65rem,5vw,2.3rem);font-weight:700;line-height:1.1;padding-right:56px}
+.meta-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.chip{font-size:.73rem;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:3px 10px;color:rgba(255,255,255,.88)}
+.chip strong{color:var(--gold)}
+.theme-btn{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:20px;padding:5px 11px;font-size:.78rem;cursor:pointer;line-height:1}
+.theme-btn:hover{background:rgba(255,255,255,.2)}
 
-.name-bar{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:2px solid var(--teal-lt);padding:9px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
-.name-bar label{font-size:.83rem;font-weight:600;color:var(--teal);white-space:nowrap}
-.name-bar input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:6px 11px;font-size:.88rem;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
-.name-bar input:focus{outline:none;border-color:var(--teal)}
+/* NAME BAR + PROGRESS (sticky) */
+.sticky{position:sticky;top:0;z-index:10;background:var(--navy-dk);padding:0 16px 12px}
+.sticky-inner{max-width:760px;margin:0 auto}
+.name-bar{display:flex;align-items:center;gap:10px}
+.name-bar label{font-size:.8rem;font-weight:700;color:var(--gold);white-space:nowrap;text-transform:uppercase;letter-spacing:.06em}
+.name-bar input{flex:1;max-width:300px;padding:7px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-size:.9rem;font-family:var(--body);outline:none}
+.name-bar input::placeholder{color:rgba(255,255,255,.55)}
+.name-bar input:focus{border-color:var(--gold)}
+.progress-wrap{margin-top:10px}
+.progress-top{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:4px;display:flex;justify-content:space-between;text-transform:uppercase;letter-spacing:.06em}
+.progress-top #plabel{color:var(--gold)}
+.progress-track{height:4px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:var(--gold);transition:width .4s ease;width:0%}
 
-.prog-wrap{padding:14px 16px 0;max-width:680px;margin:0 auto}
-.prog-row{display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted);margin-bottom:5px}
-.prog-track{height:6px;background:var(--border);border-radius:4px;overflow:hidden}
-.prog-fill{height:100%;background:var(--teal);border-radius:4px;transition:width .4s}
+/* CARD */
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-top:16px}
+.card-hd{margin-bottom:8px}
+.card-hd h3{font-family:var(--display);font-size:1.08rem;font-weight:700;color:var(--head);line-height:1.3}
+.tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+.instr{font-size:.86rem;color:var(--muted);margin-bottom:14px;line-height:1.6}
+.wbox{background:var(--gold-lt);border:1.5px dashed var(--gold);border-radius:10px;padding:11px 14px;margin-bottom:14px}
+.wbox-ttl{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+.wbox-words{font-size:.86rem;line-height:1.9}
 
-.card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:20px;max-width:680px;margin:14px auto 0;box-shadow:var(--shadow)}
-.ex-hd{display:flex;align-items:baseline;gap:8px;margin-bottom:5px}
-.ex-num{background:var(--teal);color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:.75rem;border-radius:8px;padding:2px 9px;letter-spacing:.04em}
-.ex-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:.98rem;color:var(--text)}
-.ex-instr{font-size:.85rem;color:var(--muted);margin-bottom:14px}
+/* BUTTONS */
+.btn-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.btn{font-family:var(--body);font-size:.84rem;font-weight:700;border-radius:20px;padding:7px 18px;cursor:pointer;border:2px solid transparent;transition:all .15s}
+.btn-check{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn-check:hover{background:var(--navy-mid)}
+.btn-reset{background:transparent;color:var(--head);border-color:var(--border)}
+.btn-reset:hover{border-color:var(--navy)}
+.btn-send{background:var(--gold);color:#fff;border-color:var(--gold);font-size:.95rem;padding:9px 26px}
+.btn-send:hover{filter:brightness(1.08)}
+.btn-copy{background:transparent;color:#fff;border-color:var(--gold);font-size:.95rem;padding:9px 26px}
+.btn-copy:hover{background:rgba(201,151,42,.18)}
 
-/* word box */
-.word-box{background:var(--teal-lt);border-radius:8px;padding:8px 14px;margin-bottom:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.word-box strong{font-size:.78rem;color:var(--muted);margin-right:4px}
-.word-box span{font-weight:700;color:var(--teal-dk);font-size:.9rem}
+/* INPUTS */
+.ans-input{border:none;border-bottom:2px solid var(--border);border-radius:0;padding:2px 6px;font-size:.92rem;background:transparent;color:var(--text);font-family:var(--body);outline:none;transition:border-color .2s}
+.ans-input:focus{border-color:var(--gold)}
+.ans-input.correct{border-color:var(--success)!important;color:var(--success);font-weight:700}
+.ans-input.wrong{border-color:var(--error)!important;color:var(--error)}
+.fb{font-size:.9rem}
+.gap-num,.order-num,.choice-num{font-weight:700;color:var(--gold);min-width:18px}
 
-/* word order */
-.wo-item{margin-bottom:13px}
-.wo-scr{font-size:.8rem;color:var(--muted);font-style:italic;margin-bottom:4px}
-.wo-n{font-weight:700;font-size:.82rem;color:var(--label);margin-right:3px}
-.wo-inp{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:7px 12px;font-size:.9rem;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
-.wo-inp:focus{outline:none;border-color:var(--teal)}
-.wo-inp.ok{border-color:var(--green);background:var(--green-lt);color:var(--green)}
-.wo-inp.err{border-color:var(--red);background:var(--red-lt)}
-.wo-fb{font-size:.77rem;min-height:16px;margin-top:2px}
-.wo-inp.ok~.wo-fb{color:var(--green)}
-.wo-inp.err~.wo-fb{color:var(--red)}
+/* EX1 MATCH */
+.match-list{display:flex;flex-direction:column}
+.match-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 0;border-bottom:1px solid var(--border)}
+.match-row:last-child{border-bottom:none}
+.match-word{font-weight:700;min-width:100px;color:var(--head)}
+.match-sel{border:1.5px solid var(--border);border-radius:20px;padding:6px 12px;font-size:.84rem;background:var(--card-bg);color:var(--text);font-family:var(--body);cursor:pointer;flex:1;max-width:360px;outline:none}
+.match-sel:focus{border-color:var(--gold)}
+.match-sel.correct{border-color:var(--success);background:rgba(34,134,58,.08);color:var(--success);font-weight:700}
+.match-sel.wrong{border-color:var(--error);background:rgba(211,47,47,.07);color:var(--error)}
 
-/* match */
-.ans-ref{background:var(--teal-lt);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:.82rem;line-height:1.7;color:var(--text)}
-.ans-ref strong{color:var(--teal-dk);margin-right:4px}
-.match-q{margin-bottom:12px}
-.match-qtext{font-size:.9rem;margin-bottom:6px}
-.match-qn{font-weight:700;color:var(--label);margin-right:5px}
-.match-opts{display:flex;flex-wrap:wrap;gap:6px}
-.m-btn{border:1.5px solid var(--border);background:var(--bg);color:var(--text);border-radius:8px;padding:5px 13px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
-.m-btn:hover{border-color:var(--teal);background:var(--teal-lt)}
-.m-btn.sel{border-color:var(--teal);background:var(--teal-lt);color:var(--teal-dk)}
-.m-btn.ok{border-color:var(--green);background:var(--green-lt);color:var(--green)}
-.m-btn.err{border-color:var(--red);background:var(--red-lt);color:var(--red)}
+/* EX2 SORT */
+.sort-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.sort-col{border:2px solid var(--gold);border-radius:10px;overflow:hidden;background:var(--gold-lt)}
+.sort-col-hd{background:var(--navy);color:#fff;padding:8px 12px;font-size:.8rem;font-weight:700}
+.sort-col-body{padding:8px 12px;min-height:90px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
+.sort-example{font-size:.8rem;color:var(--muted);font-style:italic;padding:3px 0}
+.sort-chip{font-size:.8rem;font-weight:700;background:var(--card-bg);border:1px solid var(--gold);color:var(--head);border-radius:20px;padding:2px 10px}
+.sort-row-item{display:flex;align-items:center;gap:6px;padding:7px 0;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.sort-row-item:last-child{border-bottom:none}
+.sort-word-label{font-size:.9rem;font-weight:600;min-width:110px}
+.sort-btn,.choice-btn{font-family:var(--body);font-size:.84rem;padding:5px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--card-bg);cursor:pointer;transition:all .15s;color:var(--text)}
+.sort-btn:hover,.choice-btn:hover{border-color:var(--gold)}
+.sort-btn.active,.choice-btn.selected{border-color:var(--navy);background:var(--gold-lt);font-weight:700}
+.sort-btn.correct,.choice-btn.correct{border-color:var(--success)!important;background:rgba(34,134,58,.1)!important;color:var(--success);font-weight:700}
+.sort-btn.wrong,.choice-btn.wrong{border-color:var(--error)!important;background:rgba(211,47,47,.08)!important;color:var(--error)}
 
-/* gap fill */
-.conv-item{margin-bottom:11px;background:var(--bg);border-radius:10px;padding:11px 14px;border:1px solid var(--border)}
-.conv-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:3px}
-.conv-n{font-weight:700;font-size:.8rem;color:var(--teal);width:16px;flex-shrink:0;padding-top:1px}
-.conv-text{font-size:.9rem;line-height:1.65}
-.g-inp{border:none;border-bottom:2px solid var(--teal-mid);background:transparent;color:var(--text);font-family:'Inter',sans-serif;font-size:.9rem;width:72px;text-align:center;padding:0 2px;outline:none}
-.g-inp.ok{border-bottom-color:var(--green);color:var(--green)}
-.g-inp.err{border-bottom-color:var(--red);color:var(--red)}
-.conv-b{font-size:.87rem;color:var(--muted);padding-left:24px}
+/* EX3 GAP */
+.gap-list,.choice-list{display:flex;flex-direction:column}
+.gap-row{display:block;padding:8px 0;font-size:.92rem;line-height:2}
+.gap-row .ans-input{width:130px;margin:0 4px}
+.gap-row .gap-num{display:inline-block;margin-right:6px}
+.gap-row .fb{margin-left:4px}
+.choice-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 0;font-size:.92rem;line-height:1.8}
 
-/* buttons */
-.btn-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-.btn{border:none;border-radius:8px;padding:8px 18px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
-.btn-c{background:var(--teal);color:#fff}
-.btn-c:hover{background:var(--teal-dk)}
-.btn-r{background:var(--border);color:var(--text)}
-.btn-r:hover{background:var(--teal-lt)}
+/* EX4 ORDER */
+.order-list{display:flex;flex-direction:column;gap:12px}
+.order-prompt{display:inline-block;font-size:.84rem;font-weight:600;color:var(--head);background:var(--gold-lt);border:1px solid var(--gold);border-radius:8px;padding:4px 10px;margin-bottom:6px}
+.order-row{display:flex;align-items:center;gap:8px}
+.order-ans{flex:1;min-width:0;border:1.5px solid var(--border)!important;border-radius:8px;padding:8px 12px;background:var(--bg)}
+.order-ans.correct{background:rgba(34,134,58,.06)}
+.order-ans.wrong{background:rgba(211,47,47,.05)}
 
-/* send */
-.send-card{background:linear-gradient(135deg,var(--teal-lt) 0%,var(--surface) 100%);border:2px solid var(--teal);border-radius:14px;padding:22px;max-width:680px;margin:18px auto 0;text-align:center}
-.send-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;color:var(--teal-dk);margin-bottom:5px}
-.send-sub{font-size:.84rem;color:var(--muted);margin-bottom:14px}
-.btn-send{background:var(--teal);color:#fff;border:none;border-radius:10px;padding:10px 26px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
-.btn-send:hover{background:var(--teal-dk)}
+/* EX6 WRITE */
+.write-list{display:flex;flex-direction:column;gap:12px}
+.write-item{background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.write-sit{font-weight:700;color:var(--head);margin-bottom:4px}
+.write-prompt{display:inline-block;font-size:.78rem;font-weight:700;color:var(--gold);border:1px solid var(--gold);border-radius:20px;padding:1px 10px;margin-bottom:8px}
+.write-eg{font-size:.88rem;font-style:italic;color:var(--muted)}
+.write-eg::before{content:"Example: ";font-style:normal;font-weight:700;color:var(--gold)}
+.write-ta{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.9rem;font-family:var(--body);background:var(--card-bg);color:var(--text);resize:vertical;min-height:46px;outline:none}
+.write-ta:focus{border-color:var(--gold)}
+
+/* SEND */
+.send-card{background:linear-gradient(135deg,var(--navy-dk),var(--navy-mid));color:#fff;border-radius:var(--radius);padding:24px 20px;text-align:center;margin-top:22px}
+.send-card h3{font-family:var(--display);font-size:1.2rem;font-weight:700;color:var(--gold);margin-bottom:6px}
+.send-card p{font-size:.86rem;color:rgba(255,255,255,.8);margin-bottom:16px}
+.send-card .btn-row{justify-content:center}
+.copied{font-size:.82rem;color:var(--gold);margin-top:10px;font-weight:600}
+
+@media(max-width:520px){.sort-grid{grid-template-columns:1fr}}
+
+.wo-item{padding:10px 0;border-bottom:1px solid var(--border)}
+.wo-item:last-child{border-bottom:none}
+.order-eg{font-size:.9rem;font-style:italic;color:var(--success);font-weight:600}
+.fix{display:none;font-size:.82rem;color:var(--success);font-weight:600;margin-top:4px}
+.fix.on{display:block}
+.conv-item{padding:10px 0;border-bottom:1px solid var(--border);font-size:.92rem;line-height:2}
+.conv-item:last-child{border-bottom:none}
+.conv-b{color:var(--muted);padding-left:24px;font-size:.88rem;line-height:1.5}
+.conv-item .ans-input{width:110px;margin:0 4px}
+.score{display:inline-block;font-size:.82rem;font-weight:700;padding:5px 12px;border-radius:20px;background:var(--gold-lt);color:var(--head);border:1px solid var(--gold);align-self:center}
 </style>
 </head>
 <body>
 
 <header class="hdr">
-  <div class="hdr-eye">📚 Homework</div>
-  <h1>Unit 4D — English in Action</h1>
-  <div class="hdr-sub">Functional language: Asking for information</div>
-  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
+  <div class="hdr-inner">
+    <div class="unit-eye">Homework · A2 · Unit 4D</div>
+    <h1 class="lesson-h1">Asking for Information</h1>
+    <div class="meta-row">
+      <span class="chip"><strong>Focus:</strong> questions</span>
+      <span class="chip"><strong>Places:</strong> museum · cinema · gym</span>
+    </div>
+  </div>
 </header>
 
-<div class="name-bar">
-  <label>Your name:</label>
-  <input id="nameInput" type="text" placeholder="Type your name…" autocomplete="off">
-</div>
+<div class="sticky"><div class="sticky-inner">
+  <div class="name-bar">
+    <label for="nameInput">Your name</label>
+    <input id="nameInput" type="text" placeholder="Type your name…" autocomplete="name">
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-top"><span>Exercises completed</span><span id="plabel">0 / 3</span></div>
+    <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+  </div>
+</div></div>
 
-<div class="prog-wrap">
-  <div class="prog-row"><span>Progress</span><span id="plabel">0 / 3</span></div>
-  <div class="prog-track"><div class="prog-fill" id="pfill" style="width:0%"></div></div>
-</div>
+<div class="page">
 
-<!-- EX 1: Word Order -->
-<div class="card">
-  <div class="ex-hd">
-    <span class="ex-num">Ex 1</span>
-    <span class="ex-title">Put the words in the correct order to make questions.</span>
-  </div>
-  <p class="ex-instr">Write the complete question. Use a capital letter at the start.</p>
-
-  <div class="wo-item">
-    <div class="wo-scr"><span class="wo-n">2</span>the / What / close / museum / does / time / ?</div>
-    <input class="wo-inp" id="wo2" placeholder="Write the question…" autocomplete="off" spellcheck="false">
-    <div class="wo-fb" id="wofb2"></div>
-  </div>
-  <div class="wo-item">
-    <div class="wo-scr"><span class="wo-n">3</span>the / free / museum / Is / ?</div>
-    <input class="wo-inp" id="wo3" placeholder="Write the question…" autocomplete="off" spellcheck="false">
-    <div class="wo-fb" id="wofb3"></div>
-  </div>
-  <div class="wo-item">
-    <div class="wo-scr"><span class="wo-n">4</span>take / museum / Can / in / I / the / photos / ?</div>
-    <input class="wo-inp" id="wo4" placeholder="Write the question…" autocomplete="off" spellcheck="false">
-    <div class="wo-fb" id="wofb4"></div>
-  </div>
-  <div class="wo-item">
-    <div class="wo-scr"><span class="wo-n">5</span>pay / Where / I / do / ?</div>
-    <input class="wo-inp" id="wo5" placeholder="Write the question…" autocomplete="off" spellcheck="false">
-    <div class="wo-fb" id="wofb5"></div>
-  </div>
-  <div class="wo-item">
-    <div class="wo-scr"><span class="wo-n">6</span>does / end / What / the / time / film / ?</div>
-    <input class="wo-inp" id="wo6" placeholder="Write the question…" autocomplete="off" spellcheck="false">
-    <div class="wo-fb" id="wofb6"></div>
-  </div>
-  <div class="wo-item">
-    <div class="wo-scr"><span class="wo-n">7</span>a / near / Is / here / there / bank / ?</div>
-    <input class="wo-inp" id="wo7" placeholder="Write the question…" autocomplete="off" spellcheck="false">
-    <div class="wo-fb" id="wofb7"></div>
-  </div>
-
-  <div class="btn-row">
-    <button class="btn btn-c" onclick="checkWO()">✔ Check</button>
-    <button class="btn btn-r" onclick="resetWO()">↺ Reset</button>
-  </div>
-</div>
-
-<!-- EX 2: Match -->
-<div class="card">
-  <div class="ex-hd">
-    <span class="ex-num">Ex 2</span>
-    <span class="ex-title">Match questions 1–7 with answers a–g.</span>
-  </div>
-  <p class="ex-instr">Click the letter that goes with each question.</p>
-
-  <div class="ans-ref">
-    <strong>a</strong> At half past ten. &nbsp;
-    <strong>b</strong> It's £5. &nbsp;
-    <strong>c</strong> Yes, there is. It's on the fourth floor. &nbsp;
-    <strong>d</strong> No, sorry, you can't. &nbsp;
-    <strong>e</strong> No, it isn't, sorry. It's £10 per person. &nbsp;
-    <strong>f</strong> It's near the museum exit. &nbsp;
-    <strong>g</strong> At the front of the shop.
-  </div>
-
-  <div id="matchBox">
-    <div class="match-q" data-q="1" data-ans="f">
-      <div class="match-qtext"><span class="match-qn">1</span>Where's the gift shop?</div>
-      <div class="match-opts">
-        <button class="m-btn" onclick="selMatch(this,'1','a')">a</button>
-        <button class="m-btn" onclick="selMatch(this,'1','b')">b</button>
-        <button class="m-btn" onclick="selMatch(this,'1','c')">c</button>
-        <button class="m-btn" onclick="selMatch(this,'1','d')">d</button>
-        <button class="m-btn" onclick="selMatch(this,'1','e')">e</button>
-        <button class="m-btn" onclick="selMatch(this,'1','f')">f</button>
-        <button class="m-btn" onclick="selMatch(this,'1','g')">g</button>
-      </div>
-    </div>
-    <div class="match-q" data-q="2" data-ans="a">
-      <div class="match-qtext"><span class="match-qn">2</span>What time does the next train to London leave?</div>
-      <div class="match-opts">
-        <button class="m-btn" onclick="selMatch(this,'2','a')">a</button>
-        <button class="m-btn" onclick="selMatch(this,'2','b')">b</button>
-        <button class="m-btn" onclick="selMatch(this,'2','c')">c</button>
-        <button class="m-btn" onclick="selMatch(this,'2','d')">d</button>
-        <button class="m-btn" onclick="selMatch(this,'2','e')">e</button>
-        <button class="m-btn" onclick="selMatch(this,'2','f')">f</button>
-        <button class="m-btn" onclick="selMatch(this,'2','g')">g</button>
-      </div>
-    </div>
-    <div class="match-q" data-q="3" data-ans="g">
-      <div class="match-qtext"><span class="match-qn">3</span>Where do I pay?</div>
-      <div class="match-opts">
-        <button class="m-btn" onclick="selMatch(this,'3','a')">a</button>
-        <button class="m-btn" onclick="selMatch(this,'3','b')">b</button>
-        <button class="m-btn" onclick="selMatch(this,'3','c')">c</button>
-        <button class="m-btn" onclick="selMatch(this,'3','d')">d</button>
-        <button class="m-btn" onclick="selMatch(this,'3','e')">e</button>
-        <button class="m-btn" onclick="selMatch(this,'3','f')">f</button>
-        <button class="m-btn" onclick="selMatch(this,'3','g')">g</button>
-      </div>
-    </div>
-    <div class="match-q" data-q="4" data-ans="c">
-      <div class="match-qtext"><span class="match-qn">4</span>Is there a café here?</div>
-      <div class="match-opts">
-        <button class="m-btn" onclick="selMatch(this,'4','a')">a</button>
-        <button class="m-btn" onclick="selMatch(this,'4','b')">b</button>
-        <button class="m-btn" onclick="selMatch(this,'4','c')">c</button>
-        <button class="m-btn" onclick="selMatch(this,'4','d')">d</button>
-        <button class="m-btn" onclick="selMatch(this,'4','e')">e</button>
-        <button class="m-btn" onclick="selMatch(this,'4','f')">f</button>
-        <button class="m-btn" onclick="selMatch(this,'4','g')">g</button>
-      </div>
-    </div>
-    <div class="match-q" data-q="5" data-ans="e">
-      <div class="match-qtext"><span class="match-qn">5</span>Is the museum free?</div>
-      <div class="match-opts">
-        <button class="m-btn" onclick="selMatch(this,'5','a')">a</button>
-        <button class="m-btn" onclick="selMatch(this,'5','b')">b</button>
-        <button class="m-btn" onclick="selMatch(this,'5','c')">c</button>
-        <button class="m-btn" onclick="selMatch(this,'5','d')">d</button>
-        <button class="m-btn" onclick="selMatch(this,'5','e')">e</button>
-        <button class="m-btn" onclick="selMatch(this,'5','f')">f</button>
-        <button class="m-btn" onclick="selMatch(this,'5','g')">g</button>
-      </div>
-    </div>
-    <div class="match-q" data-q="6" data-ans="b">
-      <div class="match-qtext"><span class="match-qn">6</span>How much is a ticket?</div>
-      <div class="match-opts">
-        <button class="m-btn" onclick="selMatch(this,'6','a')">a</button>
-        <button class="m-btn" onclick="selMatch(this,'6','b')">b</button>
-        <button class="m-btn" onclick="selMatch(this,'6','c')">c</button>
-        <button class="m-btn" onclick="selMatch(this,'6','d')">d</button>
-        <button class="m-btn" onclick="selMatch(this,'6','e')">e</button>
-        <button class="m-btn" onclick="selMatch(this,'6','f')">f</button>
-        <button class="m-btn" onclick="selMatch(this,'6','g')">g</button>
-      </div>
-    </div>
-    <div class="match-q" data-q="7" data-ans="d">
-      <div class="match-qtext"><span class="match-qn">7</span>Can I take photos in the theatre?</div>
-      <div class="match-opts">
-        <button class="m-btn" onclick="selMatch(this,'7','a')">a</button>
-        <button class="m-btn" onclick="selMatch(this,'7','b')">b</button>
-        <button class="m-btn" onclick="selMatch(this,'7','c')">c</button>
-        <button class="m-btn" onclick="selMatch(this,'7','d')">d</button>
-        <button class="m-btn" onclick="selMatch(this,'7','e')">e</button>
-        <button class="m-btn" onclick="selMatch(this,'7','f')">f</button>
-        <button class="m-btn" onclick="selMatch(this,'7','g')">g</button>
-      </div>
+  <div class="card">
+    <div class="card-hd"><div class="tag">Exercise 1</div><h3>Put the words in the correct order to make questions</h3></div>
+    <p class="instr">Write the complete question. Start with a capital letter and end with a question mark. Look at number 1 first.</p>
+    <div id="woList"></div>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkWO()">Check</button>
+      <button class="btn btn-reset" onclick="resetWO()">Reset</button>
+      <span class="score" id="woSc" hidden></span>
     </div>
   </div>
 
-  <div class="btn-row">
-    <button class="btn btn-c" onclick="checkMatch()">✔ Check</button>
-    <button class="btn btn-r" onclick="resetMatch()">↺ Reset</button>
-  </div>
-</div>
-
-<!-- EX 3: Gap fill -->
-<div class="card">
-  <div class="ex-hd">
-    <span class="ex-num">Ex 3</span>
-    <span class="ex-title">Complete the conversations with the words in the box.</span>
-  </div>
-  <div class="word-box">
-    <strong>words:</strong>
-    <span>Can</span><span>How</span><span>Is</span><span>there</span><span>time</span>
+  <div class="card">
+    <div class="card-hd"><div class="tag">Exercise 2</div><h3>Match questions 1–7 with answers a–g</h3></div>
+    <p class="instr">Choose the correct answer for each question.</p>
+    <div class="match-list" id="matchList"></div>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkMatch()">Check</button>
+      <button class="btn btn-reset" onclick="resetMatch()">Reset</button>
+      <span class="score" id="mSc" hidden></span>
+    </div>
   </div>
 
-  <div class="conv-item">
-    <div class="conv-row">
-      <span class="conv-n">1</span>
-      <span class="conv-text">A: Are <input class="g-inp" id="g1" data-ans="there" autocomplete="off" spellcheck="false"> any towels in the changing rooms?</span>
+  <div class="card">
+    <div class="card-hd"><div class="tag">Exercise 3</div><h3>Complete the conversations with the words in the box</h3></div>
+    <div class="wbox"><div class="wbox-ttl">Word box</div><div class="wbox-words">can · how · is · there · time</div></div>
+    <div id="convList"></div>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkGaps()">Check</button>
+      <button class="btn btn-reset" onclick="resetGaps()">Reset</button>
+      <span class="score" id="gSc" hidden></span>
     </div>
-    <div class="conv-b">B: Yes, there are. Help yourself.</div>
-  </div>
-  <div class="conv-item">
-    <div class="conv-row">
-      <span class="conv-n">2</span>
-      <span class="conv-text">A: What <input class="g-inp" id="g2" data-ans="time" autocomplete="off" spellcheck="false"> does the film finish?</span>
-    </div>
-    <div class="conv-b">B: At six fifty-five.</div>
-  </div>
-  <div class="conv-item">
-    <div class="conv-row">
-      <span class="conv-n">3</span>
-      <span class="conv-text">A: <input class="g-inp" id="g3" data-ans="how" autocomplete="off" spellcheck="false"> much is a ticket?</span>
-    </div>
-    <div class="conv-b">B: It's £20.</div>
-  </div>
-  <div class="conv-item">
-    <div class="conv-row">
-      <span class="conv-n">4</span>
-      <span class="conv-text">A: <input class="g-inp" id="g4" data-ans="can" autocomplete="off" spellcheck="false"> I take photos?</span>
-    </div>
-    <div class="conv-b">B: Yes, you can.</div>
-  </div>
-  <div class="conv-item">
-    <div class="conv-row">
-      <span class="conv-n">5</span>
-      <span class="conv-text">A: <input class="g-inp" id="g5" data-ans="is" autocomplete="off" spellcheck="false"> there a toilet near here?</span>
-    </div>
-    <div class="conv-b">B: Yes, it's downstairs.</div>
   </div>
 
-  <div class="btn-row">
-    <button class="btn btn-c" onclick="checkGaps()">✔ Check</button>
-    <button class="btn btn-r" onclick="resetGaps()">↺ Reset</button>
+  <div class="send-card">
+    <h3>📨 Finished?</h3>
+    <p>Send your work to your teacher by email, or copy your answers and send them on Telegram.</p>
+    <div class="btn-row">
+      <button class="btn btn-send" onclick="sendToTeacher()">Send to Teacher</button>
+      <button class="btn btn-copy" onclick="copyAnswers()">Copy answers</button>
+    </div>
+    <div class="copied" id="copied" hidden>✅ Copied! Now paste it into Telegram.</div>
   </div>
-</div>
 
-<!-- Send to Teacher -->
-<div class="send-card">
-  <div class="send-title">📧 Send to Teacher</div>
-  <div class="send-sub">Finished? Send your answers to your teacher.</div>
-  <button class="btn-send" onclick="sendToTeacher()">Send Answers</button>
 </div>
 
 <script>
-var DONE={d1:false,d2:false,d3:false};
-function updateProgress(){
-  var n=Object.values(DONE).filter(Boolean).length,total=3;
-  document.getElementById('pfill').style.width=(n/total*100)+'%';
-  document.getElementById('plabel').textContent=n+' / '+total;
-}
 function toggleTheme(){
-  var r=document.documentElement,cur=r.getAttribute('data-theme');
-  if(!cur||cur==='light'){r.setAttribute('data-theme','dark');document.getElementById('themeBtn').textContent='☀️ Light';}
-  else{r.setAttribute('data-theme','light');document.getElementById('themeBtn').textContent='🌙 Dark';}
+  var r=document.documentElement;
+  var dark=r.getAttribute('data-theme')==='dark'||(!r.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme:dark)').matches);
+  r.setAttribute('data-theme',dark?'light':'dark');
+  document.getElementById('themeBtn').textContent=dark?'🌙':'☀️';
 }
+var DONE={ex1:false,ex2:false,ex3:false};
+function updateProgress(){
+  var n=Object.keys(DONE).filter(function(k){return DONE[k];}).length,t=Object.keys(DONE).length;
+  document.getElementById('pfill').style.width=(n/t*100)+'%';
+  document.getElementById('plabel').textContent=n+' / '+t;
+}
+function norm(s){return s.toLowerCase().replace(/[’‘]/g,"'").replace(/\bwhere's\b/g,'where is').replace(/[.,!?]/g,'').replace(/\s+/g,' ').trim();}
+function score(id,ok,tot){var s=document.getElementById(id);s.hidden=false;s.textContent=ok+' / '+tot+(ok===tot?' 🎉':'');}
 
-// EX 1 — Word order
-var WO={
-  2:'what time does the museum close',
-  3:'is the museum free',
-  4:'can i take photos in the museum',
-  5:'where do i pay',
-  6:'what time does the film end',
-  7:'is there a bank near here'
-};
-function normalise(s){return s.toLowerCase().trim().replace(/\?+$/,'').replace(/\s+/g,' ').trim();}
+/* EX 1 */
+var WO=[
+  {p:'there / Is / a / near / gym / here / ?',a:['Is there a gym near here?'],eg:true},
+  {p:'the / What / close / museum / does / time / ?',a:['What time does the museum close?']},
+  {p:'the / free / museum / Is / ?',a:['Is the museum free?']},
+  {p:'take / museum / Can / in / I / the / photos / ?',a:['Can I take photos in the museum?']},
+  {p:'pay / Where / I / do / ?',a:['Where do I pay?']},
+  {p:'does / end / What / the / time / film / ?',a:['What time does the film end?']},
+  {p:'a / near / Is / here / there / bank / ?',a:['Is there a bank near here?']}
+];
+document.getElementById('woList').innerHTML=WO.map(function(w,i){
+  return '<div class="wo-item"><div class="order-prompt">'+(i+1)+'. '+w.p+'</div>'+
+    (w.eg?'<div class="order-eg">'+w.a[0]+'</div>':
+    '<div class="order-row"><input class="ans-input order-ans" data-i="'+i+'" placeholder="Write the question…" autocomplete="off" spellcheck="false"></div><div class="fix" id="fix-'+i+'">✏️ '+w.a[0]+'</div>')+'</div>';
+}).join('');
 function checkWO(){
-  var allOk=true;
-  for(var n=2;n<=7;n++){
-    var inp=document.getElementById('wo'+n),fb=document.getElementById('wofb'+n);
-    if(normalise(inp.value)===WO[n]){
-      inp.className='wo-inp ok';fb.textContent='✓ Correct!';fb.style.color='var(--green)';
-    } else {
-      inp.className='wo-inp err';fb.textContent='Try again.';fb.style.color='var(--red)';allOk=false;
-    }
-  }
-  DONE.d1=allOk;updateProgress();
+  var ok=0,tot=0;
+  document.querySelectorAll('#woList .ans-input').forEach(function(el){
+    tot++;var i=+el.getAttribute('data-i'),good=WO[i].a.some(function(a){return norm(a)===norm(el.value);});
+    el.classList.toggle('correct',good);el.classList.toggle('wrong',!good);if(good)ok++;
+    document.getElementById('fix-'+i).classList.toggle('on',!good);
+  });
+  score('woSc',ok,tot);DONE.ex1=ok===tot;updateProgress();
 }
 function resetWO(){
-  for(var n=2;n<=7;n++){document.getElementById('wo'+n).className='wo-inp';document.getElementById('wo'+n).value='';document.getElementById('wofb'+n).textContent='';}
-  DONE.d1=false;updateProgress();
+  document.querySelectorAll('#woList .ans-input').forEach(function(el){el.value='';el.classList.remove('correct','wrong');document.getElementById('fix-'+el.getAttribute('data-i')).classList.remove('on');});
+  document.getElementById('woSc').hidden=true;DONE.ex1=false;updateProgress();
 }
 
-// EX 2 — Match
-var matchSel={};
-function selMatch(btn,qn,letter){
-  btn.closest('.match-q').querySelectorAll('.m-btn').forEach(function(b){b.className='m-btn';});
-  btn.className='m-btn sel';matchSel[qn]=letter;
-}
+/* EX 2 */
+var ANS={a:'At half past ten.',b:"It's £5.",c:"Yes, there is. It's on the fourth floor.",d:"No, sorry, you can't.",e:"No, it isn't, sorry. It's £10 per person.",f:"It's near the museum exit.",g:'At the front of the shop.'};
+var MQ=[
+  {q:"Where's the gift shop?",a:'f'},
+  {q:'What time does the next train to London leave?',a:'a'},
+  {q:'Where do I pay?',a:'g'},
+  {q:'Is there a café here?',a:'c'},
+  {q:'Is the museum free?',a:'e'},
+  {q:'How much is a ticket?',a:'b'},
+  {q:'Can I take photos in the theatre?',a:'d'}
+];
+(function(){
+  var opts='<option value="">choose…</option>'+Object.keys(ANS).map(function(k){return '<option value="'+k+'">'+k+' – '+ANS[k]+'</option>';}).join('');
+  document.getElementById('matchList').innerHTML=MQ.map(function(m,i){
+    return '<div class="match-row"><span class="match-word">'+(i+1)+'. '+m.q+'</span><select class="match-sel" data-i="'+i+'">'+opts+'</select></div>';
+  }).join('');
+})();
 function checkMatch(){
-  var allOk=true;
-  document.querySelectorAll('.match-q').forEach(function(q){
-    var qn=q.dataset.q,ans=q.dataset.ans,sel=matchSel[qn];
-    if(!sel){allOk=false;return;}
-    q.querySelectorAll('.m-btn').forEach(function(b){
-      if(b.textContent.trim()===sel){b.className=(sel===ans)?'m-btn ok':'m-btn err';}
-    });
-    if(sel!==ans)allOk=false;
+  var ok=0;
+  document.querySelectorAll('#matchList .match-sel').forEach(function(s){
+    var good=s.value===MQ[+s.getAttribute('data-i')].a;s.classList.toggle('correct',good);s.classList.toggle('wrong',!good);if(good)ok++;
   });
-  DONE.d2=allOk;updateProgress();
+  score('mSc',ok,MQ.length);DONE.ex2=ok===MQ.length;updateProgress();
 }
 function resetMatch(){
-  matchSel={};
-  document.querySelectorAll('.m-btn').forEach(function(b){b.className='m-btn';});
-  DONE.d2=false;updateProgress();
+  document.querySelectorAll('#matchList .match-sel').forEach(function(s){s.value='';s.classList.remove('correct','wrong');});
+  document.getElementById('mSc').hidden=true;DONE.ex2=false;updateProgress();
 }
 
-// EX 3 — Gap fill
+/* EX 3 */
+var CV=[
+  {a:'A: Are ',x:'there',b:' any towels in the changing rooms?',r:'B: Yes, there are. Help yourself.'},
+  {a:'A: What ',x:'time',b:' does the film finish?',r:'B: At six fifty-five.'},
+  {a:'A: ',x:'how',b:' much is a ticket?',r:"B: It's £20."},
+  {a:'A: ',x:'can',b:' I take photos?',r:'B: Yes, you can.'},
+  {a:'A: ',x:'is',b:' there a toilet near here?',r:"B: Yes, it's downstairs."}
+];
+document.getElementById('convList').innerHTML=CV.map(function(c,i){
+  return '<div class="conv-item"><span class="gap-num">'+(i+1)+'</span> '+c.a+'<input class="ans-input" data-i="'+i+'" placeholder="…" autocomplete="off" spellcheck="false">'+c.b+'<div class="conv-b">'+c.r+'</div></div>';
+}).join('');
 function checkGaps(){
-  var allOk=true;
-  ['g1','g2','g3','g4','g5'].forEach(function(id){
-    var inp=document.getElementById(id),ans=inp.dataset.ans.toLowerCase(),val=inp.value.toLowerCase().trim();
-    if(val===ans){inp.className='g-inp ok';}
-    else{inp.className='g-inp err';allOk=false;}
+  var ok=0;
+  document.querySelectorAll('#convList .ans-input').forEach(function(el){
+    var good=norm(el.value)===CV[+el.getAttribute('data-i')].x;el.classList.toggle('correct',good);el.classList.toggle('wrong',!good);if(good)ok++;
   });
-  DONE.d3=allOk;updateProgress();
+  score('gSc',ok,CV.length);DONE.ex3=ok===CV.length;updateProgress();
 }
 function resetGaps(){
-  ['g1','g2','g3','g4','g5'].forEach(function(id){var inp=document.getElementById(id);inp.className='g-inp';inp.value='';});
-  DONE.d3=false;updateProgress();
+  document.querySelectorAll('#convList .ans-input').forEach(function(el){el.value='';el.classList.remove('correct','wrong');});
+  document.getElementById('gSc').hidden=true;DONE.ex3=false;updateProgress();
 }
 
-// Send to teacher
-function sendToTeacher(){
+/* SEND / COPY */
+function buildAnswers(){
   var name=document.getElementById('nameInput').value.trim()||'Anonymous';
-  var lines=['Student: '+name,''];
-  lines.push('=== Exercise 1: Word Order ===');
-  for(var n=2;n<=7;n++)lines.push(n+'. '+(document.getElementById('wo'+n).value||'(no answer)'));
-  lines.push('');
-  lines.push('=== Exercise 2: Match Questions & Answers ===');
-  for(var q=1;q<=7;q++)lines.push(q+'. → '+(matchSel[q]||'(no answer)'));
-  lines.push('');
-  lines.push('=== Exercise 3: Complete the Conversations ===');
-  ['g1','g2','g3','g4','g5'].forEach(function(id,i){lines.push((i+1)+'. '+(document.getElementById(id).value||'(no answer)'));});
-  var body=encodeURIComponent(lines.join('\n'));
-  var subj=encodeURIComponent('Homework – '+name+' – Unit 4D English in Action');
-  window.location.href='mailto:dariia.mlnk@gmail.com?subject='+subj+'&body='+body;
+  var L=['Student: '+name,'','=== Exercise 1: Word order ==='];
+  document.querySelectorAll('#woList .ans-input').forEach(function(el){L.push((+el.getAttribute('data-i')+1)+'. '+(el.value.trim()||'(no answer)'));});
+  L.push('','=== Exercise 2: Match questions & answers ===');
+  document.querySelectorAll('#matchList .match-sel').forEach(function(s,i){L.push((i+1)+'. '+MQ[i].q+' → '+(s.value?s.value+' – '+ANS[s.value]:'(no answer)'));});
+  L.push('','=== Exercise 3: Complete the conversations ===');
+  document.querySelectorAll('#convList .ans-input').forEach(function(el,i){L.push((i+1)+'. '+CV[i].a+'['+(el.value.trim()||'—')+']'+CV[i].b);});
+  return {name:name,text:L.join('\n')};
+}
+function sendToTeacher(){
+  var a=buildAnswers();
+  window.location.href='mailto:dariia.mlnk@gmail.com?subject='+encodeURIComponent('Homework – '+a.name+' – Unit 4D Asking for Information')+'&body='+encodeURIComponent(a.text);
+}
+function copyAnswers(){
+  var t='Homework – Unit 4D Asking for Information\n'+buildAnswers().text;
+  function done(){document.getElementById('copied').hidden=false;}
+  function fallback(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){alert(t);}document.body.removeChild(ta);}
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(done,fallback);}else fallback();
 }
 </script>
 </body>
