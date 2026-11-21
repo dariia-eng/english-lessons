@@ -254,6 +254,8 @@ textarea.tx{width:100%;min-height:58px;resize:vertical}
 .phrase{background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:7px 12px;font-size:.9rem;margin-bottom:6px}
 .stress-line{display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
 .stress-line:last-child{border-bottom:none}
+.stress-hd{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-top:14px;padding-bottom:2px}
+.stress-hd:first-child{margin-top:0}
 .stress-line .gn{margin-right:4px}
 .sw{font-size:.95rem;padding:2px 6px;border-radius:6px;cursor:pointer;border:1.5px solid transparent;user-select:none;transition:all .12s}
 .sw:hover{border-color:var(--border)}
@@ -262,6 +264,11 @@ textarea.tx{width:100%;min-height:58px;resize:vertical}
 .sw.bad{background:rgba(211,47,47,.08);border-color:var(--error);color:var(--error)}
 .sw.miss{border-color:var(--success);border-style:dashed;color:var(--success);font-weight:700}
 .match-q{font-size:.92rem;font-weight:600;margin-bottom:6px}
+.qa-list{background:var(--gold-lt);border:1.5px dashed var(--gold);border-radius:10px;padding:10px 14px;margin-bottom:12px}
+.qa-opt{display:flex;gap:9px;align-items:baseline;font-size:.88rem;padding:3px 0}
+.qa-let{font-family:var(--display);font-weight:700;color:#fff;background:var(--gold);border-radius:5px;min-width:22px;text-align:center;font-size:.8rem;line-height:1.6}
+.qa-pill{min-width:38px;font-weight:700}
+.qa-pick{font-size:.82rem;color:var(--muted);font-style:italic;margin-top:5px;min-height:1px}
 .sel{border:1.5px solid var(--border);border-radius:20px;padding:6px 12px;font-size:.86rem;background:var(--card-bg);color:var(--text);font-family:var(--body);width:100%;max-width:420px;outline:none;cursor:pointer}
 .sel:focus{border-color:var(--gold)}
 .sel.ok{border-color:var(--success);color:var(--success);font-weight:700}
@@ -394,7 +401,7 @@ textarea.tx{width:100%;min-height:58px;resize:vertical}
 
   <div class="card">
     <div class="card-hd">🔊 Exercise 3a — Which words are stressed?</div>
-    <div class="card-instr">Listen. Tap the <strong>stressed</strong> words in each question, then check. Stressed words are usually the important ones: nouns, main verbs, question words.</div>
+    <div class="card-instr">Listen. Tap the <strong>stressed</strong> words in each sentence, then check. Stressed words are usually the important ones: nouns, main verbs, question words.</div>
     <div id="stressWrap"></div>
     <div class="btn-row">
       <button class="btn btn-p" onclick="checkStress()">Check</button>
@@ -405,10 +412,10 @@ textarea.tx{width:100%;min-height:58px;resize:vertical}
 
   <div class="speak-card">
     <div class="speak-hd">🔁 Exercise 3b — Listen again and repeat</div>
-    <p>Repeat each question. Make the stressed words <strong>long and strong</strong>, and the small words short and quick.</p>
+    <p>Repeat each sentence. Make the stressed words <strong>long and strong</strong>, and the small words short and quick.</p>
     <ul>
-      <li>Can I take PHOtos in THERE?</li>
-      <li>What TIME does the NEXT FILM START?</li>
+      <li>Is there a GIFT SHOP near HERE?</li>
+      <li>WHAT TIME does the NEXT FILM START?</li>
       <li>WHERE are the CHANGing ROOMS?</li>
     </ul>
     <div class="tnote">Questions with Is / Are / Can usually go ↗ up at the end. Questions with What / Where / How usually go ↘ down.</div>
@@ -470,7 +477,8 @@ textarea.tx{width:100%;min-height:58px;resize:vertical}
 
   <div class="card">
     <div class="card-hd">🔗 Match the questions and answers</div>
-    <div class="card-instr">Choose the best answer for each question.</div>
+    <div class="card-instr">Read answers a–f. Then choose the letter of the best answer for each question.</div>
+    <div class="qa-list"><div class="wbox-ttl">Answers</div><div id="qaAnsList"></div></div>
     <div id="qaWrap"></div>
     <div class="btn-row">
       <button class="btn btn-p" onclick="checkQA()">Check</button>
@@ -683,16 +691,21 @@ document.getElementById('ex2bWrap').innerHTML=gapLines('ex2b',[
 
 /* 3a stress */
 var STRESS=[
-  {w:['Excuse','me,','is','the','museum','open?'],s:[0,4,5]},
-  {w:['Can','I','take','photos','in','there?'],s:[2,3,5]},
-  {w:['Is','there','a','gift','shop?'],s:[3,4]},
-  {w:['What','time','does','the','next','film','start?'],s:[1,4,5,6]},
-  {w:['How','much','is','a','ticket?'],s:[1,4]},
-  {w:['Where','are','the','changing','rooms?'],s:[0,3,4]}
+  {h:'Asking if something is near',w:['Is','there','a','gift','shop','near','here?'],s:[3,4,6]},
+  {w:['Are','there','any','towels','in','the','changing','rooms?'],s:[3,6,7]},
+  {h:'Asking / saying where things are',w:['Where','are','the','changing','rooms?'],s:[0,3,4]},
+  {w:['The','gift','shop','is','near','the','exit.'],s:[1,2,6]},
+  {h:'Asking about times',w:['What','time','does','the','next','film','start?'],s:[0,1,4,5,6]},
+  {w:['What','time','does','the','gym','open','on','Sundays?'],s:[0,1,4,5,7]},
+  {w:['What','time','does','the','gym','close','tonight?'],s:[0,1,4,5,6]},
+  {h:'Asking about price',w:['Is','the','museum','free?'],s:[2,3]},
+  {w:['How','much','is','a','ticket?'],s:[0,1,4]},
+  {w:['Where','do','I','pay?'],s:[0,3]},
+  {h:'Asking for permission',w:['Can','I','take','photos','in','the','museum?'],s:[3,6]}
 ];
 (function(){
   document.getElementById('stressWrap').innerHTML=STRESS.map(function(l,li){
-    return '<div class="stress-line" data-l="'+li+'"><span class="gn">'+(li+1)+'</span>'+
+    return (l.h?'<div class="stress-hd">'+l.h+'</div>':'')+'<div class="stress-line" data-l="'+li+'"><span class="gn">'+(li+1)+'</span>'+
       l.w.map(function(w,wi){return '<span class="sw" data-w="'+wi+'">'+w+'</span>';}).join('')+'</div>';
   }).join('');
   document.querySelectorAll('.sw').forEach(function(s){s.onclick=function(){s.classList.remove('ok','bad','miss');s.classList.toggle('on');};});
@@ -781,20 +794,34 @@ var QA=[
   {q:'Where do I pay?',a:'e'},
   {q:'Is there a café?',a:'d'}
 ];
+var qaSel={};
 (function(){
-  var opts='<option value="">choose…</option>'+Object.keys(QA_ANS).map(function(k){return '<option value="'+k+'">'+k+' – '+QA_ANS[k]+'</option>';}).join('');
+  var keys=Object.keys(QA_ANS);
+  document.getElementById('qaAnsList').innerHTML=keys.map(function(k){return '<div class="qa-opt"><span class="qa-let">'+k+'</span>'+QA_ANS[k]+'</div>';}).join('');
   document.getElementById('qaWrap').innerHTML=QA.map(function(x,i){
-    return '<div class="q-item"><div class="match-q"><span class="gn">'+(i+1)+'</span>'+x.q+'</div><select class="sel" data-i="'+i+'">'+opts+'</select></div>';
+    return '<div class="q-item" data-i="'+i+'"><div class="match-q"><span class="gn">'+(i+1)+'</span>'+x.q+'</div><div class="pills">'+
+      keys.map(function(k){return '<button class="pill qa-pill" data-v="'+k+'">'+k+'</button>';}).join('')+'</div><div class="qa-pick"></div></div>';
   }).join('');
+  document.querySelectorAll('#qaWrap .q-item').forEach(function(row){
+    row.querySelectorAll('.pill').forEach(function(b){
+      b.onclick=function(){
+        qaSel[row.getAttribute('data-i')]=b.getAttribute('data-v');
+        row.querySelectorAll('.pill').forEach(function(x){x.classList.remove('ok','bad','show');x.classList.toggle('sel',x===b);});
+        row.querySelector('.qa-pick').textContent='→ '+QA_ANS[b.getAttribute('data-v')];
+      };
+    });
+  });
 })();
 function checkQA(){
   var ok=0;
-  document.querySelectorAll('#qaWrap .sel').forEach(function(s){
-    var good=s.value===QA[+s.getAttribute('data-i')].a;s.classList.toggle('ok',good);s.classList.toggle('err',!good);if(good)ok++;
+  document.querySelectorAll('#qaWrap .q-item').forEach(function(row){
+    var i=+row.getAttribute('data-i'),sel=qaSel[i],good=sel===QA[i].a;if(good)ok++;
+    row.querySelectorAll('.pill').forEach(function(x){var v=x.getAttribute('data-v');x.classList.remove('sel','ok','bad','show');
+      if(v===sel)x.classList.add(good?'ok':'bad');else if(!good&&v===QA[i].a)x.classList.add('show');});
   });
   score('qaSc',ok,QA.length);
 }
-function resetQA(){document.querySelectorAll('#qaWrap .sel').forEach(function(s){s.value='';s.classList.remove('ok','err');});document.getElementById('qaSc').hidden=true;}
+function resetQA(){qaSel={};document.querySelectorAll('#qaWrap .pill').forEach(function(x){x.classList.remove('sel','ok','bad','show');});document.querySelectorAll('#qaWrap .qa-pick').forEach(function(p){p.textContent='';});document.getElementById('qaSc').hidden=true;}
 
 /* Spot the mistake */
 var STM=[
