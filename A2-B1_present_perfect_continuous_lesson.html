@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Still Going</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Lexend:wght@400;500;600&display=swap">
+<style>
+html{-webkit-text-size-adjust:100%} body{margin:0} img{max-width:100%} [hidden]{display:none!important}
+:root{
+  --ground:#F2F4F7; --paper:#FFFFFF; --paper2:#F5F7FA; --ink:#141A26; --muted:#5B6474; --line:#DCE1E8;
+  --mint:#0F7F68; --mint-soft:#D5EFE8; --orange:#C8561A; --orange-soft:#FBE3D5; --violet:#6249C2; --violet-soft:#E6E0F8; --sun:#A87500; --sun-soft:#FBEFCB;
+  --ok:#2F7D3B; --ok-soft:#D6EDD6; --bad:#B23A2E; --bad-soft:#F6D8D3; --on:#FFFFFF;
+  --display:"Unbounded","Trebuchet MS",sans-serif; --body:"Lexend","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0E121A; --paper:#171C27; --paper2:#1E2431; --ink:#ECEFF5; --muted:#A3ABBA; --line:#2E3646;
+    --mint:#5FD0B4; --mint-soft:#15332C; --orange:#F39A68; --orange-soft:#3B2418; --violet:#AE9BF2; --violet-soft:#272040; --sun:#F2C35A; --sun-soft:#3A3018;
+    --ok:#7CCB85; --ok-soft:#1F3822; --bad:#F08A7E; --bad-soft:#40221E; --on:#0E121A;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0E121A; --paper:#171C27; --paper2:#1E2431; --ink:#ECEFF5; --muted:#A3ABBA; --line:#2E3646;
+  --mint:#5FD0B4; --mint-soft:#15332C; --orange:#F39A68; --orange-soft:#3B2418; --violet:#AE9BF2; --violet-soft:#272040; --sun:#F2C35A; --sun-soft:#3A3018;
+  --ok:#7CCB85; --ok-soft:#1F3822; --bad:#F08A7E; --bad-soft:#40221E; --on:#0E121A;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:860px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.1;margin:0}
+h1{font-weight:800;font-size:clamp(2.4rem,8vw,4.2rem);letter-spacing:-.02em}
+h2{font-weight:700;font-size:clamp(1.35rem,4vw,1.9rem)}
+h3{font-weight:500;font-size:1.05rem}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+
+header.hero{padding-block:34px 16px;display:grid;gap:12px}
+.hero h1 span{color:var(--mint)}
+.hero .sub{color:var(--muted);max-width:62ch}
+.loader{display:grid;gap:6px;max-width:420px}
+.loader .lbl{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);font-weight:500}
+.loader .track{height:12px;border-radius:99px;background:var(--line);overflow:hidden}
+.loader .fill{height:100%;width:30%;border-radius:99px;background:repeating-linear-gradient(45deg,var(--mint) 0 10px,var(--violet) 10px 20px);background-size:28px 28px;animation:slide 1.2s linear infinite,grow 6s ease-in-out infinite alternate}
+@keyframes slide{to{background-position:28px 0}}
+@keyframes grow{from{width:25%}to{width:88%}}
+.hero-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.plan{color:var(--muted);font-size:.95rem}
+.theme-btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:4px 14px;font-size:.85rem}
+
+nav.stages{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);padding-block:10px;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap}
+nav.stages a{display:inline-block;margin-right:6px;padding:5px 12px;border-radius:999px;color:var(--ink);text-decoration:none;font-size:.84rem;font-weight:500;background:var(--paper);border:1px solid var(--line)}
+nav.stages a.ext{border-style:dashed;color:var(--muted)}
+nav.stages a:hover{border-color:var(--mint);color:var(--mint)}
+
+section.stage{margin-top:46px;display:grid;gap:18px;scroll-margin-top:70px}
+.stage-head{display:grid;gap:6px}
+.stage-head .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.step-no{font-weight:600;color:var(--mint);font-size:.9rem;letter-spacing:.03em;text-transform:uppercase}
+.chip{font-size:.72rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 10px;border-radius:999px;background:var(--sun-soft);color:var(--sun)}
+.chip.game{background:var(--violet-soft);color:var(--violet)}
+.chip.book{background:var(--orange-soft);color:var(--orange)}
+.chip.ext{background:transparent;border:1.5px dashed var(--muted);color:var(--muted)}
+.instr{color:var(--muted);max-width:66ch}
+.ext-band{margin-top:52px;padding:14px 18px;border:2px dashed var(--line);border-radius:14px;color:var(--muted);display:grid;gap:4px}
+.ext-band b{font-family:var(--display);font-size:1.2rem;color:var(--ink)}
+
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:14px}
+details.tnote{border-left:3px solid var(--sun);background:var(--sun-soft);border-radius:0 10px 10px 0;padding:8px 14px;font-size:.92rem}
+details.tnote summary{cursor:pointer;font-weight:600;color:var(--sun)}
+details.tnote ul{margin:8px 0 4px;padding-left:20px}
+.talk{display:grid;gap:8px;padding:0;margin:0;list-style:none}
+.talk li{padding:10px 14px;border-radius:12px;background:var(--paper2);border:1px solid var(--line)}
+.phr{display:flex;flex-wrap:wrap;gap:8px}
+.phr span{padding:4px 12px;border-radius:999px;background:var(--mint-soft);font-size:.9rem}
+
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:none;border-radius:999px;padding:9px 20px;font-weight:600;background:var(--mint);color:var(--on)}
+.btn.orange{background:var(--orange)} .btn.violet{background:var(--violet)} .btn.dark{background:var(--ink);color:var(--ground)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+.score{font-weight:600;color:var(--ok);font-variant-numeric:tabular-nums}
+
+/* status cards warm-up */
+.status{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.st{border-radius:16px;padding:14px;background:var(--paper);border:1.5px solid var(--line);display:grid;gap:8px}
+.st .top{display:flex;gap:10px;align-items:center;font-weight:600}
+.st .emo{font-size:1.6rem}
+.st .bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.st .bar i{display:block;height:100%;background:var(--mint);border-radius:99px}
+.st small{color:var(--muted)}
+
+/* timeline */
+.tl{position:relative;padding:34px 8px 10px}
+.tl .line{height:4px;background:var(--line);border-radius:4px;position:relative}
+.tl .act{position:absolute;top:-3px;left:22%;right:0;height:10px;border-radius:99px;background:repeating-linear-gradient(45deg,var(--mint) 0 8px,var(--violet) 8px 16px)}
+.tl .mk{position:absolute;top:-30px;transform:translateX(-50%);font-size:.8rem;font-weight:600;text-align:center;white-space:nowrap}
+.tl .mk.a{left:22%;color:var(--orange)} .tl .mk.b{left:92%;color:var(--mint)}
+.tl .cap{display:flex;justify-content:space-between;margin-top:14px;font-size:.85rem;color:var(--muted)}
+
+/* rule */
+.formula{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:var(--display);font-weight:700;font-size:clamp(1rem,3.4vw,1.35rem)}
+.formula span{padding:8px 14px;border-radius:12px}
+.formula .p1{background:var(--violet-soft);color:var(--violet)} .formula .p2{background:var(--orange-soft);color:var(--orange)} .formula .p3{background:var(--mint-soft);color:var(--mint)}
+.formula .plus{color:var(--muted);padding:0}
+.rule{display:grid}
+.rule .r{display:grid;grid-template-columns:minmax(140px,200px) 1fr;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px dashed var(--line)}
+.rule .r:last-child{border-bottom:none}
+.rule .r>span:first-child{font-weight:600;color:var(--violet)}
+@media (max-width:560px){.rule .r{grid-template-columns:1fr;gap:2px}}
+input.gap{font:inherit;font-size:.95rem;border:none;border-bottom:2px solid var(--violet);background:var(--violet-soft);color:var(--ink);border-radius:6px 6px 0 0;padding:1px 8px;width:9em;max-width:100%}
+input.gap.w{width:12em}
+input.gap.right{border-color:var(--ok);background:var(--ok-soft)}
+input.gap.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.key{font-size:.85rem;color:var(--ok);margin-left:6px;font-weight:500}
+.gl{line-height:2.3}
+.gl .n{font-weight:600;color:var(--violet);margin-right:6px}
+.gl .fs{font-size:.82rem;color:var(--muted);margin-left:6px}
+
+/* builder */
+.bline{min-height:52px;padding:10px;border-radius:14px;border:2px dashed var(--line);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.bline.right{border-color:var(--ok);background:var(--ok-soft)} .bline.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.tiles{display:flex;flex-wrap:wrap;gap:6px}
+.tile{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:10px;padding:5px 12px;font-weight:500}
+.tile.t-have{border-color:var(--violet)} .tile.t-been{border-color:var(--orange)} .tile.t-ing{border-color:var(--mint)}
+.bcount{font-weight:600;color:var(--muted);font-size:.9rem}
+
+/* sort */
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;padding:12px;border:2px dashed var(--line);border-radius:16px}
+.pool button,.bk button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:999px;padding:4px 12px;font-weight:500}
+.pool button.picked{border-color:var(--orange);background:var(--orange-soft)}
+.bks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.bk{border-radius:16px;padding:12px;min-height:150px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;cursor:pointer;border:2px solid var(--c);background:var(--cs)}
+.bk .lbl{width:100%;font-family:var(--display);font-weight:700;color:var(--c)}
+.bk .lbl small{display:block;font-family:var(--body);font-weight:500;font-size:.8rem;color:var(--muted)}
+.bk button.right{border-color:var(--ok);color:var(--ok);font-weight:600}
+.bk button.wrong{border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+
+/* story */
+.bank{display:flex;flex-wrap:wrap;gap:8px;padding:10px;border:2px dashed var(--line);border-radius:14px}
+.bank button{border:1.5px solid var(--line);background:var(--sun-soft);color:var(--ink);border-radius:999px;padding:3px 12px}
+.bank button.used{opacity:.35}
+.story{line-height:2.2;background:var(--paper2);border-radius:14px;padding:14px 16px;border:1px solid var(--line)}
+
+/* mc */
+.list{display:grid;gap:16px}
+.q{display:grid;gap:8px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts button{border:1.5px solid var(--line);background:var(--paper2);color:var(--ink);border-radius:12px;padding:6px 14px;text-align:left}
+.opts button:hover{border-color:var(--mint)}
+.opts button.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:600}
+.opts button.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.fb{font-size:.9rem;color:var(--muted);min-height:1.2em}
+.svs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.svs{grid-template-columns:1fr}}
+.svs div{border-radius:14px;padding:12px 14px;display:grid;gap:4px}
+.svs .a{background:var(--mint-soft)} .svs .s{background:var(--violet-soft)}
+.svs b{font-family:var(--display);font-size:.95rem}
+
+/* detective */
+.det{border-radius:18px;border:2px solid var(--ink);background:var(--paper);overflow:hidden;display:grid}
+.det .top{background:var(--ink);color:var(--ground);padding:8px 16px;display:flex;justify-content:space-between;font-weight:600;font-size:.85rem;letter-spacing:.05em}
+.det .body{padding:22px;display:grid;gap:12px;justify-items:center;text-align:center}
+.det .emo{font-size:3.4rem;line-height:1}
+.det .ev{font-family:var(--display);font-weight:700;font-size:clamp(1.1rem,3.8vw,1.5rem);line-height:1.3;max-width:28ch}
+.det .ans{padding:10px 16px;border-radius:12px;background:var(--mint-soft);border:2px dashed var(--mint);font-weight:600}
+
+.qf{display:grid;gap:14px;justify-items:center;text-align:center}
+.qf .expr{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,6vw,2.4rem);line-height:1.15;min-height:1.3em}
+.qf .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.qf .big{font-family:var(--display);font-weight:700;font-size:1.1rem;padding:10px 28px;border-radius:999px;border:none;color:var(--on)}
+.qf .stats{display:flex;gap:18px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--muted)}
+.qf .stats b{color:var(--ink)}
+.timer{font-family:var(--display);font-weight:800;font-size:2rem;color:var(--orange);line-height:1;font-variant-numeric:tabular-nums}
+.timer.done{color:var(--ok)}
+
+/* interview */
+.cards2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.role{border-radius:16px;padding:16px;display:grid;gap:8px;border:2px solid var(--c);background:var(--cs)}
+.role h3{color:var(--c)}
+.role ul{margin:0;padding-left:20px;display:grid;gap:4px}
+
+/* ttt */
+.ttt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:520px;width:100%;margin:0 auto}
+.ttt button{aspect-ratio:1/1;border-radius:14px;border:2px solid var(--line);background:var(--paper2);color:var(--ink);font-size:.9rem;font-weight:500;padding:8px;line-height:1.3}
+.ttt button.x{background:var(--mint);border-color:var(--mint);color:var(--on);font-family:var(--display);font-size:2.4rem}
+.ttt button.o{background:var(--orange);border-color:var(--orange);color:var(--on);font-family:var(--display);font-size:2.4rem}
+.ttt button.sel{border-color:var(--violet);box-shadow:0 0 0 3px var(--violet-soft)}
+.tttq{text-align:center;font-weight:600;min-height:1.6em}
+.break{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:16px;background:var(--sun-soft);font-weight:600;margin-top:36px}
+.break span{font-size:1.8rem}
+footer{margin-top:48px;color:var(--muted);font-size:.85rem;text-align:center}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="hero">
+  <h1>Still <span>Going</span> ⏳</h1>
+  <p class="sub">Things that started in the past and are <b>still going on</b>. Review of the <b>present perfect progressive</b> with <b>for</b> and <b>since</b> (Unit 1B, p. 32), set in Freiburg and Brooklyn.</p>
+  <div class="loader" aria-hidden="true"><div class="lbl"><span>I've been learning English…</span><span>still loading</span></div><div class="track"><div class="fill"></div></div></div>
+  <div class="hero-row"><span class="plan">Core lesson: 120 min · Extensions: +15 min</span><button class="theme-btn" id="themeBtn" type="button">◐ Light / dark</button></div>
+</header>
+
+<nav class="stages" aria-label="Lesson stages">
+  <a href="#s1">1 · Warm-up</a><a href="#s2">2 · The rule</a><a href="#s3">3 · Build it</a><a href="#s4">4 · for / since</a><a href="#s5">5 · In Freiburg</a><a href="#s6">6 · Maya's exchange</a><a href="#s7">7 · Simple or -ing?</a><a href="#s8">8 · Detective</a><a href="#s9">9 · Quick-fire</a><a href="#s10">10 · Interview</a><a href="#s11">11 · Wrap-up</a><a class="ext" href="#x1">+ Noughts &amp; crosses</a>
+</nav>
+
+<!-- 1 -->
+<section class="stage" id="s1">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 1 · Warm-up</span><span class="chip">10 min</span></div>
+    <h2>What's still loading? 📲</h2>
+    <p class="instr">These things started in the past and are still going on. Answer the questions about you, then ask your teacher!</p>
+  </div>
+  <div class="status">
+    <div class="st"><div class="top"><span class="emo">📱</span>Screen time</div><div class="bar"><i style="width:85%"></i></div><small>Which app have you been using the most this week? Be honest! Check your screen time and guess first.</small></div>
+    <div class="st"><div class="top"><span class="emo">🎧</span>On repeat</div><div class="bar"><i style="width:60%"></i></div><small>Which song have you been listening to on repeat? Play 5 seconds. Can your teacher guess it?</small></div>
+    <div class="st"><div class="top"><span class="emo">🍿</span>Binge-watching</div><div class="bar"><i style="width:45%"></i></div><small>What series have you been binge-watching? How many episodes have you watched since Friday?</small></div>
+    <div class="st"><div class="top"><span class="emo">😤</span>Annoying!</div><div class="bar"><i style="width:70%"></i></div><small>What has been annoying you recently? A sibling? Homework? The weather?</small></div>
+    <div class="st"><div class="top"><span class="emo">🤫</span>Secret skill</div><div class="bar"><i style="width:30%"></i></div><small>What have you been practising that your friends don't know about?</small></div>
+    <div class="st"><div class="top"><span class="emo">🎄</span>Can't wait!</div><div class="bar"><i style="width:20%"></i></div><small>What have you been looking forward to? How long have you been counting the days?</small></div>
+  </div>
+  <div class="phr"><span>I've been … for …</span><span>I've been … since …</span><span>I haven't been … since …</span></div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul><li>Don't correct much yet, just note mistakes like ✗ "I learn English since…" (German: <i>Ich lerne seit…</i>). We come back to them in Stage 2.</li></ul>
+  </details>
+</section>
+
+<!-- 2 -->
+<section class="stage" id="s2">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 2 · Rule</span><span class="chip">15 min</span><span class="chip book">Book p. 32</span></div>
+    <h2>Looking at language</h2>
+    <p class="instr">Look at the timeline. The action <b>started in the past</b> and is <b>still going on</b> now.</p>
+  </div>
+  <div class="panel">
+    <div class="tl" aria-label="Timeline: they started running a restaurant 40 years ago and are still running it now">
+      <div class="line"><span class="mk a">40 years ago<br>▼ start</span><span class="mk b">now<br>▼ still going!</span><div class="act"></div></div>
+      <div class="cap"><span>past</span><span>now</span></div>
+    </div>
+    <p style="text-align:center"><b>They've been running a restaurant for 40 years.</b><br><span class="instr">= They started 40 years ago and they're still running it now.</span></p>
+  </div>
+  <div class="panel">
+    <h3>3 parts</h3>
+    <div class="formula"><span class="p1">have / has</span><span class="plus">+</span><span class="p2">been</span><span class="plus">+</span><span class="p3">verb-ing</span></div>
+    <div class="phr"><span>I<b>'ve been</b> enjoy<b>ing</b> myself so much since last week.</span><span>He<b>'s been</b> talk<b>ing</b> about your tour for hours.</span></div>
+  </div>
+  <div class="panel" id="rule">
+    <h3>Complete the rules</h3>
+    <div class="rule">
+      <div class="r"><span>a) Form</span><span>have/has + <input class="gap" data-ans="been" aria-label="part 2"> + verb <input class="gap" data-ans="-ing|ing|-ing form|ing form" aria-label="part 3"></span></div>
+      <div class="r"><span>b) Use</span><span>with <b>activity verbs</b>, when an action started in the <input class="gap" data-ans="past" aria-label="started in the"> and is still going on.</span></div>
+      <div class="r"><span>c) State verbs</span><span>With <i>be, have, know, like, want</i> we use the present perfect <input class="gap" data-ans="simple" aria-label="present perfect …">: They've had a restaurant there for 40 years.</span></div>
+      <div class="r"><span>for</span><span>+ a <input class="gap" data-ans="period|period of time|length of time|time period" aria-label="for + …"> of time: for 20 minutes, for two years</span></div>
+      <div class="r"><span>since</span><span>+ a <input class="gap" data-ans="point|point in time|starting point|start" aria-label="since + …"> in time: since 8:30, since 2020</span></div>
+    </div>
+    <div class="actions"><button class="btn" type="button" data-check="rule">Check</button><button class="btn ghost" type="button" data-resetgap="rule">Reset</button><span class="score"></span></div>
+  </div>
+  <div class="panel">
+    <h3>Negatives and questions</h3>
+    <div class="phr"><span>She <b>hasn't been</b> sleeping well.</span><span><b>How long have</b> you <b>been</b> waiting?</span><span><b>Has</b> it <b>been</b> raining?</span></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li><b>German trap:</b> German uses the present with <i>seit</i>: <i>Ich warte seit 20 Minuten.</i> → ✗ I wait since 20 minutes. ✓ I've been waiting <b>for</b> 20 minutes.</li>
+      <li><i>seit</i> = <b>for</b> OR <b>since</b>! Period → for, point → since.</li>
+      <li>Watch the spelling: run → running, sit → sitting, shop → shopping, make → making.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- 3 -->
+<section class="stage" id="s3">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 3 · Game</span><span class="chip">10 min</span><span class="chip game">Sentence builder</span></div>
+    <h2>Build the sentence 🧱</h2>
+    <p class="instr">Tap the words in the right order. Tap a word in the line to send it back. Then read the sentence aloud.</p>
+  </div>
+  <div class="panel">
+    <span class="bcount" id="bNo"></span>
+    <div class="bline" id="bLine" aria-live="polite"></div>
+    <div class="tiles" id="bTiles"></div>
+    <div class="actions"><button class="btn" type="button" id="bCheck">Check</button><button class="btn ghost" type="button" id="bClear">Clear</button><button class="btn ghost" type="button" id="bNext">Next →</button><span class="score" id="bScore"></span></div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="stage" id="s4">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 4 · Game</span><span class="chip">10 min</span><span class="chip game">Sort</span></div>
+    <h2>for or since? ⏱️</h2>
+    <p class="instr">Tap a time phrase, then tap the right box.</p>
+  </div>
+  <div class="panel">
+    <div class="pool" id="pool"></div>
+    <div class="bks" id="bks"></div>
+    <div class="actions"><button class="btn" type="button" id="sortCheck">Check</button><button class="btn ghost" type="button" id="sortReset">Reset</button><span class="score" id="sortScore"></span></div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="stage" id="s5">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 5 · Practice</span><span class="chip">10 min</span><span class="chip book">Like ex. 1</span></div>
+    <h2>We've been waiting for the tram 🚋</h2>
+    <p class="instr">Write the verb in the present perfect progressive. Then say each sentence <b>twice</b>: once with <b>for</b> and once with <b>since</b>.</p>
+  </div>
+  <div class="panel" id="ex5">
+    <div class="gl"><span class="n">1</span>We <input class="gap w" data-ans="have been waiting|'ve been waiting" aria-label="1"> (wait) for the tram at Bertoldsbrunnen …</div>
+    <div class="gl"><span class="n">2</span>Lena <input class="gap w" data-ans="has been sitting|'s been sitting" aria-label="2"> (sit) on the Schlossberg …</div>
+    <div class="gl"><span class="n">3</span>My parents <input class="gap w" data-ans="have been shopping|'ve been shopping" aria-label="3"> (shop) at the Münstermarkt …</div>
+    <div class="gl"><span class="n">4</span>You <input class="gap w" data-ans="have been walking|'ve been walking" aria-label="4"> (walk) around the Altstadt …</div>
+    <div class="gl"><span class="n">5</span>It <input class="gap w" data-ans="has been snowing|'s been snowing" aria-label="5"> (snow) …</div>
+    <div class="gl"><span class="n">6</span>The SC Freiburg fans <input class="gap w" data-ans="have been singing|'ve been singing" aria-label="6"> (sing) …</div>
+    <div class="gl"><span class="n">7</span>My sister <input class="gap w" data-ans="has been practising|has been practicing|'s been practising|'s been practicing" aria-label="7"> (practise) the piano …</div>
+    <div class="gl"><span class="n">8</span>I <input class="gap w" data-ans="have been running|'ve been running" aria-label="8"> (run) around the Seepark …</div>
+    <div class="actions"><button class="btn" type="button" data-check="ex5">Check</button><button class="btn ghost" type="button" data-resetgap="ex5">Reset</button><span class="score"></span></div>
+    <div class="phr"><span>for 20 minutes</span><span>for hours</span><span>since 8:30</span><span>since yesterday evening</span><span>since last week</span><span>for ages</span></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul><li>You can then do the book's ex. 1 (NYC version) orally as a quick check.</li><li>Accept the contracted forms too ('ve / 's been).</li></ul>
+  </details>
+</section>
+
+<!-- 6 -->
+<section class="stage" id="s6">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 6 · Reading</span><span class="chip">10 min</span><span class="chip book">Like ex. 2</span></div>
+    <h2>Maya's school exchange in Freiburg 🇺🇸➡️🇩🇪</h2>
+    <p class="instr">In the book, Ella from Frankfurt is in Brooklyn. Now it's the other way round! Complete the text with the time phrases. Make sure they make sense. Tap a gap, then a phrase.</p>
+  </div>
+  <div class="panel" id="story">
+    <div class="bank" id="sBank"></div>
+    <div class="story">
+      Maya, a 14-year-old girl from Brooklyn, is on a school exchange in Freiburg. She's been staying with Lena's family for <input class="gap" data-ans="four days" aria-label="Gap 1">. The girls have been exploring the city since <input class="gap" data-ans="Sunday" aria-label="Gap 2">, and today they've been walking around the Altstadt since <input class="gap" data-ans="lunchtime" aria-label="Gap 3">. Maya has been taking photos of the Bächle for <input class="gap" data-ans="two hours" aria-label="Gap 4">, so her phone battery is almost dead! It's been snowing since <input class="gap" data-ans="7 a.m." aria-label="Gap 5"> this morning, and everything looks like a Christmas card. Maya loves basketball. She's been playing since <input class="gap" data-ans="she was eight" aria-label="Gap 6">. Lena has only been playing for <input class="gap" data-ans="three years" aria-label="Gap 7">, but she's really good.
+    </div>
+    <div class="actions"><button class="btn" type="button" data-check="story">Check</button><button class="btn ghost" type="button" id="storyReset">Reset</button><span class="score"></span></div>
+  </div>
+  <div class="panel">
+    <h3>Talk about it</h3>
+    <ul class="talk">
+      <li>Maya has been in Freiburg for four days and she's bored of the Bächle. Plan her perfect Saturday: 3 places, 1 food, 1 secret tip only locals know.</li>
+      <li>Would you rather spend 3 months in Brooklyn or 3 months in Tokyo? Why?</li>
+      <li>Your exchange partner has been eating your snacks and using your shampoo since she arrived. What do you say? 😬</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="stage" id="s7">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 7 · Grammar</span><span class="chip">15 min</span></div>
+    <h2>Simple or -ing? 🤔</h2>
+    <p class="instr">Activity verbs → usually <b>-ing</b>. State verbs → <b>present perfect simple</b>. They can't be in the -ing form!</p>
+  </div>
+  <div class="panel">
+    <div class="svs">
+      <div class="a"><b>Activity verbs → -ing</b><span>wait, play, learn, run, rain, work, watch, sit, talk, read…</span><span><i>I've been waiting for an hour.</i></span></div>
+      <div class="s"><b>State verbs → simple</b><span>be, have (= own), know, like, love, hate, want, believe, own, understand…</span><span><i>I've known Lena for years.</i> ✗ <s>I've been knowing</s></span></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Choose the correct form</h3>
+    <div class="list" id="svQ"></div>
+    <div class="actions"><button class="btn ghost" type="button" data-reset="svQ">New order</button></div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul>
+      <li>Quick drill: you say a verb, she says "-ing!" or "simple!" (know, swim, own, cry, believe, cook, have a dog, have breakfast…).</li>
+      <li>Note: <i>have</i> = own → simple (I've had my phone for a year), but <i>have breakfast / have fun</i> = activity → -ing is OK (We've been having fun!).</li>
+    </ul>
+  </details>
+</section>
+
+<div class="break"><span>⏸️</span>5-minute break. Your brain has been working hard for an hour!</div>
+
+<!-- 8 -->
+<section class="stage" id="s8">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 8 · Speaking game</span><span class="chip">10 min</span><span class="chip game">Detective</span></div>
+    <h2>What have you been doing? 🔍</h2>
+    <p class="instr">Look at the evidence. What has the person been doing? Make a guess: "You've been …ing!" Then reveal the answer. Can you think of a different answer?</p>
+  </div>
+  <div class="det">
+    <div class="top"><span id="dNo">CASE 1</span><span>EVIDENCE</span></div>
+    <div class="body">
+      <span class="emo" id="dEmo" aria-hidden="true"></span>
+      <span class="ev" id="dEv"></span>
+      <span class="ans" id="dAns" hidden></span>
+      <div class="actions" style="justify-content:center"><button class="btn violet" type="button" id="dReveal">Reveal</button><button class="btn ghost" type="button" id="dNext">Next case →</button></div>
+    </div>
+  </div>
+  <details class="tnote"><summary>Teacher notes</summary>
+    <ul><li>Swap roles: she gives you evidence about herself ("I'm covered in mud!") and you guess.</li></ul>
+  </details>
+</section>
+
+<!-- 9 -->
+<section class="stage" id="s9">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 9 · Game</span><span class="chip">10 min</span><span class="chip game">60 seconds</span></div>
+    <h2>for or since? Quick-fire ⚡</h2>
+    <p class="instr">Tap fast! Round 2: for every correct answer, say a full sentence about you.</p>
+  </div>
+  <div class="panel qf">
+    <div class="timer" id="qfTimer">1:00</div>
+    <div class="stats"><span>Score <b id="qfScore">0</b></span><span>Streak <b id="qfStreak">0</b> 🔥</span><span>Best <b id="qfBest">0</b></span></div>
+    <div class="expr" id="qfExpr">Ready?</div>
+    <div class="btns"><button class="big" type="button" id="qfFor" style="background:var(--violet)" disabled>for</button><button class="big" type="button" id="qfSince" style="background:var(--orange)" disabled>since</button></div>
+    <p class="fb" id="qfFb" aria-live="polite"></p>
+    <button class="btn" type="button" id="qfStart">Start 60 seconds</button>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="stage" id="s10">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 10 · Freer speaking</span><span class="chip">15 min</span></div>
+    <h2>Exchange student interviews 🎙️</h2>
+    <p class="instr">Role-play for the school magazine. Then swap roles. Use <b>How long have you been…?</b> and <b>for / since</b> in every answer.</p>
+  </div>
+  <div class="cards2">
+    <div class="role" style="--c:var(--mint);--cs:var(--mint-soft)">
+      <h3>Round 1 · You're the reporter</h3>
+      <p>Your teacher is <b>Maya from Brooklyn</b>, on exchange in Freiburg. Ask her:</p>
+      <ul><li>How long / try to pronounce "Eichhörnchen"? 🐿️</li><li>What German food / eat every day? Brezeln? Lange Rote?</li><li>Why / you / look so tired? What / you / do / since you arrived?</li><li>miss / bagels and pizza? 🥯</li><li>What / be / the weirdest thing about Germany? (All the shops are closed on Sundays!)</li><li>How long / know / Lena? (state verb!)</li></ul>
+    </div>
+    <div class="role" style="--c:var(--orange);--cs:var(--orange-soft)">
+      <h3>Round 2 · You're the exchange student</h3>
+      <p>Imagine you've been in <b>Brooklyn, New York</b> for two weeks. Your teacher interviews you. Think about:</p>
+      <ul><li>How many bagels have you been eating a day? 🥯</li><li>Have you been getting lost on the subway? What happened?</li><li>What have you been posting on Instagram? Show me a "photo"!</li><li>Your host family's dog has been barking all night. What are you going to do?</li><li>What have you been missing from Freiburg? Your bed? Black Forest cake?</li><li>What has been the strangest thing about Americans so far?</li></ul>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Lie detector 🕵️</h3>
+    <p class="instr">Say three sentences about you with <b>for</b> or <b>since</b>. Two are true, one is a lie! Your teacher asks follow-up questions and guesses the lie. Then swap.</p>
+    <div class="phr"><span>I've been playing the guitar since I was nine.</span><span>I've been going to the same hairdresser for ten years.</span><span>I haven't been eating meat since January.</span></div>
+    <div class="actions"><button class="btn orange" type="button" id="ldBtn">Start 1:00 thinking time</button><span class="timer" id="ldTimer">1:00</span></div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="stage" id="s11">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Stage 11 · Wrap-up</span><span class="chip">5 min</span></div>
+    <h2>Final check ✅</h2>
+  </div>
+  <div class="panel">
+    <div class="list" id="exitQ"></div>
+    <div class="actions"><button class="btn ghost" type="button" data-reset="exitQ">New order</button></div>
+  </div>
+</section>
+
+<div class="ext-band"><b>Extension (+15 min)</b><span>If you have time left: a game to finish.</span></div>
+
+<!-- X1 -->
+<section class="stage" id="x1">
+  <div class="stage-head">
+    <div class="row"><span class="step-no">Extension · Game</span><span class="chip ext">+10–15 min</span></div>
+    <h2>Noughts &amp; crosses ❌⭕</h2>
+    <p class="instr">Choose a square and answer the question in a full sentence with <b>for</b> or <b>since</b>. Correct = your square (❌). Wrong = your teacher's square (⭕). Get three in a row!</p>
+  </div>
+  <div class="panel">
+    <div class="ttt" id="ttt"></div>
+    <p class="tttq" id="tttQ" aria-live="polite">Tap a square.</p>
+    <div class="actions" style="justify-content:center"><button class="btn" type="button" id="tttX" disabled>✓ Correct (❌)</button><button class="btn orange" type="button" id="tttO" disabled>✗ Wrong (⭕)</button><button class="btn ghost" type="button" id="tttNew">New game</button></div>
+  </div>
+</section>
+
+<footer>Still Going · present perfect progressive with for / since · 120–135 min</footer>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const norm = s => s.toLowerCase().replace(/[’‘`]/g, "'").replace(/[?!,]/g, "").replace(/\.$/, "").replace(/\s+/g, " ").trim();
+  const fmt = n => Math.floor(n / 60) + ":" + String(n % 60).padStart(2, "0");
+
+  $("themeBtn").addEventListener("click", () => {
+    const r = document.documentElement;
+    const cur = r.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    r.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+  });
+
+  // ---- MC ----
+  const MC = {};
+  function buildMC(id) {
+    const box = $(id); box.innerHTML = "";
+    MC[id].forEach((it, i) => {
+      const q = document.createElement("div"); q.className = "q";
+      q.innerHTML = `<span>${i + 1}. ${it[0]}</span><div class="opts"></div><span class="fb"></span>`;
+      const o = q.querySelector(".opts"), fb = q.querySelector(".fb");
+      shuffle(it[1].map((t, j) => [t, j])).forEach(([t, j]) => {
+        const b = document.createElement("button"); b.type = "button"; b.textContent = t;
+        b.addEventListener("click", () => { if (q.dataset.done) return; if (j === it[2]) { b.classList.add("right"); q.dataset.done = 1; fb.textContent = it[3] ? "✓ " + it[3] : "✓ Correct!"; } else { b.classList.add("wrong"); fb.textContent = "Try again!"; } });
+        o.appendChild(b);
+      });
+      box.appendChild(q);
+    });
+  }
+  document.querySelectorAll("[data-reset]").forEach(b => b.addEventListener("click", () => buildMC(b.dataset.reset)));
+
+  // ---- gaps ----
+  function checkSec(sec) {
+    let ok = 0, n = 0;
+    sec.querySelectorAll(".key").forEach(k => k.remove());
+    sec.querySelectorAll("input.gap").forEach(inp => { n++; const acc = inp.dataset.ans.split("|"); const good = acc.map(norm).includes(norm(inp.value)); inp.classList.toggle("right", good); inp.classList.toggle("wrong", !good); if (good) ok++; else { const k = document.createElement("span"); k.className = "key"; k.textContent = "→ " + acc[0]; inp.after(k); } });
+    sec.querySelector(".score").textContent = ok + " / " + n + (ok === n ? " 🎉" : "");
+  }
+  function resetSec(sec) { sec.querySelectorAll("input.gap").forEach(i => { i.value = ""; i.classList.remove("right", "wrong"); }); sec.querySelectorAll(".key").forEach(k => k.remove()); sec.querySelector(".score").textContent = ""; }
+  document.querySelectorAll("[data-check]").forEach(b => b.addEventListener("click", () => checkSec($(b.dataset.check))));
+  document.querySelectorAll("[data-resetgap]").forEach(b => b.addEventListener("click", () => resetSec($(b.dataset.resetgap))));
+
+  // ---- 3 sentence builder ----
+  const BUILD = [
+    "I have been learning English for six years.",
+    "She has been waiting for the tram since 8 o'clock.",
+    "How long have you been playing the piano?",
+    "It has been raining in Freiburg all week.",
+    "We haven't been sleeping well since the holidays.",
+    "Has Lena been working at the café for a long time?",
+    "They have been running a restaurant for 40 years."
+  ];
+  let bI = 0, bScore = 0, bWords = [];
+  function tileClass(w) { const l = w.toLowerCase(); if (["have", "has", "haven't", "hasn't"].includes(l)) return " t-have"; if (l === "been") return " t-been"; if (/ing$/.test(l) && l !== "long" && l !== "nothing") return " t-ing"; return ""; }
+  function bShow() {
+    const s = BUILD[bI]; bWords = s.split(" ");
+    $("bNo").textContent = `Sentence ${bI + 1} / ${BUILD.length}`; $("bLine").innerHTML = ""; $("bLine").className = "bline"; $("bTiles").innerHTML = "";
+    let order; do { order = shuffle(bWords.map((w, i) => i)); } while (order.every((v, i) => v === i));
+    order.forEach(i => { const t = document.createElement("button"); t.type = "button"; t.className = "tile" + tileClass(bWords[i]); t.textContent = bWords[i]; t.addEventListener("click", () => { $("bLine").className = "bline"; (t.parentElement.id === "bTiles" ? $("bLine") : $("bTiles")).appendChild(t); }); $("bTiles").appendChild(t); });
+  }
+  $("bCheck").addEventListener("click", () => {
+    const got = [...$("bLine").children].map(t => t.textContent).join(" ");
+    const good = got === BUILD[bI]; $("bLine").className = "bline " + (good ? "right" : "wrong");
+    if (good && !$("bLine").dataset.scored) { bScore++; $("bLine").dataset.scored = 1; }
+    $("bScore").textContent = good ? `✓ ${bScore} / ${BUILD.length}` : (got.split(" ").length < bWords.length ? "Use all the words!" : "Not quite. Try again!");
+  });
+  $("bClear").addEventListener("click", () => { [...$("bLine").children].forEach(t => $("bTiles").appendChild(t)); $("bLine").className = "bline"; });
+  $("bNext").addEventListener("click", () => { bI = (bI + 1) % BUILD.length; if (bI === 0) bScore = 0; delete $("bLine").dataset.scored; bShow(); });
+  bShow();
+
+  // ---- 4 sort ----
+  const BOX = [["for", "a period of time", "var(--violet)", "var(--violet-soft)"], ["since", "a point in time", "var(--orange)", "var(--orange-soft)"]];
+  const TP = [["20 minutes", 0], ["a few hours", 0], ["three days", 0], ["two years", 0], ["ages", 0], ["a long time", 0], ["the whole morning", 0], ["a week", 0], ["8:30", 1], ["yesterday evening", 1], ["last January", 1], ["2020", 1], ["I was six", 1], ["Monday", 1], ["Christmas", 1], ["this morning", 1]];
+  let picked = null;
+  function buildSort() {
+    picked = null; $("sortScore").textContent = ""; $("pool").innerHTML = "";
+    $("bks").innerHTML = BOX.map((b, i) => `<div class="bk" style="--c:${b[2]};--cs:${b[3]}" data-i="${i}" role="button" tabindex="0"><span class="lbl">${b[0]}<small>${b[1]}</small></span></div>`).join("");
+    $("bks").querySelectorAll(".bk").forEach(bk => { const drop = () => { if (!picked) return; picked.classList.remove("picked"); bk.appendChild(picked); picked = null; }; bk.addEventListener("click", drop); bk.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); drop(); } }); });
+    shuffle(TP).forEach(([w, i]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = w; b.dataset.i = i; b.addEventListener("click", e => { e.stopPropagation(); if (b.parentElement.id !== "pool") { $("pool").appendChild(b); b.classList.remove("right", "wrong"); return; } $("pool").querySelectorAll("button").forEach(x => x.classList.remove("picked")); picked = b; b.classList.add("picked"); }); $("pool").appendChild(b); });
+  }
+  $("sortCheck").addEventListener("click", () => {
+    let ok = 0;
+    $("bks").querySelectorAll(".bk").forEach(bk => bk.querySelectorAll("button").forEach(b => { const g = b.dataset.i === bk.dataset.i; b.classList.toggle("right", g); b.classList.toggle("wrong", !g); if (g) ok++; }));
+    const left = $("pool").querySelectorAll("button").length;
+    $("sortScore").textContent = ok + " / " + TP.length + (left ? ` · ${left} still to sort` : "") + (ok === TP.length ? " 🎉" : "");
+  });
+  $("sortReset").addEventListener("click", buildSort); buildSort();
+
+  // ---- 6 story ----
+  const storyGaps = [...$("story").querySelectorAll("input.gap")];
+  let sLast = null;
+  storyGaps.forEach(g => g.addEventListener("focus", () => sLast = g));
+  function buildBank() {
+    $("sBank").innerHTML = "";
+    shuffle(storyGaps.map(g => g.dataset.ans)).forEach(w => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = w;
+      b.addEventListener("click", () => {
+        const t = sLast && !sLast.value ? sLast : storyGaps.find(g => !g.value); if (!t) return;
+        t.value = w; t.classList.remove("right", "wrong"); b.classList.add("used");
+        const nx = storyGaps.slice(storyGaps.indexOf(t) + 1).find(g => !g.value) || storyGaps.find(g => !g.value); sLast = nx || null; if (nx) nx.focus();
+      });
+      $("sBank").appendChild(b);
+    });
+  }
+  $("storyReset").addEventListener("click", () => { resetSec($("story")); buildBank(); sLast = null; });
+  buildBank();
+
+  // ---- 7 simple vs -ing ----
+  MC.svQ = [
+    ["I ___ Lena since primary school.", ["have been knowing", "have known", "know"], 1, "know = state verb → simple."],
+    ["She ___ for the bus for 20 minutes. Poor her!", ["has been waiting", "is waiting", "has been wait"], 0],
+    ["How long ___ that phone?", ["do you have", "have you been having", "have you had"], 2, "have = own → simple."],
+    ["We ___ English since Year 5.", ["are learning", "have been learning", "learn"], 1],
+    ["It ___ all day. Take an umbrella!", ["is raining since", "rains", "has been raining"], 2],
+    ["My dad ___ that car for ten years.", ["has owned", "has been owning", "owns"], 0, "own = state verb → simple."],
+    ["I ___ a dog since I was six, but my parents always say no!", ["have been wanting", "want", "have wanted"], 2, "want = state verb → simple."],
+    ["Why are you so dirty? What ___?", ["have you been doing", "do you do", "have you been do"], 0],
+    ["They ___ football for two hours. They must be tired!", ["play", "have been playing", "are playing"], 1]
+  ];
+  buildMC("svQ");
+
+  // ---- 8 detective ----
+  const DET = [
+    ["😮‍💨", "Your face is red and you're out of breath.", "You've been running!"],
+    ["🎨", "There's blue paint on your hands and on your jeans.", "You've been painting!"],
+    ["🍫", "There's chocolate all over your face.", "You've been eating chocolate!"],
+    ["🎮", "It's 2 a.m. and your thumbs hurt.", "You've been playing video games!"],
+    ["🌧️", "The streets are wet and there are puddles everywhere.", "It's been raining!"],
+    ["🏊", "Your hair is wet and smells of chlorine.", "You've been swimming (at the Westbad)!"],
+    ["🧁", "The kitchen smells of cake and there's flour everywhere.", "You've been baking!"],
+    ["🐕", "Your shoes are muddy and the dog is very tired.", "You've been walking the dog (on the Schlossberg)!"],
+    ["📱", "Your phone battery is at 1% and your eyes hurt.", "You've been scrolling TikTok!"],
+    ["🎤", "You've lost your voice after the SC Freiburg match.", "You've been shouting / singing!"],
+    ["😭", "Your eyes are red and there are tissues everywhere.", "You've been crying / watching a sad film!"],
+    ["😴", "You look very tired and there are books all over your desk.", "You've been studying (for a test)!"]
+  ];
+  let dDeck = shuffle(DET), dI = 0;
+  function dShow() { const d = dDeck[dI]; $("dNo").textContent = `CASE ${dI + 1} / ${dDeck.length}`; $("dEmo").textContent = d[0]; $("dEv").textContent = d[1]; $("dAns").textContent = d[2]; $("dAns").hidden = true; }
+  $("dReveal").addEventListener("click", () => $("dAns").hidden = false);
+  $("dNext").addEventListener("click", () => { dI++; if (dI >= dDeck.length) { dDeck = shuffle(DET); dI = 0; } dShow(); });
+  dShow();
+
+  // ---- 9 quick-fire ----
+  const QF = [["… 20 minutes", 0], ["… 8:30", 1], ["… last week", 1], ["… a few hours", 0], ["… 2019", 1], ["… ages", 0], ["… I was born", 1], ["… two days", 0], ["… yesterday", 1], ["… a long time", 0], ["… Christmas", 1], ["… three months", 0], ["… Monday", 1], ["… half an hour", 0], ["… lunchtime", 1], ["… the summer holidays", 1], ["… ten years", 0], ["… this morning", 1], ["… a week", 0], ["… I moved to Freiburg", 1], ["… five minutes", 0], ["… my birthday", 1], ["… the whole day", 0], ["… January", 1]];
+  let qfDeck = [], qfI = 0, qfS = 0, qfK = 0, qfBest = 0, qfLeft = 60, qfIv = null, qfOn = false;
+  function qfNext() { if (qfI >= qfDeck.length) { qfDeck = shuffle(QF); qfI = 0; } $("qfExpr").textContent = qfDeck[qfI][0]; }
+  function qfAns(k) {
+    if (!qfOn) return; const it = qfDeck[qfI], good = k === it[1], w = it[1] ? "since" : "for";
+    if (good) { qfS++; qfK++; $("qfFb").textContent = "✓ " + w + " " + it[0].slice(2); } else { qfK = 0; $("qfFb").textContent = "✗ It's " + w + " " + it[0].slice(2); }
+    $("qfScore").textContent = qfS; $("qfStreak").textContent = qfK; qfI++; qfNext();
+  }
+  $("qfFor").addEventListener("click", () => qfAns(0)); $("qfSince").addEventListener("click", () => qfAns(1));
+  $("qfStart").addEventListener("click", () => {
+    clearInterval(qfIv); qfDeck = shuffle(QF); qfI = 0; qfS = 0; qfK = 0; qfLeft = 60; qfOn = true;
+    $("qfScore").textContent = 0; $("qfStreak").textContent = 0; $("qfFb").textContent = ""; $("qfTimer").textContent = "1:00"; $("qfTimer").classList.remove("done");
+    $("qfFor").disabled = $("qfSince").disabled = false; $("qfStart").disabled = true; qfNext();
+    qfIv = setInterval(() => { qfLeft--; $("qfTimer").textContent = fmt(qfLeft); if (qfLeft <= 0) { clearInterval(qfIv); qfOn = false; $("qfFor").disabled = $("qfSince").disabled = true; $("qfStart").disabled = false; $("qfStart").textContent = "Play again"; $("qfTimer").textContent = "Time!"; $("qfTimer").classList.add("done"); $("qfExpr").textContent = qfS + " points"; if (qfS > qfBest) { qfBest = qfS; $("qfBest").textContent = qfBest; $("qfFb").textContent = "New best score! 🏆"; } } }, 1000);
+  });
+
+  // ---- 10 lie detector timer ----
+  let lIv = null, lLeft = 60;
+  $("ldBtn").addEventListener("click", () => {
+    const t = $("ldTimer");
+    if (lIv) { clearInterval(lIv); lIv = null; lLeft = 60; t.textContent = "1:00"; t.classList.remove("done"); $("ldBtn").textContent = "Start 1:00 thinking time"; return; }
+    $("ldBtn").textContent = "Stop"; t.classList.remove("done");
+    lIv = setInterval(() => { lLeft--; t.textContent = fmt(lLeft); if (lLeft <= 0) { clearInterval(lIv); lIv = null; lLeft = 60; t.textContent = "Go! 🕵️"; t.classList.add("done"); $("ldBtn").textContent = "Start 1:00 thinking time"; } }, 1000);
+  });
+
+  // ---- 11 exit ----
+  MC.exitQ = [
+    ["Ich warte seit 20 Minuten. =", ["I wait since 20 minutes.", "I've been waiting for 20 minutes.", "I've been waiting since 20 minutes."], 1],
+    ["She's been living in Freiburg ___ 2018.", ["since", "for", "from"], 0],
+    ["How long ___ you been playing tennis?", ["are", "did", "have"], 2],
+    ["I've ___ my best friend for eight years.", ["been knowing", "known", "know"], 1],
+    ["It's been ___ since this morning.", ["snow", "snowed", "snowing"], 2],
+    ["They've been sitting in the café ___ two hours.", ["for", "since", "ago"], 0]
+  ];
+  buildMC("exitQ");
+
+  // ---- X1 noughts & crosses ----
+  const TTT = ["What / you / wait for / for ages? Is it worth it? ⏳", "What / you / binge-watch / recently? Sell it to me in 3 sentences! 🍿", "Who / you / message / most this week? Why? 💬", "How long / you / know / your best friend? How did you meet? (careful!)", "What / you / secretly / practise / recently? 🤫", "What app / you / spend / too much time on / recently? 📱", "How long / you / have / your phone? Do you need a new one? (careful!)", "What / annoy / you / recently? Complain for 30 seconds! 😤", "What / you / dream about / doing / since you were little? ✨"];
+  const LINES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+  let tState = [], tSel = null, tOver = false;
+  function tttBuild() {
+    tState = Array(9).fill(""); tSel = null; tOver = false; $("ttt").innerHTML = ""; $("tttQ").textContent = "Tap a square.";
+    shuffle(TTT).forEach((q, i) => { const b = document.createElement("button"); b.type = "button"; b.textContent = q; b.dataset.q = q; b.addEventListener("click", () => { if (tOver || tState[i]) return; $("ttt").querySelectorAll("button").forEach(x => x.classList.remove("sel")); b.classList.add("sel"); tSel = i; $("tttQ").textContent = "❓ " + q; $("tttX").disabled = $("tttO").disabled = false; }); $("ttt").appendChild(b); });
+    $("tttX").disabled = $("tttO").disabled = true;
+  }
+  function tttMark(m) {
+    if (tSel === null) return; const b = $("ttt").children[tSel]; tState[tSel] = m; b.classList.remove("sel"); b.classList.add(m === "X" ? "x" : "o"); b.textContent = m === "X" ? "✕" : "○"; b.setAttribute("aria-label", b.dataset.q + (m === "X" ? ": student" : ": teacher")); tSel = null; $("tttX").disabled = $("tttO").disabled = true;
+    const win = LINES.find(l => l.every(i => tState[i] === m));
+    if (win) { tOver = true; $("tttQ").textContent = m === "X" ? "🎉 Three in a row! You win!" : "⭕ Your teacher wins this time!"; }
+    else if (tState.every(Boolean)) { tOver = true; $("tttQ").textContent = "It's a draw!"; }
+    else $("tttQ").textContent = "Tap another square.";
+  }
+  $("tttX").addEventListener("click", () => tttMark("X")); $("tttO").addEventListener("click", () => tttMark("O")); $("tttNew").addEventListener("click", tttBuild);
+  tttBuild();
+})();
+</script>
+
+</body>
+</html>
