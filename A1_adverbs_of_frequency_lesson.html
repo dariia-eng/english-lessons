@@ -1,0 +1,507 @@
+<meta charset="utf-8">
+<title>Always, Sometimes, Never</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: one centred column of stage panels with a sticky stage bar; book tasks tagged, each followed by speaking or a game */
+:root{
+  --bg:#f7f8ff; --surface:#ffffff; --surface-2:#eef0fb;
+  --ink:#1d1b3a; --muted:#5f5d7e; --line:#dcdff2;
+  --red:#e8364f; --red-soft:#ffdfe4; --teal:#11a39a; --teal-soft:#cdf3ef;
+  --navy:#2b3a8f; --navy-soft:#dde3ff; --sun:#f2a900; --sun-soft:#fff0c4;
+  --good:#0f9d6e; --bad:#d92d4a; --good-bg:#dcf8ec; --bad-bg:#ffe1e7; --on-accent:#ffffff;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#12132a; --surface:#1c1e3a; --surface-2:#262947; --ink:#eef0ff; --muted:#aeb1d6; --line:#363a63;
+  --red:#ff6b80; --red-soft:#4a1f2c; --teal:#3fd6c9; --teal-soft:#123f3c; --navy:#93a4ff; --navy-soft:#2a3166;
+  --sun:#ffcf5c; --sun-soft:#433a1b; --good:#4fe0aa; --bad:#ff7b95; --good-bg:#173f31; --bad-bg:#4a1d2a; --on-accent:#12132a; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#12132a; --surface:#1c1e3a; --surface-2:#262947; --ink:#eef0ff; --muted:#aeb1d6; --line:#363a63;
+  --red:#ff6b80; --red-soft:#4a1f2c; --teal:#3fd6c9; --teal-soft:#123f3c; --navy:#93a4ff; --navy-soft:#2a3166;
+  --sun:#ffcf5c; --sun-soft:#433a1b; --good:#4fe0aa; --bad:#ff7b95; --good-bg:#173f31; --bad-bg:#4a1d2a; --on-accent:#12132a; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:48px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3,h4{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+p{margin:0} button{font:inherit;cursor:pointer} button:disabled{cursor:default;opacity:.45}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.hero{padding-top:28px;display:flex;flex-direction:column;gap:12px;position:relative}
+.hero h1{font-size:clamp(44px,10vw,88px);font-weight:800;letter-spacing:-.02em;text-transform:uppercase;line-height:.95}
+.hero h1 span{display:inline-block;background:var(--ink);color:var(--bg);padding:0 .12em;margin-top:.06em}
+.lede{font-size:19px;color:var(--muted);max-width:62ch}
+.theme-btn{position:absolute;top:24px;right:0;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding-block:10px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.bar a{flex:0 0 auto;text-decoration:none;color:var(--ink);font-weight:800;font-size:14px;padding:6px 12px;border-radius:999px;border:2px solid var(--line);background:var(--surface);white-space:nowrap}
+.bar a span{color:var(--muted);font-weight:600;margin-left:4px}
+.bar a:hover{border-color:var(--red)}
+.stage{background:var(--surface);border:2px solid var(--line);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:24px;scroll-margin-top:70px}
+.stage-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.stage-head h2{font-size:clamp(26px,5vw,34px);font-weight:800}
+.num{font-family:var(--display);color:var(--red);margin-right:8px}
+.time{font-weight:800;font-size:14px;background:var(--sun-soft);padding:4px 12px;border-radius:999px}
+.task{display:flex;flex-direction:column;gap:12px}
+.task h3{font-size:21px;font-weight:600;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.tag{font-family:var(--body);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--navy-soft);color:var(--navy)}
+.tag.book{background:var(--surface-2);color:var(--muted);border:2px solid var(--line)}
+.tag.talk{background:var(--teal-soft);color:var(--teal)}
+.tag.game{background:var(--sun-soft);color:var(--ink)}
+.tag.audio{background:var(--red-soft);color:var(--red)}
+.instr{color:var(--muted);font-weight:600}
+.tnote{font-size:15px;background:var(--surface-2);border-radius:14px;padding:10px 14px;color:var(--muted)}
+.tnote b{color:var(--ink)}
+details summary{cursor:pointer;font-weight:800}
+.plan{width:100%;border-collapse:collapse;font-size:15px}
+.plan td,.plan th{text-align:left;padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.plan th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.plan td:first-child{white-space:nowrap;font-weight:800}
+.say{display:flex;flex-wrap:wrap;gap:8px}
+.pill{background:var(--surface-2);border-radius:12px;padding:6px 12px;font-weight:800}
+.pill.q{background:var(--navy-soft)} .pill.a{background:var(--teal-soft)}
+.big{border-radius:24px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;background:var(--sun-soft)}
+.big.navy{background:var(--navy-soft)} .big.red{background:var(--red-soft)} .big.teal{background:var(--teal-soft)}
+.big .line{font-family:var(--display);font-weight:800;font-size:clamp(22px,5vw,34px);min-height:1.2em}
+.big .sub{font-weight:700;color:var(--muted)}
+.big .emo{font-size:60px;line-height:1}
+.big .btns{justify-content:center}
+.btns{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:none;border-radius:999px;padding:9px 20px;font-weight:800;background:var(--red);color:var(--on-accent)}
+.btn.navy{background:var(--navy)} .btn.teal{background:var(--teal)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.score{font-weight:800;color:var(--muted)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:2px solid var(--line);background:var(--surface);color:var(--ink);padding:5px 14px;border-radius:999px;font-weight:700}
+.opt:hover{border-color:var(--navy)}
+.opt.sel{border-color:var(--navy);background:var(--navy-soft)}
+.opt.right{border-color:var(--good);background:var(--good-bg);color:var(--good)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.rows{display:flex;flex-direction:column;gap:8px}
+.trow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between;background:var(--surface-2);border-radius:14px;padding:8px 12px;font-weight:700}
+.trow .st{flex:1 1 260px;min-width:0}
+.trow .lab{font-family:var(--display);font-weight:800;color:var(--navy);margin-right:4px}
+select.sel,input.gap{font:inherit;font-weight:800;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:2px 8px;max-width:100%;min-width:0}
+input.gap{width:9em}
+input.gap.w{width:14em} input.gap.s{width:5em}
+select.sel.right,input.gap.right{border-color:var(--good);background:var(--good-bg)}
+select.sel.wrong,input.gap.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.fix{font-size:14px;font-weight:800;color:var(--good)} .fix:empty{display:none}
+.mk{display:flex;gap:4px}
+.mk button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:2px 9px;font-weight:800;font-size:14px}
+.mk button.ok{border-color:var(--good);background:var(--good-bg);color:var(--good)}
+.mk button.no{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.key{font-size:14px;font-weight:800;color:var(--teal)} .key[hidden]{display:none}
+.match{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:10px}
+.match .col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.mi{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:8px 12px;text-align:left;font-weight:700}
+.mi.w{font-family:var(--display);font-weight:800;font-size:18px}
+.mi.sel{border-color:var(--navy);background:var(--navy-soft)}
+.mi.done{border-color:var(--good);background:var(--good-bg);color:var(--good);cursor:default}
+.mi.nope{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;font-weight:800}
+.chip.on{border-color:var(--navy);background:var(--navy-soft)}
+.chip.right{border-color:var(--good);background:var(--good-bg)} .chip.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.cols2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.box{border:3px dashed var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:110px;min-width:0;background:var(--surface-2);text-align:left;color:var(--ink)}
+.box h4{font-size:16px}
+.box.target{border-style:solid;border-color:var(--navy)}
+.timer{font-family:var(--display);font-weight:800;font-size:48px;font-variant-numeric:tabular-nums;line-height:1}
+.timer.low{color:var(--red)}
+.bookimg{width:100%;max-width:600px;border-radius:16px;display:block;border:2px solid var(--line)}
+.pform{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.pform label{display:flex;flex-direction:column;gap:4px;font-weight:800;background:var(--surface-2);border-radius:12px;padding:8px 10px}
+.pform input{font:inherit;font-weight:700;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:5px 8px;width:100%}
+.pform input.right{border-color:var(--good);background:var(--good-bg)} .pform input.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.preview{background:var(--sun-soft);border-radius:18px;padding:16px;font-size:18px;font-weight:700;line-height:1.7}
+.preview b{color:var(--red)}
+textarea.write{font:inherit;font-weight:700;color:var(--ink);background:var(--surface-2);border:2px solid var(--line);border-radius:14px;padding:10px 12px;width:100%;min-height:130px;resize:vertical}
+.qcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.qcards div{background:var(--navy-soft);border-radius:14px;padding:10px 12px;font-weight:800}
+.qcards div:nth-child(2n){background:var(--teal-soft)} .qcards div:nth-child(3n){background:var(--red-soft)}
+.who{display:grid;grid-template-columns:auto 1fr;gap:14px;background:var(--surface);border-radius:18px;padding:16px;align-items:center;width:100%;max-width:560px;text-align:left}
+.who .ava{font-size:60px;line-height:1}
+.who dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-weight:700}
+.who dt{color:var(--muted)} .who dd{margin:0}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.scale button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:6px 4px;font-weight:800;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.scale button span{font-size:22px}
+.scale button.s{border-color:var(--red);background:var(--red-soft)}
+.scale button.t{border-color:var(--navy);background:var(--navy-soft)}
+.scale button.s.t{background:linear-gradient(90deg,var(--red-soft) 50%,var(--navy-soft) 50%);border-color:var(--ink)}
+.dcard{background:var(--surface-2);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.dcard .st{font-family:var(--display);font-weight:800;font-size:19px}
+.rank{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;counter-reset:r}
+.rank li{display:flex;align-items:center;gap:8px;background:var(--surface-2);border-radius:12px;padding:6px 10px;font-weight:800;counter-increment:r}
+.rank li::before{content:counter(r);font-family:var(--display);color:var(--red);min-width:1.2em}
+.rank li span{flex:1}
+.rank button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:0 8px;font-weight:800}
+.grid3{width:100%;border-collapse:collapse}
+.grid3 th,.grid3 td{padding:6px 6px;border-bottom:1px solid var(--line);text-align:center}
+.grid3 td:first-child,.grid3 th:first-child{text-align:left;font-weight:700}
+.grid3 input{width:22px;height:22px;accent-color:var(--navy)}
+.grid3 td.right{background:var(--good-bg)} .grid3 td.wrong{background:var(--bad-bg)}
+.table-wrap{overflow-x:auto}
+@media (max-width:620px){ .stage{padding:18px} .theme-btn{position:static;align-self:flex-start} .match{grid-template-columns:1fr} .pform{grid-template-columns:1fr} .scale button{font-size:11px} }
+@media (max-width:520px){ .cols2{grid-template-columns:1fr} .who{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
+</style>
+<style>
+.kw{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.kw button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:16px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:800;font-size:18px;min-height:120px}
+.kw button span{font-size:36px;line-height:1}
+.kw button i,.kw button small{font-style:normal;font-size:14px;visibility:hidden}
+.kw button i{color:var(--teal)} .kw button small{color:var(--muted);font-weight:700}
+.kw button.on{border-color:var(--teal);background:var(--teal-soft)} .kw button.on i,.kw button.on small{visibility:visible}
+.g{border-bottom:2px dotted var(--teal);cursor:pointer}
+.g.on::after{content:" (" attr(data-t) ")";font-size:.85em;font-weight:800;color:var(--teal);background:var(--teal-soft);border-radius:6px;padding:0 4px;margin-left:2px;display:inline-block}
+.text{border-radius:18px;overflow:hidden;border:2px solid var(--line)}
+.text h4{padding:10px 14px;color:#fff;font-size:19px;display:flex;gap:10px;align-items:center}
+.text h4 span{font-size:30px}
+.text.leo h4{background:#2b3a8f} .text.mia h4{background:#b03a7a}
+.text p{padding:5px 16px;line-height:1.75;font-weight:600;font-size:18px}
+.text p:first-of-type{padding-top:12px} .text p:last-child{padding-bottom:14px}
+.fq{color:var(--red);font-weight:800;background:var(--red-soft);border-radius:6px;padding:0 4px}
+.text.plain .fq{color:inherit;background:none;padding:0}
+.scale6{display:flex;flex-direction:column;gap:6px}
+.scale6 div{display:grid;grid-template-columns:100px 1fr 50px;gap:10px;align-items:center;font-weight:800}
+.scale6 .bar{height:20px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.scale6 .bar i{display:block;height:20px;background:linear-gradient(90deg,var(--teal),var(--navy))}
+.scale6 .ua{font-size:14px;color:var(--muted);font-weight:700}
+.builder{display:flex;flex-direction:column;gap:8px;background:var(--surface-2);border-radius:16px;padding:12px}
+.builder .out{min-height:44px;border:2px dashed var(--line);border-radius:12px;padding:6px;display:flex;flex-wrap:wrap;gap:6px;background:var(--surface)}
+.builder .out.right{border-color:var(--good);background:var(--good-bg)} .builder .out.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.fboard{display:flex;flex-direction:column;gap:8px}
+.frow{background:var(--surface-2);border-radius:14px;padding:8px 12px;display:flex;flex-direction:column;gap:6px}
+.frow .st{font-weight:800}
+.frow .who6{display:grid;grid-template-columns:70px repeat(6,minmax(0,1fr));gap:4px;align-items:center}
+.frow .who6 b{font-size:13px}
+.frow .who6 button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:3px 0;font-weight:800;font-size:12px;min-width:0}
+.frow .who6.s button.on{border-color:var(--red);background:var(--red-soft)}
+.frow .who6.t button.on{border-color:var(--navy);background:var(--navy-soft)}
+@media (max-width:560px){ .frow .who6{grid-template-columns:52px repeat(6,minmax(0,1fr))} .frow .who6 button{font-size:10px} .scale6 div{grid-template-columns:80px 1fr 40px} }
+</style>
+<div class="wrap">
+<header class="hero">
+  <button class="theme-btn" id="themeBtn" type="button">🌙 Dark</button>
+  <h1><span>Always,</span><br><span>sometimes,</span><br><span>never</span></h1>
+  <p class="lede">10 verbs for your school day and the words for <b>how often</b>: always, usually, often, sometimes, rarely, never.</p>
+  <details class="tnote">
+    <summary>Teacher plan · 70 minutes, 1-to-1 · after My School Day</summary>
+    <div class="table-wrap"><table class="plan">
+      <tr><th>Time</th><th>Stage</th><th>Activity</th></tr>
+      <tr><td>0–5</td><td>Warm-up</td><td>Your school day: 3 questions</td></tr>
+      <tr><td>5–17</td><td>Learn the verbs</td><td>Flashcards · match · picture flash</td></tr>
+      <tr><td>17–25</td><td>Use the verbs</td><td>Complete the sentences · Mime it!</td></tr>
+      <tr><td>25–35</td><td>Read: Leo's day</td><td>Text · questions</td></tr>
+      <tr><td>35–45</td><td>How often?</td><td>The scale · rule · complete · word order</td></tr>
+      <tr><td>45–57</td><td>Speaking</td><td>How often do you…? · Me and my teacher</td></tr>
+      <tr><td>57–65</td><td>Read: Mia's day</td><td>Text · Leo or Mia?</td></tr>
+      <tr><td>65–70</td><td>Wrap-up</td><td>My school day (writing) · exit quiz</td></tr>
+    </table></div>
+    <p>Main rule for A1: the how-often word goes <b>before the verb</b> (I <b>always</b> do…). Bonus: <b>after be</b> (I'm <b>often</b> late) appears once in Mia's text.</p>
+  </details>
+</header>
+
+<nav class="bar" aria-label="Lesson stages">
+  <a href="#s1">1 Warm-up <span>5′</span></a>
+  <a href="#s2">2 Verbs <span>12′</span></a>
+  <a href="#s3">3 Use them <span>8′</span></a>
+  <a href="#s4">4 Leo <span>10′</span></a>
+  <a href="#s5">5 How often? <span>10′</span></a>
+  <a href="#s6">6 Speak <span>12′</span></a>
+  <a href="#s7">7 Mia <span>8′</span></a>
+  <a href="#s8">8 Wrap-up <span>5′</span></a>
+</nav>
+
+<!-- 1 -->
+<section class="stage" id="s1">
+  <div class="stage-head"><h2><span class="num">1</span>Your school day</h2><span class="time">5 min</span></div>
+  <div class="task">
+    <h3>Answer the questions <span class="tag talk">Speaking</span></h3>
+    <div class="qcards"><div>What time do you go to school?</div><div>What's your first lesson on Monday?</div><div>What do you do at break?</div></div>
+    <p class="instr">Then ask the teacher the same questions.</p>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="stage" id="s2">
+  <div class="stage-head"><h2><span class="num">2</span>Learn the verbs</h2><span class="time">12 min</span></div>
+  <div class="task">
+    <h3>10 school-day verbs <span class="tag">Vocabulary</span></h3>
+    <p class="instr">Look at the picture and say the verb. Tap the card: see the word in Ukrainian and an example. Say the example!</p>
+    <div class="kw" id="cards"></div>
+  </div>
+  <div class="task">
+    <h3>Match the verbs</h3>
+    <p class="instr">Tap an English verb, then the Ukrainian.</p>
+    <div id="mv"></div>
+    <span class="score" id="mv-score"></span>
+  </div>
+  <div class="task">
+    <h3>Picture flash <span class="tag game">Game</span></h3>
+    <p class="instr">Say the verb before the time ends!</p>
+    <div class="big navy">
+      <span class="emo" id="pfE">🎒</span>
+      <span class="line" id="pfW" style="filter:blur(10px)">…</span>
+      <span class="timer" id="pfT">4</span>
+      <div class="btns"><button class="btn" type="button" id="pfNext">Next</button><button class="btn teal" type="button" id="pfYes">✅ Got it</button><button class="btn ghost" type="button" id="pfShow">Show</button></div>
+      <span class="score" id="pfS">0 points</span>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="stage" id="s3">
+  <div class="stage-head"><h2><span class="num">3</span>Use the verbs</h2><span class="time">8 min</span></div>
+  <div class="task">
+    <h3>Complete the sentences</h3>
+    <p class="instr">Use the verbs in the box.</p>
+    <div style="background:var(--surface-2);border:2px dashed var(--line);border-radius:16px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:6px" id="gvBox"></div>
+    <div id="gv"></div>
+    <div class="btns"><button class="btn" type="button" data-check="gv">Check</button><span class="score" id="gv-score"></span></div>
+  </div>
+  <div class="task">
+    <h3>Mime it! <span class="tag game">Game</span></h3>
+    <p class="instr">Get a secret verb. Do it with your hands and face, no words! The other person guesses: "You're writing!" Then swap.</p>
+    <div class="big red">
+      <span class="line" id="miW" style="filter:blur(12px)">…</span>
+      <div class="btns"><button class="btn" type="button" id="miNext">Secret verb</button><button class="btn ghost" type="button" id="miShow">🙈 Hide / show</button></div>
+      <span class="sub">Only the person who mimes looks!</span>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="stage" id="s4">
+  <div class="stage-head"><h2><span class="num">4</span>Read: Leo's school day</h2><span class="time">10 min</span></div>
+  <div class="task">
+    <h3>Read the text <span class="tag">Reading</span></h3>
+    <p class="instr">Tap the dotted words to see them in Ukrainian. Look at the <span class="fq">red words</span>: what do they mean?</p>
+    <div class="text leo" id="leo"><h4><span aria-hidden="true">👦</span>Leo, 13, Manchester</h4>
+      <p>Hi! I'm Leo. I'm 13 and I live in Manchester.</p>
+      <p>I <span class="fq">always</span> get to school at 8:30. Lessons start at 8:45.</p>
+      <p>In maths, I listen to the teacher and I write in my <span class="g" data-t="зошит" tabindex="0">notebook</span>. I <span class="fq">usually</span> answer a lot of questions. I love maths!</p>
+      <p>In English, we <span class="fq">often</span> read <span class="g" data-t="історії" tabindex="0">stories</span>. I <span class="fq">sometimes</span> ask questions when I don't <span class="g" data-t="розумію" tabindex="0">understand</span>.</p>
+      <p>I <span class="fq">always</span> have lunch at school with my friends. We talk about football and video games.</p>
+      <p>School <span class="g" data-t="закінчується" tabindex="0">finishes</span> at 3:30. I do my homework in the <span class="g" data-t="увечері" tabindex="0">evening</span>. I <span class="fq">never</span> do homework on Saturday!</p>
+    </div>
+  </div>
+  <div class="task">
+    <h3>Answer the questions</h3>
+    <div id="lq"></div>
+    <div class="btns"><button class="btn" type="button" data-check="lq">Check</button><span class="score" id="lq-score"></span></div>
+    <p class="tnote"><b>Speaking:</b> after checking, she answers each question in a full sentence: "He gets to school at 8:30." (he/she + <b>-s</b>!)</p>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="stage" id="s5">
+  <div class="stage-head"><h2><span class="num">5</span>How often?</h2><span class="time">10 min</span></div>
+  <div class="task">
+    <h3>The how-often scale</h3>
+    <div class="scale6" id="sc6"></div>
+    <div class="rule" style="background:var(--sun-soft);border-radius:16px;padding:12px 14px;font-weight:700;display:flex;flex-direction:column;gap:4px">
+      <span>📌 The how-often word goes <b>before the verb</b>:</span>
+      <span>I <span class="fq">always</span> <u>get</u> to school at 8:30. · She <span class="fq">never</span> <u>does</u> homework on Saturday.</span>
+      <span style="font-size:15px;color:var(--muted)">⭐ Bonus: with <b>am / is / are</b>, it goes after: I'm <span class="fq">often</span> late.</span>
+    </div>
+  </div>
+  <div class="task">
+    <h3>Complete with a how-often word</h3>
+    <p class="instr">Look at the % and choose.</p>
+    <div id="fw"></div>
+    <div class="btns"><button class="btn" type="button" data-check="fw">Check</button><span class="score" id="fw-score"></span></div>
+  </div>
+  <div class="task">
+    <h3>Make the sentence <span class="tag game">Game</span></h3>
+    <p class="instr">Tap the words in the right order. Then say the sentence. Is it true for you?</p>
+    <div class="builder">
+      <div class="out" id="boOut"></div>
+      <div class="chips" id="boBank"></div>
+      <div class="btns"><button class="btn" type="button" id="boCheck">Check</button><button class="btn ghost" type="button" id="boUndo">Undo</button><button class="btn navy" type="button" id="boNext">Next sentence</button><span class="score" id="boMsg"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="stage" id="s6">
+  <div class="stage-head"><h2><span class="num">6</span>Speaking</h2><span class="time">12 min</span></div>
+  <div class="task">
+    <h3>How often do you…? <span class="tag talk">Speaking</span></h3>
+    <p class="instr">Get a question. Answer with a how-often word. Then ask the teacher: "And you?"</p>
+    <div class="big teal">
+      <span class="emo" id="hoE">❓</span>
+      <span class="line" id="hoQ">Tap Next</span>
+      <div class="say" style="justify-content:center"><span class="pill a">I always / usually / often…</span><span class="pill a">I sometimes / rarely / never…</span></div>
+      <div class="btns"><button class="btn" type="button" id="hoNext">Next</button></div>
+    </div>
+  </div>
+  <div class="task">
+    <h3>Me and my teacher <span class="tag talk">Speaking</span></h3>
+    <p class="instr">Tap your answer (red). The teacher taps hers (blue). Then say the differences: "I always…, but you never…"</p>
+    <div class="fboard" id="fb"></div>
+    <div class="say"><span class="pill a">We both always…</span><span class="pill a">I often…, but you rarely…</span><span class="pill q">How often do you…?</span></div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="stage" id="s7">
+  <div class="stage-head"><h2><span class="num">7</span>Read: Mia's school day</h2><span class="time">8 min</span></div>
+  <div class="task">
+    <h3>Read the text <span class="tag">Reading</span></h3>
+    <p class="instr">Find the 6 how-often words. Tap the dotted words for Ukrainian.</p>
+    <div class="text mia plain" id="mia"><h4><span aria-hidden="true">👧</span>Mia, 12, Dublin</h4>
+      <p>Hi! I'm Mia. I'm 12 and I live in Dublin, in Ireland.</p>
+      <p>I'm <span class="fq">often</span> <span class="g" data-t="запізнююся" tabindex="0">late</span> for school! I <span class="fq">usually</span> get to school at 9:05. Oops!</p>
+      <p>I love art. In art, we <span class="fq">never</span> write. We draw and paint.</p>
+      <p>I <span class="fq">rarely</span> ask questions. I'm <span class="g" data-t="сором'язлива" tabindex="0">shy</span>. But I <span class="fq">always</span> listen to the teacher.</p>
+      <p>I <span class="fq">sometimes</span> have lunch at school, and sometimes I have lunch at home with my grandma.</p>
+      <p>I do my homework with my sister. She <span class="g" data-t="допомагає" tabindex="0">helps</span> me with maths!</p>
+    </div>
+    <div class="btns"><button class="btn ghost" type="button" id="miaShow">Show the how-often words</button></div>
+  </div>
+  <div class="task">
+    <h3>Leo or Mia? <span class="tag game">Game</span></h3>
+    <div id="lm"></div>
+    <div class="btns"><button class="btn" type="button" data-check="lm">Check</button><span class="score" id="lm-score"></span></div>
+    <p class="tnote"><b>Speaking:</b> Is your school day like Leo's or like Mia's? Why?</p>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="stage" id="s8">
+  <div class="stage-head"><h2><span class="num">8</span>Wrap-up</h2><span class="time">5 min</span></div>
+  <div class="task">
+    <h3>My school day <span class="tag talk">Writing</span></h3>
+    <p class="instr">Write 5 sentences about your school day. Use a different how-often word in each one!</p>
+    <textarea class="write" id="myDay" aria-label="My school day" placeholder="I always get to school at 8:15. I sometimes…"></textarea>
+    <div class="say" id="myDayChk"></div>
+  </div>
+  <div class="task">
+    <h3>Exit quiz</h3>
+    <div id="exit"></div>
+    <div class="btns"><button class="btn" type="button" data-check="exit">Check</button><span class="score" id="exit-score"></span></div>
+  </div>
+</section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const shuffle=a=>{ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; };
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const norm=s=>String(s).toLowerCase().replace(/[’‘`]/g,"'").replace(/[.!?,]/g,'').replace(/\s+/g,' ').trim();
+const isOk=(v,ans)=>String(ans).split('|').some(a=>norm(a)===norm(v));
+const first=ans=>String(ans).split('|')[0];
+function setScore(id,ok,n){ const el=$(id+'-score'); if(el) el.textContent=`${ok} / ${n}`+(ok===n?' 🎉':''); }
+(function(){ const root=document.documentElement, tb=$('themeBtn'); if(!tb) return;
+  const isDark=()=> root.dataset.theme ? root.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const label=()=>{ tb.textContent = isDark() ? '☀️ Light' : '🌙 Dark'; };
+  tb.addEventListener('click',()=>{ root.dataset.theme = isDark()?'light':'dark'; label(); }); label(); })();
+
+/* multiple choice rows: [prompt, [options], answer] */
+function MC(id,items){ const el=$(id); el.dataset.kind='mc'; el.classList.add('rows');
+  el.innerHTML=items.map(([p,o,a])=>`<div class="trow" data-ans="${esc(a)}"><span class="st">${p}</span><div class="opts">${o.map(x=>`<button class="opt" type="button">${esc(x)}</button>`).join('')}</div></div>`).join('');
+  el.querySelectorAll('.trow').forEach(r=>r.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ r.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel','right','wrong')); b.classList.add('sel'); })); }
+/* select gaps: [text with ___, [options], answer] */
+function SEL(id,items){ const el=$(id); el.dataset.kind='sel'; el.classList.add('rows');
+  el.innerHTML=items.map(([t,o,a],i)=>`<div class="trow"><span class="st">${t.replace('___',`<select class="sel" data-ans="${esc(a)}" aria-label="Answer ${i+1}"><option value="">…</option>${o.map(x=>`<option>${esc(x)}</option>`).join('')}</select>`)}</span><span class="fix"></span></div>`).join(''); }
+/* typed gaps: [text with ___ (one or more), answer or [answers], optional width class] */
+function INP(id,items){ const el=$(id); el.dataset.kind='inp'; el.classList.add('rows');
+  el.innerHTML=items.map(([t,a,w],i)=>{ const ans=Array.isArray(a)?a:[a]; let k=0;
+    return `<div class="trow"><span class="st">${t.replace(/___/g,()=>`<input class="gap ${w||''}" data-ans="${esc(ans[k++])}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Answer ${i+1}">`)}</span><span class="fix"></span></div>`; }).join(''); }
+/* teacher marking rows: [html, key] */
+function MARK(id,items){ const el=$(id); el.classList.add('rows');
+  el.innerHTML=items.map(([t,k])=>`<div class="trow"><span class="st">${t}${k?` <span class="key" hidden>→ ${k}</span>`:''}</span><span class="mk"><button type="button" data-m="ok" aria-label="correct">✓</button><button type="button" data-m="no" aria-label="wrong">✗</button></span></div>`).join('');
+  el.querySelectorAll('.mk').forEach(m=>m.querySelectorAll('button').forEach(b=>b.onclick=()=>{ const on=b.classList.contains(b.dataset.m); m.querySelectorAll('button').forEach(x=>x.classList.remove('ok','no')); if(!on) b.classList.add(b.dataset.m);
+    const n=el.querySelectorAll('.mk').length, ok=el.querySelectorAll('.mk .ok').length; setScore(id,ok,n); })); }
+function checkIt(id){ const el=$(id); let ok=0,n=0;
+  if(el.dataset.kind==='mc'){ el.querySelectorAll('.trow').forEach(r=>{ n++; const s=r.querySelector('.opt.sel'); r.querySelectorAll('.opt').forEach(x=>x.classList.remove('right','wrong'));
+      if(s){ if(s.textContent===r.dataset.ans){ s.classList.add('right'); ok++; } else s.classList.add('wrong'); } }); }
+  else { el.querySelectorAll('.trow').forEach(r=>{ const f=r.querySelector('.fix'); const fixes=[];
+      r.querySelectorAll('select.sel,input.gap').forEach(g=>{ n++; g.classList.remove('right','wrong'); const v=g.value.trim();
+        const good= g.tagName==='SELECT' ? v===g.dataset.ans : (v && isOk(v,g.dataset.ans));
+        g.classList.add(good?'right':'wrong'); if(good) ok++; else fixes.push(first(g.dataset.ans)); });
+      if(f) f.textContent= fixes.length? '✓ '+fixes.join(' / ') : ''; }); }
+  setScore(id,ok,n); }
+document.addEventListener('click',e=>{ const c=e.target.closest('[data-check]'); if(c) checkIt(c.dataset.check);
+  const k=e.target.closest('[data-key]'); if(k){ const show=k.dataset.open!=='1'; k.dataset.open=show?'1':''; $(k.dataset.key).querySelectorAll('.key').forEach(x=>x.hidden=!show); k.textContent=show?'Hide answers':'Show answers'; } });
+
+/* click-to-match: pairs [left, right] */
+function MATCH(id,pairs,wide){ const el=$(id); el.className='match'; let sel=null, done=0;
+  el.innerHTML=`<div class="col">${shuffle(pairs.map((p,i)=>[p[0],i])).map(([w,i])=>`<button type="button" class="mi w" data-i="${i}">${w}</button>`).join('')}</div><div class="col">${shuffle(pairs.map((p,i)=>[p[1],i])).map(([d,i])=>`<button type="button" class="mi" data-j="${i}">${d}</button>`).join('')}</div>`;
+  el.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{ if(b.classList.contains('done')) return; el.querySelectorAll('[data-i]').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); sel=b; });
+  el.querySelectorAll('[data-j]').forEach(b=>b.onclick=()=>{ if(!sel||b.classList.contains('done')) return;
+    if(sel.dataset.i===b.dataset.j){ sel.classList.remove('sel'); sel.classList.add('done'); b.classList.add('done'); done++; sel=null; setScore(id,done,pairs.length); }
+    else { b.classList.add('nope'); setTimeout(()=>b.classList.remove('nope'),320); } }); }
+/* shuffled deck */
+function DECK(list){ let d=[]; return ()=>{ if(!d.length) d=shuffle(list); return d.pop(); }; }
+/* countdown timer */
+function TIMER(dispId,secs){ let left=secs,t=null; const show=()=>{ $(dispId).textContent=left; $(dispId).classList.toggle('low',left<=5); };
+  return { start(s){ clearInterval(t); left=s||secs; show(); t=setInterval(()=>{ left--; show(); if(left<=0){ clearInterval(t); $(dispId).textContent='⏰'; } },1000); },
+    stop(){ clearInterval(t); }, reset(s){ clearInterval(t); left=s||secs; show(); } }; }
+/* ranking list with up/down buttons */
+function RANK(id,items){ const el=$(id); let order=items.slice();
+  const draw=()=>{ el.innerHTML=order.map((x,i)=>`<li><span>${x}</span><button type="button" data-u="${i}" aria-label="up" ${i?'':'disabled'}>↑</button><button type="button" data-d="${i}" aria-label="down" ${i<order.length-1?'':'disabled'}>↓</button></li>`).join('');
+    el.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.u; [order[i-1],order[i]]=[order[i],order[i-1]]; draw(); });
+    el.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.d; [order[i+1],order[i]]=[order[i],order[i+1]]; draw(); }); };
+  draw(); return ()=>order; }
+/* agree-o-meter: statements; two rows (student / teacher) */
+function AGREE(id,items){ const faces=[['😡','No way!'],['🙁','Disagree'],['😐','Not sure'],['🙂','Agree'],['😍','Totally!']];
+  $(id).innerHTML=items.map((s,i)=>`<div class="dcard"><span class="st">${s}</span>${['s','t'].map(w=>`<div><b style="font-size:13px;color:var(--${w==='s'?'red':'navy'})">${w==='s'?'Student':'Teacher'}</b><div class="scale" data-w="${w}">${faces.map(([e,l])=>`<button type="button"><span aria-hidden="true">${e}</span>${l}</button>`).join('')}</div></div>`).join('')}</div>`).join('');
+  $(id).querySelectorAll('.scale').forEach(sc=>sc.querySelectorAll('button').forEach(b=>b.onclick=()=>{ sc.querySelectorAll('button').forEach(x=>x.classList.remove(sc.dataset.w)); b.classList.add(sc.dataset.w); })); }
+
+(function(){
+  const V=[['🏫','get to school','приходити до школи','I get to school at 8:30.'],['▶️','start','починатися','Lessons start at 9 o\'clock.'],['👂','listen','слухати','I listen to the teacher.'],['✍️','write','писати','I write in my notebook.'],['📖','read','читати','We read stories in English.'],['🙋','ask','питати','I ask a question.'],['💬','answer','відповідати','I answer the question.'],['🗣️','talk','розмовляти','I talk to my friends.'],['🍽️','have lunch','обідати','I have lunch at 1 o\'clock.'],['📚','do homework','робити домашнє завдання','I do my homework in the evening.']];
+  $('cards').innerHTML=V.map(([e,w,t,x])=>`<button type="button"><span aria-hidden="true">${e}</span>${w}<i>${t}</i><small>${x}</small></button>`).join('');
+  $('cards').querySelectorAll('button').forEach(b=>b.onclick=()=>b.classList.toggle('on'));
+  MATCH('mv',V.map(([e,w,t])=>[w,t]));
+  const PF=DECK(V), pt=TIMER('pfT',4); let pp=0, pc=null;
+  $('pfNext').onclick=()=>{ pc=PF(); $('pfE').textContent=pc[0]; $('pfW').textContent=pc[1]; $('pfW').style.filter='blur(10px)'; pt.start(4); };
+  $('pfShow').onclick=()=>{ $('pfW').style.filter=''; pt.stop(); };
+  $('pfYes').onclick=()=>{ if(!pc) return; pp++; pc=null; $('pfS').textContent=pp+(pp===1?' point':' points'); $('pfW').style.filter=''; pt.stop(); };
+
+  const VB=['get','start','listen','write','read','ask','answer','talk','have','do'];
+  $('gvBox').innerHTML=V.map(([e,w])=>`<span style="background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:3px 12px;font-weight:800">${e} ${w.replace(' to school','').replace(' lunch','').replace(' homework','')}</span>`).join('');
+  SEL('gv',[["1 I ___ my homework in the evening.",VB,'do'],["2 We ___ a story in English.",VB,'read'],["3 Lessons ___ at nine o'clock.",VB,'start'],["4 Can I ___ a question?",VB,'ask'],["5 I ___ to my friends at break.",VB,'talk'],["6 Please ___ to the teacher!",VB,'listen'],["7 I ___ to school by bus.",VB,'get'],["8 I know the answer! Can I ___?",VB,'answer'],["9 We ___ lunch at one o'clock.",VB,'have'],["10 I ___ my name in my notebook.",VB,'write']]);
+  const MI=DECK(V.map(v=>v[0]+' '+v[1]));
+  $('miNext').onclick=()=>{ $('miW').textContent=MI(); $('miW').style.filter=''; };
+  $('miShow').onclick=()=>{ const w=$('miW'); w.style.filter= w.style.filter? '' : 'blur(12px)'; };
+
+  document.querySelectorAll('.g').forEach(w=>{ const t=()=>w.classList.toggle('on'); w.addEventListener('click',t); w.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); t(); } }); });
+  MC('lq',[["1 What time does Leo get to school?",['3:30','8:45','8:30'],'8:30'],["2 What does Leo do in maths?",['He listens and writes.','He reads stories.','He talks to friends.'],'He listens and writes.'],["3 What's Leo's favourite subject?",['English','maths','art'],'maths'],["4 How often does Leo ask questions?",['always','never','sometimes'],'sometimes'],["5 Where does Leo have lunch?",['at school','at home','in the park'],'at school'],["6 When does Leo never do homework?",['in the evening','on Monday','on Saturday'],'on Saturday']]);
+
+  const F=[['always','100','завжди'],['usually','80','зазвичай'],['often','60','часто'],['sometimes','40','іноді'],['rarely','20','рідко'],['never','0','ніколи']];
+  $('sc6').innerHTML=F.map(([w,p,t])=>`<div><span>${w}<br><span class="ua">${t}</span></span><span class="bar"><i style="width:${p}%"></i></span><span>${p}%</span></div>`).join('');
+  const FW=F.map(f=>f[0]);
+  SEL('fw',[["1 Leo ___ gets to school at 8:30. (100%)",FW,'always'],["2 Mia ___ asks questions. (20%)",FW,'rarely'],["3 Leo ___ reads stories in English. (60%)",FW,'often'],["4 Leo ___ does homework on Saturday. (0%)",FW,'never'],["5 Mia ___ has lunch at school. (40%)",FW,'sometimes'],["6 Leo ___ answers a lot of questions. (80%)",FW,'usually']]);
+
+  const BO=["I always do my homework","She never writes in art","We usually have lunch at school","He sometimes asks questions","They rarely read in maths","I often talk to my friends","I'm often late for school"];
+  let bi=-1, bout=[];
+  const boShow=()=>{ const s=BO[bi]; $('boOut').className='out'; $('boOut').innerHTML=bout.map(w=>`<span class="chip">${w}</span>`).join('');
+    const used=bout.slice(); $('boBank').innerHTML=shuffleSeeded(s.split(' ')).map(w=>{ const k=used.indexOf(w); if(k>-1){ used.splice(k,1); return ''; } return `<button type="button" class="chip">${w}</button>`; }).join('');
+    $('boBank').querySelectorAll('button').forEach(b=>b.onclick=()=>{ bout.push(b.textContent); boShow(); }); };
+  let order=[]; const shuffleSeeded=a=>{ if(order.length!==a.length) order=shuffle(a.map((_,i)=>i)); return order.map(i=>a[i]); };
+  $('boNext').onclick=()=>{ bi=(bi+1)%BO.length; bout=[]; order=[]; $('boMsg').textContent=`Sentence ${bi+1} / ${BO.length}`; boShow(); };
+  $('boUndo').onclick=()=>{ if(bi<0) return; bout.pop(); boShow(); };
+  $('boCheck').onclick=()=>{ if(bi<0) return; const ok=bout.join(' ')===BO[bi]; $('boOut').className='out '+(ok?'right':'wrong'); $('boMsg').textContent= ok? '✓ Great! Now say it.' : '✗ '+BO[bi]+'.'; };
+  $('boNext').click();
+
+  const HO=DECK([['📚','How often do you read books?'],['🍕','How often do you eat pizza?'],['🎮','How often do you play video games?'],['⏰','How often are you late for school?'],['🙋','How often do you ask questions in class?'],['📝','How often do you do homework on Sunday?'],['🗣️','How often do you talk in class?'],['🍽️','How often do you have lunch at school?'],['🎧','How often do you listen to music?'],['✍️','How often do you write stories?'],['🚌','How often do you go to school by bus?'],['📱','How often do you use your phone at school?']]);
+  $('hoNext').onclick=()=>{ const [e,q]=HO(); $('hoE').textContent=e; $('hoQ').textContent=q; };
+  const FB=['get to school early','listen to music','read books','ask questions in class','do homework at the weekend','talk on the phone','play sport','eat breakfast'];
+  $('fb').innerHTML=FB.map(a=>`<div class="frow"><span class="st">${a}</span>${['s','t'].map(w=>`<div class="who6 ${w}"><b style="color:var(--${w==='s'?'red':'navy'})">${w==='s'?'Student':'Teacher'}</b>${FW.map(f=>`<button type="button">${f}</button>`).join('')}</div>`).join('')}</div>`).join('');
+  $('fb').querySelectorAll('.who6').forEach(r=>r.querySelectorAll('button').forEach(b=>b.onclick=()=>{ r.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); }));
+
+  $('miaShow').onclick=()=>{ $('mia').classList.toggle('plain'); };
+  const LM=['Leo','Mia'];
+  MC('lm',[["1 ___ always gets to school at 8:30.",LM,'Leo'],["2 ___ is often late for school.",LM,'Mia'],["3 ___ loves maths.",LM,'Leo'],["4 ___ rarely asks questions.",LM,'Mia'],["5 ___ sometimes has lunch at home.",LM,'Mia'],["6 ___ never does homework on Saturday.",LM,'Leo'],["7 ___ does homework with a sister.",LM,'Mia']]);
+
+  $('myDay').addEventListener('input',()=>{ const t=$('myDay').value.toLowerCase(); $('myDayChk').innerHTML=FW.map(w=>`<span class="pill ${new RegExp('\\b'+w+'\\b').test(t)?'a':''}">${new RegExp('\\b'+w+'\\b').test(t)?'✓ ':''}${w}</span>`).join(''); });
+  $('myDay').dispatchEvent(new Event('input'));
+  MC('exit',[["1. 0% =",['never','always','sometimes'],'never'],["2. I ___ do my homework. (100%)",['usually','always','rarely'],'always'],["3. Choose the correct sentence:",['Always I do my homework.','I do always my homework.','I always do my homework.'],'I always do my homework.'],["4. We ___ to the teacher.",['write','ask','listen'],'listen'],["5. Can I ___ a question?",['answer','ask','talk'],'ask']]);
+})();
+</script>
