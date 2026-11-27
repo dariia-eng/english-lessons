@@ -1,0 +1,338 @@
+<meta charset="utf-8">
+<title>Always, Sometimes, Never Homework</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: one centred column of stage panels with a sticky stage bar; book tasks tagged, each followed by speaking or a game */
+:root{
+  --bg:#f7f8ff; --surface:#ffffff; --surface-2:#eef0fb;
+  --ink:#1d1b3a; --muted:#5f5d7e; --line:#dcdff2;
+  --red:#e8364f; --red-soft:#ffdfe4; --teal:#11a39a; --teal-soft:#cdf3ef;
+  --navy:#2b3a8f; --navy-soft:#dde3ff; --sun:#f2a900; --sun-soft:#fff0c4;
+  --good:#0f9d6e; --bad:#d92d4a; --good-bg:#dcf8ec; --bad-bg:#ffe1e7; --on-accent:#ffffff;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#12132a; --surface:#1c1e3a; --surface-2:#262947; --ink:#eef0ff; --muted:#aeb1d6; --line:#363a63;
+  --red:#ff6b80; --red-soft:#4a1f2c; --teal:#3fd6c9; --teal-soft:#123f3c; --navy:#93a4ff; --navy-soft:#2a3166;
+  --sun:#ffcf5c; --sun-soft:#433a1b; --good:#4fe0aa; --bad:#ff7b95; --good-bg:#173f31; --bad-bg:#4a1d2a; --on-accent:#12132a; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#12132a; --surface:#1c1e3a; --surface-2:#262947; --ink:#eef0ff; --muted:#aeb1d6; --line:#363a63;
+  --red:#ff6b80; --red-soft:#4a1f2c; --teal:#3fd6c9; --teal-soft:#123f3c; --navy:#93a4ff; --navy-soft:#2a3166;
+  --sun:#ffcf5c; --sun-soft:#433a1b; --good:#4fe0aa; --bad:#ff7b95; --good-bg:#173f31; --bad-bg:#4a1d2a; --on-accent:#12132a; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:48px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3,h4{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+p{margin:0} button{font:inherit;cursor:pointer} button:disabled{cursor:default;opacity:.45}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.hero{padding-top:28px;display:flex;flex-direction:column;gap:12px;position:relative}
+.hero h1{font-size:clamp(44px,10vw,88px);font-weight:800;letter-spacing:-.02em;text-transform:uppercase;line-height:.95}
+.hero h1 span{display:inline-block;background:var(--ink);color:var(--bg);padding:0 .12em;margin-top:.06em}
+.lede{font-size:19px;color:var(--muted);max-width:62ch}
+.theme-btn{position:absolute;top:24px;right:0;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding-block:10px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.bar a{flex:0 0 auto;text-decoration:none;color:var(--ink);font-weight:800;font-size:14px;padding:6px 12px;border-radius:999px;border:2px solid var(--line);background:var(--surface);white-space:nowrap}
+.bar a span{color:var(--muted);font-weight:600;margin-left:4px}
+.bar a:hover{border-color:var(--red)}
+.stage{background:var(--surface);border:2px solid var(--line);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:24px;scroll-margin-top:70px}
+.stage-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.stage-head h2{font-size:clamp(26px,5vw,34px);font-weight:800}
+.num{font-family:var(--display);color:var(--red);margin-right:8px}
+.time{font-weight:800;font-size:14px;background:var(--sun-soft);padding:4px 12px;border-radius:999px}
+.task{display:flex;flex-direction:column;gap:12px}
+.task h3{font-size:21px;font-weight:600;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.tag{font-family:var(--body);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--navy-soft);color:var(--navy)}
+.tag.book{background:var(--surface-2);color:var(--muted);border:2px solid var(--line)}
+.tag.talk{background:var(--teal-soft);color:var(--teal)}
+.tag.game{background:var(--sun-soft);color:var(--ink)}
+.tag.audio{background:var(--red-soft);color:var(--red)}
+.instr{color:var(--muted);font-weight:600}
+.tnote{font-size:15px;background:var(--surface-2);border-radius:14px;padding:10px 14px;color:var(--muted)}
+.tnote b{color:var(--ink)}
+details summary{cursor:pointer;font-weight:800}
+.plan{width:100%;border-collapse:collapse;font-size:15px}
+.plan td,.plan th{text-align:left;padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.plan th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.plan td:first-child{white-space:nowrap;font-weight:800}
+.say{display:flex;flex-wrap:wrap;gap:8px}
+.pill{background:var(--surface-2);border-radius:12px;padding:6px 12px;font-weight:800}
+.pill.q{background:var(--navy-soft)} .pill.a{background:var(--teal-soft)}
+.big{border-radius:24px;padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;background:var(--sun-soft)}
+.big.navy{background:var(--navy-soft)} .big.red{background:var(--red-soft)} .big.teal{background:var(--teal-soft)}
+.big .line{font-family:var(--display);font-weight:800;font-size:clamp(22px,5vw,34px);min-height:1.2em}
+.big .sub{font-weight:700;color:var(--muted)}
+.big .emo{font-size:60px;line-height:1}
+.big .btns{justify-content:center}
+.btns{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:none;border-radius:999px;padding:9px 20px;font-weight:800;background:var(--red);color:var(--on-accent)}
+.btn.navy{background:var(--navy)} .btn.teal{background:var(--teal)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.score{font-weight:800;color:var(--muted)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:2px solid var(--line);background:var(--surface);color:var(--ink);padding:5px 14px;border-radius:999px;font-weight:700}
+.opt:hover{border-color:var(--navy)}
+.opt.sel{border-color:var(--navy);background:var(--navy-soft)}
+.opt.right{border-color:var(--good);background:var(--good-bg);color:var(--good)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.rows{display:flex;flex-direction:column;gap:8px}
+.trow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between;background:var(--surface-2);border-radius:14px;padding:8px 12px;font-weight:700}
+.trow .st{flex:1 1 260px;min-width:0}
+.trow .lab{font-family:var(--display);font-weight:800;color:var(--navy);margin-right:4px}
+select.sel,input.gap{font:inherit;font-weight:800;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:2px 8px;max-width:100%;min-width:0}
+input.gap{width:9em}
+input.gap.w{width:14em} input.gap.s{width:5em}
+select.sel.right,input.gap.right{border-color:var(--good);background:var(--good-bg)}
+select.sel.wrong,input.gap.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.fix{font-size:14px;font-weight:800;color:var(--good)} .fix:empty{display:none}
+.mk{display:flex;gap:4px}
+.mk button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:2px 9px;font-weight:800;font-size:14px}
+.mk button.ok{border-color:var(--good);background:var(--good-bg);color:var(--good)}
+.mk button.no{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.key{font-size:14px;font-weight:800;color:var(--teal)} .key[hidden]{display:none}
+.match{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:10px}
+.match .col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.mi{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:8px 12px;text-align:left;font-weight:700}
+.mi.w{font-family:var(--display);font-weight:800;font-size:18px}
+.mi.sel{border-color:var(--navy);background:var(--navy-soft)}
+.mi.done{border-color:var(--good);background:var(--good-bg);color:var(--good);cursor:default}
+.mi.nope{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;font-weight:800}
+.chip.on{border-color:var(--navy);background:var(--navy-soft)}
+.chip.right{border-color:var(--good);background:var(--good-bg)} .chip.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.cols2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.box{border:3px dashed var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:110px;min-width:0;background:var(--surface-2);text-align:left;color:var(--ink)}
+.box h4{font-size:16px}
+.box.target{border-style:solid;border-color:var(--navy)}
+.timer{font-family:var(--display);font-weight:800;font-size:48px;font-variant-numeric:tabular-nums;line-height:1}
+.timer.low{color:var(--red)}
+.bookimg{width:100%;max-width:600px;border-radius:16px;display:block;border:2px solid var(--line)}
+.pform{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.pform label{display:flex;flex-direction:column;gap:4px;font-weight:800;background:var(--surface-2);border-radius:12px;padding:8px 10px}
+.pform input{font:inherit;font-weight:700;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:5px 8px;width:100%}
+.pform input.right{border-color:var(--good);background:var(--good-bg)} .pform input.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.preview{background:var(--sun-soft);border-radius:18px;padding:16px;font-size:18px;font-weight:700;line-height:1.7}
+.preview b{color:var(--red)}
+textarea.write{font:inherit;font-weight:700;color:var(--ink);background:var(--surface-2);border:2px solid var(--line);border-radius:14px;padding:10px 12px;width:100%;min-height:130px;resize:vertical}
+.qcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.qcards div{background:var(--navy-soft);border-radius:14px;padding:10px 12px;font-weight:800}
+.qcards div:nth-child(2n){background:var(--teal-soft)} .qcards div:nth-child(3n){background:var(--red-soft)}
+.who{display:grid;grid-template-columns:auto 1fr;gap:14px;background:var(--surface);border-radius:18px;padding:16px;align-items:center;width:100%;max-width:560px;text-align:left}
+.who .ava{font-size:60px;line-height:1}
+.who dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-weight:700}
+.who dt{color:var(--muted)} .who dd{margin:0}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.scale button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:6px 4px;font-weight:800;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.scale button span{font-size:22px}
+.scale button.s{border-color:var(--red);background:var(--red-soft)}
+.scale button.t{border-color:var(--navy);background:var(--navy-soft)}
+.scale button.s.t{background:linear-gradient(90deg,var(--red-soft) 50%,var(--navy-soft) 50%);border-color:var(--ink)}
+.dcard{background:var(--surface-2);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.dcard .st{font-family:var(--display);font-weight:800;font-size:19px}
+.rank{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;counter-reset:r}
+.rank li{display:flex;align-items:center;gap:8px;background:var(--surface-2);border-radius:12px;padding:6px 10px;font-weight:800;counter-increment:r}
+.rank li::before{content:counter(r);font-family:var(--display);color:var(--red);min-width:1.2em}
+.rank li span{flex:1}
+.rank button{border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:0 8px;font-weight:800}
+.grid3{width:100%;border-collapse:collapse}
+.grid3 th,.grid3 td{padding:6px 6px;border-bottom:1px solid var(--line);text-align:center}
+.grid3 td:first-child,.grid3 th:first-child{text-align:left;font-weight:700}
+.grid3 input{width:22px;height:22px;accent-color:var(--navy)}
+.grid3 td.right{background:var(--good-bg)} .grid3 td.wrong{background:var(--bad-bg)}
+.table-wrap{overflow-x:auto}
+@media (max-width:620px){ .stage{padding:18px} .theme-btn{position:static;align-self:flex-start} .match{grid-template-columns:1fr} .pform{grid-template-columns:1fr} .scale button{font-size:11px} }
+@media (max-width:520px){ .cols2{grid-template-columns:1fr} .who{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
+</style>
+<style>
+.namebar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.namebar label{font-weight:800}
+.namebar input{font:inherit;font-weight:700;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:6px 14px;flex:1 1 180px;min-width:0}
+.prog{display:flex;align-items:center;gap:8px;flex:1 1 200px}
+.pbar{flex:1;height:12px;border-radius:999px;background:var(--surface-2);overflow:hidden}
+.pfill{height:12px;width:0;background:linear-gradient(90deg,var(--red),var(--sun),var(--teal));transition:width .3s}
+.stage.complete{border-color:var(--good)}
+.wbox{background:var(--surface-2);border:2px dashed var(--line);border-radius:16px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:6px}
+.wbox span{background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:3px 12px;font-weight:800}
+.wl{display:flex;flex-direction:column;gap:4px;background:var(--surface-2);border-radius:14px;padding:8px 12px}
+.wl label{font-weight:800}
+.wl input{font:inherit;font-weight:700;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:6px 10px;width:100%}
+.tips{display:flex;flex-direction:column;gap:4px;font-weight:700}
+.tips .ok{color:var(--good)} .tips .warn{color:var(--bad)}
+pre#preview{white-space:pre-wrap;background:var(--surface-2);border-radius:14px;padding:12px;font-size:14px;margin:0}
+</style>
+<div class="wrap">
+<header class="hero">
+  <button class="theme-btn" id="themeBtn" type="button">🌙 Dark</button>
+  <h1><span>Homework</span></h1>
+  <p class="lede">School-day verbs and how-often words: <b>always, usually, often, sometimes, rarely, never</b>.</p>
+</header>
+
+<div class="namebar">
+  <label for="nameInput">Your name:</label><input id="nameInput" autocomplete="off" placeholder="Type your name…">
+  <div class="prog"><div class="pbar"><div class="pfill" id="pfill"></div></div><span class="score" id="plabel">0 / 4</span></div>
+</div>
+
+<section class="stage" id="ex1">
+  <div class="stage-head"><h2><span class="num">1</span>School-day verbs</h2></div>
+  <p class="instr">Look at the picture. Choose the verb.</p>
+  <div class="wbox"><span>🏫 get</span><span>▶️ start</span><span>👂 listen</span><span>✍️ write</span><span>📖 read</span><span>🙋 ask</span><span>💬 answer</span><span>🗣️ talk</span><span>🍽️ have</span><span>📚 do</span></div>
+  <div id="v1"></div>
+  <div class="btns"><button class="btn" type="button" data-hw="v1">Check</button><span class="score" id="v1-score"></span></div>
+</section>
+
+<section class="stage" id="ex2">
+  <div class="stage-head"><h2><span class="num">2</span>How often does Sam…?</h2></div>
+  <p class="instr">Look at the %. Choose the how-often word.</p>
+  <div class="wbox"><span>always 100%</span><span>usually 80%</span><span>often 60%</span><span>sometimes 40%</span><span>rarely 20%</span><span>never 0%</span></div>
+  <div id="v2"></div>
+  <div class="btns"><button class="btn" type="button" data-hw="v2">Check</button><span class="score" id="v2-score"></span></div>
+</section>
+
+<section class="stage" id="ex3">
+  <div class="stage-head"><h2><span class="num">3</span>Choose the correct sentence</h2></div>
+  <p class="instr">Remember: the how-often word goes <b>before the verb</b>.</p>
+  <div id="v3"></div>
+  <div class="btns"><button class="btn" type="button" data-hw="v3">Check</button><span class="score" id="v3-score"></span></div>
+</section>
+
+<section class="stage" id="ex4">
+  <div class="stage-head"><h2><span class="num">4</span>My school day</h2></div>
+  <p class="instr">Write 5 sentences about you. Use a <b>different</b> how-often word in each sentence.</p>
+  <div class="rows">
+    <div class="wl"><label for="w1">1. Getting to school</label><input id="w1" autocomplete="off" placeholder="I always get to school at 8:15."></div>
+    <div class="wl"><label for="w2">2. Lessons</label><input id="w2" autocomplete="off" placeholder="In English, we often…"></div>
+    <div class="wl"><label for="w3">3. Lunch or break</label><input id="w3" autocomplete="off" placeholder="I sometimes…"></div>
+    <div class="wl"><label for="w4">4. Homework</label><input id="w4" autocomplete="off" placeholder="I usually…"></div>
+    <div class="wl"><label for="w5">5. Something you never do</label><input id="w5" autocomplete="off" placeholder="I never…"></div>
+  </div>
+  <div class="btns"><button class="btn" type="button" id="w4Check">Done</button><span class="score" id="v4-score"></span></div>
+  <div class="tips" id="tips"></div>
+</section>
+
+<section class="stage" id="send">
+  <div class="stage-head"><h2><span class="num">✉️</span>Send to your teacher</h2></div>
+  <p class="instr">Check all 4 exercises. Then tap <b>Copy answers</b> and send them to your teacher on Telegram. Or tap <b>Send by email</b>.</p>
+  <div class="btns"><button class="btn navy" type="button" id="copyBtn">Copy answers</button><button class="btn ghost" type="button" id="mailBtn">Send by email</button><span class="score" id="sendMsg"></span></div>
+  <pre id="preview" hidden></pre>
+</section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const shuffle=a=>{ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; };
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const norm=s=>String(s).toLowerCase().replace(/[’‘`]/g,"'").replace(/[.!?,]/g,'').replace(/\s+/g,' ').trim();
+const isOk=(v,ans)=>String(ans).split('|').some(a=>norm(a)===norm(v));
+const first=ans=>String(ans).split('|')[0];
+function setScore(id,ok,n){ const el=$(id+'-score'); if(el) el.textContent=`${ok} / ${n}`+(ok===n?' 🎉':''); }
+(function(){ const root=document.documentElement, tb=$('themeBtn'); if(!tb) return;
+  const isDark=()=> root.dataset.theme ? root.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const label=()=>{ tb.textContent = isDark() ? '☀️ Light' : '🌙 Dark'; };
+  tb.addEventListener('click',()=>{ root.dataset.theme = isDark()?'light':'dark'; label(); }); label(); })();
+
+/* multiple choice rows: [prompt, [options], answer] */
+function MC(id,items){ const el=$(id); el.dataset.kind='mc'; el.classList.add('rows');
+  el.innerHTML=items.map(([p,o,a])=>`<div class="trow" data-ans="${esc(a)}"><span class="st">${p}</span><div class="opts">${o.map(x=>`<button class="opt" type="button">${esc(x)}</button>`).join('')}</div></div>`).join('');
+  el.querySelectorAll('.trow').forEach(r=>r.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ r.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel','right','wrong')); b.classList.add('sel'); })); }
+/* select gaps: [text with ___, [options], answer] */
+function SEL(id,items){ const el=$(id); el.dataset.kind='sel'; el.classList.add('rows');
+  el.innerHTML=items.map(([t,o,a],i)=>`<div class="trow"><span class="st">${t.replace('___',`<select class="sel" data-ans="${esc(a)}" aria-label="Answer ${i+1}"><option value="">…</option>${o.map(x=>`<option>${esc(x)}</option>`).join('')}</select>`)}</span><span class="fix"></span></div>`).join(''); }
+/* typed gaps: [text with ___ (one or more), answer or [answers], optional width class] */
+function INP(id,items){ const el=$(id); el.dataset.kind='inp'; el.classList.add('rows');
+  el.innerHTML=items.map(([t,a,w],i)=>{ const ans=Array.isArray(a)?a:[a]; let k=0;
+    return `<div class="trow"><span class="st">${t.replace(/___/g,()=>`<input class="gap ${w||''}" data-ans="${esc(ans[k++])}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Answer ${i+1}">`)}</span><span class="fix"></span></div>`; }).join(''); }
+/* teacher marking rows: [html, key] */
+function MARK(id,items){ const el=$(id); el.classList.add('rows');
+  el.innerHTML=items.map(([t,k])=>`<div class="trow"><span class="st">${t}${k?` <span class="key" hidden>→ ${k}</span>`:''}</span><span class="mk"><button type="button" data-m="ok" aria-label="correct">✓</button><button type="button" data-m="no" aria-label="wrong">✗</button></span></div>`).join('');
+  el.querySelectorAll('.mk').forEach(m=>m.querySelectorAll('button').forEach(b=>b.onclick=()=>{ const on=b.classList.contains(b.dataset.m); m.querySelectorAll('button').forEach(x=>x.classList.remove('ok','no')); if(!on) b.classList.add(b.dataset.m);
+    const n=el.querySelectorAll('.mk').length, ok=el.querySelectorAll('.mk .ok').length; setScore(id,ok,n); })); }
+function checkIt(id){ const el=$(id); let ok=0,n=0;
+  if(el.dataset.kind==='mc'){ el.querySelectorAll('.trow').forEach(r=>{ n++; const s=r.querySelector('.opt.sel'); r.querySelectorAll('.opt').forEach(x=>x.classList.remove('right','wrong'));
+      if(s){ if(s.textContent===r.dataset.ans){ s.classList.add('right'); ok++; } else s.classList.add('wrong'); } }); }
+  else { el.querySelectorAll('.trow').forEach(r=>{ const f=r.querySelector('.fix'); const fixes=[];
+      r.querySelectorAll('select.sel,input.gap').forEach(g=>{ n++; g.classList.remove('right','wrong'); const v=g.value.trim();
+        const good= g.tagName==='SELECT' ? v===g.dataset.ans : (v && isOk(v,g.dataset.ans));
+        g.classList.add(good?'right':'wrong'); if(good) ok++; else fixes.push(first(g.dataset.ans)); });
+      if(f) f.textContent= fixes.length? '✓ '+fixes.join(' / ') : ''; }); }
+  setScore(id,ok,n); }
+document.addEventListener('click',e=>{ const c=e.target.closest('[data-check]'); if(c) checkIt(c.dataset.check);
+  const k=e.target.closest('[data-key]'); if(k){ const show=k.dataset.open!=='1'; k.dataset.open=show?'1':''; $(k.dataset.key).querySelectorAll('.key').forEach(x=>x.hidden=!show); k.textContent=show?'Hide answers':'Show answers'; } });
+
+/* click-to-match: pairs [left, right] */
+function MATCH(id,pairs,wide){ const el=$(id); el.className='match'; let sel=null, done=0;
+  el.innerHTML=`<div class="col">${shuffle(pairs.map((p,i)=>[p[0],i])).map(([w,i])=>`<button type="button" class="mi w" data-i="${i}">${w}</button>`).join('')}</div><div class="col">${shuffle(pairs.map((p,i)=>[p[1],i])).map(([d,i])=>`<button type="button" class="mi" data-j="${i}">${d}</button>`).join('')}</div>`;
+  el.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{ if(b.classList.contains('done')) return; el.querySelectorAll('[data-i]').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); sel=b; });
+  el.querySelectorAll('[data-j]').forEach(b=>b.onclick=()=>{ if(!sel||b.classList.contains('done')) return;
+    if(sel.dataset.i===b.dataset.j){ sel.classList.remove('sel'); sel.classList.add('done'); b.classList.add('done'); done++; sel=null; setScore(id,done,pairs.length); }
+    else { b.classList.add('nope'); setTimeout(()=>b.classList.remove('nope'),320); } }); }
+/* shuffled deck */
+function DECK(list){ let d=[]; return ()=>{ if(!d.length) d=shuffle(list); return d.pop(); }; }
+/* countdown timer */
+function TIMER(dispId,secs){ let left=secs,t=null; const show=()=>{ $(dispId).textContent=left; $(dispId).classList.toggle('low',left<=5); };
+  return { start(s){ clearInterval(t); left=s||secs; show(); t=setInterval(()=>{ left--; show(); if(left<=0){ clearInterval(t); $(dispId).textContent='⏰'; } },1000); },
+    stop(){ clearInterval(t); }, reset(s){ clearInterval(t); left=s||secs; show(); } }; }
+/* ranking list with up/down buttons */
+function RANK(id,items){ const el=$(id); let order=items.slice();
+  const draw=()=>{ el.innerHTML=order.map((x,i)=>`<li><span>${x}</span><button type="button" data-u="${i}" aria-label="up" ${i?'':'disabled'}>↑</button><button type="button" data-d="${i}" aria-label="down" ${i<order.length-1?'':'disabled'}>↓</button></li>`).join('');
+    el.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.u; [order[i-1],order[i]]=[order[i],order[i-1]]; draw(); });
+    el.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.d; [order[i+1],order[i]]=[order[i],order[i+1]]; draw(); }); };
+  draw(); return ()=>order; }
+/* agree-o-meter: statements; two rows (student / teacher) */
+function AGREE(id,items){ const faces=[['😡','No way!'],['🙁','Disagree'],['😐','Not sure'],['🙂','Agree'],['😍','Totally!']];
+  $(id).innerHTML=items.map((s,i)=>`<div class="dcard"><span class="st">${s}</span>${['s','t'].map(w=>`<div><b style="font-size:13px;color:var(--${w==='s'?'red':'navy'})">${w==='s'?'Student':'Teacher'}</b><div class="scale" data-w="${w}">${faces.map(([e,l])=>`<button type="button"><span aria-hidden="true">${e}</span>${l}</button>`).join('')}</div></div>`).join('')}</div>`).join('');
+  $(id).querySelectorAll('.scale').forEach(sc=>sc.querySelectorAll('button').forEach(b=>b.onclick=()=>{ sc.querySelectorAll('button').forEach(x=>x.classList.remove(sc.dataset.w)); b.classList.add(sc.dataset.w); })); }
+
+(function(){
+  const TEACHER='dariia.mlnk@gmail.com', TITLE='Always, sometimes, never';
+  const VB=['get','start','listen','write','read','ask','answer','talk','have','do'];
+  SEL('v1',[["1 📖 We ___ a book in English class.",VB,'read'],["2 🍽️ I ___ lunch with my friends.",VB,'have'],["3 🙋 Can I ___ a question, please?",VB,'ask'],["4 📚 I ___ my homework after dinner.",VB,'do'],["5 👂 We ___ to music in the music lesson.",VB,'listen'],["6 ▶️ Our lessons ___ at 8:30.",VB,'start'],["7 ✍️ I ___ an email to my friend.",VB,'write'],["8 🗣️ We ___ in English with the teacher.",VB,'talk']]);
+  const FW=['always','usually','often','sometimes','rarely','never'];
+  SEL('v2',[["1 Sam ___ has breakfast. (100%)",FW,'always'],["2 Sam ___ plays football after school. (60%)",FW,'often'],["3 Sam ___ reads comics. (40%)",FW,'sometimes'],["4 Sam ___ gets to school late. (0%)",FW,'never'],["5 Sam ___ does homework on Friday. (20%)",FW,'rarely'],["6 Sam ___ walks to school. (80%)",FW,'usually']]);
+  MC('v3',[["1",['I listen always to the teacher.','I always listen to the teacher.','Always I listen to the teacher.'],'I always listen to the teacher.'],["2",['Never she does homework on Sunday.','She does never homework on Sunday.','She never does homework on Sunday.'],'She never does homework on Sunday.'],["3",['We usually have lunch at 1:00.','We usually lunch have at 1:00.','We have usually lunch at 1:00.'],'We usually have lunch at 1:00.'],["4",['I talk often to my friends.','I often talk to my friends.','I to my friends often talk.'],'I often talk to my friends.'],["5",['They rarely in maths read.','They read rarely in maths.','They rarely read in maths.'],'They rarely read in maths.']]);
+  $('v3').querySelectorAll('.trow').forEach(r=>{ r.style.flexDirection='column'; r.style.alignItems='flex-start'; const st=r.querySelector('.st'); st.style.flex='0 0 auto'; st.style.fontFamily='var(--display)'; st.style.color='var(--navy)'; });
+
+  const done={v1:false,v2:false,v3:false,v4:false}, results={};
+  const prog=()=>{ const n=Object.values(done).filter(Boolean).length; $('pfill').style.width=(n*25)+'%'; $('plabel').textContent=n+' / 4';
+    ['v1','v2','v3','v4'].forEach((k,i)=>$('ex'+(i+1)).classList.toggle('complete',done[k])); };
+  function collect(id){ const lines=[]; let ok=0,n=0;
+    $(id).querySelectorAll('.trow').forEach((r,i)=>{ n++;
+      const s=r.querySelector('select.sel'), o=r.querySelector('.opt.sel');
+      let v,good,ans;
+      if(s){ v=s.value; ans=s.dataset.ans; good=v===ans; } else { v=o?o.textContent:''; ans=r.dataset.ans; good=v===ans; }
+      if(good) ok++; lines.push(`${i+1}. ${v||'—'} ${good?'✓':'✗ ('+ans+')'}`); });
+    results[id]={score:`${ok}/${n}`,lines}; done[id]=true; prog(); }
+  document.querySelectorAll('[data-hw]').forEach(b=>b.onclick=()=>{ checkIt(b.dataset.hw); collect(b.dataset.hw); });
+
+  function checkWrite(){ const tips=[], lines=[]; let filled=0; const used=new Set();
+    for(let i=1;i<=5;i++){ const v=$('w'+i).value.trim(); lines.push(`${i}. ${v||'—'}`); if(!v){ tips.push(`<span class="warn">⚠️ Sentence ${i}: write a sentence.</span>`); continue; } filled++;
+      const l=v.toLowerCase(); const f=FW.filter(w=>new RegExp('\\b'+w+'\\b').test(l));
+      if(!f.length) tips.push(`<span class="warn">💡 Sentence ${i}: add a how-often word.</span>`); f.forEach(w=>used.add(w));
+      if(f.length && /^(always|never|rarely)\b/.test(l)) tips.push(`<span class="warn">💡 Sentence ${i}: start with I / we… → "I ${f[0]}…"</span>`);
+      const m=l.match(new RegExp('\\b(i|we|they|you)\\s+(\\w+)\\s+('+FW.join('|')+')\\b')); if(m && !['am','are',"'m","'re"].includes(m[2])) tips.push(`<span class="warn">💡 Sentence ${i}: put "${m[3]}" before the verb: ${m[1]==='i'?'I':m[1]} ${m[3]} ${m[2]}…</span>`); }
+    if(filled===5 && used.size<5) tips.push(`<span class="warn">💡 Use 5 different how-often words (you used ${used.size}).</span>`);
+    if(filled===5 && !tips.length) tips.push('<span class="ok">✓ Great! Your teacher will read your sentences.</span>');
+    $('tips').innerHTML=tips.join(''); $('v4-score').textContent=`${filled} / 5 written`;
+    results.v4={score:`${filled}/5`,lines}; done.v4=filled===5; prog(); }
+  $('w4Check').onclick=checkWrite;
+
+  const names={v1:'1 School-day verbs',v2:'2 How often does Sam…?',v3:'3 Choose the correct sentence',v4:'4 My school day'};
+  function body(){ const name=$('nameInput').value.trim()||'Anonymous'; let t=0,m=0;
+    ['v1','v2','v3'].forEach(k=>{ if(results[k]){ const [a,b]=results[k].score.split('/').map(Number); t+=a; m+=b; } });
+    let s=`Student: ${name}\nHomework: ${TITLE}\nScore (ex 1–3): ${t}/${m}\n`;
+    Object.keys(names).forEach(k=>{ s+=`\n${names[k]}`; s+= results[k]? ` — ${results[k].score}\n${results[k].lines.join('\n')}\n` : ' — not checked\n'; });
+    return {name,s}; }
+  const show=t=>{ $('preview').textContent=t; $('preview').hidden=false; };
+  $('copyBtn').onclick=()=>{ if(!results.v4) checkWrite(); const {s}=body(); show(s);
+    const sel=()=>{ const r=document.createRange(); r.selectNodeContents($('preview')); const g=getSelection(); g.removeAllRanges(); g.addRange(r); $('sendMsg').textContent='Text selected. Copy it and send it to your teacher.'; };
+    try{ navigator.clipboard.writeText(s).then(()=>{ $('sendMsg').textContent='Copied! Paste it in Telegram to your teacher.'; },sel); }catch(e){ sel(); } };
+  $('mailBtn').onclick=()=>{ if(!results.v4) checkWrite(); const {name,s}=body(); show(s);
+    location.href=`mailto:${TEACHER}?subject=${encodeURIComponent('Homework – '+name+' – '+TITLE)}&body=${encodeURIComponent(s)}`; };
+  prog();
+})();
+</script>
