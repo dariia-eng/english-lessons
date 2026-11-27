@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>7C Homework – Unusual Cafés</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  --teal:#1BBCB3;--teal-s:rgba(27,188,179,.13);--teal-b:rgba(27,188,179,.35);
+  --purple:#7B4FD6;--purple-s:rgba(123,79,214,.13);
+  --orange:#E8653A;--orange-s:rgba(232,101,58,.13);
+  --green:#22c55e;--green-s:rgba(34,197,94,.13);
+  --red:#e04565;--red-s:rgba(224,69,101,.13);
+  --bg:#ffffff;--card:#f9fafb;--border:#e5e7eb;
+  --text:#111827;--text2:#6b7280;--text3:#9ca3af;
+  --header-bg:#0fa49c;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111827;--card:#1f2937;--border:#374151;
+  --text:#f9fafb;--text2:#9ca3af;--text3:#6b7280;
+  --header-bg:#0a8c84;
+}}
+:root[data-theme="dark"]{
+  --bg:#111827;--card:#1f2937;--border:#374151;
+  --text:#f9fafb;--text2:#9ca3af;--text3:#6b7280;
+  --header-bg:#0a8c84;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:3rem}
+
+/* ── HEADER ── */
+.hw-header{background:var(--header-bg);padding:1.6rem 1.2rem 1.3rem;position:relative}
+.hw-eyebrow{font-family:'Nunito',sans-serif;font-weight:900;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:.3rem}
+.hw-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.55rem;color:#fff;line-height:1.2;margin-bottom:.18rem}
+.hw-sub{font-size:.88rem;color:rgba(255,255,255,.8)}
+.theme-btn{position:absolute;top:1.1rem;right:1.1rem;background:rgba(255,255,255,.18);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:1rem;color:#fff;display:flex;align-items:center;justify-content:center}
+.theme-btn:hover{background:rgba(255,255,255,.28)}
+
+/* ── NAME BAR ── */
+.name-bar{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:2px solid var(--border);padding:.6rem 1.1rem;display:flex;align-items:center;gap:.7rem}
+.name-bar label{font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;white-space:nowrap;color:var(--text2)}
+.name-bar input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:.42rem .7rem;font-family:'Inter',sans-serif;font-size:.9rem;background:var(--bg);color:var(--text);min-width:0;outline:none}
+.name-bar input:focus{border-color:var(--teal)}
+
+/* ── PROGRESS ── */
+.progress-wrap{padding:.85rem 1.1rem .4rem;max-width:700px;margin:0 auto}
+.progress-bar{height:8px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:.35rem}
+.progress-fill{height:100%;background:var(--teal);border-radius:99px;transition:width .4s ease}
+.progress-label{font-size:.78rem;color:var(--text2);font-weight:600;text-align:right}
+
+/* ── EXERCISE CARDS ── */
+.container{max-width:700px;margin:0 auto;padding:.5rem 1.1rem}
+.ex-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:1.1rem 1.15rem 1.2rem;margin-bottom:1.1rem}
+.ex-hd{display:flex;align-items:center;gap:.7rem;margin-bottom:.55rem}
+.ex-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:.9rem;background:var(--teal);color:#fff;border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ex-num.p{background:var(--purple)}
+.ex-num.o{background:var(--orange)}
+.ex-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem}
+.ex-instr{font-size:.86rem;color:var(--text2);margin-bottom:.85rem;line-height:1.5}
+
+/* ── WORD BANK ── */
+.word-bank{display:flex;flex-wrap:wrap;gap:.35rem;padding:.65rem .8rem;background:var(--teal-s);border:1.5px solid var(--teal-b);border-radius:10px;margin-bottom:1rem}
+.wb-word{font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;color:var(--teal)}
+
+/* ── GAP FILL ── */
+.gap-item{display:flex;align-items:flex-start;gap:.6rem;padding:.55rem .6rem;border-radius:9px;margin-bottom:.4rem;line-height:1.55;font-size:.9rem}
+.gap-item:last-child{margin-bottom:0}
+.gap-num{font-family:'Nunito',sans-serif;font-weight:800;color:var(--text3);font-size:.82rem;min-width:1.3rem;padding-top:.12rem}
+.gap-text{flex:1}
+.gap-input{border:none;border-bottom:2px solid var(--teal);background:transparent;color:var(--text);font-family:'Inter',sans-serif;font-size:.9rem;width:9rem;padding:.12rem .3rem;outline:none;text-align:center;margin:0 .2rem}
+.gap-input:focus{border-bottom-color:var(--purple)}
+.gap-input.ok{border-bottom-color:var(--green);color:var(--green)}
+.gap-input.bad{border-bottom-color:var(--red);color:var(--red)}
+.gap-hint{font-size:.78rem;color:var(--text3);font-style:italic;margin-left:.25rem}
+.reveal-ans{font-size:.78rem;color:var(--red);font-weight:700;margin-left:.4rem;display:none}
+
+/* ── MULTIPLE CHOICE ── */
+.mc-item{margin-bottom:.85rem}
+.mc-item:last-child{margin-bottom:0}
+.mc-stem{font-size:.9rem;margin-bottom:.42rem;line-height:1.5;padding-left:1.9rem;position:relative}
+.mc-stem .mn{position:absolute;left:0;top:0;font-family:'Nunito',sans-serif;font-weight:800;color:var(--text3);font-size:.82rem}
+.mc-opts{display:flex;flex-wrap:wrap;gap:.4rem;padding-left:1.9rem}
+.mc-btn{border:1.5px solid var(--border);background:var(--bg);color:var(--text);border-radius:8px;padding:.35rem .8rem;font-size:.85rem;font-family:'Inter',sans-serif;cursor:pointer;transition:border-color .15s,background .15s}
+.mc-btn:hover{border-color:var(--teal);background:var(--teal-s)}
+.mc-btn.sel{border-color:var(--teal);background:var(--teal-s);color:var(--teal);font-weight:600}
+.mc-btn.ok{border-color:var(--green)!important;background:var(--green-s)!important;color:var(--green)!important;font-weight:700}
+.mc-btn.bad{border-color:var(--red)!important;background:var(--red-s)!important;color:var(--red)!important;font-weight:700}
+.mc-fb{font-size:.78rem;margin-top:.3rem;padding-left:1.9rem;display:none}
+
+/* ── BUTTONS ── */
+.btn-row{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap}
+.btn{padding:.45rem 1.1rem;border-radius:9px;border:none;font-family:'Nunito',sans-serif;font-weight:800;font-size:.88rem;cursor:pointer;transition:opacity .15s}
+.btn-check{background:var(--teal);color:#fff}
+.btn-reset{background:var(--border);color:var(--text2)}
+.btn:hover{opacity:.85}
+
+/* ── SEND TO TEACHER ── */
+.send-card{background:linear-gradient(135deg,var(--teal-s),var(--purple-s));border:1.5px solid var(--teal-b);border-radius:14px;padding:1.1rem 1.15rem;text-align:center}
+.send-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;margin-bottom:.35rem}
+.send-sub{font-size:.84rem;color:var(--text2);margin-bottom:.8rem}
+.send-btn{background:var(--teal);color:#fff;border:none;border-radius:10px;padding:.6rem 1.5rem;font-family:'Nunito',sans-serif;font-weight:900;font-size:.95rem;cursor:pointer;transition:opacity .15s}
+.send-btn:hover{opacity:.85}
+
+/* ── SCORE BADGE ── */
+.score-badge{display:inline-block;font-family:'Nunito',sans-serif;font-weight:900;font-size:.82rem;border-radius:20px;padding:.18rem .7rem;margin-left:.6rem;vertical-align:middle}
+.score-badge.ok{background:var(--green-s);color:var(--green)}
+.score-badge.meh{background:var(--orange-s);color:var(--orange)}
+.score-badge.bad{background:var(--red-s);color:var(--red)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hw-header">
+  <div class="hw-eyebrow">Unit 7C · Homework</div>
+  <div class="hw-title">Unusual Cafés</div>
+  <div class="hw-sub">Vocabulary · Comparative adjectives</div>
+  <button class="theme-btn" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
+</div>
+
+<!-- NAME BAR -->
+<div class="name-bar">
+  <label for="nameInput">Your name:</label>
+  <input id="nameInput" type="text" placeholder="Type your name…">
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="pfill" style="width:0%"></div></div>
+  <div class="progress-label"><span id="plabel">0 / 3</span> exercises checked</div>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════
+     EXERCISE 1 – VOCABULARY GAP-FILL
+══════════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <div class="ex-num">1</div>
+    <div class="ex-title">Vocabulary – Describing places to eat</div>
+  </div>
+  <div class="ex-instr">Complete the sentences with a word from the box.</div>
+
+  <div class="word-bank">
+    <span class="wb-word">crowded</span>
+    <span class="wb-word">dark</span>
+    <span class="wb-word">expensive</span>
+    <span class="wb-word">modern</span>
+    <span class="wb-word">noisy</span>
+    <span class="wb-word">popular</span>
+    <span class="wb-word">small</span>
+    <span class="wb-word">strange</span>
+  </div>
+
+  <div id="ex1-items">
+    <div class="gap-item"><span class="gap-num">1</span><span class="gap-text">Sorry, I can't hear you. It's really <input class="gap-input" id="g1_1" data-ans="noisy" placeholder="?"> in here.</span></div>
+    <div class="gap-item"><span class="gap-num">2</span><span class="gap-text">It's really <input class="gap-input" id="g1_2" data-ans="expensive" placeholder="?">. I spent over £100 last time I went.</span></div>
+    <div class="gap-item"><span class="gap-num">3</span><span class="gap-text">Why is it so <input class="gap-input" id="g1_3" data-ans="dark" placeholder="?">? I can't see my food!</span></div>
+    <div class="gap-item"><span class="gap-num">4</span><span class="gap-text">It's close to the Eiffel Tower, so it's very <input class="gap-input" id="g1_4" data-ans="popular" placeholder="?"> with tourists.</span></div>
+    <div class="gap-item"><span class="gap-num">5</span><span class="gap-text">This place gets really <input class="gap-input" id="g1_5" data-ans="crowded" placeholder="?"> on a Friday night.</span></div>
+    <div class="gap-item"><span class="gap-num">6</span><span class="gap-text">The building is old, but it's quite <input class="gap-input" id="g1_6" data-ans="modern" placeholder="?"> inside.</span></div>
+    <div class="gap-item"><span class="gap-num">7</span><span class="gap-text">It's a <input class="gap-input" id="g1_7" data-ans="strange" placeholder="?"> café – there are cat pictures everywhere!</span></div>
+    <div class="gap-item"><span class="gap-num">8</span><span class="gap-text">There's a <input class="gap-input" id="g1_8" data-ans="small" placeholder="?"> garden with a few tables out the back.</span></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx1()">Check ✓</button>
+    <button class="btn btn-reset" onclick="resetEx1()">Reset</button>
+    <span id="ex1-score"></span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     EXERCISE 2 – SPOT THE CORRECT FORM
+══════════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <div class="ex-num o">2</div>
+    <div class="ex-title">Grammar – Find the correct form</div>
+  </div>
+  <div class="ex-instr">Choose the correct comparative form (A or B) to complete each sentence.</div>
+
+  <div id="ex3-items">
+
+    <div class="mc-item">
+      <div class="mc-stem"><span class="mn">1</span>Tom's Café is always _____ than the River Café.</div>
+      <div class="mc-opts">
+        <button class="mc-btn" data-q="3_1" data-opt="A" data-correct="true" onclick="pickMC(this)">A) more crowded</button>
+        <button class="mc-btn" data-q="3_1" data-opt="B" onclick="pickMC(this)">B) crowdeder</button>
+      </div>
+      <div class="mc-fb" id="fb3_1"></div>
+    </div>
+
+    <div class="mc-item">
+      <div class="mc-stem"><span class="mn">2</span>Canada is _____ than France.</div>
+      <div class="mc-opts">
+        <button class="mc-btn" data-q="3_2" data-opt="A" onclick="pickMC(this)">A) more bigger</button>
+        <button class="mc-btn" data-q="3_2" data-opt="B" data-correct="true" onclick="pickMC(this)">B) bigger</button>
+      </div>
+      <div class="mc-fb" id="fb3_2"></div>
+    </div>
+
+    <div class="mc-item">
+      <div class="mc-stem"><span class="mn">3</span>My lunch is _____ than yours.</div>
+      <div class="mc-opts">
+        <button class="mc-btn" data-q="3_3" data-opt="A" data-correct="true" onclick="pickMC(this)">A) healthier</button>
+        <button class="mc-btn" data-q="3_3" data-opt="B" onclick="pickMC(this)">B) healthyier</button>
+      </div>
+      <div class="mc-fb" id="fb3_3"></div>
+    </div>
+
+    <div class="mc-item">
+      <div class="mc-stem"><span class="mn">4</span>This café is much better _____ the old one.</div>
+      <div class="mc-opts">
+        <button class="mc-btn" data-q="3_4" data-opt="A" data-correct="true" onclick="pickMC(this)">A) than</button>
+        <button class="mc-btn" data-q="3_4" data-opt="B" onclick="pickMC(this)">B) then</button>
+      </div>
+      <div class="mc-fb" id="fb3_4"></div>
+    </div>
+
+    <div class="mc-item">
+      <div class="mc-stem"><span class="mn">5</span>The food here is much _____.</div>
+      <div class="mc-opts">
+        <button class="mc-btn" data-q="3_5" data-opt="A" onclick="pickMC(this)">A) expensiver</button>
+        <button class="mc-btn" data-q="3_5" data-opt="B" data-correct="true" onclick="pickMC(this)">B) more expensive</button>
+      </div>
+      <div class="mc-fb" id="fb3_5"></div>
+    </div>
+
+    <div class="mc-item">
+      <div class="mc-stem"><span class="mn">6</span>This car is _____ than your old one.</div>
+      <div class="mc-opts">
+        <button class="mc-btn" data-q="3_6" data-opt="A" onclick="pickMC(this)">A) more small</button>
+        <button class="mc-btn" data-q="3_6" data-opt="B" data-correct="true" onclick="pickMC(this)">B) smaller</button>
+      </div>
+      <div class="mc-fb" id="fb3_6"></div>
+    </div>
+
+    <div class="mc-item">
+      <div class="mc-stem"><span class="mn">7</span>It's much _____ than I remember.</div>
+      <div class="mc-opts">
+        <button class="mc-btn" data-q="3_7" data-opt="A" data-correct="true" onclick="pickMC(this)">A) nicer</button>
+        <button class="mc-btn" data-q="3_7" data-opt="B" onclick="pickMC(this)">B) niceer</button>
+      </div>
+      <div class="mc-fb" id="fb3_7"></div>
+    </div>
+
+    <div class="mc-item">
+      <div class="mc-stem"><span class="mn">8</span>English food is _____ than Italian.</div>
+      <div class="mc-opts">
+        <button class="mc-btn" data-q="3_8" data-opt="A" data-correct="true" onclick="pickMC(this)">A) worse</button>
+        <button class="mc-btn" data-q="3_8" data-opt="B" onclick="pickMC(this)">B) badder</button>
+      </div>
+      <div class="mc-fb" id="fb3_8"></div>
+    </div>
+
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx3()">Check ✓</button>
+    <button class="btn btn-reset" onclick="resetEx3()">Reset</button>
+    <span id="ex3-score"></span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     EXERCISE 3 – COMPARATIVE FORMS
+══════════════════════════════════════ -->
+<div class="ex-card">
+  <div class="ex-hd">
+    <div class="ex-num p">3</div>
+    <div class="ex-title">Grammar – Comparative adjectives</div>
+  </div>
+  <div class="ex-instr">Complete the sentences with the comparative form of the adjective in brackets.</div>
+
+  <div id="ex2-items">
+    <div class="gap-item"><span class="gap-num">1</span><span class="gap-text">The lights are <input class="gap-input" id="g2_1" data-ans="brighter" placeholder="?"> in the kitchen. <span class="gap-hint">(bright)</span></span></div>
+    <div class="gap-item"><span class="gap-num">2</span><span class="gap-text">The food is <input class="gap-input" id="g2_2" data-ans="fresher" placeholder="?"> than in most places. <span class="gap-hint">(fresh)</span></span></div>
+    <div class="gap-item"><span class="gap-num">3</span><span class="gap-text">The coffee here is <input class="gap-input" id="g2_3" data-ans="more expensive" placeholder="?"> , but it tastes amazing! <span class="gap-hint">(expensive)</span></span></div>
+    <div class="gap-item"><span class="gap-num">4</span><span class="gap-text">It's a lot <input class="gap-input" id="g2_4" data-ans="noisier" placeholder="?"> downstairs, I'm afraid. <span class="gap-hint">(noisy)</span></span></div>
+    <div class="gap-item"><span class="gap-num">5</span><span class="gap-text">Our new place is <input class="gap-input" id="g2_5" data-ans="larger" placeholder="?"> than our old one. <span class="gap-hint">(large)</span></span></div>
+    <div class="gap-item"><span class="gap-num">6</span><span class="gap-text">Your phone is <input class="gap-input" id="g2_6" data-ans="better" placeholder="?"> than mine. <span class="gap-hint">(good)</span></span></div>
+    <div class="gap-item"><span class="gap-num">7</span><span class="gap-text">Sushi is <input class="gap-input" id="g2_7" data-ans="healthier" placeholder="?"> than fast food. <span class="gap-hint">(healthy)</span></span></div>
+    <div class="gap-item"><span class="gap-num">8</span><span class="gap-text">Pizza is <input class="gap-input" id="g2_8" data-ans="more delicious" placeholder="?"> than pasta, I think. <span class="gap-hint">(delicious)</span></span></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-check" onclick="checkEx2()">Check ✓</button>
+    <button class="btn btn-reset" onclick="resetEx2()">Reset</button>
+    <span id="ex2-score"></span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SEND TO TEACHER
+══════════════════════════════════════ -->
+<div class="send-card">
+  <div class="send-title">📧 Send to your teacher</div>
+  <div class="send-sub">When you're finished, send your answers to your teacher.</div>
+  <button class="send-btn" onclick="sendToTeacher()">Send to Teacher ✉️</button>
+</div>
+
+</div><!-- /container -->
+
+<script>
+var done = { ex1: false, ex2: false, ex3: false };
+
+function updateProgress() {
+  var n = 0;
+  for (var k in done) { if (done[k]) n++; }
+  var total = Object.keys(done).length;
+  document.getElementById('pfill').style.width = (n / total * 100) + '%';
+  document.getElementById('plabel').textContent = n + ' / ' + total;
+}
+
+/* ── THEME ── */
+function toggleTheme() {
+  var root = document.documentElement;
+  var current = root.getAttribute('data-theme');
+  root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+}
+
+/* ── SCORE BADGE ── */
+function scoreBadge(correct, total) {
+  var pct = correct / total;
+  var cls = pct === 1 ? 'ok' : pct >= 0.5 ? 'meh' : 'bad';
+  return '<span class="score-badge ' + cls + '">' + correct + ' / ' + total + '</span>';
+}
+
+/* ══════════════════════
+   EXERCISE 1 – GAP FILL
+══════════════════════ */
+function checkEx1() {
+  var ids = ['g1_1','g1_2','g1_3','g1_4','g1_5','g1_6','g1_7','g1_8'];
+  var correct = 0;
+  for (var i = 0; i < ids.length; i++) {
+    var inp = document.getElementById(ids[i]);
+    var val = inp.value.toLowerCase().trim();
+    var ans = inp.getAttribute('data-ans').toLowerCase();
+    inp.classList.remove('ok','bad');
+    if (val === ans) {
+      inp.classList.add('ok');
+      correct++;
+    } else {
+      inp.classList.add('bad');
+      inp.title = '✓ ' + inp.getAttribute('data-ans');
+    }
+  }
+  document.getElementById('ex1-score').innerHTML = scoreBadge(correct, ids.length);
+  done.ex1 = true;
+  updateProgress();
+}
+
+function resetEx1() {
+  var ids = ['g1_1','g1_2','g1_3','g1_4','g1_5','g1_6','g1_7','g1_8'];
+  for (var i = 0; i < ids.length; i++) {
+    var inp = document.getElementById(ids[i]);
+    inp.value = '';
+    inp.classList.remove('ok','bad');
+    inp.title = '';
+  }
+  document.getElementById('ex1-score').innerHTML = '';
+  done.ex1 = false;
+  updateProgress();
+}
+
+/* ══════════════════════════════
+   EXERCISE 2 – COMPARATIVE FORM
+══════════════════════════════ */
+function checkEx2() {
+  var ids = ['g2_1','g2_2','g2_3','g2_4','g2_5','g2_6','g2_7','g2_8'];
+  var correct = 0;
+  for (var i = 0; i < ids.length; i++) {
+    var inp = document.getElementById(ids[i]);
+    var val = inp.value.toLowerCase().trim();
+    var ans = inp.getAttribute('data-ans').toLowerCase();
+    inp.classList.remove('ok','bad');
+    if (val === ans) {
+      inp.classList.add('ok');
+      correct++;
+    } else {
+      inp.classList.add('bad');
+      inp.title = '✓ ' + inp.getAttribute('data-ans');
+    }
+  }
+  document.getElementById('ex2-score').innerHTML = scoreBadge(correct, ids.length);
+  done.ex2 = true;
+  updateProgress();
+}
+
+function resetEx2() {
+  var ids = ['g2_1','g2_2','g2_3','g2_4','g2_5','g2_6','g2_7','g2_8'];
+  for (var i = 0; i < ids.length; i++) {
+    var inp = document.getElementById(ids[i]);
+    inp.value = '';
+    inp.classList.remove('ok','bad');
+    inp.title = '';
+  }
+  document.getElementById('ex2-score').innerHTML = '';
+  done.ex2 = false;
+  updateProgress();
+}
+
+/* ═════════════════════════
+   EXERCISE 3 – MULTIPLE CHOICE
+═════════════════════════ */
+var mcSelections = {};
+
+function pickMC(btn) {
+  var q = btn.getAttribute('data-q');
+  // Deselect others in same question
+  var btns = document.querySelectorAll('[data-q="' + q + '"]');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.remove('sel');
+  }
+  btn.classList.add('sel');
+  mcSelections[q] = btn;
+}
+
+function checkEx3() {
+  var qs = ['3_1','3_2','3_3','3_4','3_5','3_6','3_7','3_8'];
+  var correct = 0;
+  for (var i = 0; i < qs.length; i++) {
+    var q = qs[i];
+    var btns = document.querySelectorAll('[data-q="' + q + '"]');
+    var fb = document.getElementById('fb' + q);
+    var answered = false;
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].classList.remove('sel');
+      var isCorrect = btns[j].getAttribute('data-correct') === 'true';
+      if (mcSelections[q] === btns[j]) {
+        answered = true;
+        if (isCorrect) {
+          btns[j].classList.add('ok');
+          correct++;
+          fb.textContent = '✓ Correct!';
+          fb.style.color = 'var(--green)';
+        } else {
+          btns[j].classList.add('bad');
+          // Find correct answer text
+          var correctText = '';
+          for (var k = 0; k < btns.length; k++) {
+            if (btns[k].getAttribute('data-correct') === 'true') {
+              correctText = btns[k].textContent;
+              btns[k].classList.add('ok');
+            }
+          }
+          fb.textContent = '✗ The correct answer is: ' + correctText;
+          fb.style.color = 'var(--red)';
+        }
+        fb.style.display = 'block';
+      }
+    }
+    if (!answered) {
+      fb.textContent = '— not answered';
+      fb.style.color = 'var(--text3)';
+      fb.style.display = 'block';
+    }
+  }
+  document.getElementById('ex3-score').innerHTML = scoreBadge(correct, qs.length);
+  done.ex3 = true;
+  updateProgress();
+}
+
+function resetEx3() {
+  var qs = ['3_1','3_2','3_3','3_4','3_5','3_6','3_7','3_8'];
+  mcSelections = {};
+  for (var i = 0; i < qs.length; i++) {
+    var btns = document.querySelectorAll('[data-q="' + qs[i] + '"]');
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].classList.remove('sel','ok','bad');
+    }
+    var fb = document.getElementById('fb' + qs[i]);
+    fb.style.display = 'none';
+    fb.textContent = '';
+  }
+  document.getElementById('ex3-score').innerHTML = '';
+  done.ex3 = false;
+  updateProgress();
+}
+
+/* ══════════════════
+   SEND TO TEACHER
+══════════════════ */
+function sendToTeacher() {
+  var name = document.getElementById('nameInput').value.trim() || 'Anonymous';
+
+  // Collect Ex 1
+  var ex1ids = ['g1_1','g1_2','g1_3','g1_4','g1_5','g1_6','g1_7','g1_8'];
+  var ex1lines = '';
+  for (var i = 0; i < ex1ids.length; i++) {
+    var inp = document.getElementById(ex1ids[i]);
+    var val = inp.value.trim() || '(blank)';
+    var ok = inp.classList.contains('ok') ? '✓' : inp.classList.contains('bad') ? '✗' : '-';
+    ex1lines += (i+1) + '. ' + val + ' ' + ok + '\n';
+  }
+
+  // Collect Ex 2
+  var ex2ids = ['g2_1','g2_2','g2_3','g2_4','g2_5','g2_6','g2_7','g2_8'];
+  var ex2lines = '';
+  for (var j = 0; j < ex2ids.length; j++) {
+    var inp2 = document.getElementById(ex2ids[j]);
+    var val2 = inp2.value.trim() || '(blank)';
+    var ok2 = inp2.classList.contains('ok') ? '✓' : inp2.classList.contains('bad') ? '✗' : '-';
+    ex2lines += (j+1) + '. ' + val2 + ' ' + ok2 + '\n';
+  }
+
+  // Collect Ex 3
+  var ex3qs = ['3_1','3_2','3_3','3_4','3_5','3_6','3_7','3_8'];
+  var ex3lines = '';
+  for (var k = 0; k < ex3qs.length; k++) {
+    var sel = mcSelections[ex3qs[k]];
+    var chosen = sel ? sel.textContent : '(not answered)';
+    var status = '-';
+    if (sel) {
+      status = sel.getAttribute('data-correct') === 'true' ? '✓' : '✗';
+    }
+    ex3lines += (k+1) + '. ' + chosen + ' ' + status + '\n';
+  }
+
+  var body = 'Student: ' + name + '\n\n' +
+    'EXERCISE 1 – Vocabulary gap-fill\n' + ex1lines +
+    '\nEXERCISE 2 – Comparative forms\n' + ex2lines +
+    '\nEXERCISE 3 – Spot the correct form\n' + ex3lines;
+
+  var subject = encodeURIComponent('Homework – 7C Unusual Cafés – ' + name);
+  window.location.href = 'mailto:daryaaa2028@gmail.com?subject=' + subject + '&body=' + encodeURIComponent(body);
+}
+</script>
+</body>
+</html>
